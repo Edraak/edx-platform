@@ -2,12 +2,14 @@
   <div class="indicator_container">
     % if status == 'unsubmitted':
     <span class="unanswered" style="display:inline-block;" id="status_${id}"></span>
-    % elif status == 'correct': 
+    % elif status == 'correct' and show_right_or_wrong: 
     <span class="correct" id="status_${id}"></span>
-    % elif status == 'incorrect':
+    % elif status == 'incorrect' and show_right_or_wrong:
     <span class="incorrect" id="status_${id}"></span>
     % elif status == 'incomplete':
     <span class="incorrect" id="status_${id}"></span>
+    % elif not show_right_or_wrong:
+    <span class="done" id="status_${id}"></span>
     % endif
   </div>
 

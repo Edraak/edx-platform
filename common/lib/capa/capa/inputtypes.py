@@ -108,6 +108,23 @@ class Attribute(object):
 
         return val
 
+def transform_from_bool_str(s):
+    """
+    Transform a string into a boolean.  "1" and "true" are True, "", "0", "false" are
+    False (case insensitive).  Everything else is an error.
+    """
+    these_true = ["1", "true"]
+    if s.lower() in these_true:
+        return True
+
+    these_false = ["0", "false"]
+
+    if s.lower() in these_false:
+        return False
+
+    raise ValueError("Don't know how to convert '{0}' to"
+                     " boolean. Not one of {1} or {2}".format(s, these_true, these_false))
+
 
 class InputTypeBase(object):
     """
@@ -162,7 +179,7 @@ class InputTypeBase(object):
         self.status = state.get('status', 'unanswered')
 
         try:
-            # Pre-parse and propcess all the declared requirements.
+            # Pre-parse and process all the declared requirements.
             self.process_requirements()
 
             # Call subclass "constructor" -- means they don't have to worry about calling
@@ -177,7 +194,8 @@ class InputTypeBase(object):
     @classmethod
     def get_attributes(cls):
         """
-        Should return a list of Attribute objects (see docstring there for details). Subclasses should override.  e.g.
+        Should return a list of Attribute objects (see docstring there for
+        details). Subclasses should override.  e.g.
 
         return [Attribute('unicorn', True), Attribute('num_dragons', 12, transform=int), ...]
         """
@@ -190,10 +208,12 @@ class InputTypeBase(object):
         function parses the input xml and pulls out those attributes.  This
         isolates most simple input types from needing to deal with xml parsing at all.
 
-        Processes attributes, putting the results in the self.loaded_attributes dictionary.  Also creates a set
-        self.to_render, containing the names of attributes that should be included in the context by default.
+        Processes attributes, putting the results in the self.loaded_attributes
+        dictionary.  Also creates a set self.to_render, containing the names of attributes
+        that should be included in the context by default.
         """
-        # Use local dicts and sets so that if there are exceptions, we don't end up in a partially-initialized state.
+        # Use local dicts and sets so that if there are exceptions, we don't end up in a
+        # partially-initialized state.
         loaded = {}
         to_render = set()
         for a in self.get_attributes():
@@ -206,11 +226,11 @@ class InputTypeBase(object):
 
     def setup(self):
         """
-        InputTypes should override this to do any needed initialization.  It is called after the
-        constructor, so all base attributes will be set.
+        InputTypes should override this to do any needed initialization.  It is called
+        after the constructor, so all base attributes will be set.
 
-        If this method raises an exception, it will be wrapped with a message that includes the
-        problem xml.
+        If this method raises an exception, it will be wrapped with a message that
+        includes the problem xml.
         """
         pass
 
@@ -351,10 +371,15 @@ class ChoiceGroup(InputTypeBase):
 
         self.choices = self.extract_choices(self.xml)
 
+    @classmethod
+    def get_attributes(cls):
+        return [Attribute("show_right_or_wrong", True, transform=transform_from_bool_str)]
+
     def _extra_context(self):
         return {'input_type': self.html_input_type,
                 'choices': self.choices,
-                'name_array_suffix': self.suffix}
+                'name_array_suffix': self.suffix,}
+                
 
     @staticmethod
     def extract_choices(element):

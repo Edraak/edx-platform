@@ -74,14 +74,22 @@ class ChoiceGroupTest(unittest.TestCase):
     Test choice groups, radio groups, and checkbox groups
     '''
 
-    def check_group(self, tag, expected_input_type, expected_suffix):
+    def check_group(self, tag, expected_input_type, expected_suffix,
+                    show_right_wrong=None):
+
+        options = ""
+        expected_right_wrong = True
+        if show_right_wrong is not None:
+            options = 'show_right_or_wrong="{0}"'.format(str(show_right_wrong).lower())
+            expected_right_wrong = bool(show_right_wrong)
+
         xml_str = """
-  <{tag}>
+  <{tag} {options}>
     <choice correct="false" name="foil1"><text>This is foil One.</text></choice>
     <choice correct="false" name="foil2"><text>This is foil Two.</text></choice>
     <choice correct="true" name="foil3">This is foil Three.</choice>
   </{tag}>
-        """.format(tag=tag)
+        """.format(tag=tag, options=options)
 
         element = etree.fromstring(xml_str)
 
@@ -102,12 +110,21 @@ class ChoiceGroupTest(unittest.TestCase):
                                 ('foil2', '<text>This is foil Two.</text>'),
                                 ('foil3', 'This is foil Three.'),],
                     'name_array_suffix': expected_suffix,   # what is this for??
+                    'show_right_or_wrong': expected_right_wrong,
                     }
 
         self.assertEqual(context, expected)
 
     def test_choicegroup(self):
         self.check_group('choicegroup', 'radio', '')
+
+    def test_choicegroup_right_wrong(self):
+        self.check_group('choicegroup', 'radio', '', True)
+        self.check_group('choicegroup', 'radio', '', 1)
+        self.check_group('choicegroup', 'radio', '', False)
+        self.check_group('choicegroup', 'radio', '', 0)
+        self.assertRaises(Exception, self.check_group,
+                          'choicegroup', 'radio', '', 'invalid')
 
     def test_radiogroup(self):
         self.check_group('radiogroup', 'radio', '[]')
