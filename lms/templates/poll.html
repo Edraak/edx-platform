@@ -1,9 +1,37 @@
-<div align="center" id="${element_id}" class="${element_class}">
+<!-- <div align="center" id="poll_${element_id}" class="${element_class}"> -->
+<section id="poll_${element_id}" class="${element_class}" data-ajax-url="${ajax_url}"
+         data-id="${id}" data-state="${state}" data-allow_reset="${allow_reset}" data-child-type="${child_type}">
     <!-- hidden field to read configuration json from -->
     <div class="${element_class}" id="${element_id}_json" style="display: none;">
         ${configuration_json}
     </div>
+     ${element_html}
 
-    <!-- main xml with marked places for sliders, numbers, and plot -->
-    ${element_html}
+     <div id="polls-1" class="wp-polls">
+    {# <form id="polls_form_1" class="wp-polls-form" method="post"> #}
+
+    <p style="display: none;">
+    <input type="hidden" name="poll_id" value="1" /></p>
+    <h4>What's the Right Thing to Do?</h4>
+    <p style="text-align: center;"><strong>Suppose four shipwrecked sailors are
+stranded at sea in a lifeboat, without food or water. Would it be wrong
+for three of them to kill and eat the cabin boy, in order to save their own lives?</strong>
+    </p>
+
+    <div id="polls-1-ans" class="wp-polls-ans clearfix">
+        <ul class="wp-polls-ul">
+            <li>
+                <input type="radio" id="poll-answer-1" name="poll_1" value="1" />
+                <label for="poll-answer-1">Yes</label>
+                </li>
+            <li>
+                <input type="radio" id="poll-answer-2" name="poll_1" value="2" />
+                <label for="poll-answer-2">No</label></li>
+        </ul>
+        <div class="submit-button">
+            <input type="button" name="vote" value="   Cast Your Vote   " class="Buttons" />
+        </div>
+    </div>
+{# </form> #}
+</div>
 </div>

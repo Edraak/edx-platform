@@ -37,6 +37,7 @@ setup(
             "videosequence = xmodule.seq_module:SequenceDescriptor",
             "discussion = xmodule.discussion_module:DiscussionDescriptor",
             "graphical_slider_tool = xmodule.gst_module:GraphicalSliderToolDescriptor",
+            "poll = xmodule.poll_module:PollDescriptor",
         ]
     }
 )
