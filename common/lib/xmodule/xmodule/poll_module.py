@@ -46,9 +46,14 @@ class PollModule(XModule):
 
     js = {
        'coffee': [resource_string(__name__, 'js/src/javascript_loader.coffee'),
-                  resource_string(__name__, 'js/src/poll/poll_main.coffee')],
-      'js': [resource_string(__name__, 'js/src/poll/poll.js')]
+                  # resource_string(__name__, 'js/src/poll/poll_main.coffee')
+                  ],
+      'js': [resource_string(__name__, 'js/src/poll/poll.js'),
+            resource_string(__name__, 'js/src/poll/poll_main.js'),
+
+      ]
     }
+    css = {'scss': [resource_string(__name__, 'css/poll/display.scss')]}
     js_module_name = "Poll"
 
     def __init__(self, system, location, definition, descriptor, instance_state=None,
@@ -70,7 +75,7 @@ class PollModule(XModule):
 
     def handle_ajax(self, dispatch, get):       # TODO: bounds checking
         ''' get = request.POST instance '''
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         pass
         # if dispatch == 'goto_position':
             # self.position = int(get['position'])

@@ -14,7 +14,9 @@ window.Poll = function (el) {
         // with a unique DOM ID), we will iterate over all children, and for
         // each match, we will call GstMain module.
         $(el).children('.poll').each(function (index, value) {
-            PollMain($(value).attr('id'));
+            console.log('inpoll');
+            console.log($(value));
+            var tmp = new PollMain($(value));
         });
     });
 };
