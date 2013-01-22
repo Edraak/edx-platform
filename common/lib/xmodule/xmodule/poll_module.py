@@ -45,11 +45,9 @@ class PollModule(XModule):
     '''
 
     js = {
-       'coffee': [resource_string(__name__, 'js/src/javascript_loader.coffee')],
-      'js': [
-        resource_string(__name__, 'js/src/poll/poll_main.js'),
-        resource_string(__name__, 'js/src/poll/poll.js')
-      ]
+       'coffee': [resource_string(__name__, 'js/src/javascript_loader.coffee'),
+                  resource_string(__name__, 'js/src/poll/poll_main.coffee')],
+      'js': [resource_string(__name__, 'js/src/poll/poll.js')]
     }
     js_module_name = "Poll"
 
