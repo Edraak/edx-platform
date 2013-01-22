@@ -73,13 +73,14 @@ class PollModule(XModule):
         """Dumps all user answers"""
         return json.dumps({'answered': True})
 
-    def handle_ajax(self, dispatch, get):       # TODO: bounds checking
+    def handle_ajax(self, dispatch, get):
         ''' get = request.POST instance '''
         # import ipdb; ipdb.set_trace()
-        pass
-        # if dispatch == 'goto_position':
-            # self.position = int(get['position'])
-            # return json.dumps({'success': True})
+        if dispatch == 'submit_answer':
+            if int(get['answer']) == 1:
+                return json.dumps({'success': True})
+            else:
+                return json.dumps({'success': False})
         # raise NotFoundError('Unexpected dispatch type')
 
     # def handle_ajax(self, dispatch, get, system):

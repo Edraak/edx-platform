@@ -16,10 +16,10 @@
 
     PollMain.prototype.submit_answer = function (event, _this) {
       // alert('answer');
-      _this.status_item = $(event.target).parent().parent();
-      // _this.status_number = status_item.data("status-number");
+      _this.status_item = $(event.target).parent().parent().find(
+                                           'input:checked').val();
       _this.data = {
-        task_number: "1"
+        'answer': _this.status_item
       };
       logme( "" + _this.ajax_url + "/submit_answer");
       $.postWithPrefix(
@@ -27,9 +27,13 @@
         _this.data,
         function(response) {
           if (response.success) {
-            return alert("Success");
+            // alert("Success");
+            _this.element.find(".hidden").attr('style',
+               'display: block !important; visibility: visible; border: 1px solid green;');
           } else {
-            return alert("No success");
+            // alert("No success");
+            _this.element.find(".hidden").attr('style',
+               'display: block !important; visibility: visible; border: 1px solid red;');
           }
         }
       );
@@ -38,6 +42,7 @@
     PollMain.prototype.reinitialize = function (element) {
       var _this = this;
       // alert('Reinit');
+      this.element = element;
       this.id = element.data("id");
       this.ajax_url = element.data("ajax-url");
       this.state = element.data("state");
