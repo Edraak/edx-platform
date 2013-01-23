@@ -231,7 +231,7 @@ def _get_module(user, request, location, student_module_cache, course_id, positi
     system.set('position', position)
     system.set('DEBUG', settings.DEBUG)
     if settings.MITX_FEATURES.get('ENABLE_PSYCHOMETRICS') and instance_module is not None:
-        system.set('psychometrics_handler',		# set callback for updating PsychometricsData
+        system.set('psychometrics_handler',  # set callback for updating PsychometricsData
                    make_psychometrics_data_update_handler(instance_module))
 
     try:
