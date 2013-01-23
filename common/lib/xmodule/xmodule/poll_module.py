@@ -65,21 +65,28 @@ class PollModule(XModule):
         XModule.__init__(self, system, location, definition, descriptor,
                          instance_state, shared_state, **kwargs)
         self.system = system
+
         if instance_state is not None:
-            # state = json.loads(instance_state)
-            pass
+            self.state = json.loads(instance_state)
+            self.variant = self.state.get('answer', 0)
+        else:
+            self.variant = 0
 
     def get_instance_state(self):
         """Dumps all user answers"""
-        return json.dumps({'answered': True})
+        # import ipdb; ipdb.set_trace()
+        return json.dumps({'answered': True,
+                          'answer': self.variant})
 
     def handle_ajax(self, dispatch, get):
         ''' get = request.POST instance '''
         # import ipdb; ipdb.set_trace()
         if dispatch == 'submit_answer':
             if int(get['answer']) == 1:
+                self.variant += 10
                 return json.dumps({'success': True})
             else:
+                self.varuant -= 10
                 return json.dumps({'success': False})
         # raise NotFoundError('Unexpected dispatch type')
 
@@ -217,6 +224,7 @@ class PollModule(XModule):
 class PollDescriptor(MakoModuleDescriptor, XmlDescriptor):
     module_class = PollModule
     template_dir_name = 'poll'
+    stores_state = True
 
     @classmethod
     def definition_from_xml(cls, xml_object, system):
