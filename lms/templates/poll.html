@@ -1,43 +1,73 @@
-<section id="poll_${element_id}"
-         class="${element_class}"
-         data-ajax-url="${ajax_url}"
-         data-state="${state}" >
+<section
+    id="poll_${element_id}"
+    class="${element_class}"
+    data-ajax-url="${ajax_url}"
+>
+    <!-- Hidden field to read configuration JSON from. -->
+    <div
+        class="${element_class}_div"
+        id="${element_id}_json"
+        style="display: none;"
+    >${configuration_json}</div>
 
-    <!-- hidden field to read configuration json from -->
-    <div class="${element_class}_div" id="${element_id}_json"
-        style="display: none;">
-        ${configuration_json}
-    </div>
+    <!-- Main HTML. -->
+    ${element_html}
 
-    <!--main html -->
-     ${element_html}
+    <div id="poll-1" class="polls">
+        <h3>What's the Right Thing to Do?</h3>
 
-     <div id="poll-1" class="polls">
-        <h3>What's the Right Thing to Do?</h4>
-        <p>Suppose four shipwrecked sailors are
-        stranded at sea in a lifeboat, without food or water. Would it be wrong
-        for three of them to kill and eat the cabin boy,
-        in order to save their own lives?
+        <p>
+            Suppose four shipwrecked sailors are stranded at sea in a lifeboat, without
+            food or water. Would it be wrong for three of them to kill and eat the cabin
+            boy, in order to save their own lives?
         </p>
-        <div id="vote_block-1" class="vote_blocks">
-            <ul>
-                <li>
-                    <input type="radio" id="poll-vote-1" name="vote_1" value="1"/>
-                    <label for="poll-answer-1">Yes</label>
-                </li>
-                <li>
-                    <input type="radio" id="poll-vote-2" name="vote_1" value="2" />
-                    <label for="poll-answer-2">No</label>
-                </li>
-            </ul>
+
+        <div style="width: 500px; heoght: 100px; margin-left: auto; margin-right: auto;">
+            <div id="vote_block-1" class="vote_blocks" style="display: inline; float: left; clear: none;">
+                <ul>
+                    <li>
+                        <input type="radio" id="poll-vote-1-1" name="vote_1-1" value="1" />
+                        <label for="poll-vote-1-1">Yes</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="poll-vote-1-2" name="vote_1-2" value="2" />
+                        <label for="poll-vote-1-2">No</label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="submit-button" style="display: inline; float: left; clear: none; margin: 2.5rem;">
+                <input type="button" value="Cast Your vote" class=".submit-button" name="vote" />
+            </div>
         </div>
 
-        <div class="submit-button">
-            <input type="button" value="Cast Your vote" class=".submit-button" name="vote"/>
-        </div>
+        <div class="graph_answer" style="display: none; clear: both;"></div>
     </div>
 
-    <div class="hidden">
-        <p> THIS IS ACTUAL PLOT </p>
+    <div id="poll-2" class="polls" style="display: none;">
+        <h3>What's the Wrong Thing to Do?</h3>
+
+        <p>Should they try to swim across the ocean?</p>
+
+        <div style="width: 500px; heoght: 100px; margin-left: auto; margin-right: auto;">
+            <div id="vote_block-2" class="vote_blocks" style="display: inline; float: left; clear: none;">
+                <ul>
+                    <li>
+                        <input type="radio" id="poll-vote-2-1" name="vote_2-1" value="1" />
+                        <label for="poll-vote-2-1">Yes</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="poll-vote-2-2" name="vote_2-2" value="2" />
+                        <label for="poll-vote-2-2">No</label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="submit-button" style="display: inline; float: left; clear: none; margin: 2.5rem;">
+                <input type="button" value="Cast Your vote" class=".submit-button" name="vote" />
+            </div>
+        </div>
+
+        <div class="graph_answer" style="display: none; clear: both;"></div>
     </div>
 </section>
