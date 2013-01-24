@@ -58,11 +58,17 @@ section.poll {
     visibility: hidden;
   }
 
-  .submit-button {
-    clear: both;
-    height: 2em;
-    margin-bottom: 2em;
-    margin-bottom: 2rem;
+  .vote_submit_button {
+    display: inline;
+    float: left;
+    clear: none;
+    margin: 2.5rem;
+    margin: 2.5rem;
+  }
+
+  .submit_botton {
+
+
   }
 
 
@@ -77,4 +83,16 @@ section.poll {
     font-weight: bold;
   }
 
+  .vote_and_submit {
+    width: 500px;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .vote {
+    display: inline;
+    float: left;
+    clear: none;
+  }
 }
