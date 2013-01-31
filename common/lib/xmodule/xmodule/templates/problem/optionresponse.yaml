@@ -1,49 +1,34 @@
 ---
 metadata:
-    display_name: Option Response
+    display_name: Dropdown
     rerandomize: never
     showanswer: always
     weight: ""
     attempts: ""
     markdown: 
-        "OptionResponse gives a limited set of options for students to respond with, and presents those options
-        in a format that encourages them to search for a specific answer rather than being immediately presented 
-        with options from which to recognize the correct answer.
+        "Translation between Dropdown and __________ is extremely straightforward:
         
-
-        The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag.
-        
-
-        Translation between Option Response and __________ is extremely straightforward:
-        
-        [[(Multiple Choice), String Response, Numerical Response, External Response, Image Response]]
-
+        [[(Multiple Choice), Text Input, Numerical Input, Image Mapped Input]]
 
         [explanation]
         Multiple Choice also allows students to select from a variety of pre-written responses, although the 
-        format makes it easier for students to read very long response options. Optionresponse also differs 
+        format makes it easier for students to read very long response options. Dropdown also differs 
         slightly because students are more likely to think of an answer and then search for it rather than 
         relying purely on recognition to answer the question.
         [explanation]
         "
 data: |
   <problem>
-  <p>OptionResponse gives a limited set of options for students to respond with, and presents those options
-  in a format that encourages them to search for a specific answer rather than being immediately presented with options from which to recognize the correct answer.</p>
-
-  <p>
-  The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag. 
-  </p>
-  <p>Translation between Option Response and __________ is extremely straightforward:
+  <p>Translation between Dropdown and __________ is extremely straightforward:
       
   <optionresponse>
-        <optioninput options="('Multiple Choice','String Response','Numerical Response','External Response','Image Response')" correct="Multiple Choice"></optioninput>
+        <optioninput options="('Multiple Choice','Text Input','Numerical Input','Image Mapped Input')" correct="Multiple Choice"></optioninput>
   </optionresponse>
   </p>
       <solution>
           <div class="detailed-solution">
               <p>Explanation</p>
-              <p>Multiple Choice also allows students to select from a variety of pre-written responses, although the format makes it easier for students to read very long response options. Optionresponse also differs slightly because students are more likely to think of an answer and then search for it rather than relying purely on recognition to answer the question.</p>
+              <p>Multiple Choice also allows students to select from a variety of pre-written responses, although the format makes it easier for students to read very long response options. Dropdown also differs slightly because students are more likely to think of an answer and then search for it rather than relying purely on recognition to answer the question.</p>
           </div>
       </solution>
   </problem>

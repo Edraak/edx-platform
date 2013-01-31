@@ -1,20 +1,12 @@
 ---
 metadata:
-    display_name: Formula Response
+    display_name: Math Expression Input
     rerandomize: never
     showanswer: always
     weight: ""
     attempts: ""
 data: |
   <problem>
-  <p>
-  A formula response problem accepts a line of text representing a mathematical expression from the
-  student, and evaluates for equivalence to a mathematical expression provided by the 
-  grader. The answer is correct if both the student provided response and the grader's mathematical
-  expression are equivalent to specified numerical tolerance, over a specified range of values for each
-  variable. These problems can handle symbolic expressions, but place an extra burden
-  on the problem author to specify the allowed variables in the expression, and the
-  numerical ranges over which the variables must be sampled in order to test for correctness.</p>
 
   <script type="loncapa/python">
   VoVi = "(R_1*R_2)/R_3"
