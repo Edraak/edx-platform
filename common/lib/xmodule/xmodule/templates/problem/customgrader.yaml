@@ -8,9 +8,7 @@ metadata:
 data: |
   <problem>
   <p>
-  A custom response problem accepts one or more lines of text input from the
-  student, and evaluates the inputs for correctness based on evaluation using a 
-  python script embedded within the problem.
+  A custom response problem accepts one or more lines of text input from the student, and evaluates correctness through a python script embedded within the problem.
   </p>
 
   <script type="loncapa/python">
