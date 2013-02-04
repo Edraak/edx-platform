@@ -317,9 +317,12 @@
     .metadata_edit {
       margin-bottom: 20px;
       font-size: 13px;
+      @include clearfix;
 
       li {
-        margin-bottom: 10px;
+        margin: 2px 15px;
+        float: left;
+        width: 120px;
       }
 
       label {
@@ -343,6 +346,7 @@
     .save-button {
       margin-top: 10px;
       margin: 15px 8px 0 0;
+      @include clearfix;
     }
   }
 }
