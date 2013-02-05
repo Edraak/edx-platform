@@ -325,6 +325,10 @@
       li {
         display: inline-block;
         width: 125px;
+
+        .display-name {
+          width: 200px;
+        }
       }
     }
 
