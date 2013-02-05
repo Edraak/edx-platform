@@ -8,7 +8,7 @@
     % for keyname in editable_metadata_fields:
     <li>
         % if keyname=='source_code':
-	    <a href="#hls-modal-${hlskey}" style="color:yellow;" id="hls-trig-${hlskey}" >Edit High Level Source</a>
+	    <a href="#hls-modal-${hlskey}" id="hls-trig-${hlskey}" >Edit High Level Source</a>
         % else:
             <label>${keyname}:</label>
  	    <input type='text' data-metadata-name='${keyname}' value='${metadata[keyname]}' size='10' />

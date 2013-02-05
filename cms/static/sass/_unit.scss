@@ -317,17 +317,14 @@
     .metadata_edit {
       margin-bottom: 20px;
       font-size: 13px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid $mediumGrey;
       @include clearfix;
 
-      li {
-        margin: 2px 15px;
-        float: left;
-        width: 120px;
-      }
 
-      label {
+      li {
         display: inline-block;
-        margin-right: 10px;  
+        width: 125px;
       }
     }
 
