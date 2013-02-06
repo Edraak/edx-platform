@@ -144,11 +144,15 @@
 }
 
 @mixin edit-box {
-	padding: 15px 20px;
+	padding: 10px 20px;
 	border-radius: 3px;
-	background-color: $lightBluishGrey2;
+	background-color: #fff;
 	color: #3c3c3c;
 	@include box-shadow(0 1px 0 rgba(255, 255, 255, .2) inset);
+
+	&:hover {
+		background-color: $lightBluishGrey2;
+	}
 
 	label {
 		color: $baseFontColor;

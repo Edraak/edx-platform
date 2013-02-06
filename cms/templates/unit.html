@@ -42,8 +42,8 @@
         <a href="${published_preview_link}" target="_blank" class="alert-action secondary">Preview the published version</a>
       </div>
       <div class="main-column">
+        <p class="unit-name-input"><label>Display Name:</label><input type="text" value="${unit.display_name}" class="unit-display-name-input" /></p>
         <article class="unit-body window">
-          <p class="unit-name-input"><label>Display Name:</label><input type="text" value="${unit.display_name}" class="unit-display-name-input" /></p>
           <ol class="components">
             % for id in components:
             <li class="component" data-id="${id}"/>
