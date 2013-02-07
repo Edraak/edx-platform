@@ -87,7 +87,7 @@
         <form class="new-subsection-form">
           <span class="folder-icon"></span>
           <span class="subsection-name">
-            <input type="text" value="New Subsection" class="new-subsection-name-input" />
+            <input type="text" value="New Learning Sequence" class="new-subsection-name-input" />
           </span>
           <input type="submit" value="Save" class="new-subsection-name-save" />
           <input type="button" value="Cancel" class="new-subsection-name-cancel" />
@@ -96,7 +96,7 @@
       <ol>
         <li>
           <a href="unit.html" class="new-unit-item">
-            <span class="new-unit-icon"></span>New Unit
+            <span class="new-unit-icon"></span>New Learning Unit
           </a>
         </li>
       </ol>
@@ -112,7 +112,7 @@
         <input class="start-date date" type="text" name="start_date" value="" placeholder="MM/DD/YYYY" class="date" size='15' autocomplete="off"/>
         <input class="start-time time" type="text" name="start_time" value="" placeholder="HH:MM" class="time" size='10' autocomplete="off"/>
         <div class="description">
-          <p>On the date set above, this section – <strong class="section-name"></strong> – will be released to students. Any units marked private will only be visible to admins.</p>
+          <p>On the date set above, this section – <strong class="section-name"></strong> – will be released to students. Any units within this section marked private will only be visible to admins.</p>
         </div>
       </div>
       <a href="#" class="save-button">Save</a><a href="#" class="cancel-button">Cancel</a>
@@ -164,7 +164,7 @@
           <div class="subsection-list">
             <div class="list-header">
               <a href="#" class="new-subsection-item" data-template="${new_subsection_template}">
-                <span class="new-folder-icon"></span>New Subsection
+                <span class="new-folder-icon"></span>New Learning Sequence
               </a>
             </div>
             <ol data-section-id="${section.location.url()}">
@@ -183,7 +183,7 @@
                   </div>
                   
                   <div class="item-actions">
-                    <a href="#" data-tooltip="Delete this subsection" class="delete-button delete-subsection-button"><span class="delete-icon"></span></a>                    
+                    <a href="#" data-tooltip="Delete this learning sequence" class="delete-button delete-subsection-button"><span class="delete-icon"></span></a>                    
                     <a href="#" data-tooltip="Drag to reorder" class="drag-handle"></a>
                   </div>
                 </div>

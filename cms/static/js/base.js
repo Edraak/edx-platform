@@ -351,7 +351,7 @@ function createNewUnit(e) {
     $.post('/clone_item',
 	   {'parent_location' : parent,
 		   'template' : template,
-		   'display_name': 'New Unit'
+		   'display_name': 'New Learning Unit'
 		   },
 	   function(data) {
 	       // redirect to the edit page

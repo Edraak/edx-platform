@@ -139,7 +139,7 @@ def add_section(name='My Section'):
     css_click(save_css)
 
 
-def add_subsection(name='Subsection One'):
+def add_subsection(name='New Learning Sequence'):
     css = 'a.new-subsection-item'
     css_click(css)
     name_css = 'input.new-subsection-name-input'
