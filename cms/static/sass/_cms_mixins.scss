@@ -188,7 +188,7 @@
 
 @mixin tree-view {
 	border: 1px solid $mediumGrey;
-	background: $lightGrey;
+	//background: $lightGrey;
 
 	.branch {
 		margin-bottom: 10px;
@@ -206,7 +206,7 @@
 		position: relative;
 		display: block;
 		padding: 6px 8px 8px 16px;			
-		background: #edf1f5;
+		//background: #edf1f5;
 		font-size: 13px;
 
 		&:hover {

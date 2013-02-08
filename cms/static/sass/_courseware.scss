@@ -268,7 +268,7 @@ input.courseware-unit-search-input {
         .section-published-date {
           float: right;
           width: 265px;
-          margin-right: 220px;                              
+          margin-right: 20px;                              
           @include border-radius(3px);
           background: $lightGrey;
 
@@ -483,9 +483,8 @@ input.courseware-unit-search-input {
     }
 
     .list-header {
-        @include linear-gradient(top, transparent, rgba(0, 0, 0, .1));
-        background-color: #ced2db;
-        border-radius: 3px 3px 0 0;
+        background-color: #fff;
+        border-radius: 0 0 3px 3px;
     }
 
     .subsection-list {
@@ -493,7 +492,6 @@ input.courseware-unit-search-input {
 
         > ol {
             @include tree-view;
-            border-top-width: 0;
         }
     }
 
@@ -539,7 +537,7 @@ input.courseware-unit-search-input {
 
 .new-section-name,
 .new-subsection-name-input {
-    width: 515px;
+    width: 315px;
 }
 
 .new-section-name-save,
@@ -648,7 +646,7 @@ input.courseware-unit-search-input {
 // sort/drag and drop
 .ui-droppable {
     @include transition (padding 0.5s ease-in-out 0s);
-    min-height: 20px;
+    //min-height: 20px;
     padding: 0;
 
     &.dropover {
