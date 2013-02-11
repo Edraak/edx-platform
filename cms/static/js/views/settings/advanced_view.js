@@ -67,8 +67,8 @@ CMS.Views.Settings.Advanced = CMS.Views.ValidatingView.extend({
                 self.showMessage(self.unsaved_changes);
 
             });
-        // Calling getSession() directly in render causes a crash on Chrome.
-        // Seems to be OK in afterRender method.
+        // Using web workers crashes Chrome 24. Ace is investigating.
+        editor.getSession().setUseWorker(false);
         editor.getSession().setMode("ace/mode/json");
     },
 
