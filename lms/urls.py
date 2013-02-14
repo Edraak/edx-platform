@@ -17,6 +17,7 @@ urlpatterns = ('',
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
 
     url(r'^admin_dashboard$', 'dashboard.views.dashboard'),
+    url(r'^feedback$', 'feedback.views.submit_feedback'),
 
     # Adding to allow debugging issues when prod is mysteriously different from staging
     # (specifically missing get parameters in certain cases)
