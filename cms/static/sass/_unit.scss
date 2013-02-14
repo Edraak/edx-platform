@@ -243,7 +243,7 @@
 
   .component {
     border: 1px solid $lightBluishGrey2;
-    border-left-width: 0;
+    border-left: 0px;
     background: #fff;
     min-height: 50px;
     @include transition(none);
@@ -254,7 +254,7 @@
 
     &:hover {
       border-color: #6696d7;
-      border-left-width: 1px;
+      border-left: 1px;
 
       .component-actions {
         display: block;
@@ -304,7 +304,7 @@
   }
 
   .xmodule_display {
-    padding: 0px 20px 30px;
+    padding: 10px 20px 50px;
     overflow-x: auto;
 
     h1 {
