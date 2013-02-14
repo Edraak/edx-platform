@@ -268,7 +268,7 @@ input.courseware-unit-search-input {
         .section-published-date {
           float: right;
           width: 265px;
-          margin-right: 220px;                              
+          margin-right: 10px;                              
           @include border-radius(3px);
           background: $lightGrey;
 
@@ -483,9 +483,14 @@ input.courseware-unit-search-input {
     }
 
     .list-header {
-        @include linear-gradient(top, transparent, rgba(0, 0, 0, .1));
-        background-color: #ced2db;
-        border-radius: 3px 3px 0 0;
+        border: 1px solid $mediumGrey;
+        border-top-width: 0;
+        //@include linear-gradient(top, transparent, rgba(0, 0, 0, .1));
+        border-radius: 0 0 3px 3px;
+        &:hover {
+          background-color: tint($green, 50%);
+          transition: none;
+        }
     }
 
     .subsection-list {
@@ -493,7 +498,7 @@ input.courseware-unit-search-input {
 
         > ol {
             @include tree-view;
-            border-top-width: 0;
+            //border-top-width: 0;
         }
     }
 
