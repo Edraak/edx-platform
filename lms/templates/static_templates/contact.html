@@ -18,46 +18,89 @@
       <img src="${static.url('images/contact-page.jpg')}">
     </div>
     <div class="contacts">
-      <h2>Class Feedback</h2>
-      <p>We are always seeking feedback to improve our courses. If you are an enrolled student and have any questions, feedback, suggestions, or any other issues specific to a particular class, please post on the discussion forums of that&nbsp;class.</p>
 
-      <h2>General Inquiries and Feedback</h2>
-      <p>If you have a general question about edX please email <a href="mailto:info@edx.org">info@edx.org</a>. To see if your question has already been answered, visit our <a href="${reverse('faq_edx')}">FAQ page</a>. You can also join the discussion on our <a href="http://www.facebook.com/EdxOnline">Facebook page</a>. Though we may not have a chance to respond to every email, we take all feedback into consideration.</p>
+      <div class="contact-type">
+        <h2>Class Feedback</h2>
+        <p>We are always seeking feedback to improve our courses. If you are an enrolled student and have any questions, feedback, suggestions, or any other issues specific to a particular class, please post on the discussion forums of that&nbsp;class.</p>  
+      </div>
 
-      <h2>Media</h2>
-      <p>Please visit our <a href="${reverse('press')}">media/press page</a> for more information. For any media or press enquiries, please email <a href="mailto:press@edx.org">press@edx.org</a>.</p>
+      <div class="contact-type">
+        <h2>General Inquiries and Feedback</h2>
+        <p>If you have a general question about edX please email <a href="mailto:info@edx.org">info@edx.org</a>. To see if your question has already been answered, visit our <a href="${reverse('faq_edx')}">FAQ page</a>. You can also join the discussion on our <a href="http://www.facebook.com/EdxOnline">Facebook page</a>. Though we may not have a chance to respond to every email, we take all feedback into consideration.</p>
+      </div>
+      
+      <div class="contact-type">
+        <h2>Media</h2>
+        <p>Please visit our <a href="${reverse('press')}">media/press page</a> for more information. For any media or press enquiries, please email <a href="mailto:press@edx.org">press@edx.org</a>.</p>        
+      </div>
 
-      <h2>Universities</h2>
-      <p>If you are a university wishing to collaborate or with questions about edX, please email <a href="mailto:university@edx.org">university@edx.org</a>.</p>
-      <h2>Technical Inquiries and Feedback</h2>
-    <form role="form" id="feedback-form" method="post" data-remote="true" action="/submit-feedback">
-      <ul class="list-input">
-        <li class="field required text" id="field-email">
-          <label for="email">Name</label>
-          <input class="" id="name" value="herpderp"  />
-        </li>
+      <div class="contact-type">
+        <h2>Universities</h2>
+        <p>If you are a university wishing to collaborate or with questions about edX, please email <a href="mailto:university@edx.org">university@edx.org</a>.</p>
+      </div>
+
+      <div class="contact-type">
+        <h2>Technical Issues, Inquiries, and Feedback</h2>
         
-        <li class="field required text" id="field-email">
-          <label for="email">E-mail</label>
-          <input class="" id="email" type="email" name="email" value="herp@derp" />
-        </li>
-        <li class="field required" id="field-type">
-          <select id="field=-type">
-            <option value="General Question">General Question</option>
-            <option value="Account Issue">Account Issue</option>
-            <option value="Site Issue">Site Issue</option>
-          </select>
-        </li>
-        <li class="field text" id="field-problem">
-          <label for="problem">Problem description</label>
-          <textarea rows="8" cols="75"></textarea>
-        </li>
-        <button name="submit" type="submit" id="submit" >Submit Question</button>
-      </ul>
-    </form>
+        <p class="instructions">In order for us to help address any technical questions you may have, please complete the following form.</p>
 
+        <form role="form" id="feedback-form" method="post" data-remote="true" action="/submit-feedback">
+
+          <div class="message message-error">
+            We're sorry, there was an error in your submission.
+          </div>
+
+          <fieldset>
+            <legend class="sr">Technical Issues, Inquiries, and Feedback Form</legend>
+
+            <ol class="list-input">
+              <li class="field required text" id="field-name">
+                <label for="name">Your Name</label>
+                <input type="text" class="" id="name" name="name" value="" placeholder="Jane Doe" />
+              </li>
+              
+              <li class="field required text email" id="field-email">
+                <label for="email">Your E-mail Address</label>
+                <input type="email" class="" id="email" name="email" value="" placeholder="jane.doe@gmail.com" />
+              </li>
+
+              <li class="field required select" id="field-type">
+                <label for="type">Why Are You Contacting Us Today?</label>
+                <select id="type">
+                  <option value="General Question">General Question</option>
+                  <option value="Account Issue">Account Issue</option>
+                  <option value="Site Issue">Site Issue</option>
+                  <option value="Other">Other</option>
+                </select>
+              </li>
+
+              <li class="field text textarea required" id="field-description">
+                <label for="description">Please provide any relevant details that will help us with your question/issue</label>
+                <textarea name='description' id="description" placeholder="Technology/browsers used, pages or parts of the edX sites/apps, or specific scenarios you may have encountered with your question/issue"></textarea>
+              </li>
+            </ol>
+          </fieldset>
+
+          <div class="form-actions">
+            <button name="submit" type="submit" id="submit" class="action action-primary" >Submit Your Technical Question</button>
+          </div>
+        </form>
+      </div>
 
     </div>
   </section>
 </section>
 
+<%block name="jsextra">
+  <script type="text/javascript">
+    $(document).ready(function(){
+    
+      $("form :input").focus(function() {
+        $("label[for='" + this.id + "']").addClass("is-focused");
+      }).blur(function() {
+        $("label").removeClass("is-focused");
+        });
+    });
+      
+  </script>
+</%block>
