@@ -488,7 +488,8 @@ input.courseware-unit-search-input {
         //@include linear-gradient(top, transparent, rgba(0, 0, 0, .1));
         border-radius: 0 0 3px 3px;
         &:hover {
-          background-color: tint($green, 50%);
+          background-color: tint($green, 20%);
+          //TO-DO FIX TRANSITIONS DOUBLING ISSUE @marco
           transition: none;
         }
     }

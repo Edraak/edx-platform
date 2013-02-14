@@ -13,14 +13,14 @@ describe "CMS.Views.ModuleEdit", ->
         <a href="#" class="save-button">Save</a>
         <a href="#" class="cancel-button">Cancel</a>
       </div>
-      <div class="component-actions">
-        <a href="#" class="edit-button"><span class="edit-icon white"></span>Edit</a>
-        <a href="#" class="delete-button"><span class="delete-icon white"></span>Delete</a>  
-      </div>
       <a href="#" class="drag-handle"></a>
       <section class="xmodule_display xmodule_stub" data-type="StubModule">
         <div id="stub-module-content"/>
       </section>
+      <div class="component-actions">
+        <a href="#" class="edit-button"><span class="edit-icon white"></span>Edit</a>
+        <a href="#" class="delete-button"><span class="delete-icon white"></span>Delete</a>  
+      </div>
     </li>
     """
     spyOn($.fn, 'load').andReturn(@moduleData)

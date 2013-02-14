@@ -55,7 +55,7 @@
     > li {
       position: relative;
       z-index: 10;
-      margin: 20px 40px;
+      margin: 10px 15px 10px 0;
 
 
       .title {
@@ -69,7 +69,7 @@
       &.new-component-item {
         padding: 20px;
         border: none;
-        border-radius: 3px;
+        //border-radius: 3px;
         background: $lightGrey;
 
         .new-component-button {
@@ -243,12 +243,22 @@
 
   .component {
     border: 1px solid $lightBluishGrey2;
-    border-radius: 3px;
+    border-left-width: 0;
     background: #fff;
+    min-height: 50px;
     @include transition(none);
+
+    .component-actions {
+        display: none;
+      }
 
     &:hover {
       border-color: #6696d7;
+      border-left-width: 1px;
+
+      .component-actions {
+        display: block;
+      }
 
       .drag-handle {
         background-color: $blue;
@@ -272,7 +282,9 @@
 
     .component-actions {
       position: absolute;
-      top: 7px;
+      //REMOVED FOR UNIT PAGE CHANGES: TO-DO CHECK USERS PAGE AND ASSETS PAGE @marco
+      //top: 7px;
+      bottom:0;
       right: 9px;
     }
 
@@ -284,7 +296,6 @@
       z-index: 10;
       width: 15px;
       height: 100%;
-      border-radius: 0 3px 3px 0;
       border: 1px solid $lightBluishGrey2;
       background: url(../img/white-drag-handles.png) center no-repeat $lightBluishGrey2;
       cursor: move;
@@ -293,7 +304,7 @@
   }
 
   .xmodule_display {
-    padding: 40px 20px 20px;
+    padding: 0px 20px 30px;
     overflow-x: auto;
 
     h1 {
@@ -550,14 +561,15 @@
 body.unit {
 
   .component {
-    padding-top: 30px;
+    //padding-top: 15px;
 
     .component-actions {
       @include box-sizing(border-box);
       position: absolute;
       width: 100%;
-      padding: 15px;
-      top: 0;
+      padding: 10px;
+      //REMOVED FOR UNIT PAGE CHANGES: TO-DO CHECK USERS PAGE AND ASSETS PAGE @marco
+      //top: 0;
       left: 0;
       border-bottom: 1px solid $lightBluishGrey2;
       background: $lightGrey;
