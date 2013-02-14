@@ -24,14 +24,38 @@
       <h2>General Inquiries and Feedback</h2>
       <p>If you have a general question about edX please email <a href="mailto:info@edx.org">info@edx.org</a>. To see if your question has already been answered, visit our <a href="${reverse('faq_edx')}">FAQ page</a>. You can also join the discussion on our <a href="http://www.facebook.com/EdxOnline">Facebook page</a>. Though we may not have a chance to respond to every email, we take all feedback into consideration.</p>
 
-      <h2>Technical Inquiries and Feedback</h2>
-      <p>If you have suggestions/feedback about the overall edX platform, or are facing general technical issues with the platform (e.g., issues with email addresses and passwords), you can reach us at <a href="mailto:technical@edx.org">technical@edx.org</a>. For technical questions, please make sure you are using a current version of Firefox or Chrome, and include browser and version in your e-mail, as well as screenshots or other pertinent details. If you find a bug or other issues, you can reach us at the following: <a href="mailto:bugs@edx.org">bugs@edx.org</a>.</p>
-
       <h2>Media</h2>
       <p>Please visit our <a href="${reverse('press')}">media/press page</a> for more information. For any media or press enquiries, please email <a href="mailto:press@edx.org">press@edx.org</a>.</p>
 
       <h2>Universities</h2>
       <p>If you are a university wishing to collaborate or with questions about edX, please email <a href="mailto:university@edx.org">university@edx.org</a>.</p>
+      <h2>Technical Inquiries and Feedback</h2>
+    <form role="form" id="feedback-form" method="post" data-remote="true" action="/submit-feedback">
+      <ul class="list-input">
+        <li class="field required text" id="field-email">
+          <label for="email">Name</label>
+          <input class="" id="name" value="herpderp"  />
+        </li>
+        
+        <li class="field required text" id="field-email">
+          <label for="email">E-mail</label>
+          <input class="" id="email" type="email" name="email" value="herp@derp" />
+        </li>
+        <li class="field required" id="field-type">
+          <select id="field=-type">
+            <option value="General Question">General Question</option>
+            <option value="Account Issue">Account Issue</option>
+            <option value="Site Issue">Site Issue</option>
+          </select>
+        </li>
+        <li class="field text" id="field-problem">
+          <label for="problem">Problem description</label>
+          <textarea rows="8" cols="75"></textarea>
+        </li>
+        <button name="submit" type="submit" id="submit" >Submit Question</button>
+      </ul>
+    </form>
+
 
     </div>
   </section>
