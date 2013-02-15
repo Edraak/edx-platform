@@ -4,6 +4,47 @@
 <%inherit file="../main.html" />
 
 <%block name="title"><title>Contact edX</title></%block>
+<%block name="js_extra">
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $('#feedback-form').submit(function() {
+          $.ajax({  
+            type: "POST",  
+            url: "/feedback",  
+            dataType: 'json',
+            data: $('#feedback-form').serialize(),  
+            success:  function(data) {  
+              if (data.error) {
+                $('.message').html(data.error);
+                $('.message').removeClass('message-success');
+                $('.message').addClass('is-shown message-error');
+                $('.field').removeClass('has-error');
+                if (data.error == 'Invalid email') {
+                  $('#field-email').addClass('has-error');
+                }
+                else if (data.error == 'Message invalid') {
+                  $('#field-description').addClass('has-error'); 
+                }
+
+              } else if (data.success) {
+                $('.field').removeClass('has-error');
+                $('.message').html('Thank you! - Your question has been submitted');
+                $('.message').addClass('message-success is-shown');
+                $('#description').val('');
+                $('#email').val('');
+              }
+            },  
+            error: function() {
+              
+            },
+          });  
+          return false;
+        });
+    });
+  </script>
+
+</%block>
+
 
 <section class="container about">
   <nav>
@@ -44,9 +85,9 @@
         
         <p class="instructions">In order for us to help address any technical questions you may have, please complete the following form.</p>
 
-        <form role="form" id="feedback-form" method="post" data-remote="true" action="/submit-feedback">
+        <form role="form" id="feedback-form" >
 
-          <div class="message message-error">
+          <div class="message">
             We're sorry, there was an error in your submission.
           </div>
 
@@ -54,11 +95,6 @@
             <legend class="sr">Technical Issues, Inquiries, and Feedback Form</legend>
 
             <ol class="list-input">
-              <li class="field required text" id="field-name">
-                <label for="name">Your Name</label>
-                <input type="text" class="" id="name" name="name" value="" placeholder="Jane Doe" />
-              </li>
-              
               <li class="field required text email" id="field-email">
                 <label for="email">Your E-mail Address</label>
                 <input type="email" class="" id="email" name="email" value="" placeholder="jane.doe@gmail.com" />
@@ -66,11 +102,11 @@
 
               <li class="field required select" id="field-type">
                 <label for="type">Why Are You Contacting Us Today?</label>
-                <select id="type">
-                  <option value="General Question">General Question</option>
-                  <option value="Account Issue">Account Issue</option>
-                  <option value="Site Issue">Site Issue</option>
-                  <option value="Other">Other</option>
+                <select name="category" id="type">
+                  <option value="general">General Question</option>
+                  <option value="account">Account Issue</option>
+                  <option value="issue">Site Issue</option>
+                  <option value="other">Other</option>
                 </select>
               </li>
 

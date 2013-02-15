@@ -330,6 +330,10 @@
           &.message-error {
             color: $red;
           }
+          &.message-success {
+            color: $blue;
+          }
+
         }
 
         .list-input {
