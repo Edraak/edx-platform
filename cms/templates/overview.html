@@ -86,7 +86,6 @@
     <li class="branch collapsed">
       <div class="section-item editing">
         <form class="new-subsection-form">
-          <span class="folder-icon"></span>
           <span class="subsection-name">
             <input type="text" value="New Subsection" class="new-subsection-name-input" />
           </span>
@@ -183,11 +182,6 @@
             </div>
           </header>
           <div class="subsection-list">
-            <div class="list-header">
-              <a href="#" class="new-subsection-item" data-template="${new_subsection_template}">
-                <span class="new-folder-icon"></span>New Subsection
-              </a>
-            </div>
             <ol data-section-id="${section.location.url()}">
               % for subsection in section.get_children():
               <li class="branch collapsed id-holder" data-id="${subsection.location}">
@@ -195,7 +189,6 @@
                   <div class="details">
                     <a href="#" data-tooltip="Expand/collapse this subsection" class="expand-collapse-icon expand"></a>
                     <a href="${reverse('edit_subsection', args=[subsection.location])}">
-                      <span class="folder-icon"></span>
                       <span class="subsection-name"><span class="subsection-name-value">${subsection.display_name}</span></span>
                     </a>
                   </div>
@@ -212,6 +205,11 @@
               </li>
               % endfor
             </ol>
+            <div class="list-header">
+              <a href="#" class="new-subsection-item" data-template="${new_subsection_template}">
+                <i class="ss-icon ss-symbolicons-standard icon icon-create">+</i>New Subsection
+              </a>
+            </div>
           </div>
         </section>
         % endfor

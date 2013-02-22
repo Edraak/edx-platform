@@ -268,7 +268,7 @@ input.courseware-unit-search-input {
         .section-published-date {
           float: right;
           width: 265px;
-          margin-right: 220px;                              
+          margin-right: 20px;                              
           @include border-radius(3px);
           background: $lightGrey;
 
@@ -483,9 +483,10 @@ input.courseware-unit-search-input {
     }
 
     .list-header {
-        @include linear-gradient(top, transparent, rgba(0, 0, 0, .1));
-        background-color: #ced2db;
         border-radius: 3px 3px 0 0;
+        .ss-icon {
+          padding-right: 5px;
+        }
     }
 
     .subsection-list {
@@ -493,7 +494,6 @@ input.courseware-unit-search-input {
 
         > ol {
             @include tree-view;
-            border-top-width: 0;
         }
     }
 
