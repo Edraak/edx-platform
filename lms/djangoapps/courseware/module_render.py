@@ -441,6 +441,10 @@ def xqueue_callback(request, course_id, userid, id, dispatch):
 
     # Save state back to database
     instance_module.state = instance.get_instance_state()
+    if hasattr(instance, is_attempted) and instance.is_attempted():
+        instance_module.done = 'i'
+    if hasattr(instance, is_done) and instance.is_done():
+        instance_module.done = 'f'
     if instance.get_score():
         instance_module.grade = instance.get_score()['score']
     if instance_module.grade != oldgrade or instance_module.state != old_instance_state:
