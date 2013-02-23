@@ -101,6 +101,8 @@ class XmlDescriptor(XModuleDescriptor):
         # information about testcenter exams is a dict (of dicts), not a string,
         # so it cannot be easily exportable as a course element's attribute.
         'testcenter_info',
+        # grading by attempt instead of using score
+        'score_by_attempt',
         # VS[compat] Remove once unused.
         'name', 'slug')
 
@@ -126,6 +128,7 @@ class XmlDescriptor(XModuleDescriptor):
     xml_attribute_map = {
         # type conversion: want True/False in python, "true"/"false" in xml
         'graded': bool_map,
+        'score_by_attempt': bool_map,
         'hide_progress_tab': bool_map,
         'allow_anonymous': bool_map,
         'allow_anonymous_to_peers': bool_map

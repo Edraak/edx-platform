@@ -443,7 +443,9 @@ class XModuleDescriptor(Plugin, HTMLSnippet, ResourceTemplates):
         # How many days early to show a course element to beta testers (float)
         # intended to be set per-course, but can be overridden in for specific
         # elements.  Can be a float.
-        'days_early_for_beta'
+        'days_early_for_beta',
+        # grading by attempt instead of using score
+        'score_by_attempt',
     )
 
     # cdodge: this is a list of metadata names which are 'system' metadata

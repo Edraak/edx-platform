@@ -372,8 +372,15 @@ def get_score(course_id, user, problem_descriptor, module_creator, student_modul
     if not instance_module or instance_module.max_grade is None:
         return (None, None)
 
-    correct = instance_module.grade if instance_module.grade is not None else 0
-    total = instance_module.max_grade
+    # if score_by_attempt is True
+    if problem_descriptor.metadata.get('score_by_attempt',False):
+        correct = 0 if instance_module.done=='na' else 1
+        total = 1
+
+    else:
+        # normal grading, based on score points
+        correct = instance_module.grade if instance_module.grade is not None else 0
+        total = instance_module.max_grade
 
     if correct is not None and total is not None:
         #Now we re-weight the problem, if specified
