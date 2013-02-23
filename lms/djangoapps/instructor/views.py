@@ -862,7 +862,7 @@ def get_student_grade_summary_data(request, course, course_id, get_grades=True, 
     if not get_grades:
         header += ['Enrolled Date']
     assignments = []
-    if get_grades and enrolled_students.count() > 0:
+    if get_grades and len(enrolled_students) > 0:
         # just to construct the header
         gradeset = student_grades(enrolled_students[0], request, course, keep_raw_scores=get_raw_scores, use_offline=use_offline)
         # log.debug('student {0} gradeset {1}'.format(enrolled_students[0], gradeset))
