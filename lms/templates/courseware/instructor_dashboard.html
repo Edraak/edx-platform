@@ -91,9 +91,12 @@ function goto( mode)
     <a href="${reverse('grade_summary', kwargs=dict(course_id=course.id))}">Grade summary</a>
     </p>
 
+    <!--
     <p>
     <input type="submit" name="action" value="Dump list of enrolled students">
+    <input type="submit" name="action" value="Download CSV of enrolled students">
     </p>
+    -->
 
     <p>
     <input type="submit" name="action" value="Dump Grades for all students in this course">
@@ -107,6 +110,7 @@ function goto( mode)
 
     <p>
     <input type="submit" name="action" value="Download CSV of answer distributions">
+    <input type="submit" name="action" value="Dump description of graded assignments configuration">
     </p>
     <hr width="40%" style="align:left">
 
@@ -144,11 +148,16 @@ function goto( mode)
 
   %endif
 
+    <hr width="40%" style="align:left">
     <H2>Student-specific grade inspection and adjustment</h2>
-    <p>edX email address or their username: </p>
-    <p><input type="text" name="unique_student_identifier">  <input type="submit" name="action" value="Get link to student's progress page"></p>
+    <p>edX email address or their username: 
+    <input type="text" name="unique_student_identifier">  <input type="submit" name="action" value="Get link to student's progress page"></p>
     <p>and, if you want to reset the number of attempts for a problem, the urlname of that problem</p>
     <p> <input type="text" name="problem_to_reset"> <input type="submit" name="action" value="Reset student's attempts">  </p>
+    %if instructor_access:
+    <p> You may also delete the entire state of a student for a problem:
+    <input type="submit" name="action" value="Delete student state for problem">  </p>
+    %endif
  %endif
 
 ##----------------------------------------------------------------------------- 
@@ -236,11 +245,17 @@ function goto( mode)
     <hr width="40%" style="align:left">
     <p>
     <input type="submit" name="action" value="List enrolled students">
+    <input type="submit" name="action" value="Download CSV of enrolled students">
+    </p>
+    <p>
     <input type="submit" name="action" value="List students who may enroll but may not have yet signed up">
+    </p>
     <p>
     Student Email: <input type="text" name="enstudent"> <input type="submit" name="action" value="Un-enroll student">
     <input type="submit" name="action" value="Enroll student">
     <input type="submit" name="action" value="Un-enroll ALL students">
+    </p>
+
     <hr width="40%" style="align:left">
 
   %if settings.MITX_FEATURES.get('REMOTE_GRADEBOOK_URL','') and instructor_access:
