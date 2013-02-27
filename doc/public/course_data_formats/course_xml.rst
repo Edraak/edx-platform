@@ -388,6 +388,9 @@ Inherited
 `graded`
   Whether this section will count towards the students grade. "true" or "false". Defaults to "false".
 
+`score_by_attempt`
+  Whether the grading (if done) will be done by attempt, instead of by score.  "true" or "false". Defaults to "false".
+
 `rerandomize`
   Randomize question on each attempt. Optional. Possible values:
   
