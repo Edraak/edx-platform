@@ -38,7 +38,9 @@
     genexStoreAnswer = function(ans) {
         var problem = $('#genex_container').parents('.problem');
         var input_field = problem.find('input[type="hidden"][name!="dna_sequence"][name!="genex_problem_number"]');
-        input_field.val(ans);
+        //input_field.val(ans);
+        var value = {genex_answer: ans};
+        input_field.val(JSON.stringify(value));
     };
 }).call(this);
 
