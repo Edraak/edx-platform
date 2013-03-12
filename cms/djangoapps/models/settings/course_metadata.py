@@ -9,7 +9,7 @@ class CourseMetadata(object):
     The objects have no predefined attrs but instead are obj encodings of the editable metadata.
     '''
     # __new_advanced_key__ is used by client not server; so, could argue against it being here
-    FILTERED_LIST = XModuleDescriptor.system_metadata_fields + ['start', 'end', 'enrollment_start', 'enrollment_end', 'tabs', 'graceperiod', '__new_advanced_key__']
+    FILTERED_LIST = XModuleDescriptor.system_metadata_fields + ['start', 'end', 'enrollment_start', 'enrollment_end', 'tabs', 'graceperiod']
 
     @classmethod
     def fetch(cls, course_location):
