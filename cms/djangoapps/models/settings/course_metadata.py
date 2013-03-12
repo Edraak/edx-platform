@@ -1,8 +1,6 @@
 from xmodule.modulestore import Location
 from contentstore.utils import get_modulestore
 from xmodule.x_module import XModuleDescriptor
-from xmodule.modulestore.inheritance import own_metadata
-from xblock.core import Scope
 
 
 class CourseMetadata(object):
@@ -10,7 +8,8 @@ class CourseMetadata(object):
     For CRUD operations on metadata fields which do not have specific editors on the other pages including any user generated ones.
     The objects have no predefined attrs but instead are obj encodings of the editable metadata.
     '''
-    FILTERED_LIST = XModuleDescriptor.system_metadata_fields + ['start', 'end', 'enrollment_start', 'enrollment_end', 'tabs', 'graceperiod']
+    # __new_advanced_key__ is used by client not server; so, could argue against it being here
+    FILTERED_LIST = XModuleDescriptor.system_metadata_fields + ['start', 'end', 'enrollment_start', 'enrollment_end', 'tabs', 'graceperiod', '__new_advanced_key__']
 
     @classmethod
     def fetch(cls, course_location):
@@ -24,20 +23,17 @@ class CourseMetadata(object):
 
         descriptor = get_modulestore(course_location).get_item(course_location)
 
-        for field in descriptor.fields + descriptor.lms.fields:
-            if field.scope != Scope.settings:
-                continue
-
-            if field.name not in cls.FILTERED_LIST:
-                course[field.name] = field.read_from(descriptor)
-
+        for k, v in descriptor.metadata.iteritems():
+            if k not in cls.FILTERED_LIST:
+                course[k] = v
+    
         return course
 
     @classmethod
     def update_from_json(cls, course_location, jsondict):
         """
         Decode the json into CourseMetadata and save any changed attrs to the db.
-
+        
         Ensures none of the fields are in the blacklist.
         """
         descriptor = get_modulestore(course_location).get_item(course_location)
@@ -46,18 +42,12 @@ class CourseMetadata(object):
 
         for k, v in jsondict.iteritems():
             # should it be an error if one of the filtered list items is in the payload?
-            if k in cls.FILTERED_LIST:
-                continue
-
-            if hasattr(descriptor, k) and getattr(descriptor, k) != v:
+            if k not in cls.FILTERED_LIST and (k not in descriptor.metadata or descriptor.metadata[k] != v):
                 dirty = True
-                setattr(descriptor, k, v)
-            elif hasattr(descriptor.lms, k) and getattr(descriptor.lms, k) != k:
-                dirty = True
-                setattr(descriptor.lms, k, v)
+                descriptor.metadata[k] = v
 
         if dirty:
-            get_modulestore(course_location).update_metadata(course_location, own_metadata(descriptor))
+            get_modulestore(course_location).update_metadata(course_location, descriptor.metadata)
 
         # Could just generate and return a course obj w/o doing any db reads, but I put the reads in as a means to confirm
         # it persisted correctly
@@ -71,11 +61,10 @@ class CourseMetadata(object):
         descriptor = get_modulestore(course_location).get_item(course_location)
 
         for key in payload['deleteKeys']:
-            if hasattr(descriptor, key):
-                delattr(descriptor, key)
-            elif hasattr(descriptor.lms, key):
-                delattr(descriptor.lms, key)
+            if key in descriptor.metadata:
+                del descriptor.metadata[key]
 
-        get_modulestore(course_location).update_metadata(course_location, own_metadata(descriptor))
+        get_modulestore(course_location).update_metadata(course_location, descriptor.metadata)
 
         return cls.fetch(course_location)
+        
