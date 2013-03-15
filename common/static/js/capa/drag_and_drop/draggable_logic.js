@@ -409,7 +409,6 @@ return {
             this.labelEl.appendTo(this.containerEl);
         }
 
-        // TODO: Add dummy targets.
         Targets.clearDummyTargets(this);
         Targets.drawDummyTargets(this);
 

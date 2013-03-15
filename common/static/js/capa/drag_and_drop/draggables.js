@@ -232,7 +232,6 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                 draggableObj.iconImgEl.appendTo(draggableObj.iconEl);
                 draggableObj.iconEl.appendTo(draggableObj.containerEl);
 
-                // TODO: Add dummy targets.
                 Targets.drawDummyTargets(draggableObj);
 
                 if (obj.label.length > 0) {

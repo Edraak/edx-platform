@@ -21,7 +21,6 @@ define(['logme'], function (logme) {
     function initializeTargetField(draggableObj) {
         var iconElOffset;
 
-        // TODO: Remove dummy targets.
         clearDummyTargets(draggableObj);
 
         if (draggableObj.targetField.length === 0) {
@@ -72,18 +71,32 @@ define(['logme'], function (logme) {
         draggableObj.targetField = [];
     }
 
+    /*
+     * function drawDummyTargets
+     *
+     * @draggableObj The draggable object on which we must temporarily draw targets before they are
+     * created for real. This is necessary when a draggable is in the slider, and when a draggable
+     * is just being dragged out fo slider.
+     *
+     * @dontResize If this parameter is true, then temporary targets are drawn in full size. This
+     * parameter is not necessary, and if omitted, the targets will be rescaled with the aspect ratio
+     * that was used for draggable when placing it in the slider.
+     *
+     * This function will see if there is an icon. If there is no icon, or the border is turned off,
+     * then we will simply return, as there is no need for drawing targets.
+     *
+     * The targets are simple divs with a border. They all have a specific class, which will allow for
+     * easy removal later on (when real targets will have to be created and drawn).
+     */
     function drawDummyTargets(draggableObj, dontResize) {
-        var borderCss, scaleFactor;
-
-        // TODO.
+        var scaleFactor;
 
         if (draggableObj.originalConfigObj.icon.length === 0) {
             return;
         }
 
-        borderCss = '';
-        if (draggableObj.state.config.targetOutline === true) {
-            borderCss = 'border: 1px dashed gray; ';
+        if (draggableObj.state.config.targetOutline !== true) {
+            return;
         }
 
         if (dontResize !== true) {
@@ -102,7 +115,7 @@ define(['logme'], function (logme) {
                         'height: ' + (scaleFactor * obj.h) + 'px; ' +
                         'top: ' + (scaleFactor * obj.y) + 'px; ' +
                         'left: ' + (scaleFactor * obj.x) + 'px; ' +
-                        borderCss +
+                        'border: 1px dashed gray; ' +
                     '" ' +
                     'class="dummy_target" ' +
                 '></div>'
@@ -112,8 +125,14 @@ define(['logme'], function (logme) {
         });
     }
 
+    /*
+     * function clearDummyTargets
+     *
+     * @draggableObj The draggable object which must be cleared from the temporary targets.
+     *
+     * We simply select all divs with class of temporary target, and remove them.
+     */
     function clearDummyTargets(draggableObj) {
-        // TODO.
         draggableObj.iconEl.find('.dummy_target').remove();
     }
 

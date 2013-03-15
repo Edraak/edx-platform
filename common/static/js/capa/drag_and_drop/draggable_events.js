@@ -85,7 +85,6 @@ return {
                     this.labelEl.appendTo(this.state.baseImageEl.parent());
                 }
 
-                // TODO: We must add dummy targets.
                 Targets.clearDummyTargets(this);
                 Targets.drawDummyTargets(this, true);
 
