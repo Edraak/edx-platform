@@ -75,12 +75,14 @@ return {
             if (moveType === 'target') {
                 this.labelEl.css({
                     'left': target.offset.left + 0.5 * target.w - this.labelWidth * 0.5 + offset - 9, // Account for padding, border.
-                    'top': target.offset.top + 0.5 * target.h + this.iconHeight * 0.5 + 5 + offset
+                    'top': target.offset.top + 0.5 * target.h + this.iconHeight * 0.5 + 5 + offset,
+                    'min-width': this.labelWidth
                 });
             } else {
                 this.labelEl.css({
                     'left': target.x - this.labelWidth * 0.5 + offset - 9, // Account for padding, border.
-                    'top': target.y - this.iconHeight * 0.5 + this.iconHeight + 5 + offset
+                    'top': target.y - this.iconHeight * 0.5 + this.iconHeight + 5 + offset,
+                    'min-width': this.labelWidth
                 });
             }
             this.labelEl.appendTo(this.state.baseImageEl.parent());
@@ -276,7 +278,8 @@ return {
         if (this.labelEl !== null) {
             this.labelEl.css({
                 'left': target.offset.left + 0.5 * target.w - this.labelWidth * 0.5 + offset - 9, // Acoount for padding, border.
-                'top': target.offset.top + 0.5 * target.h + this.iconHeight * 0.5 + 5 + offset
+                'top': target.offset.top + 0.5 * target.h + this.iconHeight * 0.5 + 5 + offset,
+                'min-width': this.labelWidth
             });
         }
     },
@@ -394,14 +397,28 @@ return {
                 'padding-left': 0,
                 'padding-right': 0,
                 'z-index': this.zIndex,
-                'left': 50 - this.labelWidth * 0.5,
+                'left': 50 - this.labelWidthSmall * 0.5,
 
                 // Before:
                 // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                 // After:
-                'top': 42.5 + 0.5 * this.iconHeightSmall
+                'top': 42.5 + 0.5 * this.iconHeightSmall,
+
+                'min-width': this.labelWidthSmall
             });
             this.labelEl.appendTo(this.containerEl);
+        }
+
+        // TODO: Add dummy targets.
+        Targets.clearDummyTargets(this);
+        Targets.drawDummyTargets(this);
+
+        if (this.originalConfigObj.label.length > 0) {
+            if (this.originalConfigObj.icon.length > 0) {
+                this.labelEl.html(this.originalConfigObj.shortLabel);
+            } else {
+                this.iconEl.html(this.originalConfigObj.shortLabel);
+            }
         }
 
         this.inContainer = true;

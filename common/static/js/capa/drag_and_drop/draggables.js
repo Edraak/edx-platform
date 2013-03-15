@@ -1,5 +1,5 @@
 (function (requirejs, require, define) {
-define(['logme', 'draggable_events', 'draggable_logic'], function (logme, draggableEvents, draggableLogic) {
+define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (logme, draggableEvents, draggableLogic, Targets) {
     return {
         'init': init
     };
@@ -70,7 +70,8 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
                     );
                     draggableObj.labelEl.css({
                         'left': 50 - draggableObj.labelWidth * 0.5,
-                        'top': 5 + draggableObj.iconHeightSmall + 5
+                        'top': 5 + draggableObj.iconHeightSmall + 5,
+                        'min-width': draggableObj.labelWidth
                     });
 
                     draggableObj.attachMouseEventsTo('labelEl');
@@ -143,6 +144,7 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
             'iconHeightSmall': null,
             'labelEl': null,
             'labelWidth': null,
+            'labelWidthSmall': null,
             'hasLoaded': false,
             'inContainer': true,
             'mousePressed': false,
@@ -230,6 +232,9 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
                 draggableObj.iconImgEl.appendTo(draggableObj.iconEl);
                 draggableObj.iconEl.appendTo(draggableObj.containerEl);
 
+                // TODO: Add dummy targets.
+                Targets.drawDummyTargets(draggableObj);
+
                 if (obj.label.length > 0) {
                     draggableObj.labelEl = $(
                         '<div ' +
@@ -237,6 +242,7 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
                                 'position: absolute; ' +
                                 'color: black; ' +
                                 'font-size: 0.95em; ' +
+                                'white-space: nowrap; ' +
                             '" ' +
                         '>' +
                             obj.label +
@@ -245,13 +251,20 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
 
                     draggableObj.labelEl.appendTo(draggableObj.containerEl);
                     draggableObj.labelWidth = draggableObj.labelEl.width();
+
+                    draggableObj.labelEl.html(obj.shortLabel);
+
+                    draggableObj.labelWidthSmall = draggableObj.labelEl.width();
+
                     draggableObj.labelEl.css({
-                        'left': 50 - draggableObj.labelWidth * 0.5,
+                        'left': 50 - draggableObj.labelWidthSmall * 0.5,
 
                         // Before:
                         // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                         // After:
-                        'top': 42.5 + 0.5 * draggableObj.iconHeightSmall
+                        'top': 42.5 + 0.5 * draggableObj.iconHeightSmall,
+
+                        'min-width': draggableObj.labelWidthSmall
                     });
 
                     draggableObj.attachMouseEventsTo('labelEl');
@@ -276,6 +289,7 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
                             'position: absolute; ' +
                             'color: black; ' +
                             'font-size: 0.95em; ' +
+                            'white-space: nowrap; ' +
                         '" ' +
                     '>' +
                         obj.label +
@@ -286,8 +300,11 @@ define(['logme', 'draggable_events', 'draggable_logic'], function (logme, dragga
 
                 draggableObj.iconWidth = draggableObj.iconEl.width();
                 draggableObj.iconHeight = draggableObj.iconEl.height();
-                draggableObj.iconWidthSmall = draggableObj.iconWidth;
-                draggableObj.iconHeightSmall = draggableObj.iconHeight;
+
+                draggableObj.iconEl.html(obj.shortLabel);
+
+                draggableObj.iconWidthSmall = draggableObj.iconEl.width();
+                draggableObj.iconHeightSmall = draggableObj.iconEl.height();
 
                 draggableObj.iconEl.css({
                     'left': 50 - draggableObj.iconWidthSmall * 0.5,

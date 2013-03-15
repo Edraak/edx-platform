@@ -81,20 +81,19 @@ define([], function () {
             );
 
             if (state.currentMovingDraggable.labelEl !== null) {
-                state.currentMovingDraggable.labelEl.css(
-                    'left',
-                    event.pageX -
-                        state.baseImageEl.offset().left -
-                        state.currentMovingDraggable.labelWidth * 0.5
-                        - 9 // Account for padding, border.
-                );
-                state.currentMovingDraggable.labelEl.css(
-                    'top',
-                    event.pageY -
-                        state.baseImageEl.offset().top +
-                        state.currentMovingDraggable.iconHeight * 0.5 +
-                        5
-                );
+                state.currentMovingDraggable.labelEl.css({
+                    'left':
+                        event.pageX -
+                            state.baseImageEl.offset().left -
+                            state.currentMovingDraggable.labelWidth * 0.5
+                            - 9, // Account for padding, border.
+                    'top':
+                        event.pageY -
+                            state.baseImageEl.offset().top +
+                            state.currentMovingDraggable.iconHeight * 0.5 +
+                            5,
+                    'min-width': state.currentMovingDraggable.labelWidth
+                });
             }
         }
     }

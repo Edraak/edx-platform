@@ -1,5 +1,5 @@
 (function (requirejs, require, define) {
-define(['logme'], function (logme) {
+define(['logme', 'targets'], function (logme, Targets) {
 return {
     'attachMouseEventsTo': function (element) {
         var self;
@@ -79,9 +79,22 @@ return {
                         'padding-right': 8,
                         'border': '1px solid black',
                         'left': event.pageX - this.state.baseImageEl.offset().left - this.labelWidth * 0.5 - 9, // Account for padding, border.
-                        'top': event.pageY - this.state.baseImageEl.offset().top + this.iconHeight * 0.5 + 5
+                        'top': event.pageY - this.state.baseImageEl.offset().top + this.iconHeight * 0.5 + 5,
+                        'min-width': this.labelWidth
                     });
                     this.labelEl.appendTo(this.state.baseImageEl.parent());
+                }
+
+                // TODO: We must add dummy targets.
+                Targets.clearDummyTargets(this);
+                Targets.drawDummyTargets(this, true);
+
+                if (this.originalConfigObj.label.length > 0) {
+                    if (this.originalConfigObj.icon.length > 0) {
+                        this.labelEl.html(this.originalConfigObj.label);
+                    } else {
+                        this.iconEl.html(this.originalConfigObj.label);
+                    }
                 }
 
                 this.inContainer = false;
@@ -132,7 +145,8 @@ return {
             if (this.labelEl !== null) {
                 this.labelEl.css({
                     'left': event.pageX - this.state.baseImageEl.offset().left - this.labelWidth * 0.5 - 9, // Acoount for padding, border.
-                    'top': event.pageY - this.state.baseImageEl.offset().top + this.iconHeight * 0.5 + 5
+                    'top': event.pageY - this.state.baseImageEl.offset().top + this.iconHeight * 0.5 + 5,
+                    'min-width': this.labelWidth
                 });
             }
         }

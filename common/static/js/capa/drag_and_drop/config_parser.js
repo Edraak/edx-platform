@@ -172,6 +172,12 @@ define(['logme'], function (logme) {
             return false;
         }
 
+        if (obj.label.length > 11) {
+            obj.shortLabel = obj.label.substring(0, 9) + '...';
+        } else {
+            obj.shortLabel = obj.label;
+        }
+
         state.config.draggables.push(obj);
 
         return true;
