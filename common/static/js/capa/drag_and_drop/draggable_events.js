@@ -85,10 +85,17 @@ return {
                     this.labelEl.appendTo(this.state.baseImageEl.parent());
                 }
 
+                // When a draggable is being removed from the slider, the temporary targets that were drawn on it
+                // must be cleared (because they were drawn using the small dimensions), and new temporary targets
+                // must be drawn using the full dimensions.
                 Targets.clearDummyTargets(this);
                 Targets.drawDummyTargets(this, true);
 
+                // When removing a draggable from the slider, we must change the label to the origian,
+                // unshortened version.
                 if (this.originalConfigObj.label.length > 0) {
+                    // Depending on whether we have only a lable, or it is an image with a label,
+                    // the text must be updated in different objects.
                     if (this.originalConfigObj.icon.length > 0) {
                         this.labelEl.html(this.originalConfigObj.label);
                     } else {

@@ -172,6 +172,9 @@ define(['logme'], function (logme) {
             return false;
         }
 
+        // The short label will be used when the draggable is in the slider. If the actual
+        // label is longer than 11 characters, then we will show only the first 9, followed
+        // by "...".
         if (obj.label.length > 11) {
             obj.shortLabel = obj.label.substring(0, 9) + '...';
         } else {

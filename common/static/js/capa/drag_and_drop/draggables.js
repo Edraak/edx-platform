@@ -232,6 +232,8 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                 draggableObj.iconImgEl.appendTo(draggableObj.iconEl);
                 draggableObj.iconEl.appendTo(draggableObj.containerEl);
 
+                // Initially, when a draggable is created from the config JSON, it is placed in the slider.
+                // At this time we must draw temporary targets.
                 Targets.drawDummyTargets(draggableObj);
 
                 if (obj.label.length > 0) {
@@ -241,6 +243,10 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                                 'position: absolute; ' +
                                 'color: black; ' +
                                 'font-size: 0.95em; ' +
+
+                                // This is really important. If we don't set this, then sometimes
+                                // the text wraps when a draggable is moved beyong the right side of
+                                // the entire DnD instance.
                                 'white-space: nowrap; ' +
                             '" ' +
                         '>' +
@@ -288,6 +294,10 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                             'position: absolute; ' +
                             'color: black; ' +
                             'font-size: 0.95em; ' +
+
+                            // This is really important. If we don't set this, then sometimes
+                            // the text wraps when a draggable is moved beyong the right side of
+                            // the entire DnD instance.
                             'white-space: nowrap; ' +
                         '" ' +
                     '>' +
@@ -295,13 +305,15 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     '</div>'
                 );
 
+                // The first time we append, we get the width of the label with the original text.
                 draggableObj.iconEl.appendTo(draggableObj.containerEl);
 
                 draggableObj.iconWidth = draggableObj.iconEl.width();
                 draggableObj.iconHeight = draggableObj.iconEl.height();
 
+                // Now we will change the label text to the short version, and record
+                // the width of the resulting element.
                 draggableObj.iconEl.html(obj.shortLabel);
-
                 draggableObj.iconWidthSmall = draggableObj.iconEl.width();
                 draggableObj.iconHeightSmall = draggableObj.iconEl.height();
 

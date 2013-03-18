@@ -409,10 +409,16 @@ return {
             this.labelEl.appendTo(this.containerEl);
         }
 
+        // When a draggable is movedback to slider, the temporary targets that were drawn on it (if drawn at all)
+        // must be cleared (because they were drawn full size), and new temporary targets must be drawn using
+        // the small dimensions.
         Targets.clearDummyTargets(this);
         Targets.drawDummyTargets(this);
 
+        // When moving a draggable back to the slider, we must change the label to the short variant.
         if (this.originalConfigObj.label.length > 0) {
+            // Depending on whether we have only a lable, or it is an image with a label,
+            // the text must be updated in different objects.
             if (this.originalConfigObj.icon.length > 0) {
                 this.labelEl.html(this.originalConfigObj.shortLabel);
             } else {

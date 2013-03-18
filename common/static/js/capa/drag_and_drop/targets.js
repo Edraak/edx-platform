@@ -21,6 +21,9 @@ define(['logme'], function (logme) {
     function initializeTargetField(draggableObj) {
         var iconElOffset;
 
+        // When we are creating real targets on a draggable, we must remove the temporary once
+        // that are drawn for the user to see that a draggable has targets (when it is in the
+        // slider).
         clearDummyTargets(draggableObj);
 
         if (draggableObj.targetField.length === 0) {
