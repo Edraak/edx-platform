@@ -67,8 +67,51 @@ define(['logme'], function (logme) {
         draggableObj.targetField = [];
     }
 
+    // When a target is of type grid, this method will create multiple targets for it,
+    // laying them out in a grid.
+    function processGridTarget(state, obj) {
+        // One minor complexity is that if we have 1px dashed borders, then we have to offset
+        // each cell to the left and up by 1px in order for the borders not to double.
+        //
+        // We will create normal standard targets, and pass them back to processTarget()
+        // method. Howver, each such targets will have an ID with a common prefix. This
+        // prefix will be formed like so:
+        //
+        //     {grid id}_{col}_{row}
+
+        var i, j; // First we will do it the old fashion way, and then
+                  // convert to fancy jQuery.each() ^_^v
+
+        // For each cell, we need to create a mock object, with a unique ID based on
+        // the row and column, and also provide correct (x, y) offset.
+    }
+
+    // Currently, we already have a 'type' property. We need to create a new one that will
+    // store the type of draggable: single, or grid.
+    //
+    // Because this property is boolean in nature, it can be named 'isGrid'. Possible values
+    // are:
+    //
+    //     true
+    //     false
+    //
+    // Obviously, 'isGrid' can be 'true' only when 'type' is 'base'.
+    //
+    // Due to the special case of grids, a separate method will handle targets that are of
+    // type grid.
+    //
+    // Actually, I will rethink my initial idea. All targets will be the same. A target that
+    // is a grid will be split into multiple normal targets. So, in reality, there will not
+    // be a need for a 'isGrid' property.
     function processTarget(state, obj, fromTargetField, draggableObj) {
         var targetEl, borderCss, numTextEl, targetObj;
+
+        // If this is a "complex" grid case, pass it on to a dedicated handler.
+        if (obj.is_grid === true) {
+            processGridTarget(state, obj);
+
+            return;
+        }
 
         borderCss = '';
         if (state.config.targetOutline === true) {
