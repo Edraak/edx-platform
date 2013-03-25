@@ -1021,8 +1021,11 @@ class DragAndDropInput(InputTypeBase):
                     (name or label or icon or can_reuse) are optional
 
                     If tag_type is 'target' all attributes (name, x, y, w, h)
-                    are required. (x, y) - coordinates of center of target,
+                    are required.
+                    x, y - coordinates of center of target.
                     w, h - weight and height of target.
+                    type - type of target (normal|grid). Default value is "grid".
+                    col, row - optional, if type = "grid". Default value is 1.
 
                 Returns:
                     Dictionary of vaues of attributes:
@@ -1031,20 +1034,25 @@ class DragAndDropInput(InputTypeBase):
             """
             tag_attrs = dict()
             tag_attrs['draggable'] = {'id': Attribute._sentinel,
-                                      'label': "", 'icon': "",
-                                      'can_reuse': ""}
+                                      'label': '', 'icon': '',
+                                      'can_reuse': ''}
 
             tag_attrs['target'] = {'id': Attribute._sentinel,
-                                   'x': Attribute._sentinel,
-                                   'y': Attribute._sentinel,
-                                   'w': Attribute._sentinel,
-                                   'h': Attribute._sentinel}
+                                    'type': 'normal',
+                                    'x': Attribute._sentinel,
+                                    'y': Attribute._sentinel,
+                                    'w': Attribute._sentinel,
+                                    'h': Attribute._sentinel}
 
             dic = dict()
 
             for attr_name in tag_attrs[tag_type].keys():
                 dic[attr_name] = Attribute(attr_name,
                                            default=tag_attrs[tag_type][attr_name]).parse_from_xml(tag)
+
+            if tag_type == 'target' and dic['type'] == 'grid':
+                for attr_name in ['col', 'row']:
+                    dic[attr_name] = Attribute(attr_name, default=1).parse_from_xml(tag)
 
             if tag_type == 'draggable' and not self.no_labels:
                 dic['label'] = dic['label'] or dic['id']
