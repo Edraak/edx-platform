@@ -69,6 +69,8 @@ define(['logme'], function (logme) {
 
     // When a target is of type grid, this method will create multiple targets for it,
     // laying them out in a grid.
+    //
+    // How hard it is to code on a Saturday morning. Outside is total chaos!
     function processGridTarget(state, obj) {
         // One minor complexity is that if we have 1px dashed borders, then we have to offset
         // each cell to the left and up by 1px in order for the borders not to double.
