@@ -81,8 +81,44 @@ define(['logme'], function (logme) {
         //
         //     {grid id}_{col}_{row}
 
-        var i, j; // First we will do it the old fashion way, and then
+        var i, j, // First we will do it the old fashion way, and then
                   // convert to fancy jQuery.each() ^_^v
+            width, height;
+            // deltaX, deltaY;
+
+        // console.log('INFO: We are in processGridTarget() function.');
+        // console.log('obj = ', obj);
+
+        width = Math.round(obj.w / obj.col);
+        height = Math.round(obj.h / obj.row);
+
+        for (i = 0; i < obj.col; i += 1) {
+            for (j = 0; j < obj.row; j += 1) {
+                /*
+                if (i > 0) {
+                    deltaX = 1;
+                } else {
+                    deltaX = 0;
+                }
+                if (j > 0) {
+                    deltaY = 1;
+                } else {
+                    deltaY = 0;
+                }
+                */
+
+                processTarget(
+                    state,
+                    {
+                        'id': obj.id + '_' + i + '_' + j,
+                        'w': width,
+                        'h': height,
+                        'x': obj.x + i * width,
+                        'y': obj.y + j * height
+                    }
+                );
+            }
+        }
 
         // For each cell, we need to create a mock object, with a unique ID based on
         // the row and column, and also provide correct (x, y) offset.
@@ -109,7 +145,7 @@ define(['logme'], function (logme) {
         var targetEl, borderCss, numTextEl, targetObj;
 
         // If this is a "complex" grid case, pass it on to a dedicated handler.
-        if (obj.is_grid === true) {
+        if (obj.type === 'grid') {
             processGridTarget(state, obj);
 
             return;

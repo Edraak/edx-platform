@@ -192,9 +192,36 @@ define(['logme'], function (logme) {
             (attrIsInteger(obj, 'h') === false) ||
 
             (attrIsInteger(obj, 'x') === false) ||
-            (attrIsInteger(obj, 'y') === false)
+            (attrIsInteger(obj, 'y') === false) ||
+
+            (attrIsString(obj, 'type') === false)
         ) {
             return false;
+        }
+
+        obj.type = obj.type.toLowerCase();
+
+        if (
+            (obj.type !== 'grid') &&
+            (obj.type !== 'normal')
+        ) {
+
+        }
+
+        // If this targets if of type 'grid', we need to make sure that
+        // attributes 'row' and 'col' are sepecified, are integers, and that they are
+        // equal to or greater than 1.
+        if (obj.type === 'grid') {
+            if (
+                (attrIsInteger(obj, 'col') === false) ||
+                (attrIsInteger(obj, 'row') === false)
+            ) {
+                return false;
+            }
+
+            if ((obj.col < 1) || (obj.row < 1)) {
+                return false;
+            }
         }
 
         if (pushToState !== false) {
