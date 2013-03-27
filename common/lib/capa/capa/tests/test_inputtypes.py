@@ -777,8 +777,8 @@ class DragAndDropTest(unittest.TestCase):
 {"can_reuse": "", "label": "Label3", "id": "7", "icon": "", "can_reuse": "", "target_fields": []}],
                         "one_per_target": "True",
                         "targets": [
-                {"y": "90", "x": "210", "id": "t1", "w": "90", "h": "90"},
-                {"y": "160", "x": "370", "id": "t2", "w": "90", "h": "90"}
+                {"y": "90", "x": "210", "id": "t1", "w": "90", "h": "90", "type": "normal"},
+                {"y": "160", "x": "370", "id": "t2", "w": "90", "h": "90", "type": "normal"}
                                     ]
                     }
 
@@ -794,7 +794,7 @@ class DragAndDropTest(unittest.TestCase):
 
         # as we are dumping 'draggables' dicts while dumping user_input, string
         # comparison will fail, as order of keys is random.
-        self.assertEqual(json.loads(context['drag_and_drop_json']), user_input)
+        self.assertDictEqual(json.loads(context['drag_and_drop_json']), user_input)
         context.pop('drag_and_drop_json')
         expected.pop('drag_and_drop_json')
         self.assertEqual(context, expected)

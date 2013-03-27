@@ -25,6 +25,7 @@ values are (x,y) coordinates of centers of dragged images.
 """
 
 import json
+import re
 
 
 def flat_user_answer(user_answer):
@@ -41,8 +42,8 @@ def flat_user_answer(user_answer):
     def parse_user_answer(answer):
         key = answer.keys()[0]
         value = answer.values()[0]
-        if isinstance(value, dict):
 
+        if isinstance(value, dict):
             # Make complex value:
             # Example:
             # Create like 'p_l[p][first]' from {'first': {'p': 'p_l'}
@@ -59,6 +60,39 @@ def flat_user_answer(user_answer):
 
             res = {key: complex_value}
             return res
+        else:
+            return answer
+
+    result = []
+    for answer in user_answer:
+        parse_answer = parse_user_answer(answer)
+        result.append(parse_answer)
+
+    return result
+
+
+def clean_user_answer(user_answer):
+    """
+    Clean `user_answer` from {col}{row}, when target use type == "grid",
+    cause teacher use target id without additional info about columns
+    and rows.
+
+        {'up': 'p_l[p][first{3}{5}]'}
+
+        to
+
+        {'up': 'p_l[p][first]'}
+    """
+
+    def parse_user_answer(answer):
+        key = answer.keys()[0]
+        value = answer.values()[0]
+
+        if isinstance(value, basestring):
+            # Remove next sequences - "{any number of digits}"
+            p = re.compile(r'\{[0-9]*\}')
+            new_value = p.sub('', value)
+            return {key: new_value}
         else:
             return answer
 
@@ -358,6 +392,9 @@ class DragAndDrop(object):
         # Convert nested `user_answer` to flat format.
         user_answer = flat_user_answer(user_answer)
 
+        # Clean `user_answer`.
+        user_answer = clean_user_answer(user_answer)
+
         # Create identical data structures from user answer and correct answer.
         for answer in correct_answer:
             user_groups_data = []
@@ -424,3 +461,7 @@ def grade(user_input, correct_answer):
     """
     return DragAndDrop(correct_answer=correct_answer,
                        user_answer=user_input).grade()
+
+
+def get_all_items(user_input, xml):
+    return None

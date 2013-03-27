@@ -63,6 +63,30 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         ]
         self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
+    def test_targets_are_draggable_1_with_grid(self):
+        user_input = json.dumps([
+            {'p': 'p_l{100}{9799}'},
+            {'up': {'first': {'p': 'p_l{2}{3}'}}}
+        ])
+
+        correct_answer = [
+            {
+                'draggables': ['p'],
+                'targets': [
+                    'p_l', 'p_r'
+                ],
+                'rule': 'anyof'
+            },
+            {
+                'draggables': ['up'],
+                'targets': [
+                    'p_l[p][first]'
+                ],
+                'rule': 'anyof'
+            }
+        ]
+        self.assertTrue(draganddrop.grade(user_input, correct_answer))
+
     def test_targets_are_draggable_2(self):
         user_input = json.dumps([
             {'p': 'p_l'},
