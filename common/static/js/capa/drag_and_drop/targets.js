@@ -96,7 +96,7 @@ define(['logme'], function (logme) {
                 processTarget(
                     state,
                     {
-                        'id': obj.id + '_' + i + '_' + j,
+                        'id': obj.id + '{' + i + '}{' + j + '}',
                         'w': width,
                         'h': height,
                         'x': obj.x + i * width,
