@@ -67,46 +67,32 @@ define(['logme'], function (logme) {
         draggableObj.targetField = [];
     }
 
-    // When a target is of type grid, this method will create multiple targets for it,
-    // laying them out in a grid.
-    //
-    // How hard it is to code on a Saturday morning. Outside is total chaos!
+    // When a target (it's config object) is of type grid, this method will create multiple
+    // targets for it, laying them out in a grid.
     function processGridTarget(state, obj) {
-        // One minor complexity is that if we have 1px dashed borders, then we have to offset
-        // each cell to the left and up by 1px in order for the borders not to double.
-        //
         // We will create normal standard targets, and pass them back to processTarget()
-        // method. Howver, each such targets will have an ID with a common prefix. This
-        // prefix will be formed like so:
+        // method. However, each such targets will have an ID with a common prefix. This
+        // ID will be formed like so:
         //
-        //     {grid id}_{col}_{row}
+        //     gridId\{col\}\{row\}
+        //
+        // So, an example is:
+        //
+        //     targetX{0}{3}
+        //
+        // "targetX" is the ID (common prefix)
+        // 0 is the col
+        // 3 is the row
 
-        var i, j, // First we will do it the old fashion way, and then
-                  // convert to fancy jQuery.each() ^_^v
-            width, height;
-            // deltaX, deltaY;
+        var i, j, width, height;
 
-        // console.log('INFO: We are in processGridTarget() function.');
-        // console.log('obj = ', obj);
-
+        // Calculate the dimensions of each cell.
         width = Math.round(obj.w / obj.col);
         height = Math.round(obj.h / obj.row);
 
+        // For each cell, create a normal target.
         for (i = 0; i < obj.col; i += 1) {
             for (j = 0; j < obj.row; j += 1) {
-                /*
-                if (i > 0) {
-                    deltaX = 1;
-                } else {
-                    deltaX = 0;
-                }
-                if (j > 0) {
-                    deltaY = 1;
-                } else {
-                    deltaY = 0;
-                }
-                */
-
                 processTarget(
                     state,
                     {
@@ -119,28 +105,11 @@ define(['logme'], function (logme) {
                 );
             }
         }
-
-        // For each cell, we need to create a mock object, with a unique ID based on
-        // the row and column, and also provide correct (x, y) offset.
     }
 
-    // Currently, we already have a 'type' property. We need to create a new one that will
-    // store the type of draggable: single, or grid.
-    //
-    // Because this property is boolean in nature, it can be named 'isGrid'. Possible values
-    // are:
-    //
-    //     true
-    //     false
-    //
-    // Obviously, 'isGrid' can be 'true' only when 'type' is 'base'.
-    //
-    // Due to the special case of grids, a separate method will handle targets that are of
-    // type grid.
-    //
-    // Actually, I will rethink my initial idea. All targets will be the same. A target that
-    // is a grid will be split into multiple normal targets. So, in reality, there will not
-    // be a need for a 'isGrid' property.
+    // All targets will be the same. A target that is a grid in JSON config will
+    // be split into multiple normal targets. So, in reality, there will not be
+    // a need for a 'isGrid' property.
     function processTarget(state, obj, fromTargetField, draggableObj) {
         var targetEl, borderCss, numTextEl, targetObj;
 
