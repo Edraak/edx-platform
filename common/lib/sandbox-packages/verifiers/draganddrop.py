@@ -26,6 +26,7 @@ values are (x,y) coordinates of centers of dragged images.
 
 import json
 import re
+from itertools import groupby
 
 
 def flat_user_answer(user_answer):
@@ -463,5 +464,40 @@ def grade(user_input, correct_answer):
                        user_answer=user_input).grade()
 
 
-def get_all_items(user_input, xml):
+def get_all_items(raw_user_input, xml):
+
+    user_input = json.loads(raw_user_input)
+    sorted_user_input = sorted(user_input, key=lambda x: x.keys()[0])
+
+    for key, value in groupby(sorted_user_input, key=lambda x: x.keys()[0]):
+        # TODO: Now we ignore dragabbles on draggables. Fix this.
+        targets = [i[key] for i in value if isinstance(i[key], basestring)]
+        for target in targets:
+            # Create Item object
+            cell_positions = re.findall(r'\{([0-9]*)\}', target)
+            if cell_positions:
+                p = re.compile(r'\{[0-9]*\}')
+                clean_target = p.sub('', target)
+                item_col, item_row = [int(i) for i in cell_positions]
+            else:
+                clean_target = target
+                item_col = 0
+                item_row = 0
+
+            # TODO: Find target x,y in xml using `clean_target`
+            # TODO: Now we ignore dragabbles on draggables. Fix this.
+            target_x = 5
+            target_y = 5
+            target_width = 600
+            target_height = 600
+            target_col = 30 # default = 1 for type "normal"
+            target_row = 30 # default = 1 for type "normal"
+
+            cell_width = target_width / target_col
+            cell_height = target_height / target_row
+
+            x = target_x + (item_col + 1/2) * cell_width
+            y = target_y + (item_row + 1/2) * cell_height
+
+            import ipdb; ipdb.set_trace()
     return None
