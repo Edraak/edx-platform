@@ -464,16 +464,91 @@ def grade(user_input, correct_answer):
                        user_answer=user_input).grade()
 
 
-def get_all_items(raw_user_input, xml):
+def get_all_dragabbles(raw_user_input, xml):
+    """Return all draggables objects."""
 
     user_input = json.loads(raw_user_input)
     sorted_user_input = sorted(user_input, key=lambda x: x.keys()[0])
 
+    class Draggable(object):
+        """Class which describe draggables objects."""
+        def __init__(self, id, x, y, target):
+            self.id = id
+            self.x = x
+            self.y = y
+            self.target = target
+
+    class BadProperty(object):
+        """Property for non-existent object.
+        This class help managing some case, when we have for example:
+            dragabbles.sun.on_target('base_target')[0].y > 100
+
+        and dragabbles.sun object doesn't exist.
+
+        Any operations (>, <, >=, <=, !=, ==) with this object
+        return False.
+        """
+        def __eq__(self, other):
+            return False
+
+        def __ne__(self, other):
+            return False
+
+        def __lt__(self, other):
+            return False
+
+        def __gt__(self, other):
+            return False
+
+        def __le__(self, other):
+            return False
+
+        def __ge__(self, other):
+            return False
+
+
+    class DraggableSet(object):
+        """This class use for unite many Draggable objects to one
+        structure, which has some helpful filters and properties.
+        """
+        def __init__(self, items):
+            self.items = items
+
+        def __getitem__(self, key):
+            try:
+                return self.items[key]
+            except IndexError:
+                bad_property = BadProperty()
+                return Draggable(
+                    bad_property,
+                    bad_property,
+                    bad_property,
+                    bad_property,
+                )
+
+        @property
+        def count(self):
+            """Return total counts for draggable set."""
+            return len(self.items)
+
+        def on_target(self, target):
+            """Filter draggables by target."""
+            new_items = [i for i in self.items if i.target == target]
+            return DraggableSet(new_items)
+
+    # TODO: singleton
+    class A(object):
+        def __getattr__(self, name):
+            return DraggableSet([])
+
+    all_dragabbles = A()
+
     for key, value in groupby(sorted_user_input, key=lambda x: x.keys()[0]):
-        # TODO: Now we ignore dragabbles on draggables. Fix this.
+        dragabbles = []
+
+        # We ignore dragabbles on draggables.
         targets = [i[key] for i in value if isinstance(i[key], basestring)]
         for target in targets:
-            # Create Item object
             cell_positions = re.findall(r'\{([0-9]*)\}', target)
             if cell_positions:
                 p = re.compile(r'\{[0-9]*\}')
@@ -484,14 +559,16 @@ def get_all_items(raw_user_input, xml):
                 item_col = 0
                 item_row = 0
 
-            # TODO: Find target x,y in xml using `clean_target`
-            # TODO: Now we ignore dragabbles on draggables. Fix this.
-            target_x = 5
-            target_y = 5
-            target_width = 600
-            target_height = 600
-            target_col = 30 # default = 1 for type "normal"
-            target_row = 30 # default = 1 for type "normal"
+            # We ignore dragabbles on draggables.
+            target_object = xml.find('drag_and_drop_input'
+                ).find("target[@id='{0}']".format(clean_target))
+
+            target_x = int(target_object.attrib.get('x'))
+            target_y = int(target_object.attrib.get('y'))
+            target_width = int(target_object.attrib.get('w'))
+            target_height = int(target_object.attrib.get('h'))
+            target_col = int(target_object.attrib.get('col', 1))
+            target_row = int(target_object.attrib.get('row', 1))
 
             cell_width = target_width / target_col
             cell_height = target_height / target_row
@@ -499,5 +576,8 @@ def get_all_items(raw_user_input, xml):
             x = target_x + (item_col + 1/2) * cell_width
             y = target_y + (item_row + 1/2) * cell_height
 
-            import ipdb; ipdb.set_trace()
-    return None
+            dragabbles.append(Draggable(key, x, y, clean_target))
+
+        setattr(all_dragabbles, key, DraggableSet(dragabbles))
+
+    return all_dragabbles
