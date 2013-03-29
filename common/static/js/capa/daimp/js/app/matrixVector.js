@@ -85,21 +85,38 @@ define(function (require) {
     initTool();
   }
   
-  function updateHiddenInputField() {
+  
+  function  getInputField() {
     var problem = $('#tool').parents('.problem');
-    var input_field = problem.find('input[type="hidden"][name!="tool_name"][name!="tool_initial_state"]');
-    var value = {'vinx': parseFloat(vinx), 'voutx': parseFloat(voutx)};
+    return problem.find('input[type="hidden"][name!="tool_name"][name!="tool_initial_state"]');
+    };     
+  
+  function updateHiddenInputField() {
+    var input_field = getInputField();
+    var value = {'vinx': parseFloat(vinx), 'viny': parseFloat(viny), 'voutx': parseFloat(voutx),'vouty': parseFloat(vouty)};
     input_field.val(JSON.stringify(value));
   }
 
   function initTool() {
-    //Read from hidden input field
-    //For the moment, load only vinx and save its value to 
-    //hidden field every time it is updated
+    var initial_state = $("input#tool_initial_state").val()
+    var saved_state = getInputField().val();
+    
+    //Initial state from xml file 
+    if (saved_state === '') {
+      //initial_state = JSON.parse(initial_state);
+      vinx = parseFloat(initial_state); //initial_state.vinx;
+      viny = parseFloat(initial_state); //initial_state.viny;
+    }
+    //Saved state
+    else {
+      saved_state = JSON.parse(saved_state);
+      vinx = saved_state.vinx;
+      viny = saved_state.viny;
+    }
     
     //Load vinx from xml
-    vinx = parseFloat($("input#tool_initial_state").val());
-    viny = 1.0;
+    //vinx = parseFloat($("input#tool_initial_state").val());
+    //viny = 1.0;
     a11 = 1.0;
     a12 = 1.0;
     a21 = 1.0;
