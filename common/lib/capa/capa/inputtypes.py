@@ -1172,6 +1172,32 @@ class EditAGeneInput(InputTypeBase):
 
 registry.register(EditAGeneInput)
 
+#-----------------------------------------------------------------------------
+
+
+class DaimpInput(InputTypeBase):
+    """
+    An input type to use with a Daimp JavaScript tools.
+
+    Example:
+
+    <daimpinput tool_name='matrixVector' tool_initial_state="JSON String" />
+    """
+
+    template = "daimpinput.html"
+    tags = ['daimpinput']
+
+    @classmethod
+    def get_attributes(cls):
+        """
+        Note: tool_name and tool_initial_state are required.
+        """
+        return [Attribute('tool_name'),
+                Attribute('tool_initial_state')
+                ]
+
+registry.register(DaimpInput)
+
 #---------------------------------------------------------------------
 
 

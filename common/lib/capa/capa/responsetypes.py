@@ -935,7 +935,7 @@ def sympy_check2():
                            'chemicalequationinput', 'vsepr_input',
                            'drag_and_drop_input', 'editamoleculeinput',
                            'designprotein2dinput', 'editageneinput',
-                           'annotationinput']
+                           'annotationinput', 'daimpinput']
 
     def setup_response(self):
         xml = self.xml
