@@ -80,7 +80,7 @@ define(function (require) {
       U.testForFeatures(true, false, false); //Test for canvas only
     }
     catch (err) {
-      window.alert(err.toString() + " The tool is disabled.");
+      window.alert(err.toString() + ' The tool is disabled.');
     }
     initTool();
   }
@@ -98,14 +98,14 @@ define(function (require) {
   }
 
   function initTool() {
-    var initial_state = $("input#tool_initial_state").val()
+    var initial_state = $('input#tool_initial_state').val();
     var saved_state = getInputField().val();
     
     //Initial state from xml file 
     if (saved_state === '') {
-      //initial_state = JSON.parse(initial_state);
-      vinx = parseFloat(initial_state); //initial_state.vinx;
-      viny = parseFloat(initial_state); //initial_state.viny;
+      initial_state = JSON.parse(initial_state);
+      vinx = initial_state[0];
+      viny = initial_state[1];
     }
     //Saved state
     else {
@@ -114,9 +114,6 @@ define(function (require) {
       viny = saved_state.viny;
     }
     
-    //Load vinx from xml
-    //vinx = parseFloat($("input#tool_initial_state").val());
-    //viny = 1.0;
     a11 = 1.0;
     a12 = 1.0;
     a21 = 1.0;
