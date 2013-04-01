@@ -467,13 +467,16 @@ def grade(user_input, correct_answer):
 def get_all_dragabbles(raw_user_input, xml):
     """Return all draggables objects."""
 
+    def singleton(cls):
+        """Signleton decorator."""
+        return cls()
+
     user_input = json.loads(raw_user_input)
     sorted_user_input = sorted(user_input, key=lambda x: x.keys()[0])
 
     class Draggable(object):
         """Class which describe draggables objects."""
-        def __init__(self, id, x, y, target):
-            self.id = id
+        def __init__(self, x, y, target):
             self.x = x
             self.y = y
             self.target = target
@@ -508,7 +511,7 @@ def get_all_dragabbles(raw_user_input, xml):
 
 
     class DraggableSet(object):
-        """This class use for unite many Draggable objects to one
+        """This class use to unite many Draggable objects to one
         structure, which has some helpful filters and properties.
         """
         def __init__(self, items):
@@ -519,12 +522,7 @@ def get_all_dragabbles(raw_user_input, xml):
                 return self.items[key]
             except IndexError:
                 bad_property = BadProperty()
-                return Draggable(
-                    bad_property,
-                    bad_property,
-                    bad_property,
-                    bad_property,
-                )
+                return Draggable(bad_property, bad_property, bad_property)
 
         @property
         def count(self):
@@ -536,17 +534,19 @@ def get_all_dragabbles(raw_user_input, xml):
             new_items = [i for i in self.items if i.target == target]
             return DraggableSet(new_items)
 
-    # TODO: singleton
-    class A(object):
+    @singleton
+    class AllDragabbles(object):
+        """Class which manage all dragabbles by classes attributes."""
         def __getattr__(self, name):
             return DraggableSet([])
 
-    all_dragabbles = A()
+    all_dragabbles = AllDragabbles
 
     for key, value in groupby(sorted_user_input, key=lambda x: x.keys()[0]):
         dragabbles = []
 
-        # We ignore dragabbles on draggables.
+        # We ignore dragabbles on draggables. Support only first level
+        # target.
         targets = [i[key] for i in value if isinstance(i[key], basestring)]
         for target in targets:
             cell_positions = re.findall(r'\{([0-9]*)\}', target)
@@ -559,10 +559,12 @@ def get_all_dragabbles(raw_user_input, xml):
                 item_col = 0
                 item_row = 0
 
-            # We ignore dragabbles on draggables.
+            # We ignore dragabbles on draggables. Support only first
+            # level target.
             target_object = xml.find('drag_and_drop_input'
                 ).find("target[@id='{0}']".format(clean_target))
 
+            # Get data from xml.
             target_x = int(target_object.attrib.get('x'))
             target_y = int(target_object.attrib.get('y'))
             target_width = int(target_object.attrib.get('w'))
@@ -573,10 +575,11 @@ def get_all_dragabbles(raw_user_input, xml):
             cell_width = target_width / target_col
             cell_height = target_height / target_row
 
+            # Calculate x,y coordinates of item.
             x = target_x + (item_col + 1/2) * cell_width
             y = target_y + (item_row + 1/2) * cell_height
 
-            dragabbles.append(Draggable(key, x, y, clean_target))
+            dragabbles.append(Draggable(x, y, clean_target))
 
         setattr(all_dragabbles, key, DraggableSet(dragabbles))
 
