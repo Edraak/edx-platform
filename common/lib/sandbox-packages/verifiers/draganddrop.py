@@ -471,9 +471,6 @@ def get_all_dragabbles(raw_user_input, xml):
         """Signleton decorator."""
         return cls()
 
-    user_input = json.loads(raw_user_input)
-    sorted_user_input = sorted(user_input, key=lambda x: x.keys()[0])
-
     class Draggable(object):
         """Class which describe draggables objects."""
         def __init__(self, x, y, target):
@@ -540,9 +537,12 @@ def get_all_dragabbles(raw_user_input, xml):
         def __getattr__(self, name):
             return DraggableSet([])
 
+    user_input = json.loads(raw_user_input)
+    sorted_user_input = sorted(user_input, key=lambda obj: obj.keys()[0])
+
     all_dragabbles = AllDragabbles
 
-    for key, value in groupby(sorted_user_input, key=lambda x: x.keys()[0]):
+    for key, value in groupby(sorted_user_input, key=lambda obj: obj.keys()[0]):
         dragabbles = []
 
         # We ignore dragabbles on draggables. Support only first level
@@ -576,10 +576,13 @@ def get_all_dragabbles(raw_user_input, xml):
             cell_height = target_height / target_row
 
             # Calculate x,y coordinates of item.
-            x = target_x + (item_col + 1/2) * cell_width
-            y = target_y + (item_row + 1/2) * cell_height
+            x = int(target_x + (item_col + 0.5) * cell_width)
+            y = int(target_y + (item_row + 0.5) * cell_height)
 
             dragabbles.append(Draggable(x, y, clean_target))
+
+            # Sort by Y-coordinate.
+            dragabbles.sort(key=lambda obj: obj.y)
 
         setattr(all_dragabbles, key, DraggableSet(dragabbles))
 
