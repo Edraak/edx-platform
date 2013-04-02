@@ -534,8 +534,17 @@ def get_all_dragabbles(raw_user_input, xml):
     @singleton
     class AllDragabbles(object):
         """Class which manage all dragabbles by classes attributes."""
-        def __getattr__(self, name):
-            return DraggableSet([])
+
+        items = {}
+
+        def __setitem__(self, key, value):
+            self.items[key] = value
+
+        def __getitem__(self, key):
+            try:
+                return self.items[key]
+            except KeyError:
+                return DraggableSet([])
 
     user_input = json.loads(raw_user_input)
     sorted_user_input = sorted(user_input, key=lambda obj: obj.keys()[0])
@@ -584,6 +593,6 @@ def get_all_dragabbles(raw_user_input, xml):
             # Sort by Y-coordinate.
             dragabbles.sort(key=lambda obj: obj.y)
 
-        setattr(all_dragabbles, key, DraggableSet(dragabbles))
+        all_dragabbles[key] = DraggableSet(dragabbles)
 
     return all_dragabbles
