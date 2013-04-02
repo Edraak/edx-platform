@@ -200,7 +200,9 @@ define(['logme'], function (logme) {
             'addDraggable': addDraggable,
 
             'type': 'base',
-            'draggableObj': null
+            'draggableObj': null,
+
+            'zIndex': null
         };
 
         if (fromTargetField === true) {
@@ -210,6 +212,12 @@ define(['logme'], function (logme) {
 
             targetObj.type = 'on_drag';
             targetObj.draggableObj = draggableObj;
+
+            targetObj.zIndex = draggableObj.zIndex;
+        } else {
+            // This is a normal target that sits on the base image. It is the lowest of all
+            // possible targets. It gets the lowest z-index possible - zero (0).
+            targetObj.zIndex = 0;
         }
 
         if (state.config.onePerTarget === false) {

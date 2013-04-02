@@ -175,62 +175,86 @@ return {
     //
     //     this.iconEl.position()
     'checkIfOnTarget': function (positionIE) {
-        var c1, target;
+        var c1, target, firstPass, maxTargetIndex;
 
-        for (c1 = 0; c1 < this.state.targets.length; c1 += 1) {
-            target = this.state.targets[c1];
+        firstPass = null;
+        maxTargetIndex = -1;
 
-            // If only one draggable per target is allowed, and
-            // the current target already has a draggable on it
-            // (with an ID different from the one we are checking
-            // against), then go to next target.
-            if (
-                (this.state.config.onePerTarget === true) &&
-                (target.draggableList.length === 1) &&
-                (target.draggableList[0].uniqueId !== this.uniqueId)
-            ) {
-                continue;
+        while (firstPass !== false) {
+            if (firstPass === null) {
+                firstPass = true;
+            } else if (firstPass === true) {
+                firstPass = false;
             }
 
-            // If the target is on a draggable (from target field), we must make sure that
-            // this draggable is not the same as "this" one.
-            if ((target.type === 'on_drag') && (target.draggableObj.uniqueId === this.uniqueId)) {
-                continue;
-            }
+            for (c1 = 0; c1 < this.state.targets.length; c1 += 1) {
+                target = this.state.targets[c1];
 
-            // Check if the draggable's center coordinate is within
-            // the target's dimensions. If not, go to next target.
-            if (
-                (positionIE.top + this.iconHeight * 0.5 < target.offset.top) ||
-                (positionIE.top + this.iconHeight * 0.5 > target.offset.top + target.h) ||
-                (positionIE.left + this.iconWidth * 0.5 < target.offset.left) ||
-                (positionIE.left + this.iconWidth * 0.5 > target.offset.left + target.w)
-            ) {
-                continue;
-            }
+                // If only one draggable per target is allowed, and
+                // the current target already has a draggable on it
+                // (with an ID different from the one we are checking
+                // against), then go to next target.
+                if (
+                    (this.state.config.onePerTarget === true) &&
+                    (target.draggableList.length === 1) &&
+                    (target.draggableList[0].uniqueId !== this.uniqueId)
+                ) {
+                    continue;
+                }
 
-            // If the draggable was moved from one target to
-            // another, then we need to remove it from the
-            // previous target's draggables list, and add it to the
-            // new target's draggables list.
-            if ((this.onTarget !== null) && (this.onTarget.uniqueId !== target.uniqueId)) {
-                this.onTarget.removeDraggable(this);
-                target.addDraggable(this);
-            }
-            // If the draggable was moved from the slider to a
-            // target, remember the target, and add ID to the
-            // target's draggables list.
-            else if (this.onTarget === null) {
-                target.addDraggable(this);
-            }
+                // If the target is on a draggable (from target field), we must make sure that
+                // this draggable is not the same as "this" one.
+                if ((target.type === 'on_drag') && (target.draggableObj.uniqueId === this.uniqueId)) {
+                    continue;
+                }
 
-            // Reposition the draggable so that it's center
-            // coincides with the center of the target.
-            this.snapToTarget(target);
+                // Check if the draggable's center coordinate is within
+                // the target's dimensions. If not, go to next target.
+                if (
+                    (positionIE.top + this.iconHeight * 0.5 < target.offset.top) ||
+                    (positionIE.top + this.iconHeight * 0.5 > target.offset.top + target.h) ||
+                    (positionIE.left + this.iconWidth * 0.5 < target.offset.left) ||
+                    (positionIE.left + this.iconWidth * 0.5 > target.offset.left + target.w)
+                ) {
+                    continue;
+                }
 
-            // Target was found.
-            return true;
-        }
+                if (firstPass === true) {
+                    if (maxTargetIndex < target.zIndex) {
+                        maxTargetIndex = target.zIndex;
+                    }
+
+                    continue;
+                } else if (firstPass === false) {
+                    if (maxTargetIndex !== target.zIndex) {
+                        continue;
+                    }
+                }
+
+                // If the draggable was moved from one target to
+                // another, then we need to remove it from the
+                // previous target's draggables list, and add it to the
+                // new target's draggables list.
+                if ((this.onTarget !== null) && (this.onTarget.uniqueId !== target.uniqueId)) {
+                    this.onTarget.removeDraggable(this);
+                    target.addDraggable(this);
+                }
+                // If the draggable was moved from the slider to a
+                // target, remember the target, and add ID to the
+                // target's draggables list.
+                else if (this.onTarget === null) {
+                    target.addDraggable(this);
+                }
+
+                // Reposition the draggable so that it's center
+                // coincides with the center of the target.
+                this.snapToTarget(target);
+
+                // Target was found.
+                return true;
+            } // End-of: for (c1 = 0; c1 < this.state.targets.length; c1 += 1) {
+
+        } // End-of: while (firstPass !== false) {
 
         // Target was not found.
         return false;
