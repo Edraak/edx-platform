@@ -541,10 +541,7 @@ def get_all_dragabbles(raw_user_input, xml):
             self.items[key] = value
 
         def __getitem__(self, key):
-            try:
-                return self.items[key]
-            except KeyError:
-                return DraggableSet([])
+            return self.items.get(key) or DraggableSet([])
 
     user_input = json.loads(raw_user_input)
     sorted_user_input = sorted(user_input, key=lambda obj: obj.keys()[0])
