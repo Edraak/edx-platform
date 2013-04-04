@@ -28,7 +28,9 @@ define([], function () {
             'uniqueId': 0,
             'salt': makeSalt(),
 
-            'getUniqueId': getUniqueId
+            'getUniqueId': getUniqueId,
+
+            'normalizeEvent': normalizeEvent
         };
 
         $(document).mousemove(function (event) {
@@ -59,6 +61,11 @@ define([], function () {
 
     function documentMouseMove(state, event) {
         if (state.currentMovingDraggable !== null) {
+            // We need to make sure that event.pageX, and event.pageY behave in the same way
+            // across diffrent browsers. This 'fix' was applied after it was discovered that
+            // in IE10 you could not drag properly if the page was scrolled down or right.
+            state.normalizeEvent(event);
+
             state.currentMovingDraggable.iconEl.css(
                 'left',
                 event.pageX -
@@ -90,6 +97,11 @@ define([], function () {
                 );
             }
         }
+    }
+
+    function normalizeEvent(event) {
+        event.pageX = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+        event.pageY = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
     }
 }); // End-of: define([], function () {
 }(RequireJS.requirejs, RequireJS.require, RequireJS.define)); // End-of: (function (requirejs, require, define) {

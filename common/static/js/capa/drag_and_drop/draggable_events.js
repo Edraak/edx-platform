@@ -51,6 +51,12 @@ return {
                         'height': this.iconHeight
                     });
                 }
+
+                // We need to make sure that event.pageX, and event.pageY behave in the same way
+                // across diffrent browsers. This 'fix' was applied after it was discovered that
+                // in IE10 you could not drag properly if the page was scrolled down or right.
+                this.state.normalizeEvent(event);
+
                 this.iconEl.css({
                     'background-color': this.iconElBGColor,
                     'padding-left': this.iconElPadding,
@@ -112,6 +118,11 @@ return {
             // pointer leaves the draggable while it is in the middle
             // of a drag operation (user moves the mouse very quickly).
             event.stopPropagation();
+
+            // We need to make sure that event.pageX, and event.pageY behave in the same way
+            // across diffrent browsers. This 'fix' was applied after it was discovered that
+            // in IE10 you could not drag properly if the page was scrolled down or right.
+            this.state.normalizeEvent(event);
 
             this.iconEl.css({
                 'left': event.pageX - this.state.baseImageEl.offset().left - this.iconWidth * 0.5 - this.iconElLeftOffset,
