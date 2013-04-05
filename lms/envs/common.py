@@ -82,7 +82,9 @@ MITX_FEATURES = {
     'AUTH_USE_MIT_CERTIFICATES': False,
     'AUTH_USE_OPENID_PROVIDER': False,
 
-    # analytics experiments
+    # Enable below to permit streaming of analytics to the analytics server
+    'ANALYTICS_LOGGING_ENABLED' : os.environ.get("ANALYTICS_LOGGER_ENABLED", "False").upper() == "TRUE", 
+    'ANALYTICS_EMBEDDING_ENABLED' : os.environ.get("ANALYTICS_EMBED_ENABLED", "False").upper() == "TRUE", 
     'ENABLE_INSTRUCTOR_ANALYTICS': False,
 
     # Flip to True when the YouTube iframe API breaks (again)

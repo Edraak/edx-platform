@@ -31,7 +31,9 @@ LOGGING = get_logger_config(ENV_ROOT / "log",
                             logging_env="dev",
                             local_loglevel="DEBUG",
                             dev_env=True,
-                            debug=True)
+                            debug=True, 
+                            analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED']
+                            )
 
 DATABASES = {
     'default': {

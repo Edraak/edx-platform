@@ -15,7 +15,10 @@ def get_logger_config(log_dir,
                       debug=False,
                       local_loglevel='INFO',
                       console_loglevel=None,
-                      service_variant=None):
+                      service_variant=None, 
+                      analytics_enabled=False, 
+                      analytics_host="127.0.0.1:9022",
+                      sns_topic=None):
 
     """
 
@@ -141,5 +144,33 @@ def get_logger_config(log_dir,
                 'formatter': 'raw',
             },
         })
+
+    if analytics_enabled and dev_env:
+        logger_config['handlers'].update({
+                'http': {
+                    'level': 'DEBUG', 
+                    'class': 'logging.handlers.HTTPHandler',
+                    'host' : analytics_host,
+                    'url':'/httpevent'
+                    }
+                })
+        logger_config['loggers']['tracking']['handlers'].append('http')
+    elif analytics_enabled: 
+        raise NotImplementedError("The code must be tested prior to deployment") 
+        # Below is pseudocode. 
+        import loghandlersplus
+        logger_config['handlers'].update({
+                'http': {
+                    'level': 'DEBUG', 
+                    'class': 'loghandlersplus.failsafehandler',
+                    'main_handler': loghandlersplus.SNSHandler(topic = sns_topic),
+                    'timeout': 0.1, 
+                    'attempts': 3,
+                    'retry_timeout' : 60*60,
+                    'exception_handler' : logging.handlers.SysLogHandler(), # SNS throws an exception
+                    'fallback_handlers' : [logging.handlers.SysLogHandler()] # SNS times out
+                    }
+                })
+        logger_config['loggers']['tracking'].append('http')
 
     return logger_config
