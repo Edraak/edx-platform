@@ -526,7 +526,7 @@ def get_all_dragabbles(raw_user_input, xml):
             """Return total counts for draggable set."""
             return len(self.items)
 
-        def on_target(self, target):
+        def on(self, target):
             """Filter draggables by target."""
             new_items = [i for i in self.items if i.target == target]
             return DraggableSet(new_items)

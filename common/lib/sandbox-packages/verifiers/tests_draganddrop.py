@@ -809,8 +809,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         constraints = [
             dragabbles['sun'].count == 1,
             dragabbles['baby'].count == 2,
-            dragabbles['sun'].on_target('base_target')[0].y < dragabbles['baby'].on_target('base_target')[0].y,
-            dragabbles['sun'].on_target('base_target')[0].y < dragabbles['baby'].on_target('base_target')[1].y
+            dragabbles['sun'].on('base_target')[0].y < dragabbles['baby'].on('base_target')[0].y,
+            dragabbles['sun'].on('base_target')[0].y < dragabbles['baby'].on('base_target')[1].y
         ]
 
         if all(constraints):
@@ -837,10 +837,10 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         constraints_raw = '''[
             dragabbles['sun'].count == 1,
             dragabbles['baby'].count == 2,
-            dragabbles['sun'].on_target('base_target')[0].y <
-                dragabbles['baby'].on_target('base_target')[0].y,
-            dragabbles['sun'].on_target('base_target')[0].y <
-                dragabbles['baby'].on_target('base_target')[1].y
+            dragabbles['sun'].on('base_target')[0].y <
+                dragabbles['baby'].on('base_target')[0].y,
+            dragabbles['sun'].on('base_target')[0].y <
+                dragabbles['baby'].on('base_target')[1].y
         ]'''
 
         # Correct
@@ -854,14 +854,14 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         self.assertTrue(all(eval(constraints_raw)))
         self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
-        self.assertEqual(dragabbles['sun'].on_target('base_target')[0].x, 55)
-        self.assertEqual(dragabbles['sun'].on_target('base_target')[0].y, 55)
+        self.assertEqual(dragabbles['sun'].on('base_target')[0].x, 55)
+        self.assertEqual(dragabbles['sun'].on('base_target')[0].y, 55)
 
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[0].x, 115)
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[0].y, 215)
+        self.assertEqual(dragabbles['baby'].on('base_target')[0].x, 115)
+        self.assertEqual(dragabbles['baby'].on('base_target')[0].y, 215)
 
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[1].x, 415)
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[1].y, 415)
+        self.assertEqual(dragabbles['baby'].on('base_target')[1].x, 415)
+        self.assertEqual(dragabbles['baby'].on('base_target')[1].y, 415)
 
         # Correct (change order)
         user_input = json.dumps([
@@ -874,14 +874,14 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         self.assertTrue(all(eval(constraints_raw)))
         self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
-        self.assertEqual(dragabbles['sun'].on_target('base_target')[0].x, 55)
-        self.assertEqual(dragabbles['sun'].on_target('base_target')[0].y, 55)
+        self.assertEqual(dragabbles['sun'].on('base_target')[0].x, 55)
+        self.assertEqual(dragabbles['sun'].on('base_target')[0].y, 55)
 
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[0].x, 115)
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[0].y, 215)
+        self.assertEqual(dragabbles['baby'].on('base_target')[0].x, 115)
+        self.assertEqual(dragabbles['baby'].on('base_target')[0].y, 215)
 
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[1].x, 415)
-        self.assertEqual(dragabbles['baby'].on_target('base_target')[1].y, 415)
+        self.assertEqual(dragabbles['baby'].on('base_target')[1].x, 415)
+        self.assertEqual(dragabbles['baby'].on('base_target')[1].y, 415)
 
     def test_grid_fail(self):
         raw_xml = '''
@@ -905,8 +905,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         constraints = [
             dragabbles['sun'].count == 1,
             dragabbles['baby'].count == 2,
-            dragabbles['sun'].on_target('base_target')[0].y < dragabbles['baby'].on_target('base_target')[0].y,
-            dragabbles['sun'].on_target('base_target')[0].y < dragabbles['baby'].on_target('base_target')[1].y
+            dragabbles['sun'].on('base_target')[0].y < dragabbles['baby'].on('base_target')[0].y,
+            dragabbles['sun'].on('base_target')[0].y < dragabbles['baby'].on('base_target')[1].y
         ]
 
         if all(constraints):
@@ -923,10 +923,10 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         constraints_raw = '''[
             dragabbles['sun'].count == 1,
             dragabbles['baby'].count == 2,
-            dragabbles['sun'].on_target('base_target')[0].y <
-                dragabbles['baby'].on_target('base_target')[0].y,
-            dragabbles['sun'].on_target('base_target')[0].y <
-                dragabbles['baby'].on_target('base_target')[1].y
+            dragabbles['sun'].on('base_target')[0].y <
+                dragabbles['baby'].on('base_target')[0].y,
+            dragabbles['sun'].on('base_target')[0].y <
+                dragabbles['baby'].on('base_target')[1].y
         ]'''
 
         # Correct
