@@ -385,7 +385,7 @@ return {
             // Before:
             // 'top': ((this.labelEl !== null) ? (100 - this.iconHeightSmall - 25) * 0.5 : 50 - this.iconHeightSmall * 0.5)
             // After:
-            'top': ((this.labelEl !== null) ? 37.5 : 50.0) - 0.5 * this.iconHeightSmall
+            'top': (this.iconImgEl) ? 37.5 - 0.5 * this.iconHeightSmall : 70
         });
         this.iconEl.appendTo(this.containerEl);
 
@@ -402,7 +402,7 @@ return {
                 // Before:
                 // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                 // After:
-                'top': 42.5 + 0.5 * this.iconHeightSmall,
+                'top': 70,
 
                 'min-width': this.labelWidthSmall
             });

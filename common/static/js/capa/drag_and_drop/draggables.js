@@ -195,21 +195,17 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
             draggableObj.iconElBorder = 'none';
             draggableObj.iconElLeftOffset = 0;
 
-            draggableObj.iconEl = $('<div></div>');
+            draggableObj.iconEl = $('<div></div>').css({
+                'overflow': 'hidden'
+            });
 
             draggableObj.iconImgEl = $('<img />');
             draggableObj.iconImgEl.attr('src', obj.icon);
             draggableObj.iconImgEl.load(function () {
                 draggableObj.iconWidth = this.width;
                 draggableObj.iconHeight = this.height;
-
-                if (draggableObj.iconWidth >= draggableObj.iconHeight) {
-                    draggableObj.iconWidthSmall = 60;
-                    draggableObj.iconHeightSmall = draggableObj.iconWidthSmall * (draggableObj.iconHeight / draggableObj.iconWidth);
-                } else {
-                    draggableObj.iconHeightSmall = 60;
-                    draggableObj.iconWidthSmall = draggableObj.iconHeightSmall * (draggableObj.iconWidth / draggableObj.iconHeight);
-                }
+                draggableObj.iconHeightSmall = 30;
+                draggableObj.iconWidthSmall = draggableObj.iconHeightSmall * (draggableObj.iconWidth / draggableObj.iconHeight);
 
                 draggableObj.iconEl.css({
                     'position': 'absolute',
@@ -220,7 +216,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     // Before:
                     // 'top': ((obj.label.length > 0) ? (100 - draggableObj.iconHeightSmall - 25) * 0.5 : 50 - draggableObj.iconHeightSmall * 0.5)
                     // After:
-                    'top': ((obj.label.length > 0) ? 37.5 : 50.0) - 0.5 * draggableObj.iconHeightSmall
+                    'top': 37.5 - 0.5 * draggableObj.iconHeightSmall
                 });
                 draggableObj.iconImgEl.css({
                     'position': 'absolute',
@@ -267,8 +263,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                         // Before:
                         // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                         // After:
-                        'top': 42.5 + 0.5 * draggableObj.iconHeightSmall,
-
+                        'top': 70,
                         'min-width': draggableObj.labelWidthSmall
                     });
 
@@ -319,7 +314,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
 
                 draggableObj.iconEl.css({
                     'left': 50 - draggableObj.iconWidthSmall * 0.5,
-                    'top': 50 - draggableObj.iconHeightSmall * 0.5
+                    'top': 70
                 });
 
                 draggableObj.hasLoaded = true;
