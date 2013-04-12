@@ -2,7 +2,10 @@
 define(['logme', 'update_input', 'targets'], function (logme, updateInput, Targets) {
 return {
     'moveDraggableTo': function (moveType, target, funcCallback) {
-        var self, offset;
+        var self = this,
+            container = (this.originalConfigObj.icon.length) ? this.labelEl 
+                                                             : this.iconEl,
+            offset, adjustLabelEl;
 
         if (this.hasLoaded === false) {
             self = this;
@@ -62,16 +65,7 @@ return {
         }
         this.iconEl.appendTo(this.state.baseImageEl.parent());
 
-        if (this.labelEl !== null) {
-            if (this.isOriginal === true) {
-                this.labelEl.detach();
-            }
-            this.labelEl.css({
-                'background-color': this.state.config.labelBgColor,
-                'padding-left': 8,
-                'padding-right': 8,
-                'border': '1px solid black'
-            });
+        adjustLabelEl = function(){
             if (moveType === 'target') {
                 this.labelEl.css({
                     'left': target.offset.left + 0.5 * target.w - this.labelWidth * 0.5 + offset - 9, // Account for padding, border.
@@ -85,9 +79,39 @@ return {
                     'min-width': this.labelWidth
                 });
             }
+        };
+
+        if (this.labelEl !== null) {
+            if (this.isOriginal === true) {
+                this.labelEl.detach();
+            }
+            this.labelEl.css({
+                'background-color': this.state.config.labelBgColor,
+                'padding-left': 8,
+                'padding-right': 8,
+                'border': '1px solid black'
+            });
+            
+            if (!this.originalConfigObj.isMathJax) {
+                adjustLabelEl.call(this);
+            }
+
             this.labelEl.appendTo(this.state.baseImageEl.parent());
         }
 
+        // When removing a draggable from the slider, we must change the label to the origian,
+        // unshortened version.
+
+        if (this.originalConfigObj.label.length > 0) {
+            // Depending on whether we have only a lable, or it is an image with a label,
+            // the text must be updated in different objects.
+            if (this.originalConfigObj.icon.length > 0) {
+                this.labelEl.html(this.originalConfigObj.label);
+            } else {
+                this.iconEl.html(this.originalConfigObj.label);
+            }
+        }
+        
         if (moveType === 'target') {
             target.addDraggable(this);
         } else {
@@ -108,6 +132,41 @@ return {
         if ($.isFunction(funcCallback) === true) {
             funcCallback();
         }
+        
+        if (this.originalConfigObj.isMathJax) {
+            MathJax.Hub.Queue(
+                ["Typeset", MathJax.Hub, container[0]],
+                [function(){
+                
+                    if (self.labelEl !== null) {
+                        adjustLabelEl.call(self);
+                    }                    
+
+                    container
+                    .children()
+                    .filter('span, div')
+                        .css({
+                            'margin-top': '3px',
+                            'margin-bottom': '0',
+                            'text-align': 'center'
+                        })
+                    .children()
+                        .css({
+                            'display': 'inline'
+                        })
+                    .find('.math > span')
+                        .css({
+                            'font-size': '100%'
+                        })
+                    .find('.mrow > span')
+                        .css({
+                            'color': '#000'
+                        });
+                }]
+            );
+        }
+        
+        
     },
 
     // At this point the mouse was realeased, and we need to check
@@ -341,7 +400,9 @@ return {
     // move it back to the slider, placing it in the same position
     // that it was dragged out of.
     'moveBackToSlider': function () {
-        var c1;
+        var c1,
+            container = (this.originalConfigObj.icon.length) ? this.labelEl 
+                                                             : this.iconEl;
 
         Targets.destroyTargetField(this);
 
@@ -403,7 +464,6 @@ return {
                 // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                 // After:
                 'top': 70,
-
                 'min-width': this.labelWidthSmall
             });
             this.labelEl.appendTo(this.containerEl);
@@ -427,6 +487,34 @@ return {
         }
 
         this.inContainer = true;
+        
+        if (this.originalConfigObj.isMathJax) {
+            MathJax.Hub.Queue(
+                ["Typeset", MathJax.Hub, container[0]],
+                [function(){                    
+                    container
+                    .children()
+                    .filter('span, div')
+                        .css({
+                            'margin-top': '3px',
+                            'margin-bottom': '0',
+                            'text-align': 'center'
+                        })
+                    .children()
+                        .css({
+                            'display': 'inline'
+                        })
+                    .find('.math > span')
+                        .css({
+                            'font-size': '100%'
+                        })
+                    .find('.mrow > span')
+                        .css({
+                            'color': '#000'
+                        });
+                }]
+            );
+        }
     }
 }; // End-of: return {
 }); // End-of: define(['logme', 'update_input', 'targets'], function (logme, updateInput, Targets) {

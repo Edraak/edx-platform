@@ -149,7 +149,24 @@ define(['logme'], function (logme) {
         }
     }
 
+    function isMathJax(str) {
+        
+        // Check string on MathJAx tags ( "\(", "\)", '[mathjaxinline]', 
+        // '[/mathjaxinline]', "\[", "\]", '[mathjax]', '[/mathjax]').
+        // If MathJax tags are present at the start or end of string, function 
+        // return true. Otherwise, false will be returned.
+        
+        if(/^(\\[\(\[]|\[mathjax(inline)?\]).*(\\[\)\]]|\[\/mathjax(inline)?\])$/.test(str)){
+          
+          return true;  
+        }
+        
+        return false;
+    }
+
     function processDraggable(state, obj) {
+        var mathJax;
+        
         if (
             (attrIsString(obj, 'id') === false) ||
             (attrIsString(obj, 'icon') === false) ||
@@ -175,10 +192,14 @@ define(['logme'], function (logme) {
         // The short label will be used when the draggable is in the slider. If the actual
         // label is longer than 11 characters, then we will show only the first 9, followed
         // by "...".
-        if (obj.label.length > 11) {
+        
+        mathJax = isMathJax(obj.label);
+
+        if (obj.label.length > 11 && !mathJax) {
             obj.shortLabel = obj.label.substring(0, 9) + '...';
         } else {
             obj.shortLabel = obj.label;
+            obj.isMathJax = mathJax;
         }
 
         state.config.draggables.push(obj);

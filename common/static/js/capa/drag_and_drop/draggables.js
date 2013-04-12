@@ -251,26 +251,67 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     );
 
                     draggableObj.labelEl.appendTo(draggableObj.containerEl);
-                    draggableObj.labelWidth = draggableObj.labelEl.width();
-
                     draggableObj.labelEl.html(obj.shortLabel);
-
+                    draggableObj.labelWidth = draggableObj.labelEl.width();
                     draggableObj.labelWidthSmall = draggableObj.labelEl.width();
-
-                    draggableObj.labelEl.css({
-                        'left': 50 - draggableObj.labelWidthSmall * 0.5,
-
-                        // Before:
-                        // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
-                        // After:
-                        'top': 70,
-                        'min-width': draggableObj.labelWidthSmall
-                    });
+                    
+                    // If element has MathJax we hide it before processing
+                    if (obj.isMathJax) {
+                        draggableObj.labelEl.css({
+                            'top': 70,
+                            'opacity': 0
+                        });
+                    } else {
+                        draggableObj.labelEl.css({
+                            'left': 50 - draggableObj.labelWidthSmall * 0.5,
+                            // Before:
+                            // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
+                            // After:
+                            'top': 70,
+                            'min-width': draggableObj.labelWidthSmall
+                        });
+                    }
 
                     draggableObj.attachMouseEventsTo('labelEl');
+                    
+                    if (obj.isMathJax) {
+                        MathJax.Hub.Queue(
+                            ["Typeset", MathJax.Hub, draggableObj.labelEl[0]],
+                            [function(){
+                                draggableObj.labelWidth = draggableObj.labelEl.width();
+                                draggableObj.labelWidthSmall = draggableObj.labelEl.width();
+                                
+                                draggableObj.labelEl
+                                    .css({
+                                        'left': 50 - draggableObj.labelWidthSmall * 0.5,
+                                        'opacity': 1,
+                                        'min-width': draggableObj.labelWidthSmall
+                                    })
+                                .children()
+                                .filter('span, div')
+                                    .css({
+                                        'margin-top': '3px',
+                                        'margin-bottom': '0',
+                                        'text-align': 'center'
+                                    })
+                                .children()
+                                    .css({
+                                        'display': 'inline'
+                                    })
+                                .find('.math > span')
+                                .css({
+                                    'font-size': '100%'
+                                })
+                                .find('.mrow > span')
+                                .css({
+                                    'color': '#000'
+                                });
+                            }]
+                        );
+                    }    
                 }
 
-                draggableObj.hasLoaded = true;
+                draggableObj.hasLoaded = true;             
             });
         } else {
             // To make life easier, if there is no icon, but there is a
@@ -303,6 +344,14 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                 // The first time we append, we get the width of the label with the original text.
                 draggableObj.iconEl.appendTo(draggableObj.containerEl);
 
+                // If element has MathJax we hide it before processing
+                if (obj.isMathJax) {
+                    draggableObj.iconEl.css({
+                        'opacity': 0,
+                        'min-width': 60
+                    });
+                } 
+
                 draggableObj.iconWidth = draggableObj.iconEl.width();
                 draggableObj.iconHeight = draggableObj.iconEl.height();
 
@@ -318,6 +367,42 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                 });
 
                 draggableObj.hasLoaded = true;
+
+                if (obj.isMathJax) {
+                    MathJax.Hub.Queue(
+                        ["Typeset", MathJax.Hub, draggableObj.iconEl[0]],
+                        [function(){
+                            draggableObj.iconWidth = draggableObj.iconEl.width();
+                            draggableObj.iconWidthSmall = draggableObj.iconEl.width();
+                            
+                            draggableObj.iconEl
+                                .css({
+                                    'left': 50 - draggableObj.iconWidthSmall * 0.5,
+                                    'opacity': 1
+                                })
+                            .children()
+                            .filter('span, div')
+                                .css({
+                                    'margin-top': '3px',
+                                    'margin-bottom': '0',
+                                    'text-align': 'center'
+                                })
+                            .children()
+                                .css({
+                                    'display': 'inline'
+                                })
+                            .find('.math > span')
+                                .css({
+                                    'font-size': '100%'
+                                })
+                            .find('.mrow > span')
+                            .css({
+                                'color': '#000'
+                            });
+                        }]
+                    );
+                }
+            
             } else {
                 // If no icon and no label, don't create a draggable.
                 return;
@@ -328,7 +413,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
         draggableObj.attachMouseEventsTo('containerEl');
 
         state.numDraggablesInSlider += 1;
-        draggableObj.stateDraggablesIndex = state.draggables.push(draggableObj) - 1;
+        draggableObj.stateDraggablesIndex = state.draggables.push(draggableObj) - 1;            
     }
 }); // End-of: define(['logme', 'draggable_events', 'draggable_logic'], function (logme, draggableEvents, draggableLogic) {
 }(RequireJS.requirejs, RequireJS.require, RequireJS.define)); // End-of: (function (requirejs, require, define) {

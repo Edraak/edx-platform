@@ -18,6 +18,9 @@ return {
     },
 
     'mouseDown': function (event) {
+        var container = (this.originalConfigObj.icon.length) ? this.labelEl 
+                                                             : this.iconEl;
+        
         if (this.mousePressed === false) {
             // So that the browser does not perform a default drag.
             // If we don't do this, each drag operation will
@@ -107,6 +110,37 @@ return {
                 if (this.isOriginal === true) {
                     this.state.numDraggablesInSlider -= 1;
                 }
+        
+                if (this.originalConfigObj.isMathJax) {
+                    MathJax.Hub.Queue(
+                        ["Typeset", MathJax.Hub, container[0]],
+                        [function(){
+                            container
+                            .children()
+                            .filter('span, div')
+                                .css({
+                                    'margin-top': '3px',
+                                    'margin-bottom': '0',
+                                    'text-align': 'center'
+                                })
+                            .children()
+                                .css({
+                                    'display': 'inline'
+                                })
+                            .find('.math > span')
+                                .css({
+                                    'font-size': '100%'
+                                })
+                            .find('.mrow > span')
+                                .css({
+                                    'color': '#000'
+                                });
+                        }]
+                    );
+                }    
+                
+                    
+                    
             }
 
             this.zIndex = 1000;
