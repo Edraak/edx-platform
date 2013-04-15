@@ -173,6 +173,7 @@ define(['logme'], function (logme) {
                         'h': height,
                         'x': obj.x + i * width,
                         'y': obj.y + j * height,
+                        'isGrid': true,
                         'isFirstCol': (i === 0) ? true : false,
                         'isFirstRow': (j === 0) ? true : false
                     }
@@ -197,12 +198,16 @@ define(['logme'], function (logme) {
 
         borderCss = '';
         if (state.config.targetOutline === true) {
-            borderCss = 'border-width: ' +
+            if (obj.isGrid) {
+                borderCss = 'border-width: ' +
                         ((obj.isFirstRow) ? '1px ' : '0 ')  +
                         '1px 1px ' + 
                         ((obj.isFirstCol) ? '1px; ' : '0; ')  +
                         'border-style: dashed; ' +
                         'border-color: #ccc;';
+            } else{
+                borderCss = 'border: 1px dashed grey;'
+            }
         }
 
         targetEl = $(
