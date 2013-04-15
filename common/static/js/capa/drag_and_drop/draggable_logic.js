@@ -401,6 +401,7 @@ return {
     // that it was dragged out of.
     'moveBackToSlider': function () {
         var c1,
+            posTop,
             container = (this.originalConfigObj.icon.length) ? this.labelEl 
                                                              : this.iconEl;
 
@@ -433,6 +434,13 @@ return {
                 'height': this.iconHeightSmall
             });
         }
+        
+        if(this.state.config.autoResize){
+            posTop = ((this.labelEl !== null) ? 37.5 : 50.0) - 0.5 * this.iconHeightSmall;
+        } else {
+            posTop = (this.iconImgEl) ? 37.5 - 0.5 * this.iconHeightSmall : 70;
+        }
+        
         this.iconEl.css({
             'border': 'none',
             'background-color': 'transparent',
@@ -446,7 +454,7 @@ return {
             // Before:
             // 'top': ((this.labelEl !== null) ? (100 - this.iconHeightSmall - 25) * 0.5 : 50 - this.iconHeightSmall * 0.5)
             // After:
-            'top': (this.iconImgEl) ? 37.5 - 0.5 * this.iconHeightSmall : 70
+            'top': posTop
         });
         this.iconEl.appendTo(this.containerEl);
 
@@ -463,7 +471,7 @@ return {
                 // Before:
                 // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                 // After:
-                'top': 70,
+                'top':  (this.state.config.autoResize) ? 42.5 + 0.5 * this.iconHeightSmall : 70,
                 'min-width': this.labelWidthSmall
             });
             this.labelEl.appendTo(this.containerEl);

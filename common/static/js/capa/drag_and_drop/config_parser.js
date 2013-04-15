@@ -9,6 +9,8 @@ define(['logme'], function (logme) {
             'targets': [],
             'onePerTarget': null, // Specified by user. No default.
             'targetOutline': true,
+            'autoResize': false,
+            'separateLabels': false,
             'labelBgColor': '#d6d6d6',
             'individualTargets': null, // Depends on 'targets'.
             'foundErrors': false // Whether or not we find errors while processing the config.
@@ -20,6 +22,7 @@ define(['logme'], function (logme) {
         getOnePerTarget(state, config);
         getTargetOutline(state, config);
         getLabelBgColor(state, config);
+        getAutoResize(state, config);
 
         setIndividualTargets(state);
 
@@ -146,6 +149,48 @@ define(['logme'], function (logme) {
             state.config.individualTargets = false;
         } else {
             state.config.individualTargets = true;
+        }
+    }
+
+    function getAutoResize(state, config) {
+        // It is possible that no "auto_resize" was specified. This is not an error.
+        // In this case the default value of 'true' (boolean) will be used.
+
+        if (config.hasOwnProperty('auto_resize') === true) {
+            if (typeof config.auto_resize === 'string') {
+                if (config.auto_resize.toLowerCase() === 'true') {
+                    state.config.autoResize = true;
+                } else if (config.auto_resize.toLowerCase() === 'false') {
+                    state.config.autoResize = false;
+                } else {
+                    logme('ERROR: Property config.auto_resize can either be "true", or "false".');
+                    state.config.foundErrors = true;
+                }
+            } else {
+                logme('ERROR: Property config.auto_resize is not of a supported type.');
+                state.config.foundErrors = true;
+            }
+        }
+    }
+
+    function getSeparateLabels(state, config) {
+        // It is possible that no "auto_resize" was specified. This is not an error.
+        // In this case the default value of 'true' (boolean) will be used.
+
+        if (config.hasOwnProperty('separate_labels') === true) {
+            if (typeof config.separate_labels === 'string') {
+                if (config.separate_labels.toLowerCase() === 'true') {
+                    state.config.separateLabels = true;
+                } else if (config.separate_labels.toLowerCase() === 'false') {
+                    state.config.separateLabels = false;
+                } else {
+                    logme('ERROR: Property config.separate_labels can either be "true", or "false".');
+                    state.config.foundErrors = true;
+                }
+            } else {
+                logme('ERROR: Property config.separate_labels is not of a supported type.');
+                state.config.foundErrors = true;
+            }
         }
     }
 
