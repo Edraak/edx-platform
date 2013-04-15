@@ -1078,6 +1078,15 @@ class DragAndDropInput(InputTypeBase):
         # one draggable per target?
         to_js['one_per_target'] = Attribute('one_per_target',
                                             default="True").parse_from_xml(self.xml)
+
+        # auto resize draggables image?
+        to_js['auto_resize'] = Attribute('auto_resize',
+                                            default="True").parse_from_xml(self.xml)
+
+        # draw labels separatly from draggables or not?
+        to_js['separate_labels'] = Attribute('separate_labels',
+                                            default="False").parse_from_xml(self.xml)
+
         # list of draggables
         to_js['draggables'] = [parse(draggable, 'draggable') for draggable in
                                self.xml.iterchildren('draggable')]
