@@ -1,0 +1,289 @@
+<problem display_name="Drag and drop demos with grid: chemical case #1" attempts="100">
+
+<customresponse>
+    <text>
+        <h4>Describe carbon molecule in LCAO-MO (without target outline).</h4>
+        <br/>
+    </text>
+
+    <html>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 33%; text-align: center">
+                    C
+                </td>
+                <td style="width: 33%; text-align: center">
+                    C<sub>2</sub>
+                </td>
+                <td style="width: 33%; text-align: center">
+                    C
+                </td>
+            </tr>
+        </table>
+    </html>
+
+    <drag_and_drop_input img="/static/images/images_list/lcao-mo/lcao-mo-clean-large.jpg" auto_resize="false" separate_labels="true">
+
+        <!-- filled bond -->
+        <draggable id="up_and_down" icon="/static/images/images_list/lcao-mo/u_d.png" can_reuse="true" />
+        <!-- up bond -->
+        <draggable id="up" icon="/static/images/images_list/lcao-mo/up.png" can_reuse="true" />
+
+        <!-- images that should not be dragged -->
+        <draggable id="down" icon="/static/images/images_list/lcao-mo/d.png" can_reuse="true" />
+
+        <draggable id="s" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p" icon="/static/images/images_list/lcao-mo/orbital_triple.png" can_reuse="true" label="p" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+            <target id="2" x="34" y="0" w="32" h="32"/>
+            <target id="3" x="68" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="s-sigma" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s-sigma" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="s-sigma*" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s-sigma*" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-pi" icon="/static/images/images_list/lcao-mo/orbital_double.png" label="p-pi" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+            <target id="2" x="34" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-sigma" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="p-sigma" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-pi*" icon="/static/images/images_list/lcao-mo/orbital_double.png" label="p-pi*" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+            <target id="2" x="34" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-sigma*" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="p-sigma*" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <target id="left-side" type="grid" x="4" y="10" w="210" h="655" col="1" row="19" />
+        <target id="center-side" type="grid" x="226" y="10" w="210" h="655" col="1" row="19" />
+        <target id="right-side" type="grid" x="449" y="10" w="210" h="655" col="1" row="19" />
+
+    </drag_and_drop_input>
+
+    <answer type="loncapa/python"><![CDATA[
+correct_answer = [
+{'draggables': ['p'], 'targets': ['left-side', 'right-side'], 'rule': 'unordered_equal'},
+{'draggables': ['s'], 'targets': ['left-side', 'right-side'], 'rule': 'unordered_equal'},
+{'draggables': ['s-sigma'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['s-sigma*'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-pi'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-sigma'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-pi*'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-sigma*'], 'targets': ['center-side'], 'rule': 'exact'},
+{
+    'draggables': ['up_and_down'],
+    'targets': ['left-side[s][1]', 'right-side[s][1]', 'center-side[s-sigma][1]', 'center-side[s-sigma*][1]', 'center-side[p-pi][1]', 'center-side[p-pi][2]'],
+    'rule': 'unordered_equal'
+},
+{
+    'draggables': ['up'],
+    'targets': ['left-side[p][1]', 'left-side[p][2]', 'right-side[p][2]', 'right-side[p][3]',],
+    'rule': 'unordered_equal'
+}
+]
+
+# Do not remove this!
+orbitals = draganddrop.get_all_dragabbles(submission[0], xml) 
+
+constraints = [
+    orbitals['p'].on('left-side').count == 1,
+    orbitals['s'].on('left-side').count == 1,
+    orbitals['p'].on('right-side').count == 1,
+    orbitals['s'].on('right-side').count == 1,
+    orbitals['s-sigma'].on('center-side').count == 1,
+    orbitals['s-sigma*'].on('center-side').count == 1,
+    orbitals['p-pi'].on('center-side').count == 1,
+    orbitals['p-sigma'].on('center-side').count == 1,
+    orbitals['p-pi*'].on('center-side').count == 1,
+    orbitals['p-sigma*'].on('center-side').count == 1,
+
+    orbitals['p'].on('left-side')[0].y < orbitals['s'].on('left-side')[0].y,
+    orbitals['p'].on('right-side')[0].y < orbitals['s'].on('right-side')[0].y,
+
+    orbitals['s-sigma'].on('center-side')[0].y > orbitals['s-sigma*'].on('center-side')[0].y,
+    orbitals['s-sigma*'].on('center-side')[0].y > orbitals['p-pi'].on('center-side')[0].y,
+    orbitals['p-pi'].on('center-side')[0].y > orbitals['p-sigma'].on('center-side')[0].y,
+    orbitals['p-sigma'].on('center-side')[0].y > orbitals['p-pi*'].on('center-side')[0].y,
+    orbitals['p-pi*'].on('center-side')[0].y > orbitals['p-sigma*'].on('center-side')[0].y,
+
+    orbitals['s'].on('left-side')[0].y == orbitals['s'].on('right-side')[0].y,
+    orbitals['s'].on('left-side')[0].y > orbitals['s-sigma*'].on('center-side')[0].y,
+    orbitals['s'].on('left-side')[0].y < orbitals['s-sigma'].on('center-side')[0].y,
+
+    orbitals['p'].on('left-side')[0].y == orbitals['p'].on('right-side')[0].y,
+    orbitals['p'].on('left-side')[0].y > orbitals['p-pi*'].on('center-side')[0].y,
+    orbitals['p'].on('left-side')[0].y < orbitals['p-sigma'].on('center-side')[0].y
+
+]
+
+if draganddrop.grade(submission[0], correct_answer) and all(constraints):
+    correct = ['correct']
+else:
+    correct = ['incorrect']
+]]></answer>
+</customresponse>
+
+<html>
+    <h2>Code example:</h2>
+    <pre style="border: 1px solid; padding: 10px;">
+<![CDATA[
+<customresponse>
+    <text>
+        <h4>Describe carbon molecule in LCAO-MO (without target outline).</h4>
+        <br/>
+    </text>
+
+    <html>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 33%; text-align: center">
+                    O
+                </td>
+                <td style="width: 33%; text-align: center">
+                    O<sub>2</sub>
+                </td>
+                <td style="width: 33%; text-align: center">
+                    O
+                </td>
+            </tr>
+        </table>
+    </html>
+
+    <drag_and_drop_input img="/static/images/images_list/lcao-mo/lcao-mo-clean-large.jpg" auto_resize="false" separate_labels="true">
+
+        <!-- filled bond -->
+        <draggable id="up_and_down" icon="/static/images/images_list/lcao-mo/u_d.png" can_reuse="true" />
+        <!-- up bond -->
+        <draggable id="up" icon="/static/images/images_list/lcao-mo/up.png" can_reuse="true" />
+
+        <!-- images that should not be dragged -->
+        <draggable id="down" icon="/static/images/images_list/lcao-mo/d.png" can_reuse="true" />
+
+        <draggable id="s" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p" icon="/static/images/images_list/lcao-mo/orbital_triple.png" can_reuse="true" label="p" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+            <target id="2" x="34" y="0" w="32" h="32"/>
+            <target id="3" x="68" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="s-sigma" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s-sigma" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="s-sigma*" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s-sigma*" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-pi" icon="/static/images/images_list/lcao-mo/orbital_double.png" label="p-pi" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+            <target id="2" x="34" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-sigma" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="p-sigma" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-pi*" icon="/static/images/images_list/lcao-mo/orbital_double.png" label="p-pi*" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+            <target id="2" x="34" y="0" w="32" h="32"/>
+        </draggable>
+
+        <draggable id="p-sigma*" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="p-sigma*" can_reuse="true" >
+            <target id="1" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+        <target id="left-side" type="grid" x="4" y="10" w="210" h="655" col="1" row="19" />
+        <target id="center-side" type="grid" x="226" y="10" w="210" h="655" col="1" row="19" />
+        <target id="right-side" type="grid" x="449" y="10" w="210" h="655" col="1" row="19" />
+
+    </drag_and_drop_input>
+
+    <answer type="loncapa/python"><![CDATA[
+correct_answer = [
+{'draggables': ['p'], 'targets': ['left-side', 'right-side'], 'rule': 'unordered_equal'},
+{'draggables': ['s'], 'targets': ['left-side', 'right-side'], 'rule': 'unordered_equal'},
+{'draggables': ['s-sigma'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['s-sigma*'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-pi'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-sigma'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-pi*'], 'targets': ['center-side'], 'rule': 'exact'},
+{'draggables': ['p-sigma*'], 'targets': ['center-side'], 'rule': 'exact'},
+{
+    'draggables': ['up_and_down'],
+    'targets': ['left-side[s][1]', 'right-side[s][1]', 'center-side[s-sigma][1]', 'center-side[s-sigma*][1]', 'center-side[p-pi][1]', 'center-side[p-pi][2]'],
+    'rule': 'unordered_equal'
+},
+{
+    'draggables': ['up'],
+    'targets': ['left-side[p][1]', 'left-side[p][2]', 'right-side[p][2]', 'right-side[p][3]',],
+    'rule': 'unordered_equal'
+}
+]
+
+# Do not remove this!
+orbitals = draganddrop.get_all_dragabbles(submission[0], xml) 
+
+constraints = [
+    orbitals['p'].on('left-side').count == 1,
+    orbitals['s'].on('left-side').count == 1,
+    orbitals['p'].on('right-side').count == 1,
+    orbitals['s'].on('right-side').count == 1,
+    orbitals['s-sigma'].on('center-side').count == 1,
+    orbitals['s-sigma*'].on('center-side').count == 1,
+    orbitals['p-pi'].on('center-side').count == 1,
+    orbitals['p-sigma'].on('center-side').count == 1,
+    orbitals['p-pi*'].on('center-side').count == 1,
+    orbitals['p-sigma*'].on('center-side').count == 1,
+
+    orbitals['p'].on('left-side')[0].y < orbitals['s'].on('left-side')[0].y,
+    orbitals['p'].on('right-side')[0].y < orbitals['s'].on('right-side')[0].y,
+
+    orbitals['s-sigma'].on('center-side')[0].y > orbitals['s-sigma*'].on('center-side')[0].y,
+    orbitals['s-sigma*'].on('center-side')[0].y > orbitals['p-pi'].on('center-side')[0].y,
+    orbitals['p-pi'].on('center-side')[0].y > orbitals['p-sigma'].on('center-side')[0].y,
+    orbitals['p-sigma'].on('center-side')[0].y > orbitals['p-pi*'].on('center-side')[0].y,
+    orbitals['p-pi*'].on('center-side')[0].y > orbitals['p-sigma*'].on('center-side')[0].y,
+
+    orbitals['s'].on('left-side')[0].y == orbitals['s'].on('right-side')[0].y,
+    orbitals['s'].on('left-side')[0].y > orbitals['s-sigma*'].on('center-side')[0].y,
+    orbitals['s'].on('left-side')[0].y < orbitals['s-sigma'].on('center-side')[0].y,
+
+    orbitals['p'].on('left-side')[0].y == orbitals['p'].on('right-side')[0].y,
+    orbitals['p'].on('left-side')[0].y > orbitals['p-pi*'].on('center-side')[0].y,
+    orbitals['p'].on('left-side')[0].y < orbitals['p-sigma'].on('center-side')[0].y
+
+]
+
+if draganddrop.grade(submission[0], correct_answer) and all(constraints):
+    correct = ['correct']
+else:
+    correct = ['incorrect']
+]]><![CDATA[    </answer>
+</customresponse>
+]]>
+    </pre>
+</html>
+
+<html>
+    <h4>Correct answer:</h4>
+    <img src="/static/images/images_list/lcao-mo/correct-answer-C2.png" />
+</html>
+
+</problem>

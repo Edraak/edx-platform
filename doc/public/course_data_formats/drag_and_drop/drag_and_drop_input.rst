@@ -21,17 +21,18 @@ The main container for a single instance of DnD. The following attributes can
 be specified for this tag::
 
     img - Relative path to an image that will be the base image. All draggables
-          can be dragged onto it.
-    target_outline - Specify whether an outline (gray dashed line) should be
-          drawn around targets (if they are specified). It can be either
-          'true' or 'false'. If not specified, the default value is
-          'false'.
-    one_per_target - Specify whether to allow more than one draggable to be
-          placed onto a single target. It can be either 'true' or 'false'. If
-          not specified, the default value is 'true'.
-    no_labels - default is false, in default behaviour if label is not set, label
-          is obtained from id. If no_labels is true, labels are not automatically
-          populated from id, and one can not set labels and obtain only icons.
+        can be dragged onto it.
+    [target_outline | false] - Specify whether an outline (gray dashed line) should be
+        drawn around targets (if they are specified). It can be either
+        'true' or 'false'.
+    [auto_resize | true] - Specify whether we must auto resize image on draggables.
+    [separate_labels|false] - Specify whether labels should be separated from
+        the image on draggables.
+    [one_per_target | true] - Specify whether to allow more than one draggable to be
+        placed onto a single target. It can be either 'true' or 'false'.
+    [no_labels | false] - in default behaviour if label is not set, label
+        is obtained from id. If no_labels is true, labels are not automatically
+        populated from id, and one can not set labels and obtain only icons.
 
 draggable tag
 -------------
@@ -63,13 +64,18 @@ target tag
 Target tag specifies a single target object which has the following required
 attributes::
 
-    id - Unique identifier of the target object.
-    x - X-coordinate on the base image where the top left corner of the target
+    id – Unique identifier of the target object.
+    x – X-coordinate on the base image where the top left corner of the target
         will be positioned.
-    y - Y-coordinate on the base image where the top left corner of the target
+    y – Y-coordinate on the base image where the top left corner of the target
         will be positioned.
-    w - Width of the target.
-    h - Height of the target.
+    w – Width of the target.
+    h – Height of the target.
+    [type | normal] – Define type of target (value = "normal"/"grid"):
+        "normal" – usual behaviour
+        "grid" – target will be divided into a grid cells
+    [row | 1] – number of rows (only using, when type = "grid")
+    [col | 1] – number of columns (only using, when type = "grid")
 
 A target specifies a place on the base image where a draggable can be
 positioned. By design, if the center of a draggable lies within the target
@@ -159,7 +165,22 @@ draggables, targets and rule. For example::
 Draggables is list of draggables id. Target is list of targets id, draggables
 must be dragged to with considering rule. Rule is string.
 
-Draggables in dicts inside correct_answer list must not intersect!!!
+.. note::
+
+    Draggables in dicts inside correct_answer list must not intersect!
+
+.. note::
+
+    If in <draggable> you have internal <target> tags, then you can address to
+    these targets using index notation.
+
+    For example, you have next:
+
+        <draggable id="my_draggable" icon="/static/images/images_list/lcao-mo/orbital_single.png" label="s" can_reuse="true" >
+            <target id="my_internal_target" x="0" y="0" w="32" h="32"/>
+        </draggable>
+
+    'my_internal_target[my_internal_target]' - notation, which you can use in `correct_answer` object.
 
 Wrong (for draggable id 7)::
 
@@ -302,6 +323,106 @@ draggable 'p'. Below is an excerpt from a problem.::
 Note that it is a requirement to specify rules for all draggables, even if some draggable gets included
 in more than one chain.
 
+Сonstraints in the answer format
+--------------------------------
+
+Along with `draganddrop.grade(submission[0], correct_answer)` grading you can use some additional type of grading – constraints.
+
+After you get all information about objects, with next line of code::
+    orbitals = draganddrop.get_all_dragabbles(submission[0], xml)
+
+you can use `orbitals` in a different ways.
+
+In this example you can use next notations:
+
+    `orbitals` – whole targets object. 
+    `orbitals['p']` – return all draggables with id == 'p'.
+
+    `orbitals['p'].count()` – return numbers of all draggables with id == 'p'.
+
+    `orbitals['p'][0]` – return first draggables with id == 'p', using order by Y coordinate (sorting by Y coordinate of draggables). This object have has two properties: `x` (value of X coordinate) and `y` (value of X coordinate).
+
+    `orbitals['p'][0].x` – return value of X coordinate of first draggables with id == 'p' (X-coordinate on the base image where the top left corner of the target
+    will be positioned).
+
+    `orbitals['p'][0].y` – return value of Y coordinate of first draggables with id == 'p' (Y-coordinate on the base image where the top left corner of the target
+    will be positioned).
+
+    `orbitals['p'].on('left-side')` – return all draggables with id == 'p', which lays on the target 'left-side'.
+
+    `orbitals['p'].on('left-side').count()` – return numbers of all draggables with id == 'p', which lays on the target 'left-side'.
+    
+    `orbitals['p'].on('left-side')[0]` – return first draggables with id == 'p', which lays on the target 'left-side', using order by Y coordinate (sorting by Y coordinate of draggables). This object have has two properties: `x` (value of X coordinate) and `y` (value of X coordinate).
+
+    `orbitals['p'].on('left-side')[0].x` – return value of X coordinate of first draggables with id == 'p', which lays on the target 'left-side' (X-coordinate on the base image where the top left corner of the target
+    will be positioned).
+
+    `orbitals['p'].on('left-side')[0].y` – return value of Y coordinate of first draggables with id == 'p', which lays on the target 'left-side' (Y-coordinate on the base image where the top left corner of the target
+    will be positioned).
+
+One of the real example, how can you use this feature::
+
+    correct_answer = [
+        {'draggables': ['p'], 'targets': ['left-side', 'right-side'], 'rule': 'unordered_equal'},
+        {'draggables': ['s'], 'targets': ['left-side', 'right-side'], 'rule': 'unordered_equal'},
+        {'draggables': ['s-sigma'], 'targets': ['center-side'], 'rule': 'exact'},
+        {'draggables': ['s-sigma*'], 'targets': ['center-side'], 'rule': 'exact'},
+        {'draggables': ['p-pi'], 'targets': ['center-side'], 'rule': 'exact'},
+        {'draggables': ['p-sigma'], 'targets': ['center-side'], 'rule': 'exact'},
+        {'draggables': ['p-pi*'], 'targets': ['center-side'], 'rule': 'exact'},
+        {'draggables': ['p-sigma*'], 'targets': ['center-side'], 'rule': 'exact'},
+        {
+            'draggables': ['up_and_down'],
+            'targets': ['left-side[s][1]', 'right-side[s][1]', 'center-side[s-sigma][1]', 'center-side[s-sigma*][1]', 'center-side[p-pi][1]', 'center-side[p-pi][2]'],
+            'rule': 'unordered_equal'
+        },
+        {
+            'draggables': ['up'],
+            'targets': ['left-side[p][1]', 'left-side[p][2]', 'right-side[p][2]', 'right-side[p][3]',],
+            'rule': 'unordered_equal'
+        }
+    ]
+
+    # Do not remove this!
+    orbitals = draganddrop.get_all_dragabbles(submission[0], xml) 
+
+    constraints = [
+        orbitals['p'].on('left-side').count == 1,
+        orbitals['s'].on('left-side').count == 1,
+        orbitals['p'].on('right-side').count == 1,
+        orbitals['s'].on('right-side').count == 1,
+        orbitals['s-sigma'].on('center-side').count == 1,
+        orbitals['s-sigma*'].on('center-side').count == 1,
+        orbitals['p-pi'].on('center-side').count == 1,
+        orbitals['p-sigma'].on('center-side').count == 1,
+        orbitals['p-pi*'].on('center-side').count == 1,
+        orbitals['p-sigma*'].on('center-side').count == 1,
+
+        orbitals['p'].on('left-side')[0].y < orbitals['s'].on('left-side')[0].y,
+        orbitals['p'].on('right-side')[0].y < orbitals['s'].on('right-side')[0].y,
+
+        orbitals['s-sigma'].on('center-side')[0].y > orbitals['s-sigma*'].on('center-side')[0].y,
+        orbitals['s-sigma*'].on('center-side')[0].y > orbitals['p-pi'].on('center-side')[0].y,
+        orbitals['p-pi'].on('center-side')[0].y > orbitals['p-sigma'].on('center-side')[0].y,
+        orbitals['p-sigma'].on('center-side')[0].y > orbitals['p-pi*'].on('center-side')[0].y,
+        orbitals['p-pi*'].on('center-side')[0].y > orbitals['p-sigma*'].on('center-side')[0].y,
+
+        orbitals['s'].on('left-side')[0].y == orbitals['s'].on('right-side')[0].y,
+        orbitals['s'].on('left-side')[0].y > orbitals['s-sigma*'].on('center-side')[0].y,
+        orbitals['s'].on('left-side')[0].y < orbitals['s-sigma'].on('center-side')[0].y,
+
+        orbitals['p'].on('left-side')[0].y == orbitals['p'].on('right-side')[0].y,
+        orbitals['p'].on('left-side')[0].y > orbitals['p-pi*'].on('center-side')[0].y,
+        orbitals['p'].on('left-side')[0].y < orbitals['p-sigma'].on('center-side')[0].y
+    ]
+
+    if draganddrop.grade(submission[0], correct_answer) and all(constraints):
+        correct = ['correct']
+    else:
+        correct = ['incorrect']
+
+So, you can use any mathematical operations and python functions to deal with your goals.
+
 Grading logic
 -------------
 
@@ -420,6 +541,11 @@ Draggables can be reused
 .. literalinclude:: drag-n-drop-demo2.xml
 
 Examples of targets on draggables
-------------------------
+---------------------------------
 
 .. literalinclude:: drag-n-drop-demo3.xml
+
+Examples of contraints in answer
+--------------------------------
+
+.. literalinclude:: drag-n-drop-demo4.xml
