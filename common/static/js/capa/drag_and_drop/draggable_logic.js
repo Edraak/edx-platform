@@ -435,10 +435,15 @@ return {
             });
         }
         
-        if(this.state.config.autoResize){
-            posTop = ((this.labelEl !== null) ? 37.5 : 50.0) - 0.5 * this.iconHeightSmall;
+        if(!this.state.config.separateLabels){
+            if(this.state.config.autoResize){
+                posTop = ((this.labelEl !== null && !!this.iconImgEl) ? 37.5 : 50) - 0.5 * this.iconHeightSmall;
+                
+            } else {
+                posTop = ((!!this.iconImgEl) ? 37.5 : 50) - 0.5 * this.iconHeightSmall;
+            }
         } else {
-            posTop = (this.iconImgEl) ? 37.5 - 0.5 * this.iconHeightSmall : 70;
+            posTop = (this.iconImgEl) ? ((this.labelEl !== null || !this.state.config.autoResize) ? 37.5 : 50) - 0.5 * this.iconHeightSmall : 70;
         }
         
         this.iconEl.css({
@@ -471,7 +476,7 @@ return {
                 // Before:
                 // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                 // After:
-                'top':  (this.state.config.autoResize) ? 42.5 + 0.5 * this.iconHeightSmall : 70,
+                'top':  (!this.state.config.separateLabels) ? 42.5 + 0.5 * this.iconHeightSmall : 70,
                 'min-width': this.labelWidthSmall
             });
             this.labelEl.appendTo(this.containerEl);

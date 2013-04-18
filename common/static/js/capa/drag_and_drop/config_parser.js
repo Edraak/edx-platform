@@ -9,20 +9,21 @@ define(['logme'], function (logme) {
             'targets': [],
             'onePerTarget': null, // Specified by user. No default.
             'targetOutline': true,
-            'autoResize': false,
+            'autoResize': true,
             'separateLabels': false,
             'labelBgColor': '#d6d6d6',
             'individualTargets': null, // Depends on 'targets'.
             'foundErrors': false // Whether or not we find errors while processing the config.
         };
 
+        getAutoResize(state, config);
+        getSeparateLabels(state, config);
         getDraggables(state, config);
         getBaseImage(state, config);
         getTargets(state, config);
         getOnePerTarget(state, config);
         getTargetOutline(state, config);
         getLabelBgColor(state, config);
-        getAutoResize(state, config);
 
         setIndividualTargets(state);
 
@@ -155,7 +156,7 @@ define(['logme'], function (logme) {
     function getAutoResize(state, config) {
         // It is possible that no "auto_resize" was specified. This is not an error.
         // In this case the default value of 'true' (boolean) will be used.
-
+        
         if (config.hasOwnProperty('auto_resize') === true) {
             if (typeof config.auto_resize === 'string') {
                 if (config.auto_resize.toLowerCase() === 'true') {
@@ -174,9 +175,9 @@ define(['logme'], function (logme) {
     }
 
     function getSeparateLabels(state, config) {
-        // It is possible that no "auto_resize" was specified. This is not an error.
+        // It is possible that no "separate_labels" was specified. This is not an error.
         // In this case the default value of 'true' (boolean) will be used.
-
+        
         if (config.hasOwnProperty('separate_labels') === true) {
             if (typeof config.separate_labels === 'string') {
                 if (config.separate_labels.toLowerCase() === 'true') {

@@ -170,7 +170,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
             'targetField': [],
             'numDraggablesOnMe': 0
         };
-
+            
         draggableObj.containerEl = $(
             '<div ' +
                 'style=" ' +
@@ -227,8 +227,9 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     // Before:
                     // 'top': ((obj.label.length > 0) ? (100 - draggableObj.iconHeightSmall - 25) * 0.5 : 50 - draggableObj.iconHeightSmall * 0.5)
                     // After:
-                     'top': ((obj.label.length > 0 || draggableObj.state.config.autoResize) ? 37.5 : 50.0) - 0.5 * draggableObj.iconHeightSmall
+                     'top': ((obj.label.length > 0 || !draggableObj.state.config.autoResize) ? 37.5 : 50.0) - 0.5 * draggableObj.iconHeightSmall
                 });
+                
                 draggableObj.iconImgEl.css({
                     'position': 'absolute',
                     'width': draggableObj.iconWidthSmall,
@@ -269,7 +270,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     // If element has MathJax we hide it before processing
                     if (obj.isMathJax) {
                         draggableObj.labelEl.css({
-                            'top': (draggableObj.state.config.autoResize) ? 42.5 + 0.5 * draggableObj.iconHeightSmall : 70,
+                            'top': (!draggableObj.state.config.separateLabels) ? 42.5 + 0.5 * draggableObj.iconHeightSmall : 70,
                             'opacity': 0
                         });
                     } else {
@@ -278,11 +279,11 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                             // Before:
                             // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
                             // After:
-                            'top': (draggableObj.state.config.autoResize) ? 42.5 + 0.5 * draggableObj.iconHeightSmall : 70,
+                            'top': (!draggableObj.state.config.separateLabels) ? 42.5 + 0.5 * draggableObj.iconHeightSmall : 70,
                             'min-width': draggableObj.labelWidthSmall
                         });
                     }
-
+                    
                     draggableObj.attachMouseEventsTo('labelEl');
                     
                     if (obj.isMathJax) {
@@ -374,7 +375,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
 
                 draggableObj.iconEl.css({
                     'left': 50 - draggableObj.iconWidthSmall * 0.5,
-                    'top': (draggableObj.state.config.autoResize) ? 50 - draggableObj.iconHeightSmall * 0.5 : 70
+                    'top': (!draggableObj.state.config.separateLabels) ? 50 - draggableObj.iconHeightSmall * 0.5 : 70
                 });
 
                 draggableObj.hasLoaded = true;
