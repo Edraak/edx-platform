@@ -36,7 +36,7 @@ function get_dummy_timeseries(value_type){
 		"value_type": value_type,
 		"all_series": [
 			{
-				"label": "edX Total",
+				"label": "edX",
 				"data": [
 					[today, 100], [yesterday, 200], [day_before_yesterday, 350]
 					]
@@ -78,7 +78,17 @@ function render_timeline(data, target){
 	}
 
 	*/
+
+	// edX series in gray, all other series edX purple but hidden until revealed
+	data["all_series"].forEach(function(x) {
+		if (x["label"] === "edX") {
+			x["color"] = "rgb(119, 121, 124)";
+		} else {
+			x["color"] = "rgb(165, 16, 86)";
+		}	
 	
+		return x;
+	})
 	$.plot(target, data["all_series"], {
 		xaxis: {
                 mode: "time",
@@ -105,7 +115,8 @@ function render_map(data, target) {
 		 	bars: {
 		 		show: true,
 		 		barWidth: .5
-		 	}
+		 	},
+		 	color: "rgb(13, 139, 227)"
 		}
 		], {
 			xaxis: {

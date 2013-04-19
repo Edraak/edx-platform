@@ -21,6 +21,9 @@ urlpatterns = ('',
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
 
     url(r'^admin_dashboard$', 'dashboard.views.dashboard'),
+    # Data views
+    url(r'^data/enrollment_history/map$', 'dashboard.views.enrollment_history_map'),
+    url(r'^data/enrollment_history/timeseries$', 'dashboard.views.enrollment_history_timeseries'),
 
     # Adding to allow debugging issues when prod is mysteriously different from staging
     # (specifically missing get parameters in certain cases)
@@ -399,6 +402,10 @@ if settings.MITX_FEATURES.get('ENABLE_SQL_TRACKING_LOGS'):
         url(r'^event_logs$', 'track.views.view_tracking_log'),
         url(r'^event_logs/(?P<args>.+)$', 'track.views.view_tracking_log'),
         )
+
+
+
+
 
 # FoldIt views
 urlpatterns += (

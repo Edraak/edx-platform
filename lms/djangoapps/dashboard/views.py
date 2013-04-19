@@ -1,7 +1,8 @@
 # Create your views here.
 import json
+import calendar
 from datetime import datetime
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from mitxmako.shortcuts import render_to_response
 from django.db import connection
 
@@ -26,6 +27,77 @@ def SQL_query_to_list(cursor, query_string):
     cursor.execute(query_string)
     raw_result=dictfetchall(cursor)
     return raw_result
+
+
+def enrollment_history_map(request):
+    """
+    A demo hack to return enrollment history, per course.
+
+    Returns: 
+
+    """
+    if not request.user.is_staff:
+        raise Http404
+
+    data = {
+        "type": "map",
+        "value_type": "Enrollements by course",
+        "courses": [
+            {
+                "run": "2013_Spring",
+                "course_name": "6.00x",
+                "org": "MITx",
+                "value": 100
+            },
+            {
+                "run": "2013_Spring",
+                "course_name": "7.00x",
+                "org": "MITx",
+                "value": 100
+            },
+            {
+                "run": "2013_Spring",
+                "course_name": "8.02x",
+                "org": "MITx",
+                "value": 200
+            }
+        ]
+    }
+    return HttpResponse(json.dumps(data), mimetype='application/json')
+
+def enrollment_history_timeseries(request):
+    """
+    A demo hack to return enrollment history, per course.
+
+    Returns: 
+
+    """
+    if not request.user.is_staff:
+        raise Http404
+
+    today = calendar.timegm(datetime.now().timetuple()) * 1000
+    yesterday = today - 86400000
+    day_before_yesterday = today - 86400000*2
+
+    data = {
+        "type": "timeseries",
+        "value_type": "Enrollments over the last few weeks",
+        "all_series": [
+            {
+                "label": "edX",
+                "data": [
+                    [today, 50000], [yesterday, 200000], [day_before_yesterday, 1000]
+                    ]
+            },
+            {
+                "label": "6.00x",
+                "data": [
+                    [today, 50], [yesterday, 60], [day_before_yesterday, 45]
+                    ]
+            }
+        ]
+    }
+    return HttpResponse(json.dumps(data), mimetype='application/json')
 
 def dashboard(request):
     """
@@ -80,7 +152,7 @@ def dashboard(request):
         results["tables"][query] = SQL_query_to_list(cursor, table_queries[query])
 
     context={"results":results
-            
+
     }
 
     return render_to_response("admin_dashboard.html",context)
