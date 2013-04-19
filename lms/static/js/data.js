@@ -1,11 +1,8 @@
+function get_dummy_map(value_type) {
 
-function get_enrollment_data(callback) {
-	var today = (new Date()).getTime();
-	var yesterday = (new Date()).getTime();
-	var today = (new Date()).getTime();
-
-	var dummy_data = {
-		"value_type": "Enrollments (Last 7 Days)",
+	return {
+		"type": "map",
+		"value_type": value_type,
 		"courses": [
 			{
 				"run": "2013_Spring",
@@ -27,37 +24,81 @@ function get_enrollment_data(callback) {
 			}
 		]
 	};
-	callback(dummy_data); 
 }
 
-function render_chart(data) {
-	$('#json_goes_here').text(String(data));
-	var chart_div = $("<div class='course_by_course'>flot should replace this</div>");
+function get_dummy_timeseries(value_type){
+	var today = (new Date()).getTime();
+	var yesterday = today - 86400000;
+	var day_before_yesterday = today - 86400000*2;
 
+	return {
+		"type": "timeseries",
+		"value_type": value_type,
+		"all_series": [
+			{
+				"label": "edX Total",
+				"data": [
+					[today, 100], [yesterday, 200], [day_before_yesterday, 350]
+					]
+			},
+			{
+				"label": "6.00x",
+				"data": [
+					[today, 50], [yesterday, 60], [day_before_yesterday, 45]
+					]
+			}
+		]
+	};
+}
+
+function render_timeline(data, target){
+	/*
+	This function takes an object containing the following:
+	    value_type, which is a display name for the series
+        all_series, an array of objects containing the timeseries data
+           and some information about that series ()
+	example:
+	{
+		"type": "timeseries",
+		"value_type": "Enrollments per Day",
+		"all_series": [
+			{
+				"label": "edX Total",
+				"data": [
+					[1239410294831, 100], [1234210419238, 200], [1234210419238, 350]
+					]
+			},
+			{
+				"label": "6.00x",
+				"data": [
+					[1239410294831, 50], [1234210419238, 60], [1234210419238, 45]
+					]
+			}
+		]
+	}
+
+	*/
+	
+	$.plot(target, data["all_series"], {
+		xaxis: {
+                mode: "time",
+                minTickSize: [1, "day"],
+                timeformat: "%m/%e"
+            	}})
+}
+
+function render_map(data, target) {
 	var course_bars = [];
 	var course_names = [];
 	var i = 0;
+
 	data["courses"].forEach(function (x) {
 		course_bars.push([i-.25, x["value"]]);
 		course_names.push([i, x["course_name"]]);
 		i++;
 	})
-	// $.plot(chart_div, [{
-	// 			label: "Norway",
-	// 			data: [[1988, 4382], [1989, 4498], [1990, 4535], [1991, 4398], [1992, 4766], [1993, 4441], [1994, 4670], [1995, 4217], [1996, 4275], [1997, 4203], [1998, 4482], [1999, 4506], [2000, 4358], [2001, 4385], [2002, 5269], [2003, 5066], [2004, 5194], [2005, 4887], [2006, 4891]]
-	// 		},{
-	// 			label: "Sweden",
-	// 			data: [[1988, 6402], [1989, 6474], [1990, 6605], [1991, 6209], [1992, 6035], [1993, 6020], [1994, 6000], [1995, 6018], [1996, 3958], [1997, 5780], [1998, 5954], [1999, 6178], [2000, 6411], [2001, 5993], [2002, 5833], [2003, 5791], [2004, 5450], [2005, 5521], [2006, 5271]]
-	// 		}], {
-	// 				yaxis: {
-	// 					min: 0
-	// 				},
-	// 				xaxis: {
-	// 					tickDecimals: 0
-	// 				}
-	// 			});
-	$('#graphs_container').append(chart_div);
-	$.plot(chart_div, [
+
+	$.plot(target, [
 		{
 			label: data["value_type"],
 			data: course_bars,
@@ -73,7 +114,62 @@ function render_chart(data) {
 		});
 }
 
+function fake_ajax(url, callback) {
+	urls = {
+		'/data/enrollments/last': get_dummy_map("enrollments"),
+		'/data/enrollments/timeseries': get_dummy_timeseries("enrollments"),
+		
+		'/data/enrollment_conversion/last': get_dummy_map("enrollment_conversion"),
+		'/data/enrollment_conversion/timeseries': get_dummy_timeseries("enrollment_conversion"),
+		
+		'/data/participation_conversion/last': get_dummy_map("participation_conversion"),
+		'/data/participation_conversion/timeseries': get_dummy_timeseries("participation_conversion"),
+
+		'/data/certification_conversion/last': get_dummy_map("certification_conversion"),
+		'/data/certification_conversion/timeseries': get_dummy_timeseries("certification_conversion"),
+
+	}
+	data = urls[url];
+	callback(data);
+}
+
+function load_and_plot(url, target) {
+	function callback(data) {
+		// TODO: if error, complain
+		if (data["type"] === "timeseries") {
+			render_timeline(data, target);
+		} else if (data["type"] === "map") {
+			render_map(data, target)
+		}
+	};
+
+	// TODO: do ajax calls here
+	// $.post(url, callback)
+	fake_ajax(url, callback);
+}
+
+function add_graph_section(base_url) {
+	section = $("<section>").addClass("graph_section");
+	map_div = $("<div>").addClass('map').text("map");
+	series_div = $("<div>").addClass('timeseries').text("series");
+	title = $("<h2>"+base_url+"</h2>");
+
+	section.append(title);
+	section.append(map_div);
+	section.append(series_div);
+	$('#graphs_container').append(section);
+	$('#graphs_container').append("<br style='clear:both'/>");
+	
+	load_and_plot(base_url + '/last', map_div);
+	load_and_plot(base_url + '/timeseries', series_div);
+}
+
 $(document).ready(function() {
-	get_enrollment_data(render_chart)
+
+	add_graph_section('/data/enrollments');
+	add_graph_section('/data/enrollment_conversion');	
+	add_graph_section('/data/participation_conversion');	
+	add_graph_section('/data/certification_conversion');	
+	
 });
 

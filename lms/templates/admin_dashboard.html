@@ -3,7 +3,8 @@
 <%inherit file="main.html" />
 
 <%block name="headextra">
-  <script type="text/javascript" src="/static/js/vendor/flot/jquery.flot.js"/>
+  <script type="text/javascript" src="/static/js/vendor/flot/jquery.flot.js"></script>
+  <script type="text/javascript" src="/static/js/vendor/flot/jquery.flot.time.js"></script>
 </%block>
 
 <%block name="js_extra">
@@ -13,8 +14,6 @@
 <%block name="css_extra">
   <link rel="stylesheet" type="text/css" href="/static/css/data.css"/>
 </%block>
-
-<div id="json_goes_here"> This should be replaced on document ready </div>
 
 <div id="graphs_container"> 
 
