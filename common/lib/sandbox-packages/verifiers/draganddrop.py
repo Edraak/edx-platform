@@ -135,9 +135,8 @@ class PositionsCompare(list):
         if (isinstance(self[0], (list, int, float)) and
             isinstance(other[0], (list, int, float))):
             return self.coordinate_positions_compare(other)
-
         elif (isinstance(self[0], (unicode, str)) and
-              isinstance(other[0], (unicode, str))):
+            isinstance(other[0], (unicode, str))):
             return ''.join(self) == ''.join(other)
         else:  # improper argument types: no (float / int or lists of list
             #and float / int pair) or two string / unicode lists pair
@@ -387,8 +386,10 @@ class DragAndDrop(object):
         # correct_answer entries.  If the draggable is mentioned in at least one
         # correct_answer entry, the value is False.
         # default to consider every user answer excess until proven otherwise.
-        self.excess_draggables = dict((users_draggable.keys()[0],True)
-            for users_draggable in user_answer)
+        self.excess_draggables = dict(
+            (users_draggable.keys()[0], True)
+            for users_draggable in user_answer
+        )
 
         # Convert nested `user_answer` to flat format.
         user_answer = flat_user_answer(user_answer)
@@ -406,7 +407,8 @@ class DragAndDrop(object):
                 if draggable_name in answer['draggables']:
                     user_groups_data.append(draggable_name)
                     user_positions_data.append(
-                                            draggable_dict[draggable_name])
+                        draggable_dict[draggable_name]
+                    )
                     # proved that this is not excess
                     self.excess_draggables[draggable_name] = False
 
@@ -506,7 +508,6 @@ def get_all_dragabbles(raw_user_input, xml):
         def __ge__(self, other):
             return False
 
-
     class DraggableSet(object):
         """This class use to unite many Draggable objects to one
         structure, which has some helpful filters and properties.
@@ -567,8 +568,9 @@ def get_all_dragabbles(raw_user_input, xml):
 
             # We ignore dragabbles on draggables. Support only first
             # level target.
-            target_object = xml.find('drag_and_drop_input'
-                ).find("target[@id='{0}']".format(clean_target))
+            target_object = xml.find(
+                'drag_and_drop_input'
+            ).find("target[@id='{0}']".format(clean_target))
 
             # Get data from xml.
             target_x = int(target_object.attrib.get('x'))

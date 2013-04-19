@@ -653,8 +653,10 @@ class MatlabInput(CodeInput):
     template = "matlabinput.html"
     tags = ['matlabinput']
 
-    plot_submitted_msg = ("Submitted. As soon as a response is returned, "
-                          "this message will be replaced by that feedback.")
+    plot_submitted_msg = (
+        "Submitted. As soon as a response is returned, "
+        "this message will be replaced by that feedback."
+    )
 
     def setup(self):
         '''
@@ -730,7 +732,7 @@ class MatlabInput(CodeInput):
         extra_context = {
             'queue_len': str(self.queue_len),
             'queue_msg': self.queue_msg,
-            'button_enabled': self.button_enabled(),
+            'button_enabled': self.button_enabled()
         }
         return extra_context
 
@@ -745,8 +747,9 @@ class MatlabInput(CodeInput):
         try:
             result = json.loads(queue_msg)
         except (TypeError, ValueError):
-            log.error("External message should be a JSON serialized dict."
-                      " Received queue_msg = %s" % queue_msg)
+            log.error(
+                "External message should be a JSON serialized dict."
+                " Received queue_msg = %s" % queue_msg)
             raise
         msg = result['msg']
         return msg
@@ -781,8 +784,10 @@ class MatlabInput(CodeInput):
             queue_name=self.queuename)
 
         # construct xqueue body
-        student_info = {'anonymous_student_id': anonymous_student_id,
-                        'submission_time': qtime}
+        student_info = {
+            'anonymous_student_id': anonymous_student_id,
+            'submission_time': qtime
+        }
         contents = {'grader_payload': self.plot_payload,
                     'student_info': json.dumps(student_info),
                     'student_response': response}
@@ -1058,8 +1063,10 @@ class DragAndDropInput(InputTypeBase):
                 dic['label'] = dic['label'] or dic['id']
 
             if tag_type == 'draggable':
-                dic['target_fields'] = [parse(target, 'target') for target in
-                                        tag.iterchildren('target')]
+                dic['target_fields'] = [
+                    parse(target, 'target') for target in
+                    tag.iterchildren('target')
+                ]
 
             return dic
 
@@ -1080,12 +1087,12 @@ class DragAndDropInput(InputTypeBase):
                                             default="true").parse_from_xml(self.xml)
 
         # auto resize draggables image?
-        to_js['auto_resize'] = Attribute('auto_resize',
-                                            default="true").parse_from_xml(self.xml)
+        to_js['auto_resize'] = Attribute(
+            'auto_resize', default="true").parse_from_xml(self.xml)
 
         # draw labels separatly from draggables or not?
-        to_js['separate_labels'] = Attribute('separate_labels',
-                                            default="false").parse_from_xml(self.xml)
+        to_js['separate_labels'] = Attribute(
+            'separate_labels', default="false").parse_from_xml(self.xml)
 
         # list of draggables
         to_js['draggables'] = [parse(draggable, 'draggable') for draggable in
