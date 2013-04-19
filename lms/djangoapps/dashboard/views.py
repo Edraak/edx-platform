@@ -1,7 +1,8 @@
 # Create your views here.
 import json
 import calendar
-from datetime import datetime
+from time import strptime, strftime
+from datetime import datetime, timedelta
 from django.http import Http404, HttpResponse
 from mitxmako.shortcuts import render_to_response
 from django.db import connection
@@ -33,67 +34,72 @@ def enrollment_history_map(request):
     """
     A demo hack to return enrollment history, per course.
 
-    Returns: 
-
     """
     if not request.user.is_staff:
         raise Http404
+    cursor = connection.cursor()
+    
+    # current time as a string
+    one_week_ago = strftime("%Y-%m-%d %H:%M:%S", (datetime.now() - timedelta(7, 0)).timetuple())
+    print "one week ago was", one_week_ago
 
+    # get a list of lists [[course_id, enrollments in last 7 days ]]
+    recent_enrollments = SQL_query_to_list(cursor, """select course_id, count(*) 
+                                           from student_courseenrollment 
+                                           where '{week_ago}' < created
+                                           group by course_id
+                                           ;""".format(week_ago=one_week_ago))[1:]  
+    plottable_data = []
+    for course_id, count in recent_enrollments:
+        org, course, run = course_id.split("/")
+        plottable_data.append({
+            "run": run,
+            "course_name": course,
+            "org": org,
+            "value": count
+            })
+    
     data = {
         "type": "map",
         "value_type": "Enrollements by course",
-        "courses": [
-            {
-                "run": "2013_Spring",
-                "course_name": "6.00x",
-                "org": "MITx",
-                "value": 100
-            },
-            {
-                "run": "2013_Spring",
-                "course_name": "7.00x",
-                "org": "MITx",
-                "value": 100
-            },
-            {
-                "run": "2013_Spring",
-                "course_name": "8.02x",
-                "org": "MITx",
-                "value": 200
-            }
-        ]
+        "courses": plottable_data
     }
+    
     return HttpResponse(json.dumps(data), mimetype='application/json')
+
+def tojstime(sqltime):
+    print sqltime
+    pydt = strptime(sqltime, "%Y-%m-%d")
+    return calendar.timegm(pydt)*1000
 
 def enrollment_history_timeseries(request):
     """
     A demo hack to return enrollment history, per course.
 
-    Returns: 
-
     """
     if not request.user.is_staff:
         raise Http404
+    cursor = connection.cursor()
 
     today = calendar.timegm(datetime.now().timetuple()) * 1000
     yesterday = today - 86400000
     day_before_yesterday = today - 86400000*2
-
+    
+    # get all daily enrollment counts, ignore the headers
+    daily_enrollments = SQL_query_to_list(cursor, """select date(created), count(*) 
+                                           from student_courseenrollment 
+                                           group by date(created)
+                                           order by date(created) asc;""")[1:]    
+    plottable_data = [[tojstime(entry[0]) ,entry[1]] for entry in daily_enrollments]
+    print plottable_data
     data = {
         "type": "timeseries",
         "value_type": "Enrollments over the last few weeks",
-        "all_series": [
+        "all_series": 
+        [
             {
                 "label": "edX",
-                "data": [
-                    [today, 50000], [yesterday, 200000], [day_before_yesterday, 1000]
-                    ]
-            },
-            {
-                "label": "6.00x",
-                "data": [
-                    [today, 50], [yesterday, 60], [day_before_yesterday, 45]
-                    ]
+                "data": plottable_data
             }
         ]
     }
@@ -131,20 +137,18 @@ def dashboard(request):
     # table queries need not take the form of raw SQL, but do in this case since
     # the MySQL backend for django isn't very friendly with group by or distinct
     table_queries = {}
-    table_queries["course enrollments"]= \
-        "select "+ \
-        "course_id as Course, "+ \
-        "count(user_id) as Students " + \
-        "from student_courseenrollment "+ \
-        "group by course_id "+ \
-        "order by students desc;"
-    table_queries["number of students in each number of classes"]= \
-        "select registrations as 'Registered for __ Classes' , "+ \
-        "count(registrations) as Users "+ \
-        "from (select count(user_id) as registrations "+ \
-               "from student_courseenrollment "+ \
-               "group by user_id) as registrations_per_user "+ \
-        "group by registrations;"
+    table_queries["course enrollments"]= """
+        select course_id as Course, count(user_id) as Students 
+        from student_courseenrollment
+        group by course_id
+        order by students desc;"""
+    table_queries["number of students in each number of classes"]= """
+        select registrations as 'Registered for __ Classes',
+        count(registrations) as Users
+        from (select count(user_id) as registrations
+               from student_courseenrollment
+               group by user_id) as registrations_per_user
+        group by registrations;"""
 
     # add the result for each of the table_queries to the results object
     for query in table_queries.keys():

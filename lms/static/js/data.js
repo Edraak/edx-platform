@@ -127,16 +127,16 @@ function render_map(data, target) {
 
 function fake_ajax(url, callback) {
 	urls = {
-		'/data/enrollments/last': get_dummy_map("enrollments"),
-		'/data/enrollments/timeseries': get_dummy_timeseries("enrollments"),
+		'/data/enrollment_history/map': get_dummy_map("enrollments"),
+		'/data/enrollment_history/timeseries': get_dummy_timeseries("enrollments"),
 		
-		'/data/enrollment_conversion/last': get_dummy_map("enrollment_conversion"),
+		'/data/enrollment_conversion/map': get_dummy_map("enrollment_conversion"),
 		'/data/enrollment_conversion/timeseries': get_dummy_timeseries("enrollment_conversion"),
 		
-		'/data/participation_conversion/last': get_dummy_map("participation_conversion"),
+		'/data/participation_conversion/map': get_dummy_map("participation_conversion"),
 		'/data/participation_conversion/timeseries': get_dummy_timeseries("participation_conversion"),
 
-		'/data/certification_conversion/last': get_dummy_map("certification_conversion"),
+		'/data/certification_conversion/map': get_dummy_map("certification_conversion"),
 		'/data/certification_conversion/timeseries': get_dummy_timeseries("certification_conversion"),
 
 	}
@@ -144,7 +144,7 @@ function fake_ajax(url, callback) {
 	callback(data);
 }
 
-function load_and_plot(url, target) {
+function load_and_plot(url, target, fake) {
 	function callback(data) {
 		// TODO: if error, complain
 		if (data["type"] === "timeseries") {
@@ -156,10 +156,14 @@ function load_and_plot(url, target) {
 
 	// TODO: do ajax calls here
 	// $.post(url, callback)
-	fake_ajax(url, callback);
+	if (fake) {
+		fake_ajax(url, callback);
+	} else {
+		$.get(url, callback);
+	}
 }
 
-function add_graph_section(base_url) {
+function add_graph_section(base_url, fake) {
 	section = $("<section>").addClass("graph_section");
 	map_div = $("<div>").addClass('map').text("map");
 	series_div = $("<div>").addClass('timeseries').text("series");
@@ -171,16 +175,16 @@ function add_graph_section(base_url) {
 	$('#graphs_container').append(section);
 	$('#graphs_container').append("<br style='clear:both'/>");
 	
-	load_and_plot(base_url + '/last', map_div);
-	load_and_plot(base_url + '/timeseries', series_div);
+	load_and_plot(base_url + '/map', map_div, fake);
+	load_and_plot(base_url + '/timeseries', series_div, fake);
 }
 
 $(document).ready(function() {
 
-	add_graph_section('/data/enrollments');
-	add_graph_section('/data/enrollment_conversion');	
-	add_graph_section('/data/participation_conversion');	
-	add_graph_section('/data/certification_conversion');	
+	add_graph_section('/data/enrollment_history', false);
+	add_graph_section('/data/enrollment_conversion', true);	
+	add_graph_section('/data/participation_conversion', true);	
+	add_graph_section('/data/certification_conversion', true);	
 	
 });
 
