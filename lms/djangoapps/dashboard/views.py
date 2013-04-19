@@ -79,6 +79,8 @@ def dashboard(request):
         cursor.execute(table_queries[query])
         results["tables"][query] = SQL_query_to_list(cursor, table_queries[query])
 
-    context={"results":results}
+    context={"results":results
+            
+    }
 
     return render_to_response("admin_dashboard.html",context)
