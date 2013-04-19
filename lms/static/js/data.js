@@ -83,6 +83,7 @@ function render_timeline(data, target){
 	data["all_series"].forEach(function(x) {
 		if (x["label"] === "edX") {
 			x["color"] = "rgb(119, 121, 124)";
+			x["bars"] = { "show": true}
 		} else {
 			x["color"] = "rgb(165, 16, 86)";
 		}	
