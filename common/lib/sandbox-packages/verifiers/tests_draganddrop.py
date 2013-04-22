@@ -94,15 +94,13 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
             },
             {
                 'draggables': ['up_and_down'],
-                'targets': [
-                's_l[s][1]', 's_r[s][1]'
-                ],
+                'targets': ['s_l[s][1]', 's_r[s][1]'],
                 'rule': 'unordered_equal'
             },
             {
                 'draggables': ['up'],
                 'targets': [
-                'p_l[p][1]', 'p_l[p][3]', 'p_r[p][1]', 'p_r[p][3]'
+                    'p_l[p][1]', 'p_l[p][3]', 'p_r[p][1]', 'p_r[p][3]'
                 ],
                 'rule': 'unordered_equal'
             }
@@ -136,15 +134,13 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
             },
             {
                 'draggables': ['up_and_down'],
-                'targets': [
-                's_l[s][1]', 's_r[s][1]'
-                ],
+                'targets': ['s_l[s][1]', 's_r[s][1]'],
                 'rule': 'unordered_equal'
             },
             {
                 'draggables': ['up'],
-                'targets': [
-                'p_l[p][1]', 'p_l[p][3]', 'p_r[p][1]', 'p_r[p][3]'
+                'targets':[
+                    'p_l[p][1]', 'p_l[p][3]', 'p_r[p][1]', 'p_r[p][3]'
                 ],
                 'rule': 'unordered_equal'
             }
@@ -191,7 +187,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
             },
             {
                 'draggables': ['up_and_down'],
-                'targets': [
+                'targets':
+                [
                     'left_side_tagret[molecule][s_target][s][1]',
                     'right_side_tagret[molecule][s_target][s][1]'
                 ],
@@ -203,7 +200,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
                     'left_side_tagret[molecule][p_target][p][1]',
                     'left_side_tagret[molecule][p_target][p][3]',
                     'right_side_tagret[molecule][p_target][p][1]',
-                    'right_side_tagret[molecule][p_target][p][3]'],
+                    'right_side_tagret[molecule][p_target][p][3]'
+                ],
                 'rule': 'unordered_equal'
             }
         ]
@@ -254,7 +252,9 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
             },
             {
                 'draggables': ['single_draggable'],
-                'targets': ['s_l', 's_r', 's_sigma', 's_sigma*', 'p_sigma', 'p_sigma*'],
+                'targets': [
+                    's_l', 's_r', 's_sigma', 's_sigma*', 'p_sigma', 'p_sigma*'
+                ],
                 'rule': 'unordered_equal'
             },
             {
@@ -265,9 +265,14 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
             },
             {
                 'draggables': ['up_and_down'],
-                'targets': ['s_l[single_draggable][1]', 's_r[single_draggable][1]',
-                's_sigma[single_draggable][1]', 's_sigma*[single_draggable][1]',
-                'p_pi[double_draggable][1]', 'p_pi[double_draggable][2]'],
+                'targets': [
+                    's_l[single_draggable][1]',
+                    's_r[single_draggable][1]',
+                    's_sigma[single_draggable][1]',
+                    's_sigma*[single_draggable][1]',
+                    'p_pi[double_draggable][1]',
+                    'p_pi[double_draggable][2]'
+                ],
                 'rule': 'unordered_equal'
             },
 
@@ -298,14 +303,12 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         self.assertFalse(draganddrop.grade(user_input, correct_answer))
 
     def test_multiple_images_per_target_true(self):
-        user_input = '[{"1": "t1"}, {"name_with_icon": "t2"}, \
-        {"2": "t1"}]'
+        user_input = '[{"1": "t1"}, {"name_with_icon": "t2"}, {"2": "t1"}]'
         correct_answer = {'1': 't1', 'name_with_icon': 't2', '2': 't1'}
         self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
     def test_multiple_images_per_target_false(self):
-        user_input = '[{"1": "t1"}, {"name_with_icon": "t2"}, \
-        {"2": "t1"}]'
+        user_input = '[{"1": "t1"}, {"name_with_icon": "t2"}, {"2": "t1"}]'
         correct_answer = {'1': 't2', 'name_with_icon': 't2', '2': 't1'}
         self.assertFalse(draganddrop.grade(user_input, correct_answer))
 
@@ -372,7 +375,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [{
             'draggables': ['1', '2', '3', '4', '5', '6'],
             'targets': [
-                's_left', 's_right', 's_sigma', 's_sigma_star', 'p_pi_1', 'p_pi_2'
+                's_left', 's_right', 's_sigma',
+                's_sigma_star', 'p_pi_1', 'p_pi_2'
             ],
             'rule': 'anyof'
         }, {
@@ -411,7 +415,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [{
             'draggables': ['1', '2', '3', '4', '5', '6'],
             'targets': [
-                's_left', 's_right', 's_sigma', 's_sigma_star', 'p_pi_1', 'p_pi_2'
+                's_left', 's_right', 's_sigma', 's_sigma_star',
+                'p_pi_1', 'p_pi_2'
             ],
             'rule': 'anyof'
         }, {
@@ -446,7 +451,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['1'],
-                'targets': ['target1', 'target3'],
+                'targets': ['target1',  'target3'],
                 'rule': 'anyof'
             },
             {
@@ -470,7 +475,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['1'],
-                'targets': ['target1', 'target3'],
+                'targets': ['target1',  'target3'],
                 'rule': 'anyof'
             },
             {
@@ -495,7 +500,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['1', '4'],
-                'targets': ['target1', 'target3'],
+                'targets': ['target1',  'target3'],
                 'rule': 'anyof'
             },
             {
@@ -527,7 +532,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['1', '4'],
-                'targets': ['target1', 'target3'],
+                'targets': ['target1',  'target3'],
                 'rule': 'anyof'
             },
             {
@@ -544,7 +549,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
                 'draggables': ['3'],
                 'targets': ['target6'],
                 'rule': 'anyof'
-            }]
+            }
+        ]
         self.assertFalse(draganddrop.grade(user_input, correct_answer))
 
     def test_label_10_targets_with_a_b_c_false(self):
@@ -556,7 +562,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a'],
-                'targets': ['target1', 'target4', 'target7', 'target10'],
+                'targets': ['target1',  'target4', 'target7', 'target10'],
                 'rule': 'unordered_equal'
             },
             {
@@ -581,7 +587,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a'],
-                'targets': ['target1', 'target4', 'target7', 'target10'],
+                'targets': ['target1',  'target4', 'target7', 'target10'],
                 'rule': 'unordered_equal'
             },
             {
@@ -606,7 +612,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'a', 'a'],
-                'targets': ['target1', 'target4', 'target7', 'target10'],
+                'targets': ['target1',  'target4', 'target7', 'target10'],
                 'rule': 'anyof+number'
             },
             {
@@ -631,7 +637,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'a', 'a'],
-                'targets': ['target1', 'target4', 'target7', 'target10'],
+                'targets': ['target1',  'target4', 'target7', 'target10'],
                 'rule': 'anyof+number'
             },
             {
@@ -656,7 +662,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'a'],
-                'targets': ['target1', 'target10'],
+                'targets': ['target1',   'target10'],
                 'rule': 'unordered_equal+number'
             },
             {
@@ -681,7 +687,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'a'],
-                'targets': ['target1', 'target10'],
+                'targets': ['target1',   'target10'],
                 'rule': 'unordered_equal+number'
             },
             {
@@ -705,7 +711,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'b'],
-                'targets': ['target1', 'target2', 'target4', 'target5'],
+                'targets': ['target1',   'target2', 'target4', 'target5'],
                 'rule': 'anyof'
             },
             {
@@ -723,7 +729,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'a', 'b'],
-                'targets': ['target1', 'target2', 'target4'],
+                'targets': ['target1',   'target2', 'target4'],
                 'rule': 'anyof+number'
             },
             {
@@ -741,7 +747,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         correct_answer = [
             {
                 'draggables': ['a', 'a', 'b'],
-                'targets': ['target1', 'target2', 'target4', 'target10'],
+                'targets': ['target1',   'target2', 'target4', 'target10'],
                 'rule': 'anyof_number'
             },
             {
@@ -757,9 +763,16 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         {"name_with_icon":"t1"},{"name_with_icon":"t1"},{"name4":"t1"}, \
         {"name4":"t1"}]'
         correct_answer = [
-            {'draggables': ['name4'], 'targets': ['t1', 't1'], 'rule': 'exact'},
-            {'draggables': ['name_with_icon'], 'targets': ['t1', 't1', 't1'],
-                'rule': 'exact'}
+            {
+                'draggables': ['name4'],
+                'targets': ['t1', 't1'],
+                'rule': 'exact'
+            },
+            {
+                'draggables': ['name_with_icon'],
+                'targets': ['t1', 't1', 't1'],
+                'rule': 'exact'
+            }
         ]
         self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
@@ -1002,9 +1015,13 @@ class Test_DraAndDrop_Compare_Positions(unittest.TestCase):
 
     def test_2a(self):
         dnd = draganddrop.DragAndDrop({'1': 't1'}, '[{"1": "t1"}]')
-        self.assertTrue(dnd.compare_positions(correct=[[1, 1], [2, 3]],
-                                              user=[[2, 3], [1, 1]],
-                                              flag='exact'))
+        self.assertTrue(
+            dnd.compare_positions(
+                correct=[[1, 1], [2, 3]],
+                user=[[2, 3], [1, 1]],
+                flag='exact'
+            )
+        )
 
     def test_2b(self):
         dnd = draganddrop.DragAndDrop({'1': 't1'}, '[{"1": "t1"}]')
@@ -1032,9 +1049,13 @@ class Test_DraAndDrop_Compare_Positions(unittest.TestCase):
 
     def test_6(self):
         dnd = draganddrop.DragAndDrop({'1': 't1'}, '[{"1": "t1"}]')
-        self.assertTrue(dnd.compare_positions(correct=["a", "b", "c"],
-                                              user=["a", "c", "b"],
-                                              flag='anyof'))
+        self.assertTrue(
+            dnd.compare_positions(
+                correct=["a", "b", "c"],
+                user=["a", "c", "b"],
+                flag='anyof'
+            )
+        )
 
     def test_7(self):
         dnd = draganddrop.DragAndDrop({'1': 't1'}, '[{"1": "t1"}]')
@@ -1045,10 +1066,12 @@ class Test_DraAndDrop_Compare_Positions(unittest.TestCase):
 
 def suite():
 
-    testcases = [Test_PositionsCompare,
-                 Test_DragAndDrop_Populate,
-                 Test_DragAndDrop_Grade,
-                 Test_DraAndDrop_Compare_Positions]
+    testcases = [
+        Test_PositionsCompare,
+        Test_DragAndDrop_Populate,
+        Test_DragAndDrop_Grade,
+        Test_DraAndDrop_Compare_Positions
+    ]
     suites = []
     for testcase in testcases:
         suites.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
