@@ -14,9 +14,9 @@ from student.models import CourseEnrollment
 
 class ProfileObject(object):
     def __init__(self):
-        self.name = 'Fred W'
-        self.username = 'freddy'
-        self.email = 'fred@edx.org'
+        self.name = ''
+        self.username = ''
+        self.email = ''
         self.courses = []
 
 
@@ -37,20 +37,24 @@ class ProfileResource(Resource):
         # return RiakObject(initial={'name': 'bar'})
         pk = kwargs['pk']
 
+        # Get the User object from the passed in id
         user = User.objects.get(id=pk)
-        enrollments = CourseEnrollment.objects.filter(user=user)
-
         result = ProfileObject()
         result.name = user.first_name + (' ' if len(user.first_name) > 0 and len(user.last_name) > 0 else '') + user.last_name
         result.username = user.username
         result.email = user.email
 
+        # get all enrollments for this user
+        enrollments = CourseEnrollment.objects.filter(user=user)
+
+        # go through the content database and query for each course
         store = modulestore()
         for course_enrollment in enrollments:
             course_loc = CourseDescriptor.id_to_location(course_enrollment.course_id)
             try:
                 course = store.get_instance(course_enrollment.course_id, course_loc)
             except:
+                # this can happen when we delete courses - typical for dev environments
                 continue
 
             # get short_description
