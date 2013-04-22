@@ -1,3 +1,4 @@
+import logging
 import time
 from tastypie import fields
 from tastypie.authentication import Authentication
@@ -10,6 +11,9 @@ from xmodule.contentstore.content import StaticContent
 from xmodule.course_module import CourseDescriptor
 
 from student.models import CourseEnrollment
+
+
+log = logging.getLogger(__name__)
 
 
 class ProfileObject(object):
@@ -35,12 +39,12 @@ class ProfileResource(Resource):
 
     def obj_get(self, request=None, **kwargs):
         # return RiakObject(initial={'name': 'bar'})
-        pk = kwargs['pk']
+        username = kwargs['pk']
 
         # Get the User object from the passed in id
-        user = User.objects.get(id=pk)
+        user = User.objects.get(username=username)
         result = ProfileObject()
-        result.name = user.first_name + (' ' if len(user.first_name) > 0 and len(user.last_name) > 0 else '') + user.last_name
+        result.name = ' '.join([user.first_name, user.last_name]).strip()
         result.username = user.username
         result.email = user.email
 
@@ -55,6 +59,7 @@ class ProfileResource(Resource):
                 course = store.get_instance(course_enrollment.course_id, course_loc)
             except:
                 # this can happen when we delete courses - typical for dev environments
+                log.debug("%r enrolled in non-existent course %r", user.username, course_loc)
                 continue
 
             # get short_description

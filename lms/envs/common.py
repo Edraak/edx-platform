@@ -580,8 +580,9 @@ INSTALLED_APPS = (
     'foldit',
 
     # an API!
+    'tastypie',
     'courseware_api',
-    
+
     # For testing
     'django.contrib.admin',   # only used in DEBUG mode
 
