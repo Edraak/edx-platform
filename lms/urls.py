@@ -125,6 +125,8 @@ urlpatterns = ('',
     # TODO: These urls no longer work. They need to be updated before they are re-enabled
     # url(r'^send_feedback$', 'util.views.send_feedback'),
     # url(r'^reactivate/(?P<key>[^/]*)$', 'student.views.reactivation_email'),
+
+    url(r'^api/', include('courseware_api.urls')),
 )
 
 if settings.PERFSTATS:
