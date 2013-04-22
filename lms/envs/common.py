@@ -579,6 +579,9 @@ INSTALLED_APPS = (
     # foldit integration
     'foldit',
 
+    # an API!
+    'courseware_api',
+    
     # For testing
     'django.contrib.admin',   # only used in DEBUG mode
 
