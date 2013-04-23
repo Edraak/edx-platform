@@ -37,7 +37,6 @@ class CourseResource(Resource):
         allowed_methods = ['get']
 
     def obj_get(self, request=None, **kwargs):
-        # return RiakObject(initial={'name': 'bar'})
         id = kwargs['pk']
 
         store = modulestore()
@@ -52,6 +51,8 @@ class CourseResource(Resource):
         result = CourseObject()
         # crawl through the course and create the course outline document
         def add_xblock_summary(module, result):
+            # TODO: check that the user has access, ideally without
+            # thousands of queries to the DB.
             metadata = {}
             for field in module.fields + module.lms.fields:
                 if field.name not in METADATA_WHITELIST:

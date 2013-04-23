@@ -191,7 +191,7 @@ class CoursewareApiTest(ModuleResourceTestCase):
             parent_location=vertical.location,
             template="i4x://edx/templates/video/default",
             display_name="See Fred Weld",
-            data='<video youtube="1.0:abc123 />'
+            data='<video youtube="1.0:abc123" />'
         )
 
         html = ItemFactory.create(
@@ -300,50 +300,60 @@ class CoursewareApiTest(ModuleResourceTestCase):
 
     def test_xblock_problem(self):
         # TODO: correct error status code instead of 'error message'
-        expected = {
-            'location': 'i4x://edX/Welding/problem/weld_this',
-            'category': 'problem',
-            'message': 'Problems not supported yet'
-        # ???
-        }
-        parsed = expected
-        self.assertEqual(parsed, expected)
 
+        url = reverse('api_dispatch_detail',
+                      kwargs={'resource_name': 'xblock',
+                              'pk': 'i4x://edX/Welding/problem/Weld_This'})
+
+        resp = self.api_client.get(url, format='json')
+        self.assertHttpNotImplemented(resp)
 
     def test_xblock_sequential(self):
-        expected = {
-            'location': 'i4x://edX/Welding/sequential/your_first_weld',
-            'category': 'sequential',
-            'message': "Sequentials don't have any interesting definition"
-        # ???
-        }
-        parsed = expected
-        self.assertEqual(parsed, expected)
+        url = reverse('api_dispatch_detail',
+                      kwargs={'resource_name': 'xblock',
+                              'pk':'i4x://edX/Welding/sequential/Your_first_weld'})
+        resp = self.api_client.get(url, format='json')
+        self.assertHttpNotImplemented(resp)
 
     def test_xblock_vertical(self):
-        expected = {
-            'location': 'i4x://edX/Welding/vertical/deadbeef',
-            'category': 'vertical',
-            'message': "Verticals don't have any interesting definition"
-        # ???
-        }
-        parsed = expected
-        self.assertEqual(parsed, expected)
+        url = reverse('api_dispatch_detail',
+                      kwargs={'resource_name': 'xblock',
+                              'pk':'i4x://edX/Welding/vertical/random_hex'})
+        resp = self.api_client.get(url, format='json')
+        self.assertHttpNotImplemented(resp)
 
 
     def test_xblock_video(self):
+        url = reverse('api_dispatch_detail',
+                      kwargs={'resource_name': 'xblock',
+                              'pk':'i4x://edX/Welding/video/See_Fred_Weld'})
+
+        resp = self.api_client.get(url, format='json')
+
+        self.assertValidJSONResponse(resp)
+
+
         expected = {
-            'location': 'i4x://edX/Welding/video/see_fred_weld',
+            'location': 'i4x://edX/Welding/video/See_Fred_Weld',
             'category': 'video',
             'youtube_id': 'abc123',
             }
+
         parsed = expected
         self.assertEqual(parsed, expected)
 
 
     def test_xblock_html(self):
+        url = reverse('api_dispatch_detail',
+                      kwargs={'resource_name': 'xblock',
+                              'pk': 'i4x://edX/Welding/html/About_Welding'})
+
+        resp = self.api_client.get(url, format='json')
+
+        self.assertValidJSONResponse(resp)
+
         expected = {
-            'location': 'i4x://edX/Welding/html/about_welding',
+            'location': 'i4x://edX/Welding/html/About_Welding',
             'category': 'html',
             'html': DUMMY_HTML
             }
