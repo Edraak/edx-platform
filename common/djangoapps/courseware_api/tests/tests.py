@@ -171,7 +171,7 @@ class CoursewareApiTest(ModuleResourceTestCase):
 
         chapter = ItemFactory.create(
             parent_location=self.course.location,
-            template="i4x://edx/templates/sequential/Empty",
+            template="i4x://edx/templates/chapter/Empty",
             display_name='Welcome to Welding'
         )
 
@@ -204,7 +204,7 @@ class CoursewareApiTest(ModuleResourceTestCase):
         problem = ItemFactory.create(
             parent_location=vertical.location,
             template="i4x://edx/templates/problem/Blank_Common_Problem",
-            display_name="About Welding",
+            display_name="Weld This",
             data=PROBLEM_XML
         )
 
@@ -246,25 +246,27 @@ class CoursewareApiTest(ModuleResourceTestCase):
         self.assertValidJSONResponse(resp)
 
         expected = {
-            'id': 'edX/Welding/2013',
+            'id': 'edX/Welding/Power_Welding',
             'blocks': {
                 'i4x://edX/Welding/course/Power_Welding': {'category': 'course',
-                    'children': [2],
+                    'children': ['i4x://edX/Welding/chapter/Welcome_to_Welding'],
                     'metadata': {'display_name': 'Power Welding'},
                     'definition': 'i4x://edX/Welding/course/Power_Welding',
                     },
                 'i4x://edX/Welding/chapter/Welcome_to_Welding': {'category': 'chapter',
-                    'children': [3],
+                    'children': ['i4x://edX/Welding/sequential/Your_first_weld'],
                     'metadata': {'display_name': 'Welcome to Welding'},
                     'definition': 'i4x://edX/Welding/chapter/Welcome_to_Welding',
                     },
                 'i4x://edX/Welding/sequential/Your_first_weld': {'category': 'sequential',
-                    'children': [4],
+                    'children': ['i4x://edX/Welding/vertical/random_hex'],
                     'metadata': {'display_name': 'Your first weld'},
                     'definition': 'i4x://edX/Welding/sequential/Your_first_weld',
                     },
                 'i4x://edX/Welding/vertical/random_hex': {'category': 'vertical',
-                    'children': [5,6,7],
+                    'children': ['i4x://edX/Welding/video/See_Fred_Weld',
+                                 'i4x://edX/Welding/html/About_Welding',
+                                 'i4x://edX/Welding/problem/Weld_This'],
                     'metadata': {'display_name': 'random hex'},
                     'definition': 'i4x://edX/Welding/vertical/random_hex',
                     },
@@ -279,7 +281,7 @@ class CoursewareApiTest(ModuleResourceTestCase):
                     'definition': 'i4x://edX/Welding/html/About_Welding',
                     },
                 'i4x://edX/Welding/problem/Weld_This': {'category': 'problem',
-'metadata': {'display_name': 'Weld this'},
+'metadata': {'display_name': 'Weld This'},
                     'children': [],
                     'definition': 'i4x://edX/Welding/problem/Weld_This',
                     }
@@ -287,6 +289,11 @@ class CoursewareApiTest(ModuleResourceTestCase):
             }
 
         parsed = self.deserialize(resp)
+        # First, let's make sure the keys match
+        self.assertKeys(parsed, expected)
+
+        # now make sure everything matches
+
         self.assertEqual(parsed, expected)
 
 

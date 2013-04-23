@@ -36,7 +36,8 @@ class ProfileResource(Resource):
         authentication = Authentication()
         authorization = Authorization()
         include_resource_uri = False
-
+        allowed_methods = ['get']
+        
     def obj_get(self, request=None, **kwargs):
         # return RiakObject(initial={'name': 'bar'})
         username = kwargs['pk']

@@ -14,6 +14,9 @@ from xblock.core import Scope
 
 from student.models import CourseEnrollment
 
+# Only return a subset of the data
+METADATA_WHITELIST = ['display_name']
+
 
 class CourseObject(object):
     def __init__(self):
@@ -22,7 +25,8 @@ class CourseObject(object):
 
 class CourseResource(Resource):
     id = fields.CharField(attribute='id')
-    blocks = fields.CharField(attribute='blocks')
+    blocks = fields.DictField(attribute='blocks')
+
 
     class Meta:
         resource_name = 'course'
@@ -30,6 +34,7 @@ class CourseResource(Resource):
         authentication = Authentication()
         authorization = Authorization()
         include_resource_uri = False
+        allowed_methods = ['get']
 
     def obj_get(self, request=None, **kwargs):
         # return RiakObject(initial={'name': 'bar'})
@@ -49,6 +54,8 @@ class CourseResource(Resource):
         def add_xblock_summary(module, result):
             metadata = {}
             for field in module.fields + module.lms.fields:
+                if field.name not in METADATA_WHITELIST:
+                    continue
                 # Only save metadata that wasn't inherited
                 if field.scope != Scope.settings:
                     continue
