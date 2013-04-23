@@ -16,6 +16,13 @@ class XModuleCourseFactory(Factory):
 
     @classmethod
     def _create(cls, target_class, *args, **kwargs):
+        """
+        Specify `org`, `number`, `display_name` (which will get
+        Location.clean()ed into the url_name),
+        and optionally:
+          `start`: as a time in the same format as time.gmtime()
+          `data`: stored as the data for the course
+        """
 
         template = Location('i4x', 'edx', 'templates', 'course', 'Empty')
         org = kwargs.get('org')
@@ -36,7 +43,7 @@ class XModuleCourseFactory(Factory):
         if display_name is not None:
             new_course.display_name = display_name
 
-        new_course.lms.start = gmtime()
+        new_course.lms.start = kwargs.get('start', gmtime())
         new_course.tabs = [{"type": "courseware"},
                            {"type": "course_info", "name": "Course Info"},
                            {"type": "discussion", "name": "Discussion"},

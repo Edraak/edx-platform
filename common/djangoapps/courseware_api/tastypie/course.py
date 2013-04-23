@@ -6,7 +6,10 @@ from tastypie.resources import Resource
 from xmodule.modulestore.django import modulestore
 from xmodule.course_module import CourseDescriptor
 
-from xblock.core import Scope
+from .utils import get_xblock_summary
+
+# Only return a subset of the data
+METADATA_WHITELIST = ['display_name']
 
 
 class CourseObject(object):
@@ -17,7 +20,7 @@ class CourseObject(object):
 
 class CourseResource(Resource):
     id = fields.CharField(attribute='id')
-    blocks = fields.CharField(attribute='blocks')
+    blocks = fields.DictField(attribute='blocks')
 
     class Meta:
         resource_name = 'course'
@@ -25,9 +28,9 @@ class CourseResource(Resource):
         authentication = Authentication()
         authorization = Authorization()
         include_resource_uri = False
+        allowed_methods = ['get']
 
     def obj_get(self, request=None, **kwargs):
-        # return RiakObject(initial={'name': 'bar'})
         id = kwargs['pk']
 
         store = modulestore()
@@ -43,24 +46,10 @@ class CourseResource(Resource):
 
         # crawl through the course and create the course outline document
         def add_xblock_summary(module, result):
-            metadata = {}
-            for field in module.fields + module.lms.fields:
-                # Only save metadata that wasn't inherited
-                if field.scope != Scope.settings:
-                    continue
+            # TODO: check that the user has access, ideally without
+            # thousands of queries to the DB.
+            summary = get_xblock_summary(module, METADATA_WHITELIST)
 
-                try:
-                    metadata[field.name] = module._model_data[field.name]
-                except KeyError:
-                    # Ignore any missing keys in _model_data
-                    pass
-
-            summary = {
-                'category': module.location.category,
-                'metadata': metadata,
-                'children': getattr(module, 'children', []),
-                'definition': module.location.url()
-            }
             result.blocks[module.location.url()] = summary
             for child in module.get_children():
                 add_xblock_summary(child, result)
