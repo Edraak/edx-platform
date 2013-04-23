@@ -18,7 +18,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError
 
 from xmodule.course_module import CourseDescriptor
 
-from .utils import get_xblock_metadata, parse_video_tag
+from .utils import get_xblock_metadata
 
 
 # Only return a subset of the data
