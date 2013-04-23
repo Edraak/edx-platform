@@ -372,3 +372,5 @@ class CoursewareApiTest(ModuleResourceTestCase):
         parsed = expected
         self.assertEqual(parsed, expected)
 
+
+        

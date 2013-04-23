@@ -8,6 +8,9 @@ from xmodule.course_module import CourseDescriptor
 
 from .utils import get_xblock_summary
 
+from django.conf.urls import url
+
+
 # Only return a subset of the data
 METADATA_WHITELIST = ['display_name']
 
@@ -31,6 +34,19 @@ class CourseResource(Resource):
         authorization = Authorization()
         include_resource_uri = False
         allowed_methods = ['get']
+
+    def prepend_urls(self):
+        """
+        The tastypie default url pattern don't like our course ids, what with
+        their strange chars (like '.').  Add another url pattern that looks
+        similar, but is less restrictive.
+        """
+        return [
+            url(r"^(?P<resource_name>{0})/(?P<pk>[\w\d:/_.-]+)/$".format(
+                self._meta.resource_name),
+                self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+        ]
+
 
     def obj_get(self, request=None, **kwargs):
         id = kwargs['pk']
