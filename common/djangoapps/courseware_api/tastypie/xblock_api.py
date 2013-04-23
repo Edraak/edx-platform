@@ -18,7 +18,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError
 
 from xmodule.course_module import CourseDescriptor
 
-from .utils import get_xblock_metadata
+from .utils import get_xblock_metadata, parse_video_tag
 
 
 # Only return a subset of the data
@@ -79,7 +79,20 @@ class XBlockResource(Resource):
         result = XBlockObject()
 
         result.metadata = get_xblock_metadata(xblock, METADATA_WHITELIST)
-        result.data = xblock.data
+
+        if real_loc.category == 'video':
+            # Parse out the normal speed youtube video id
+            # This is a cut-and-paste job from video_module.py, so if/when we want to make this API 'real'
+            # then consolidate this logic. In video_module.py this logic is in the xmodule but it really should
+            # be in the descriptor, so it should be moved
+            normal_speed_video_id = ''
+            for video_id_str in xblock.data.split(","):
+                if video_id_str.startswith("1.0:"):
+                    normal_speed_video_id = video_id_str.split(":")[1]
+
+            result.data = normal_speed_video_id
+        else:
+            result.data = xblock.data
 
         result.location = xblock.location.url()
         result.category = xblock.location.category
