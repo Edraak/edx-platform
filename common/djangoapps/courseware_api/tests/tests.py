@@ -247,6 +247,7 @@ class CoursewareApiTest(ModuleResourceTestCase):
 
         expected = {
             'id': 'edX/Welding/Power_Welding',
+            'root': 'i4x://edX/Welding/course/Power_Welding',
             'blocks': {
                 'i4x://edX/Welding/course/Power_Welding': {'category': 'course',
                     'children': ['i4x://edX/Welding/chapter/Welcome_to_Welding'],

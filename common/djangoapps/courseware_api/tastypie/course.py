@@ -14,12 +14,14 @@ METADATA_WHITELIST = ['display_name']
 
 class CourseObject(object):
     def __init__(self):
-        self.id = ''
+        self.id = None
+        self.root = None
         self.blocks = {}
 
 
 class CourseResource(Resource):
     id = fields.CharField(attribute='id')
+    root = fields.CharField(attribute='root')
     blocks = fields.DictField(attribute='blocks')
 
     class Meta:
@@ -57,5 +59,6 @@ class CourseResource(Resource):
         add_xblock_summary(course, result)
 
         result.id = id
+        result.root = course_loc
         return result
 
