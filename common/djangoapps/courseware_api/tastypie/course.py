@@ -1,24 +1,19 @@
-import time
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.exceptions import NotFound
 from tastypie.resources import Resource
-from django.contrib.auth.models import User
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.contentstore.content import StaticContent
 from xmodule.course_module import CourseDescriptor
 
 from xblock.core import Scope
-
-from student.models import CourseEnrollment
 
 
 class CourseObject(object):
     def __init__(self):
         self.id = ''
         self.blocks = {}
+
 
 class CourseResource(Resource):
     id = fields.CharField(attribute='id')
@@ -45,6 +40,7 @@ class CourseResource(Resource):
         # @TODO: Check for authorization
 
         result = CourseObject()
+
         # crawl through the course and create the course outline document
         def add_xblock_summary(module, result):
             metadata = {}
