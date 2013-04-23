@@ -191,7 +191,7 @@ class CoursewareApiTest(ModuleResourceTestCase):
             parent_location=vertical.location,
             template="i4x://edx/templates/video/default",
             display_name="See Fred Weld",
-            data='<video youtube="1.0:abc123" />'
+            data='<video youtube="1.0:abc123,1.25:bcD"/>'
         )
 
         html = ItemFactory.create(
@@ -347,10 +347,15 @@ class CoursewareApiTest(ModuleResourceTestCase):
         expected = {
             'location': 'i4x://edX/Welding/video/See_Fred_Weld',
             'category': 'video',
-            'youtube_id': 'abc123',
+            'metadata': {'display_name': 'See Fred Weld'},
+            'data': 'abc123',
             }
 
-        parsed = expected
+        parsed = self.deserialize(resp)
+        # First, let's make sure the keys match
+        self.assertKeys(parsed, expected)
+
+        # now make sure everything matches
         self.assertEqual(parsed, expected)
 
 
@@ -372,5 +377,3 @@ class CoursewareApiTest(ModuleResourceTestCase):
         parsed = expected
         self.assertEqual(parsed, expected)
 
-
-        

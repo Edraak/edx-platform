@@ -2,6 +2,8 @@
 NOTE: named xblock_api to prevent name clashes with imports from xblock.
 """
 
+from lxml import etree
+
 from tastypie import fields
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
@@ -82,8 +84,11 @@ class XBlockResource(Resource):
             # This is a cut-and-paste job from video_module.py, so if/when we want to make this API 'real'
             # then consolidate this logic. In video_module.py this logic is in the xmodule but it really should
             # be in the descriptor, so it should be moved
+            xmltree = etree.fromstring(xblock.data)
+            youtube = xmltree.get('youtube')
+
             normal_speed_video_id = ''
-            for video_id_str in xblock.data.split(","):
+            for video_id_str in youtube.split(","):
                 if video_id_str.startswith("1.0:"):
                     normal_speed_video_id = video_id_str.split(":")[1]
 
