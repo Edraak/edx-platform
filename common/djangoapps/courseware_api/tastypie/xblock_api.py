@@ -11,12 +11,9 @@ from tastypie.http import HttpNotImplemented
 from tastypie.resources import Resource
 from django.conf.urls import url
 
-
 from xmodule.modulestore import Location
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
-
-from xmodule.course_module import CourseDescriptor
 
 from .utils import get_xblock_metadata
 
