@@ -1,5 +1,5 @@
 from tastypie import fields
-from tastypie.authentication import Authentication
+from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.exceptions import NotFound
 from tastypie.resources import Resource
@@ -27,7 +27,7 @@ class CourseResource(Resource):
     class Meta:
         resource_name = 'course'
         object_class = CourseObject
-        authentication = Authentication()
+        authentication = BasicAuthentication()
         authorization = Authorization()
         include_resource_uri = False
         allowed_methods = ['get']

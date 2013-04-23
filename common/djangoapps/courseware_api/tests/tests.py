@@ -214,11 +214,16 @@ class CoursewareApiTest(ModuleResourceTestCase):
         enrollment.save()
 
 
+    def get_credentials(self):
+        return self.create_basic('freddy', 'test_password')
+
     def test_profile(self):
         url = reverse('api_dispatch_detail',
                       kwargs={'resource_name': 'profile',
                               'pk': 'freddy'})
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
+
         self.assertValidJSONResponse(resp)
 
         expected = {'name': 'Fred W',
@@ -242,7 +247,8 @@ class CoursewareApiTest(ModuleResourceTestCase):
                       kwargs={'resource_name': 'course',
                               'pk': TEST_COURSE_ID})
 
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
         self.assertValidJSONResponse(resp)
 
         expected = {
@@ -306,21 +312,24 @@ class CoursewareApiTest(ModuleResourceTestCase):
                       kwargs={'resource_name': 'xblock',
                               'pk': 'i4x://edX/Welding/problem/Weld_This'})
 
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
         self.assertHttpNotImplemented(resp)
 
     def test_xblock_sequential(self):
         url = reverse('api_dispatch_detail',
                       kwargs={'resource_name': 'xblock',
                               'pk':'i4x://edX/Welding/sequential/Your_first_weld'})
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
         self.assertHttpNotImplemented(resp)
 
     def test_xblock_vertical(self):
         url = reverse('api_dispatch_detail',
                       kwargs={'resource_name': 'xblock',
                               'pk':'i4x://edX/Welding/vertical/random_hex'})
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
         self.assertHttpNotImplemented(resp)
 
 
@@ -329,7 +338,8 @@ class CoursewareApiTest(ModuleResourceTestCase):
                       kwargs={'resource_name': 'xblock',
                               'pk':'i4x://edX/Welding/video/See_Fred_Weld'})
 
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
 
         self.assertValidJSONResponse(resp)
 
@@ -349,7 +359,8 @@ class CoursewareApiTest(ModuleResourceTestCase):
                       kwargs={'resource_name': 'xblock',
                               'pk': 'i4x://edX/Welding/html/About_Welding'})
 
-        resp = self.api_client.get(url, format='json')
+        resp = self.api_client.get(url, format='json',
+                                   authentication=self.get_credentials())
 
         self.assertValidJSONResponse(resp)
 

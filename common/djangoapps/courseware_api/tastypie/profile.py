@@ -1,7 +1,7 @@
 import logging
 import time
 from tastypie import fields
-from tastypie.authentication import Authentication
+from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.resources import Resource
 from django.contrib.auth.models import User
@@ -33,7 +33,7 @@ class ProfileResource(Resource):
     class Meta:
         resource_name = 'profile'
         object_class = ProfileObject
-        authentication = Authentication()
+        authentication = BasicAuthentication()
         authorization = Authorization()
         include_resource_uri = False
         allowed_methods = ['get']

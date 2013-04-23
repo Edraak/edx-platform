@@ -3,7 +3,7 @@ NOTE: named xblock_api to prevent name clashes with imports from xblock.
 """
 
 from tastypie import fields
-from tastypie.authentication import Authentication
+from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.exceptions import NotFound, ImmediateHttpResponse
 from tastypie.http import HttpNotImplemented
@@ -42,7 +42,7 @@ class XBlockResource(Resource):
     class Meta:
         resource_name = 'xblock'
         object_class = XBlockObject
-        authentication = Authentication()
+        authentication = BasicAuthentication()
         authorization = Authorization()
         include_resource_uri = False
         allowed_methods = ['get']
