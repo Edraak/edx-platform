@@ -2,7 +2,6 @@
 NOTE: named xblock_api to prevent name clashes with imports from xblock.
 """
 
-import time
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
@@ -10,16 +9,16 @@ from tastypie.exceptions import NotFound, ImmediateHttpResponse
 from tastypie.http import HttpNotImplemented
 
 from tastypie.resources import Resource
-from django.conf.urls import patterns, url
-from django.contrib.auth.models import User
+from django.conf.urls import url
 
 
 from xmodule.modulestore import Location
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.contentstore.content import StaticContent
 
 from xmodule.course_module import CourseDescriptor
+
+from .utils import get_xblock_metadata
 
 
 # Only return a subset of the data
@@ -28,13 +27,17 @@ METADATA_WHITELIST = ['display_name']
 
 class XBlockObject(object):
     def __init__(self):
-        self.id = ''
-        self.blocks = {}
+        self.location = ''
+        self.category = ''
+        self.metadata = {}
+        self.data = ''
+
 
 class XBlockResource(Resource):
-    id = fields.CharField(attribute='id')
-    blocks = fields.DictField(attribute='blocks')
-
+    location = fields.CharField(attribute='location')
+    category = fields.CharField(attribute='category')
+    data = fields.CharField(attribute='data')
+    metadata = fields.DictField(attribute='metadata')
 
     class Meta:
         resource_name = 'xblock'
@@ -64,24 +67,20 @@ class XBlockResource(Resource):
         if real_loc.category not in hack_list:
             raise ImmediateHttpResponse(HttpNotImplemented())
 
-        import pudb; pudb.set_trace()
-
         store = modulestore()
-        course_id = CourseDescriptor.location_to_id(location)
         try:
-            xblock = store.get_instance(course_id, location)
-        except:
+            xblock = store.get_item(location)
+        except ItemNotFoundError:
             raise NotFound
 
-        
-        
         # @TODO: Check for authorization
 
         # TODO: make this a real thing
         result = XBlockObject()
 
-        add_xblock_summary(xblock, result)
+        result.metadata = get_xblock_metadata(xblock, METADATA_WHITELIST)
+        result.data = xblock.data
 
-        result.id = id
+        result.location = xblock.location.url()
+        result.category = xblock.location.category
         return result
-
