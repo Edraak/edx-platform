@@ -766,6 +766,8 @@ class DragAndDropTest(unittest.TestCase):
         user_input = {  # order matters, for string comparison
                         "target_outline": "false",
                         "base_image": "/static/images/about_1.png",
+                        "separate_labels": "false",
+                        "auto_resize": "true",
                         "draggables": [
 {"can_reuse": "", "label": "Label 1", "id": "1", "icon": "", "target_fields": []},
 {"can_reuse": "", "label": "cc", "id": "name_with_icon", "icon": "/static/images/cc.jpg", "target_fields": []},
@@ -775,7 +777,7 @@ class DragAndDropTest(unittest.TestCase):
 {"can_reuse": "", "label": "spinner", "id": "name_label_icon3", "icon": "/static/images/spinner.gif", "can_reuse": "", "target_fields": []},
 {"can_reuse": "", "label": "Star", "id": "name4", "icon": "/static/images/volume.png", "can_reuse": "", "target_fields": []},
 {"can_reuse": "", "label": "Label3", "id": "7", "icon": "", "can_reuse": "", "target_fields": []}],
-                        "one_per_target": "True",
+                        "one_per_target": "true",
                         "targets": [
                 {"y": "90", "x": "210", "id": "t1", "w": "90", "h": "90", "type": "normal"},
                 {"y": "160", "x": "370", "id": "t2", "w": "90", "h": "90", "type": "normal"}
