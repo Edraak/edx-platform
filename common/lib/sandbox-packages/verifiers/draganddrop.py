@@ -480,6 +480,14 @@ def get_all_dragabbles(raw_user_input, xml):
             self.y = y
             self.target = target
 
+        def contains_or(self, *args, **kwargs):
+            exact = kwargs.get('exact')
+
+            if exact is None:
+                exact = True
+
+            return True
+
     class BadProperty(object):
         """Property for non-existent object.
         This class help managing some case, when we have for example:
