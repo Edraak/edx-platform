@@ -233,6 +233,7 @@ function goto( mode)
 
 ##-----------------------------------------------------------------------------
 %if modeflag.get('Admin'):
+
   %if instructor_access:
     <hr width="40%" style="align:left">
     <p>
@@ -329,6 +330,10 @@ function goto( mode)
 ##-----------------------------------------------------------------------------
 
 %if modeflag.get('Data'):
+    <p>
+    <input type="submit" name="action" value="Test Celery">
+    <p>
+
     <hr width="40%" style="align:left">
     <p>
     <input type="submit" name="action" value="Download CSV of all student profile data">

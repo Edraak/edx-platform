@@ -63,6 +63,8 @@ urlpatterns = ('',  # nopep8
 
     url(r'^heartbeat$', include('heartbeat.urls')),
 
+    url(r'^celery_ajax_status/(?P<task_id>.+)/$', 'instructor.views.celery_task_status', name='celery_ajax_status'),
+
     ##
     ## Only universities without courses should be included here.  If
     ## courses exist, the dynamic profile rule below should win.
