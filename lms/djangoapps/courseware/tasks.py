@@ -2,7 +2,7 @@
 import json
 import logging
 from django.contrib.auth.models import User
-from courseware.models import StudentModule
+from courseware.models import StudentModule, CourseTaskLog
 from courseware.model_data import ModelDataCache
 from courseware.module_render import get_module
 
@@ -19,7 +19,6 @@ logger = get_task_logger(__name__)
 # celery = Celery('tasks', broker='django://')
 
 log = logging.getLogger(__name__)
-
 
 
 @task
@@ -60,14 +59,18 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     If student is None, performs update on modules for all students on the specified problem
     '''
     module_state_key = problem_url
+    # TODO: store this in the task state, not as a separate return value.
+    # (Unless that's not what the task state is intended to mean.  The task can successfully
+    # complete, as far as celery is concerned, but have an internal status of failed.)
+    succeeded = False
 
     # find the problem descriptor, if any:
     try:
         module_descriptor = modulestore().get_instance(course_id, module_state_key)
     except ItemNotFoundError:
-        return "<font color='red'>Couldn't find problem with that urlname.  </font>"
+        return (succeeded, "Couldn't find problem with that urlname.")
     if module_descriptor is None:
-        return "<font color='red'>Couldn't find problem with that urlname.  </font>"
+        return (succeeded, "Couldn't find problem with that urlname.")
 
     # find the module in question
     modules_to_update = StudentModule.objects.filter(course_id=course_id,
@@ -81,8 +84,10 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     if filter_fcn is not None:
         modules_to_update = filter_fcn(modules_to_update)
 
+    # perform the main loop
     num_updated = 0
     num_attempted = 0
+    num_total = len(modules_to_update)  # TODO: make this more efficient.  Count()?
     for module_to_update in modules_to_update:
         num_attempted += 1
         try:
@@ -90,45 +95,49 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
                 num_updated += 1
         except UpdateProblemModuleStateError as e:
             # something bad happened, so exit right away
-            msg = "<font color='red'>{0}</font>".format(e.message)
-            return msg
+            return (succeeded, e.message)
+        # update task status:
+        current_task.update_state(state='PROGRESS',
+                                  meta={'attempted': num_attempted, 'updated': num_updated, 'total': num_total})
 
     # done with looping through all modules, so just return final statistics:
     if student is not None:
         if num_attempted == 0:
-            msg = "<font color='red'>Unable to find submission to be {action} for student '{student}' and problem '{problem}'.  </font>"
+            msg = "Unable to find submission to be {action} for student '{student}' and problem '{problem}'."
         elif num_updated == 0:
-            msg = "<font color='red'>Problem failed to be {action} for student '{student}' and problem '{problem}'!</font>"
+            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'!"
         else:
-            msg = "<font color='green'>Problem successfully {action} for student '{student}' and problem '{problem}'</font>"
+            succeeded = True
+            msg = "Problem successfully {action} for student '{student}' and problem '{problem}'"
     elif num_attempted == 0:
-        msg = "<font color='red'>Unable to find any students with submissions to be {action} for problem '{problem}'.  </font>"
+        msg = "Unable to find any students with submissions to be {action} for problem '{problem}'."
     elif num_updated == 0:
-        msg = "<font color='red'>Problem failed to be {action} for any of {attempted} students for problem '{problem}'!</font>"
+        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'!"
     elif num_updated == num_attempted:
-        msg = "<font color='green'>Problem successfully {action} for {attempted} students for problem '{problem}'!</font>"
+        succeeded = True
+        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'!"
     elif num_updated < num_attempted:
-        msg = "<font color='red'>Problem {action} for {updated} of {attempted} students for problem '{problem}'!</font>"
+        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
 
     msg = msg.format(action=action_name, updated=num_updated, attempted=num_attempted, student=student, problem=module_state_key)
-    return msg
+    return (succeeded, msg)
 
 
 def _update_problem_module_state_for_student(request, course_id, problem_url, student_identifier,
                                              update_fcn, action_name, filter_fcn=None):
     msg = ''
+    success = False
     # try to uniquely id student by email address or username
     try:
         if "@" in student_identifier:
             student_to_update = User.objects.get(email=student_identifier)
         elif student_identifier is not None:
             student_to_update = User.objects.get(username=student_identifier)
-        msg = "Found a single student to be {action}.  ".format(action=action_name)
-        msg += _update_problem_module_state(request, course_id, problem_url, student_to_update, update_fcn, action_name, filter_fcn)
+        return _update_problem_module_state(request, course_id, problem_url, student_to_update, update_fcn, action_name, filter_fcn)
     except:
-        msg = "<font color='red'>Couldn't find student with that email or username.  </font>"
+        msg = "Couldn't find student with that email or username."
 
-    return msg
+    return (success, msg)
 
 
 def _update_problem_module_state_for_all_students(request, course_id, problem_url, update_fcn, action_name, filter_fcn=None):
@@ -194,6 +203,7 @@ def filter_problem_module_state_for_done(modules_to_update):
     return modules_to_update.filter(state__contains='"done": true')
 
 
+@task
 def _regrade_problem_for_student(request, course_id, problem_url, student_identifier):
     action_name = 'regraded'
     update_fcn = _regrade_problem_module_state
@@ -202,12 +212,44 @@ def _regrade_problem_for_student(request, course_id, problem_url, student_identi
                                                     update_fcn, action_name, filter_fcn)
 
 
-def _regrade_problem_for_all_students(request, course_id, problem_url):
+def regrade_problem_for_student(request, course_id, problem_url, student_identifier):
+    # First submit task.  Then  put stuff into table with the resulting task_id.
+    result = _regrade_problem_for_student.apply_async(request, course_id, problem_url, student_identifier)
+    task_id = result.id
+    # TODO: for log, would want student_identifier to already be mapped to the student
+    tasklog_args = {'course_id': course_id,
+                    'task_name': 'regrade',
+                    'task_args': problem_url,
+                    'task_id': task_id,
+                    'task_status': result.state,
+                    'requester': request.user}
+
+    CourseTaskLog.objects.create(**tasklog_args)
+
+
+@task(serializer='pickle')
+def _regrade_problem_for_all_students(dummy_request, course_id, problem_url):
+    request = dummy_request
     action_name = 'regraded'
     update_fcn = _regrade_problem_module_state
     filter_fcn = filter_problem_module_state_for_done
     return _update_problem_module_state_for_all_students(request, course_id, problem_url,
                                                          update_fcn, action_name, filter_fcn)
+
+
+def regrade_problem_for_all_students(request, course_id, problem_url):
+    # First submit task.  Then  put stuff into table with the resulting task_id.
+    dummy_request = {}
+    task_args = [dummy_request, course_id, problem_url]
+    result = _regrade_problem_for_all_students.apply_async(task_args)
+    task_id = result.id
+    tasklog_args = {'course_id': course_id,
+                    'task_name': 'regrade',
+                    'task_args': problem_url,
+                    'task_id': task_id,
+                    'task_status': result.state,
+                    'requester': request.user}
+    CourseTaskLog.objects.create(**tasklog_args)
 
 
 def _reset_problem_attempts_module_state(request, module_to_reset, module_descriptor):

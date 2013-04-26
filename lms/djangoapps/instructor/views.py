@@ -217,6 +217,10 @@ def instructor_dashboard(request, course_id):
         track.views.server_track(request, action, {}, page='idashboard')
         msg += dump_grading_context(course)
 
+    elif "Regrade ALL students' problem submissions" in action:
+        problem_url = request.POST.get('problem_to_regrade', '')
+        msg += tasks.regrade_problem_for_all_students(request, course_id, problem_url)
+
     elif "Reset student's attempts" in action or "Delete student state for problem" in action:
         # get the form data
         unique_student_identifier = request.POST.get('unique_student_identifier', '')
@@ -1257,7 +1261,9 @@ def testcelery_status(request, task_id):
 
 def celery_task_status(request, task_id):
     # TODO: determine if we need to know the name of the original task,
-    # or if this could be any task...
+    # or if this could be any task...  Sample code seems to indicate that
+    # we could just include the AsyncResult class directly, i.e.:
+    # from celery.result import AsyncResult.
     result = tasks.waitawhile.AsyncResult(task_id)
 
     output = {
