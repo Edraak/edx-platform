@@ -14,6 +14,7 @@ import track.views
 from celery import task, current_task
 from celery.utils.log import get_task_logger
 from time import sleep
+from django.core.handlers.wsgi import WSGIRequest
 
 logger = get_task_logger(__name__)
 
@@ -148,6 +149,7 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     # return (succeeded, msg)
     return succeeded
 
+
 def _update_problem_module_state_for_student(request, course_id, problem_url, student_identifier,
                                              update_fcn, action_name, filter_fcn=None):
     msg = ''
@@ -159,7 +161,7 @@ def _update_problem_module_state_for_student(request, course_id, problem_url, st
         elif student_identifier is not None:
             student_to_update = User.objects.get(username=student_identifier)
         return _update_problem_module_state(request, course_id, problem_url, student_to_update, update_fcn, action_name, filter_fcn)
-    except:
+    except User.DoesNotExist:
         msg = "Couldn't find student with that email or username."
 
     return (success, msg)
@@ -252,9 +254,11 @@ def regrade_problem_for_student(request, course_id, problem_url, student_identif
     CourseTaskLog.objects.create(**tasklog_args)
     return result
 
-@task(serializer='pickle')
-def _regrade_problem_for_all_students(dummy_request, course_id, problem_url):
-    request = dummy_request
+
+@task
+def _regrade_problem_for_all_students(request_environ, course_id, problem_url):
+#    request = dummy_request
+    request = WSGIRequest(request_environ)
     action_name = 'regraded'
     update_fcn = _regrade_problem_module_state
     filter_fcn = filter_problem_module_state_for_done
@@ -263,9 +267,17 @@ def _regrade_problem_for_all_students(dummy_request, course_id, problem_url):
 
 
 def regrade_problem_for_all_students(request, course_id, problem_url):
-    # First submit task.  Then  put stuff into table with the resulting task_id.
-    dummy_request = {}
-    task_args = [dummy_request, course_id, problem_url]
+    # Figure out (for now) how to serialize what we need of the request.  The actual
+    # request will not successfully serialize with json or with pickle.
+    request_environ = {'HTTP_USER_AGENT': request.META['HTTP_USER_AGENT'],
+                       'REMOTE_ADDR': request.META['REMOTE_ADDR'],
+                       'SERVER_NAME': request.META['SERVER_NAME'],
+                       'REQUEST_METHOD': 'GET',
+#                             'HTTP_X_FORWARDED_PROTO': request.META['HTTP_X_FORWARDED_PROTO'],
+                      }
+
+    # Submit task.  Then put stuff into table with the resulting task_id.
+    task_args = [request_environ, course_id, problem_url]
     result = _regrade_problem_for_all_students.apply_async(task_args)
     task_id = result.id
     tasklog_args = {'course_id': course_id,
