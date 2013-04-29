@@ -31,6 +31,9 @@ class HtmlModule(HtmlFields, XModule):
     css = {'scss': [resource_string(__name__, 'css/html/display.scss')]}
 
     def get_html(self):
+        # Replace magic field if possible to do so (e.g., not in CMS view)
+        if self.system.anonymous_student_id:
+            return self.data.replace("%%USER_ID%%", str(self.system.anonymous_student_id))
         return self.data
 
 
