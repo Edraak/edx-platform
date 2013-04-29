@@ -1029,9 +1029,14 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
 
         correct_answer = [
             {
+                'draggables': ['house'],
+                'targets': ['base_target'],
+                'rule': 'exact'
+            },
+            {
                 'draggables': ['sun', 'baby'],
                 'targets': [
-                    'base_target'
+                    'base_target[house][1]', 'base_target[house][2]', 'base_target[house][3]'
                 ],
                 'rule': 'anyof'
             }
@@ -1046,7 +1051,8 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         user_input = json.dumps([
             {'house': 'base_target{5}{10}'},
             {'baby': {'1': {'house': 'base_target'}}},
-            {'baby': {'2': {'house': 'base_target'}}}
+            {'baby': {'2': {'house': 'base_target'}}},
+            {'sun': {'3': {'house': 'base_target'}}}
         ])
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 

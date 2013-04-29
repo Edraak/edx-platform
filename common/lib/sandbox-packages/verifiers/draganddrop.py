@@ -552,6 +552,15 @@ def get_all_dragabbles(raw_user_input, xml):
         def __getitem__(self, key):
             return self.items.get(key) or DraggableSet([])
 
+    def prepare_data(value):
+        result = []
+        for item in value:
+            if isinstance(item.values()[0], dict):
+                result.append(item.values()[0])
+            else:
+                result.append(item)
+        return [i.values()[0] for i in flat_user_answer(result)]
+
     user_input = json.loads(raw_user_input)
     sorted_user_input = sorted(user_input, key=lambda obj: obj.keys()[0])
 
@@ -562,7 +571,7 @@ def get_all_dragabbles(raw_user_input, xml):
 
         # We ignore dragabbles on draggables. Support only first level
         # target.
-        targets = [i[key] for i in value if isinstance(i[key], basestring)]
+        targets = prepare_data(value)
         for target in targets:
             cell_positions = re.findall(r'\{([0-9]*)\}', target)
             if cell_positions:
@@ -580,20 +589,24 @@ def get_all_dragabbles(raw_user_input, xml):
                 'drag_and_drop_input'
             ).find("target[@id='{0}']".format(clean_target))
 
-            # Get data from xml.
-            target_x = int(target_object.attrib.get('x'))
-            target_y = int(target_object.attrib.get('y'))
-            target_width = int(target_object.attrib.get('w'))
-            target_height = int(target_object.attrib.get('h'))
-            target_col = int(target_object.attrib.get('col', 1))
-            target_row = int(target_object.attrib.get('row', 1))
+            if target_object is not None:
+                # Get data from xml.
+                target_x = int(target_object.attrib.get('x'))
+                target_y = int(target_object.attrib.get('y'))
+                target_width = int(target_object.attrib.get('w'))
+                target_height = int(target_object.attrib.get('h'))
+                target_col = int(target_object.attrib.get('col', 1))
+                target_row = int(target_object.attrib.get('row', 1))
 
-            cell_width = target_width / target_col
-            cell_height = target_height / target_row
+                cell_width = target_width / target_col
+                cell_height = target_height / target_row
 
-            # Calculate x,y coordinates of item.
-            x = int(target_x + (item_col + 0.5) * cell_width)
-            y = int(target_y + (item_row + 0.5) * cell_height)
+                # Calculate x,y coordinates of item.
+                x = int(target_x + (item_col + 0.5) * cell_width)
+                y = int(target_y + (item_row + 0.5) * cell_height)
+            else:
+                x = BadProperty()
+                y = BadProperty()
 
             dragabbles.append(Draggable(x, y, clean_target))
 
