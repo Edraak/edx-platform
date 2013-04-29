@@ -475,18 +475,15 @@ def get_all_dragabbles(raw_user_input, xml):
 
     class Draggable(object):
         """Class which describe draggables objects."""
-        def __init__(self, x, y, target):
+        def __init__(self, name, x, y, target, children):
+            self.name = name
             self.x = x
             self.y = y
             self.target = target
+            self.children = children
 
-        def contains_or(self, *args, **kwargs):
-            exact = kwargs.get('exact')
-
-            if exact is None:
-                exact = True
-
-            return True
+        def contains_or(self, *args):
+            return self.children in args
 
     class BadProperty(object):
         """Property for non-existent object.
@@ -528,7 +525,13 @@ def get_all_dragabbles(raw_user_input, xml):
                 return self.items[key]
             except IndexError:
                 bad_property = BadProperty()
-                return Draggable(bad_property, bad_property, bad_property)
+                return Draggable(
+                    bad_property,
+                    bad_property,
+                    bad_property,
+                    bad_property,
+                    bad_property
+                )
 
         @property
         def count(self):
@@ -552,18 +555,31 @@ def get_all_dragabbles(raw_user_input, xml):
         def __getitem__(self, key):
             return self.items.get(key) or DraggableSet([])
 
-    def prepare_data(value):
+    def prepare_targets(data):
         result = []
-        for item in value:
+        for item in data:
             if isinstance(item.values()[0], dict):
                 result.append(item.values()[0])
             else:
                 result.append(item)
         return [i.values()[0] for i in flat_user_answer(result)]
 
+    def prepare_children(data):
+        result = []
+        for item in data:
+            if isinstance(item.values()[0], dict):
+                result.append({item.keys()[0]: item.values()[0].values()[0]})
+            else:
+                result.append(item)
+        result = clean_user_answer(flat_user_answer(result))
+        sorted_user_input = sorted(result, key=lambda obj: obj.values()[0])
+        groups = groupby(sorted_user_input, key=lambda obj: obj.values()[0])
+        return dict([(i[0], [j.keys()[0] for j in i[1]]) for i in groups])
+
     user_input = json.loads(raw_user_input)
     sorted_user_input = sorted(user_input, key=lambda obj: obj.keys()[0])
 
+    all_children = prepare_children(user_input)
     all_dragabbles = AllDragabbles
 
     for key, value in groupby(sorted_user_input, key=lambda obj: obj.keys()[0]):
@@ -571,7 +587,7 @@ def get_all_dragabbles(raw_user_input, xml):
 
         # We ignore dragabbles on draggables. Support only first level
         # target.
-        targets = prepare_data(value)
+        targets = prepare_targets(value)
         for target in targets:
             cell_positions = re.findall(r'\{([0-9]*)\}', target)
             if cell_positions:
@@ -608,7 +624,8 @@ def get_all_dragabbles(raw_user_input, xml):
                 x = BadProperty()
                 y = BadProperty()
 
-            dragabbles.append(Draggable(x, y, clean_target))
+            children = all_children.get('{0}[{1}]'.format(clean_target, key), [])
+            dragabbles.append(Draggable(key, x, y, clean_target, children))
 
             # Sort by Y-coordinate.
             dragabbles.sort(key=lambda obj: obj.y)

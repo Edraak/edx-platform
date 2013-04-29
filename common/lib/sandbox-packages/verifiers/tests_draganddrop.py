@@ -1087,7 +1087,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         constraints = [
             dragabbles['house'].count == 1,
             dragabbles['sun'].count == 2 or dragabbles['baby'].count == 2,
-            dragabbles['house'].on('base_target')[0].contains_or(['sun', 'sun'], ['baby', 'baby'], exact=True)
+            dragabbles['house'].on('base_target')[0].contains_or(['sun', 'sun'], ['baby', 'baby'])
         ]
 
         if all(constraints):
@@ -1101,20 +1101,10 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
 
         xml = etree.fromstring(raw_xml)
 
-        correct_answer = [
-            {
-                'draggables': ['sun', 'baby'],
-                'targets': [
-                    'base_target'
-                ],
-                'rule': 'anyof'
-            }
-        ]
-
         constraints_raw = '''[
             dragabbles['house'].count == 1,
             dragabbles['sun'].count == 2 or dragabbles['baby'].count == 2,
-            dragabbles['house'].on('base_target')[0].contains_or(['sun', 'sun'], ['baby', 'baby'], exact=True)
+            dragabbles['house'].on('base_target')[0].contains_or(['sun', 'sun'], ['baby', 'baby'])
         ]'''
 
         # Correct
@@ -1126,7 +1116,6 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 
         self.assertTrue(all(eval(constraints_raw)))
-        self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
         # Correct
         user_input = json.dumps([
@@ -1137,7 +1126,6 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 
         self.assertTrue(all(eval(constraints_raw)))
-        self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
         # Correct
         user_input = json.dumps([
@@ -1156,7 +1144,6 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 
         self.assertTrue(all(eval(constraints_raw)))
-        self.assertTrue(draganddrop.grade(user_input, correct_answer))
 
         # Fail
         user_input = json.dumps([
@@ -1167,8 +1154,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         ])
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 
-        self.assertTrue(all(eval(constraints_raw)))
-        self.assertTrue(draganddrop.grade(user_input, correct_answer))
+        self.assertFalse(all(eval(constraints_raw)))
 
         # Fail
         user_input = json.dumps([
@@ -1179,8 +1165,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         ])
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 
-        self.assertTrue(all(eval(constraints_raw)))
-        self.assertTrue(draganddrop.grade(user_input, correct_answer))
+        self.assertFalse(all(eval(constraints_raw)))
 
         # Fail
         user_input = json.dumps([
@@ -1190,8 +1175,7 @@ class Test_DragAndDrop_Grade(unittest.TestCase):
         ])
         dragabbles = draganddrop.get_all_dragabbles(user_input, xml)
 
-        self.assertTrue(all(eval(constraints_raw)))
-        self.assertTrue(draganddrop.grade(user_input, correct_answer))
+        self.assertFalse(all(eval(constraints_raw)))
 
 
 class Test_DragAndDrop_Populate(unittest.TestCase):
