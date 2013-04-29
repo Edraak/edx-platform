@@ -7,7 +7,8 @@ from courseware.model_data import ModelDataCache
 from courseware.module_render import get_module
 
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.exceptions import ItemNotFoundError
+from xmodule.modulestore.exceptions import ItemNotFoundError,\
+    InvalidLocationError
 import track.views
 
 from celery import task, current_task
@@ -67,12 +68,22 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     # find the problem descriptor, if any:
     try:
         module_descriptor = modulestore().get_instance(course_id, module_state_key)
+        succeeded = True
     except ItemNotFoundError:
-        return (succeeded, "Couldn't find problem with that urlname.")
+        msg = "Couldn't find problem with that urlname."
+    except InvalidLocationError:
+        msg = "Couldn't find problem with that urlname."
     if module_descriptor is None:
-        return (succeeded, "Couldn't find problem with that urlname.")
+        msg = "Couldn't find problem with that urlname."
+#    if not succeeded:
+#        current_task.update_state(
+#                                  meta={'attempted': num_attempted, 'updated': num_updated, 'total': num_total})
+# The task should still succeed, but should have metadata indicating
+# that the result of the successful task was a failure.  (It's not
+# the queue that failed, but the task put on the queue.)
 
     # find the module in question
+    succeeded = False
     modules_to_update = StudentModule.objects.filter(course_id=course_id,
                                                      module_state_key=module_state_key)
 
@@ -90,12 +101,14 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     num_total = len(modules_to_update)  # TODO: make this more efficient.  Count()?
     for module_to_update in modules_to_update:
         num_attempted += 1
-        try:
-            if update_fcn(request, module_to_update, module_descriptor):
-                num_updated += 1
-        except UpdateProblemModuleStateError as e:
+#        try:
+        if update_fcn(request, module_to_update, module_descriptor):
+            num_updated += 1
+# if there's an error, just let it throw, and the task will
+# be marked as FAILED, with a stack trace.
+#        except UpdateProblemModuleStateError as e:
             # something bad happened, so exit right away
-            return (succeeded, e.message)
+#            return (succeeded, e.message)
         # update task status:
         current_task.update_state(state='PROGRESS',
                                   meta={'attempted': num_attempted, 'updated': num_updated, 'total': num_total})
@@ -120,8 +133,20 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
         msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
 
     msg = msg.format(action=action_name, updated=num_updated, attempted=num_attempted, student=student, problem=module_state_key)
-    return (succeeded, msg)
+    # update status in task result object itself:
+    current_task.update_state(state='DONE',
+                              meta={'attempted': num_attempted, 'updated': num_updated, 'total': num_total,
+                                    'succeeded': succeeded, 'message': msg})
 
+    # and update status in course task table as well:
+    # TODO: figure out how this is legal.  The actual task result
+    # status is updated by celery when this task completes, and is
+    # not
+#    course_task_log_entry = CourseTaskLog.objects.get(task_id=current_task.id)
+#    course_task_log_entry.task_status = ...
+
+    # return (succeeded, msg)
+    return succeeded
 
 def _update_problem_module_state_for_student(request, course_id, problem_url, student_identifier,
                                              update_fcn, action_name, filter_fcn=None):
@@ -225,7 +250,7 @@ def regrade_problem_for_student(request, course_id, problem_url, student_identif
                     'requester': request.user}
 
     CourseTaskLog.objects.create(**tasklog_args)
-
+    return result
 
 @task(serializer='pickle')
 def _regrade_problem_for_all_students(dummy_request, course_id, problem_url):
@@ -249,7 +274,8 @@ def regrade_problem_for_all_students(request, course_id, problem_url):
                     'task_id': task_id,
                     'task_status': result.state,
                     'requester': request.user}
-    CourseTaskLog.objects.create(**tasklog_args)
+    course_task_log = CourseTaskLog.objects.create(**tasklog_args)
+    return course_task_log
 
 
 def _reset_problem_attempts_module_state(request, module_to_reset, module_descriptor):

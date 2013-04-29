@@ -219,7 +219,10 @@ def instructor_dashboard(request, course_id):
 
     elif "Regrade ALL students' problem submissions" in action:
         problem_url = request.POST.get('problem_to_regrade', '')
-        msg += tasks.regrade_problem_for_all_students(request, course_id, problem_url)
+        try:
+            result = tasks.regrade_problem_for_all_students(request, course_id, problem_url)
+        except Exception as e:
+            log.error("Encountered exception from regrade: {msg}", msg=e.message())
 
     elif "Reset student's attempts" in action or "Delete student state for problem" in action:
         # get the form data
