@@ -27,6 +27,7 @@ values are (x,y) coordinates of centers of dragged images.
 import json
 import re
 from itertools import groupby
+from collections import Counter
 
 
 def flat_user_answer(user_answer):
@@ -489,18 +490,31 @@ def get_all_dragabbles(raw_user_input, xml):
             self.target = target
             self.children = children
 
-        def contains_or(self, *args):
-            """Check if current `Draggable` object contains one of
-            sequences.
+        def contains(self, *args, **kwargs):
+            """Check if current `Draggable` object contains some draggables.
 
             Example:
-            ...contains_or(['obj1', 'obj1'], ['obj2', 'obj2'])
-            return `True` if `self.children` equal to ['obj1', 'obj1'] or
-            ['obj2', 'obj2'].
+            ...contains('obj1', 'obj2', 'obj1')
+            return `True` if `self.children` equal to
+            ['obj1', 'obj1', 'obj2']
+            or
+            ['obj1', 'obj2', 'obj1']
+            or
+            ['obj2', 'obj1', 'obj1'].
 
-            The order doesn't matter.
+            So, the order doesn't matter.
+
+            `exact` - default value = `True`.
+            If you set option `exact` to `False`, then you have not
+            strict conditional and check only, that `args` in `self.children`.
             """
-            return sorted(self.children) in sorted(args)
+
+            exact = kwargs.get('exact', True)
+
+            if exact:
+                return sorted(self.children) == sorted(args)
+            else:
+                return not bool(Counter(args) - Counter(self.children))
 
     class BadProperty(object):
         """Property for non-existent object.
