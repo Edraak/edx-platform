@@ -217,10 +217,9 @@ def _regrade_problem_module_state(request, module_to_regrade, module_descriptor)
         return False
     else:
         track.views.server_track(request,
-                                 '{instructor} regrade problem {problem} for student {student} '
+                                 'regrade problem {problem} for student {student} '
                                  'in {course}'.format(student=student.id,
                                                       problem=module_to_regrade.module_state_key,
-                                                      instructor=request.user,
                                                       course=course_id),
                                  {},
                                  page='idashboard')
