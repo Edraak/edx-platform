@@ -28,7 +28,8 @@ from courseware import tasks
 from courseware.access import (has_access, get_access_group_name,
                                course_beta_test_group_name)
 from courseware.courses import get_course_with_access
-from courseware.models import StudentModule
+from courseware.models import StudentModule, CourseTaskLog
+
 from django_comment_client.models import (Role,
                                           FORUM_ROLE_ADMINISTRATOR,
                                           FORUM_ROLE_MODERATOR,
@@ -220,9 +221,12 @@ def instructor_dashboard(request, course_id):
     elif "Regrade ALL students' problem submissions" in action:
         problem_url = request.POST.get('problem_to_regrade', '')
         try:
-            result = tasks.regrade_problem_for_all_students(request, course_id, problem_url)
+            course_task_log_entry = tasks.regrade_problem_for_all_students(request, course_id, problem_url)
         except Exception as e:
-            log.error("Encountered exception from regrade: {msg}", msg=e.message())
+            log.error("Encountered exception from regrade: {0}", e)
+        # check that a course_task_log entry was created:
+        if course_task_log_entry is None:
+            msg += '<font="red">Failed to create a background task for regrading "{0}".</font>'.format(problem_url)
 
     elif "Reset student's attempts" in action or "Delete student state for problem" in action:
         # get the form data
@@ -665,6 +669,9 @@ def instructor_dashboard(request, course_id):
     if use_offline:
         msg += "<br/><font color='orange'>Grades from %s</font>" % offline_grades_available(course_id)
 
+    # generate list of pending background tasks
+    course_tasks = CourseTaskLog.objects.filter(course_id = course_id).exclude(task_status='SUCCESS').exclude(task_status='FAILURE')
+
     #----------------------------------------
     # context for rendering
 
@@ -679,7 +686,7 @@ def instructor_dashboard(request, course_id):
                'problems': problems,		# psychometrics
                'plots': plots,			# psychometrics
                'course_errors': modulestore().get_item_errors(course.location),
-
+               'course_tasks': course_tasks,
                'djangopid': os.getpid(),
                'mitx_version': getattr(settings, 'MITX_VERSION_STRING', ''),
                'offline_grade_log': offline_grades_available(course_id),

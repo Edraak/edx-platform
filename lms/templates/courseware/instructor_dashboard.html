@@ -383,6 +383,42 @@ function goto( mode)
     <p></p><p>${msg}</p>
 %endif
 ##-----------------------------------------------------------------------------
+## Output tasks in progress
+
+%if course_tasks is not None:
+    <p>Pending Course Tasks</p>
+    <div>
+      <table class="stat_table">
+        <tr>
+          <th>Task Name</th>
+          <th>Task Arg</th>
+          <th>Student</th>
+          <th>Task Id</th>
+          <th>Requester</th>
+          <th>Submitted</th>
+          <th>Last Update</th>
+          <th>Task Status</th>
+        </tr>
+      %for course_task in course_tasks:
+        <tr>
+          ## For now, just discard the non-date portion
+          <td>${course_task.task_name}</td>
+          <td>${course_task.task_args}</td>
+          <td>${course_task.student}</td>
+          <td>${course_task.task_id}</td>
+          <td>${course_task.requester}</td>
+          <td>${course_task.created}</td>
+          <td>${course_task.updated}</td>
+          <td>${course_task.task_status}</td>
+        </tr>
+      %endfor
+      </table>
+    </div>
+  <br/>
+
+%endif
+
+##-----------------------------------------------------------------------------
 
 %if modeflag.get('Analytics'):
 

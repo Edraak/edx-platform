@@ -14,7 +14,8 @@ import track.views
 from celery import task, current_task
 from celery.utils.log import get_task_logger
 from time import sleep
-from django.core.handlers.wsgi import WSGIRequest
+#from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpRequest
 
 logger = get_task_logger(__name__)
 
@@ -258,7 +259,9 @@ def regrade_problem_for_student(request, course_id, problem_url, student_identif
 @task
 def _regrade_problem_for_all_students(request_environ, course_id, problem_url):
 #    request = dummy_request
-    request = WSGIRequest(request_environ)
+#    request = WSGIRequest(request_environ)
+    request = HttpRequest()
+    request.META.update(request_environ)
     action_name = 'regraded'
     update_fcn = _regrade_problem_module_state
     filter_fcn = filter_problem_module_state_for_done
