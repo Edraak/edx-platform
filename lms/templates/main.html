@@ -4,7 +4,12 @@
 <head>
   <%block name="title"><title>edX</title></%block>
 
-  <link rel="icon" type="image/x-icon" href="${static.url('images/favicon.ico')}" />
+  % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+    <link rel="icon" type="image/x-icon" href="${static.url('themes/' + settings.CUSTOM_THEME + '/images/favicon.ico')}" />
+  % else:
+    <link rel="icon" type="image/x-icon" href="${static.url('images/favicon.ico')}" />
+  % endif
+
 
   <%static:css group='application'/>
 
@@ -22,25 +27,33 @@
   <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
 
   % if not course:
-  <%include file="google_analytics.html" />
+    <%include file="google_analytics.html" />
+  % endif
+
+  % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+    <%include file="themes/${settings.CUSTOM_THEME}/head-extra.html"/>
   % endif
 
 </head>
 
 <body class="<%block name='bodyclass'/>">
 
-% if not suppress_toplevel_navigation:
-  <%include file="navigation.html" />
-% endif
+  % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+    <%include file="themes/${settings.CUSTOM_THEME}/header.html"/>
+  % elif not suppress_toplevel_navigation:
+    <%include file="navigation.html"/>
+  % endif
 
   <section class="content-wrapper">
     ${self.body()}
     <%block name="bodyextra"/>
   </section>
 
-% if not suppress_toplevel_navigation:
-  <%include file="footer.html" />
-% endif
+  % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+    <%include file="themes/${settings.CUSTOM_THEME}/footer.html"/>
+  % elif not suppress_toplevel_navigation:
+    <%include file="footer.html"/>
+  % endif
 
   <%static:js group='application'/>
   <%static:js group='module-js'/>

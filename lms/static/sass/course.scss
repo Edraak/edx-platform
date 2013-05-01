@@ -4,6 +4,10 @@
 @import 'base/font_face';
 @import 'base/mixins';
 @import 'base/variables';
+
+// Import theme variable overrides
+@import 'base/overrides';
+
 @import 'base/base';
 @import 'base/extends';
 @import 'base/animations';

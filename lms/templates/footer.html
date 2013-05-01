@@ -4,37 +4,54 @@
 
 <footer>
   <nav>
-    <section class="top">
-      <section class="primary">
-        <a href="${reverse('root')}" class="logo"></a>
-        <a href="${reverse('courses')}">Find Courses</a>
-        <a href="${reverse('about_edx')}">About</a>
-        <a href="http://blog.edx.org/">Blog</a>
-        <a href="${reverse('jobs')}">Jobs</a>
-        <a href="${reverse('contact')}">Contact</a>
-      </section>
+    <%block name="footer_top">
+      <section class="top" <%block name="footer_top_attributes"/>>
+        <section class="primary">
+          <%block name="footer_primary_links">
+            <a href="${reverse('root')}" class="logo"></a>
+            <a href="${reverse('courses')}">Find Courses</a>
+            <a href="${reverse('about_edx')}">About</a>
+            <a href="http://blog.edx.org/">Blog</a>
+            <a href="${reverse('jobs')}">Jobs</a>
+            <a href="${reverse('contact')}">Contact</a>
+          </%block>
+        </section>
 
-      <section class="social">
-        <a href="http://youtube.com/user/edxonline"><img src="${static.url('images/social/youtube-sharing.png')}" /></a>
-        <a href="https://plus.google.com/108235383044095082735"><img src="${static.url('images/social/google-plus-sharing.png')}" /></a>
-        <a href="http://www.facebook.com/EdxOnline"><img src="${static.url('images/social/facebook-sharing.png')}" /></a>
-        <a href="https://twitter.com/edXOnline"><img src="${static.url('images/social/twitter-sharing.png')}" /></a>
-      </section>
-    </section>
+        <section class="social">
+          <%block name="footer_social_links">
+            <a href="http://youtube.com/user/edxonline"><img src="${static.url('images/social/youtube-sharing.png')}" /></a>
+            <a href="https://plus.google.com/108235383044095082735"><img src="${static.url('images/social/google-plus-sharing.png')}" /></a>
+            <a href="http://www.facebook.com/EdxOnline"><img src="${static.url('images/social/facebook-sharing.png')}" /></a>
+            <a href="https://twitter.com/edXOnline"><img src="${static.url('images/social/twitter-sharing.png')}" /></a>
+          </%block>
+        </section>
 
-    <section class="bottom">
-      <section class="copyright">
-##        <p>&copy; 2013 edX, <a href="${reverse('copyright')}">some rights reserved.</a></p> # TODO: (bridger) Update the copyright for edX, then re-enable the link.
-        <p>&copy; 2013 edX, some rights reserved.</p>
       </section>
+    </%block>
 
-      <section class="secondary">
-        <a href="${reverse('tos')}">Terms of Service</a>
-        <a href="${reverse('privacy_edx')}">Privacy Policy</a>
-        <a href="${reverse('honor')}">Honor Code</a>
-        <a href="${reverse('help_edx')}">Help</a>
+    <%block name="footer_bottom">
+      <section class="bottom">
+
+        <section class="copyright">
+          <%block name="copyright">
+    ##        <p>&copy; 2013 edX, <a href="${reverse('copyright')}">some rights reserved.</a></p> # TODO: (bridger) Update the copyright for edX, then re-enable the link.
+            <p>&copy; 2013 edX, some rights reserved.</p>
+          </%block>
+        </section>
+
+        <section class="secondary">
+          <%block name="footer_secondary_links">
+            <a href="${reverse('tos')}">Terms of Service</a>
+            <a href="${reverse('privacy_edx')}">Privacy Policy</a>
+            <a href="${reverse('honor')}">Honor Code</a>
+            <a href="${reverse('help_edx')}">Help</a>
+          </%block>
+        </section>
+
       </section>
-    </section>
+    </%block>
 
   </nav>
 </footer>
+
+<%block name="second_footer"/>

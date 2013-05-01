@@ -17,141 +17,147 @@
             <a href="#signup-modal" id="signup_action" class="find-courses" rel="leanModal">Sign Up</a>
           </div>
 
-          <div class="secondary-actions">
-            <div class="social-sharing">
-              <div class="sharing-message">Stay up to date with all edX has to offer!</div>
-              <a href="https://twitter.com/edXOnline" class="share">
-                <img src="${static.url('images/social/twitter-sharing.png')}">
-              </a>
-              <a href="http://www.facebook.com/EdxOnline" class="share">
-                <img src="${static.url('images/social/facebook-sharing.png')}">
-              </a>
-              <a href="https://plus.google.com/108235383044095082735/posts" class="share">
-                <img src="${static.url('images/social/google-plus-sharing.png')}">
-              </a>
+          % if not settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+            <div class="secondary-actions">
+              <div class="social-sharing">
+                <div class="sharing-message">Stay up to date with all edX has to offer!</div>
+                <a href="https://twitter.com/edXOnline" class="share">
+                  <img src="${static.url('images/social/twitter-sharing.png')}">
+                </a>
+                <a href="http://www.facebook.com/EdxOnline" class="share">
+                  <img src="${static.url('images/social/facebook-sharing.png')}">
+                </a>
+                <a href="https://plus.google.com/108235383044095082735/posts" class="share">
+                  <img src="${static.url('images/social/google-plus-sharing.png')}">
+                </a>
+              </div>
             </div>
-          </div>
+          % endif
         </section>
       </div>
 
-        <a href="#video-modal" class="media" rel="leanModal">
-          <div class="hero">
-            <div class="play-intro"></div>
-          </div>
-        </a>
+      <a href="#video-modal" class="media" rel="leanModal">
+        <div class="hero">
+          <div class="play-intro"></div>
+        </div>
+      </a>
 
     </div>
   </header>
 
   <section class="container">
     <section class="highlighted-courses">
-      <h2>Explore free courses from <span class="edx">edX</span> universities</h2>
+      % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+        <h2>Explore free courses from <span class="theme">Stanford University</span></h2>
+      % else :
+        <h2>Explore free courses from <span class="edx">edX</span> universities</h2>
 
-      <section class="university-partners university-partners2x6">
-        <ol class="partners">
-          <li class="partner mit">
-            <a href="${reverse('university_profile', args=['MITx'])}">
-              <img src="${static.url('images/university/mit/mit.png')}" />
-              <div class="name">
-                <span>MITx</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['HarvardX'])}">
-              <img src="${static.url('images/university/harvard/harvard.png')}" />
-              <div class="name">
-                <span>HarvardX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['BerkeleyX'])}">
-              <img src="${static.url('images/university/berkeley/berkeley.png')}" />
-              <div class="name">
-                <span>BerkeleyX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['UTx'])}">
-              <img src="${static.url('images/university/ut/ut-rollover_350x150.png')}" />
-              <div class="name">
-                <span>UTx</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['McGillX'])}">
-              <img src="${static.url('images/university/mcgill/mcgill.png')}" />
-              <div class="name">
-                <span>McGillX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['ANUx'])}">
-              <img src="${static.url('images/university/anu/anu.png')}" />
-              <div class="name">
-                <span>ANUx</span>
-              </div>
-            </a>
-          </li>
-        </ol>
+        <section class="university-partners university-partners2x6">
+          <ol class="partners">
+            <li class="partner mit">
+              <a href="${reverse('university_profile', args=['MITx'])}">
+                <img src="${static.url('images/university/mit/mit.png')}" />
+                <div class="name">
+                  <span>MITx</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['HarvardX'])}">
+                <img src="${static.url('images/university/harvard/harvard.png')}" />
+                <div class="name">
+                  <span>HarvardX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['BerkeleyX'])}">
+                <img src="${static.url('images/university/berkeley/berkeley.png')}" />
+                <div class="name">
+                  <span>BerkeleyX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['UTx'])}">
+                <img src="${static.url('images/university/ut/ut-rollover_350x150.png')}" />
+                <div class="name">
+                  <span>UTx</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['McGillX'])}">
+                <img src="${static.url('images/university/mcgill/mcgill.png')}" />
+                <div class="name">
+                  <span>McGillX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['ANUx'])}">
+                <img src="${static.url('images/university/anu/anu.png')}" />
+                <div class="name">
+                  <span>ANUx</span>
+                </div>
+              </a>
+            </li>
+          </ol>
 
-        <hr />
+          <hr />
 
-        <ol class="partners">
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['WellesleyX'])}">
-              <img src="${static.url('images/university/wellesley/wellesley-rollover_350x150.png')}" />
-              <div class="name">
-                <span>WellesleyX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['GeorgetownX'])}">
-              <img src="${static.url('images/university/georgetown/georgetown-rollover_350x150.png')}" />
-              <div class="name">
-                <span>GeorgetownX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['TorontoX'])}">
-              <img src="${static.url('images/university/toronto/toronto.png')}" />
-              <div class="name">
-                <span>University of TorontoX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['EPFLx'])}">
-              <img src="${static.url('images/university/epfl/epfl.png')}" />
-              <div class="name">
-                <span>EPFLx</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['DelftX'])}">
-              <img src="${static.url('images/university/delft/delft.png')}" />
-              <div class="name">
-                <span>DelftX</span>
-              </div>
-            </a>
-          </li>
-          <li class="partner">
-            <a href="${reverse('university_profile', args=['RiceX'])}">
-              <img src="${static.url('images/university/rice/rice.png')}" />
-              <div class="name">
-                <span>RiceX</span>
-              </div>
-            </a>
-          </li>
-        </ol>
-      </section>
+          <ol class="partners">
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['WellesleyX'])}">
+                <img src="${static.url('images/university/wellesley/wellesley-rollover_350x150.png')}" />
+                <div class="name">
+                  <span>WellesleyX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['GeorgetownX'])}">
+                <img src="${static.url('images/university/georgetown/georgetown-rollover_350x150.png')}" />
+                <div class="name">
+                  <span>GeorgetownX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['TorontoX'])}">
+                <img src="${static.url('images/university/toronto/toronto.png')}" />
+                <div class="name">
+                  <span>University of TorontoX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['EPFLx'])}">
+                <img src="${static.url('images/university/epfl/epfl.png')}" />
+                <div class="name">
+                  <span>EPFLx</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['DelftX'])}">
+                <img src="${static.url('images/university/delft/delft.png')}" />
+                <div class="name">
+                  <span>DelftX</span>
+                </div>
+              </a>
+            </li>
+            <li class="partner">
+              <a href="${reverse('university_profile', args=['RiceX'])}">
+                <img src="${static.url('images/university/rice/rice.png')}" />
+                <div class="name">
+                  <span>RiceX</span>
+                </div>
+              </a>
+            </li>
+          </ol>
+        </section>
+      % endif
 
       <section class="courses">
           <ul class="courses-listing">
@@ -165,57 +171,66 @@
     </section>
   </section>
 
-  <section class="container">
-    <section class="more-info">
-      <header>
-        <h2><span class="edx">edX</span> News &amp; Announcements</h2>
-        <a class="action action-mediakit" href="${reverse('media-kit')}"> <span class="org-name">edX</span> MEDIA KIT</a>
-      </header>
-      <section class="news">
-        <section class="blog-posts">
-            %for entry in news:
-            <article>
-                %if entry.image:
-                    <a href="${entry.link}" class="post-graphics" target="_blank"><img src="${entry.image}" /></a>
-                %endif
-                <div class="post-name">
-                    <a href="${entry.link}" target="_blank">${entry.title}</a>
-                    %if entry.summary:
-                        <p>${entry.summary}</p>
-                    %endif
-                    <p class="post-date">${strftime("%m/%d/%y", entry.published_parsed)}</p>
-                </div>
-            </article>
-            %endfor
-        </section>
-        <section class="press-links">
-          <h3>edX in the News:</h3>
-          <a target="_blank" href="http://www.bbc.co.uk/news/business-19661899">BBC</a>,
-          <a target="_blank" href="http://www.technologyreview.com/news/506351/the-most-important-education-technology-in-200-years/">Technology Review</a>,
-          <a target="_blank" href="http://tech.mit.edu/V132/N48/edxvmware.html">The Tech</a>,
-          <a target="_blank" href="http://www.nytimes.com/2012/11/04/education/edlife/massive-open-online-courses-are-multiplying-at-a-rapid-pace.html">The New York Times</a>,
-          <a target="_blank" href="http://www.reuters.com/article/2012/10/19/us-education-courses-online-idUSBRE89I17120121019">Reuters</a>,
-          <a target="_blank" href="http://www.ft.com/intl/cms/s/2/73030f44-d4dd-11e1-9444-00144feabdc0.html#axzz2A9qvk48A">Financial Times</a>,
-          <a target="_blank" href="http://campustechnology.com/articles/2012/10/25/vmware-offers-free-virtualization-software-for-edx-computer-science-students.aspx">Campus Technology</a>,
-          <a target="_blank" href="http://chronicle.com/blogs/wiredcampus/san-jose-state-u-says-replacing-live-lectures-with-videos-increased-test-scores/40470">Chronicle of Higher Education</a>,
-          <a target="_blank" href="http://www.timeshighereducation.co.uk/story.asp?sectioncode=26&storycode=421577&c=1">Times Higher Education</a>,
-          <a target="_blank" href="http://www.bloomberg.com/news/2012-10-15/university-of-texas-joining-harvard-mit-online-venture.html">Bloomberg.com</a>,
-          <a target="_blank" href="http://www.businessweek.com/news/2012-10-15/university-of-texas-joining-harvard-mit-online-venture">BusinessWeek</a>,
-          <a target="_blank" href="http://news.yahoo.com/univ-texas-joins-online-course-program-edx-172202035--finance.html">Associated Press</a>
-          <a href="${reverse('press')}" class="read-more">Read More &rarr;</a>
+  % if not settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+    <section class="container">
+      <section class="more-info">
+        <header>
+          <h2><span class="edx">edX</span> News &amp; Announcements</h2>
+          <a class="action action-mediakit" href="${reverse('media-kit')}"> <span class="org-name">edX</span> MEDIA KIT</a>
+        </header>
+        <section class="news">
+          <section class="blog-posts">
+              %for entry in news:
+              <article>
+                  %if entry.image:
+                      <a href="${entry.link}" class="post-graphics" target="_blank"><img src="${entry.image}" /></a>
+                  %endif
+                  <div class="post-name">
+                      <a href="${entry.link}" target="_blank">${entry.title}</a>
+                      %if entry.summary:
+                          <p>${entry.summary}</p>
+                      %endif
+                      <p class="post-date">${strftime("%m/%d/%y", entry.published_parsed)}</p>
+                  </div>
+              </article>
+              %endfor
+          </section>
+          <section class="press-links">
+            <h3>edX in the News:</h3>
+            <a target="_blank" href="http://www.bbc.co.uk/news/business-19661899">BBC</a>,
+            <a target="_blank" href="http://www.technologyreview.com/news/506351/the-most-important-education-technology-in-200-years/">Technology Review</a>,
+            <a target="_blank" href="http://tech.mit.edu/V132/N48/edxvmware.html">The Tech</a>,
+            <a target="_blank" href="http://www.nytimes.com/2012/11/04/education/edlife/massive-open-online-courses-are-multiplying-at-a-rapid-pace.html">The New York Times</a>,
+            <a target="_blank" href="http://www.reuters.com/article/2012/10/19/us-education-courses-online-idUSBRE89I17120121019">Reuters</a>,
+            <a target="_blank" href="http://www.ft.com/intl/cms/s/2/73030f44-d4dd-11e1-9444-00144feabdc0.html#axzz2A9qvk48A">Financial Times</a>,
+            <a target="_blank" href="http://campustechnology.com/articles/2012/10/25/vmware-offers-free-virtualization-software-for-edx-computer-science-students.aspx">Campus Technology</a>,
+            <a target="_blank" href="http://chronicle.com/blogs/wiredcampus/san-jose-state-u-says-replacing-live-lectures-with-videos-increased-test-scores/40470">Chronicle of Higher Education</a>,
+            <a target="_blank" href="http://www.timeshighereducation.co.uk/story.asp?sectioncode=26&storycode=421577&c=1">Times Higher Education</a>,
+            <a target="_blank" href="http://www.bloomberg.com/news/2012-10-15/university-of-texas-joining-harvard-mit-online-venture.html">Bloomberg.com</a>,
+            <a target="_blank" href="http://www.businessweek.com/news/2012-10-15/university-of-texas-joining-harvard-mit-online-venture">BusinessWeek</a>,
+            <a target="_blank" href="http://news.yahoo.com/univ-texas-joins-online-course-program-edx-172202035--finance.html">Associated Press</a>
+            <a href="${reverse('press')}" class="read-more">Read More &rarr;</a>
+          </section>
         </section>
       </section>
     </section>
-  </section>
+  % endif
 
 </section>
 
 <section id="video-modal" class="modal home-page-video-modal video-modal">
   <div class="inner-wrapper">
-    <iframe width="640" height="360" src="http://www.youtube.com/embed/XNaiOGxWeto?showinfo=0" frameborder="0" allowfullscreen></iframe>
+    % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+      % if settings.CUSTOM_THEME == 'stanford' :
+        <iframe width="640" height="360" src="http://www.youtube.com/embed/2gmreZObCY4?showinfo=0" frameborder="0" allowfullscreen></iframe>
+      % else :
+        <iframe width="640" height="360" src="http://www.youtube.com/embed/XNaiOGxWeto?showinfo=0" frameborder="0" allowfullscreen></iframe>
+      % endif
+    % else :
+      <iframe width="640" height="360" src="http://www.youtube.com/embed/XNaiOGxWeto?showinfo=0" frameborder="0" allowfullscreen></iframe>
+    % endif
   </div>
 </section>
-
 
 <%block name="js_extra">
    <script type="text/javascript"">

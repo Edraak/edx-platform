@@ -14,6 +14,8 @@
   <script type="text/javascript">
   (function() {
 
+    % if not settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+
     var carouselPageHeight = 0;
     var carouselIndex = 0;
     var carouselDelay = 5000;
@@ -53,6 +55,8 @@
       $pageToShow.fadeIn(transitionSpeed);
       $('.news-carousel .page').not($pageToShow).fadeOut(transitionSpeed);
     }
+
+    % endif
 
     $(".unenroll").click(function(event) {
       $("#unenroll_course_id").val( $(event.target).data("course-id") );
@@ -148,7 +152,7 @@
       </ul>
     </section>
 
-    %if news:
+    %if news and not settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
     <article class="news-carousel">
       <header>
         <h4>edX News</h4>
