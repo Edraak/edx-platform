@@ -2,6 +2,8 @@
 import json
 import logging
 from django.contrib.auth.models import User
+
+import mitxmako.middleware as middleware
 from courseware.models import StudentModule, CourseTaskLog
 from courseware.model_data import ModelDataCache
 from courseware.module_render import get_module
@@ -66,6 +68,15 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     # (Unless that's not what the task state is intended to mean.  The task can successfully
     # complete, as far as celery is concerned, but have an internal status of failed.)
     succeeded = False
+
+    # add hack so that mako templates will work on celery worker server:
+    # The initialization of Make templating is usually done when Django is
+    # initialize middleware packages as part of processing a server request.
+    # When this is run on a celery worker server, no such initialization is
+    # called.  So we look for the result: the defining of the lookup paths
+    # for templates.
+    if 'main' not in middleware.lookup:
+        middleware.MakoMiddleware()
 
     # find the problem descriptor, if any:
     try:
