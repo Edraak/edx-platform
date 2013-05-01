@@ -1,44 +1,29 @@
 
 import json
 import logging
+from time import sleep
 from django.contrib.auth.models import User
-
 import mitxmako.middleware as middleware
+from django.http import HttpResponse
+# from django.http import HttpRequest
+from django.test.client import RequestFactory
+
+from celery import task, current_task
+from celery.result import AsyncResult
+from celery.utils.log import get_task_logger
+
 from courseware.models import StudentModule, CourseTaskLog
 from courseware.model_data import ModelDataCache
 from courseware.module_render import get_module
 
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.exceptions import ItemNotFoundError,\
-    InvalidLocationError
+from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError
 import track.views
 
-from celery import task, current_task
-from celery.utils.log import get_task_logger
-from time import sleep
-#from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpRequest
 
+# define different loggers for use within tasks and on client side
 logger = get_task_logger(__name__)
-
-# celery = Celery('tasks', broker='django://')
-
 log = logging.getLogger(__name__)
-
-
-@task
-def add(x, y):
-    return x + y
-
-
-@task
-def echo(value):
-    if value == 'ping':
-        result = 'pong'
-    else:
-        result = 'got: {0}'.format(value)
-
-    return result
 
 
 @task
@@ -154,7 +139,8 @@ def _update_problem_module_state(request, course_id, problem_url, student, updat
     # and update status in course task table as well:
     # TODO: figure out how this is legal.  The actual task result
     # status is updated by celery when this task completes, and is
-    # not
+    # presumably going to clobber this custom metadata.  So if we want
+    # any such status to persist, we have to write it to the CourseTaskLog instead.
 #    course_task_log_entry = CourseTaskLog.objects.get(task_id=current_task.id)
 #    course_task_log_entry.task_status = ...
 
@@ -268,10 +254,10 @@ def regrade_problem_for_student(request, course_id, problem_url, student_identif
 
 @task
 def _regrade_problem_for_all_students(request_environ, course_id, problem_url):
-#    request = dummy_request
-#    request = WSGIRequest(request_environ)
-    request = HttpRequest()
-    request.META.update(request_environ)
+#    request = HttpRequest()
+#    request.META.update(request_environ)
+    factory = RequestFactory(**request_environ)
+    request = factory.get('/')
     action_name = 'regraded'
     update_fcn = _regrade_problem_module_state
     filter_fcn = filter_problem_module_state_for_done
@@ -282,6 +268,7 @@ def _regrade_problem_for_all_students(request_environ, course_id, problem_url):
 def regrade_problem_for_all_students(request, course_id, problem_url):
     # Figure out (for now) how to serialize what we need of the request.  The actual
     # request will not successfully serialize with json or with pickle.
+    # Maybe we can just pass all META info as a dict.
     request_environ = {'HTTP_USER_AGENT': request.META['HTTP_USER_AGENT'],
                        'REMOTE_ADDR': request.META['REMOTE_ADDR'],
                        'SERVER_NAME': request.META['SERVER_NAME'],
@@ -301,6 +288,54 @@ def regrade_problem_for_all_students(request, course_id, problem_url):
                     'requester': request.user}
     course_task_log = CourseTaskLog.objects.create(**tasklog_args)
     return course_task_log
+
+
+def course_task_log_status(request, task_id):
+    """
+    This returns the status of a course-related task as a JSON-serialized dict.
+    """
+    course_task_log_entry = CourseTaskLog.objects.get(task_id=task_id)
+    # TODO: error handling if it doesn't exist...
+
+    def not_in_progress(entry):
+        # TODO: do better than to copy list from celery.states.READY_STATES
+        return entry.task_status in ['SUCCESS', 'FAILURE', 'REVOKED']
+
+    # if the task is already known to be done, then there's no reason to query
+    # the underlying task:
+    if not_in_progress(course_task_log_entry):
+        output = {
+                  'task_id': course_task_log_entry.task_id,
+                  'state': course_task_log_entry.task_status
+                  }
+        return HttpResponse(json.dumps(output, indent=4))
+
+    # we need to get information from the task result directly now.
+    result = AsyncResult(task_id)
+
+    output = {
+        'task_id': result.id,
+        'state': result.state
+    }
+
+    if result.state == "PROGRESS":
+        if hasattr(result, 'result') and 'current' in result.result:
+            log.info("still waiting... progress at {0} of {1}".format(result.result['current'], result.result['total']))
+            output['current'] = result.result['current']
+            output['total'] = result.result['total']
+        else:
+            log.info("still making progress... ")
+
+    if result.successful():
+        value = result.result
+        output['value'] = value
+
+    # update the entry if necessary:
+    if course_task_log_entry.task_status != result.state:
+        course_task_log_entry.task_status = result.state
+        course_task_log_entry.save()
+
+    return HttpResponse(json.dumps(output, indent=4))
 
 
 def _reset_problem_attempts_module_state(request, module_to_reset, module_descriptor):
