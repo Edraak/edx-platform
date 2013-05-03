@@ -300,8 +300,9 @@ def course_task_log_status(request, task_id=None):
     elif 'task_id' in request.POST:
         task_id = request.POST['task_id']
         output = _get_course_task_log_status(task_id)
-    elif 'task_ids' in request.POST:
-        for task_id in request.POST['task_ids']:
+    elif 'task_ids[]' in request.POST:
+        tasks = request.POST.getlist('task_ids[]')
+        for task_id in tasks:
             task_output = _get_course_task_log_status(task_id)
             output[task_id] = task_output
     # TODO else:  raise exception?
