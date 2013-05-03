@@ -290,10 +290,26 @@ def regrade_problem_for_all_students(request, course_id, problem_url):
     return course_task_log
 
 
-def course_task_log_status(request, task_id):
+def course_task_log_status(request, task_id=None):
     """
     This returns the status of a course-related task as a JSON-serialized dict.
     """
+    output = {}
+    if task_id is not None:
+        output = _get_course_task_log_status(task_id)
+    elif 'task_id' in request.POST:
+        task_id = request.POST['task_id']
+        output = _get_course_task_log_status(task_id)
+    elif 'task_ids' in request.POST:
+        for task_id in request.POST['task_ids']:
+            task_output = _get_course_task_log_status(task_id)
+            output[task_id] = task_output
+    # TODO else:  raise exception?
+
+    return HttpResponse(json.dumps(output, indent=4))
+
+
+def _get_course_task_log_status(task_id):
     course_task_log_entry = CourseTaskLog.objects.get(task_id=task_id)
     # TODO: error handling if it doesn't exist...
 
@@ -306,21 +322,26 @@ def course_task_log_status(request, task_id):
     if not_in_progress(course_task_log_entry):
         output = {
                   'task_id': course_task_log_entry.task_id,
-                  'state': course_task_log_entry.task_status
+                  'task_status': course_task_log_entry.task_status,
+                  'in_progress': False
                   }
-        return HttpResponse(json.dumps(output, indent=4))
+        return output
 
     # we need to get information from the task result directly now.
     result = AsyncResult(task_id)
 
     output = {
         'task_id': result.id,
-        'state': result.state
+        'task_status': result.state,
+        'in_progress': True
     }
+    if result.traceback is not None:
+        output['task_traceback'] = result.traceback
 
     if result.state == "PROGRESS":
         if hasattr(result, 'result') and 'current' in result.result:
-            log.info("still waiting... progress at {0} of {1}".format(result.result['current'], result.result['total']))
+            log.info("still waiting... progress at {0} of {1}".format(result.result['current'],
+                                                                      result.result['total']))
             output['current'] = result.result['current']
             output['total'] = result.result['total']
         else:
@@ -335,7 +356,7 @@ def course_task_log_status(request, task_id):
         course_task_log_entry.task_status = result.state
         course_task_log_entry.save()
 
-    return HttpResponse(json.dumps(output, indent=4))
+    return output
 
 
 def _reset_problem_attempts_module_state(request, module_to_reset, module_descriptor):
