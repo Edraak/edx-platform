@@ -255,6 +255,7 @@ INSTALLED_APPS = (
     'auth',
     'student',  # misleading name due to sharing with lms
     'course_groups',  # not used in cms (yet), but tests run
+    'course_secrets',
 
     # tracking
     'track',

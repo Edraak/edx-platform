@@ -8,7 +8,7 @@ from functools import partial
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -32,6 +32,7 @@ from xmodule.error_module import ErrorDescriptor, NonStaffErrorDescriptor
 from xblock.runtime import DbModel
 from xmodule_modifiers import replace_course_urls, replace_static_urls, add_histogram, wrap_xmodule
 from .model_data import LmsKeyValueStore, LmsUsage, ModelDataCache
+from course_secrets.models import CourseSecret
 
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from statsd import statsd
@@ -273,6 +274,23 @@ def get_module_for_descriptor(user, request, descriptor, model_data_cache, cours
 
         statsd.increment("lms.courseware.question_answered", tags=tags)
 
+    def anonymized_user_id(course_id, user):
+        """
+        Returns an anonymized ID for the user. Helpful for exporting to third-party
+        service providers (like Qualtrics or SurveyMonkey), where we don't want to
+        expose the raw user ID.
+        """
+        try:
+            course_secret = CourseSecret.objects.get(course_id=course_id)
+            unique_id = course_secret.anonymized_user_id(user)
+        except ObjectDoesNotExist:
+            # if there's no CourseSecret for this course, then fall back to
+            # the original unique_id_for_user implementation
+            unique_id = unique_id_for_user(user)
+
+        return unique_id
+
+
     # TODO (cpennington): When modules are shared between courses, the static
     # prefix is going to have to be specific to the module, not the directory
     # that the xml was loaded from
@@ -295,7 +313,7 @@ def get_module_for_descriptor(user, request, descriptor, model_data_cache, cours
                           node_path=settings.NODE_PATH,
                           xblock_model_data=xblock_model_data,
                           publish=publish,
-                          anonymous_student_id=unique_id_for_user(user),
+                          anonymous_student_id=anonymized_user_id(course_id, user),
                           course_id=course_id,
                           open_ended_grading_interface=open_ended_grading_interface,
                           s3_interface=s3_interface,

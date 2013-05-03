@@ -16,6 +16,8 @@ from django.dispatch import Signal
 from contentstore.utils import get_modulestore
 from contentstore.tests.utils import parse_json
 
+from course_secrets.models import CourseSecret
+
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 
@@ -597,6 +599,9 @@ class ContentStoreTest(ModuleStoreTestCase):
         self.assertEqual(resp.status_code, 200)
         data = parse_json(resp)
         self.assertEqual(data['id'], 'i4x://MITx/999/course/Robot_Super_Course')
+        # Make sure we've got a new CourseSecret generated
+        course_id = CourseDescriptor.location_to_id(data['id'])
+        self.assertEqual(CourseSecret.objects.filter(course_id=course_id).count(), 1)
 
     def test_create_course_duplicate_course(self):
         """Test new course creation - error path"""
@@ -605,6 +610,9 @@ class ContentStoreTest(ModuleStoreTestCase):
         data = parse_json(resp)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(data['ErrMsg'], 'There is already a course defined with this name.')
+        # Ensure there's only one CourseSecret (for the first course)
+        course_id = 'MITx/999/Robot_Super_Course'
+        self.assertEqual(CourseSecret.objects.filter(course_id=course_id).count(), 1)
 
     def test_create_course_duplicate_number(self):
         """Test new course creation - error path"""
@@ -617,6 +625,9 @@ class ContentStoreTest(ModuleStoreTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(data['ErrMsg'],
                          'There is already a course defined with the same organization and course number.')
+        # Ensure there's only one CourseSecret (for the first course)
+        course_id = 'MITx/999/Robot_Super_Course'
+        self.assertEqual(CourseSecret.objects.filter(course_id=course_id).count(), 1)
 
     def test_create_course_with_bad_organization(self):
         """Test new course creation - error path for bad organization name"""
@@ -627,6 +638,9 @@ class ContentStoreTest(ModuleStoreTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(data['ErrMsg'],
                          "Unable to create course 'Robot Super Course'.\n\nInvalid characters in 'University of California, Berkeley'.")
+        # Ensure there's no CourseSecret generated
+        course_id = 'MITx/999/Robot_Super_Course'
+        self.assertEqual(CourseSecret.objects.filter(course_id=course_id).count(), 0)
 
     def test_course_index_view_with_no_courses(self):
         """Test viewing the index page with no courses"""

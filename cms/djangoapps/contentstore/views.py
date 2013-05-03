@@ -63,6 +63,7 @@ from models.settings.course_grading import CourseGradingModel
 from contentstore.utils import get_modulestore
 from django.shortcuts import redirect
 from models.settings.course_metadata import CourseMetadata
+from course_secrets import create_course_secret
 
 # to install PIL on MacOSX: 'easy_install http://dist.repoze.org/PIL-1.1.6.tar.gz'
 
@@ -1502,6 +1503,8 @@ def create_new_course(request):
     initialize_course_tabs(new_course)
 
     create_all_course_groups(request.user, new_course.location)
+
+    create_course_secret(new_course.id)
 
     return HttpResponse(json.dumps({'id': new_course.location.url()}))
 

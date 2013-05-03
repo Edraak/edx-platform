@@ -561,6 +561,7 @@ INSTALLED_APPS = (
     'psychometrics',
     'licenses',
     'course_groups',
+    'course_secrets',
 
     #For the wiki
     'wiki',   # The new django-wiki from benjaoming
