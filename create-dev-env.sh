@@ -346,14 +346,14 @@ fi
 if [[ $systempkgs ]]; then
     mkvirtualenv -a "$BASE/mitx" --system-site-packages mitx || {
       error "mkvirtualenv exited with a non-zero error"
-      return 1
+      exit 1
     }
 else
     # default behavior for virtualenv>1.7 is
     # --no-site-packages
     mkvirtualenv -a "$BASE/mitx" mitx || {
       error "mkvirtualenv exited with a non-zero error"
-      return 1
+      exit 1
     }
 fi
 
