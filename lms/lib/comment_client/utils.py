@@ -42,7 +42,7 @@ def perform_request(method, url, data_or_params=None, *args, **kwargs):
         # Reraise with a single exception type
         raise CommentClientError(str(err))
 
-    if 200 < response.status_code < 500 or True:
+    if 200 < response.status_code < 500:
         log.exception("Unsuccessful response from comments service URL {url} with {params}".format(
             method=method, url=url, params=data_or_params))
         raise CommentClientError(response.text)
