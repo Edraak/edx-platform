@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 
 def get_running_course_tasks(course_id):
     course_tasks = CourseTaskLog.objects.filter(course_id=course_id)
-    # exclude(task_state='SUCCESS').exclude(task_state='FAILURE').exclude(task_state='REVOKED')
     for state in READY_STATES:
         course_tasks = course_tasks.exclude(task_state=state)
     return course_tasks
@@ -45,7 +44,7 @@ def submit_regrade_problem_for_all_students(request, course_id, problem_url):
     task_name = 'regrade'
     if _task_is_running(course_id, task_name, problem_url):
         # TODO: figure out how to return info that it's already running
-        raise Exception("task is already running")
+        raise Exception("requested task is already running")
 
     # Create log entry now, so that future requests won't
     tasklog_args = {'course_id': course_id,
@@ -54,7 +53,6 @@ def submit_regrade_problem_for_all_students(request, course_id, problem_url):
                     'task_state': 'QUEUING',
                     'requester': request.user}
     course_task_log = CourseTaskLog.objects.create(**tasklog_args)
-
 
     # At a low level of processing, the task currently fetches some information from the web request.
     # This is used for setting up X-Queue, as well as for tracking.
@@ -71,7 +69,7 @@ def submit_regrade_problem_for_all_students(request, course_id, problem_url):
     task_args = [request_environ, course_id, problem_url]
     result = regrade_problem_for_all_students.apply_async(task_args)
 
-    # Put info into table with the resulting task_id.
+    # Update info in table with the resulting task_id (and state).
     course_task_log.task_state = result.state
     course_task_log.task_id = result.id
     course_task_log.save()
@@ -108,7 +106,17 @@ def _get_course_task_log_status(task_id):
       'task_id'
       'task_state'
       'in_progress': boolean indicating if the task is still running.
+      'message': status message reporting on progress, or providing exception message if failed.
+      'task_progress': dict containing progress information.  This includes:
+          'attempted': number of attempts made
+          'updated': number of attempts that "succeeded"
+          'total': number of possible subtasks to attempt
+          'action_name': user-visible verb to use in status messages.  Should be past-tense.
       'task_traceback': optional, returned if task failed and produced a traceback.
+      'succeeded': on complete tasks, indicates if the task outcome was successful:
+          did it achieve what it set out to do.
+          This is in contrast with a successful task_state, which indicates that the
+          task merely completed.
 
       If task doesn't exist, returns None.
     """
@@ -119,44 +127,72 @@ def _get_course_task_log_status(task_id):
         # TODO: log a message here
         return None
 
+    # define ajax return value:
     output = {}
 
     # if the task is already known to be done, then there's no reason to query
-    # the underlying task:
+    # the underlying task's result object:
     if course_task_log_entry.task_state not in READY_STATES:
         # we need to get information from the task result directly now.
-        # Just create the result object.
+
+        # Just create the result object, and pull values out once.
+        # (If we check them later, the state and result may have changed.)
         result = AsyncResult(task_id)
+        result_state = result.state
+        returned_result = result.result
+        result_traceback = result.traceback
 
-        if result.traceback is not None:
-            output['task_traceback'] = result.traceback
+        # Assume we don't always update the CourseTaskLog entry if we don't have to:
+        entry_needs_saving = False
 
-        if result.state == "PROGRESS":
-            # construct a status message directly from the task result's metadata:
-            if hasattr(result, 'result') and 'attempted' in result.result:
+        if result_state == 'PROGRESS':
+            # construct a status message directly from the task result's result:
+            if hasattr(result, 'result') and 'attempted' in returned_result:
                 fmt = "Attempted {attempted} of {total}, {action_name} {updated}"
-                message = fmt.format(attempted=result.result['attempted'],
-                                     updated=result.result['updated'],
-                                     total=result.result['total'],
-                                     action_name=result.result['action_name'])
+                message = fmt.format(attempted=returned_result['attempted'],
+                                     updated=returned_result['updated'],
+                                     total=returned_result['total'],
+                                     action_name=returned_result['action_name'])
                 output['message'] = message
-                log.info("progress: {0}".format(message))
-                for name in ['attempted', 'updated', 'total', 'action_name']:
-                    output[name] = result.result[name]
+                log.info("task progress: {0}".format(message))
             else:
                 log.info("still making progress... ")
+            output['task_progress'] = returned_result
 
-        # update the entry if the state has changed:
-        if result.state != course_task_log_entry.task_state:
-            course_task_log_entry.task_state = result.state
+        elif result_state == 'SUCCESS':
+            # on success, save out the result here, but the message
+            # will be calculated later
+            output['task_progress'] = returned_result
+            course_task_log_entry.task_progress = json.dumps(returned_result)
+            log.info("task succeeded: {0}".format(returned_result))
+            entry_needs_saving = True
+
+        elif result_state == 'FAILURE':
+            # on failure, the result's result contains the exception that caused the failure
+            exception = str(returned_result)
+            course_task_log_entry.task_progress = exception
+            entry_needs_saving = True
+            output['message'] = exception
+            log.info("task failed: {0}".format(returned_result))
+            if result_traceback is not None:
+                output['task_traceback'] = result_traceback
+
+        # always update the entry if the state has changed:
+        if result_state != course_task_log_entry.task_state:
+            course_task_log_entry.task_state = result_state
+            entry_needs_saving = True
+
+        if entry_needs_saving:
             course_task_log_entry.save()
+    else:
+        # task is already known to have finished, but report on its status:
+        if course_task_log_entry.task_progress is not None:
+            output['task_progress'] = json.loads(course_task_log_entry.task_progress)
 
+    # output basic information matching what's stored in CourseTaskLog:
     output['task_id'] = course_task_log_entry.task_id
     output['task_state'] = course_task_log_entry.task_state
     output['in_progress'] = course_task_log_entry.task_state not in READY_STATES
-
-    if course_task_log_entry.task_progress is not None:
-        output['task_progress'] = course_task_log_entry.task_progress
 
     if course_task_log_entry.task_state == 'SUCCESS':
         succeeded, message = _get_task_completion_message(course_task_log_entry)

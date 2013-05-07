@@ -16,13 +16,11 @@ from courseware.model_data import ModelDataCache
 from courseware.module_render import get_module
 
 from xmodule.modulestore.django import modulestore
-#from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError
 import track.views
 
 
 # define different loggers for use within tasks and on client side
 task_log = get_task_logger(__name__)
-# log = logging.getLogger(__name__)
 
 
 @task
@@ -40,28 +38,6 @@ def waitawhile(value):
 class UpdateProblemModuleStateError(Exception):
     pass
 
-#def get_module_descriptor(course_id, module_state_key):
-#    """Return module descriptor for requested module, or None if not found."""
-#    try:
-#        module_descriptor = modulestore().get_instance(course_id, module_state_key)
-#    except ItemNotFoundError:
-#        pass
-#    except InvalidLocationError:
-#        pass
-#    return module_descriptor
-#    except ItemNotFoundError:
-#        msg = "Couldn't find problem with that urlname."
-#    except InvalidLocationError:
-#        msg = "Couldn't find problem with that urlname."
-#    if module_descriptor is None:
-#        msg = "Couldn't find problem with that urlname."
-#    if not succeeded:
-#        current_task.update_state(
-#                                  meta={'attempted': num_attempted, 'updated': num_updated, 'total': num_total})
-# The task should still succeed, but should have metadata indicating
-# that the result of the successful task was a failure.  (It's not
-# the queue that failed, but the task put on the queue.)
-
 
 def _update_problem_module_state(request, course_id, module_state_key, student, update_fcn, action_name, filter_fcn):
     '''
@@ -71,7 +47,7 @@ def _update_problem_module_state(request, course_id, module_state_key, student, 
     '''
     # add hack so that mako templates will work on celery worker server:
     # The initialization of Make templating is usually done when Django is
-    # initialize middleware packages as part of processing a server request.
+    # initializing middleware packages as part of processing a server request.
     # When this is run on a celery worker server, no such initialization is
     # called.  So we look for the result: the defining of the lookup paths
     # for templates.
@@ -83,7 +59,6 @@ def _update_problem_module_state(request, course_id, module_state_key, student, 
     module_descriptor = modulestore().get_instance(course_id, module_state_key)
 
     # find the module in question
-    succeeded = False
     modules_to_update = StudentModule.objects.filter(course_id=course_id,
                                                      module_state_key=module_state_key)
 
@@ -125,42 +100,11 @@ def _update_problem_module_state(request, course_id, module_state_key, student, 
         current_task.update_state(state='PROGRESS', meta=get_task_progress())
         sleep(5)  # in seconds
 
-    # Done with looping through all modules, so just return final statistics:
-    # TODO: these messages should be rendered at the view level -- move them there!
-#    if student is not None:
-#        if num_attempted == 0:
-#            msg = "Unable to find submission to be {action} for student '{student}' and problem '{problem}'."
-#        elif num_updated == 0:
-#            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'!"
-#        else:
-#            succeeded = True
-#            msg = "Problem successfully {action} for student '{student}' and problem '{problem}'"
-#    elif num_attempted == 0:
-#        msg = "Unable to find any students with submissions to be {action} for problem '{problem}'."
-#    elif num_updated == 0:
-#        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'!"
-#    elif num_updated == num_attempted:
-#        succeeded = True
-#        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'!"
-#    elif num_updated < num_attempted:
-#        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
-#
-#    # Update status in task result object itself:
-#    msg = msg.format(action=action_name, updated=num_updated, attempted=num_attempted, student=student, problem=module_state_key)
-    task_progress = get_task_progress() #  succeeded=succeeded, message=msg)
+    task_progress = get_task_progress()
     current_task.update_state(state='PROGRESS', meta=task_progress)
 
-    # Update final progress in course task table as well:
-    # The actual task result state is updated by celery when this task completes, and thus
-    # clobbers any custom metadata.  So if we want any such status to persist, we have to
-    # write it to the CourseTaskLog instead.
-    task_log.info("Finished processing task, updating CourseTaskLog entry")
-
-    course_task_log_entry = CourseTaskLog.objects.get(task_id=current_task.request.id)
-    course_task_log_entry.task_progress = json.dumps(task_progress)
-    course_task_log_entry.save()
-
-    return succeeded
+    task_log.info("Finished processing task")
+    return task_progress
 
 
 def _update_problem_module_state_for_student(request, course_id, problem_url, student_identifier,
