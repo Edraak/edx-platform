@@ -80,7 +80,7 @@
             // find the corresponding entry, and update it:
             entry = $(_this.element).find('[data-task-id="' + task_id + '"]');
             entry.find('.task-state').text(task_dict.task_state)
-            var progress_value = task_dict.task_progress || '';
+            var progress_value = task_dict.message || '';
             entry.find('.task-progress').text(progress_value);
           }
         }

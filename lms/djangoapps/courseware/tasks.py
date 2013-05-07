@@ -76,6 +76,7 @@ def _update_problem_module_state(request, course_id, module_state_key, student, 
     # called.  So we look for the result: the defining of the lookup paths
     # for templates.
     if 'main' not in middleware.lookup:
+        task_log.info("Initializing Mako middleware explicitly")
         middleware.MakoMiddleware()
 
     # find the problem descriptor:
@@ -99,18 +100,18 @@ def _update_problem_module_state(request, course_id, module_state_key, student, 
     num_attempted = 0
     num_total = len(modules_to_update)  # TODO: make this more efficient.  Count()?
 
-    def get_task_progress(succeeded=False, message=None):
-        progress = {'attempted': num_attempted,
+    def get_task_progress():
+        progress = {'action_name': action_name,
+                    'attempted': num_attempted,
                     'updated': num_updated,
                     'total': num_total,
-                    'succeeded': succeeded}
-        if message is not None:
-            progress['message'] = message
+                    }
         return progress
+
+    task_log.info("Starting to process task {0}".format(current_task.request.id))
 
     for module_to_update in modules_to_update:
         num_attempted += 1
-
         # There is no try here:  if there's an error, we let it throw, and the task will
         # be marked as FAILED, with a stack trace.
         if update_fcn(request, module_to_update, module_descriptor):
@@ -122,36 +123,39 @@ def _update_problem_module_state(request, course_id, module_state_key, student, 
         #  -- it may not make sense to do so every time through the loop
         #  -- may depend on each iteration's duration
         current_task.update_state(state='PROGRESS', meta=get_task_progress())
+        sleep(5)  # in seconds
 
     # Done with looping through all modules, so just return final statistics:
     # TODO: these messages should be rendered at the view level -- move them there!
-    if student is not None:
-        if num_attempted == 0:
-            msg = "Unable to find submission to be {action} for student '{student}' and problem '{problem}'."
-        elif num_updated == 0:
-            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'!"
-        else:
-            succeeded = True
-            msg = "Problem successfully {action} for student '{student}' and problem '{problem}'"
-    elif num_attempted == 0:
-        msg = "Unable to find any students with submissions to be {action} for problem '{problem}'."
-    elif num_updated == 0:
-        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'!"
-    elif num_updated == num_attempted:
-        succeeded = True
-        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'!"
-    elif num_updated < num_attempted:
-        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
-
-    # Update status in task result object itself:
-    msg = msg.format(action=action_name, updated=num_updated, attempted=num_attempted, student=student, problem=module_state_key)
-    task_progress = get_task_progress(succeeded=succeeded, message=msg)
+#    if student is not None:
+#        if num_attempted == 0:
+#            msg = "Unable to find submission to be {action} for student '{student}' and problem '{problem}'."
+#        elif num_updated == 0:
+#            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'!"
+#        else:
+#            succeeded = True
+#            msg = "Problem successfully {action} for student '{student}' and problem '{problem}'"
+#    elif num_attempted == 0:
+#        msg = "Unable to find any students with submissions to be {action} for problem '{problem}'."
+#    elif num_updated == 0:
+#        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'!"
+#    elif num_updated == num_attempted:
+#        succeeded = True
+#        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'!"
+#    elif num_updated < num_attempted:
+#        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
+#
+#    # Update status in task result object itself:
+#    msg = msg.format(action=action_name, updated=num_updated, attempted=num_attempted, student=student, problem=module_state_key)
+    task_progress = get_task_progress() #  succeeded=succeeded, message=msg)
     current_task.update_state(state='PROGRESS', meta=task_progress)
 
     # Update final progress in course task table as well:
     # The actual task result state is updated by celery when this task completes, and thus
     # clobbers any custom metadata.  So if we want any such status to persist, we have to
     # write it to the CourseTaskLog instead.
+    task_log.info("Finished processing task, updating CourseTaskLog entry")
+
     course_task_log_entry = CourseTaskLog.objects.get(task_id=current_task.request.id)
     course_task_log_entry.task_progress = json.dumps(task_progress)
     course_task_log_entry.save()
@@ -343,6 +347,7 @@ def initialize_middleware(**kwargs):
     # the celery workers do not serve request, the components never
     # get initialized, causing errors in some dependencies.
     # In particular, the Mako template middleware is used by some xmodules
+    task_log.info("Initializing all middleware from worker_ready.connect hook")
 
     from django.core.handlers.base import BaseHandler
     BaseHandler().load_middleware()

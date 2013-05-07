@@ -119,48 +119,89 @@ def _get_course_task_log_status(task_id):
         # TODO: log a message here
         return None
 
-    def not_in_progress(entry):
-        # TODO: do better than to copy list from celery.states.READY_STATES
-        return entry.task_state in ['SUCCESS', 'FAILURE', 'REVOKED']
+    output = {}
 
     # if the task is already known to be done, then there's no reason to query
     # the underlying task:
-    if not_in_progress(course_task_log_entry):
-        output = {
-                  'task_id': course_task_log_entry.task_id,
-                  'task_state': course_task_log_entry.task_state,
-                  'in_progress': False
-                  }
-        return output
+    if course_task_log_entry.task_state not in READY_STATES:
+        # we need to get information from the task result directly now.
+        # Just create the result object.
+        result = AsyncResult(task_id)
 
-    # we need to get information from the task result directly now.
-    # Just create the result object.
-    result = AsyncResult(task_id)
+        if result.traceback is not None:
+            output['task_traceback'] = result.traceback
 
-    output = {
-        'task_id': result.id,
-        'task_state': result.state,
-        'in_progress': True
-    }
-    if result.traceback is not None:
-        output['task_traceback'] = result.traceback
+        if result.state == "PROGRESS":
+            # construct a status message directly from the task result's metadata:
+            if hasattr(result, 'result') and 'current' in result.result:
+                fmt = "Attempted {attempted} of {total}, {action_name} {updated}"
+                message = fmt.format(attempted=result.result['attempted'],
+                                     updated=result.result['updated'],
+                                     total=result.result['total'],
+                                     action_name=result.result['action_name'])
+                output['message'] = message
+                log.info("progress: {0}".format(message))
+                for name in ['attempted', 'updated', 'total', 'action_name']:
+                    output[name] = result.result[name]
+            else:
+                log.info("still making progress... ")
 
-    if result.state == "PROGRESS":
-        if hasattr(result, 'result') and 'current' in result.result:
-            log.info("still waiting... progress at {0} of {1}".format(result.result['current'],
-                                                                      result.result['total']))
-            output['current'] = result.result['current']
-            output['total'] = result.result['total']
-        else:
-            log.info("still making progress... ")
+        # update the entry if the state has changed:
+        if result.state != course_task_log_entry.task_state:
+            course_task_log_entry.task_state = result.state
+            course_task_log_entry.save()
 
-    if result.successful():
-        value = result.result
-        output['value'] = value
+    output['task_id'] = course_task_log_entry.task_id
+    output['task_state'] = course_task_log_entry.task_state
+    output['in_progress'] = course_task_log_entry.task_state not in READY_STATES
 
-    # update the entry if necessary:
-    if course_task_log_entry.task_state != result.state:
-        course_task_log_entry.task_state = result.state
-        course_task_log_entry.save()
+    if course_task_log_entry.task_progress is not None:
+        output['task_progress'] = course_task_log_entry.task_progress
+
+    if course_task_log_entry.task_state == 'SUCCESS':
+        succeeded, message = _get_task_completion_message(course_task_log_entry)
+        output['message'] = message
+        output['succeeded'] = succeeded
 
     return output
+
+
+def _get_task_completion_message(course_task_log_entry):
+    """
+    Construct progress message from progress information in CourseTaskLog entry.
+
+    Returns (boolean, message string) duple.
+    """
+    succeeded = False
+
+    if course_task_log_entry.task_progress is None:
+        log.warning("No task_progress information found for course_task {0}".format(course_task_log_entry.task_id))
+        return (succeeded, "No status information available")
+
+    task_progress = json.loads(course_task_log_entry.task_progress)
+    action_name = task_progress['action_name']
+    num_attempted = task_progress['attempted']
+    num_updated = task_progress['updated']
+    # num_total = task_progress['total']
+    if course_task_log_entry.student is not None:
+        if num_attempted == 0:
+            msg = "Unable to find submission to be {action} for student '{student}' and problem '{problem}'."
+        elif num_updated == 0:
+            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'!"
+        else:
+            succeeded = True
+            msg = "Problem successfully {action} for student '{student}' and problem '{problem}'"
+    elif num_attempted == 0:
+        msg = "Unable to find any students with submissions to be {action} for problem '{problem}'."
+    elif num_updated == 0:
+        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'!"
+    elif num_updated == num_attempted:
+        succeeded = True
+        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'!"
+    elif num_updated < num_attempted:
+        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
+
+    # Update status in task result object itself:
+    message = msg.format(action=action_name, updated=num_updated, attempted=num_attempted,
+                         student=course_task_log_entry.student, problem=course_task_log_entry.task_args)
+    return (succeeded, message)
