@@ -133,7 +133,7 @@ def _get_course_task_log_status(task_id):
 
         if result.state == "PROGRESS":
             # construct a status message directly from the task result's metadata:
-            if hasattr(result, 'result') and 'current' in result.result:
+            if hasattr(result, 'result') and 'attempted' in result.result:
                 fmt = "Attempted {attempted} of {total}, {action_name} {updated}"
                 message = fmt.format(attempted=result.result['attempted'],
                                      updated=result.result['updated'],
