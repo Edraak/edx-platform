@@ -18,7 +18,8 @@ def get_logger_config(log_dir,
                       service_variant=None, 
                       analytics_enabled=False, 
                       analytics_host="127.0.0.1:9022",
-                      sns_topic=None):
+                      sns_topic=None, 
+                      sns_timeout=0.5):
 
     """
 
@@ -171,7 +172,7 @@ def get_logger_config(log_dir,
                     'level': 'DEBUG', 
                     'class': 'loghandlersplus.failsafehandler.FailsafeHandler',
                     'main_handler': loghandlersplus.snshandler.SNSHandler(topic = sns_topic),
-                    'timeout': 0.5, 
+                    'timeout': sns_timeout, 
                     'attempts': 3,
                     'retry_timeout' : 60*60,
                     'exception_handler' : loghandlersplus.lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS exception')), # SNS throws an exception

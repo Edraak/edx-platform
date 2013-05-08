@@ -17,6 +17,7 @@ LOGGING = get_logger_config(ENV_ROOT / "log",
                             tracking_filename="tracking.log",
                             debug=False,
                             analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
+                            sns_timeout = MITX_FEATURES['ANALYTICS_SNS_TIMEOUT'],
                             sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
                             analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
                             )

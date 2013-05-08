@@ -17,6 +17,7 @@ LOGGING = get_logger_config(TEST_ROOT / "log",
                             console_loglevel='ERROR',
                             analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
                             sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
+                            sns_timeout = MITX_FEATURES['ANALYTICS_SNS_TIMEOUT'],
                             analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
                             )
 

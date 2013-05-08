@@ -88,6 +88,7 @@ MITX_FEATURES = {
     'ANALYTICS_LOGGING_ENABLED' : os.environ.get("ANALYTICS_LOGGING_ENABLED", False),  
     'ANALYTICS_HTTP_HOST' : os.environ.get("ANALYTICS_HTTP_HOST", '127.0.0.1:9000'),  
     'ANALYTICS_SNS_TOPIC' : os.environ.get("ANALYTICS_SNS_TOPIC", 'pmitros_dev'),  
+    'ANALYTICS_SNS_TIMEOUT' : float(os.environ.get("ANALYTICS_SNS_TIMEOUT", '0.5')), # Reasonable numbers are 0.5 for dev machines talking to SNS, and 0.1 for machines on AWS. 
 
     # If enabled, we have the new dev developer dashboard. 
     # For now, this does nothing. 
