@@ -4,11 +4,15 @@
 <head>
   {% block title %}<title>edX</title>{% endblock %}
   
-  <link rel="icon" type="image/x-icon" href="{% static "images/favicon.ico" %}" />
+  <!--<link rel="icon" type="image/x-icon" href="{% static "images/favicon.ico" %}" />-->
+  <link rel="icon" type="image/x-icon" href="{% static "themes/stanford/images/favicon.ico" %}" />
   
   {% compressed_css 'application' %}
   {% compressed_js 'main_vendor' %}
   {% block headextra %}{% endblock %}
+  
+    {% include "themes/stanford/head-extra.html" %}
+  
   {% render_block "css" %}
   
   
@@ -23,13 +27,17 @@
 </head>
 
 <body class="{% block bodyclass %}{% endblock %}">
-  {% include "navigation.html" %}
+  
+  <!--{% include "navigation.html" %}-->
+    {% include "themes/stanford/header.html" %}
+  
   <section class="content-wrapper">
     {% block body %}{% endblock %}
     {% block bodyextra %}{% endblock %}
   </section>
   
-  {% include "footer.html" %}
+  <!--{% include "footer.html" %}-->
+    {% include "themes/stanford/footer.html" %}
     
   {% compressed_js 'application' %}
   {% compressed_js 'module-js' %}
