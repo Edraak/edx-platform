@@ -145,12 +145,9 @@ def get_logger_config(log_dir,
             },
         })
 
-    print ">>>>>>>>>>>>>>>>>>>>>", analytics_enabled
     if not analytics_enabled or analytics_enabled.upper()=="FALSE": 
-        print ">>>>>>>>>>>>>>>>>>>>> DISABLED"
         pass
     elif analytics_enabled.upper() == "HTTP":
-        print ">>>>>>>>>>>>>>>>>>>>> HTTP"
         logger_config['handlers'].update({
                 'http': {
                     'level': 'DEBUG', 
@@ -161,29 +158,27 @@ def get_logger_config(log_dir,
                 })
         logger_config['loggers']['tracking']['handlers'].append('http')
     elif analytics_enabled.upper()  == "SNS": 
-        print ">>>>>>>>>>>>>>>>>>>>> SNS"
         import loghandlersplus.failsafehandler
         import loghandlersplus.snshandler
         import loghandlersplus.lambdahandler
         import logging.handlers
         
-        print ">>>>>>>>>>>>>>>>>>>>> imported"
+        lambda x: logging.getLogger('snshandler').error('timeout')
+        lambda x: logging.getLogger('snshandler').error('exception')
 
         logger_config['handlers'].update({
                 'sns': {
                     'level': 'DEBUG', 
                     'class': 'loghandlersplus.failsafehandler.FailsafeHandler',
                     'main_handler': loghandlersplus.snshandler.SNSHandler(topic = sns_topic),
-                    'timeout': 0.1, 
+                    'timeout': 0.5, 
                     'attempts': 3,
                     'retry_timeout' : 60*60,
-                    'exception_handler' : logging.handlers.SysLogHandler(), # SNS throws an exception
-                    'fallback_handlers' : [logging.handlers.SysLogHandler()] # SNS times out
+                    'exception_handler' : loghandlersplus.lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS exception')), # SNS throws an exception
+                    'fallback_handlers' : [loghandlersplus.lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS timeout'))] # SNS times out
                     }
                 })
-        print ">>>>>>>>>>>>>>>>>>>>> configured"
         logger_config['loggers']['tracking']['handlers'].append('sns')
-        print ">>>>>>>>>>>>>>>>>>>>> done"
     else:
         raise AttributeError("Invalid ANALYTICS_LOGGING_ENABLED setting")
 
