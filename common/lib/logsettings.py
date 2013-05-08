@@ -145,7 +145,12 @@ def get_logger_config(log_dir,
             },
         })
 
-    if analytics_enabled and dev_env:
+    print ">>>>>>>>>>>>>>>>>>>>>", analytics_enabled
+    if not analytics_enabled or analytics_enabled.upper()=="FALSE": 
+        print ">>>>>>>>>>>>>>>>>>>>> DISABLED"
+        pass
+    elif analytics_enabled.upper() == "HTTP":
+        print ">>>>>>>>>>>>>>>>>>>>> HTTP"
         logger_config['handlers'].update({
                 'http': {
                     'level': 'DEBUG', 
@@ -155,15 +160,20 @@ def get_logger_config(log_dir,
                     }
                 })
         logger_config['loggers']['tracking']['handlers'].append('http')
-    elif analytics_enabled: 
-        raise NotImplementedError("The code must be tested prior to deployment") 
-        # Below is pseudocode. 
-        import loghandlersplus
+    elif analytics_enabled.upper()  == "SNS": 
+        print ">>>>>>>>>>>>>>>>>>>>> SNS"
+        import loghandlersplus.failsafehandler
+        import loghandlersplus.snshandler
+        import loghandlersplus.lambdahandler
+        import logging.handlers
+        
+        print ">>>>>>>>>>>>>>>>>>>>> imported"
+
         logger_config['handlers'].update({
-                'http': {
+                'sns': {
                     'level': 'DEBUG', 
-                    'class': 'loghandlersplus.failsafehandler',
-                    'main_handler': loghandlersplus.SNSHandler(topic = sns_topic),
+                    'class': 'loghandlersplus.failsafehandler.FailsafeHandler',
+                    'main_handler': loghandlersplus.snshandler.SNSHandler(topic = sns_topic),
                     'timeout': 0.1, 
                     'attempts': 3,
                     'retry_timeout' : 60*60,
@@ -171,6 +181,10 @@ def get_logger_config(log_dir,
                     'fallback_handlers' : [logging.handlers.SysLogHandler()] # SNS times out
                     }
                 })
-        logger_config['loggers']['tracking'].append('http')
+        print ">>>>>>>>>>>>>>>>>>>>> configured"
+        logger_config['loggers']['tracking']['handlers'].append('sns')
+        print ">>>>>>>>>>>>>>>>>>>>> done"
+    else:
+        raise AttributeError("Invalid ANALYTICS_LOGGING_ENABLED setting")
 
     return logger_config

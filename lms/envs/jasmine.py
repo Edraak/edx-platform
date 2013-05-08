@@ -14,7 +14,11 @@ LOGGING = get_logger_config(TEST_ROOT / "log",
                             dev_env=True,
                             debug=True,
                             local_loglevel='ERROR',
-                            console_loglevel='ERROR')
+                            console_loglevel='ERROR',
+                            analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
+                            sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
+                            analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
+                            )
 
 PIPELINE_JS['js-test-source'] = {
     'source_filenames': sum([

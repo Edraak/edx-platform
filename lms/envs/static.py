@@ -15,7 +15,11 @@ STATIC_GRAB = True
 LOGGING = get_logger_config(ENV_ROOT / "log",
                             logging_env="dev",
                             tracking_filename="tracking.log",
-                            debug=False)
+                            debug=False,
+                            analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
+                            sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
+                            analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
+                            )
 
 DATABASES = {
     'default': {

@@ -41,7 +41,11 @@ MAKO_TEMPLATES['main'] = [PROJECT_ROOT / 'templates',
 LOGGING = get_logger_config(TEST_ROOT / "log",
                             logging_env="dev",
                             tracking_filename="tracking.log",
-                            debug=True)
+                            debug=True, 
+                            analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
+                            sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
+                            analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
+                            )
 
 DATABASES = {
     'default': {

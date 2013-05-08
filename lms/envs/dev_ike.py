@@ -8,7 +8,6 @@ sessions. Assumes structure:
         /log  # Where we're going to write log files
 """
 from .common import *
-from logsettings import get_logger_config
 from .dev import *
 import socket
 

@@ -82,9 +82,16 @@ MITX_FEATURES = {
     'AUTH_USE_MIT_CERTIFICATES': False,
     'AUTH_USE_OPENID_PROVIDER': False,
 
-    # Enable below to permit streaming of analytics to the analytics server
-    'ANALYTICS_LOGGING_ENABLED' : os.environ.get("ANALYTICS_LOGGER_ENABLED", "False").upper() == "TRUE", 
-    'ANALYTICS_EMBEDDING_ENABLED' : os.environ.get("ANALYTICS_EMBED_ENABLED", "False").upper() == "TRUE", 
+    # False => No analytics event streaming
+    # HTTP => HttpLogger event streaming
+    # SNS => Amazon SNS event streaming
+    'ANALYTICS_LOGGING_ENABLED' : os.environ.get("ANALYTICS_LOGGING_ENABLED", False),  
+    'ANALYTICS_HTTP_HOST' : os.environ.get("ANALYTICS_HTTP_HOST", '127.0.0.1:9000'),  
+    'ANALYTICS_SNS_TOPIC' : os.environ.get("ANALYTICS_SNS_TOPIC", 'pmitros_dev'),  
+
+    # If enabled, we have the new dev developer dashboard. 
+    # For now, this does nothing. 
+    'ANALYTICS_EMBEDDING_ENABLED' : os.environ.get("ANALYTICS_EMBED_ENABLED", None), 
     'ENABLE_INSTRUCTOR_ANALYTICS': False,
 
     # Flip to True when the YouTube iframe API breaks (again)
