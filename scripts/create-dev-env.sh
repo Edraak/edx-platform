@@ -74,22 +74,22 @@ clone_repos() {
         git clone git@github.com:edx/mitx.git
     fi
 
-    # By default, dev environments start with a copy of 6.002x
-    cd "$BASE"
-    mkdir -p "$BASE/data"
-    REPO="content-mit-6002x"
-    if [[ -d "$BASE/data/$REPO/.git" ]]; then
-        output "Pulling $REPO"
-        cd "$BASE/data/$REPO"
-        git pull
-    else
-        output "Cloning $REPO"
-        if [[ -d "$BASE/data/$REPO" ]]; then
-            mv "$BASE/data/$REPO" "${BASE}/data/$REPO.bak.$$"
-        fi
-        cd "$BASE/data"
-        git clone git@github.com:MITx/$REPO
-    fi
+    # # By default, dev environments start with a copy of 6.002x
+    # cd "$BASE"
+    # mkdir -p "$BASE/data"
+    # REPO="content-mit-6002x"
+    # if [[ -d "$BASE/data/$REPO/.git" ]]; then
+    #     output "Pulling $REPO"
+    #     cd "$BASE/data/$REPO"
+    #     git pull
+    # else
+    #     output "Cloning $REPO"
+    #     if [[ -d "$BASE/data/$REPO" ]]; then
+    #         mv "$BASE/data/$REPO" "${BASE}/data/$REPO.bak.$$"
+    #     fi
+    #     cd "$BASE/data"
+    #     git clone git@github.com:MITx/$REPO
+    # fi
 }
 
 
