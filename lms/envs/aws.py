@@ -92,6 +92,14 @@ CERT_QUEUE = ENV_TOKENS.get("CERT_QUEUE", 'test-pull')
 ZENDESK_URL = ENV_TOKENS.get("ZENDESK_URL")
 FEEDBACK_SUBMISSION_EMAIL = ENV_TOKENS.get("FEEDBACK_SUBMISSION_EMAIL")
 
+
+# Set up the special Stanford theme
+
+MITX_FEATURES['ENABLE_CUSTOM_THEME'] = True
+CUSTOM_THEME = "stanford"
+STATICFILES_DIRS += [PROJECT_ROOT / "static" / "themes" / "stanford"]
+
+
 ############################## SECURE AUTH ITEMS ###############
 # Secret things: passwords, access keys, etc.
 with open(ENV_ROOT / CONFIG_PREFIX + "auth.json") as auth_file:
