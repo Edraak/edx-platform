@@ -71,7 +71,7 @@ clone_repos() {
         if [[ -d "$BASE/mitx" ]]; then
             mv "$BASE/mitx" "${BASE}/mitx.bak.$$"
         fi
-        git clone git@github.com:MITx/mitx.git
+        git clone git@github.com:edx/mitx.git
     fi
 
     # By default, dev environments start with a copy of 6.002x
