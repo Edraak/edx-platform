@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import sys, os
+from path import path
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -246,3 +247,19 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'cms.envs.dev'
+
+# BASE_DIR is /mitx
+BASE_DIR = path(__file__).abspath().dirname().joinpath('..', '..').normpath()
+sys.path.append(BASE_DIR)
+sys.path.append(BASE_DIR.joinpath('cms', 'djangoapps'))
+sys.path.append(BASE_DIR.joinpath('lms', 'djangoapps'))
+sys.path.append(BASE_DIR.joinpath('cms', 'lib'))
+sys.path.append(BASE_DIR.joinpath('lms', 'lib'))
+sys.path.append(BASE_DIR.joinpath('src', 'xblock'))
+sys.path.append(BASE_DIR.joinpath('src', 'django-staticfiles'))
+sys.path.append(BASE_DIR.joinpath('src', 'django-pipeline'))
+sys.path.append(BASE_DIR.joinpath('src', 'django-wiki'))
+import cms
+import xblock

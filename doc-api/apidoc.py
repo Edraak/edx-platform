@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, subprocess
+import sys, os, subprocess
 from path import path
 
 # Root for these documents
@@ -9,6 +9,9 @@ DOC_SRC_DIR = DOC_DIR.joinpath('source').normpath()
 
 # BASE_DIR is the mitx directory
 BASE_DIR = DOC_DIR.joinpath('..').normpath()
+
+
+
 
 SOURCES = ('cms/djangoapps',
            'i18n',
@@ -62,8 +65,8 @@ def make_html():
     run('make html', cwd=DOC_DIR)
 
 def main():
-    make_clean()
-    make_apidoc()
+    #make_clean()
+    #make_apidoc()
     make_html()
 
 if __name__ == '__main__':
