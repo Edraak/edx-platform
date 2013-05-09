@@ -8,7 +8,8 @@ from celery.states import READY_STATES
 
 from courseware.models import CourseTaskLog
 from courseware.module_render import get_xqueue_callback_url_prefix
-from courseware.tasks import regrade_problem_for_all_students
+from courseware.tasks import (regrade_problem_for_all_students, regrade_problem_for_student,
+                              reset_problem_attempts_for_all_students, delete_problem_state_for_all_students)
 from xmodule.modulestore.django import modulestore
 
 
@@ -274,14 +275,45 @@ def _get_task_completion_message(course_task_log_entry):
     return (succeeded, message)
 
 
+def submit_regrade_problem_for_student(request, course_id, problem_url, student):
+    """
+    Request a problem to be regraded as a background task.
+
+    The problem will be regraded for the specified student only.  Parameters are the `course_id`,
+    the `problem_url`, and the `student` as a User object.
+    The url must specify the location of the problem, using i4x-type notation.
+
+    An exception is thrown if the problem doesn't exist, or if the particular
+    problem is already being regraded for this student.
+    """
+    # check arguments:  make sure that the problem_url is defined
+    # (since that's currently typed in).  If the corresponding module descriptor doesn't exist,
+    # an exception will be raised.  Let it pass up to the caller.
+    modulestore().get_instance(course_id, problem_url)
+
+    task_name = 'regrade_problem'
+
+    # check to see if task is already running, and reserve it otherwise
+    course_task_log = _reserve_task(course_id, task_name, problem_url, request.user, student)
+
+    # Submit task:
+    task_args = [course_id, problem_url, student.username, _get_xmodule_instance_args(request)]
+    task_result = regrade_problem_for_student.apply_async(task_args)
+
+    # Update info in table with the resulting task_id (and state).
+    _update_task(course_task_log, task_result)
+
+    return course_task_log
+
+
 def submit_regrade_problem_for_all_students(request, course_id, problem_url):
     """
     Request a problem to be regraded as a background task.
 
     The problem will be regraded for all students who have accessed the
-    particular problem in a course.  Parameters are the `course_id` and
-    the `problem_url`.  The url must specify the location of the problem,
-    using i4x-type notation.
+    particular problem in a course and have provided and checked an answer.
+    Parameters are the `course_id` and the `problem_url`.
+    The url must specify the location of the problem, using i4x-type notation.
 
     An exception is thrown if the problem doesn't exist, or if the particular
     problem is already being regraded.
@@ -299,6 +331,70 @@ def submit_regrade_problem_for_all_students(request, course_id, problem_url):
     # Submit task:
     task_args = [course_id, problem_url, _get_xmodule_instance_args(request)]
     task_result = regrade_problem_for_all_students.apply_async(task_args)
+
+    # Update info in table with the resulting task_id (and state).
+    _update_task(course_task_log, task_result)
+
+    return course_task_log
+
+
+def submit_reset_problem_attempts_for_all_students(request, course_id, problem_url):
+    """
+    Request to have attempts reset for a problem as a background task.
+
+    The problem's attempts will be reset for all students who have accessed the
+    particular problem in a course.  Parameters are the `course_id` and
+    the `problem_url`.  The url must specify the location of the problem,
+    using i4x-type notation.
+
+    An exception is thrown if the problem doesn't exist, or if the particular
+    problem is already being reset.
+    """
+    # check arguments:  make sure that the problem_url is defined
+    # (since that's currently typed in).  If the corresponding module descriptor doesn't exist,
+    # an exception will be raised.  Let it pass up to the caller.
+    modulestore().get_instance(course_id, problem_url)
+
+    task_name = 'reset_problem_attempts'
+
+    # check to see if task is already running, and reserve it otherwise
+    course_task_log = _reserve_task(course_id, task_name, problem_url, request.user)
+
+    # Submit task:
+    task_args = [course_id, problem_url, _get_xmodule_instance_args(request)]
+    task_result = reset_problem_attempts_for_all_students.apply_async(task_args)
+
+    # Update info in table with the resulting task_id (and state).
+    _update_task(course_task_log, task_result)
+
+    return course_task_log
+
+
+def submit_delete_problem_state_for_all_students(request, course_id, problem_url):
+    """
+    Request to have state deleted for a problem as a background task.
+
+    The problem's state will be deleted for all students who have accessed the
+    particular problem in a course.  Parameters are the `course_id` and
+    the `problem_url`.  The url must specify the location of the problem,
+    using i4x-type notation.
+
+    An exception is thrown if the problem doesn't exist, or if the particular
+    problem is already being deleted.
+    """
+    # check arguments:  make sure that the problem_url is defined
+    # (since that's currently typed in).  If the corresponding module descriptor doesn't exist,
+    # an exception will be raised.  Let it pass up to the caller.
+    modulestore().get_instance(course_id, problem_url)
+
+    task_name = 'delete_problem_state'
+
+    # check to see if task is already running, and reserve it otherwise
+    course_task_log = _reserve_task(course_id, task_name, problem_url, request.user)
+
+    # Submit task:
+    task_args = [course_id, problem_url, _get_xmodule_instance_args(request)]
+    task_result = delete_problem_state_for_all_students.apply_async(task_args)
 
     # Update info in table with the resulting task_id (and state).
     _update_task(course_task_log, task_result)

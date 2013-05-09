@@ -296,22 +296,57 @@ function goto( mode)
   %endif
     <H2>Course-specific grade adjustment</h2>
 
-    <p>to regrade a problem for all students, input the urlname of that problem</p>
-    <p><input type="text" name="problem_to_regrade" size="60">
+    <p>
+      Specify a particular problem in the course here by its url:
+      <input type="text" name="problem_for_all_students" size="60">
+    </p>
+    <p>
+      You may use just the "urlname" if a problem, or modulename/urlname if not
+      (e.g. <tt>combinedopenended/Humanities_SA_Peer</tt>).
+    </p>
+    <p>
+      Then select an action:
+       <input type="submit" name="action" value="Reset ALL students' attempts">
        <input type="submit" name="action" value="Regrade ALL students' problem submissions">
     </p>
+    %if instructor_access:
+    <p>
+      You may also delete the entire state for all students for the specified module:
+      <input type="submit" name="action" value="Delete ALL student state for module">
+    </p>
+    %endif
+    <p>These actions run in the background, and status for active tasks will appear in a table below.</p>
+
+    <hr width="40%" style="align:left">
 
     <H2>Student-specific grade inspection and adjustment</h2>
-    <p>edX email address or their username: </p>
-    <p><input type="text" name="unique_student_identifier">  <input type="submit" name="action" value="Get link to student's progress page"></p>
-    <p>and, if you want to reset the number of attempts for a problem, the urlname of that problem</p>
-    <p> <input type="text" name="problem_to_reset" size="60"> <input type="submit" name="action" value="Reset student's attempts">  </p>
+    <p>
+      Specify the edX email address or username of a student here:
+      <input type="text" name="unique_student_identifier">
+    </p>
+    <p>
+      Click this, and a link to student's progress page will appear below:
+      <input type="submit" name="action" value="Get link to student's progress page">
+    </p>
+    <p>
+      Specify a particular problem in the course here by its url:
+      <input type="text" name="problem_for_student" size="60">
+    </p>
+    <p>
+      You may use just the "urlname" if a problem, or modulename/urlname if not
+      (e.g. <tt>combinedopenended/Humanities_SA_Peer</tt>).
+    </p>
+    <p>
+      Then select an action:
+      <input type="submit" name="action" value="Reset student's attempts">
+      <input type="submit" name="action" value="Regrade student's problem submission">
+    </p>
 
     %if instructor_access:
-    <p> You may also delete the entire state of a student for a problem:
-    <input type="submit" name="action" value="Delete student state for problem">  </p>
-    <p>To delete the state of other XBlocks specify modulename/urlname, eg
-       <tt>combinedopenended/Humanities_SA_Peer</tt></p>
+    <p>
+      You may also delete the entire state of a student for the specified module:
+      <input type="submit" name="action" value="Delete student state for module">
+    </p>
     %endif
 
  %endif
@@ -486,7 +521,8 @@ function goto( mode)
 ## Output tasks in progress
 
 %if course_tasks is not None and len(course_tasks) > 0:
-    <p>Pending Course Tasks</p>
+    <hr width="40%" style="align:left">
+    <h2>Pending Course Tasks</h2>
     <div id="task-progress-wrapper">
       <table class="stat_table">
         <tr>
