@@ -707,12 +707,13 @@ body.course.unit {
         }
       }
 
-      tip.setting-help {
+      .tip.setting-help {
         @include font-size(12);
         display: inline-block;
         font-color: $gray-l6;
-        //max-width: 50%;
-        vertical-align: top;
+        min-width: 200px;
+        width: 48%;
+        vertical-align: middle;
       }
     }
   }
