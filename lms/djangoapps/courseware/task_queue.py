@@ -1,20 +1,22 @@
 import json
 import logging
 from django.http import HttpResponse
+from django.db import transaction
 
 from celery.result import AsyncResult
 from celery.states import READY_STATES
 
 from courseware.models import CourseTaskLog
+from courseware.module_render import get_xqueue_callback_url_prefix
 from courseware.tasks import regrade_problem_for_all_students
 from xmodule.modulestore.django import modulestore
 
 
-# define different loggers for use within tasks and on client side
 log = logging.getLogger(__name__)
 
 
 def get_running_course_tasks(course_id):
+    """Returns a query of CourseTaskLog objects of running tasks for a given course."""
     course_tasks = CourseTaskLog.objects.filter(course_id=course_id)
     for state in READY_STATES:
         course_tasks = course_tasks.exclude(task_state=state)
@@ -22,6 +24,7 @@ def get_running_course_tasks(course_id):
 
 
 def _task_is_running(course_id, task_name, task_args, student=None):
+    """Checks if a particular task is already running"""
     runningTasks = CourseTaskLog.objects.filter(course_id=course_id, task_name=task_name, task_args=task_args)
     if student is not None:
         runningTasks = runningTasks.filter(student=student)
@@ -30,55 +33,83 @@ def _task_is_running(course_id, task_name, task_args, student=None):
     return len(runningTasks) > 0
 
 
-def submit_regrade_problem_for_all_students(request, course_id, problem_url):
-    # check arguments: in particular, make sure that problem_url is defined
-    # (since that's currently typed in).  If the corresponding module descriptor doesn't exist,
-    # an exception should be raised.  Let it continue to the caller.
-    modulestore().get_instance(course_id, problem_url)
+@transaction.autocommit
+def _reserve_task(course_id, task_name, task_args, requester, student=None):
+    """
+    Creates a database entry to indicate that a task is in progress.
 
-    # TODO: adjust transactions so that one request will not be about to create an
-    # entry while a second is testing to see if the entry exists.  (Need to handle
-    # quick accidental double-clicks when submitting.)
+    An exception is thrown if the task is already in progress.
 
-    # check to see if task is already running
-    task_name = 'regrade'
-    if _task_is_running(course_id, task_name, problem_url):
-        # TODO: figure out how to return info that it's already running
+    Autocommit annotation makes sure the database entry is committed.
+    """
+
+    if _task_is_running(course_id, task_name, task_args, student):
         raise Exception("requested task is already running")
 
     # Create log entry now, so that future requests won't
     tasklog_args = {'course_id': course_id,
                     'task_name': task_name,
-                    'task_args': problem_url,
+                    'task_args': task_args,
                     'task_state': 'QUEUING',
-                    'requester': request.user}
+                    'requester': requester}
+    if student is not None:
+        tasklog_args['student'] = student
+
     course_task_log = CourseTaskLog.objects.create(**tasklog_args)
-
-    # At a low level of processing, the task currently fetches some information from the web request.
-    # This is used for setting up X-Queue, as well as for tracking.
-    # An actual request will not successfully serialize with json or with pickle.
-    # TODO: we can just pass all META info as a dict.
-    request_environ = {'HTTP_USER_AGENT': request.META['HTTP_USER_AGENT'],
-                       'REMOTE_ADDR': request.META['REMOTE_ADDR'],
-                       'SERVER_NAME': request.META['SERVER_NAME'],
-                       'REQUEST_METHOD': 'GET',
-#                      'HTTP_X_FORWARDED_PROTO': request.META['HTTP_X_FORWARDED_PROTO'],
-                      }
-
-    # Submit task:
-    task_args = [request_environ, course_id, problem_url]
-    result = regrade_problem_for_all_students.apply_async(task_args)
-
-    # Update info in table with the resulting task_id (and state).
-    course_task_log.task_state = result.state
-    course_task_log.task_id = result.id
-    course_task_log.save()
     return course_task_log
+
+
+@transaction.autocommit
+def _update_task(course_task_log, task_result):
+    """
+    Updates a database entry with information about the submitted task.
+
+    Autocommit annotation makes sure the database entry is committed.
+    """
+    course_task_log.task_state = task_result.state
+    course_task_log.task_id = task_result.id
+    course_task_log.save()
+
+
+def _get_xmodule_instance_args(request):
+    """
+    Calculate parameters needed for instantiating xmodule instances.
+
+    The `request_info` will be passed to a tracking log function, to provide information
+    about the source of the task request.   The `xqueue_callback_urul_prefix` is used to
+    permit old-style xqueue callbacks directly to the appropriate module in the LMS.
+    """
+    request_info = {'username': request.user.username,
+                    'ip': request.META['REMOTE_ADDR'],
+                    'agent': request.META.get('HTTP_USER_AGENT', ''),
+                    'host': request.META['SERVER_NAME'],
+                    }
+
+    xmodule_instance_args = {'xqueue_callback_url_prefix': get_xqueue_callback_url_prefix(request),
+                             'request_info': request_info,
+                             }
+    return xmodule_instance_args
 
 
 def course_task_log_status(request, task_id=None):
     """
     This returns the status of a course-related task as a JSON-serialized dict.
+
+    The task_id can be specified in one of three ways:
+
+    * explicitly as an argument to the method (by specifying in the url)
+      Returns a dict containing status information for the specified task_id
+
+    * by making a post request containing 'task_id' as a parameter with a single value
+      Returns a dict containing status information for the specified task_id
+
+    * by making a post request containing 'task_ids' as a parameter,
+      with a list of task_id values.
+      Returns a dict of dicts, with the task_id as key, and the corresponding
+      dict containing status information for the specified task_id
+
+      Task_id values that are unrecognized are skipped.
+
     """
     output = {}
     if task_id is not None:
@@ -223,21 +254,53 @@ def _get_task_completion_message(course_task_log_entry):
         if num_attempted == 0:
             msg = "Unable to find submission to be {action} for student '{student}' and problem '{problem}'."
         elif num_updated == 0:
-            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'!"
+            msg = "Problem failed to be {action} for student '{student}' and problem '{problem}'"
         else:
             succeeded = True
             msg = "Problem successfully {action} for student '{student}' and problem '{problem}'"
     elif num_attempted == 0:
         msg = "Unable to find any students with submissions to be {action} for problem '{problem}'."
     elif num_updated == 0:
-        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'!"
+        msg = "Problem failed to be {action} for any of {attempted} students for problem '{problem}'"
     elif num_updated == num_attempted:
         succeeded = True
-        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'!"
+        msg = "Problem successfully {action} for {attempted} students for problem '{problem}'"
     elif num_updated < num_attempted:
-        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'!"
+        msg = "Problem {action} for {updated} of {attempted} students for problem '{problem}'"
 
     # Update status in task result object itself:
     message = msg.format(action=action_name, updated=num_updated, attempted=num_attempted,
                          student=course_task_log_entry.student, problem=course_task_log_entry.task_args)
     return (succeeded, message)
+
+
+def submit_regrade_problem_for_all_students(request, course_id, problem_url):
+    """
+    Request a problem to be regraded as a background task.
+
+    The problem will be regraded for all students who have accessed the
+    particular problem in a course.  Parameters are the `course_id` and
+    the `problem_url`.  The url must specify the location of the problem,
+    using i4x-type notation.
+
+    An exception is thrown if the problem doesn't exist, or if the particular
+    problem is already being regraded.
+    """
+    # check arguments:  make sure that the problem_url is defined
+    # (since that's currently typed in).  If the corresponding module descriptor doesn't exist,
+    # an exception will be raised.  Let it pass up to the caller.
+    modulestore().get_instance(course_id, problem_url)
+
+    task_name = 'regrade_problem'
+
+    # check to see if task is already running, and reserve it otherwise
+    course_task_log = _reserve_task(course_id, task_name, problem_url, request.user)
+
+    # Submit task:
+    task_args = [course_id, problem_url, _get_xmodule_instance_args(request)]
+    task_result = regrade_problem_for_all_students.apply_async(task_args)
+
+    # Update info in table with the resulting task_id (and state).
+    _update_task(course_task_log, task_result)
+
+    return course_task_log
