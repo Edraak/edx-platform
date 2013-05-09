@@ -173,3 +173,11 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     # 'django.contrib.auth.hashers.CryptPasswordHasher',
 )
+
+
+# Set up the special Stanford theme
+
+MITX_FEATURES['ENABLE_CUSTOM_THEME'] = True
+CUSTOM_THEME = "stanford"
+STATICFILES_DIRS += [PROJECT_ROOT / "static" / "themes" / "stanford"]
+
