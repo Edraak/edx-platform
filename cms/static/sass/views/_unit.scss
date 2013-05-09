@@ -675,7 +675,11 @@ body.course.unit {
         }
       }
 
-      //input[type=others]
+      input[type="number"] {
+        padding: 10px;
+        min-width: 100px;
+        width: 45%;
+      }
 
       .action.setting-clear {
         @include font-size(11);
