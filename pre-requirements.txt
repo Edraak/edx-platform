@@ -7,4 +7,4 @@
 # that `numpy` is built *and* installed before we try to build `scipy`.
 
 numpy==1.6.2
-distribute>=0.6.28
+distribute==0.6.28
