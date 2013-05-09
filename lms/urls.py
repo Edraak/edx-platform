@@ -98,15 +98,18 @@ urlpatterns = ('',  # nopep8
     url(r'^help$', 'static_template_view.views.render',
         {'template': 'help.html'}, name="help_edx"),
 
-    url(r'^tos$', 'static_template_view.views.render',
-        {'template': 'tos.html'}, name="tos"),
+    #url(r'^tos$', 'static_template_view.views.render',
+    #    {'template': 'tos.html'}, name="tos"),
     url(r'^privacy$', 'static_template_view.views.render',
         {'template': 'privacy.html'}, name="privacy_edx"),
     # TODO: (bridger) The copyright has been removed until it is updated for edX
-    # url(r'^copyright$', 'static_template_view.views.render',
+    #url(r'^copyright$', 'static_template_view.views.render',
     #     {'template': 'copyright.html'}, name="copyright"),
     url(r'^honor$', 'static_template_view.views.render',
         {'template': 'honor.html'}, name="honor"),
+
+    url(r'^tos$', 'static_template_view.views.render',
+        {'template': 'tos-stanford.html'}, name="tos"),
 
     #Press releases
     url(r'^press/([_a-zA-Z0-9-]+)$', 'static_template_view.views.render_press_release', name='press_release'),
