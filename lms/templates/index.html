@@ -8,8 +8,13 @@
     <div class="outer-wrapper">
       <div class="title">
         <hgroup>
-          <h1>The Future of Online Education</h1>
-          <h2>For anyone, anywhere, anytime</h2>
+          % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+            <h1>Free courses from <strong>Stanford</strong></h1>
+            <h2>For anyone, anywhere, anytime</h2>
+          % else:
+            <h1>The Future of Online Education</h1>
+            <h2>For anyone, anywhere, anytime</h2>
+          % endif
         </hgroup>
 
         <section class="actions">
@@ -47,9 +52,7 @@
 
   <section class="container">
     <section class="highlighted-courses">
-      % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
-        <h2>Explore free courses from <span class="theme">Stanford University</span></h2>
-      % else :
+      % if not settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):        
         <h2>Explore free courses from <span class="edx">edX</span> universities</h2>
 
         <section class="university-partners university-partners2x6">
