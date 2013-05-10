@@ -27,7 +27,11 @@
   <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
 
   % if not course:
-    <%include file="google_analytics.html" />
+    % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
+      <%include file="themes/${settings.CUSTOM_THEME}/google_analytics.html" />
+    % else:
+      <%include file="google_analytics.html" />
+    % endif
   % endif
 
   % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
