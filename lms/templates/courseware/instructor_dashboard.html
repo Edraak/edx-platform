@@ -15,97 +15,95 @@
 
 (function() {
 
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  this.CourseTaskProgress = (function() {
+    this.CourseTaskProgress = (function() {
 
-    function CourseTaskProgress(element) {
-      this.poll = __bind(this.poll, this);
-      this.queueing = __bind(this.queueing, this);
-      this.element = element;
-      this.reinitialize(element);
-      // start the work here
-      this.queueing();
-    }
+        // Hardcode the refresh interval to be every five seconds.
+        // TODO: allow the refresh interval to be set.  (And if it is disabled,
+        // then don't set the timeout at all.)
+        var refresh_interval = 5000;
 
-    CourseTaskProgress.prototype.reinitialize = function(element) {
-      this.entries = $(element).find('.task-progress-entry')
-    };
+        // Hardcode the initial delay, for the first refresh, to two seconds:
+        var initial_refresh_delay = 2000;
 
-    CourseTaskProgress.prototype.$ = function(selector) {
-      return $(selector, this.element);
-    };
-
-    CourseTaskProgress.prototype.queueing = function() {
-      if (window.queuePollerID) {
-        window.clearTimeout(window.queuePollerID);
-      }
-      return window.queuePollerID = window.setTimeout(this.poll, 1000);
-    };
-
-    CourseTaskProgress.prototype.poll = function() {
-      var _this = this;
-      // clear the array of entries to poll this time
-      this.task_ids = [];
-      // then go through the entries, update each,
-      // and decide if it should go onto the next list
-      this.entries.each(function(idx, element) {
-         var task_id = $(element).data('taskId');
-         _this.task_ids.push(task_id);
-      });
-      var ajax_url = '/course_task_log_status/';
-      // Note that the keyname here ends up with "[]" being appended
-      // in the POST parameter that shows up on the Django server.
-      var data = {'task_ids': this.task_ids };
-      // TODO: split callback out into a separate function defn.
-      $.post(ajax_url, data).done(function(response) {
-        // expect to receive a dict with an entry for each
-        // requested task_id.
-        // Each should indicate if it were in_progress.
-        // If none are, then delete the poller.
-        // If any are, add them to the list of entries to
-        // be requeried, and reset the timer to call this
-        // again.
-        // TODO: clean out _this.entries, and add back
-        // only those entries that are still pending.
-        var something_in_progress = false;
-        for (name in response) {
-          if (response.hasOwnProperty(name)) {
-            var task_id = name;
-            var task_dict = response[task_id];
-            // this should be a dict of properties for this task_id
-            if (task_dict.in_progress === true) {
-              something_in_progress = true;
+        function CourseTaskProgress(element) {
+            this.update_progress = __bind(this.update_progress, this);
+            this.get_status = __bind(this.get_status, this);
+            this.element = element;
+            this.entries = $(element).find('.task-progress-entry')
+            if (window.queuePollerID) {
+                window.clearTimeout(window.queuePollerID);
             }
-            // find the corresponding entry, and update it:
-            entry = $(_this.element).find('[data-task-id="' + task_id + '"]');
-            entry.find('.task-state').text(task_dict.task_state)
-            var progress_value = task_dict.message || '';
-            entry.find('.task-progress').text(progress_value);
-          }
+            return window.queuePollerID = window.setTimeout(this.get_status, this.initial_refresh_delay);
         }
-        if (something_in_progress) {
-          // TODO: set the refresh interval.  (And if it is disabled,
-          // then don't set the timeout at all.)
-          return window.queuePollerID = window.setTimeout(_this.poll, 1000);
-        } else {
-          delete window.queuePollerID;
+
+        CourseTaskProgress.prototype.$ = function(selector) {
+            return $(selector, this.element);
+        };
+
+        CourseTaskProgress.prototype.update_progress = function(response) {
+            var _this = this;
+            // Response should be a dict with an entry for each requested task_id,
+            // with a "task-state" and "in_progress" key and optionally a "message" key.
+            var something_in_progress = false;
+            for (task_id in response) {
+                var task_dict = response[task_id];
+                // find the corresponding entry, and update it:
+                entry = $(_this.element).find('[data-task-id="' + task_id + '"]');
+                entry.find('.task-state').text(task_dict.task_state)
+                var progress_value = task_dict.message || '';
+                entry.find('.task-progress').text(progress_value);
+                // if the task is complete, then change the entry so it won't
+                // be queried again.  Otherwise set a flag.
+                if (task_dict.in_progress === true) {
+                    something_in_progress = true;
+                } else {
+                    entry.data('inProgress', "False")
+                }
+            }
+
+            // if some entries are still incomplete, then repoll:
+            if (something_in_progress) {
+                return window.queuePollerID = window.setTimeout(_this.get_status, _this.refresh_interval);
+            } else {
+                delete window.queuePollerID;
+            }
         }
-      });
-    };
 
+        CourseTaskProgress.prototype.get_status = function() {
+            var _this = this;
+            var task_ids = [];
 
-    return CourseTaskProgress;
+            // Construct the array of ids to get status for, by
+            // including the subset of entries that are still in progress.
+            this.entries.each(function(idx, element) {
+                var task_id = $(element).data('taskId');
+                var in_progress = $(element).data('inProgress');
+                if (in_progress="True") {
+                    task_ids.push(task_id);
+                }
+            });
 
-  })();
+            // Make call to get status for these ids.
+            // Note that the keyname here ends up with "[]" being appended
+            // in the POST parameter that shows up on the Django server.
+            // TODO: add error handler.
+            var ajax_url = '/course_task_log_status/';
+            var data = {'task_ids': task_ids };
+            $.post(ajax_url, data).done(this.update_progress);
+        };
+
+        return CourseTaskProgress;
+    })();
 
 }).call(this);
 
-    // once the page is rendered, create the progress object
-    var courseTaskProgress;
-    $(document).ready(function() {
-        courseTaskProgress = new CourseTaskProgress($('#task-progress-wrapper'));
-    });
+// once the page is rendered, create the progress object
+var courseTaskProgress;
+$(document).ready(function() {
+    courseTaskProgress = new CourseTaskProgress($('#task-progress-wrapper'));
+});
 
   </script>
 %endif
@@ -537,7 +535,9 @@ function goto( mode)
           <th>Task Progress</th>
         </tr>
       %for tasknum, course_task in enumerate(course_tasks):
-        <tr id="task-progress-entry-${tasknum}" class="task-progress-entry" data-task-id="${course_task.task_id}">
+        <tr id="task-progress-entry-${tasknum}" class="task-progress-entry"
+	    data-task-id="${course_task.task_id}"
+	    data-in-progress="true">
           <td>${course_task.task_name}</td>
           <td>${course_task.task_args}</td>
           <td>${course_task.student}</td>
