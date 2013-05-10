@@ -28,7 +28,7 @@
 
   % if not course:
     % if settings.MITX_FEATURES.get('ENABLE_CUSTOM_THEME'):
-      <%include file="themes/stanford/google_analytics.html" />
+      <%include file="themes/${settings.CUSTOM_THEME}/google_analytics.html" />
     % else:
       <%include file="google_analytics.html" />
     % endif
