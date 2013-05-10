@@ -7,12 +7,14 @@
 
 <%block name="footer_primary_links">
   <a href="${reverse('tos')}">Terms of Service</a>
-  <a href="${reverse('privacy_edx')}">Privacy Policy</a>
-  <a href="${reverse('honor')}">Honor Code</a>
-  <a href="${reverse('help_edx')}">Help</a>
+  <a href="${reverse('tos')}#privacy">Privacy Policy</a>
+  <a href="${reverse('tos')}#honor">Honor Code</a>
+  <a href="${reverse('tos')}#copyright">Copyright</a>
 </%block>
 
-<%block name="footer_social_links"/>
+<%block name="footer_social_links">
+  <span>Built on the edX platform.</span>
+</%block>
 
 <%block name="footer_bottom"/>
 
