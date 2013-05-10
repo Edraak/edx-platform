@@ -81,10 +81,11 @@ LOGGING = get_logger_config(LOG_DIR,
                             local_loglevel=local_loglevel,
                             debug=False,
                             service_variant=SERVICE_VARIANT, 
+                            analytics_provider = ANALYTICS_LOGGING_PROVIDER, 
                             analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
-                            sns_timeout = MITX_FEATURES['ANALYTICS_SNS_TIMEOUT'], 
-                            sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
-                            analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
+                            sns_timeout = ANALYTICS_SNS_TIMEOUT,
+                            sns_topic = ANALYTICS_SNS_TOPIC, 
+                            analytics_host = ANALYTICS_HTTP_HOST
                             )
 
 COURSE_LISTINGS = ENV_TOKENS.get('COURSE_LISTINGS', {})

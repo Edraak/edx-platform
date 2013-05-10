@@ -32,10 +32,11 @@ LOGGING = get_logger_config(ENV_ROOT / "log",
                             local_loglevel="DEBUG",
                             dev_env=True,
                             debug=True, 
+                            analytics_provider = ANALYTICS_LOGGING_PROVIDER, 
                             analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
-                            sns_timeout = MITX_FEATURES['ANALYTICS_SNS_TIMEOUT'],
-                            sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
-                            analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
+                            sns_timeout = ANALYTICS_SNS_TIMEOUT,
+                            sns_topic = ANALYTICS_SNS_TOPIC, 
+                            analytics_host = ANALYTICS_HTTP_HOST
                             )
 
 DATABASES = {

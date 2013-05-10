@@ -15,10 +15,11 @@ LOGGING = get_logger_config(TEST_ROOT / "log",
                             debug=True,
                             local_loglevel='ERROR',
                             console_loglevel='ERROR',
+                            analytics_provider = ANALYTICS_LOGGING_PROVIDER, 
                             analytics_enabled = MITX_FEATURES['ANALYTICS_LOGGING_ENABLED'], 
-                            sns_topic = MITX_FEATURES['ANALYTICS_SNS_TOPIC'], 
-                            sns_timeout = MITX_FEATURES['ANALYTICS_SNS_TIMEOUT'],
-                            analytics_host = MITX_FEATURES['ANALYTICS_HTTP_HOST']
+                            sns_timeout = ANALYTICS_SNS_TIMEOUT,
+                            sns_topic = ANALYTICS_SNS_TOPIC, 
+                            analytics_host = ANALYTICS_HTTP_HOST
                             )
 
 PIPELINE_JS['js-test-source'] = {

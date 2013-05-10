@@ -16,7 +16,8 @@ def get_logger_config(log_dir,
                       local_loglevel='INFO',
                       console_loglevel=None,
                       service_variant=None, 
-                      analytics_enabled=False, 
+                      analytics_enabled = False, 
+                      analytics_provider=None, 
                       analytics_host="127.0.0.1:9022",
                       sns_topic=None, 
                       sns_timeout=0.5):
@@ -35,6 +36,15 @@ def get_logger_config(log_dir,
     "tracking_filename" and "edx_filename" are ignored unless dev_env
     is set to true since otherwise logging is handled by rsyslogd.
 
+    "analytics_provider" can be None, HTTP, or SNS. Analytics logs
+    will be streamed over that protocol. "analytics_host" is used with
+    HTTP, while "sns_topic" and "sns_timeout" are used with SNS. HTTP
+    uses the standard, blocking Python HTTP logger. It is convenient
+    for development and small deploys, but is not robust for
+    deployment use. "sns_topic" specifies an AWS SNS topic to publish
+    to, while "sns_timeout" gives a maximum amount of time to give AWS
+    to respond. This has to be set somewhat high if the machine is not
+    colocated on Amazon's network, and can be lower for deployment.
     """
 
     # Revert to INFO if an invalid string is passed in
@@ -146,9 +156,12 @@ def get_logger_config(log_dir,
             },
         })
 
-    if not analytics_enabled or analytics_enabled.upper()=="FALSE": 
+    if not analytics_enabled: 
         pass
-    elif analytics_enabled.upper() == "HTTP":
+    if not analytics_provider or analytics_provider.upper() in ["FALSE", "NONE"]: 
+        # I don't want to log here, since we don't have loggers configured at this point. 
+        print "WARNING: analytics is enabled, but with no provider set"
+    elif analytics_provider.upper() == "HTTP":
         logger_config['handlers'].update({
                 'http': {
                     'level': 'DEBUG', 
@@ -158,25 +171,20 @@ def get_logger_config(log_dir,
                     }
                 })
         logger_config['loggers']['tracking']['handlers'].append('http')
-    elif analytics_enabled.upper()  == "SNS": 
-        import loghandlersplus.failsafehandler
-        import loghandlersplus.snshandler
-        import loghandlersplus.lambdahandler
+    elif analytics_provider.upper()  == "SNS": 
+        from loghandlersplus import failsafehandler, snshandler, lambdahandler
         import logging.handlers
         
-        lambda x: logging.getLogger('snshandler').error('timeout')
-        lambda x: logging.getLogger('snshandler').error('exception')
-
         logger_config['handlers'].update({
                 'sns': {
                     'level': 'DEBUG', 
                     'class': 'loghandlersplus.failsafehandler.FailsafeHandler',
-                    'main_handler': loghandlersplus.snshandler.SNSHandler(topic = sns_topic),
+                    'main_handler': snshandler.SNSHandler(topic = sns_topic),
                     'timeout': sns_timeout, 
                     'attempts': 3,
                     'retry_timeout' : 60*60,
-                    'exception_handler' : loghandlersplus.lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS exception')), # SNS throws an exception
-                    'fallback_handlers' : [loghandlersplus.lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS timeout'))] # SNS times out
+                    'exception_handler' : lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS exception')), # SNS throws an exception
+                    'fallback_handlers' : [lambdahandler.LambdaHandler(lambda x: logging.getLogger('snshandler').error('SNS timeout'))] # SNS times out
                     }
                 })
         logger_config['loggers']['tracking']['handlers'].append('sns')
