@@ -158,9 +158,6 @@ def get_logger_config(log_dir,
 
     if not analytics_enabled: 
         pass
-    elif not analytics_provider or analytics_provider.upper() in ["FALSE", "NONE"]: 
-        # I don't want to log here, since we don't have loggers configured at this point. 
-        print "WARNING: analytics is enabled, but with no provider set"
     elif analytics_provider.upper() == "HTTP":
         logger_config['handlers'].update({
                 'http': {
