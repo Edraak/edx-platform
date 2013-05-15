@@ -308,7 +308,7 @@ def _check_arguments_for_regrading(course_id, problem_url):
     """
     descriptor = modulestore().get_instance(course_id, problem_url)
     supports_regrade = False
-    if hasattr(descriptor,'module_class'):
+    if hasattr(descriptor, 'module_class'):
         module_class = descriptor.module_class
         if hasattr(module_class, 'regrade_problem'):
             supports_regrade = True
