@@ -161,7 +161,7 @@ done
 
 cat<<EO
 
-  This script will setup a local edX environment, this
+  This script will setup a local edx environment, this
   includes
 
        * Django
@@ -247,7 +247,7 @@ EO
 esac
 
 
-# Clone edX repositories
+# Clone edx repositories
 
 clone_repos
 
@@ -273,6 +273,15 @@ fi
 
 curl -sL get.rvm.io | bash -s -- --version 1.15.7
 
+# Let the repo override the version of Ruby to install
+if [[ -r $BASE/edx-platform/.ruby-version ]]; then
+  RUBY_VER=`cat $BASE/edx-platform/.ruby-version`
+fi
+
+# In order to source the rvm script, we need
+# to have the right version of Ruby installed
+# rvm install $RUBY_VER
+
 # Ensure we have RVM available as a shell function so that it can mess
 # with the environment and set everything up properly. The RVM install
 # process adds this line to login scripts, so this shouldn't be necessary
@@ -292,11 +301,6 @@ case `uname -s` in
         export CC=gcc
         ;;
 esac
-
-# Let the repo override the version of Ruby to install
-if [[ -r $BASE/edx-platform/.ruby-version ]]; then
-  RUBY_VER=`cat $BASE/edx-platform/.ruby-version`
-fi
 
 # Current stable version of RVM (1.19.0) requires the following to build Ruby:
 #
@@ -338,7 +342,10 @@ export WORKON_HOME=$PYTHON_DIR
 
 # Load in the mkvirtualenv function if needed
 if [[ `type -t mkvirtualenv` != "function" ]]; then
-  source `which virtualenvwrapper.sh`
+    if [ -z `which virtualenvwrapper.sh` ]; then
+        sudo pip install virtualenvwrapper
+    fi
+    source `which virtualenvwrapper.sh`
 fi
 
 # Create edx-platform virtualenv and link it to repo
