@@ -271,7 +271,7 @@ if [ "$HOME/.rvm" != $RUBY_DIR ]; then
   fi
 fi
 
-curl -sL get.rvm.io | bash -s -- --version 1.15.7
+curl -sL get.rvm.io | bash -s stable
 
 # Let the repo override the version of Ruby to install
 if [[ -r $BASE/edx-platform/.ruby-version ]]; then
@@ -353,14 +353,14 @@ fi
 if [[ $systempkgs ]]; then
     mkvirtualenv -a "$BASE/edx-platform" --system-site-packages edx-platform || {
       error "mkvirtualenv exited with a non-zero error"
-      return 1
+      exit 1
     }
 else
     # default behavior for virtualenv>1.7 is
     # --no-site-packages
     mkvirtualenv -a "$BASE/edx-platform" edx-platform || {
       error "mkvirtualenv exited with a non-zero error"
-      return 1
+      exit 1
     }
 fi
 
