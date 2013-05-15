@@ -90,7 +90,6 @@ body.course.unit {
       > li {
         position: relative;
         z-index: 10;
-        margin: 20px 40px;
 
         .title {
           margin: 0 0 15px 0;
@@ -104,7 +103,6 @@ body.course.unit {
         // ====================
 
         &.new-component-item {
-          margin: 20px 0px;
           border-top: 1px solid $mediumGrey;
           box-shadow: 0 2px 1px rgba(182, 182, 182, 0.75) inset;
           background-color: $lightGrey;
@@ -371,13 +369,15 @@ body.course.unit {
     // ====================
 
     .component {
-      border: 1px solid $lightBluishGrey2;
-      border-radius: 3px;
+      border: 1px solid $white;
+      border-top: 1px solid $gray-l4;
       background: #fff;
       @include transition(none);
 
+
+
       &:hover {
-        border-color: #6696d7;
+        border: 1px solid $blue;
 
         .drag-handle {
           background-color: $blue;
@@ -403,11 +403,10 @@ body.course.unit {
         position: absolute;
         display: block;
         top: -1px;
-        right: -16px;
+        right: -1px;
         z-index: 10;
         width: 15px;
         height: 100%;
-        border-radius: 0 3px 3px 0;
         border: 1px solid $lightBluishGrey2;
         background: url(../img/white-drag-handles.png) center no-repeat $lightBluishGrey2;
         cursor: move;
@@ -416,7 +415,7 @@ body.course.unit {
     }
 
     .xmodule_display {
-      padding: 40px 20px 20px;
+      padding: 20px 20px 20px;
       overflow-x: auto;
 
       h1 {
@@ -924,6 +923,10 @@ body.unit {
 
   .published-alert {
     display: block;
+  }
+
+  .xmodule_display {
+    padding: 40px 20px 20px;
   }
 }
 
