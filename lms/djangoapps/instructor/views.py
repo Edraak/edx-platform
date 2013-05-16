@@ -18,7 +18,6 @@ from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django_future.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
-from mitxmako.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 
 from courseware import grades
@@ -26,21 +25,23 @@ from courseware import task_queue
 from courseware.access import (has_access, get_access_group_name,
                                course_beta_test_group_name)
 from courseware.courses import get_course_with_access
-from courseware.models import StudentModule
+from courseware.models import StudentModule, CourseTaskLog
 
 from django_comment_client.models import (Role,
                                           FORUM_ROLE_ADMINISTRATOR,
                                           FORUM_ROLE_MODERATOR,
                                           FORUM_ROLE_COMMUNITY_TA)
 from django_comment_client.utils import has_forum_access
+from mitxmako.shortcuts import render_to_response
 from psychometrics import psychoanalyze
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
-from xmodule.modulestore.django import modulestore
 import xmodule.graders as xmgraders
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import ItemNotFoundError
 import track.views
 
-from .offline_gradecalc import student_grades, offline_grades_available
-from xmodule.modulestore.exceptions import ItemNotFoundError
+from instructor.offline_gradecalc import student_grades, offline_grades_available
+
 
 log = logging.getLogger(__name__)
 
@@ -262,6 +263,56 @@ def instructor_dashboard(request, course_id):
         except Exception as e:
             log.error("Encountered exception from reset: {0}".format(e))
             msg += '<font color="red">Failed to create a background task for resetting "{0}": {1}.</font>'.format(problem_url, e.message)
+
+    elif "Show Background Task History" in action:
+        problem_urlname = request.POST.get('problem_for_all_students', '')
+        problem_url = get_module_url(problem_urlname)
+        course_tasks = CourseTaskLog.objects.filter(course_id=course_id,
+                                                    task_args=problem_url)
+        history_entries = course_tasks.order_by('-id')
+        # first check to see if there is any history at all
+        # (note that we don't have to check that the arguments are valid; it
+        # just won't find any entries.)
+        if (len(history_entries)) == 0:
+            log.debug("Found no background tasks for request: {course}".format(e))
+            msg += '<font color="red">Failed to find any background tasks for "{course}": "{problem}".</font>' \
+                    .format(course=course_id, problem=problem_url)
+        else:
+            # now populate the "datatable", for display on the instructor dash:
+            datatable = {}
+            datatable['title'] = "{course_id} > {location}".format(course_id=course_id, location=problem_url)
+            datatable['header'] = ["Order",
+                                   "Task Name",
+                                   "Student",
+                                   "Task Id",
+                                   "Requester",
+                                   "Submitted",
+                                   "Updated",
+                                   "Task State",
+                                   "Task Status",
+                                   "Message",
+                                   ]
+            datatable['data'] = []
+
+            for i, course_task in enumerate(history_entries):
+                success, message = task_queue.get_task_completion_message(course_task)
+                if success:
+                    status = "Complete"
+                else:
+                    status = "Incomplete"
+                row = ["#{0}".format(len(history_entries) - i),
+                       str(course_task.task_name),
+                       str(course_task.student),
+                       str(course_task.task_id),
+                       str(course_task.requester),
+                       "{0} UTC".format(course_task.created),
+                       "{0} UTC".format(course_task.updated),
+                       str(course_task.task_state),
+                       status,
+                       message,
+                       ]
+
+                datatable['data'].append(row)
 
     elif "Reset student's attempts" in action or "Delete student state for module" in action \
             or "Regrade student's problem submission" in action:
@@ -1242,101 +1293,3 @@ def dump_grading_context(course):
     msg += "length=%d\n" % len(gc['all_descriptors'])
     msg = '<pre>%s</pre>' % msg.replace('<','&lt;')
     return msg
-
-
-#def old1testcelery(request):
-#    """
-#    A Simple view that checks if the application can talk to the celery workers
-#    """
-#    args = ('ping',)
-#    result = tasks.echo.apply_async(args, retry=False)
-#    value = result.get(timeout=0.5)
-#    output = {
-#        'task_id': result.id,
-#        'value': value
-#    }
-#    return HttpResponse(json.dumps(output, indent=4))
-#
-#
-#def old2testcelery(request):
-#    """
-#    A Simple view that checks if the application can talk to the celery workers
-#    """
-#    args = (10,)
-#    result = tasks.waitawhile.apply_async(args, retry=False)
-#    while not result.ready():
-#        sleep(0.5)  # in seconds
-#        if result.state == "PROGRESS":
-#            if hasattr(result, 'result') and 'current' in result.result:
-#                log.info("still waiting... progress at {0} of {1}".format(result.result['current'], result.result['total']))
-#            else:
-#                log.info("still making progress... ")
-#    if result.successful():
-#        value = result.result
-#    output = {
-#        'task_id': result.id,
-#        'value': value
-#    }
-#    return HttpResponse(json.dumps(output, indent=4))
-#
-#
-#def testcelery(request):
-#    """
-#    A Simple view that checks if the application can talk to the celery workers
-#    """
-#    args = (10,)
-#    result = tasks.waitawhile.apply_async(args, retry=False)
-#    task_id = result.id
-#    # return the task_id to a template which will set up an ajax call to
-#    # check the progress of the task.
-#    return testcelery_status(request, task_id)
-##    return mitxmako.shortcuts.render_to_response('celery_ajax.html', {
-##            'element_id': 'celery_task'
-##            'id': self.task_id,
-##            'ajax_url': reverse('testcelery_ajax'),
-##        })
-#
-#
-#def testcelery_status(request, task_id):
-#    result = tasks.waitawhile.AsyncResult(task_id)
-#    while not result.ready():
-#        sleep(0.5)  # in seconds
-#        if result.state == "PROGRESS":
-#            if hasattr(result, 'result') and 'current' in result.result:
-#                log.info("still waiting... progress at {0} of {1}".format(result.result['current'], result.result['total']))
-#            else:
-#                log.info("still making progress... ")
-#    if result.successful():
-#        value = result.result
-#    output = {
-#        'task_id': result.id,
-#        'value': value
-#    }
-#    return HttpResponse(json.dumps(output, indent=4))
-#
-#
-#def celery_task_status(request, task_id):
-#    # TODO: determine if we need to know the name of the original task,
-#    # or if this could be any task...  Sample code seems to indicate that
-#    # we could just include the AsyncResult class directly, i.e.:
-#    # from celery.result import AsyncResult.
-#    result = tasks.waitawhile.AsyncResult(task_id)
-#
-#    output = {
-#        'task_id': result.id,
-#        'state': result.state
-#    }
-#
-#    if result.state == "PROGRESS":
-#        if hasattr(result, 'result') and 'current' in result.result:
-#            log.info("still waiting... progress at {0} of {1}".format(result.result['current'], result.result['total']))
-#            output['current'] = result.result['current']
-#            output['total'] = result.result['total']
-#        else:
-#            log.info("still making progress... ")
-#
-#    if result.successful():
-#        value = result.result
-#        output['value'] = value
-#
-#    return HttpResponse(json.dumps(output, indent=4))

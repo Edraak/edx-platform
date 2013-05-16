@@ -261,14 +261,14 @@ def _get_course_task_log_status(task_id):
     output['in_progress'] = course_task_log_entry.task_state not in READY_STATES
 
     if course_task_log_entry.task_state == 'SUCCESS':
-        succeeded, message = _get_task_completion_message(course_task_log_entry)
+        succeeded, message = get_task_completion_message(course_task_log_entry)
         output['message'] = message
         output['succeeded'] = succeeded
 
     return output
 
 
-def _get_task_completion_message(course_task_log_entry):
+def get_task_completion_message(course_task_log_entry):
     """
     Construct progress message from progress information in CourseTaskLog entry.
 
