@@ -351,14 +351,14 @@ fi
 # Create edx-platform virtualenv and link it to repo
 # virtualenvwrapper automatically sources the activation script
 if [[ $systempkgs ]]; then
-    mkvirtualenv -a "$BASE/edx-platform" --system-site-packages edx-platform || {
+    mkvirtualenv -a "$BASE/edx-platform" --use-distribute --system-site-packages edx-platform || {
       error "mkvirtualenv exited with a non-zero error"
       exit 1
     }
 else
     # default behavior for virtualenv>1.7 is
     # --no-site-packages
-    mkvirtualenv -a "$BASE/edx-platform" edx-platform || {
+    mkvirtualenv -a "$BASE/edx-platform" --use-distribute edx-platform || {
       error "mkvirtualenv exited with a non-zero error"
       exit 1
     }
