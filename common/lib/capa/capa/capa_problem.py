@@ -220,7 +220,7 @@ class LoncapaProblem(object):
     def ungraded_response(self, xqueue_msg, queuekey):
         '''
         Handle any responses from the xqueue that do not contain grades
-        Will try to pass the queue message to all inputtypes that can handle ungraded responses 
+        Will try to pass the queue message to all inputtypes that can handle ungraded responses
 
         Does not return any value
         '''
@@ -517,10 +517,10 @@ class LoncapaProblem(object):
             value = ""
             if self.student_answers and problemid in self.student_answers:
                 value = self.student_answers[problemid]
-            
+
             if input_id not in self.input_state:
                 self.input_state[input_id] = {}
-                
+
             # do the rendering
             state = {'value': value,
                    'status': status,
