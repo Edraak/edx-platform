@@ -3,7 +3,7 @@
 import unittest
 
 
-from ..draganddrop import PositionsCompare
+from ..draganddrop_helpers import PositionsCompare
 from ..draganddrop_helpers import flat_user_answer, clean_user_answer
 
 
