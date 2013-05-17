@@ -103,6 +103,8 @@ PLATFORM_NAME = ENV_TOKENS.get('PLATFORM_NAME', PLATFORM_NAME)
 
 SITE_NAME = ENV_TOKENS['SITE_NAME']
 SESSION_COOKIE_DOMAIN = ENV_TOKENS.get('SESSION_COOKIE_DOMAIN')
+JABBER = ENV_TOKENS.get('JABBER', {})
+DATABASE_ROUTERS = ENV_TOKENS.get('DATABASE_ROUTERS', [])
 
 # allow for environments to specify what cookie name our login subsystem should use
 # this is to fix a bug regarding simultaneous logins between edx.org and edge.edx.org which can
@@ -140,6 +142,11 @@ TIME_ZONE = ENV_TOKENS.get('TIME_ZONE', TIME_ZONE)
 
 for feature, value in ENV_TOKENS.get('MITX_FEATURES', {}).items():
     MITX_FEATURES[feature] = value
+
+# Chat
+if MITX_FEATURES.get("ENABLE_CHAT"):
+    MAKO_TEMPLATES['main'].append(PROJECT_ROOT / 'djangoapps' / 'jabber' / 'templates')
+    STATICFILES_DIRS.append(PROJECT_ROOT / 'djangoapps' / 'jabber' / 'static')
 
 WIKI_ENABLED = ENV_TOKENS.get('WIKI_ENABLED', WIKI_ENABLED)
 local_loglevel = ENV_TOKENS.get('LOCAL_LOGLEVEL', 'INFO')

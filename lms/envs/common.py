@@ -122,7 +122,11 @@ MITX_FEATURES = {
     'USE_CUSTOM_THEME': False,
 
     # Do autoplay videos for students
-    'AUTOPLAY_VIDEOS': True
+    'AUTOPLAY_VIDEOS': True,
+
+    # Toggle to enable chat availability (configured on a per-course
+    # basis in Studio)
+    'ENABLE_CHAT': False
 }
 
 # Used for A/B testing
@@ -734,6 +738,11 @@ MKTG_URL_LINK_MAP = {
     'PRIVACY': 'privacy_edx',
 }
 
+
+############################### CHAT ################################
+JABBER = {}
+DATABASE_ROUTERS = []
+
 ############################### THEME ################################
 def enable_theme(theme_name):
     """
@@ -760,4 +769,3 @@ def enable_theme(theme_name):
     # avoid collisions with default edX static files
     STATICFILES_DIRS.append((u'themes/%s' % theme_name,
                              theme_root / 'static'))
-

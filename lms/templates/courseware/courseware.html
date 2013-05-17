@@ -1,5 +1,7 @@
 <%inherit file="/main.html" />
 <%namespace name='static' file='/static_content.html'/>
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.core.urlresolvers import reverse %>
 <%block name="bodyclass">courseware ${course.css_class}</%block>
 <%block name="title"><title>${course.number} Courseware</title></%block>
 
@@ -147,7 +149,6 @@
     </section>
   </div>
 </section>
-
 
 % if course.show_calculator:
     <div class="calc-main">

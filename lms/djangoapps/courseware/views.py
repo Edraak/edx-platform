@@ -5,7 +5,7 @@ from functools import partial
 
 from django.conf import settings
 from django.core.context_processors import csrf
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,9 @@ from django.views.decorators.cache import cache_control
 from courseware import grades
 from courseware.access import has_access
 from courseware.courses import (get_courses, get_course_with_access,
-                                get_courses_by_university, sort_by_announcement)
+                                get_courses_by_university,
+                                registered_for_course,
+                                sort_by_announcement)
 import courseware.tabs as tabs
 from courseware.masquerade import setup_masquerade
 from courseware.model_data import ModelDataCache
@@ -39,7 +41,6 @@ import comment_client
 log = logging.getLogger("mitx.courseware")
 
 template_imports = {'urllib': urllib}
-
 
 def user_groups(user):
     """
@@ -298,6 +299,7 @@ def index(request, course_id, chapter=None, section=None,
             'xqa_server': settings.MITX_FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa')
             }
 
+
         chapter_descriptor = course.get_child_by(lambda m: m.url_name == chapter)
         if chapter_descriptor is not None:
             save_child_position(course_module, chapter)
@@ -498,18 +500,6 @@ def syllabus(request, course_id):
 
     return render_to_response('courseware/syllabus.html', {'course': course,
                                             'staff_access': staff_access, })
-
-
-def registered_for_course(course, user):
-    """
-    Return CourseEnrollment if user is registered for course, else False
-    """
-    if user is None:
-        return False
-    if user.is_authenticated():
-        return CourseEnrollment.objects.filter(user=user, course_id=course.id).exists()
-    else:
-        return False
 
 
 @ensure_csrf_cookie
