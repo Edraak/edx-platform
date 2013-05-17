@@ -20,27 +20,26 @@ from django_future.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from django.core.urlresolvers import reverse
 
+import xmodule.graders as xmgraders
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import ItemNotFoundError
+
 from courseware import grades
 from courseware import task_queue
 from courseware.access import (has_access, get_access_group_name,
                                course_beta_test_group_name)
 from courseware.courses import get_course_with_access
 from courseware.models import StudentModule, CourseTaskLog
-
 from django_comment_client.models import (Role,
                                           FORUM_ROLE_ADMINISTRATOR,
                                           FORUM_ROLE_MODERATOR,
                                           FORUM_ROLE_COMMUNITY_TA)
 from django_comment_client.utils import has_forum_access
+from instructor.offline_gradecalc import student_grades, offline_grades_available
 from mitxmako.shortcuts import render_to_response
 from psychometrics import psychoanalyze
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
-import xmodule.graders as xmgraders
-from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.exceptions import ItemNotFoundError
 import track.views
-
-from instructor.offline_gradecalc import student_grades, offline_grades_available
 
 
 log = logging.getLogger(__name__)
@@ -161,6 +160,20 @@ def instructor_dashboard(request, course_id):
         (org, course_name, _) = course_id.split("/")
         return "i4x://" + org + "/" + course_name + "/" + urlname
 
+    def get_student_from_identifier(unique_student_identifier):
+        # try to uniquely id student by email address or username
+        msg = ""
+        try:
+            if "@" in unique_student_identifier:
+                student = User.objects.get(email=unique_student_identifier)
+            else:
+                student = User.objects.get(username=unique_student_identifier)
+            msg += "Found a single student.  "
+        except User.DoesNotExist:
+            student = None
+            msg += "<font color='red'>Couldn't find student with that email or username.  </font>"
+        return msg, student
+
     # process actions from form POST
     action = request.POST.get('action', '')
     use_offline = request.POST.get('use_offline_grades', False)
@@ -264,81 +277,49 @@ def instructor_dashboard(request, course_id):
             log.error("Encountered exception from reset: {0}".format(e))
             msg += '<font color="red">Failed to create a background task for resetting "{0}": {1}.</font>'.format(problem_url, e.message)
 
+    elif "Show Background Task History for Student" in action:
+        # put this before the non-student case, since the use of "in" will cause this to be missed
+        unique_student_identifier = request.POST.get('unique_student_identifier', '')
+        message, student = get_student_from_identifier(unique_student_identifier)
+        if student is None:
+            msg += message
+        else:
+            problem_urlname = request.POST.get('problem_for_student', '')
+            problem_url = get_module_url(problem_urlname)
+            message, task_datatable = get_background_task_table(course_id, problem_url, student)
+            msg += message
+            if task_datatable is not None:
+                datatable = task_datatable
+                datatable['title'] = "{course_id} > {location} > {student}".format(course_id=course_id,
+                                                                                   location=problem_url,
+                                                                                   student=student.username)
+
     elif "Show Background Task History" in action:
         problem_urlname = request.POST.get('problem_for_all_students', '')
         problem_url = get_module_url(problem_urlname)
-        course_tasks = CourseTaskLog.objects.filter(course_id=course_id,
-                                                    task_args=problem_url)
-        history_entries = course_tasks.order_by('-id')
-        # first check to see if there is any history at all
-        # (note that we don't have to check that the arguments are valid; it
-        # just won't find any entries.)
-        if (len(history_entries)) == 0:
-            log.debug("Found no background tasks for request: {course}".format(e))
-            msg += '<font color="red">Failed to find any background tasks for "{course}": "{problem}".</font>' \
-                    .format(course=course_id, problem=problem_url)
-        else:
-            # now populate the "datatable", for display on the instructor dash:
-            datatable = {}
+        message, task_datatable = get_background_task_table(course_id, problem_url)
+        msg += message
+        if task_datatable is not None:
+            datatable = task_datatable
             datatable['title'] = "{course_id} > {location}".format(course_id=course_id, location=problem_url)
-            datatable['header'] = ["Order",
-                                   "Task Name",
-                                   "Student",
-                                   "Task Id",
-                                   "Requester",
-                                   "Submitted",
-                                   "Updated",
-                                   "Task State",
-                                   "Task Status",
-                                   "Message",
-                                   ]
-            datatable['data'] = []
 
-            for i, course_task in enumerate(history_entries):
-                success, message = task_queue.get_task_completion_message(course_task)
-                if success:
-                    status = "Complete"
-                else:
-                    status = "Incomplete"
-                row = ["#{0}".format(len(history_entries) - i),
-                       str(course_task.task_name),
-                       str(course_task.student),
-                       str(course_task.task_id),
-                       str(course_task.requester),
-                       "{0} UTC".format(course_task.created),
-                       "{0} UTC".format(course_task.updated),
-                       str(course_task.task_state),
-                       status,
-                       message,
-                       ]
-
-                datatable['data'].append(row)
-
-    elif "Reset student's attempts" in action or "Delete student state for module" in action \
+    elif "Reset student's attempts" in action \
+            or "Delete student state for module" in action \
             or "Regrade student's problem submission" in action:
         # get the form data
         unique_student_identifier = request.POST.get('unique_student_identifier', '')
         problem_urlname = request.POST.get('problem_for_student', '')
         module_state_key = get_module_url(problem_urlname)
-
         # try to uniquely id student by email address or username
-        try:
-            if "@" in unique_student_identifier:
-                student = User.objects.get(email=unique_student_identifier)
-            else:
-                student = User.objects.get(username=unique_student_identifier)
-            msg += "Found a single student.  "
-        except User.DoesNotExist:
-            student = None
-            msg += "<font color='red'>Couldn't find student with that email or username.  </font>"
-
+        message, student = get_student_from_identifier(unique_student_identifier)
+        msg += message
         student_module = None
         if student is not None:
             # find the module in question
             try:
                 student_module = StudentModule.objects.get(student_id=student.id,
-                                                            course_id=course_id,
-                                                            module_state_key=module_state_key)
+                                                           course_id=course_id,
+                                                           module_state_key=module_state_key)
                 msg += "Found module.  "
             except StudentModule.DoesNotExist:
                 msg += "<font color='red'>Couldn't find module with that urlname.  </font>"
@@ -391,22 +372,19 @@ def instructor_dashboard(request, course_id):
 
     elif "Get link to student's progress page" in action:
         unique_student_identifier = request.POST.get('unique_student_identifier', '')
-        try:
-            if "@" in unique_student_identifier:
-                student_to_reset = User.objects.get(email=unique_student_identifier)
-            else:
-                student_to_reset = User.objects.get(username=unique_student_identifier)
-            progress_url = reverse('student_progress', kwargs={'course_id': course_id, 'student_id': student_to_reset.id})
+        # try to uniquely id student by email address or username
+        message, student = get_student_from_identifier(unique_student_identifier)
+        msg += message
+        if student is not None:
+            progress_url = reverse('student_progress', kwargs={'course_id': course_id, 'student_id': student.id})
             track.views.server_track(request,
                                     '{instructor} requested progress page for {student} in {course}'.format(
-                                        student=student_to_reset,
+                                        student=student,
                                         instructor=request.user,
                                         course=course_id),
                                     {},
                                     page='idashboard')
-            msg += "<a href='{0}' target='_blank'> Progress page for username: {1} with email address: {2}</a>.".format(progress_url, student_to_reset.username, student_to_reset.email)
-        except User.DoesNotExist:
-            msg += "<font color='red'>Couldn't find student with that username.  </font>"
+            msg += "<a href='{0}' target='_blank'> Progress page for username: {1} with email address: {2}</a>.".format(progress_url, student.username, student.email)
 
     #----------------------------------------
     # export grades to remote gradebook
@@ -466,7 +444,6 @@ def instructor_dashboard(request, course_id):
                     files = {'datafile': fp}
                     msg2, _ = _do_remote_gradebook(request.user, course, 'post-grades', files=files)
                     msg += msg2
-
 
     #----------------------------------------
     # Admin
@@ -533,6 +510,7 @@ def instructor_dashboard(request, course_id):
         profkeys = ['name', 'language', 'location', 'year_of_birth', 'gender', 'level_of_education',
                     'mailing_address', 'goals']
         datatable = {'header': ['username', 'email'] + profkeys}
+
         def getdat(u):
             p = u.profile
             return [u.username, u.email] + [getattr(p, x, '') for x in profkeys]
@@ -541,14 +519,13 @@ def instructor_dashboard(request, course_id):
         datatable['title'] = 'Student profile data for course %s' % course_id
         return return_csv('profiledata_%s.csv' % course_id, datatable)
 
-
     elif 'Download CSV of all responses to problem' in action:
-        problem_to_dump = request.POST.get('problem_to_dump','')
+        problem_to_dump = request.POST.get('problem_to_dump', '')
 
         if problem_to_dump[-4:] == ".xml":
             problem_to_dump = problem_to_dump[:-4]
         try:
-            (org, course_name, run) = course_id.split("/")
+            (org, course_name, _) = course_id.split("/")
             module_state_key = "i4x://" + org + "/" + course_name + "/problem/" + problem_to_dump
             smdat = StudentModule.objects.filter(course_id=course_id,
                                                  module_state_key=module_state_key)
@@ -561,7 +538,7 @@ def instructor_dashboard(request, course_id):
 
         if smdat:
             datatable = {'header': ['username', 'state']}
-            datatable['data'] = [ [x.student.username, x.state] for x in smdat ]
+            datatable['data'] = [[x.student.username, x.state] for x in smdat]
             datatable['title'] = 'Student state for problem %s' % problem_to_dump
             return return_csv('student_state_from_%s.csv' % problem_to_dump, datatable)
 
@@ -597,7 +574,6 @@ def instructor_dashboard(request, course_id):
         datatable = {}
         msg += _list_course_forum_members(course_id, rolename, datatable)
         track.views.server_track(request, 'list-{0}'.format(rolename), {}, page='idashboard')
-
 
     elif action == 'Remove forum admin':
         uname = request.POST['forumadmin']
@@ -705,7 +681,6 @@ def instructor_dashboard(request, course_id):
             overload = 'Overload' in action
             ret = _do_enroll_students(course, course_id, students, overload=overload)
             datatable = ret['datatable']
-
 
     #----------------------------------------
     # psychometrics
@@ -1291,5 +1266,59 @@ def dump_grading_context(course):
             msg += "      %s (format=%s, Assignment=%s%s)\n" % (s.display_name, format, aname, notes)
     msg += "all descriptors:\n"
     msg += "length=%d\n" % len(gc['all_descriptors'])
-    msg = '<pre>%s</pre>' % msg.replace('<','&lt;')
+    msg = '<pre>%s</pre>' % msg.replace('<', '&lt;')
     return msg
+
+
+def get_background_task_table(course_id, problem_url, student=None):
+    course_tasks = CourseTaskLog.objects.filter(course_id=course_id, task_args=problem_url)
+    if student is not None:
+        course_tasks = course_tasks.filter(student=student)
+
+    history_entries = course_tasks.order_by('-id')
+    datatable = None
+    msg = ""
+    # first check to see if there is any history at all
+    # (note that we don't have to check that the arguments are valid; it
+    # just won't find any entries.)
+    if (len(history_entries)) == 0:
+        if student is not None:
+            log.debug("Found no background tasks for request: {course}, {problem}, and student {student}".format(course=course_id, problem=problem_url, student=student.username))
+            template = '<font color="red">Failed to find any background tasks for course "{course}", module "{problem}" and student "{student}".</font>'
+            msg += template.format(course=course_id, problem=problem_url, student=student.username)
+        else:
+            log.debug("Found no background tasks for request: {course}, {problem}".format(course=course_id, problem=problem_url))
+            msg += '<font color="red">Failed to find any background tasks for course "{course}" and module "{problem}".</font>'.format(course=course_id, problem=problem_url)
+    else:
+        datatable = {}
+        datatable['header'] = ["Order",
+            "Task Name",
+            "Student",
+            "Task Id",
+            "Requester",
+            "Submitted",
+            "Updated",
+            "Task State",
+            "Task Status",
+            "Message"]
+
+        datatable['data'] = []
+        for i, course_task in enumerate(history_entries):
+            success, message = task_queue.get_task_completion_message(course_task)
+            if success:
+                status = "Complete"
+            else:
+                status = "Incomplete"
+            row = ["#{0}".format(len(history_entries) - i),
+                str(course_task.task_name),
+                str(course_task.student),
+                str(course_task.task_id),
+                str(course_task.requester),
+                course_task.created.strftime("%Y/%m/%d %H:%M:%S"),
+                course_task.updated.strftime("%Y/%m/%d %H:%M:%S"),
+                str(course_task.task_state),
+                status,
+                message]
+            datatable['data'].append(row)
+
+    return msg, datatable
