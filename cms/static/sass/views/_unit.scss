@@ -90,6 +90,7 @@ body.course.unit {
       > li {
         position: relative;
         z-index: 10;
+        min-height: $baseline*4;
 
         .title {
           margin: 0 0 15px 0;
@@ -378,10 +379,28 @@ body.course.unit {
 
       &:hover {
         border: 1px solid $blue;
+        background-color: $blue-t0;
 
         .drag-handle {
+          visibility: visible;
           background-color: $blue;
           border-color: $blue;
+        }
+
+        .component-actions {
+          //should these displays be visibility changes?
+          display: block;
+          @include transition (display 1.0s ease-in 1s, width 2.0s ease-in 2s);
+          @include box-sizing(border-box);
+          position: absolute;
+          height: $gw-column;
+          padding: 15px;
+          top: 50%;
+          left: 50%;
+          margin-left: -(3*$gw-column/2);
+          margin-top: -($gw-column/2);
+          border-radius: 3px;
+          background: $gray;
         }
       }
 
@@ -400,6 +419,7 @@ body.course.unit {
       }
 
       .drag-handle {
+        visibility: hidden;
         position: absolute;
         display: block;
         top: -1px;
@@ -734,17 +754,16 @@ body.course.unit {
 body.unit {
 
   .component {
-    padding-top: 30px;
 
     .component-actions {
-      @include box-sizing(border-box);
-      position: absolute;
-      width: 100%;
-      padding: 15px;
-      top: 0;
-      left: 0;
-      border-bottom: 1px solid $lightBluishGrey2;
-      background: $lightGrey;
+      display: none;
+
+      * {
+        visibility: inherit;
+      }
+    }
+
+    &:hover {
     }
 
     &.editing {
