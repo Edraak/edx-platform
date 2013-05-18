@@ -45,17 +45,13 @@ class HTMLSnippet(object):
         # cdodge: We've moved the xmodule.coffee script from an outside directory into the xmodule area of common
         # this means we need to make sure that all xmodules include this dependency which had been previously implicitly
         # fulfilled in a different area of code
-        js = cls.js
+        coffee = cls.js.setdefault('coffee', [])
+        fragment = resource_string(__name__, 'js/src/xmodule.coffee')
 
-        if js is None:
-            js = {}
+        if fragment not in coffee:
+            coffee.insert(0, fragment)
 
-        if 'coffee' not in js:
-            js['coffee'] = []
-
-        js['coffee'].append(resource_string(__name__, 'js/src/xmodule.coffee'))
-
-        return js
+        return cls.js
 
     @classmethod
     def get_css(cls):
@@ -86,7 +82,7 @@ class XModuleFields(object):
     display_name = String(
         help="Display name for this module",
         scope=Scope.settings,
-        default=None,
+        default=None
     )
 
 
@@ -337,10 +333,6 @@ class XModuleDescriptor(XModuleFields, HTMLSnippet, ResourceTemplates, XBlock):
     # It should respond to max_score() and grade(). It can be graded or ungraded
     # (like a practice problem).
     has_score = False
-
-    # cdodge: this is a list of metadata names which are 'system' metadata
-    # and should not be edited by an end-user
-    system_metadata_fields = ['data_dir', 'published_date', 'published_by', 'is_draft']
 
     # A list of descriptor attributes that must be equal for the descriptors to
     # be equal
@@ -614,6 +606,49 @@ class XModuleDescriptor(XModuleFields, HTMLSnippet, ResourceTemplates, XBlock):
             model_data=self._model_data,
         ))
 
+    @property
+    def non_editable_metadata_fields(self):
+        """
+        Return the list of fields that should not be editable in Studio.
+
+        When overriding, be sure to append to the superclasses' list.
+        """
+        # We are not allowing editing of xblock tag and name fields at this time (for any component).
+        return [XBlock.tags, XBlock.name]
+
+    @property
+    def editable_metadata_fields(self):
+        """
+        Returns the metadata fields to be edited in Studio. These are fields with scope `Scope.settings`.
+
+        Can be limited by extending `non_editable_metadata_fields`.
+        """
+        inherited_metadata = getattr(self, '_inherited_metadata', {})
+        inheritable_metadata = getattr(self, '_inheritable_metadata', {})
+        metadata = {}
+        for field in self.fields:
+
+            if field.scope != Scope.settings or field in self.non_editable_metadata_fields:
+                continue
+
+            inheritable = False
+            value = getattr(self, field.name)
+            default_value = field.default
+            explicitly_set = field.name in self._model_data
+            if field.name in inheritable_metadata:
+                inheritable = True
+                default_value = field.from_json(inheritable_metadata.get(field.name))
+                if field.name in inherited_metadata:
+                    explicitly_set = False
+
+            metadata[field.name] = {'field': field,
+                                    'value': value,
+                                    'default_value': default_value,
+                                    'inheritable': inheritable,
+                                    'explicitly_set': explicitly_set }
+
+        return metadata
+
 
 class DescriptorSystem(object):
     def __init__(self, load_item, resources_fs, error_tracker, **kwargs):
@@ -702,7 +737,10 @@ class ModuleSystem(object):
                  anonymous_student_id='',
                  course_id=None,
                  open_ended_grading_interface=None,
-                 s3_interface=None):
+                 s3_interface=None,
+                 cache=None,
+                 can_execute_unsafe_code=None,
+                ):
         '''
         Create a closure around the system environment.
 
@@ -744,6 +782,14 @@ class ModuleSystem(object):
 
         xblock_model_data - A dict-like object containing the all data available to this
             xblock
+
+        cache - A cache object with two methods:
+            .get(key) returns an object from the cache or None.
+            .set(key, value, timeout_secs=None) stores a value in the cache with a timeout.
+
+        can_execute_unsafe_code - A function returning a boolean, whether or
+            not to allow the execution of unsafe, unsandboxed code.
+
         '''
         self.ajax_url = ajax_url
         self.xqueue = xqueue
@@ -768,6 +814,9 @@ class ModuleSystem(object):
         self.open_ended_grading_interface = open_ended_grading_interface
         self.s3_interface = s3_interface
 
+        self.cache = cache or DoNothingCache()
+        self.can_execute_unsafe_code = can_execute_unsafe_code or (lambda: False)
+
     def get(self, attr):
         '''	provide uniform access to attributes (like etree).'''
         return self.__dict__.get(attr)
@@ -781,3 +830,12 @@ class ModuleSystem(object):
 
     def __str__(self):
         return str(self.__dict__)
+
+
+class DoNothingCache(object):
+    """A duck-compatible object to use in ModuleSystem when there's no cache."""
+    def get(self, key):
+        return None
+
+    def set(self, key, value, timeout=None):
+        pass

@@ -32,7 +32,7 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
         "click .post-actions > .edit-button" : "onEdit",
         "click .post-actions > .delete-button" : "onDelete"
     },
-        
+
     initialize: function() {
     	var self = this;
         // instantiates an editor template for each update in the collection
@@ -41,13 +41,13 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
             "/static/client_templates/course_info_update.html",
             function (raw_template) {
         		self.template = _.template(raw_template);
-        		self.render();           
+        		self.render();
             }
         );
         // when the client refetches the updates as a whole, re-render them
         this.listenTo(this.collection, 'reset', this.render);
     },
-        
+
     render: function () {
           // iterate over updates and create views for each using the template
           var updateEle = this.$el.find("#course-update-list");
@@ -66,14 +66,14 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
           this.$el.find('.date').datepicker({ 'dateFormat': 'MM d, yy' });
           return this;
     },
-    
+
     onNew: function(event) {
         event.preventDefault();
         var self = this;
         // create new obj, insert into collection, and render this one ele overriding the hidden attr
         var newModel = new CMS.Models.CourseUpdate();
         this.collection.add(newModel, {at : 0});
-        
+
         var $newForm = $(this.template({ updateModel : newModel }));
 
         var updateEle = this.$el.find("#course-update-list");
@@ -87,7 +87,7 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
                 lineWrapping: true,
             });
         }
-        
+
         $newForm.addClass('editing');
         this.$currentPost = $newForm.closest('li');
 
@@ -99,16 +99,21 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
         $('.date').datepicker('destroy');
         $('.date').datepicker({ 'dateFormat': 'MM d, yy' });
     },
-    
+
     onSave: function(event) {
         event.preventDefault();
         var targetModel = this.eventModel(event);
         targetModel.set({ date : this.dateEntry(event).val(), content : this.$codeMirror.getValue() });
-        // push change to display, hide the editor, submit the change        
+        // push change to display, hide the editor, submit the change
         targetModel.save({}, {error : CMS.ServerError});
         this.closeEditor(this);
+
+        analytics.track('Saved Course Update', {
+            'course': course_location_analytics,
+            'date': this.dateEntry(event).val()
+        });
     },
-    
+
     onCancel: function(event) {
         event.preventDefault();
         // change editor contents back to model values and hide the editor
@@ -116,13 +121,13 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
         var targetModel = this.eventModel(event);
         this.closeEditor(this, !targetModel.id);
     },
-    
+
     onEdit: function(event) {
         event.preventDefault();
         var self = this;
         this.$currentPost = $(event.target).closest('li');
         this.$currentPost.addClass('editing');
-       
+
         $(this.editor(event)).show();
         var $textArea = this.$currentPost.find(".new-update-content").first();
         if (this.$codeMirror == null ) {
@@ -147,14 +152,25 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
             return;
         }
 
+        analytics.track('Deleted Course Update', {
+            'course': course_location_analytics,
+            'date': this.dateEntry(event).val()
+        });
+
         var targetModel = this.eventModel(event);
         this.modelDom(event).remove();
         var cacheThis = this;
-        targetModel.destroy({success : function (model, response) { 
-            cacheThis.collection.fetch({success : function() {cacheThis.render();},
-                error : CMS.ServerError});
-        },
-        error : CMS.ServerError
+        targetModel.destroy({
+            success: function (model, response) {
+                cacheThis.collection.fetch({
+                    success: function() {
+                        cacheThis.render();
+                    },
+                    reset: true,
+                    error: CMS.ServerError
+                });
+            },
+            error : CMS.ServerError
         });
     },
 
@@ -182,17 +198,17 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
         this.$codeMirror = null;
         self.$currentPost.find('.CodeMirror').remove();
     },
-    
-    // Dereferencing from events to screen elements    
+
+    // Dereferencing from events to screen elements
     eventModel: function(event) {
         // not sure if it should be currentTarget or delegateTarget
         return this.collection.get($(event.currentTarget).attr("name"));
     },
-        
+
     modelDom: function(event) {
         return $(event.currentTarget).closest("li");
     },
-            
+
     editor: function(event) {
     	var li = $(event.currentTarget).closest("li");
     	if (li) return $(li).find("form").first();
@@ -206,7 +222,7 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
     contentEntry: function(event) {
         return $(event.currentTarget).closest("li").find(".new-update-content").first();
     },
-        
+
     dateDisplay: function(event) {
         return $(event.currentTarget).closest("li").find("#date-display").first();
     },
@@ -214,7 +230,7 @@ CMS.Views.ClassInfoUpdateView = Backbone.View.extend({
     contentDisplay: function(event) {
         return $(event.currentTarget).closest("li").find(".update-contents").first();
     }
-        
+
 });
 
 // the handouts view is dumb right now; it needs tied to a model and all that jazz
@@ -228,23 +244,22 @@ CMS.Views.ClassInfoHandoutsView = Backbone.View.extend({
 
     initialize: function() {
         var self = this;
-        this.model.fetch(
-            {
-                complete: function() {
-                    window.templateLoader.loadRemoteTemplate("course_info_handouts",
-                        "/static/client_templates/course_info_handouts.html",
-                        function (raw_template) {
-                            self.template = _.template(raw_template);
-                            self.render();                
-                        }
-                    );
-                },
-                error : CMS.ServerError
-            }
-        );
+        this.model.fetch({
+            complete: function() {
+                window.templateLoader.loadRemoteTemplate("course_info_handouts",
+                    "/static/client_templates/course_info_handouts.html",
+                    function (raw_template) {
+                        self.template = _.template(raw_template);
+                        self.render();
+                    }
+                );
+            },
+            reset: true,
+            error: CMS.ServerError
+        });
     },
-        
-    render: function () {        
+
+    render: function () {
         var updateEle = this.$el;
         var self = this;
         this.$el.html(
@@ -284,6 +299,11 @@ CMS.Views.ClassInfoHandoutsView = Backbone.View.extend({
         this.model.save({}, {error: CMS.ServerError});
         this.$form.hide();
         this.closeEditor(this);
+
+        analytics.track('Saved Course Handouts', {
+            'course': course_location_analytics
+        });
+
     },
 
     onCancel: function(event) {

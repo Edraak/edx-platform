@@ -2,15 +2,15 @@
 // ====================
 
 .wrapper-header {
-  margin: 0 0 ($baseline*1.5) 0;
+  @extend .depth3;
+  margin: 0;
   padding: $baseline;
   border-bottom: 1px solid $gray;
-  @include box-shadow(0 1px 5px 0 rgba(0,0,0, 0.1));
+  @include box-shadow(0 1px 5px 0 rgba(0,0,0, 0.2));
   background: $white;
   height: 76px;
   position: relative;
   width: 100%;
-  z-index: 10;
 
   a {
     color: $baseFontColor;
@@ -67,7 +67,7 @@
   padding-right: ($baseline*0.75);
 
   a {
-    @include text-hide();
+    @extend .text-hide;
     display: block;
     width: 164px;
     height: 32px;
@@ -106,13 +106,19 @@
     width: 1px;
   }
 
-  .course-org {
-    margin-right: ($baseline/4);
-  }
-
   .course-number, .course-org {
     @include font-size(12);
     display: inline-block;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+
+  .course-org {
+    margin-right: ($baseline/4);
+    max-width: 140px;
   }
 
   .course-title {
@@ -132,7 +138,7 @@
 
 // specific elements - course nav
 .nav-course {
-  width: 335px;
+  width: 290px;
   margin-top: -($baseline/4);
   @include font-size(14);
 
@@ -146,7 +152,7 @@
 
     .title {
       display: block;
-      padding: 5px;
+      padding: 0 ($baseline/4);
       text-transform: uppercase;
       font-weight: 600;
       color: $gray-d3;
@@ -516,21 +522,21 @@ body.signup .nav-not-signedin-signin {
 
   a {
     background-color: #d9e3ee;
-    color: #6d788b;    
+    color: #6d788b;
   }
 }
 
 body.signin .nav-not-signedin-signup {
-  
+
   a {
     background-color: #62aaf5;
-    color: #fff;    
+    color: #fff;
   }
 }
 
 // ====================
 
-// STATE: js enabled 
+// STATE: js enabled
 .js {
 
   .nav-dropdown {

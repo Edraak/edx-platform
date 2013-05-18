@@ -4,10 +4,12 @@
 *.swp
 *.orig
 *.DS_Store
+*.mo
 :2e_*
 :2e#
 .AppleDouble
 database.sqlite
+requirements/private.txt
 courseware/static/js/mathjax/*
 flushdb.sh
 build
@@ -21,6 +23,8 @@ reports/
 *.egg-info
 Gemfile.lock
 .env/
+conf/locale/en/LC_MESSAGES/*.po
+!messages.po
 lms/static/sass/*.css
 cms/static/sass/*.css
 lms/lib/comment_client/python
@@ -31,3 +35,8 @@ cover_html/
 chromedriver.log
 /nbproject
 ghostdriver.log
+node_modules
+.pip_download_cache/
+.prereqs_cache
+autodeploy.properties
+.ws_migrations_complete

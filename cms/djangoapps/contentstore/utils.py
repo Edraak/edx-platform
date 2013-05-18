@@ -3,8 +3,14 @@ from xmodule.modulestore import Location
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from django.core.urlresolvers import reverse
+import copy
 
 DIRECT_ONLY_CATEGORIES = ['course', 'chapter', 'sequential', 'about', 'static_tab', 'course_info']
+
+#In order to instantiate an open ended tab automatically, need to have this data
+OPEN_ENDED_PANEL = {"name": "Open Ended Panel", "type": "open_ended"}
+NOTES_PANEL = {"name": "My Notes", "type": "notes"}
+EXTRA_TAB_PANELS = dict([(p['type'], p) for p in [OPEN_ENDED_PANEL, NOTES_PANEL]])
 
 
 def get_modulestore(location):
@@ -82,11 +88,10 @@ def get_lms_link_for_item(location, preview=False, course_id=None):
 
     if settings.LMS_BASE is not None:
         if preview:
-            lms_base = settings.MITX_FEATURES.get('PREVIEW_LMS_BASE',
-                'preview.' + settings.LMS_BASE)
+            lms_base = settings.MITX_FEATURES.get('PREVIEW_LMS_BASE', 'preview.' + settings.LMS_BASE)
         else:
             lms_base = settings.LMS_BASE
-     
+
         lms_link = "//{lms_base}/courses/{course_id}/jump_to/{location}".format(
             lms_base=lms_base,
             course_id=course_id,
@@ -137,7 +142,7 @@ def compute_unit_state(unit):
     'private' content is editabled and not visible in the LMS
     """
 
-    if unit.cms.is_draft:
+    if getattr(unit, 'is_draft', False):
         try:
             modulestore('direct').get_item(unit.location)
             return UnitState.draft
@@ -145,10 +150,6 @@ def compute_unit_state(unit):
             return UnitState.private
     else:
         return UnitState.public
-
-
-def get_date_display(date):
-    return date.strftime("%d %B, %Y at %I:%M %p")
 
 
 def update_item(location, value):
@@ -191,3 +192,43 @@ class CoursePageNames:
     SettingsGrading = "settings_grading"
     CourseOutline = "course_index"
     Checklists = "checklists"
+
+
+def add_extra_panel_tab(tab_type, course):
+    """
+    Used to add the panel tab to a course if it does not exist.
+    @param tab_type: A string representing the tab type.
+    @param course: A course object from the modulestore.
+    @return: Boolean indicating whether or not a tab was added and a list of tabs for the course.
+    """
+    #Copy course tabs
+    course_tabs = copy.copy(course.tabs)
+    changed = False
+    #Check to see if open ended panel is defined in the course
+    
+    tab_panel = EXTRA_TAB_PANELS.get(tab_type)
+    if tab_panel not in course_tabs:
+        #Add panel to the tabs if it is not defined
+        course_tabs.append(tab_panel)
+        changed = True
+    return changed, course_tabs
+
+
+def remove_extra_panel_tab(tab_type, course):
+    """
+    Used to remove the panel tab from a course if it exists.
+    @param tab_type: A string representing the tab type.
+    @param course: A course object from the modulestore.
+    @return: Boolean indicating whether or not a tab was added and a list of tabs for the course.
+    """
+    #Copy course tabs
+    course_tabs = copy.copy(course.tabs)
+    changed = False
+    #Check to see if open ended panel is defined in the course
+
+    tab_panel = EXTRA_TAB_PANELS.get(tab_type)
+    if tab_panel in course_tabs:
+        #Add panel to the tabs if it is not defined
+        course_tabs = [ct for ct in course_tabs if ct != tab_panel]
+        changed = True
+    return changed, course_tabs

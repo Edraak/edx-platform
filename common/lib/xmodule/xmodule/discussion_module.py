@@ -1,8 +1,8 @@
-from lxml import etree
-from pkg_resources import resource_string, resource_listdir
+from pkg_resources import resource_string
 
 from xmodule.x_module import XModule
 from xmodule.raw_module import RawDescriptor
+from xmodule.editing_module import MetadataOnlyEditingDescriptor
 from xblock.core import String, Scope
 
 
@@ -15,11 +15,10 @@ class DiscussionFields(object):
 
 class DiscussionModule(DiscussionFields, XModule):
     js = {'coffee':
-            [resource_string(__name__, 'js/src/time.coffee'),
-            resource_string(__name__, 'js/src/discussion/display.coffee')]
-        }
+          [resource_string(__name__, 'js/src/time.coffee'),
+          resource_string(__name__, 'js/src/discussion/display.coffee')]
+          }
     js_module_name = "InlineDiscussion"
-
 
     def get_html(self):
         context = {
@@ -28,7 +27,7 @@ class DiscussionModule(DiscussionFields, XModule):
         return self.system.render_template('discussion/_discussion_module.html', context)
 
 
-class DiscussionDescriptor(DiscussionFields, RawDescriptor):
+class DiscussionDescriptor(DiscussionFields, MetadataOnlyEditingDescriptor, RawDescriptor):
     module_class = DiscussionModule
     template_dir_name = "discussion"
 
@@ -38,3 +37,10 @@ class DiscussionDescriptor(DiscussionFields, RawDescriptor):
     metadata_translations = dict(RawDescriptor.metadata_translations)
     metadata_translations['id'] = 'discussion_id'
     metadata_translations['for'] = 'discussion_target'
+
+    @property
+    def non_editable_metadata_fields(self):
+        non_editable_fields = super(DiscussionDescriptor, self).non_editable_metadata_fields
+        # We may choose to enable sort_keys in the future, but while Kevin is investigating....
+        non_editable_fields.extend([DiscussionDescriptor.discussion_id, DiscussionDescriptor.sort_key])
+        return non_editable_fields

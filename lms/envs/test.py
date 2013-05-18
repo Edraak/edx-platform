@@ -16,7 +16,9 @@ from path import path
 MITX_FEATURES['DISABLE_START_DATES'] = True
 
 # Until we have discussion actually working in test mode, just turn it off
-MITX_FEATURES['ENABLE_DISCUSSION_SERVICE'] = False
+MITX_FEATURES['ENABLE_DISCUSSION_SERVICE'] = True
+
+MITX_FEATURES['ENABLE_SERVICE_STATUS'] = True
 
 # Need wiki for courseware views to work. TODO (vshnayder): shouldn't need it.
 WIKI_ENABLED = True
@@ -27,10 +29,6 @@ SOUTH_TESTS_MIGRATE = False   # To disable migrations and use syncdb instead
 # Nose Test Runner
 INSTALLED_APPS += ('django_nose',)
 
-NOSE_ARGS = [
-    '--with-xunit',
-    # '-v', '--pdb',     # When really stuck, uncomment to start debugger on error
-]
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Local Directories
@@ -91,7 +89,7 @@ MODULESTORE = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': PROJECT_ROOT / "db" / "mitx.db",
+        'NAME': TEST_ROOT / 'db' / 'mitx.db'
     },
 
 }
@@ -122,13 +120,13 @@ CACHES = {
         'LOCATION': '/var/tmp/mongo_metadata_inheritance',
         'TIMEOUT': 300,
         'KEY_FUNCTION': 'util.memcache.safe_key',
-    } 
+    }
 }
 
 # Dummy secret key for dev
 SECRET_KEY = '85920908f28904ed733fe576320db18cabd7b6cd'
 
-################################## OPENID ######################################
+################################## OPENID #####################################
 MITX_FEATURES['AUTH_USE_OPENID'] = True
 MITX_FEATURES['AUTH_USE_OPENID_PROVIDER'] = True
 
@@ -139,6 +137,12 @@ OPENID_PROVIDER_TRUSTED_ROOTS = ['*']
 
 INSTALLED_APPS += ('external_auth',)
 INSTALLED_APPS += ('django_openid_auth',)
+
+################################# CELERY ######################################
+
+CELERY_ALWAYS_EAGER = True
+CELERY_RESULT_BACKEND = 'cache'
+BROKER_TRANSPORT = 'memory'
 
 ############################ STATIC FILES #############################
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'

@@ -7,6 +7,7 @@ from pprint import pprint
 from xmodule.modulestore import Location
 from xmodule.modulestore.mongo import MongoModuleStore
 from xmodule.modulestore.xml_importer import import_from_xml
+from xmodule.templates import update_templates
 
 from .test_modulestore import check_path_to_location
 from . import DATA_DIR
@@ -45,6 +46,7 @@ class TestMongoModuleStore(object):
         # Explicitly list the courses to load (don't want the big one)
         courses = ['toy', 'simple']
         import_from_xml(store, DATA_DIR, courses)
+        update_templates(store)
         return store
 
     @staticmethod
@@ -104,57 +106,10 @@ class TestMongoModuleStore(object):
         '''Make sure that path_to_location works'''
         check_path_to_location(self.store)
 
-    def test_metadata_inheritance_query_count(self):
-        '''
-        When retrieving items from mongo, we should only query the cache a number of times
-        equal to the number of courses being retrieved from.
-
-        We should also not query
-        '''
-        self.store.metadata_inheritance_cache = Mock()
-        get_many = self.store.metadata_inheritance_cache.get_many
-        set_many = self.store.metadata_inheritance_cache.set_many
-        get_many.return_value = {('edX', 'toy'): {}}
-
-        self.store.get_item(Location("i4x://edX/toy/course/2012_Fall"), depth=0)
-        assert_false(get_many.called)
-        assert_false(set_many.called)
-        get_many.reset_mock()
-
-        self.store.get_item(Location("i4x://edX/toy/course/2012_Fall"), depth=3)
-        get_many.assert_called_with([('edX', 'toy')])
-        assert_equals(0, set_many.call_count)
-        get_many.reset_mock()
-
-        self.store.get_items(Location('i4x', 'edX', None, 'course', None), depth=0)
-        assert_false(get_many.called)
-        assert_false(set_many.called)
-        get_many.reset_mock()
-
-        self.store.get_items(Location('i4x', 'edX', None, 'course', None), depth=3)
-        assert_equals(1, get_many.call_count)
-        assert_equals([('edX', 'simple'), ('edX', 'toy')], sorted(get_many.call_args[0][0]))
-        assert_equals(1, set_many.call_count)
-        assert_equals([('edX', 'simple')], sorted(set_many.call_args[0][0].keys()))
-        get_many.reset_mock()
-
-        self.store.get_items(Location('i4x', 'edX', None, None, None), depth=0)
-        assert_equals(1, get_many.call_count)
-        assert_equals([('edX', 'simple'), ('edX', 'toy')], sorted(get_many.call_args[0][0]))
-        assert_equals(1, set_many.call_count)
-        assert_equals([('edX', 'simple')], sorted(set_many.call_args[0][0].keys()))
-        get_many.reset_mock()
-
-    def test_metadata_inheritance_query_count_forced_refresh(self):
-        self.store.metadata_inheritance_cache = Mock()
-        get_many = self.store.metadata_inheritance_cache.get_many
-        set_many = self.store.metadata_inheritance_cache.set_many
-        get_many.return_value = {('edX', 'toy'): {}}
-
-        self.store.get_cached_metadata_inheritance_trees(
-            [Location("i4x://edX/toy/course/2012_Fall"), Location("i4x://edX/simple/course/2012_Fall")],
-            True
-        )
-        assert_false(get_many.called)
-        assert_equals(1, set_many.call_count)
-        assert_equals([('edX', 'simple'), ('edX', 'toy')], sorted(set_many.call_args[0][0].keys()))
+    def test_get_courses_has_no_templates(self):
+        courses = self.store.get_courses()
+        for course in courses:
+            assert_false(
+                course.location.org == 'edx' and course.location.course == 'templates',
+                '{0} is a template course'.format(course)
+            )

@@ -1,3 +1,6 @@
+#pylint: disable=C0111
+#pylint: disable=W0621
+
 from lettuce import world, step
 from common import *
 
@@ -15,10 +18,8 @@ def i_fill_in_the_registration_form(step):
 @step('I press the Create My Account button on the registration form$')
 def i_press_the_button_on_the_registration_form(step):
     submit_css = 'form#register_form button#submit'
-    # Workaround for click not working on ubuntu
-    # for some unknown reason.
-    e = css_find(submit_css)
-    e.type(' ')
+    world.css_click(submit_css)
+
 
 @step('I should see be on the studio home page$')
 def i_should_see_be_on_the_studio_home_page(step):

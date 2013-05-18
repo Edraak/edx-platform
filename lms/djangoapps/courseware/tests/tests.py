@@ -1,7 +1,13 @@
+'''
+Test for lms courseware app
+'''
 import logging
 import json
 import time
+import random
+
 from urlparse import urlsplit, urlunsplit
+from uuid import uuid4
 
 from django.contrib.auth.models import User, Group
 from django.test import TestCase
@@ -11,8 +17,6 @@ from django.core.urlresolvers import reverse
 from django.test.utils import override_settings
 
 import xmodule.modulestore.django
-from xmodule.modulestore.mongo import MongoModuleStore
-
 
 # Need access to internal func to put users in the right group
 from courseware import grades
@@ -28,6 +32,7 @@ from xmodule.modulestore.xml_importer import import_from_xml
 from xmodule.modulestore.xml import XMLModuleStore
 
 log = logging.getLogger("mitx." + __name__)
+
 
 def parse_json(response):
     """Parse response, which is assumed to be json"""
@@ -47,22 +52,24 @@ def get_registration(email):
 def mongo_store_config(data_dir):
     '''
     Defines default module store using MongoModuleStore
-    
+
     Use of this config requires mongo to be running
     '''
-    return {
+    store = {
         'default': {
             'ENGINE': 'xmodule.modulestore.mongo.MongoModuleStore',
             'OPTIONS': {
                 'default_class': 'xmodule.raw_module.RawDescriptor',
                 'host': 'localhost',
                 'db': 'test_xmodule',
-                'collection': 'modulestore',
+                'collection': 'modulestore_%s' % uuid4().hex,
                 'fs_root': data_dir,
                 'render_template': 'mitxmako.shortcuts.render_to_string',
             }
         }
     }
+    store['direct'] = store['default']
+    return store
 
 
 def draft_mongo_store_config(data_dir):
@@ -74,7 +81,18 @@ def draft_mongo_store_config(data_dir):
                 'default_class': 'xmodule.raw_module.RawDescriptor',
                 'host': 'localhost',
                 'db': 'test_xmodule',
-                'collection': 'modulestore',
+                'collection': 'modulestore_%s' % uuid4().hex,
+                'fs_root': data_dir,
+                'render_template': 'mitxmako.shortcuts.render_to_string',
+            }
+        },
+        'direct': {
+            'ENGINE': 'xmodule.modulestore.mongo.MongoModuleStore',
+            'OPTIONS': {
+                'default_class': 'xmodule.raw_module.RawDescriptor',
+                'host': 'localhost',
+                'db': 'test_xmodule',
+                'collection': 'modulestore_%s' % uuid4().hex,
                 'fs_root': data_dir,
                 'render_template': 'mitxmako.shortcuts.render_to_string',
             }
@@ -101,7 +119,10 @@ TEST_DATA_DRAFT_MONGO_MODULESTORE = draft_mongo_store_config(TEST_DATA_DIR)
 
 
 class LoginEnrollmentTestCase(TestCase):
-    '''Base TestCase providing support for user creation, activation, login, and course enrollment'''
+    '''
+    Base TestCase providing support for user creation,
+    activation, login, and course enrollment
+    '''
 
     def assertRedirectsNoFollow(self, response, expected_url):
         """
@@ -112,22 +133,26 @@ class LoginEnrollmentTestCase(TestCase):
         Some of the code taken from django.test.testcases.py
         """
         self.assertEqual(response.status_code, 302,
-                         'Response status code was {0} instead of 302'.format(response.status_code))
+                         'Response status code was %d instead of 302'
+                         % (response.status_code))
         url = response['Location']
 
         e_scheme, e_netloc, e_path, e_query, e_fragment = urlsplit(expected_url)
         if not (e_scheme or e_netloc):
-            expected_url = urlunsplit(('http', 'testserver', e_path, e_query, e_fragment))
+            expected_url = urlunsplit(('http', 'testserver',
+                                       e_path, e_query, e_fragment))
 
-        self.assertEqual(url, expected_url, "Response redirected to '{0}', expected '{1}'".format(
-            url, expected_url))
+        self.assertEqual(url, expected_url,
+                         "Response redirected to '%s', expected '%s'" %
+                         (url, expected_url))
 
     def setup_viewtest_user(self):
         '''create a user account, activate, and log in'''
         self.viewtest_email = 'view@test.com'
         self.viewtest_password = 'foo'
         self.viewtest_username = 'viewtest'
-        self.create_account(self.viewtest_username, self.viewtest_email, self.viewtest_password)
+        self.create_account(self.viewtest_username,
+                            self.viewtest_email, self.viewtest_password)
         self.activate_user(self.viewtest_email)
         self.login(self.viewtest_email, self.viewtest_password)
 
@@ -185,7 +210,8 @@ class LoginEnrollmentTestCase(TestCase):
         activation_key = get_registration(email).activation_key
 
         # and now we try to activate
-        resp = self.client.get(reverse('activate', kwargs={'key': activation_key}))
+        url = reverse('activate', kwargs={'key': activation_key})
+        resp = self.client.get(url)
         return resp
 
     def activate_user(self, email):
@@ -194,24 +220,20 @@ class LoginEnrollmentTestCase(TestCase):
         # Now make sure that the user is now actually activated
         self.assertTrue(get_user(email).is_active)
 
-    def _enroll(self, course):
-        """Post to the enrollment view, and return the parsed json response"""
+    def try_enroll(self, course):
+        """Try to enroll.  Return bool success instead of asserting it."""
         resp = self.client.post('/change_enrollment', {
             'enrollment_action': 'enroll',
             'course_id': course.id,
         })
-        return parse_json(resp)
-
-    def try_enroll(self, course):
-        """Try to enroll.  Return bool success instead of asserting it."""
-        data = self._enroll(course)
-        print 'Enrollment in {0} result: {1}'.format(course.location.url(), data)
-        return data['success']
+        print ('Enrollment in %s result status code: %s'
+               % (course.location.url(), str(resp.status_code)))
+        return resp.status_code == 200
 
     def enroll(self, course):
         """Enroll the currently logged-in user, and check that it worked."""
-        data = self._enroll(course)
-        self.assertTrue(data['success'])
+        result = self.try_enroll(course)
+        self.assertTrue(result)
 
     def unenroll(self, course):
         """Unenroll the currently logged-in user, and check that it worked."""
@@ -219,8 +241,7 @@ class LoginEnrollmentTestCase(TestCase):
             'enrollment_action': 'unenroll',
             'course_id': course.id,
         })
-        data = parse_json(resp)
-        self.assertTrue(data['success'])
+        self.assertTrue(resp.status_code == 200)
 
     def check_for_get_code(self, code, url):
         """
@@ -229,7 +250,8 @@ class LoginEnrollmentTestCase(TestCase):
         """
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, code,
-                         "got code {0} for url '{1}'. Expected code {2}".format(resp.status_code, url, code))
+                         "got code %d for url '%s'. Expected code %d"
+                         % (resp.status_code, url, code))
         return resp
 
     def check_for_post_code(self, code, url, data={}):
@@ -239,7 +261,8 @@ class LoginEnrollmentTestCase(TestCase):
         """
         resp = self.client.post(url, data)
         self.assertEqual(resp.status_code, code,
-                         "got code {0} for url '{1}'. Expected code {2}".format(resp.status_code, url, code))
+                         "got code %d for url '%s'. Expected code %d"
+                         % (resp.status_code, url, code))
         return resp
 
 
@@ -260,8 +283,10 @@ class ActivateLoginTest(LoginEnrollmentTestCase):
 class PageLoaderTestCase(LoginEnrollmentTestCase):
     ''' Base class that adds a function to load all pages in a modulestore '''
 
-    def check_pages_load(self, module_store):
-        """Make all locations in course load"""
+    def check_random_page_loads(self, module_store):
+        '''
+        Choose a page in the course randomly, and assert that it loads
+        '''
        # enroll in the course before trying to access pages
         courses = module_store.get_courses()
         self.assertEqual(len(courses), 1)
@@ -269,77 +294,71 @@ class PageLoaderTestCase(LoginEnrollmentTestCase):
         self.enroll(course)
         course_id = course.id
 
-        num = 0
-        num_bad = 0
-        all_ok = True
+        # Search for items in the course
+        # None is treated as a wildcard
+        course_loc = course.location
+        location_query = Location(course_loc.tag, course_loc.org,
+                                  course_loc.course, None, None, None)
 
-        for descriptor in module_store.get_items(
-                Location(None, None, None, None, None)):
+        items = module_store.get_items(location_query)
 
-            num += 1
-            print "Checking ", descriptor.location.url()
+        if len(items) < 1:
+            self.fail('Could not retrieve any items from course')
+        else:
+            descriptor = random.choice(items)
 
-            # We have ancillary course information now as modules and we can't simply use 'jump_to' to view them
-            if descriptor.location.category == 'about':
-                resp = self.client.get(reverse('about_course', kwargs={'course_id': course_id}))
-                msg = str(resp.status_code)
+        # We have ancillary course information now as modules
+        # and we can't simply use 'jump_to' to view them
+        if descriptor.location.category == 'about':
+            self._assert_loads('about_course',
+                               {'course_id': course_id},
+                               descriptor)
 
-                if resp.status_code != 200:
-                    msg = "ERROR " + msg
-                    all_ok = False
-                    num_bad += 1
-            elif descriptor.location.category == 'static_tab':
-                resp = self.client.get(reverse('static_tab', kwargs={'course_id': course_id, 'tab_slug': descriptor.location.name}))
-                msg = str(resp.status_code)
+        elif descriptor.location.category == 'static_tab':
+            kwargs = {'course_id': course_id,
+                      'tab_slug': descriptor.location.name}
+            self._assert_loads('static_tab', kwargs, descriptor)
 
-                if resp.status_code != 200:
-                    msg = "ERROR " + msg
-                    all_ok = False
-                    num_bad += 1
-            elif descriptor.location.category == 'course_info':
-                resp = self.client.get(reverse('info', kwargs={'course_id': course_id}))
-                msg = str(resp.status_code)
+        elif descriptor.location.category == 'course_info':
+            self._assert_loads('info', {'course_id': course_id},
+                               descriptor)
 
-                if resp.status_code != 200:
-                    msg = "ERROR " + msg
-                    all_ok = False
-                    num_bad += 1
-            elif descriptor.location.category == 'custom_tag_template':
-                pass
-            else:
-                #print descriptor.__class__, descriptor.location
-                resp = self.client.get(reverse('jump_to',
-                                       kwargs={'course_id': course_id,
-                                               'location': descriptor.location.url()}), follow=True)
-                msg = str(resp.status_code)
+        elif descriptor.location.category == 'custom_tag_template':
+            pass
 
-                if resp.status_code != 200:
-                    msg = "ERROR " + msg + ": " + descriptor.location.url()
-                    all_ok = False
-                    num_bad += 1
-                elif resp.redirect_chain[0][1] != 302:
-                    msg = "ERROR on redirect from " + descriptor.location.url()
-                    all_ok = False
-                    num_bad += 1
+        else:
 
-                # check content to make sure there were no rendering failures
-                content = resp.content
-                if content.find("this module is temporarily unavailable") >= 0:
-                    msg = "ERROR unavailable module "
-                    all_ok = False
-                    num_bad += 1
-                elif isinstance(descriptor, ErrorDescriptor):
-                    msg = "ERROR error descriptor loaded: "
-                    msg = msg + descriptor.error_msg
-                    all_ok = False
-                    num_bad += 1
+            kwargs = {'course_id': course_id,
+                      'location': descriptor.location.url()}
 
-            print msg
-            self.assertTrue(all_ok)  # fail fast
+            self._assert_loads('jump_to', kwargs, descriptor,
+                               expect_redirect=True,
+                               check_content=True)
 
-        print "{0}/{1} good".format(num - num_bad, num)
-        log.info("{0}/{1} good".format(num - num_bad, num))
-        self.assertTrue(all_ok)
+    def _assert_loads(self, django_url, kwargs, descriptor,
+                      expect_redirect=False,
+                      check_content=False):
+        '''
+        Assert that the url loads correctly.
+        If expect_redirect, then also check that we were redirected.
+        If check_content, then check that we don't get
+        an error message about unavailable modules.
+        '''
+
+        url = reverse(django_url, kwargs=kwargs)
+        response = self.client.get(url, follow=True)
+
+        if response.status_code != 200:
+            self.fail('Status %d for page %s' %
+                      (response.status_code, descriptor.location.url()))
+
+        if expect_redirect:
+            self.assertEqual(response.redirect_chain[0][1], 302)
+
+        if check_content:
+            unavailable_msg = "this module is temporarily unavailable"
+            self.assertEqual(response.content.find(unavailable_msg), -1)
+            self.assertFalse(isinstance(descriptor, ErrorDescriptor))
 
 
 @override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
@@ -347,25 +366,18 @@ class TestCoursesLoadTestCase_XmlModulestore(PageLoaderTestCase):
     '''Check that all pages in test courses load properly from XML'''
 
     def setUp(self):
+        super(TestCoursesLoadTestCase_XmlModulestore, self).setUp()
         self.setup_viewtest_user()
         xmodule.modulestore.django._MODULESTORES = {}
 
     def test_toy_course_loads(self):
+        module_class = 'xmodule.hidden_module.HiddenDescriptor'
         module_store = XMLModuleStore(TEST_DATA_DIR,
-                                      default_class='xmodule.hidden_module.HiddenDescriptor',
+                                      default_class=module_class,
                                       course_dirs=['toy'],
-                                      load_error_modules=True,
-        )
+                                      load_error_modules=True)
 
-        self.check_pages_load(module_store)
-
-    def test_full_course_loads(self):
-        module_store = XMLModuleStore(TEST_DATA_DIR,
-                                      default_class='xmodule.hidden_module.HiddenDescriptor',
-                                      course_dirs=['full'],
-                                      load_error_modules=True,
-        )
-        self.check_pages_load(module_store)
+        self.check_random_page_loads(module_store)
 
 
 @override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
@@ -373,6 +385,7 @@ class TestCoursesLoadTestCase_MongoModulestore(PageLoaderTestCase):
     '''Check that all pages in test courses load properly from Mongo'''
 
     def setUp(self):
+        super(TestCoursesLoadTestCase_MongoModulestore, self).setUp()
         self.setup_viewtest_user()
         xmodule.modulestore.django._MODULESTORES = {}
         modulestore().collection.drop()
@@ -380,12 +393,15 @@ class TestCoursesLoadTestCase_MongoModulestore(PageLoaderTestCase):
     def test_toy_course_loads(self):
         module_store = modulestore()
         import_from_xml(module_store, TEST_DATA_DIR, ['toy'])
-        self.check_pages_load(module_store)
+        self.check_random_page_loads(module_store)
 
-    def test_full_course_loads(self):
+    def test_full_textbooks_loads(self):
         module_store = modulestore()
         import_from_xml(module_store, TEST_DATA_DIR, ['full'])
-        self.check_pages_load(module_store)
+
+        course = module_store.get_item(Location(['i4x', 'edX', 'full', 'course', '6.002_Spring_2012', None]))
+
+        self.assertGreater(len(course.textbooks), 0)
 
 
 @override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
@@ -415,46 +431,57 @@ class TestNavigation(LoginEnrollmentTestCase):
         self.enroll(self.full)
 
         # First request should redirect to ToyVideos
-        resp = self.client.get(reverse('courseware', kwargs={'course_id': self.toy.id}))
+        resp = self.client.get(reverse('courseware',
+                               kwargs={'course_id': self.toy.id}))
 
-        # Don't use no-follow, because state should only be saved once we actually hit the section
+        # Don't use no-follow, because state should
+        # only be saved once we actually hit the section
         self.assertRedirects(resp, reverse(
             'courseware_section', kwargs={'course_id': self.toy.id,
                                           'chapter': 'Overview',
                                           'section': 'Toy_Videos'}))
 
-        # Hitting the couseware tab again should redirect to the first chapter: 'Overview'
-        resp = self.client.get(reverse('courseware', kwargs={'course_id': self.toy.id}))
+        # Hitting the couseware tab again should
+        # redirect to the first chapter: 'Overview'
+        resp = self.client.get(reverse('courseware',
+                               kwargs={'course_id': self.toy.id}))
+
         self.assertRedirectsNoFollow(resp, reverse('courseware_chapter',
-                                                   kwargs={'course_id': self.toy.id, 'chapter': 'Overview'}))
+                                     kwargs={'course_id': self.toy.id,
+                                             'chapter': 'Overview'}))
 
         # Now we directly navigate to a section in a different chapter
         self.check_for_get_code(200, reverse('courseware_section',
                                              kwargs={'course_id': self.toy.id,
-                                                     'chapter': 'secret:magic', 'section': 'toyvideo'}))
+                                                     'chapter': 'secret:magic',
+                                                     'section': 'toyvideo'}))
 
         # And now hitting the courseware tab should redirect to 'secret:magic'
-        resp = self.client.get(reverse('courseware', kwargs={'course_id': self.toy.id}))
+        resp = self.client.get(reverse('courseware',
+                               kwargs={'course_id': self.toy.id}))
+
         self.assertRedirectsNoFollow(resp, reverse('courseware_chapter',
-                                                   kwargs={'course_id': self.toy.id, 'chapter': 'secret:magic'}))
+                                     kwargs={'course_id': self.toy.id,
+                                             'chapter': 'secret:magic'}))
 
 
 @override_settings(MODULESTORE=TEST_DATA_DRAFT_MONGO_MODULESTORE)
 class TestDraftModuleStore(TestCase):
     def test_get_items_with_course_items(self):
         store = modulestore()
+
         # fix was to allow get_items() to take the course_id parameter
-        store.get_items(Location(None, None, 'vertical', None, None), course_id='abc', depth=0)
-        # test success is just getting through the above statement. The bug was that 'course_id' argument was
+        store.get_items(Location(None, None, 'vertical', None, None),
+                        course_id='abc', depth=0)
+
+        # test success is just getting through the above statement.
+        # The bug was that 'course_id' argument was
         # not allowed to be passed in (i.e. was throwing exception)
 
 
 @override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
 class TestViewAuth(LoginEnrollmentTestCase):
     """Check that view authentication works properly"""
-
-    # NOTE: setUpClass() runs before override_settings takes effect, so
-    # can't do imports there without manually hacking settings.
 
     def setUp(self):
         xmodule.modulestore.django._MODULESTORES = {}
@@ -472,21 +499,29 @@ class TestViewAuth(LoginEnrollmentTestCase):
         self.activate_user(self.instructor)
 
     def test_instructor_pages(self):
-        """Make sure only instructors for the course or staff can load the instructor
+        """Make sure only instructors for the course
+        or staff can load the instructor
         dashboard, the grade views, and student profile pages"""
 
         # First, try with an enrolled student
         self.login(self.student, self.password)
         # shouldn't work before enroll
-        response = self.client.get(reverse('courseware', kwargs={'course_id': self.toy.id}))
-        self.assertRedirectsNoFollow(response, reverse('about_course', args=[self.toy.id]))
+        response = self.client.get(reverse('courseware',
+                                   kwargs={'course_id': self.toy.id}))
+
+        self.assertRedirectsNoFollow(response,
+                                     reverse('about_course',
+                                             args=[self.toy.id]))
         self.enroll(self.toy)
         self.enroll(self.full)
         # should work now -- redirect to first page
-        response = self.client.get(reverse('courseware', kwargs={'course_id': self.toy.id}))
-        self.assertRedirectsNoFollow(response, reverse('courseware_section', kwargs={'course_id': self.toy.id,
-                                                                                     'chapter': 'Overview',
-                                                                                     'section': 'Toy_Videos'}))
+        response = self.client.get(reverse('courseware',
+                                   kwargs={'course_id': self.toy.id}))
+        self.assertRedirectsNoFollow(response,
+                                     reverse('courseware_section',
+                                             kwargs={'course_id': self.toy.id,
+                                                     'chapter': 'Overview',
+                                                     'section': 'Toy_Videos'}))
 
         def instructor_urls(course):
             "list of urls that only instructors/staff should be able to see"
@@ -494,14 +529,19 @@ class TestViewAuth(LoginEnrollmentTestCase):
                 'instructor_dashboard',
                 'gradebook',
                 'grade_summary',)]
-            urls.append(reverse('student_progress', kwargs={'course_id': course.id,
-                                                            'student_id': get_user(self.student).id}))
+
+            urls.append(reverse('student_progress',
+                                kwargs={'course_id': course.id,
+                                        'student_id': get_user(self.student).id}))
             return urls
 
-        # shouldn't be able to get to the instructor pages
-        for url in instructor_urls(self.toy) + instructor_urls(self.full):
-            print 'checking for 404 on {0}'.format(url)
-            self.check_for_get_code(404, url)
+        # Randomly sample an instructor page
+        url = random.choice(instructor_urls(self.toy) +
+                            instructor_urls(self.full))
+
+        # Shouldn't be able to get to the instructor pages
+        print 'checking for 404 on {0}'.format(url)
+        self.check_for_get_code(404, url)
 
         # Make the instructor staff in the toy course
         group_name = _course_staff_group_name(self.toy.location)
@@ -512,13 +552,13 @@ class TestViewAuth(LoginEnrollmentTestCase):
         self.login(self.instructor, self.password)
 
         # Now should be able to get to the toy course, but not the full course
-        for url in instructor_urls(self.toy):
-            print 'checking for 200 on {0}'.format(url)
-            self.check_for_get_code(200, url)
+        url = random.choice(instructor_urls(self.toy))
+        print 'checking for 200 on {0}'.format(url)
+        self.check_for_get_code(200, url)
 
-        for url in instructor_urls(self.full):
-            print 'checking for 404 on {0}'.format(url)
-            self.check_for_get_code(404, url)
+        url = random.choice(instructor_urls(self.full))
+        print 'checking for 404 on {0}'.format(url)
+        self.check_for_get_code(404, url)
 
         # now also make the instructor staff
         instructor = get_user(self.instructor)
@@ -526,9 +566,10 @@ class TestViewAuth(LoginEnrollmentTestCase):
         instructor.save()
 
         # and now should be able to load both
-        for url in instructor_urls(self.toy) + instructor_urls(self.full):
-            print 'checking for 200 on {0}'.format(url)
-            self.check_for_get_code(200, url)
+        url = random.choice(instructor_urls(self.toy) +
+                            instructor_urls(self.full))
+        print 'checking for 200 on {0}'.format(url)
+        self.check_for_get_code(200, url)
 
     def run_wrapped(self, test):
         """
@@ -572,7 +613,8 @@ class TestViewAuth(LoginEnrollmentTestCase):
 
         def reverse_urls(names, course):
             """Reverse a list of course urls"""
-            return [reverse(name, kwargs={'course_id': course.id}) for name in names]
+            return [reverse(name, kwargs={'course_id': course.id})
+                    for name in names]
 
         def dark_student_urls(course):
             """
@@ -581,8 +623,9 @@ class TestViewAuth(LoginEnrollmentTestCase):
             """
             urls = reverse_urls(['info', 'progress'], course)
             urls.extend([
-                reverse('book', kwargs={'course_id': course.id, 'book_index': book.title})
-                for book in course.textbooks
+                reverse('book', kwargs={'course_id': course.id,
+                                        'book_index': index})
+                for index, book in enumerate(course.textbooks)
             ])
             return urls
 
@@ -593,44 +636,51 @@ class TestViewAuth(LoginEnrollmentTestCase):
             """
             urls = reverse_urls(['about_course'], course)
             urls.append(reverse('courses'))
-            # Need separate test for change_enrollment, since it's a POST view
-            #urls.append(reverse('change_enrollment'))
 
             return urls
 
         def instructor_urls(course):
             """list of urls that only instructors/staff should be able to see"""
-            urls = reverse_urls(['instructor_dashboard', 'gradebook', 'grade_summary'],
-                                course)
+            urls = reverse_urls(['instructor_dashboard',
+                                 'gradebook', 'grade_summary'], course)
             return urls
 
         def check_non_staff(course):
             """Check that access is right for non-staff in course"""
             print '=== Checking non-staff access for {0}'.format(course.id)
-            for url in instructor_urls(course) + dark_student_urls(course) + reverse_urls(['courseware'], course):
-                print 'checking for 404 on {0}'.format(url)
-                self.check_for_get_code(404, url)
 
-            for url in light_student_urls(course):
-                print 'checking for 200 on {0}'.format(url)
-                self.check_for_get_code(200, url)
+            # Randomly sample a dark url
+            url = random.choice(instructor_urls(course) +
+                                dark_student_urls(course) +
+                                reverse_urls(['courseware'], course))
+            print 'checking for 404 on {0}'.format(url)
+            self.check_for_get_code(404, url)
+
+            # Randomly sample a light url
+            url = random.choice(light_student_urls(course))
+            print 'checking for 200 on {0}'.format(url)
+            self.check_for_get_code(200, url)
 
         def check_staff(course):
             """Check that access is right for staff in course"""
             print '=== Checking staff access for {0}'.format(course.id)
-            for url in (instructor_urls(course) +
-                        dark_student_urls(course) +
-                        light_student_urls(course)):
-                print 'checking for 200 on {0}'.format(url)
-                self.check_for_get_code(200, url)
+
+            # Randomly sample a url
+            url = random.choice(instructor_urls(course) +
+                                dark_student_urls(course) +
+                                light_student_urls(course))
+            print 'checking for 200 on {0}'.format(url)
+            self.check_for_get_code(200, url)
 
             # The student progress tab is not accessible to a student
-            # before launch, so the instructor view-as-student feature should return a 404 as well.
+            # before launch, so the instructor view-as-student feature
+            # should return a 404 as well.
             # TODO (vshnayder): If this is not the behavior we want, will need
             # to make access checking smarter and understand both the effective
             # user (the student), and the requesting user (the prof)
-            url = reverse('student_progress', kwargs={'course_id': course.id,
-                                                      'student_id': get_user(self.student).id})
+            url = reverse('student_progress',
+                          kwargs={'course_id': course.id,
+                                  'student_id': get_user(self.student).id})
             print 'checking for 404 on view-as-student: {0}'.format(url)
             self.check_for_get_code(404, url)
 
@@ -753,43 +803,85 @@ class TestViewAuth(LoginEnrollmentTestCase):
 
 
 @override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
-class TestCourseGrader(LoginEnrollmentTestCase):
+class TestSubmittingProblems(LoginEnrollmentTestCase):
     """Check that a course gets graded properly"""
 
-    # NOTE: setUpClass() runs before override_settings takes effect, so
-    # can't do imports there without manually hacking settings.
+    # Subclasses should specify the course slug
+    course_slug = "UNKNOWN"
+    course_when = "UNKNOWN"
 
     def setUp(self):
         xmodule.modulestore.django._MODULESTORES = {}
-        courses = modulestore().get_courses()
 
-        def find_course(course_id):
-            """Assumes the course is present"""
-            return [c for c in courses if c.id == course_id][0]
-
-        self.graded_course = find_course("edX/graded/2012_Fall")
+        course_name = "edX/%s/%s" % (self.course_slug, self.course_when)
+        self.course = modulestore().get_course(course_name)
+        assert self.course, "Couldn't load course %r" % course_name
 
         # create a test student
         self.student = 'view@test.com'
         self.password = 'foo'
         self.create_account('u1', self.student, self.password)
         self.activate_user(self.student)
-        self.enroll(self.graded_course)
+        self.enroll(self.course)
 
         self.student_user = get_user(self.student)
 
         self.factory = RequestFactory()
 
+    def problem_location(self, problem_url_name):
+        return "i4x://edX/{}/problem/{}".format(self.course_slug, problem_url_name)
+
+    def modx_url(self, problem_location, dispatch):
+        return reverse(
+                    'modx_dispatch',
+                    kwargs={
+                        'course_id': self.course.id,
+                        'location': problem_location,
+                        'dispatch': dispatch,
+                        }
+                    )
+
+    def submit_question_answer(self, problem_url_name, responses):
+        """
+        Submit answers to a question.
+
+        Responses is a dict mapping problem ids (not sure of the right term)
+        to answers:
+            {'2_1': 'Correct', '2_2': 'Incorrect'}
+
+        """
+        problem_location = self.problem_location(problem_url_name)
+        modx_url = self.modx_url(problem_location, 'problem_check')
+        answer_key_prefix = 'input_i4x-edX-{}-problem-{}_'.format(self.course_slug, problem_url_name)
+        resp = self.client.post(modx_url,
+            { (answer_key_prefix + k): v for k,v in responses.items() }
+            )
+        return resp
+
+    def reset_question_answer(self, problem_url_name):
+        '''resets specified problem for current user'''
+        problem_location = self.problem_location(problem_url_name)
+        modx_url = self.modx_url(problem_location, 'problem_reset')
+        resp = self.client.post(modx_url)
+        return resp
+
+
+class TestCourseGrader(TestSubmittingProblems):
+    """Check that a course gets graded properly"""
+
+    course_slug = "graded"
+    course_when = "2012_Fall"
+
     def get_grade_summary(self):
         '''calls grades.grade for current user and course'''
         model_data_cache = ModelDataCache.cache_for_descriptor_descendents(
-            self.graded_course.id, self.student_user, self.graded_course)
+            self.course.id, self.student_user, self.course)
 
         fake_request = self.factory.get(reverse('progress',
-                                                kwargs={'course_id': self.graded_course.id}))
+                                        kwargs={'course_id': self.course.id}))
 
         return grades.grade(self.student_user, fake_request,
-                            self.graded_course, model_data_cache)
+                            self.course, model_data_cache)
 
     def get_homework_scores(self):
         '''get scores for homeworks'''
@@ -798,59 +890,21 @@ class TestCourseGrader(LoginEnrollmentTestCase):
     def get_progress_summary(self):
         '''return progress summary structure for current user and course'''
         model_data_cache = ModelDataCache.cache_for_descriptor_descendents(
-            self.graded_course.id, self.student_user, self.graded_course)
+            self.course.id, self.student_user, self.course)
 
         fake_request = self.factory.get(reverse('progress',
-                                                kwargs={'course_id': self.graded_course.id}))
+                                        kwargs={'course_id': self.course.id}))
 
-        progress_summary = grades.progress_summary(self.student_user, fake_request,
-                                                   self.graded_course, model_data_cache)
+        progress_summary = grades.progress_summary(self.student_user,
+                                                   fake_request,
+                                                   self.course,
+                                                   model_data_cache)
         return progress_summary
 
     def check_grade_percent(self, percent):
         '''assert that percent grade is as expected'''
         grade_summary = self.get_grade_summary()
         self.assertEqual(grade_summary['percent'], percent)
-
-    def submit_question_answer(self, problem_url_name, responses):
-        """
-        The field names of a problem are hard to determine. This method only works
-        for the problems used in the edX/graded course, which has fields named in the
-        following form:
-        input_i4x-edX-graded-problem-H1P3_2_1
-        input_i4x-edX-graded-problem-H1P3_2_2
-        """
-        problem_location = "i4x://edX/graded/problem/{0}".format(problem_url_name)
-
-        modx_url = reverse('modx_dispatch',
-                            kwargs={'course_id': self.graded_course.id,
-                                    'location': problem_location,
-                                    'dispatch': 'problem_check', })
-
-        resp = self.client.post(modx_url, {
-            'input_i4x-edX-graded-problem-{0}_2_1'.format(problem_url_name): responses[0],
-            'input_i4x-edX-graded-problem-{0}_2_2'.format(problem_url_name): responses[1],
-        })
-        print "modx_url", modx_url, "responses", responses
-        print "resp", resp
-
-        return resp
-
-    def problem_location(self, problem_url_name):
-        '''Get location string for problem, assuming hardcoded course_id'''
-        return "i4x://edX/graded/problem/{0}".format(problem_url_name)
-
-    def reset_question_answer(self, problem_url_name):
-        '''resets specified problem for current user'''
-        problem_location = self.problem_location(problem_url_name)
-
-        modx_url = reverse('modx_dispatch',
-                            kwargs={'course_id': self.graded_course.id,
-                                    'location': problem_location,
-                                    'dispatch': 'problem_reset', })
-
-        resp = self.client.post(modx_url)
-        return resp
 
     def test_get_graded(self):
         #### Check that the grader shows we have 0% in the course
@@ -869,26 +923,27 @@ class TestCourseGrader(LoginEnrollmentTestCase):
             return [s.earned for s in hw_section['scores']]
 
         # Only get half of the first problem correct
-        self.submit_question_answer('H1P1', ['Correct', 'Incorrect'])
+        self.submit_question_answer('H1P1', {'2_1': 'Correct', '2_2': 'Incorrect'})
         self.check_grade_percent(0.06)
         self.assertEqual(earned_hw_scores(), [1.0, 0, 0])   # Order matters
         self.assertEqual(score_for_hw('Homework1'), [1.0, 0.0])
 
         # Get both parts of the first problem correct
         self.reset_question_answer('H1P1')
-        self.submit_question_answer('H1P1', ['Correct', 'Correct'])
+        self.submit_question_answer('H1P1', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(0.13)
         self.assertEqual(earned_hw_scores(), [2.0, 0, 0])
         self.assertEqual(score_for_hw('Homework1'), [2.0, 0.0])
 
         # This problem is shown in an ABTest
-        self.submit_question_answer('H1P2', ['Correct', 'Correct'])
+        self.submit_question_answer('H1P2', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(0.25)
         self.assertEqual(earned_hw_scores(), [4.0, 0.0, 0])
         self.assertEqual(score_for_hw('Homework1'), [2.0, 2.0])
 
-        # This problem is hidden in an ABTest. Getting it correct doesn't change total grade
-        self.submit_question_answer('H1P3', ['Correct', 'Correct'])
+        # This problem is hidden in an ABTest.
+        # Getting it correct doesn't change total grade
+        self.submit_question_answer('H1P3', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(0.25)
         self.assertEqual(score_for_hw('Homework1'), [2.0, 2.0])
 
@@ -897,19 +952,85 @@ class TestCourseGrader(LoginEnrollmentTestCase):
         # This problem is also weighted to be 4 points (instead of default of 2)
         # If the problem was unweighted the percent would have been 0.38 so we
         # know it works.
-        self.submit_question_answer('H2P1', ['Correct', 'Correct'])
+        self.submit_question_answer('H2P1', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(0.42)
         self.assertEqual(earned_hw_scores(), [4.0, 4.0, 0])
 
         # Third homework
-        self.submit_question_answer('H3P1', ['Correct', 'Correct'])
+        self.submit_question_answer('H3P1', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(0.42)   # Score didn't change
         self.assertEqual(earned_hw_scores(), [4.0, 4.0, 2.0])
 
-        self.submit_question_answer('H3P2', ['Correct', 'Correct'])
+        self.submit_question_answer('H3P2', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(0.5)   # Now homework2 dropped. Score changes
         self.assertEqual(earned_hw_scores(), [4.0, 4.0, 4.0])
 
         # Now we answer the final question (worth half of the grade)
-        self.submit_question_answer('FinalQuestion', ['Correct', 'Correct'])
+        self.submit_question_answer('FinalQuestion', {'2_1': 'Correct', '2_2': 'Correct'})
         self.check_grade_percent(1.0)   # Hooray! We got 100%
+
+
+@override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
+class TestSchematicResponse(TestSubmittingProblems):
+    """Check that we can submit a schematic response, and it answers properly."""
+
+    course_slug = "embedded_python"
+    course_when = "2013_Spring"
+
+    def test_schematic(self):
+        resp = self.submit_question_answer('schematic_problem',
+            { '2_1': json.dumps(
+                [['transient', {'Z': [
+                [0.0000004, 2.8],
+                [0.0000009, 2.8],
+                [0.0000014, 2.8],
+                [0.0000019, 2.8],
+                [0.0000024, 2.8],
+                [0.0000029, 0.2],
+                [0.0000034, 0.2],
+                [0.0000039, 0.2]
+                ]}]]
+                )
+            })
+        respdata = json.loads(resp.content)
+        self.assertEqual(respdata['success'], 'correct')
+
+        self.reset_question_answer('schematic_problem')
+        resp = self.submit_question_answer('schematic_problem',
+            { '2_1': json.dumps(
+                [['transient', {'Z': [
+                [0.0000004, 2.8],
+                [0.0000009, 0.0],       # wrong.
+                [0.0000014, 2.8],
+                [0.0000019, 2.8],
+                [0.0000024, 2.8],
+                [0.0000029, 0.2],
+                [0.0000034, 0.2],
+                [0.0000039, 0.2]
+                ]}]]
+                )
+            })
+        respdata = json.loads(resp.content)
+        self.assertEqual(respdata['success'], 'incorrect')
+
+    def test_check_function(self):
+        resp = self.submit_question_answer('cfn_problem', {'2_1': "0, 1, 2, 3, 4, 5, 'Outside of loop', 6"})
+        respdata = json.loads(resp.content)
+        self.assertEqual(respdata['success'], 'correct')
+
+        self.reset_question_answer('cfn_problem')
+
+        resp = self.submit_question_answer('cfn_problem', {'2_1': "xyzzy!"})
+        respdata = json.loads(resp.content)
+        self.assertEqual(respdata['success'], 'incorrect')
+
+    def test_computed_answer(self):
+        resp = self.submit_question_answer('computed_answer', {'2_1': "Xyzzy"})
+        respdata = json.loads(resp.content)
+        self.assertEqual(respdata['success'], 'correct')
+
+        self.reset_question_answer('computed_answer')
+
+        resp = self.submit_question_answer('computed_answer', {'2_1': "NO!"})
+        respdata = json.loads(resp.content)
+        self.assertEqual(respdata['success'], 'incorrect')
