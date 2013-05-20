@@ -4,12 +4,10 @@ import unittest
 
 
 from ..draganddrop_helpers import PositionsCompare
-from ..draganddrop_helpers import flat_user_answer, clean_user_answer
+from ..draganddrop_helpers import flatten_user_answer, clean_user_answer
 
 
 class TestPositionsCompare(unittest.TestCase):
-    """ describe"""
-
     def test_nested_list_and_list1(self):
         self.assertEqual(PositionsCompare([[1, 2], 40]), PositionsCompare([1, 3]))
 
@@ -42,7 +40,7 @@ class TestPositionsCompare(unittest.TestCase):
 
 
 class TestUserAnswerHelpers(unittest.TestCase):
-    def test_flat_user_answer(self):
+    def test_flatten_user_answer_user_answer(self):
         user_answer = [
             {'up': {'first': {'p': 'p_l1'}}},
             {'down': {'first': {'p': 'p_l2'}}},
@@ -64,7 +62,7 @@ class TestUserAnswerHelpers(unittest.TestCase):
             {'up1': 'target3'},
             {'up2': 'target4'}
         ]
-        self.assertListEqual(flat_user_answer(user_answer), expected_result)
+        self.assertListEqual(flatten_user_answer(user_answer), expected_result)
 
     def test_clean_user_answer(self):
         user_answer = [

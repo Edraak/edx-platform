@@ -32,7 +32,7 @@ import json
 # `get_all_dragabbles` is used inside capaproblem (in XML)
 from .draganddrop_constraints import get_all_dragabbles
 
-from .draganddrop_helpers import clean_user_answer, flat_user_answer
+from .draganddrop_helpers import clean_user_answer, flatten_user_answer
 from .draganddrop_helpers import PositionsCompare
 
 
@@ -256,7 +256,7 @@ class DragAndDrop(object):
 
         # Convert nested `user_answer` to flat format.
         # This transformation is needed for support draggables on draggable.
-        user_answer = flat_user_answer(user_answer)
+        user_answer = flatten_user_answer(user_answer)
 
         # Clean `user_answer` from grid additional data.
         # This transformation is needed for backward compatibility,

@@ -2,8 +2,10 @@
 
 import re
 
+re_col_row = re.compile(r'\{([0-9]*)\}')
 
-def flat_user_answer(user_answer):
+
+def flatten_user_answer(user_answer):
     """
     Convert each item of `user_answer` to flat format.
 
@@ -12,9 +14,11 @@ def flat_user_answer(user_answer):
     to
     {'up': 'p_l[p][first]'}
 
-    :param user_answer: list of dict -- information about draggables.
+    :param user_answer: list of dicts where dict value is nested dict
+    -- information about draggables.
     :type user_answer: list.
-    :returns: list -- flated list of information about draggables.
+    :returns: list of dicts where dict value is string
+    -- flattened list of information about draggables.
     """
 
     def parse_user_answer(info):
@@ -51,9 +55,9 @@ def clean_user_answer(user_answer):
     to
     {'up': 'p_l[p][first]'}
 
-    :param user_answer: list of dict -- information about draggables.
+    :param user_answer: list of dicts -- information about draggables.
     :type user_answer: list.
-    :returns: list -- clean list of information about draggables.
+    :returns: list of dicts -- clean list of information about draggables.
     """
 
     def parse_user_answer(answer):
@@ -63,8 +67,7 @@ def clean_user_answer(user_answer):
         # `list` (coordinates of centers of dragged images).
         if isinstance(target, basestring):
             # Remove next sequences - "{any number of digits}"
-            p = re.compile(r'\{[0-9]*\}')
-            return {draggable: p.sub('', target)}
+            return {draggable: re_col_row.sub('', target)}
         else:
             return answer
 
