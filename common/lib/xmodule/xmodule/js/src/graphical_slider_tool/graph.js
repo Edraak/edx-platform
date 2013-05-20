@@ -924,12 +924,13 @@ define('Graph', ['logme'], function (logme) {
                     obj['@point_size'],
                     obj['@fill_area'],
                     obj['@bar'],
-                    obj['@disable_auto_return']
+                    obj['@disable_auto_return'],
+                    obj['@steps']
                 );
             }
 
             function addFunction(funcString, color, line, dot, label,
-                pointSize, fillArea, bar, disableAutoReturn) {
+                pointSize, fillArea, bar, disableAutoReturn, steps) {
 
                 var newFunctionObject, func, paramNames, c1, rgxp;
 
@@ -973,6 +974,7 @@ define('Graph', ['logme'], function (logme) {
                 // make sure that at least a line is drawn for a function.
                 newFunctionObject = {
                     'line': true,
+                    'steps': false,
                     'dot': false,
                     'bars': false
                 };
@@ -1031,6 +1033,14 @@ define('Graph', ['logme'], function (logme) {
                         newFunctionObject['line'] = true;
                     } else if (line.toLowerCase() === 'false') {
                         newFunctionObject['line'] = false;
+                    }
+                }
+
+                if (typeof steps === 'string') {
+                    if (steps.toLowerCase() === 'true') {
+                        newFunctionObject['steps'] = true;
+                    } else if (steps.toLowerCase() === 'false') {
+                        newFunctionObject['steps'] = false;
                     }
                 }
 
@@ -1250,7 +1260,8 @@ define('Graph', ['logme'], function (logme) {
 
                 // Should the data points be connected by a line?
                 seriesObj.lines = {
-                    'show': functionObj.line
+                    'show': functionObj.line,
+                    'steps': functionObj.steps
                 };
 
                 if (functionObj.hasOwnProperty('fillArea') === true) {
