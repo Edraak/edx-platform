@@ -1,4 +1,7 @@
 // REFACTOR: Add documentation.
+// REFACTOR: Go through all files - use short hand if conditionals.
+// REFACTOR: CSS should be separated to CSS files as much as possible.
+// REFACTOR: Add class name for each created element.
 
 (function (requirejs, require, define) {
 define(

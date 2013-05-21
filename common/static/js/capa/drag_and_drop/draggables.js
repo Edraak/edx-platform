@@ -1,5 +1,6 @@
 (function (requirejs, require, define) {
 define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (logme, draggableEvents, draggableLogic, Targets) {
+    // REFACTOR: No init() method. Just return function.
     return {
         'init': init
     };
@@ -12,12 +13,14 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
         });
     }
 
+    // REFACTOR: Rename to 'callback'.
     function makeDraggableCopy(callbackFunc) {
         var draggableObj, property;
 
         // Make a full proper copy of the draggable object, with some modifications.
         draggableObj = {};
         for (property in this) {
+            // REFACTOR: Use shorthand if.
             if (this.hasOwnProperty(property) === true) {
                 draggableObj[property] = this[property];
             }
@@ -33,11 +36,19 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
         draggableObj.targetField = []; // Will be populated.
 
         // Create DOM elements and attach events.
+        // REFACTOR: Use shorthand.
         if (draggableObj.originalConfigObj.icon.length > 0) {
 
-            draggableObj.iconEl = $('<div></div>');
+            // REFACTOR: create iconEl object only once (currrently it is created in both if cases).
+            draggableObj.iconEl = $('<div />');
+
+            // REFACTOR: Use chaining.
             draggableObj.iconImgEl = $('<img />');
             draggableObj.iconImgEl.attr('src', draggableObj.originalConfigObj.icon);
+
+            // REFACTOR: Pass callback. Not inlined function.
+            // REFACTOR: chain iconImgEl.
+            // REFACTOR: Move styling to CSS.
             draggableObj.iconImgEl.load(function () {
 
                 draggableObj.iconEl.css({
@@ -45,6 +56,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     'width': draggableObj.iconWidthSmall,
                     'height': draggableObj.iconHeightSmall,
                     'left': 50 - draggableObj.iconWidthSmall * 0.5,
+                    // REFACTOR: Shorthand.
                     'top': ((draggableObj.originalConfigObj.label.length > 0) ? 5 : 50 - draggableObj.iconHeightSmall * 0.5)
                 });
                 draggableObj.iconImgEl.css({
@@ -56,7 +68,9 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                 });
                 draggableObj.iconImgEl.appendTo(draggableObj.iconEl);
 
+                // REFACTOR: Shorthand.
                 if (draggableObj.originalConfigObj.label.length > 0) {
+                    // REFACTOR: Use chainig.
                     draggableObj.labelEl = $(
                         '<div ' +
                             'style=" ' +
@@ -77,18 +91,21 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     draggableObj.attachMouseEventsTo('labelEl');
                 }
 
+                // REFACTOR: Move to separate function. The same code repeats in the below else condition.
                 draggableObj.attachMouseEventsTo('iconEl');
 
                 draggableObj.stateDraggablesIndex = draggableObj.state.draggables.push(draggableObj) - 1;
 
+                // REFACTOR: Document why this is necessary.
                 setTimeout(function () {
                     callbackFunc(draggableObj);
                 }, 0);
             });
-
-            return;
-        } else {
+         } else { // REFACTOR: Use else if with condition from below.
+            // REFACTOR: Shorthand.
             if (draggableObj.originalConfigObj.label.length > 0) {
+            // REFACTOR: Move styling to CSS.
+            // REFACTOR: Use chainig.
                 draggableObj.iconEl = $(
                     '<div ' +
                         'style=" ' +
@@ -109,19 +126,16 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
 
                 draggableObj.stateDraggablesIndex = draggableObj.state.draggables.push(draggableObj) - 1;
 
+                // REFACTOR: Document why this is necessary.
                 setTimeout(function () {
                     callbackFunc(draggableObj);
                 }, 0);
-
-                return;
             }
         }
     }
 
     function processDraggable(state, obj) {
-        var draggableObj;
-
-        draggableObj = {
+        var draggableObj = {
             'uniqueId': state.getUniqueId(),
             'originalConfigObj': obj,
             'stateDraggablesIndex': null,
@@ -170,7 +184,8 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
             'targetField': [],
             'numDraggablesOnMe': 0
         };
-            
+        // REFACTOR: Move styling to CSS.
+        // REFACTOR: Use chainig.
         draggableObj.containerEl = $(
             '<div ' +
                 'style=" ' +
@@ -188,19 +203,20 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
         );
 
         draggableObj.containerEl.appendTo(state.sliderEl);
-
+        // REFACTOR: Shorthand.
         if (obj.icon.length > 0) {
             draggableObj.iconElBGColor = 'transparent';
             draggableObj.iconElPadding = 0;
             draggableObj.iconElBorder = 'none';
             draggableObj.iconElLeftOffset = 0;
 
-            draggableObj.iconEl = $('<div></div>').css({
+            draggableObj.iconEl = $('<div />').css({
                 'overflow': 'hidden'
             });
-
+            // REFACTOR: Use chainig.
             draggableObj.iconImgEl = $('<img />');
             draggableObj.iconImgEl.attr('src', obj.icon);
+            // REFACTOR: Pass callback. Not inlined function.
             draggableObj.iconImgEl.load(function () {
                 draggableObj.iconWidth = this.width;
                 draggableObj.iconHeight = this.height;
@@ -217,16 +233,14 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     draggableObj.iconHeightSmall = 30;
                     draggableObj.iconWidthSmall = draggableObj.iconHeightSmall * (draggableObj.iconWidth / draggableObj.iconHeight);
                 }
-
+                // REFACTOR: Move styling to CSS.
                 draggableObj.iconEl.css({
                     'position': 'absolute',
                     'width': draggableObj.iconWidthSmall,
                     'height': draggableObj.iconHeightSmall,
                     'left': 50 - draggableObj.iconWidthSmall * 0.5,
 
-                    // Before:
-                    // 'top': ((obj.label.length > 0) ? (100 - draggableObj.iconHeightSmall - 25) * 0.5 : 50 - draggableObj.iconHeightSmall * 0.5)
-                    // After:
+                    // REFACTOR: Shorthand.
                      'top': ((obj.label.length > 0 || !draggableObj.state.config.autoResize) ? 37.5 : 50.0) - 0.5 * draggableObj.iconHeightSmall
                 });
                 
@@ -243,8 +257,10 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                 // Initially, when a draggable is created from the config JSON, it is placed in the slider.
                 // At this time we must draw temporary targets.
                 Targets.drawDummyTargets(draggableObj);
-
+                // REFACTOR: Shorthand.
                 if (obj.label.length > 0) {
+                    // REFACTOR: Move styling to CSS.
+                    // REFACTOR: Use chainig.
                     draggableObj.labelEl = $(
                         '<div ' +
                             'style=" ' +
@@ -263,7 +279,13 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     );
 
                     draggableObj.labelEl.appendTo(draggableObj.containerEl);
+
+                    // REFACTOR: Check why this must be done here, and not when you are creating labelEl.
                     draggableObj.labelEl.html(obj.shortLabel);
+
+
+
+                    // REFACTOR: These are set to the same value. Why? a = b = c.width()
                     draggableObj.labelWidth = draggableObj.labelEl.width();
                     draggableObj.labelWidthSmall = draggableObj.labelEl.width();
                     
@@ -276,9 +298,6 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     } else {
                         draggableObj.labelEl.css({
                             'left': 50 - draggableObj.labelWidthSmall * 0.5,
-                            // Before:
-                            // 'top': (100 - this.iconHeightSmall - 25) * 0.5 + this.iconHeightSmall + 5
-                            // After:
                             'top': (!draggableObj.state.config.separateLabels) ? 42.5 + 0.5 * draggableObj.iconHeightSmall : 70,
                             'min-width': draggableObj.labelWidthSmall
                         });
@@ -288,11 +307,13 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                     
                     if (obj.isMathJax) {
                         MathJax.Hub.Queue(
-                            ["Typeset", MathJax.Hub, draggableObj.labelEl[0]],
+                            ['Typeset', MathJax.Hub, draggableObj.labelEl[0]],
                             [function(){
+                                // REFACTOR: Maybe this can be removed?
                                 draggableObj.labelWidth = draggableObj.labelEl.width();
                                 draggableObj.labelWidthSmall = draggableObj.labelEl.width();
                                 
+                                // REFACTOR: Maybe CSS classes can be used instead of .css()
                                 draggableObj.labelEl
                                     .css({
                                         'left': 50 - draggableObj.labelWidthSmall * 0.5,
@@ -311,13 +332,13 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                                         'display': 'inline'
                                     })
                                 .find('.math > span')
-                                .css({
-                                    'font-size': '100%'
-                                })
+                                    .css({
+                                        'font-size': '100%'
+                                    })
                                 .find('.mrow > span')
-                                .css({
-                                    'color': '#000'
-                                });
+                                    .css({
+                                        'color': '#000'
+                                    });
                             }]
                         );
                     }    
@@ -330,12 +351,15 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
             // label, we will create a label and store it as if it was an
             // icon. All the existing code will work, and the user will
             // see a label instead of an icon.
+
+            // REFACTOR: Shorthand.
             if (obj.label.length > 0) {
                 draggableObj.iconElBGColor = state.config.labelBgColor;
                 draggableObj.iconElPadding = 8;
                 draggableObj.iconElBorder = '1px solid black';
                 draggableObj.iconElLeftOffset = 9;
 
+                // REFACTOR: Use chaining.
                 draggableObj.iconEl = $(
                     '<div ' +
                         'style=" ' +
@@ -380,6 +404,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
 
                 draggableObj.hasLoaded = true;
 
+                // REFACTOR: Below block is already used somewhere above. Move to separate function with parameters.
                 if (obj.isMathJax) {
                     MathJax.Hub.Queue(
                         ["Typeset", MathJax.Hub, draggableObj.iconEl[0]],
@@ -387,6 +412,7 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                             draggableObj.iconWidth = draggableObj.iconEl.width();
                             draggableObj.iconWidthSmall = draggableObj.iconEl.width();
                             
+                            // REFACTOR: Try to move styles to CSS.
                             draggableObj.iconEl
                                 .css({
                                     'left': 50 - draggableObj.iconWidthSmall * 0.5,
@@ -408,9 +434,9 @@ define(['logme', 'draggable_events', 'draggable_logic', 'targets'], function (lo
                                     'font-size': '100%'
                                 })
                             .find('.mrow > span')
-                            .css({
-                                'color': '#000'
-                            });
+                                .css({
+                                    'color': '#000'
+                                });
                         }]
                     );
                 }
