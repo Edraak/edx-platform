@@ -45,13 +45,16 @@
         CourseTaskProgress.prototype.update_progress = function(response) {
             var _this = this;
             // Response should be a dict with an entry for each requested task_id,
-            // with a "task-state" and "in_progress" key and optionally a "message" key.
+            // with a "task-state" and "in_progress" key and optionally a "message"
+            // and a "task_progress.duration" key.
             var something_in_progress = false;
             for (task_id in response) {
                 var task_dict = response[task_id];
                 // find the corresponding entry, and update it:
                 entry = $(_this.element).find('[data-task-id="' + task_id + '"]');
                 entry.find('.task-state').text(task_dict.task_state)
+                var duration_value = (task_dict.task_progress && task_dict.task_progress.duration_ms) || 'unknown';
+                entry.find('.task-duration').text(duration_value);
                 var progress_value = task_dict.message || '';
                 entry.find('.task-progress').text(progress_value);
                 // if the task is complete, then change the entry so it won't
@@ -699,6 +702,7 @@ function goto( mode)
           <th>Requester</th>
           <th>Submitted</th>
           <th>Task State</th>
+          <th>Duration (ms)</th>
           <th>Task Progress</th>
         </tr>
       %for tasknum, course_task in enumerate(course_tasks):
@@ -712,6 +716,7 @@ function goto( mode)
           <td>${course_task.requester}</td>
           <td>${course_task.created}</td>
           <td><div class="task-state">${course_task.task_state}</div></td>
+          <td><div class="task-duration">unknown</div></td>
           <td><div class="task-progress">unknown</div></td>
         </tr>
       %endfor
