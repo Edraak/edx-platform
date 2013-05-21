@@ -1,0 +1,223 @@
+#daimp-tool-header {
+  width: 818px;
+  background-color: #F4F4F4;
+  display: block;
+  margin: 0 auto;
+  overflow: auto;
+  border: 1px solid #555555;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom: 0px; }
+  #daimp-tool-header .daimp-title {
+    float: left;
+    width: 40%;
+    padding: 5px;
+    color: #555555;
+    font-family: 'Open Sans', Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    clear: both; }
+  #daimp-tool-header .daimp-help-link {
+    float: right;
+    width: 40%;
+    padding: 5px; }
+    #daimp-tool-header .daimp-help-link a {
+      float: right;
+      color: #1d9dd9;
+      text-decoration: none;
+      font-family: 'Open Sans', Verdana, sans-serif;
+      font-weight: bold;
+      font-size: 18px;
+      font-style: normal;
+      clear: both; }
+    #daimp-tool-header .daimp-help-link a:hover {
+      color: white; }
+  #daimp-tool-header .daimp-help-text {
+    clear: both;
+    padding: 5px;
+    display: none; }
+    #daimp-tool-header .daimp-help-text p {
+      color: #646464;
+      font-family: 'Open Sans', Verdana, sans-serif;
+      font-weight: normal;
+      font-size: 14px; }
+
+#daimp-tool-container {
+  width: 818px;
+  height: 575px;
+  background-color: #003366;
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid #555555;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  /* Default checkbox */
+  /* Default radiobutton */
+  /* Default button */
+  /* Default slider */
+  /*Default graph */
+  /* Default text */ }
+  #daimp-tool-container .line-base, #daimp-tool-container .checkbox-back-square, #daimp-tool-container .checkbox-front-square, #daimp-tool-container .radiobutton-back-circle, #daimp-tool-container .radiobutton-front-circle, #daimp-tool-container .button-light-border, #daimp-tool-container .button-dark-border, #daimp-tool-container .slider-dark-track, #daimp-tool-container .slider-light-track, #daimp-tool-container .slider-axis, #daimp-tool-container .slider-knob-body, #daimp-tool-container .slider-knob-pointer, #daimp-tool-container .slider-short-ticks, #daimp-tool-container .slider-long-ticks, #daimp-tool-container .graph-borders, #daimp-tool-container .graph-axis, #daimp-tool-container .graph-crosshair, #daimp-tool-container .graph-grid, #daimp-tool-container .graph-long-ticks, #daimp-tool-container .graph-short-ticks {
+    stroke-width: 1;
+    shape-rendering: auto;
+    /*auto, optimizeSpeed, crispEdges, geometricPrecision*/ }
+  #daimp-tool-container .text-base, #daimp-tool-container .normal-text, #daimp-tool-container .checkbox-label, #daimp-tool-container .ab-checkbox-label-first, #daimp-tool-container .ab-checkbox-label-last, #daimp-tool-container .amp-phi-checkbox-label, #daimp-tool-container .button-label, #daimp-tool-container .hslider-text, #daimp-tool-container .amp-slider-text, #daimp-tool-container .phi-slider-text, #daimp-tool-container .a-slider-text, #daimp-tool-container .b-slider-text, #daimp-tool-container .hslider-value-text, #daimp-tool-container .amp-slider-value-text, #daimp-tool-container .phi-slider-value-text, #daimp-tool-container .a-slider-value-text, #daimp-tool-container .b-slider-value-text, #daimp-tool-container .vslider-text, #daimp-tool-container .vslider-value-text, #daimp-tool-container .graph-x-axis-text, #daimp-tool-container .graph-y-axis-text, #daimp-tool-container .text-red, #daimp-tool-container .text-green, #daimp-tool-container .text-yellow, #daimp-tool-container .text-cyan, #daimp-tool-container .small-text, #daimp-tool-container .hslider-labels, #daimp-tool-container .vslider-labels, #daimp-tool-container .graph-x-axis-labels, #daimp-tool-container .graph-y-axis-labels {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    cursor: default; }
+  #daimp-tool-container .checkbox-back-square {
+    stroke: #999999;
+    fill: black; }
+  #daimp-tool-container .checkbox-front-square {
+    stroke: #cccccc;
+    fill: #cccccc; }
+  #daimp-tool-container .radiobutton-back-circle {
+    stroke: #999999;
+    fill: black; }
+  #daimp-tool-container .radiobutton-front-circle {
+    stroke: #cccccc;
+    fill: #cccccc; }
+  #daimp-tool-container .button-light-border {
+    stroke: #999999; }
+  #daimp-tool-container .button-dark-border {
+    stroke: black; }
+  #daimp-tool-container .button-background {
+    fill: #333333; }
+  #daimp-tool-container .slider-dark-track {
+    stroke: black; }
+  #daimp-tool-container .slider-light-track {
+    stroke: #666666; }
+  #daimp-tool-container .slider-axis {
+    stroke: #999999; }
+  #daimp-tool-container .slider-knob-body {
+    stroke: #999999; }
+  #daimp-tool-container .slider-knob-pointer {
+    stroke: white; }
+  #daimp-tool-container .slider-short-ticks {
+    stroke: #999999; }
+  #daimp-tool-container .slider-long-ticks {
+    stroke: #999999; }
+  #daimp-tool-container .graph-background {
+    stroke: none;
+    fill: black; }
+  #daimp-tool-container .graph-borders {
+    stroke: #666666; }
+  #daimp-tool-container .graph-axis {
+    stroke: #999999; }
+  #daimp-tool-container .graph-crosshair {
+    stroke: #cccccc; }
+  #daimp-tool-container .graph-grid {
+    stroke: #333333; }
+  #daimp-tool-container .graph-long-ticks {
+    stroke: #999999; }
+  #daimp-tool-container .graph-short-ticks {
+    stroke: #999999; }
+  #daimp-tool-container .normal-text, #daimp-tool-container .checkbox-label, #daimp-tool-container .ab-checkbox-label-first, #daimp-tool-container .ab-checkbox-label-last, #daimp-tool-container .amp-phi-checkbox-label, #daimp-tool-container .button-label, #daimp-tool-container .hslider-text, #daimp-tool-container .amp-slider-text, #daimp-tool-container .phi-slider-text, #daimp-tool-container .a-slider-text, #daimp-tool-container .b-slider-text, #daimp-tool-container .hslider-value-text, #daimp-tool-container .amp-slider-value-text, #daimp-tool-container .phi-slider-value-text, #daimp-tool-container .a-slider-value-text, #daimp-tool-container .b-slider-value-text, #daimp-tool-container .vslider-text, #daimp-tool-container .vslider-value-text, #daimp-tool-container .graph-x-axis-text, #daimp-tool-container .graph-y-axis-text, #daimp-tool-container .text-red, #daimp-tool-container .text-green, #daimp-tool-container .text-yellow, #daimp-tool-container .text-cyan {
+    /*style: normal, italic, oblique*/
+    /*variant: normal, small-caps, inherit*/
+    /*style: normal, italic, oblique*/
+    font-family: 'Open Sans', Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    fill: #cccccc; }
+  #daimp-tool-container .small-text, #daimp-tool-container .hslider-labels, #daimp-tool-container .vslider-labels, #daimp-tool-container .graph-x-axis-labels, #daimp-tool-container .graph-y-axis-labels {
+    font-family: 'Open Sans', Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    fill: #cccccc; }
+  #daimp-tool-container .hslider-text, #daimp-tool-container .amp-slider-text, #daimp-tool-container .phi-slider-text, #daimp-tool-container .a-slider-text, #daimp-tool-container .b-slider-text {
+    text-anchor: end; }
+  #daimp-tool-container .hslider-value-text, #daimp-tool-container .amp-slider-value-text, #daimp-tool-container .phi-slider-value-text, #daimp-tool-container .a-slider-value-text, #daimp-tool-container .b-slider-value-text {
+    text-anchor: start; }
+  #daimp-tool-container .hslider-labels {
+    fill: #999999;
+    text-anchor: middle; }
+  #daimp-tool-container .vslider-text {
+    text-anchor: middle;
+    dominant-baseline: hanging; }
+  #daimp-tool-container .vslider-value-text {
+    text-anchor: middle; }
+  #daimp-tool-container .vslider-labels {
+    fill: #999999;
+    text-anchor: end;
+    dominant-baseline: middle; }
+  #daimp-tool-container .graph-x-axis-labels {
+    fill: #999999;
+    text-anchor: middle;
+    dominant-baseline: hanging; }
+  #daimp-tool-container .graph-y-axis-labels {
+    fill: #999999;
+    text-anchor: end;
+    dominant-baseline: middle; }
+  #daimp-tool-container .graph-x-axis-text {
+    fill: #999999;
+    text-anchor: start;
+    dominant-baseline: middle; }
+  #daimp-tool-container .graph-y-axis-text {
+    fill: #999999;
+    text-anchor: middle; }
+  #daimp-tool-container .bBox {
+    stroke: none;
+    fill: none; }
+
+#daimp-tool-container .amp-slider-text {
+  fill: red; }
+#daimp-tool-container .amp-slider-value-text {
+  fill: red; }
+#daimp-tool-container .phi-slider-text {
+  fill: red; }
+#daimp-tool-container .phi-slider-value-text {
+  fill: red; }
+#daimp-tool-container .a-slider-text {
+  fill: yellow; }
+#daimp-tool-container .a-slider-value-text {
+  fill: yellow; }
+#daimp-tool-container .b-slider-text {
+  fill: cyan; }
+#daimp-tool-container .b-slider-value-text {
+  fill: cyan; }
+#daimp-tool-container .ab-checkbox-front-square {
+  stroke: lime;
+  fill: lime; }
+#daimp-tool-container .ab-checkbox-label-first {
+  fill: yellow; }
+#daimp-tool-container .ab-checkbox-label-last {
+  fill: cyan; }
+#daimp-tool-container .amp-phi-checkbox-front-square {
+  stroke: red;
+  fill: red; }
+#daimp-tool-container .amp-phi-checkbox-label {
+  fill: red; }
+#daimp-tool-container .curve-red {
+  stroke: red;
+  fill: none;
+  /*fill-opacity: 0.2;*/ }
+#daimp-tool-container .curve-green {
+  stroke: lime;
+  fill: none; }
+#daimp-tool-container .curve-yellow {
+  stroke: yellow;
+  fill: none; }
+#daimp-tool-container .curve-cyan {
+  stroke: cyan;
+  fill: none; }
+#daimp-tool-container .diamond-red {
+  stroke: red;
+  fill: red; }
+#daimp-tool-container .diamond-green {
+  stroke: lime;
+  fill: lime; }
+#daimp-tool-container .text-red {
+  fill: red; }
+#daimp-tool-container .text-green {
+  fill: lime; }
+#daimp-tool-container .text-yellow {
+  fill: yellow; }
+#daimp-tool-container .text-cyan {
+  fill: cyan; }
