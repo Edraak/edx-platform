@@ -267,7 +267,7 @@ clone_repos
 
 # Install system-level dependencies
 
-bash $BASE/$REPO_NAME/install-system-req.sh
+bash $BASE/$REPO_NAME/scripts/install-system-req.sh
 
 output "Installing RVM, Ruby, and required gems"
 
@@ -336,7 +336,7 @@ bundle install --gemfile $BASE/$REPO_NAME/Gemfile
 
 # Install Python virtualenv
 
-output "Installing python virtualenv"
+output "Creating python virtualenv"
 
 case `uname -s` in
     Darwin)
@@ -411,14 +411,12 @@ case `uname -s` in
         ;;
 esac
 
-output "Installing $REPO_NAME pre-requirements"
-pip install -r $BASE/$REPO_NAME/pre-requirements.txt
-
 output "Installing $REPO_NAME requirements"
 # Need to be in the $REPO_NAME dir to get the paths to local modules right
 cd $BASE/$REPO_NAME
-pip install -r requirements.txt
+rake install_prereqs
 
+# Don't abort the script if these commands fail
 mkdir "$BASE/log" || true
 mkdir "$BASE/db" || true
 
