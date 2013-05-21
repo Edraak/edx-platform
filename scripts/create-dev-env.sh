@@ -53,9 +53,10 @@ info() {
     cat<<EO
     platform base dir : $BASE
     platform repo dir : $BASE / $REPO_NAME
-    Python virtualenv dir : $PYTHON_DIR
+    Python base virtualenv dir : $PYTHON_DIR
+    Python virtualenv: $PYTHON_VIRTUALENV_NAME
     Ruby RVM dir : $RUBY_DIR
-    Ruby ver : $RUBY_VER
+    Ruby gemset : $RUBY_GEMSET_NAME
 
 EO
 }
@@ -108,9 +109,17 @@ REPO_NAME="edx-platform"
 # unless you've already got one set up with virtualenvwrapper.
 PYTHON_DIR=${WORKON_HOME:-"$HOME/.virtualenvs"}
 
+# Name of the virtualenv (to be created) that will manage all of the
+# needed Python packages.
+PYTHON_VIRTUALENV_NAME="edx"
+
 # RVM defaults its install to ~/.rvm, but use the overridden rvm_path
 # if that's what's preferred.
 RUBY_DIR=${rvm_path:-"$HOME/.rvm"}
+
+# Name of the Ruby gemset (to be created) that will store all of the
+# needed Ruby gems (libs).
+RUBY_GEMSET_NAME="edx"
 
 LOG="/var/tmp/install-$(date +%Y%m%d-%H%M%S).log"
 
@@ -315,8 +324,8 @@ esac
 # which will fail if any required libs are missing.
 LESS="-E" rvm install $RUBY_VER --autolibs=3 --with-readline
 
-# Create the "edx" gemset
-rvm use "$RUBY_VER@edx" --create
+# Create the $RUBY_GEMSET_NAME gemset
+rvm use "$RUBY_VER@$RUBY_GEMSET_NAME" --create
 
 output "Installing gem bundler"
 gem install bundler
@@ -348,17 +357,17 @@ if [[ `type -t mkvirtualenv` != "function" ]]; then
     source `which virtualenvwrapper.sh`
 fi
 
-# Create edx-platform virtualenv and link it to repo
+# Create Python virtualenv and link it to repo
 # virtualenvwrapper automatically sources the activation script
 if [[ $systempkgs ]]; then
-    mkvirtualenv -a "$BASE/$REPO_NAME" --use-distribute --system-site-packages edx-platform || {
+    mkvirtualenv -a "$BASE/$REPO_NAME" --use-distribute --system-site-packages $PYTHON_VIRTUALENV_NAME || {
       error "mkvirtualenv exited with a non-zero error"
       exit 1
     }
 else
     # default behavior for virtualenv>1.7 is
     # --no-site-packages
-    mkvirtualenv -a "$BASE/$REPO_NAME" --use-distribute edx-platform || {
+    mkvirtualenv -a "$BASE/$REPO_NAME" --use-distribute $PYTHON_VIRTUALENV_NAME || {
       error "mkvirtualenv exited with a non-zero error"
       exit 1
     }
@@ -406,7 +415,7 @@ output "Installing $REPO_NAME pre-requirements"
 pip install -r $BASE/$REPO_NAME/pre-requirements.txt
 
 output "Installing $REPO_NAME requirements"
-# Need to be in the edx-platform dir to get the paths to local modules right
+# Need to be in the $REPO_NAME dir to get the paths to local modules right
 cd $BASE/$REPO_NAME
 pip install -r requirements.txt
 
@@ -434,7 +443,7 @@ cat<<END
 
    Then, every time you're ready to work on the project, just run
 
-        $ workon edx-platform
+        $ workon $PYTHON_VIRTUALENV_NAME
 
    To initialize Django
 
