@@ -306,18 +306,14 @@ case `uname -s` in
         ;;
 esac
 
-# Current stable version of RVM (1.19.0) requires the following to build Ruby:
+# RVM requires the following to build Ruby:
 #
 # autoconf automake libtool pkg-config libyaml libxml2 libxslt libksba openssl
 #
-# If we decide to upgrade from the current version (1.15.7), can run
-#
-# LESS="-E" rvm install $RUBY_VER --autolibs=3 --with-readline
-#
-# to have RVM look for a package manager like Homebrew and install any missing
-# libs automatically. RVM's --autolibs flag defaults to 2, which will fail if
-# any required libs are missing.
-LESS="-E" rvm install $RUBY_VER --with-readline
+# Use --autolibs=3 to have RVM look for a package manager like Homebrew and
+# install any missing libs automatically. RVM's --autolibs flag defaults to 2,
+# which will fail if any required libs are missing.
+LESS="-E" rvm install $RUBY_VER --autolibs=3 --with-readline
 
 # Create the "edx" gemset
 rvm use "$RUBY_VER@edx" --create
