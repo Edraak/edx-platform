@@ -4,6 +4,8 @@ from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from django.core.urlresolvers import reverse
 import copy
+import hashlib
+import time
 
 DIRECT_ONLY_CATEGORIES = ['course', 'chapter', 'sequential', 'about', 'static_tab', 'course_info']
 
@@ -125,6 +127,20 @@ def get_course_id(location):
     # TODO: These will need to be changed to point to the particular instance of this problem in the particular course
     return modulestore().get_containing_courses(Location(location))[0].id
 
+
+def generate_secret_for_course(course_id):
+    """
+    Generates a secret key for use with this course, from which we'll
+    derive further keys for hashing (anonymizing) usernames for data
+    export.
+    """
+    secret = hashlib.sha1()
+    # include the secret key as a salt, and to make the ids unique across
+    # different LMS installs.
+    secret.update(settings.SECRET_KEY)
+    secret.update(str(course_id))
+    secret.update(str(time.gmtime()))
+    return secret.hexdigest()
 
 class UnitState(object):
     draft = 'draft'

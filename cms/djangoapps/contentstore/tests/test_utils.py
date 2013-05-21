@@ -3,6 +3,7 @@ from contentstore import utils
 import mock
 import collections
 import copy
+import time
 from django.test import TestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
@@ -147,4 +148,16 @@ class ExtraPanelTabTestCase(TestCase):
                 changed, actual_tabs = utils.remove_extra_panel_tab(tab_type, course)
                 self.assertFalse(changed)
                 self.assertEqual(actual_tabs, expected_tabs)
+
+
+class GenerateCourseSecretTestCase(TestCase):
+    def test_with_different_courses(self):
+        """
+        Different courses should have different secrets, even if
+        they're created at the exact same time.
+        """
+        course_ids = ('edX/toy/2012_Fall', 'edx/full/6.002_Spring_2012')
+        time.gmtime = mock.Mock(return_value=time.gmtime())
+        s1, s2 = (utils.generate_secret_for_course(c_id) for c_id in course_ids)
+        self.assertNotEqual(s1, s2)
 
