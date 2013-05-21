@@ -5,6 +5,7 @@ define(['logme'], function (logme) {
     function BaseImage(state) {
         var baseImageElContainer;
 
+        // REFACTOR: Move CSS to CSS file.
         baseImageElContainer = $(
             '<div ' +
                 'class="base_image_container" ' +
@@ -16,6 +17,8 @@ define(['logme'], function (logme) {
                 '" ' +
             '></div>'
         );
+
+        // REFACTOR: Use method chaining.
 
         state.baseImageEl = $('<img />');
 
@@ -29,12 +32,17 @@ define(['logme'], function (logme) {
             state.baseImageEl.appendTo(baseImageElContainer);
             baseImageElContainer.appendTo(state.containerEl);
 
+            // REFATOR: Use .on() . 
             state.baseImageEl.mousedown(function (event) {
                 event.preventDefault();
             });
 
             state.baseImageLoaded = true;
         });
+
+        // REFACTOR: Move all error logs to a separate util function.
+        // REFACTOR: Do we need to show the student the error message?
+        
         state.baseImageEl.error(function () {
             logme('ERROR: Image "' + state.config.baseImage + '" was not found!');
             baseImageElContainer.html(

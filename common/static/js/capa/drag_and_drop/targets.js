@@ -9,6 +9,7 @@ define(['logme'], function (logme) {
     };
 
     function initializeBaseTargets(state) {
+        // REFACTOR: Don't use anon func. Use each() or every().
         (function (c1) {
             while (c1 < state.config.targets.length) {
                 processTarget(state, state.config.targets[c1]);
@@ -26,7 +27,9 @@ define(['logme'], function (logme) {
         // slider).
         clearDummyTargets(draggableObj);
 
+        // REFACTOR: Unnecessary check.
         if (draggableObj.targetField.length === 0) {
+            // REFACTOR: Use each() instead of .every() . No need to return true explicitly.
             draggableObj.originalConfigObj.target_fields.every(function (targetObj) {
                 processTarget(draggableObj.state, targetObj, true, draggableObj);
 
@@ -35,6 +38,7 @@ define(['logme'], function (logme) {
         } else {
             iconElOffset = draggableObj.iconEl.position();
 
+            // REFACTOR: Use each() instead of .every() . No need to return true explicitly.
             draggableObj.targetField.every(function (targetObj) {
                 targetObj.offset.top = iconElOffset.top + targetObj.y;
                 targetObj.offset.left = iconElOffset.left + targetObj.x;
@@ -45,11 +49,13 @@ define(['logme'], function (logme) {
     }
 
     function destroyTargetField(draggableObj) {
+        // REFACTOR: One line var def.
         var indexOffset, lowestRemovedIndex;
 
         indexOffset = 0;
         lowestRemovedIndex = draggableObj.state.targets.length + 1;
 
+        // REFACTOR: every -> each
         draggableObj.targetField.every(function (target) {
             target.el.remove();
 
@@ -94,6 +100,7 @@ define(['logme'], function (logme) {
     function drawDummyTargets(draggableObj, dontResize) {
         var scaleFactor;
 
+        // REFACTOR: Use shorthand if
         if (draggableObj.originalConfigObj.icon.length === 0) {
             return;
         }
@@ -108,6 +115,10 @@ define(['logme'], function (logme) {
             scaleFactor = 1;
         }
 
+        // REFACTOR: Try to move to CSS file.
+        // REFACTOR: every -> each
+        // TODO: Create a list of elements in parent function. Append to buffer element
+        // in memory for speed up. Then put to DOM.
         draggableObj.originalConfigObj.target_fields.every(function (obj) {
             draggableObj.iconEl.append(
                 '<div ' +
@@ -163,6 +174,8 @@ define(['logme'], function (logme) {
         height = Math.round(obj.h / obj.row);
 
         // For each cell, create a normal target.
+        // TODO: In the future, this can be refactored for speed. However, lots
+        // of code will be affected.
         for (i = 0; i < obj.col; i += 1) {
             for (j = 0; j < obj.row; j += 1) {
                 processTarget(
@@ -187,7 +200,8 @@ define(['logme'], function (logme) {
     // a need for a 'isGrid' property.
 
     function processTarget(state, obj, fromTargetField, draggableObj) {
-        var targetEl, borderCss, numTextEl, targetObj;
+        var targetEl, borderCss, targetObj,
+            numTextEl = null;
 
         // If this is a "complex" grid case, pass it on to a dedicated handler.
         if (obj.type === 'grid') {
@@ -197,6 +211,7 @@ define(['logme'], function (logme) {
         }
 
         borderCss = '';
+        // REFACTOR: Shorthand if.
         if (state.config.targetOutline === true) {
             if (obj.isGrid) {
                 borderCss = 'border-width: ' +
@@ -210,6 +225,7 @@ define(['logme'], function (logme) {
             }
         }
 
+        // REFACTOR: CSS file.
         targetEl = $(
             '<div ' +
                 'style=" ' +
@@ -224,16 +240,23 @@ define(['logme'], function (logme) {
             '></div>'
         );
 
-        if (fromTargetField === true) {
-            targetEl.appendTo(draggableObj.iconEl);
-        } else {
-            targetEl.appendTo(state.baseImageEl.parent());
-        }
+        // REFACTOR.
+        // if (fromTargetField === true) {
+            targetEl.appendTo(
+                (fromTargetField) ? 
+                    draggableObj.iconEl : 
+                    state.baseImageEl.parent()
+            );
+        // } else {
+        //     targetEl.appendTo(state.baseImageEl.parent());
+        // }
 
+        // REFACTOR: use .on().
         targetEl.mousedown(function (event) {
             event.preventDefault();
         });
 
+        // REFACTOR: CSS file.
         if (state.config.onePerTarget === false) {
             numTextEl = $(
                 '<div ' +
@@ -254,8 +277,6 @@ define(['logme'], function (logme) {
                     '" ' +
                 '>0</div>'
             );
-        } else {
-            numTextEl = null;
         }
 
         targetObj = {
@@ -295,6 +316,7 @@ define(['logme'], function (logme) {
             targetObj.offset.top += obj.y;
             targetObj.offset.left += obj.x;
 
+            // REFACTOR: Use boolean data type.
             targetObj.type = 'on_drag';
             targetObj.draggableObj = draggableObj;
 
@@ -307,6 +329,7 @@ define(['logme'], function (logme) {
 
         if (state.config.onePerTarget === false) {
             numTextEl.appendTo(state.baseImageEl.parent());
+            // REFACTOR: use .on() func.
             numTextEl.mousedown(function (event) {
                 event.preventDefault();
             });
@@ -329,6 +352,7 @@ define(['logme'], function (logme) {
 
         // An item from the array was removed. We need to updated all indexes accordingly.
         // Shift all indexes down by one if they are higher than the index of the removed item.
+        // REFACTOR: Cache length.
         c1 = 0;
         while (c1 < this.draggableList.length) {
             if (this.draggableList[c1].onTargetIndex > draggable.onTargetIndex) {
@@ -382,6 +406,7 @@ define(['logme'], function (logme) {
         highestZIndex = -10000;
         lowestZIndex = 10000;
 
+        // REFACTOR: Use .each()
         for (c1 = 0; c1 < this.draggableList.length; c1 += 1) {
             if (this.draggableList[c1].zIndex < lowestZIndex) {
                 lowestZIndex = this.draggableList[c1].zIndex;

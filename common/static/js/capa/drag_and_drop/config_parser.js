@@ -1,3 +1,5 @@
+// REFACTOR: Remove unnecessary type checking. Don't use .hasOwnProperty() .
+
 (function (requirejs, require, define) {
 define(['logme'], function (logme) {
     return configParser;
@@ -27,12 +29,15 @@ define(['logme'], function (logme) {
 
         setIndividualTargets(state);
 
+        // REFACTOR: Use shorthand true.
         if (state.config.foundErrors !== false) {
             return false;
         }
 
         return true;
     }
+
+    // REFACTOR: Use one validation function to do the same task. Remove duplicated code.
 
     function getDraggables(state, config) {
         if (config.hasOwnProperty('draggables') === false) {
@@ -195,6 +200,7 @@ define(['logme'], function (logme) {
         }
     }
 
+    // REFACTOR: Move to separate util file.
     function isMathJax(str) {
         
         // Check string on MathJAx tags ( "\(", "\)", '[mathjaxinline]', 
@@ -227,6 +233,8 @@ define(['logme'], function (logme) {
 
         // Check that all targets in the 'target_fields' property are proper target objects.
         // We will be testing the return value from .every() call (it can be 'true' or 'false').
+
+        // REFACTOR: Move function out of if statement - not clear when you look at code.
         if (obj.target_fields.every(
             function (targetObj) {
                 return processTarget(state, targetObj, false);
@@ -275,8 +283,11 @@ define(['logme'], function (logme) {
             return false;
         }
 
+        // REFACTOR: Use Python to properly format type.
+        // REFACTOR: If unnecessary, remove case check.
         obj.type = obj.type.toLowerCase();
 
+        // REFACTOR: Figure out what this does.
         if (
             (obj.type !== 'grid') &&
             (obj.type !== 'normal')

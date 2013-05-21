@@ -3,8 +3,11 @@ define([], function () {
     return State;
 
     function State(problemId) {
+
+        // REFACTOR: Style - one line defs.
         var state;
 
+        // REFACTOR: Style - names without quotes.
         state = {
             'config': null,
 
@@ -33,6 +36,7 @@ define([], function () {
             'normalizeEvent': normalizeEvent
         };
 
+        // REFACTOR: Use .on()
         $(document).mousemove(function (event) {
             documentMouseMove(state, event);
         });
@@ -40,6 +44,7 @@ define([], function () {
         return state;
     }
 
+    // REFACTOR: Move utility code to separate file. Later put on wiki.
     function getUniqueId() {
         this.uniqueId += 1;
 
@@ -60,6 +65,8 @@ define([], function () {
     }
 
     function documentMouseMove(state, event) {
+        // REFACTOR: ate.currentMovingDraggable should be cached.
+
         if (state.currentMovingDraggable !== null) {
             // We need to make sure that event.pageX, and event.pageY behave in the same way
             // across diffrent browsers. This 'fix' was applied after it was discovered that

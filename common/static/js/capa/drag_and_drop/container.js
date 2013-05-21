@@ -3,6 +3,7 @@ define(['logme'], function (logme) {
     return Container;
 
     function Container(state) {
+        // REFACTOR: Move CSS to CSS file. Add class.
         state.containerEl = $(
             '<div ' +
                 'style=" ' +
