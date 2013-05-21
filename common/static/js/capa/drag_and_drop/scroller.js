@@ -16,6 +16,7 @@ define(['logme'], function (logme) {
             '></div>'
         );
 
+        // REFACTOR: Use chaining.
         moveLeftEl = $(
             '<div ' +
                 'style=" ' +
@@ -53,11 +54,13 @@ define(['logme'], function (logme) {
         // to perform a drag operation, or a highlight operation. If we don't
         // do this, the browser will then highlight with a gray shade the
         // element.
+        // REFACTOR: Use .on() - one callback for 2 events
         moveLeftEl.mousemove(function (event) { event.preventDefault(); });
         moveLeftEl.mousedown(function (event) { event.preventDefault(); });
 
         // This event will be responsible for moving the scroller left.
         // Hidden draggables will be shown.
+        // REFACTOR: Use .on()
         moveLeftEl.mouseup(function (event) {
             event.preventDefault();
 
@@ -67,16 +70,18 @@ define(['logme'], function (logme) {
                 return;
             }
 
+            // REFACTOR: Move constant to state object.
             showElLeftMargin += 102;
 
+            // REFACTOR: Move to separate function.
             // We scroll by changing the 'margin-left' CSS property smoothly.
             state.sliderEl.animate({
-                'margin-left': showElLeftMargin + 'px'
-            }, 100, function () {
-                updateArrowOpacity();
-            });
+                'margin-left': showElLeftMargin
+            // REFACTOR: Move constant to state object.
+            }, 100, updateArrowOpacity);
         });
 
+        // REFACTOR: Use chaining.
         showEl = $(
             '<div ' +
                 'style=" ' +
@@ -88,6 +93,8 @@ define(['logme'], function (logme) {
                 '" ' +
             '></div>'
         );
+
+        // REFACTOR: Try to use one DOM insertion. !!!!!!!
         showEl.appendTo(parentEl);
 
         showElLeftMargin = 0;
@@ -106,12 +113,16 @@ define(['logme'], function (logme) {
                 '" ' +
             '></div>'
         );
+        // REFACTOR: Try to use one DOM insertion. !!!!!!!
         state.sliderEl.appendTo(showEl);
 
+        // REFACTOR: Use .on()
+        // REFACTOR: See throughout code if we can have one callback with event.preventDefault()
         state.sliderEl.mousedown(function (event) {
             event.preventDefault();
         });
 
+        // REFACTOR: Use chaining.
         moveRightEl = $(
             '<div ' +
                 'style=" ' +
@@ -149,11 +160,13 @@ define(['logme'], function (logme) {
         // to perform a drag operation, or a highlight operation. If we don't
         // do this, the browser will then highlight with a gray shade the
         // element.
+        // REFACTOR: Use .on()
         moveRightEl.mousemove(function (event) { event.preventDefault(); });
         moveRightEl.mousedown(function (event) { event.preventDefault(); });
 
         // This event will be responsible for moving the scroller right.
         // Hidden draggables will be shown.
+        // REFACTOR: Use .on()
         moveRightEl.mouseup(function (event) {
             event.preventDefault();
 
@@ -163,14 +176,15 @@ define(['logme'], function (logme) {
                 return;
             }
 
+            // REFACTOR: Constant move to state.
             showElLeftMargin -= 102;
 
+            // REFACTOR: Move to separate function.
             // We scroll by changing the 'margin-left' CSS property smoothly.
             state.sliderEl.animate({
-                'margin-left': showElLeftMargin + 'px'
-            }, 100, function () {
-                updateArrowOpacity();
-            });
+                'margin-left': showElLeftMargin
+            // REFACTOR: Constant move to state.
+            }, 100, updateArrowOpacity);
         });
 
         parentEl.appendTo(state.containerEl);
@@ -190,12 +204,16 @@ define(['logme'], function (logme) {
         return;
 
         function updateArrowOpacity() {
+            // REFACTOR: Use CSS class.
+            // REFACTOR: Cache  moveRightEl.children('div')
             moveLeftEl.children('div').css('opacity', '1');
             moveRightEl.children('div').css('opacity', '1');
 
+            // REFACTOR: Constant move to state.
             if (showElLeftMargin < -102 * (state.numDraggablesInSlider - 6)) {
                 moveRightEl.children('div').css('opacity', '.4');
             }
+            // REFACTOR: Constant move to state.
             if (showElLeftMargin > -102) {
                 moveLeftEl.children('div').css('opacity', '.4');
             }
