@@ -52,6 +52,7 @@ EO
 info() {
     cat<<EO
     platform base dir : $BASE
+    platform repo dir : $BASE / $REPO_NAME
     Python virtualenv dir : $PYTHON_DIR
     Ruby RVM dir : $RUBY_DIR
     Ruby ver : $RUBY_VER
@@ -62,16 +63,16 @@ EO
 clone_repos() {
     cd "$BASE"
 
-    if [[ -d "$BASE/edx-platform/.git" ]]; then
-        output "Pulling edx-platform"
-        cd "$BASE/edx-platform"
+    if [[ -d "$BASE/$REPO_NAME/.git" ]]; then
+        output "Pulling $REPO_NAME"
+        cd "$BASE/$REPO_NAME"
         git pull
     else
-        output "Cloning edx-platform"
-        if [[ -d "$BASE/edx-platform" ]]; then
-            mv "$BASE/edx-platform" "${BASE}/edx-platform.bak.$$"
+        output "Cloning $REPO_NAME"
+        if [[ -d "$BASE/$REPO_NAME" ]]; then
+            mv "$BASE/$REPO_NAME" "${BASE}/$REPO_NAME.bak.$$"
         fi
-        git clone git@github.com:edx/edx-platform.git
+        git clone git@github.com:edx/$REPO_NAME.git
     fi
 
     # # By default, dev environments start with a copy of 6.002x
@@ -99,6 +100,9 @@ PROG=${0##*/}
 
 # Adjust this to wherever you'd like to place the codebase
 BASE="${PROJECT_HOME:-$HOME}/edx_base"
+
+# The code repository for the main platform code
+REPO_NAME="edx-platform"
 
 # Use a sensible default (~/.virtualenvs) for your Python virtualenvs
 # unless you've already got one set up with virtualenvwrapper.
@@ -254,7 +258,7 @@ clone_repos
 
 # Install system-level dependencies
 
-bash $BASE/edx-platform/install-system-req.sh
+bash $BASE/$REPO_NAME/install-system-req.sh
 
 output "Installing RVM, Ruby, and required gems"
 
@@ -274,8 +278,8 @@ fi
 curl -sL get.rvm.io | bash -s stable
 
 # Let the repo override the version of Ruby to install
-if [[ -r $BASE/edx-platform/.ruby-version ]]; then
-  RUBY_VER=`cat $BASE/edx-platform/.ruby-version`
+if [[ -r $BASE/$REPO_NAME/.ruby-version ]]; then
+  RUBY_VER=`cat $BASE/$REPO_NAME/.ruby-version`
 fi
 
 # In order to source the rvm script, we need
@@ -322,7 +326,7 @@ output "Installing gem bundler"
 gem install bundler
 
 output "Installing ruby packages"
-bundle install --gemfile $BASE/edx-platform/Gemfile
+bundle install --gemfile $BASE/$REPO_NAME/Gemfile
 
 
 # Install Python virtualenv
@@ -351,14 +355,14 @@ fi
 # Create edx-platform virtualenv and link it to repo
 # virtualenvwrapper automatically sources the activation script
 if [[ $systempkgs ]]; then
-    mkvirtualenv -a "$BASE/edx-platform" --use-distribute --system-site-packages edx-platform || {
+    mkvirtualenv -a "$BASE/$REPO_NAME" --use-distribute --system-site-packages edx-platform || {
       error "mkvirtualenv exited with a non-zero error"
       exit 1
     }
 else
     # default behavior for virtualenv>1.7 is
     # --no-site-packages
-    mkvirtualenv -a "$BASE/edx-platform" --use-distribute edx-platform || {
+    mkvirtualenv -a "$BASE/$REPO_NAME" --use-distribute edx-platform || {
       error "mkvirtualenv exited with a non-zero error"
       exit 1
     }
@@ -402,12 +406,12 @@ case `uname -s` in
         ;;
 esac
 
-output "Installing edx-platform pre-requirements"
-pip install -r $BASE/edx-platform/pre-requirements.txt
+output "Installing $REPO_NAME pre-requirements"
+pip install -r $BASE/$REPO_NAME/pre-requirements.txt
 
-output "Installing edx-platform requirements"
+output "Installing $REPO_NAME requirements"
 # Need to be in the edx-platform dir to get the paths to local modules right
-cd $BASE/edx-platform
+cd $BASE/$REPO_NAME
 pip install -r requirements.txt
 
 mkdir "$BASE/log" || true
