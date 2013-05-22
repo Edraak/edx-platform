@@ -52,7 +52,7 @@ EO
 info() {
     cat<<EO
     platform base dir : $BASE
-    platform repo dir : $BASE / $REPO_NAME
+    platform repo dir : $BASE/$REPO_NAME
     Python base virtualenv dir : $PYTHON_DIR
     Python virtualenv: $PYTHON_VIRTUALENV_NAME
     Ruby RVM dir : $RUBY_DIR
@@ -68,6 +68,7 @@ clone_repos() {
         output "Pulling $REPO_NAME"
         cd "$BASE/$REPO_NAME"
         git pull
+        cd "$BASE"
     else
         output "Cloning $REPO_NAME"
         if [[ -d "$BASE/$REPO_NAME" ]]; then
@@ -75,23 +76,6 @@ clone_repos() {
         fi
         git clone git@github.com:edx/$REPO_NAME.git
     fi
-
-    # # By default, dev environments start with a copy of 6.002x
-    # cd "$BASE"
-    # mkdir -p "$BASE/data"
-    # REPO="content-mit-6002x"
-    # if [[ -d "$BASE/data/$REPO/.git" ]]; then
-    #     output "Pulling $REPO"
-    #     cd "$BASE/data/$REPO"
-    #     git pull
-    # else
-    #     output "Cloning $REPO"
-    #     if [[ -d "$BASE/data/$REPO" ]]; then
-    #         mv "$BASE/data/$REPO" "${BASE}/data/$REPO.bak.$$"
-    #     fi
-    #     cd "$BASE/data"
-    #     git clone git@github.com:MITx/$REPO
-    # fi
 }
 
 
@@ -291,15 +275,12 @@ if [[ -r $BASE/$REPO_NAME/.ruby-version ]]; then
   RUBY_VER=`cat $BASE/$REPO_NAME/.ruby-version`
 fi
 
-# In order to source the rvm script, we need
-# to have the right version of Ruby installed
-# rvm install $RUBY_VER
-
 # Ensure we have RVM available as a shell function so that it can mess
 # with the environment and set everything up properly. The RVM install
 # process adds this line to login scripts, so this shouldn't be necessary
 # for the user to do each time.
 if [[ `type -t rvm` != "function" ]]; then
+  # TODO: why does this always throw a couple of errors?
   source $RUBY_DIR/scripts/rvm
 fi
 
@@ -357,6 +338,10 @@ if [[ `type -t mkvirtualenv` != "function" ]]; then
     source `which virtualenvwrapper.sh`
 fi
 
+# mkvirtualenv sometimes decides to just choke and exit. Temporarily
+# disable stringent error checking just for this one section.
+set +e
+
 # Create Python virtualenv and link it to repo
 # virtualenvwrapper automatically sources the activation script
 if [[ $systempkgs ]]; then
@@ -373,6 +358,8 @@ else
     }
 fi
 
+# Return to strict error checking
+set -e
 
 # compile numpy and scipy if requested
 
