@@ -418,6 +418,55 @@ class TestDragAndDropConstraints(unittest.TestCase):
 
         self.assertFalse(all(eval(constraints_raw)))
 
+    def test_constraints_for_bad_draggables(self):
+        raw_xml = '''
+        <customresponse>
+            <text>
+                <h4>Babies and Sun</h4><br/>
+                <h4>Drag exactly two babies or two sun on the house.</h4>
+                <br/>
+            </text>
+
+            <drag_and_drop_input img="/static/images/grid_test/610x610_blank.png" target_outline="true" >
+                <draggable id="house" icon="/static/images/grid_test/house.png" can_reuse="true">
+                    <target id="1" x="0" y="0" w="32" h="32"/>
+                    <target id="2" x="34" y="0" w="32" h="32"/>
+                    <target id="3" x="68" y="0" w="32" h="32"/>
+                </draggable>
+
+                <draggable id="baby" icon="/static/images/grid_test/baby.png" can_reuse="true" />
+                <draggable id="sun" icon="/static/images/grid_test/sun.png" can_reuse="true" />
+
+                <target id="base_target" type="grid" x="5" y="5" w="600" h="600" col="30" row="30"/>
+            </drag_and_drop_input>
+
+            <answer type="loncapa/python"><![CDATA[
+        correct = ['correct']
+        ]]>
+            </answer>
+        </customresponse>
+        '''
+
+        xml = etree.fromstring(raw_xml)
+
+        user_input = json.dumps([
+            {'house': 'base_target{5}{10}'},
+            {'baby': {'1': {'house': 'base_target'}}},
+            {'baby': {'2': {'house': 'base_target'}}}
+        ])
+
+        constraints_raw = '''[
+            dragabbles['BAD_sun'].count == 2
+        ]'''
+        dragabbles = get_all_dragabbles(user_input, xml)
+        self.assertFalse(all(eval(constraints_raw)))
+
+        constraints_raw = '''[
+            dragabbles['house'].on('BAD_base_target')[0].contains('BAD_sun', 'BAD_sun')
+        ]'''
+        dragabbles = get_all_dragabbles(user_input, xml)
+        self.assertFalse(all(eval(constraints_raw)))
+
     def test_constraints_contains_exact(self):
         raw_xml = '''
         <customresponse>

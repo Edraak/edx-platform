@@ -48,6 +48,9 @@ class Draggable(object):
 
         exact = kwargs.get('exact', True)
 
+        if isinstance(self.children, BadProperty):
+            return BadProperty()
+
         if exact:
             return sorted(self.children) == sorted(args)
         else:
@@ -80,6 +83,9 @@ class BadProperty(object):
         return False
 
     def __ge__(self, other):
+        return False
+
+    def __nonzero__(self):
         return False
 
 
