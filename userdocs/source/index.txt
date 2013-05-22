@@ -1,0 +1,56 @@
+.. Getting_Started documentation master file, created by
+   sphinx-quickstart on Tue Apr 16 11:19:12 2013.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+.. image:: images/image001.png
+
+**Welcome to edX Studio Documentation**
+
+
+Contents
+========
+
+
+.. toctree::
+   :maxdepth: 2
+
+   get_started
+   Create_lesson
+   Create_Section_Sub_Section
+
+
+
+
+
+`Let's Get Started <get_started.html>`_
+
+`Create A Lesson <Create_Lesson.html>`_
+
+`Create A Section and SubSection <Create__Section_Sub_Section.html>`_
+
+`Create A Unit <Create_Unit.html>`_
+
+`Create A Discussion <Create_Discussion.html>`_
+
+`Create An HTML Component <Create_HTML_Component.html>`_
+
+`Create a Problem <Create_Problem.html>`_
+
+
+Appendices 
+==========
+
+`Appendix A <AppendixA.html>`_
+
+`Appendix B <AppendixB.html>`_
+
+`Appendix C <AppendixC.html>`_
+
+`Appendix D <AppendixD.html>`_
+
+`Appendix E <AppendixE.html>`_
+
+
+
+
