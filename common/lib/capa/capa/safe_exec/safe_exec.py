@@ -30,7 +30,7 @@ ASSUMED_IMPORTS=[
     ("chemcalc", "chem.chemcalc"),
     ("chemtools", "chem.chemtools"),
     ("miller", "chem.miller"),
-    ("draganddrop", "verifiers.draganddrop_rules")
+    ("draganddrop", "draganddrop")
 ]
 
 # We'll need the code from lazymod.py for use in safe_exec, so read it now.
