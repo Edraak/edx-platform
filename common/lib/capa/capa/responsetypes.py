@@ -2076,7 +2076,7 @@ class DragAndDropResponse(CustomResponse):
 
     def get_score(self, student_answers):
         self.context.update(
-            {'xml': self.xml}
+            {'xml': etree.tostring(self.xml)}
         )
         return super(DragAndDropResponse, self).get_score(student_answers)
 

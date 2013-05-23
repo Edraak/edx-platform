@@ -3,6 +3,7 @@
 import json
 from collections import Counter
 from itertools import groupby
+from lxml.etree import fromstring
 
 from .draganddrop_helpers import clean_user_answer, flatten_user_answer
 from .draganddrop_helpers import re_col_row
@@ -221,9 +222,10 @@ def prepare_children(user_info):
     ])
 
 
-def get_all_dragabbles(raw_user_input, xml):
+def get_all_dragabbles(raw_user_input, str_xml):
     """Return all draggables objects."""
 
+    xml = fromstring(str_xml)
     user_input = json.loads(raw_user_input)
 
     # Container for all `Draggable` instances.
