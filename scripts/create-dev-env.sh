@@ -284,21 +284,16 @@ if [[ `type -t rvm` != "function" ]]; then
   source $RUBY_DIR/scripts/rvm
 fi
 
-# Ruby doesn't like to build with clang, which is the default on OS X, so
-# use gcc instead. This may not work, since if your gcc was installed with
-# XCode 4.2 or greater, you have an LLVM-based gcc, which also doesn't
-# always play nicely with Ruby, though it seems to be better than clang.
-# You may have to install apple-gcc42 using Homebrew if this doesn't work.
-# See `rvm requirements` for more information.
-case `uname -s` in
-    Darwin)
-        export CC=gcc
-        ;;
-esac
-
 # RVM requires the following to build Ruby:
 #
 # autoconf automake libtool pkg-config libyaml libxml2 libxslt libksba openssl
+#
+# And, if you're running OS X, it also needs
+#
+# apple-gcc42
+#
+# since Ruby doesn't like to build either with clang (default C compiler on
+# OS X) or with the LLVM-based gcc that ships with Xcode.
 #
 # Use --autolibs=3 to have RVM look for a package manager like Homebrew and
 # install any missing libs automatically. RVM's --autolibs flag defaults to 2,
