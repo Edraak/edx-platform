@@ -925,9 +925,8 @@ class CustomResponse(LoncapaResponse):
 
     allowed_inputfields = ['textline', 'textbox', 'crystallography',
                            'chemicalequationinput', 'vsepr_input',
-                           'drag_and_drop_input', 'editamoleculeinput',
-                           'designprotein2dinput', 'editageneinput',
-                           'annotationinput']
+                           'editamoleculeinput', 'designprotein2dinput',
+                           'editageneinput', 'annotationinput']
 
     def setup_response(self):
         xml = self.xml
@@ -2069,6 +2068,18 @@ class AnnotationResponse(LoncapaResponse):
             return option_ids[0]
         return None
 
+
+class DragAndDropResponse(CustomResponse):
+    """CustomResponse for drag_and_drop_input."""
+
+    allowed_inputfields = ['drag_and_drop_input']
+
+    def get_score(self, student_answers):
+        self.context.update(
+            {'xml': self.xml}
+        )
+        return super(DragAndDropResponse, self).get_score(student_answers)
+
 #-----------------------------------------------------------------------------
 
 # TEMPORARY: List of all response subclasses
@@ -2088,4 +2099,5 @@ __all__ = [CodeResponse,
            MultipleChoiceResponse,
            TrueFalseResponse,
            JavascriptResponse,
-           AnnotationResponse]
+           AnnotationResponse,
+           DragAndDropResponse]
