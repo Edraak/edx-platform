@@ -54,7 +54,7 @@ you can use `draggables` in a different ways.
 
         `contains`
             ``draggables['draggable_id'][0].contains('draggable_id1', 'draggable_id2', ...)`` – return True if first draggables with id == 'draggable_id' contains some numbers of draggables, which you can define like the arguments. This method support permutation of contained draggables.
-            With options `exact` you can define strict contains or not. `exact` equal to `True` means, that current draggable must contains exactly these draggables, and not other. By default `exact` == `True`.
+            With options `exact` you can strictly define whether it contains or not. `exact` equal to `True` means, that current draggable must contains exactly these draggables, and not other. By default `exact` == `True`.
             Return object with type – `bool`.
 
 
@@ -66,7 +66,7 @@ Simple examples of usage
 
     ``draggables['p'].count()`` – return numbers of all draggables with id == 'p'.
 
-    ``draggables['p'][0]`` – return first draggables with id == 'p', using order by Y coordinate (sorting by Y coordinate of draggables). This object have has two properties: `x` (value of X coordinate) and `y` (value of X coordinate).
+    ``draggables['p'][0]`` – return first draggables with id == 'p', using order by Y coordinate (sorting by Y coordinate of draggables). This object has two properties: `x` (value of X coordinate) and `y` (value of X coordinate).
 
     ``draggables['p'][0].x`` – return value of X coordinate of first draggables with id == 'p' (X-coordinate on the base image where the top left corner of the target will be positioned).
 
@@ -76,13 +76,13 @@ Simple examples of usage
 
     ``draggables['p'].on('left-side').count()`` – return numbers of all draggables with id == 'p', which lays on the target 'left-side'.
     
-    ``draggables['p'].on('left-side')[0]`` – return first draggables with id == 'p', which lays on the target 'left-side', using order by Y coordinate (sorting by Y coordinate of draggables). This object have has two properties: `x` (value of X coordinate) and `y` (value of X coordinate).
+    ``draggables['p'].on('left-side')[0]`` – return first draggables with id == 'p', which lays on the target 'left-side', using order by Y coordinate (sorting by Y coordinate of draggables). This object has two properties: `x` (value of X coordinate) and `y` (value of X coordinate).
 
     ``draggables['p'].on('left-side')[0].x`` – return value of X coordinate of first draggables with id == 'p', which lays on the target 'left-side' (X-coordinate on the base image where the top left corner of the target will be positioned).
 
     ``draggables['p'].on('left-side')[0].y`` – return value of Y coordinate of first draggables with id == 'p', which lays on the target 'left-side' (Y-coordinate on the base image where the top left corner of the target will be positioned).
 
-    ``draggables['p'][0].contains('a', 'b', 'b')`` – return True if first draggables with id == 'p' contains three draggables: one 'a' and two 'b'. Current draggables 'p' **can't** contains any other draggables. `Contains` – means that current draggable has target in which lays some draggables object.
+    ``draggables['p'][0].contains('a', 'b', 'b')`` – return True if first draggables with id == 'p' contains three draggables: one 'a' and two 'b'. Current draggables 'p' **can't** contain any other draggables, except the ones listed. `Contains` – means that current draggable has target on which there are lying some draggable objects.
 
     ``draggables['p'][0].contains('a', 'b', 'b', exact=False)`` – return True if first draggables with id == 'p' contains three draggables: one 'a' and two 'b'. Draggables 'p' also **may** contains other draggables.
 
@@ -153,8 +153,8 @@ One of the real example, how can you use this feature::
 
 .. note::
 
-    ``on()`` and ``contains()`` expect, that some draggable have place, where this draggable lays. And place – it's a base target or any other draggables. For example: 'base_target', 'base_target[draggable]', 'base_target[draggable1][internal_target][draggable2]', etc. So, we do not support base_target[draggable][internal_target] !
+    ``on()`` and ``contains()`` expect, that draggable object has a place, where it is lying. The place – it's a base target or any other draggables. For example: 'base_target', 'base_target[draggable]', 'base_target[draggable1][internal_target][draggable2]', etc. So, we do not support base_target[draggable][internal_target] !
 
 .. warning::
 
-    If analyzer has some trouble with conditions, for example: ``draggables['NONEXISTENT_ID'][0].x > 10``, then for applying any operation to this property ``draggables['NONEXISTENT_ID'][0].x`` return ``False``. So, ``draggables['NONEXISTENT_ID'][0].x > 10`` or ``draggables['NONEXISTENT_ID'][0].x < 10`` or ``draggables['NONEXISTENT_ID'][0].x == 10`` return ``False``. But, ``not draggables['NONEXISTENT_ID'][0].x > 10`` obviously return ``True``, and this is not, that we expect. According to this, you should use inversed operation ``draggables['NONEXISTENT_ID'][0].x <= 10``, and keep in mind about that behaviour.
+    If analyzer has some trouble with conditions, for example: ``draggables['NONEXISTENT_ID'][0].x > 10``, then for applying any operation to this property ``draggables['NONEXISTENT_ID'][0].x`` return ``False``. So, ``draggables['NONEXISTENT_ID'][0].x > 10`` or ``draggables['NONEXISTENT_ID'][0].x < 10`` or ``draggables['NONEXISTENT_ID'][0].x == 10`` return ``False``. But, ``not draggables['NONEXISTENT_ID'][0].x > 10`` obviously return ``True``, and this is not what we expect. According to this, you should use inversed operation ``draggables['NONEXISTENT_ID'][0].x <= 10``, and keep in mind about that behaviour.
