@@ -6,27 +6,18 @@ if USE_CUSTOM_THEME
     THEME_SASS = File.join(THEME_ROOT, "static", "sass")
 end
 
-# Run the specified file through the Mako templating engine, providing
-# the ENV_TOKENS to the templating context.
+# Run the specified file through the Mako templating engine
 def preprocess_with_mako(filename)
-    # simple command-line invocation of Mako engine
-    # cdodge: the .gsub() are used to translate true->True and false->False to make the generated
-    # python actually valid python. This is just a short term hack to unblock the release train
-    # until a real fix can be made by people who know this better
-    mako = "from mako.template import Template;" +
-           "print Template(filename=\"#{filename}\")" +
-           # Total hack. It works because a Python dict literal has
-           # the same format as a JSON object.
-           ".render(env=#{ENV_TOKENS.to_json.gsub("true","True").gsub("false","False")});"
-
     # strip off the .mako extension
     output_filename = filename.chomp(File.extname(filename))
 
     # just pipe from stdout into the new file, exiting on failure
     File.open(output_filename, 'w') do |file|
-      file.write(`python -c '#{mako}'`)
+      file.write(`python #{REPO_ROOT}/scripts/preprocess.py #{filename}`)
       exit_code = $?.to_i
-      abort "#{mako} failed with #{exit_code}" if exit_code.to_i != 0
+      if exit_code.to_i != 0
+        abort "Preprocessing #{filename} failed with #{exit_code}"
+      end
     end
 end
 
