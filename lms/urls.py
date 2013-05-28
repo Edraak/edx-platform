@@ -2,23 +2,23 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf.urls.static import static
-from django.views.generic import RedirectView
 
 from . import one_time_startup
 
 import django.contrib.auth.views
 
 # Uncomment the next two lines to enable the admin:
-if settings.DEBUG:
-    from django.contrib import admin
+if settings.DEBUG or settings.MITX_FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
     admin.autodiscover()
 
-urlpatterns = ('',
+urlpatterns = ('',  # nopep8
     # certificate view
 
     url(r'^update_certificate$', 'certificates.views.update_certificate'),
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
+    url(r'^login$', 'student.views.signin_user', name="signin_user"),
+    url(r'^register$', 'student.views.register_user', name="register_user"),
 
     url(r'^admin_dashboard$', 'dashboard.views.dashboard'),
 
@@ -37,8 +37,8 @@ urlpatterns = ('',
 
     url(r'^accounts/login$', 'student.views.accounts_login', name="accounts_login"),
 
-    url(r'^login$', 'student.views.login_user', name="login"),
-    url(r'^login/(?P<error>[^/]*)$', 'student.views.login_user'),
+    url(r'^login_ajax$', 'student.views.login_user', name="login"),
+    url(r'^login_ajax/(?P<error>[^/]*)$', 'student.views.login_user'),
     url(r'^logout$', 'student.views.logout_user', name='logout'),
     url(r'^create_account$', 'student.views.create_account'),
     url(r'^activate/(?P<key>[^/]*)$', 'student.views.activate_account', name="activate"),
@@ -63,10 +63,12 @@ urlpatterns = ('',
 
     url(r'^heartbeat$', include('heartbeat.urls')),
 
+    ##
+    ## Only universities without courses should be included here.  If
+    ## courses exist, the dynamic profile rule below should win.
+    ##
     url(r'^(?i)university_profile/WellesleyX$', 'courseware.views.static_university_profile',
         name="static_university_profile", kwargs={'org_id': 'WellesleyX'}),
-    url(r'^(?i)university_profile/GeorgetownX$', 'courseware.views.static_university_profile',
-        name="static_university_profile", kwargs={'org_id': 'GeorgetownX'}),
     url(r'^(?i)university_profile/McGillX$', 'courseware.views.static_university_profile',
         name="static_university_profile", kwargs={'org_id': 'McGillX'}),
     url(r'^(?i)university_profile/TorontoX$', 'courseware.views.static_university_profile',
@@ -75,8 +77,6 @@ urlpatterns = ('',
         name="static_university_profile", kwargs={'org_id': 'RiceX'}),
     url(r'^(?i)university_profile/ANUx$', 'courseware.views.static_university_profile',
         name="static_university_profile", kwargs={'org_id': 'ANUx'}),
-    url(r'^(?i)university_profile/DelftX$', 'courseware.views.static_university_profile',
-        name="static_university_profile", kwargs={'org_id': 'DelftX'}),
     url(r'^(?i)university_profile/EPFLx$', 'courseware.views.static_university_profile',
         name="static_university_profile", kwargs={'org_id': 'EPFLx'}),
 
@@ -116,8 +116,9 @@ urlpatterns = ('',
     # Favicon
     (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'}),
 
+    url(r'^submit_feedback$', 'util.views.submit_feedback_via_zendesk'),
+
     # TODO: These urls no longer work. They need to be updated before they are re-enabled
-    # url(r'^send_feedback$', 'util.views.send_feedback'),
     # url(r'^reactivate/(?P<key>[^/]*)$', 'student.views.reactivation_email'),
 )
 
@@ -178,11 +179,19 @@ if settings.COURSEWARE_ENABLED:
 
         url(r'^courses/?$', 'branding.views.courses', name="courses"),
         url(r'^change_enrollment$',
-            'student.views.change_enrollment_view', name="change_enrollment"),
+            'student.views.change_enrollment', name="change_enrollment"),
 
         #About the course
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/about$',
             'courseware.views.course_about', name="about_course"),
+        #View for mktg site (kept for backwards compatibility TODO - remove before merge to master)
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/mktg-about$',
+            'courseware.views.mktg_course_about', name="mktg_about_course"),
+        #View for mktg site
+        url(r'^mktg/(?P<course_id>.*)$',
+            'courseware.views.mktg_course_about', name="mktg_about_course"),
+
+
 
         #Inside the course
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/$',
@@ -284,6 +293,10 @@ if settings.COURSEWARE_ENABLED:
 
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/peer_grading$',
             'open_ended_grading.views.peer_grading', name='peer_grading'),
+
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/notes$', 'notes.views.notes', name='notes'),
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/notes/', include('notes.urls')),
+
     )
 
     # allow course staff to change to student view of courseware
@@ -299,12 +312,12 @@ if settings.COURSEWARE_ENABLED:
                 'courseware.views.news', name="news"),
             url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/discussion/',
                 include('django_comment_client.urls'))
-            )
+        )
     urlpatterns += (
         # This MUST be the last view in the courseware--it's a catch-all for custom tabs.
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/(?P<tab_slug>[^/]+)/$',
         'courseware.views.static_tab', name="static_tab"),
-        )
+    )
 
     if settings.MITX_FEATURES.get('ENABLE_STUDENT_HISTORY_VIEW'):
         urlpatterns += (
@@ -317,7 +330,7 @@ if settings.COURSEWARE_ENABLED:
 if settings.ENABLE_JASMINE:
     urlpatterns += (url(r'^_jasmine/', include('django_jasmine.urls')),)
 
-if settings.DEBUG:
+if settings.DEBUG or settings.MITX_FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
     ## Jasmine and admin
     urlpatterns += (url(r'^admin/', include(admin.site.urls)),)
 
@@ -346,19 +359,29 @@ if settings.MITX_FEATURES.get('ENABLE_LMS_MIGRATION'):
         url(r'^migrate/reload/(?P<reload_dir>[^/]+)/(?P<commit_id>[^/]+)$', 'lms_migration.migrate.manage_modulestores'),
         url(r'^gitreload$', 'lms_migration.migrate.gitreload'),
         url(r'^gitreload/(?P<reload_dir>[^/]+)$', 'lms_migration.migrate.gitreload'),
-        )
+    )
 
 if settings.MITX_FEATURES.get('ENABLE_SQL_TRACKING_LOGS'):
     urlpatterns += (
         url(r'^event_logs$', 'track.views.view_tracking_log'),
         url(r'^event_logs/(?P<args>.+)$', 'track.views.view_tracking_log'),
-        )
+    )
+
+if settings.MITX_FEATURES.get('ENABLE_SERVICE_STATUS'):
+    urlpatterns += (
+        url(r'^status/', include('service_status.urls')),
+    )
 
 # FoldIt views
 urlpatterns += (
     # The path is hardcoded into their app...
     url(r'^comm/foldit_ops', 'foldit.views.foldit_ops', name="foldit_ops"),
 )
+
+if settings.MITX_FEATURES.get('ENABLE_DEBUG_RUN_PYTHON'):
+    urlpatterns += (
+        url(r'^debug/run_python', 'debug.views.run_python'),
+    )
 
 urlpatterns = patterns(*urlpatterns)
 
