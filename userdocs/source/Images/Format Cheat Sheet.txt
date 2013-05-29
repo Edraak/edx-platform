@@ -1,0 +1,6 @@
+Format cheat sheet
+
+`discussion thread <http://help.edge.edx.org/discussions/questions/73-what-if-you-discover-that-a-live-problem-is-wrong">`_
+
+    .. image:: images/image102.png
+       :width: 400

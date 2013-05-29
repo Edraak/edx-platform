@@ -1,0 +1,202 @@
+*************************
+Establish Course Settings
+*************************
+ 
+ 
+Add Collaborators
+*****************
+ 
+    Studio has support for rudimentary collaborative editing of a course. Users must have registered at studio.edge.edx.org, and must have activated their
+    account via the email link. If a user is not found, you will be notified.
+ 
+ 
+    Before you add a new user, consider the following.
+ 
+ 
+    Invited users have full permissions to edit your course, including deleting content created by anyone else.
+ 
+ 
+    Invited users cannot currently grant new permissions on the course.
+ 
+ 
+    Editing conflicts are currently not managed. Thus, the state of the course might change between refreshes of the page.
+ 
+ 
+    To give another user permission to edit your course:
+ 
+ 
+    1. On the navigation bar, click **Course Settings**, and then click **Course Team**.
+ 
+ 
+    <img border="0" width="144" height="167" src="file:///C:/Users/Sylvia/AppData/Local/Temp/msohtmlclip1/01/clip_image107.png"/>
+ 
+ 
+    2. Click **New User**.
+ 
+ 
+    <img border="0" width="129" height="57" src="file:///C:/Users/Sylvia/AppData/Local/Temp/msohtmlclip1/01/clip_image108.png"/>
+ 
+ 
+    3. In the **email** box, type the email address of the user, and then click **Add User**.
+ 
+ 
+Add Manual Policy Data
+**********************
+ 
+    You can add manual policy data on the **Advanced Settings** page. These advanced configuration options are specified using JSON key and value
+    pairs.
+ 
+ 
+    You should only add manual policy data if you are very familiar with valid configuration key/value pairs and the ways these pairs will affect your course.
+    Errors on this page can cause significant problems with your course.
+ 
+ 
+    The edX program managers can help you learn about how to apply these settings.
+ 
+ 
+    1. On the navigation bar, click **Course Settings**, and then click **Advanced Settings**.
+ 
+ 
+    2. Click **New Manual Policy**.
+ 
+ 
+    <img border="0" width="479" height="201" src="file:///C:/Users/Sylvia/AppData/Local/Temp/msohtmlclip1/01/clip_image110.png"/>
+ 
+ 
+    3. In the **Policy Key **box, enter the policy key.
+ 
+ 
+    4. In the **Policy Value **box, enter the value of the policy.
+ 
+ 
+Add Course Catalog Information
+******************************
+
+ 
+Add Schedule Information
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+To add scheduling information, a description, and other information for your course, use the **Course Settings **menu.
+ 
+ 
+    <img border="0" width="130" height="151" src="file:///C:/Users/Sylvia/AppData/Local/Temp/msohtmlclip1/01/clip_image112.png"/>
+ 
+ 
+    This takes you to the
+ 
+ 
+    Schedule and Details Page
+ 
+ 
+    1. At the top of this page, you will find a section with the **Basic Information** for your course. It is here that you can locate the title of your course and find the URL for your course, which you can email to students to invite them to enroll in your course. Invite Students to Register
+
+    <img border="0" width="517" height="266" src="file:///C:/Users/Sylvia/AppData/Local/Temp/msohtmlclip1/01/clip_image114.jpg"/>
+ 
+ 
+2. In the **Course Schedule** section, enter the date you want your course to start in the **Course**    **Start Date **box, and then enter the time you want your course to start in the **Course** **Start Time** box.
+ 
+ 
+    **Note: The Course Start Time on this screen will reflect the current time zone in your browser, depending on your geography. Course start times for students will show as UTC on Edge.**
+ 
+    3. In the **Course Schedule** section, enter the date you want your course to end in the **Course** **End Date **
+    box, and then enter the time you want your course to end in the **Course** **End Time **box.
+ 
+ 
+Add Enrollment Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ 
+    1. On the navigation bar, click **Course **Settings, and then click  **Schedule &amp; Details**.
+ 
+ 
+    2. In the **Course Schedule** section, enter the date you want enrollment for your course to start in the**Enrollment Start Date **box, and then enter the time you want enrollment for your course to start in the **Enrollment Start Time** box.
+ 
+ 
+    3. In the **Course Schedule** section, enter the date you want enrollment for your course to end in the **Enrollment End Date**
+box, and then enter the time you want enrollment for your course to end in the **Enrollment End Time **box.
+ 
+     **Note** The Enrollment dates on this screen will reflect the current time zone in your browser, depending on your geography. Enrollment times for students will show as UTC on Edge
+ 
+ 
+Add a Course Overview
+^^^^^^^^^^^^^^^^^^^^^
+ 
+ 
+    1. On the navigation bar, click **Course Settings**, and then click  **Schedule &amp; Details**.
+ 
+ 
+    2. Scroll down to the **Introducing Your Course** section, and then locate the **Course Overview** box.
+
+    <img border="0" width="512" height="281" src="file:///C:/Users/Sylvia/AppData/Local/Temp/msohtmlclip1/01/clip_image116.png"/>
+ 
+ 
+    3. In the **Course Overview **box, enter a description of your course. The content for this box must be formatted in HTML. For a template that you can use that includes placeholders, see
+    <a href="file:///C:/Users/Sylvia/Dropbox/edX/Getting%20Started%20with%20Studio/Getting%20Started%20with%20Studio.docx#AppendixA">
+        **Appendix A**
+     
+ 
+    If your course has prerequisites, you can include that information in the course overview.
+ 
+    **Note: There is no save button. Studio automatically saves your changes.**
+ 
+ 
+    The following is example content for the **Course Overview **box**.
+ 
+    .. image:: images/image118.png
+       :width: 400    
+
+Add an About Video
+^^^^^^^^^^^^^^^^^^
+ 
+ 
+    You can create an About video that will appear on the **About** page for your course.
+ 
+ 
+    1. Upload the video that you want to YouTube. Make note of the code that appears between  **watch?v =** and  **&amp;feature** in
+    the URL. This code appears in the green box below.
+ 
+ 
+   .. image:: images/image052.png
+       :width: 400 
+
+ 
+    2. On the navigation bar, click **Course **Settings, and then click  **Schedule &amp; Details**.
+ 
+ 
+    3. Scroll down to the **Introducing Your Course** section, and then locate the **Course** **Introduction Video**
+    field. If you have not already added a video, you see a blank field above an **id **box.
+ 
+ 
+.. image:: images/image120.png
+       :width: 200     
+ 
+ 
+    4. In the  **your YouTube video's ID** box, enter your video code. When you add the code, the video automatically appears in the field above
+    the  **your YouTube video's ID** box.
+ 
+ 
+    **Note **
+    There is no save button. Studio automatically saves your changes.
+ 
+ 
+    For example, your course introduction video appears as follows.
+ 
+ 
+.. image:: images/image122.png
+       :width: 200
+
+ 
+ 
+Add Weekly Time Requirements Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+ 
+    1. On the navigation bar, click **Course Settings**, and then click  **Schedule &amp; Details**.
+ 
+ 
+    2. Scroll down to the **Requirements** section.
+ 
+ 
+    3. In the **Hours of Effort per Week **box, enter the number of hours you expect students to work on this course each week.
+ 
+ 
