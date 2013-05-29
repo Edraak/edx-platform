@@ -150,7 +150,7 @@
       </ul>
     </section>
 
-    %if news:
+    %if news and not settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
     <article class="news-carousel">
       <header>
         <h4>edX News</h4>
