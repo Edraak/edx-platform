@@ -2,7 +2,6 @@
 """Video xmodule tests in mongo."""
 
 import json
-from operator import itemgetter
 
 from . import BaseTestXmodule
 
@@ -26,10 +25,10 @@ class TestVideo(BaseTestXmodule):
         }
 
         self.assertTrue(
-                all([
-                    content['success']
-                    for _, content in response_contents.items()
-                    ]))
+            all([
+                content['success']
+                for _, content in response_contents.items()
+                ]))
 
     def test_handle_ajax_incorrect_dispatch(self):
         responses = {
@@ -42,7 +41,7 @@ class TestVideo(BaseTestXmodule):
 
         self.assertEqual(
             set([
-                        response.status_code
-                        for _, response in responses.items()
-                        ]).pop(),
+                response.status_code
+                for _, response in responses.items()
+                ]).pop(),
             404)
