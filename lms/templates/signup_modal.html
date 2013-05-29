@@ -9,7 +9,13 @@
   <div class="inner-wrapper">
     <div id="register">
       <header>
-        <h2>Sign Up for <span class="edx">edX</span></h2>
+        <h2>
+          % if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+            Sign Up
+          % else:
+            Sign Up for <span class="edx">edX</span>
+          % endif
+        </h2>
         <hr>
       </header>
 
@@ -81,7 +87,11 @@
           <label data-field="mailing_address" for="signup_mailing_address">Mailing address</label>
 	    <textarea id="signup_mailing_address" name="mailing_address"></textarea>
 	  
-          <label data-field="goals" for="signup_goals">Goals in signing up for edX</label>
+          % if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+            <label data-field="goals" for="signup_goals">Learning goals</label>
+          % else:
+            <label data-field="goals" for="signup_goals">Goals in signing up for edX</label>
+          % endif
 	    <textarea name="goals" id="signup_goals"></textarea>
 
         </div>
