@@ -10,6 +10,8 @@ import branding
 from status.status import get_site_status_msg
 %>
 
+<%block name="navigation_top" />
+
 <%block cached="False">
 <%
 try:
@@ -38,9 +40,12 @@ site_status_msg = get_site_status_msg(course_id)
   <nav>
 
   <h1 class="logo">
-      <a href="${marketing_link('ROOT')}">
+    <a href="${marketing_link('ROOT')}">
+      <%block name="navigation_logo">
         <img src="${static.url(branding.get_logo_url(request.META.get('HTTP_HOST')))}"/>
-      </a></h1>
+      </%block>
+    </a>
+  </h1>
 
     % if course:
       <h2><span class="provider">${course.org}:</span> ${course.number} ${course.display_name_with_default}</h2>
