@@ -3,7 +3,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <%block name="title"><title>edX</title></%block>
+  <%block name="title">
+  % if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+    <title>Home | class.stanford.edu</title>
+  % else:
+    <title>edX</title>
+  % endif
+  </%block>
+
   <script type="text/javascript">
   /* immediately break out of an iframe if coming
      from the marketing website */
@@ -14,7 +21,13 @@
   })(this);
   </script>
 
-  <link rel="icon" type="image/x-icon" href="${static.url('images/favicon.ico')}" />
+  <%
+    if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+      favicon_path = 'themes/' + settings.THEME_NAME + '/images/favicon.ico'
+    else:
+      favicon_path = 'images/favicon.ico'
+  %>
+  <link rel="icon" type="image/x-icon" href="${static.url(favicon_path)}" />
 
   <%static:css group='application'/>
 
@@ -32,14 +45,24 @@
   <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
 
   % if not course:
-  <%include file="google_analytics.html" />
+    % if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+      <%include file="lms/theme-google-analytics.html" />
+    % else:
+      <%include file="google_analytics.html" />
+    % endif
+  % endif
+
+  % if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+    <%include file="lms/theme-head-extra.html" />
   % endif
 
 </head>
 
 <body class="<%block name='bodyclass'/>">
 
-% if not suppress_toplevel_navigation:
+% if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+  <%include file="lms/theme-header.html" />
+% elif not suppress_toplevel_navigation:
   <%include file="navigation.html" />
 % endif
 
@@ -48,7 +71,9 @@
     <%block name="bodyextra"/>
   </section>
 
-% if not suppress_toplevel_navigation:
+% if settings.MITX_FEATURES.get("USE_CUSTOM_THEME"):
+  <%include file="lms/theme-footer.html" />
+% elif not suppress_toplevel_navigation:
   <%include file="footer.html" />
 % endif
 
