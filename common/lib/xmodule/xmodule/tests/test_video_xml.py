@@ -45,13 +45,7 @@ class VideoFactory(object):
 
     @staticmethod
     def create():
-        """
-        All parameters are optional, and are added to the created
-        problem if specified.
-
-        Arguments:
-            TODO: describe
-        """
+        """Method return Video Xmodule instance."""
         location = Location(["i4x", "edX", "video", "default",
                              "SampleProblem{0}".format(1)])
         model_data = {'data': VideoFactory.sample_problem_xml_youtube}
