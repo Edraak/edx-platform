@@ -314,6 +314,8 @@ class AssignmentFormatGrader(CourseGrader):
 
             #Index to display
             display_index = i + self.starting_index
+            #TODO: If a score was skipped due to not being graded,
+            #      make sure display_index is incremented accordingly.
 
             if i < len(scores) or generate_random_scores:
                 if generate_random_scores:  	# for debugging!
