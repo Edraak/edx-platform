@@ -311,6 +311,10 @@ class AssignmentFormatGrader(CourseGrader):
         scores = grade_sheet.get(self.type, [])
         breakdown = []
         for i in range(max(self.min_count, len(scores))):
+
+            #Index to display
+            display_index = i + self.starting_index
+
             if i < len(scores) or generate_random_scores:
                 if generate_random_scores:  	# for debugging!
                     earned = random.randint(2, 15)
@@ -324,7 +328,7 @@ class AssignmentFormatGrader(CourseGrader):
 
                 percentage = earned / float(possible)
                 summary_format = "{section_type} {index} - {name} - {percent:.0%} ({earned:.3n}/{possible:.3n})"
-                summary = summary_format.format(index=i + self.starting_index,
+                summary = summary_format.format(index=display_index,
                                                 section_type=self.section_type,
                                                 name=section_name,
                                                 percent=percentage,
@@ -332,10 +336,10 @@ class AssignmentFormatGrader(CourseGrader):
                                                 possible=float(possible))
             else:
                 percentage = 0
-                summary = "{section_type} {index} Unreleased - 0% (?/?)".format(index=i + self.starting_index,
+                summary = "{section_type} {index} Unreleased - 0% (?/?)".format(index=display_index,
                                                                                 section_type=self.section_type)
 
-            short_label = "{short_label} {index:02d}".format(index=i + self.starting_index,
+            short_label = "{short_label} {index:02d}".format(index=display_index,
                                                              short_label=self.short_label)
 
             breakdown.append({'percent': percentage, 'label': short_label,
