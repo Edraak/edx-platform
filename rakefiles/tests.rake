@@ -146,3 +146,24 @@ namespace :coverage do
         end
     end
 end
+
+task :check_changes do
+    # TODO: Now this task works only afer `$ rake lms`
+    pylinter_report = `
+        PYTHONPATH=./lms/djangoapps:./lms/lib:./cms/djangoapps:./cms/lib:./common/lib:./common/djangoapps \
+        pylint --rcfile=pylintrc --output-format=colorized \
+        $(git diff master --name-only | grep -i '\.py$')`
+    puts `echo '#{pylinter_report}' | grep -i 'Your code has been rated'`
+    puts "\n"
+    puts `echo '#{pylinter_report}' | grep -B 1000 '^Report$' \
+        | grep -i -v '^Report$'`
+    `django-admin.py syncdb --traceback --noinput --settings=lms.envs.test --pythonpath=.`
+    `django-admin.py migrate --traceback --settings=lms.envs.test --pythonpath=.`
+
+    %x{coverage run `which django-admin.py` test --traceback \
+        --settings=lms.envs.test --pythonpath=. --logging-clear-handlers \
+        $(git diff master --name-only | grep -i '\.py$')}
+
+    puts "\n"
+    system("coverage report $(git diff master --name-only | grep -i '\.py$')")
+end
