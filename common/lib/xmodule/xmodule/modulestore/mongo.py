@@ -268,7 +268,7 @@ class MongoModuleStore(ModuleStoreBase):
         query = {'_id.org': location.org,
                  '_id.course': location.course,
                  '_id.category': {'$in': ['course', 'chapter', 'sequential', 'vertical',
-                                          'wrapper', 'problemset', 'conditional']}
+                                          'wrapper', 'problemset', 'conditional', 'randomize']}
                  }
         # we just want the Location, children, and inheritable metadata
         record_filter = {'_id': 1, 'definition.children': 1}
@@ -476,7 +476,15 @@ class MongoModuleStore(ModuleStoreBase):
         '''
         # TODO (vshnayder): Why do I have to specify i4x here?
         course_filter = Location("i4x", category="course")
-        return self.get_items(course_filter)
+        return [
+            course
+            for course
+            in self.get_items(course_filter)
+            if not (
+                course.location.org == 'edx' and
+                course.location.course == 'templates'
+            )
+        ]
 
     def _find_one(self, location):
         '''Look for a given location in the collection.  If revision is not
@@ -694,11 +702,12 @@ class MongoModuleStore(ModuleStoreBase):
         self.refresh_cached_metadata_inheritance_tree(loc)
         self.fire_updated_modulestore_signal(get_course_id_no_run(Location(location)), Location(location))
 
-    def delete_item(self, location):
+    def delete_item(self, location, delete_all_versions=False):
         """
         Delete an item from this modulestore
 
         location: Something that can be passed to Location
+        delete_all_versions: is here because the DraftMongoModuleStore needs it and we need to keep the interface the same. It is unused.
         """
         # VS[compat] cdodge: This is a hack because static_tabs also have references from the course module, so
         # if we add one then we need to also add it to the policy information (i.e. metadata)

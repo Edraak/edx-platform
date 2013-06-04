@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse
 from django.db import connection
 from django.http import HttpResponse
 from django.utils import simplejson
-from django_comment_client.models import Role
+from django_comment_common.models import Role
 from django_comment_client.permissions import check_permissions_by_view
 from xmodule.modulestore.exceptions import NoPathToItem
 
@@ -156,7 +156,7 @@ def initialize_discussion_info(course):
 
     # get all discussion models within this course_id
     all_modules = modulestore().get_items(['i4x', course.location.org, course.location.course,
-        'discussion', None], course_id=course_id)
+                                          'discussion', None], course_id=course_id)
 
     for module in all_modules:
         skip_module = False

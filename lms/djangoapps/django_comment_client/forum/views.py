@@ -7,12 +7,11 @@ from django.http import Http404
 from django.core.context_processors import csrf
 from django.contrib.auth.models import User
 
-from mitxmako.shortcuts import render_to_response, render_to_string
+from mitxmako.shortcuts import render_to_response
 from courseware.courses import get_course_with_access
 from course_groups.cohorts import (is_course_cohorted, get_cohort_id, is_commentable_cohorted,
                                    get_cohorted_commentables, get_course_cohorts, get_cohort_by_id)
 from courseware.access import has_access
-from django_comment_client.models import Role
 
 from django_comment_client.permissions import cached_has_permission
 from django_comment_client.utils import (merge_dict, extract, strip_none, get_courseware_context)
@@ -175,6 +174,9 @@ def forum_form_discussion(request, course_id):
     try:
         unsafethreads, query_params = get_threads(request, course_id)   # This might process a search query
         threads = [utils.safe_content(thread) for thread in unsafethreads]
+    except (cc.utils.CommentClientMaintenanceError) as err:
+        log.warning("Forum is in maintenance mode")
+        return render_to_response('discussion/maintenance.html', {})
     except (cc.utils.CommentClientError, cc.utils.CommentClientUnknownError) as err:
         log.error("Error loading forum discussion threads: %s" % str(err))
         raise Http404
@@ -395,7 +397,7 @@ def followed_threads(request, course_id, user_id):
                 'discussion_data': map(utils.safe_content, threads),
                 'page': query_params['page'],
                 'num_pages': query_params['num_pages'],
-                })
+            })
         else:
 
             context = {
@@ -407,7 +409,7 @@ def followed_threads(request, course_id, user_id):
                 'user_info': saxutils.escape(json.dumps(user_info), escapedict),
                 'annotated_content_info': saxutils.escape(json.dumps(annotated_content_info), escapedict),
                 #                'content': content,
-                }
+            }
 
             return render_to_response('discussion/user_profile.html', context)
     except (cc.utils.CommentClientError, cc.utils.CommentClientUnknownError):

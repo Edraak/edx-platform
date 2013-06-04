@@ -10,9 +10,8 @@ from .x_module import XModule
 from xmodule.raw_module import RawDescriptor
 from xmodule.modulestore.django import modulestore
 from .timeinfo import TimeInfo
-from xblock.core import Object, Integer, Boolean, String, Scope
-from xmodule.open_ended_grading_classes.xblock_field_types import StringyFloat
-from xmodule.fields import Date
+from xblock.core import Object, String, Scope
+from xmodule.fields import Date, StringyFloat, StringyInteger, StringyBoolean
 
 from xmodule.open_ended_grading_classes.peer_grading_service import PeerGradingService, GradingServiceError, MockPeerGradingService
 from open_ended_grading_classes import combined_open_ended_rubric
@@ -23,24 +22,43 @@ USE_FOR_SINGLE_LOCATION = False
 LINK_TO_LOCATION = ""
 TRUE_DICT = [True, "True", "true", "TRUE"]
 MAX_SCORE = 1
-IS_GRADED = True
+IS_GRADED = False
 
 EXTERNAL_GRADER_NO_CONTACT_ERROR = "Failed to contact external graders.  Please notify course staff."
 
 
 class PeerGradingFields(object):
-    use_for_single_location = Boolean(help="Whether to use this for a single location or as a panel.",
-                                      default=USE_FOR_SINGLE_LOCATION, scope=Scope.settings)
-    link_to_location = String(help="The location this problem is linked to.", default=LINK_TO_LOCATION,
-                              scope=Scope.settings)
-    is_graded = Boolean(help="Whether or not this module is scored.", default=IS_GRADED, scope=Scope.settings)
+    use_for_single_location = StringyBoolean(
+        display_name="Show Single Problem",
+        help='When True, only the single problem specified by "Link to Problem Location" is shown. '
+             'When False, a panel is displayed with all problems available for peer grading.',
+        default=USE_FOR_SINGLE_LOCATION, scope=Scope.settings
+    )
+    link_to_location = String(
+        display_name="Link to Problem Location",
+        help='The location of the problem being graded. Only used when "Show Single Problem" is True.',
+        default=LINK_TO_LOCATION, scope=Scope.settings
+    )
+    is_graded = StringyBoolean(
+        display_name="Graded",
+        help='Defines whether the student gets credit for grading this problem. Only used when "Show Single Problem" is True.',
+        default=IS_GRADED, scope=Scope.settings
+    )
     due_date = Date(help="Due date that should be displayed.", default=None, scope=Scope.settings)
     grace_period_string = String(help="Amount of grace to give on the due date.", default=None, scope=Scope.settings)
-    max_grade = Integer(help="The maximum grade that a student can receieve for this problem.", default=MAX_SCORE,
-                        scope=Scope.settings)
-    student_data_for_location = Object(help="Student data for a given peer grading problem.",
-                                       scope=Scope.user_state)
-    weight = StringyFloat(help="How much to weight this problem by", scope=Scope.settings)
+    max_grade = StringyInteger(
+        help="The maximum grade that a student can receive for this problem.", default=MAX_SCORE,
+        scope=Scope.settings, values={"min": 0}
+    )
+    student_data_for_location = Object(
+        help="Student data for a given peer grading problem.",
+        scope=Scope.user_state
+    )
+    weight = StringyFloat(
+        display_name="Problem Weight",
+        help="Defines the number of points each problem is worth. If the value is not set, each problem is worth one point.",
+        scope=Scope.settings, values={"min": 0, "step": ".1"}
+    )
 
 
 class PeerGradingModule(PeerGradingFields, XModule):
@@ -94,9 +112,9 @@ class PeerGradingModule(PeerGradingFields, XModule):
         if not self.ajax_url.endswith("/"):
             self.ajax_url = self.ajax_url + "/"
 
-        if not isinstance(self.max_grade, (int, long)):
-            #This could result in an exception, but not wrapping in a try catch block so it moves up the stack
-            self.max_grade = int(self.max_grade)
+        #StringyInteger could return None, so keep this check.
+        if not isinstance(self.max_grade, int):
+            raise TypeError("max_grade needs to be an integer.")
 
     def closed(self):
         return self._closed(self.timeinfo)
@@ -499,7 +517,6 @@ class PeerGradingModule(PeerGradingFields, XModule):
                 log.error("Problem {0} does not exist in this course".format(location))
                 raise
 
-
         for problem in problem_list:
             problem_location = problem['location']
             descriptor = _find_corresponding_module_for_location(problem_location)
@@ -589,3 +606,14 @@ class PeerGradingDescriptor(PeerGradingFields, RawDescriptor):
     has_score = True
     always_recalculate_grades = True
     template_dir_name = "peer_grading"
+
+    #Specify whether or not to pass in open ended interface
+    needs_open_ended_interface = True
+
+    @property
+    def non_editable_metadata_fields(self):
+        non_editable_fields = super(PeerGradingDescriptor, self).non_editable_metadata_fields
+        non_editable_fields.extend([PeerGradingFields.due_date, PeerGradingFields.grace_period_string,
+                                    PeerGradingFields.max_grade])
+        return non_editable_fields
+

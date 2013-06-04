@@ -8,8 +8,16 @@ from xblock.core import String, Scope
 
 class DiscussionFields(object):
     discussion_id = String(scope=Scope.settings)
-    discussion_category = String(scope=Scope.settings)
-    discussion_target = String(scope=Scope.settings)
+    discussion_category = String(
+        display_name="Category",
+        help="A category name for the discussion. This name appears in the left pane of the discussion forum for the course.",
+        scope=Scope.settings
+    )
+    discussion_target = String(
+        display_name="Subcategory",
+        help="A subcategory name for the discussion. This name appears in the left pane of the discussion forum for the course.",
+        scope=Scope.settings
+    )
     sort_key = String(scope=Scope.settings)
 
 
@@ -37,3 +45,10 @@ class DiscussionDescriptor(DiscussionFields, MetadataOnlyEditingDescriptor, RawD
     metadata_translations = dict(RawDescriptor.metadata_translations)
     metadata_translations['id'] = 'discussion_id'
     metadata_translations['for'] = 'discussion_target'
+
+    @property
+    def non_editable_metadata_fields(self):
+        non_editable_fields = super(DiscussionDescriptor, self).non_editable_metadata_fields
+        # We may choose to enable sort_keys in the future, but while Kevin is investigating....
+        non_editable_fields.extend([DiscussionDescriptor.discussion_id, DiscussionDescriptor.sort_key])
+        return non_editable_fields

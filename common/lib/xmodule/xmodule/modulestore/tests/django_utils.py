@@ -31,18 +31,18 @@ class ModuleStoreTestCase(TestCase):
     @staticmethod
     def load_templates_if_necessary():
         '''
-        Load templates into the modulestore only if they do not already exist.
+        Load templates into the direct modulestore only if they do not already exist.
         We need the templates, because they are copied to create
         XModules such as sections and problems
         '''
-        modulestore = xmodule.modulestore.django.modulestore()
+        modulestore = xmodule.modulestore.django.modulestore('direct')
 
         # Count the number of templates
         query = {"_id.course": "templates"}
         num_templates = modulestore.collection.find(query).count()
 
         if num_templates < 1:
-            update_templates()
+            update_templates(modulestore)
 
     @classmethod
     def setUpClass(cls):
