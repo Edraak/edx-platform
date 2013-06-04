@@ -9,58 +9,55 @@
 
 <%block name="js_extra">
   <script type="text/javascript" src="/static/js/data.js"></script>
+  <script type="text/javascript" src="/static/js/table_sort.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap.js"></script>
 </%block>
 
 <%block name="css_extra">
   <link rel="stylesheet" type="text/css" href="/static/css/data.css"/>
 </%block>
+<br/>
 
-<div id="graphs_container"> 
+<section class="container">
+  <div id="graphs_container"> 
+  </div>
+</section>
 
-</div>
+<section class="container">
+  <div class="edx_summary">
+    <h2>edX-wide Summary</h2>
+    <table class="table table-hover">
+    % for pair in results["scalars"]:
+      <tr>
+        <td>${pair[0]}</td>
+        <td>${pair[1]}</td>
+      </tr>
+    % endfor
+    </table>
+  </div>
 
-
-
-
-
-
-<section class="container about">
-
-  <section class="basic_stats">
-
-    <div class="edx_summary">
-      <h2>edX-wide Summary</h2>
-      <table style="margin-left:auto;margin-right:auto;width:50%">
-      % for key in results["scalars"]:
-        <tr>
-          <td>${key}</td>
-          <td>${results["scalars"][key]}</td>
-        </tr>
-      % endfor
-      </table>
-    </div>
-
-    % for table in results["tables"]:
-    <br/>
-    <div class="table_display">
-      <h2>${table}</h2>
-      <table style="margin-left:auto;margin-right:auto;width:50%">
+  % for table in results["tables"]:
+  <br/>
+  <div class="table_display">
+    <h2>${table}</h2>
+    <table class="table sortable table-hover">
+      <thead>
         <tr>
           % for column in results["tables"][table][0]:
-          <td><b>${column}</b></td>
+          <th><b>${column}</b></th>
           % endfor
         </tr>
-        % for row in results["tables"][table][1:]:
-        <tr>
-          % for column in row:
-          <td>${column}</td>
-          % endfor
-        </tr>
+      </thead>
+      % for row in results["tables"][table][1:]:
+      <tr>
+        % for column in row:
+        <td>${column}</td>
         % endfor
-      </table>
+      </tr>
+      % endfor
+    </table>
 
-    </div>
-    % endfor
-  </section>
+  </div>
+  % endfor
 </section>
 

@@ -56,7 +56,7 @@ function render_timeline(data, target){
 	This function takes an object containing the following:
 	    value_type, which is a display name for the series
         all_series, an array of objects containing the timeseries data
-           and some information about that series ()
+           and a label for that series ()
 	example:
 	{
 		"type": "timeseries",
@@ -79,13 +79,17 @@ function render_timeline(data, target){
 
 	*/
 
-	// edX series in gray, all other series edX purple but hidden until revealed
+	// first series in gray, all other series get default colors
+	first_series = true;
 	data["all_series"].forEach(function(x) {
-		if (x["label"] === "edX") {
+		if (first_series) {
 			x["color"] = "rgb(119, 121, 124)";
-			x["bars"] = { "show": true}
+			x["bars"] = { 
+				show: true,
+				barWidth: 86400*1000 //one day wide
+			};
+			first_series = false
 		} else {
-			x["color"] = "rgb(165, 16, 86)";
 		}	
 	
 		return x;
@@ -164,11 +168,11 @@ function load_and_plot(url, target, fake) {
 	}
 }
 
-function add_graph_section(base_url, fake) {
+function add_graph_section(base_url, section_title, fake) {
 	section = $("<section>").addClass("graph_section");
 	map_div = $("<div>").addClass('map').text("map");
 	series_div = $("<div>").addClass('timeseries').text("series");
-	title = $("<h2>"+base_url+"</h2>");
+	title = $("<h2>"+section_title+"</h2>");
 
 	section.append(title);
 	section.append(map_div);
@@ -182,10 +186,10 @@ function add_graph_section(base_url, fake) {
 
 $(document).ready(function() {
 
-	add_graph_section('/data/enrollment_history', false);
-	add_graph_section('/data/enrollment_conversion', true);	
-	add_graph_section('/data/participation_conversion', true);	
-	add_graph_section('/data/certification_conversion', true);	
+	add_graph_section('/data/enrollment_history	', 'Enrollment Rates', false);
+	// add_graph_section('/data/enrollment_conversion', 'Title Goes Here', true);	
+	// add_graph_section('/data/participation_conversion', 'Title Goes Here', true);	
+	// add_graph_section('/data/certification_conversion', 'Title Goes Here', true);	
 	
 });
 
