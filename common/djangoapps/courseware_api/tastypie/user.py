@@ -65,7 +65,7 @@ class UserResource(ModelResource):
     def logout(self, request, **kwargs):
         self.method_check(request, allowed=['get'])
 
-        user = get_user_from_token(request)
+        user = get_user_from_request(request)
 
         if user is not None:
             logout(request)

@@ -6,11 +6,12 @@ from tastypie.utils import trailing_slash
 from tastypie.resources import Resource
 from tastypie.exceptions import NotFound
 from tastypie import fields
-from .utils import get_user_from_token
+from .utils import get_user_from_token, get_user_from_request
 
 from .utils import get_user_from_token
 import Queue
 import logging
+import datetime
 
 # this is a hack for hackathon, ultimately we want this persisted and not in-mem
 USER_TO_MOBILE_TOKEN_MAP = {1: "1234"}
@@ -43,7 +44,9 @@ class MobileResource(Resource):
                                 format=request.META.get('CONTENT_TYPE',
                                                         'application/json'))
 
-        user_id = data.get('user_token', '')
+        user_token = data.get('user_token', '')
+        user = get_user_from_token(user_token)
+
         device_token = data.get('device_token', '')
 
         USER_TO_MOBILE_TOKEN_MAP[user_id] = device_token
@@ -51,7 +54,7 @@ class MobileResource(Resource):
     def poll(self, request, **kwargs):
         self.method_check(request, allowed=['get'])
 
-        user = get_user_from_token(request)
+        user = get_user_from_request(request)
         user_id = user.user_id if user else 1
 
         if not user_id:

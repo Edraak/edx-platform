@@ -34,7 +34,7 @@ def get_xblock_summary(module, metadata_whitelist):
     return summary
 
 
-def get_user_from_token(request):
+def get_user_from_request(request):
     # can pass in as query string parameter or cookie
     if 'token' in request.GET:
         token = request.GET['token']
@@ -43,6 +43,10 @@ def get_user_from_token(request):
     else:
         return None
 
+    return get_user_from_token(token)
+
+
+def get_user_from_token(token):
     try:
         session = Session.objects.get(session_key=token)
     except Session.DoesNotExist:
