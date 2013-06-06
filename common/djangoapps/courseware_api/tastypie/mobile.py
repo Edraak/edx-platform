@@ -6,6 +6,7 @@ from tastypie.utils import trailing_slash
 from tastypie.resources import Resource
 from tastypie.exceptions import NotFound
 from tastypie import fields
+from .utils import get_user_from_token
 
 from .utils import get_user_from_token
 import Queue
@@ -42,7 +43,7 @@ class MobileResource(Resource):
                                 format=request.META.get('CONTENT_TYPE',
                                                         'application/json'))
 
-        user_id = data.get('user_id', '')
+        user_id = data.get('user_token', '')
         device_token = data.get('device_token', '')
 
         USER_TO_MOBILE_TOKEN_MAP[user_id] = device_token
@@ -50,7 +51,13 @@ class MobileResource(Resource):
     def poll(self, request, **kwargs):
         self.method_check(request, allowed=['get'])
 
-        self.add_to_queue(1, "hello world!")
+        user = get_user_from_token(request)
+        user_id = user.user_id if user else 1
+
+        if not user_id:
+            raise HttpForbidden
+
+        self.add_to_queue(user_id, "hello world!")
 
         device_token = kwargs['device_token']
 
@@ -64,6 +71,8 @@ class MobileResource(Resource):
         raise NotFound
 
     def add_to_queue(self, user_id, payload):
+        user_id = 1
+
         token = USER_TO_MOBILE_TOKEN_MAP.get(user_id, None)
 
         if not token:
