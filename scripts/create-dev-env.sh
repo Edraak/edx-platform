@@ -102,7 +102,7 @@ clone_repos() {
 PROG=${0##*/}
 
 # Adjust this to wherever you'd like to place the codebase
-BASE="${PROJECT_HOME:-$HOME}/edx_all"
+BASE="${PROJECT_HOME:-$HOME}/edx"
 
 # Use a sensible default (~/.virtualenvs) for your Python virtualenvs
 # unless you've already got one set up with virtualenvwrapper.
