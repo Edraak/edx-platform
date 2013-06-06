@@ -58,6 +58,8 @@ urlpatterns = ('',  # nopep8
         name='auth_password_reset_done'),
 
     url(r'^heartbeat$', include('heartbeat.urls')),
+
+    url(r'^api/', include('courseware_api.urls')),
 )
 
 # University profiles only make sense in the default edX context

@@ -1,0 +1,108 @@
+================
+edX Courseware API
+================
+
+Intro
+----
+
+This is an alpha API that allows users to access their profile info, the courses they are enrolled in, and get details about those courses.  It can be used to e.g. make a mobile app that displays course videos and other content.
+
+Endpoints
+---------
+
+There are three endpoints::
+
+  /api/profile/$username  -- get full name, email, and list of enrolled courses
+  /api/course/$course_id  -- get the entire structure of the course
+  /api/xblock/$location -- get details of the XBlock definition
+
+Details, by example:
+-----------------
+
+Profile::
+
+        resp = self.api_client.get('/api/profile/freddy', format='json',
+                                   authentication=self.get_credentials())
+
+        expected = {'name': 'Fred W',
+                    'username': 'freddy',
+                    'email': 'fred@edx.org',
+                    'courses': [
+                        {'course_id': 'edX/Welding/Power_Welding',
+                         'name': 'Power Welding',
+                         'description': '',
+                         'image_url': '/c4x/edX/Welding/asset/images_course_image.jpg',
+                         'is_running': True}]}
+
+
+Course::
+
+        resp = self.api_client.get('/api/course/edX/Welding/Power_Welding', format='json',
+                                   authentication=self.get_credentials())
+
+        expected = {
+            'id': 'edX/Welding/Power_Welding',
+            'root': 'i4x://edX/Welding/course/Power_Welding',
+            'blocks': {
+                'i4x://edX/Welding/course/Power_Welding': {'category': 'course',
+                    'children': ['i4x://edX/Welding/chapter/Welcome_to_Welding'],
+                    'metadata': {'display_name': 'Power Welding'},
+                    'definition': 'i4x://edX/Welding/course/Power_Welding',
+                    },
+                'i4x://edX/Welding/chapter/Welcome_to_Welding': {'category': 'chapter',
+                    'children': ['i4x://edX/Welding/sequential/Your_first_weld'],
+                    'metadata': {'display_name': 'Welcome to Welding'},
+                    'definition': 'i4x://edX/Welding/chapter/Welcome_to_Welding',
+                    },
+                'i4x://edX/Welding/sequential/Your_first_weld': {'category': 'sequential',
+                    'children': ['i4x://edX/Welding/vertical/random_hex'],
+                    'metadata': {'display_name': 'Your first weld'},
+                    'definition': 'i4x://edX/Welding/sequential/Your_first_weld',
+                    },
+                'i4x://edX/Welding/vertical/random_hex': {'category': 'vertical',
+                    'children': ['i4x://edX/Welding/video/See_Fred_Weld',
+                                 'i4x://edX/Welding/html/About_Welding',
+                                 'i4x://edX/Welding/problem/Weld_This'],
+                    'metadata': {'display_name': 'random hex'},
+                    'definition': 'i4x://edX/Welding/vertical/random_hex',
+                    },
+                'i4x://edX/Welding/video/See_Fred_Weld': {'category': 'video',
+                    'children': [],
+                    'metadata': {'display_name': 'See Fred Weld'},
+                    'definition': 'i4x://edX/Welding/video/See_Fred_Weld',
+                    },
+                'i4x://edX/Welding/html/About_Welding': {'category': 'html',
+                    'metadata': {'display_name': 'About Welding'},
+                    'children': [],
+                    'definition': 'i4x://edX/Welding/html/About_Welding',
+                    },
+                'i4x://edX/Welding/problem/Weld_This': {'category': 'problem',
+'metadata': {'display_name': 'Weld This'},
+                    'children': [],
+                    'definition': 'i4x://edX/Welding/problem/Weld_This',
+                    }
+                }
+            }
+
+
+
+Xblock::
+
+For video specifically:
+
+        resp = self.api_client.get('/api/xblock/i4x://edX/Welding/video/See_Fred_Weld', format='json',
+                                   authentication=self.get_credentials())
+
+        expected = {
+            'location': 'i4x://edX/Welding/video/See_Fred_Weld',
+            'category': 'video',
+            'metadata': {'display_name': 'See Fred Weld'},
+            'data': 'abc123',
+            }
+
+
+
+Authentication
+-------------
+
+You have to send your django username and password in every request, using HTTP Basic Auth. 

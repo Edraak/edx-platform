@@ -83,4 +83,8 @@ django-jasmine==0.3.2
 django_debug_toolbar
 django-debug-toolbar-mongo
 
+# dependencies for hack-a-thon3
+mimeparse==0.1.3
+django-tastypie==0.9.14
+
 git+https://github.com/mfogel/django-settings-context-processor.git
