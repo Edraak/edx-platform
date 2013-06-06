@@ -22,7 +22,6 @@ class @Problem
     
     @$('section.action input:button').click @refreshAnswers
     @$('section.action input.check').click @check_fd
-    #@$('section.action input.check').click @check
     @$('section.action input.reset').click @reset
     @$('section.action input.show').click @show
     @$('section.action input.save').click @save
@@ -36,15 +35,31 @@ class @Problem
       @$('input.math').each (index, element) =>
         MathJax.Hub.Queue [@refreshMath, null, element]
 
+  renderProgressState: () =>
+    detail = @el.data('progress_detail')
+    status = @el.data('progress_status')
+    progress = "(" + detail + " points)"
+    if status == "none" and detail? and detail.indexOf('/') > 0
+        a = detail.split('/')
+        possible = parseInt(a[1])
+        if possible == 1
+            progress =  "(" + possible + " point possible)"
+        else 
+            progress =  "(" + possible + " points possible)" 
+    @$(".problem-progress").html(progress)
+ 
   updateProgress: (response) =>
     if response.progress_changed
-        @el.attr progress: response.progress_status
+        @el.data('progress_status', response.progress_status)
+        @el.data('progress_detail', response.progress_detail)
         @el.trigger('progressChanged')
+    @renderProgressState()
 
   forceUpdate: (response) =>
-    @el.attr progress: response.progress_status
+    @el.data('progress_status', response.progress_status)
+    @el.data('progress_detail', response.progress_detail)
     @el.trigger('progressChanged')
-    
+    @renderProgressState()    
 
   queueing: =>
     @queued_items = @$(".xqueue")
@@ -114,7 +129,7 @@ class @Problem
           @setupInputTypes()
           @bind()
           @queueing()
-
+          @renderProgressState()
 
   # TODO add hooks for problem types here by inspecting response.html and doing
   # stuff if a div w a class is found

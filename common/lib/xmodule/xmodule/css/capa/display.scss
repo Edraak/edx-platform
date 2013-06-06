@@ -3,6 +3,7 @@ h2 {
   margin-bottom: 15px;
 
   &.problem-header {
+    display: inline-block;
     section.staff {
       margin-top: 30px;
       font-size: 80%;
@@ -20,6 +21,9 @@ h2 {
   color: darken($error-red, 10%);
 }
 
+section.problem-progress {
+  display: inline-block
+}
 
 section.problem {
   @media print {

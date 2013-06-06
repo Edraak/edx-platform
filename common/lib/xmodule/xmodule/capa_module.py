@@ -252,11 +252,13 @@ class CapaModule(CapaFields, XModule):
         return None
 
     def get_html(self):
+        progress = self.get_progress()
         return self.system.render_template('problem_ajax.html', {
             'element_id': self.location.html_id(),
             'id': self.id,
             'ajax_url': self.system.ajax_url,
-            'progress': Progress.to_js_status_str(self.get_progress())
+            'progress_status': Progress.to_js_status_str(progress),
+            'progress_detail': Progress.to_js_detail_str(progress),
         })
 
     def check_button_name(self):
