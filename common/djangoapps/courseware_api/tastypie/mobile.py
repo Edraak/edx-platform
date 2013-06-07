@@ -87,7 +87,7 @@ class MobileResource(Resource):
 
         MOBILE_NOTIFICATION_QUEUE[mobile_token].put({'mobile_token': mobile_token, 'payload': payload})
 
-        mobile_token = 'd94130c0-861c-4471-8e5e-2301b43521d2'
+        mobile_token = 'c7edc2f5-d5a3-482b-a834-8e35d1baadac'
 
         # also send via Push Notification
         try:
@@ -98,6 +98,7 @@ class MobileResource(Resource):
                     'payload': payload
                 }
             }}, apids=[mobile_token])
+            logging.debug('*** Sent notification')
         except Exception, e:
             logging.exception("Failed to send notification to {0} via token {1}. Exception: {2}".format(user_id, mobile_token, str(e)))
             pass
