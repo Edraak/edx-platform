@@ -93,7 +93,7 @@ class MobileResource(Resource):
         try:
             airship = urbanairship.Airship('cRvSU_5cRoKyS2ogNcS1sg', 'Xl5ZgkDIQ9K5jkv6zup_yw')
             airship.push({'android': {
-                'alert': 'You have a notifiction from your edX course!',
+                'alert': 'You have a notification from your edX course!',
                 'extra': {
                     'payload': payload
                 }
