@@ -36,6 +36,8 @@ from xmodule.modulestore.search import path_to_location
 
 import comment_client
 
+from courseware_api.tastypie.utils import get_user_from_request
+
 log = logging.getLogger("mitx.courseware")
 
 template_imports = {'urllib': urllib}
@@ -234,11 +236,10 @@ def update_timelimit_module(user, course_id, model_data_cache, timelimit_descrip
     return context
 
 
-@login_required
-@ensure_csrf_cookie
-@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 def component(request, course_id, loc_url):
-    user = User.objects.prefetch_related("groups").get(id=request.user.id)
+    request_user = get_user_from_request(request)
+
+    user = User.objects.prefetch_related("groups").get(id=request_user.id)
     request.user = user # keep just one instance of User
     course = get_course_with_access(user, course_id, 'load')
     staff_access = has_access(user, course, 'staff')

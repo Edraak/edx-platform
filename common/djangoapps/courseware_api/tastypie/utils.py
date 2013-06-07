@@ -40,6 +40,8 @@ def get_user_from_request(request):
         token = request.GET['token']
     elif 'token' in request.COOKIES:
         token = request.COOKIES['token']
+    elif 'sessionid' in request.COOKIES:
+        token = request.COOKIES['sessionid']
     else:
         return None
 
