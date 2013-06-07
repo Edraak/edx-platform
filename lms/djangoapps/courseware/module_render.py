@@ -379,9 +379,9 @@ def get_module_for_descriptor(user, request, descriptor, model_data_cache, cours
     module.get_html = replace_course_urls(module.get_html, course_id)
 
     if display_staff_info:
-      if settings.MITX_FEATURES.get('DISPLAY_HISTOGRAMS_TO_STAFF'):
-          if has_access(user, module, 'staff', course_id):
-              module.get_html = add_histogram(module.get_html, module, user)
+        if settings.MITX_FEATURES.get('DISPLAY_HISTOGRAMS_TO_STAFF'):
+            if has_access(user, module, 'staff', course_id):
+                module.get_html = add_histogram(module.get_html, module, user)
 
     return module
 

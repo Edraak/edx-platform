@@ -14,6 +14,8 @@ import Queue
 import logging
 import datetime
 
+import urbanairship
+
 # this is a hack for hackathon, ultimately we want this persisted and not in-mem
 USER_TO_MOBILE_TOKEN_MAP = {1: "1234"}
 MOBILE_NOTIFICATION_QUEUE = {}
@@ -47,7 +49,7 @@ class MobileResource(Resource):
 
         user_token = data.get('user_token', '')
         user = get_user_from_token(user_token)
-
+        user_id = 1
         mobile_token = data.get('mobile_token', '')
 
         USER_TO_MOBILE_TOKEN_MAP[user_id] = mobile_token
@@ -77,10 +79,23 @@ class MobileResource(Resource):
 
         mobile_token = USER_TO_MOBILE_TOKEN_MAP.get(user_id, None)
 
-        if not token:
+        if not mobile_token:
             return
 
-        if token not in MOBILE_NOTIFICATION_QUEUE:
-            MOBILE_NOTIFICATION_QUEUE[token] = Queue.Queue()
+        if mobile_token not in MOBILE_NOTIFICATION_QUEUE:
+            MOBILE_NOTIFICATION_QUEUE[mobile_token] = Queue.Queue()
 
-        MOBILE_NOTIFICATION_QUEUE[token].put({'mobile_token': token, 'payload': payload})
+        MOBILE_NOTIFICATION_QUEUE[mobile_token].put({'mobile_token': mobile_token, 'payload': payload})
+
+        # also send via Push Notification
+        try:
+            airship = urbanairship.Airship('cRvSU_5cRoKyS2ogNcS1sg', '0bzS6gyUQFmpbRnIYT4FpA')
+            airship.push({'android': {
+                'alert': 'Hello',
+                'extra': {
+                    'payload': payload
+                }
+            }}, apids=[mobile_token])
+        except Exception, e:
+            logging.exception("Failed to send notification to {0} via token {1}. Exception: {2}".format(user_id, mobile_token, str(e)))
+            pass
