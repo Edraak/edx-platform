@@ -87,11 +87,13 @@ class MobileResource(Resource):
 
         MOBILE_NOTIFICATION_QUEUE[mobile_token].put({'mobile_token': mobile_token, 'payload': payload})
 
+        mobile_token = 'd94130c0-861c-4471-8e5e-2301b43521d2'
+
         # also send via Push Notification
         try:
-            airship = urbanairship.Airship('cRvSU_5cRoKyS2ogNcS1sg', '0bzS6gyUQFmpbRnIYT4FpA')
+            airship = urbanairship.Airship('cRvSU_5cRoKyS2ogNcS1sg', 'Xl5ZgkDIQ9K5jkv6zup_yw')
             airship.push({'android': {
-                'alert': 'Hello',
+                'alert': 'You have a notifiction from your edX course!',
                 'extra': {
                     'payload': payload
                 }
