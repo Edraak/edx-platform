@@ -38,6 +38,8 @@ from .model_data import LmsKeyValueStore, LmsUsage, ModelDataCache
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from statsd import statsd
 
+from courseware_api.urls import mobile_resource
+
 log = logging.getLogger(__name__)
 
 
@@ -265,6 +267,15 @@ def get_module_for_descriptor(user, request, descriptor, model_data_cache, cours
         student_module.grade = event.get('value')
         student_module.max_grade = event.get('max_value')
         student_module.save()
+
+        # Hackathon3 workflow, if we get a wrong or right answer then, let's trigger some
+        # mobile notifications to re-inforce learning. Becase as we know pedagogy rules the day.
+        if event.get('value', 0) > 0:
+          if module.tethered_location_on_correct is not None:
+            mobile_resource.add_to_queue(request.user.id, module.tethered_location_on_correct)
+        else:
+          if module.tethered_location_on_incorrect is not None:
+            mobile_resource.add_to_queue(request.user.id, module.tethered_location_on_incorrect)
 
         #Bin score into range and increment stats
         score_bucket = get_score_bucket(student_module.grade, student_module.max_grade)

@@ -60,13 +60,11 @@ class MobileResource(Resource):
         if not user_id:
             raise HttpForbidden
 
-        self.add_to_queue(user_id, "hello world!")
-
         device_token = kwargs['device_token']
 
         if device_token in MOBILE_NOTIFICATION_QUEUE:
             try:
-                item = MOBILE_NOTIFICATION_QUEUE[device_token].get()
+                item = MOBILE_NOTIFICATION_QUEUE[device_token].get(timeout=0)
                 return self.create_response(request, item)
             except Queue.Empty:
                 pass

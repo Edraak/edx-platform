@@ -111,6 +111,16 @@ class CapaFields(object):
         help="Source code for LaTeX and Word problems. This feature is not well-supported.",
         scope=Scope.settings
     )
+    tethered_location_on_correct = String(
+        display_name="Tethered Location On Correct",
+        help="Location 'url' for which problem to show when user answers this correctly",
+        scope=Scope.settings
+    )
+    tethered_location_on_incorrect = String(
+        display_name="Thether Location On Incorrect",
+        help="Location 'url' for which problem to show when user answers this incorrectly",
+        scope=Scope.settings
+    )
 
 
 class CapaModule(CapaFields, XModule):
@@ -719,6 +729,7 @@ class CapaModule(CapaFields, XModule):
             'value': score['score'],
             'max_value': score['total'],
         })
+
 
     def check_problem(self, get):
         ''' Checks whether answers to a problem are correct, and
