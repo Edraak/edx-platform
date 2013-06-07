@@ -255,6 +255,9 @@ if settings.COURSEWARE_ENABLED:
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/courseware/(?P<chapter>[^/]*)/(?P<section>[^/]*)/(?P<position>[^/]*)/?$',
             'courseware.views.index', name="courseware_position"),
 
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/component/(?P<loc_url>.*)$',
+            'courseware.views.component', name="courseware_component"),
+
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/progress$',
             'courseware.views.progress', name="progress"),
         # Takes optional student_id for instructor use--shows profile as that student sees it.

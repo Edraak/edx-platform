@@ -1,0 +1,26 @@
+<%inherit file="/main_mobile.html" />
+<%namespace name='static' file='/static_content.html'/>
+<%block name="bodyclass">courseware ${course.css_class}</%block>
+<%block name="title"><title>${course.number} Courseware</title></%block>
+
+<%block name="headextra">
+  <%static:css group='course'/>
+  <%include file="../discussion/_js_head_dependencies.html" />
+</%block>
+
+<%block name="js_extra">
+  <script type="text/javascript" src="${static.url('js/vendor/jquery.scrollTo-1.4.2-min.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.js')}"></script>
+
+  <%static:js group='courseware'/>
+
+</%block>
+
+<section class="container">
+  <div class="course-wrapper">
+    <section class="course-content">
+      ${content}
+    </section>
+  </div>
+</section>
+

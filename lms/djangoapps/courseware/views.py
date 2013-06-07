@@ -237,6 +237,51 @@ def update_timelimit_module(user, course_id, model_data_cache, timelimit_descrip
 @login_required
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
+def component(request, course_id, loc_url):
+    user = User.objects.prefetch_related("groups").get(id=request.user.id)
+    request.user = user # keep just one instance of User
+    course = get_course_with_access(user, course_id, 'load')
+    staff_access = has_access(user, course, 'staff')
+    registered = registered_for_course(course, user)
+    location = Location(loc_url)
+    if not registered:
+        # TODO (vshnayder): do course instructors need to be registered to see course?
+        log.debug('User %s tried to view course %s but is not enrolled' % (user, course.location.url()))
+        return redirect(reverse('about_course', args=[course.id]))
+
+    masq = setup_masquerade(request, staff_access)
+
+    item_descriptor = modulestore().get_instance(course.id, location, depth=None)
+
+    # Load all descendants of the section, because we're going to display its
+    # html, which in general will need all of its children
+    item_model_data_cache = ModelDataCache.cache_for_descriptor_descendents(
+        course_id, user, item_descriptor, depth=None)
+    item_module = get_module(request.user, request,
+                        item_descriptor.location,
+                        item_model_data_cache, course_id, depth=None, display_staff_info=False)
+
+    logging.debug('**** getting content')
+    content = item_module.get_html()
+    logging.debug('content = {0}'.format(content))
+    logging.debug('***** got content')
+    context = {
+        'csrf': csrf(request)['csrf_token'],
+        'COURSE_TITLE': course.display_name_with_default,
+        'course': course,
+        'init': '',
+        'content': content,
+        'staff_access': staff_access,
+        'masquerade': masq,
+        'xqa_server': settings.MITX_FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa')
+        }
+
+    return render_to_response('courseware/courseware_mobile.html', context)
+
+
+@login_required
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 def index(request, course_id, chapter=None, section=None,
           position=None):
     """

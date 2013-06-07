@@ -124,7 +124,7 @@ def toc_for_course(user, request, course, active_chapter, active_section, model_
 
 def get_module(user, request, location, model_data_cache, course_id,
                position=None, not_found_ok = False, wrap_xmodule_display=True,
-               grade_bucket_type=None, depth=0):
+               grade_bucket_type=None, depth=0, display_staff_info=True):
     """
     Get an instance of the xmodule class identified by location,
     setting the state based on an existing StudentModule, or creating one if none
@@ -152,7 +152,8 @@ def get_module(user, request, location, model_data_cache, course_id,
         return get_module_for_descriptor(user, request, descriptor, model_data_cache, course_id,
                                          position=position,
                                          wrap_xmodule_display=wrap_xmodule_display,
-                                         grade_bucket_type=grade_bucket_type)
+                                         grade_bucket_type=grade_bucket_type, 
+                                         display_staff_info=display_staff_info)
     except ItemNotFoundError:
         if not not_found_ok:
             log.exception("Error in get_module")
@@ -164,7 +165,7 @@ def get_module(user, request, location, model_data_cache, course_id,
 
 
 def get_module_for_descriptor(user, request, descriptor, model_data_cache, course_id,
-                position=None, wrap_xmodule_display=True, grade_bucket_type=None):
+                position=None, wrap_xmodule_display=True, grade_bucket_type=None, display_staff_info=True):
     """
     Actually implement get_module.  See docstring there for details.
     """
@@ -369,9 +370,10 @@ def get_module_for_descriptor(user, request, descriptor, model_data_cache, cours
     #   hierarchy of this course
     module.get_html = replace_course_urls(module.get_html, course_id)
 
-    if settings.MITX_FEATURES.get('DISPLAY_HISTOGRAMS_TO_STAFF'):
-        if has_access(user, module, 'staff', course_id):
-            module.get_html = add_histogram(module.get_html, module, user)
+    if display_staff_info:
+      if settings.MITX_FEATURES.get('DISPLAY_HISTOGRAMS_TO_STAFF'):
+          if has_access(user, module, 'staff', course_id):
+              module.get_html = add_histogram(module.get_html, module, user)
 
     return module
 

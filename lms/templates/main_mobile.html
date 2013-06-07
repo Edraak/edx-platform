@@ -1,0 +1,77 @@
+<%namespace name='static' file='static_content.html'/>
+<%! from django.utils import html %>
+
+## Define a couple of helper functions to make life easier when
+## embedding theme conditionals into templates. All inheriting
+## templates have access to these functions, and we can import these
+## into non-inheriting templates via the %namespace tag.
+<%def name="theme_enabled()">
+  <% return settings.MITX_FEATURES["USE_CUSTOM_THEME"] %>
+</%def>
+
+<%def name="stanford_theme_enabled()">
+  <% return theme_enabled() and getattr(settings, "THEME_NAME") == "stanford" %>
+</%def>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <%block name="title">
+    % if stanford_theme_enabled():
+      <title>Home | class.stanford.edu</title>
+    % else:
+      <title>edX</title>
+    % endif
+  </%block>
+  <script type="text/javascript">
+  /* immediately break out of an iframe if coming
+     from the marketing website */
+  (function(window) {
+    if (window.location !== window.top.location) {
+      window.top.location = window.location;
+    }
+  })(this);
+  </script>
+
+  <link rel="icon" type="image/x-icon" href="${static.url(settings.FAVICON_PATH)}" />
+
+  <%static:css group='application'/>
+
+  <%static:js group='main_vendor'/>
+  <%block name="headextra"/>
+  % if theme_enabled():
+    <%include file="theme-head-extra.html" />
+  % endif
+
+  <!--[if lt IE 9]>
+  <script src="${static.url('js/html5shiv.js')}"></script>
+  <![endif]-->
+
+  <!--[if lte IE 9]>
+  <%static:css group='ie-fixes'/>
+  <![endif]-->
+  <meta name="path_prefix" content="${MITX_ROOT_URL}">
+  <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
+
+</head>
+
+<body class="<%block name='bodyclass'/>">
+
+  <section class="content-wrapper">
+    ${self.body()}
+    <%block name="bodyextra"/>
+  </section>
+
+  <%static:js group='application'/>
+  <%static:js group='module-js'/>
+
+  <%block name="js_extra"/>
+</body>
+</html>
+
+<%def name="login_query()">${
+  "?course_id={0}&enrollment_action={1}".format(
+    html.escape(course_id),
+    html.escape(enrollment_action)
+  ) if course_id and enrollment_action else ""
+}</%def>
