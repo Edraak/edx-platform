@@ -273,10 +273,18 @@ def get_module_for_descriptor(user, request, descriptor, model_data_cache, cours
         # mobile notifications to re-inforce learning. Becase as we know pedagogy rules the day.
         if event.get('value', 0) > 0:
           if module.tethered_location_on_correct is not None:
-            mobile_resource.add_to_queue(request.user.id, module.tethered_location_on_correct)
+            url = reverse('courseware_component',
+                       kwargs=dict(course_id=course_id,
+                                   loc_url=module.tethered_location_on_correct)
+                       )
+            mobile_resource.add_to_queue(request.user.id, url)
         else:
           if module.tethered_location_on_incorrect is not None:
-            mobile_resource.add_to_queue(request.user.id, module.tethered_location_on_incorrect)
+            url = reverse('courseware_component',
+                       kwargs=dict(course_id=course_id,
+                                   loc_url=module.tethered_location_on_incorrect)
+                       )
+            mobile_resource.add_to_queue(request.user.id, url)
 
         #Bin score into range and increment stats
         score_bucket = get_score_bucket(student_module.grade, student_module.max_grade)
