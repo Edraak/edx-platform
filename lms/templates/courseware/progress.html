@@ -22,6 +22,12 @@
 <script>
 ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph", not course.no_grade, not course.no_grade)}
 </script>
+<script type="text/javascript">
+$('.section-title').click(function (){
+    $(this).closest('li.chapter').toggleClass('is-shown');
+  });
+</script>
+
 </%block>
 
 <%include file="/courseware/course_navigation.html" args="active_page='progress'" />
@@ -41,12 +47,23 @@ ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph",
       <ol class="chapters">
         %for chapter in courseware_summary:
         %if not chapter['display_name'] == "hidden":
-        <li>
-          <h2>${ chapter['display_name'] }</h2>
+        <li class="chapter">
+
+              <span class="viz viz-checklist-status">
+              <span class="viz value viz-checklist-status-value correct" style="width:25%;">
+                <span class="int">20</span>% of section correct
+              </span>
+              <span class="viz value viz-checklist-status-value incorrect" style="width:10%; margin-left:25%;">
+                <span class="int">30</span>% of section incorrect
+              </span>
+              </span>
+
+          <h2 class="section-title"><i class="icon-caret-down ui-toggle-expansion"></i>${ chapter['display_name'] }</h2>
 
           <ol class="sections">
             %for section in chapter['sections']:
             <li>
+
               <%
               earned = section['section_total'].earned
               total = section['section_total'].possible
@@ -56,7 +73,7 @@ ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph",
               <h3><a href="${reverse('courseware_section', kwargs=dict(course_id=course.id, chapter=chapter['url_name'], section=section['url_name']))}">
                 ${ section['display_name'] }</a>
                 %if total > 0 or earned > 0:
-                  <span> ${"({0:.3n}/{1:.3n}) {2}".format( float(earned), float(total), percentageString )}</span>
+                  <span class="section-score"> ${"({0:.3n}/{1:.3n}) {2}".format( float(earned), float(total), percentageString )}</span>
                 %endif
               </h3>
               <p>

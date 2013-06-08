@@ -160,33 +160,100 @@ div.profile-wrapper {
       margin-top: lh();
       padding-left: 0;
 
+
+        .chapter ol {
+          display: none;
+        }
+
+        .chapter.is-shown ol {
+          display: block;
+        }
+
       > li {
         @extend .clearfix;
-        border-bottom: 1px solid #e3e3e3;
         display: table;
-        padding: lh() 0;
+        margin: lh() 0;
         width: 100%;
 
         &:last-child {
           border-bottom: 0px;
         }
 
-        h2 {
-          border-right: 1px dashed #ddd;
+
+        // visual status
+        .viz-checklist-status {
+          text-indent: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+          height: 5px;
+          position: relative;
+          display: block;
+          margin: 0 0 15px 0;
+          background: #E5E5E5;
+
+          .viz-checklist-status-value {
+            // @include transition(width 2s ease-in-out .25s); need bourbon for this
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 5px;
+            background: #25B85A;
+
+            &.incorrect {
+              background: #D70014;
+            }
+
+            .int {
+              border: 0;
+              clip: rect(0 0 0 0);
+              height: 1px;
+              margin: -1px;
+              overflow: hidden;
+              padding: 0;
+              position: absolute;
+              width: 1px;
+            }
+          }
+        }
+
+
+        .section-title {
           @include box-sizing(border-box);
-          display: table-cell;
           letter-spacing: 0;
-          margin: 0;
+          margin: 10px 0 20px 0;
           padding: 0;
           padding-right: flex-gutter(9);
           text-transform: none;
-          width: flex-grid(2, 9);
+          color: #000;
+
+          &:hover {
+            color: $blue;
+          }
+
+        }
+
+        .ui-toggle-expansion {
+          color: #E5E5E5;
+          display: inline-block;
+          font-size: 1.4rem;
+          margin: -2px 12px 0 0;
+          transform: rotate(-90deg);
+          transition-duration: 0.15s;
+          transition-timing-function: ease-out;
+          vertical-align: middle;
+        }
+
+        &.is-shown .ui-toggle-expansion {
+          transform: rotate(0deg);
+          transform-origin: 50% 50% 0;
         }
 
         ol.sections {
-          display: table-cell;
           list-style: none;
           padding-left: flex-gutter(9);
+          margin-bottom: 0;
           width: flex-grid(7, 9);
 
           > li {
@@ -202,11 +269,12 @@ div.profile-wrapper {
 
             h3 {
               color: #666;
+              font-size: 16px;
 
               span {
-                color: #999;
+                color: #000;
                 font-size: em(14);
-                font-weight: 100;
+                font-weight: 600;
               }
             }
 
@@ -216,24 +284,31 @@ div.profile-wrapper {
             }
 
             section.scores {
-              margin: lh(.5) 0;
+              margin: 0 0 lh(.5) 0;
 
               h3 {
-                font-size: em(14);
                 @include inline-block;
+                font-size: em(14);
               }
 
               ol {
+                @include inline-block;
                 list-style: none;
                 margin: 0;
                 padding: 0;
-                @include inline-block;
 
                 li {
                   @include inline-block;
                   font-size: em(14);
                   font-weight: normal;
                   padding-right: 1em;
+
+                  &:nth-child(odd) {
+                    color: #25B85A;
+                  }
+                  &:nth-child(even) {
+                    color: #D70014;
+                  }
                 }
               }
             }

@@ -2,6 +2,7 @@
 
 @import 'base/reset';
 @import 'base/font_face';
+@import 'vendor/font-awesome';
 @import 'base/mixins';
 @import 'base/variables';
 
