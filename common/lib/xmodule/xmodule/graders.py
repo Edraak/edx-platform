@@ -4,13 +4,21 @@ import logging
 import random
 import sys
 
-from collections import namedtuple
+# from collections import namedtuple
 
 log = logging.getLogger("mitx.courseware")
 
+
 # This is a tuple for holding scores, either from problems or sections.
 # Section either indicates the name of the problem or the name of the section
-Score = namedtuple("Score", "earned possible graded section")
+# Score = namedtuple("Score", "earned possible graded section attempted")
+class Score(object):
+    def __init__(self, earned, possible, graded, section, status="Unknown"):
+        self.earned = earned
+        self.possible = possible
+        self.graded = graded
+        self.section = section
+        self.status = status
 
 
 def aggregate_scores(scores, section_name="summary"):
