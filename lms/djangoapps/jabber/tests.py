@@ -5,7 +5,6 @@ functionality is in the utils module.
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.exceptions import ImproperlyConfigured
-from nose.plugins.skip import SkipTest
 
 from factory import DjangoModelFactory, Sequence
 
@@ -114,7 +113,6 @@ class UtilsTests(TestCase):
             jabber.utils.get_room_name_for_course(course_id)
 
     def test_get_password_for_existing_user(self):
-        raise SkipTest("We don't have a Jabber DB set up for testing")
         jabber_user = JabberUserFactory.create()
         pre_jabber_user_count = JabberUser.objects.count()
         password = jabber.utils.get_or_create_password_for_user(jabber_user.username)
@@ -124,7 +122,6 @@ class UtilsTests(TestCase):
         self.assertEquals(jabber_user_delta, 0)
 
     def test_get_password_for_nonexistent_user(self):
-        raise SkipTest("We don't have a Jabber DB set up for testing")
         pre_jabber_user_count = JabberUser.objects.count()
         jabber.utils.get_or_create_password_for_user("nonexistentuser")
         post_jabber_user_count = JabberUser.objects.count()
