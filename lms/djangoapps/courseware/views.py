@@ -37,7 +37,6 @@ from xmodule.modulestore.exceptions import InvalidLocationError, ItemNotFoundErr
 from xmodule.modulestore.search import path_to_location
 
 import comment_client
-import jabber.utils
 
 log = logging.getLogger("mitx.courseware")
 
@@ -300,16 +299,6 @@ def index(request, course_id, chapter=None, section=None,
             'xqa_server': settings.MITX_FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa')
             }
 
-        # Only show the chat if it's enabled both in the settings and
-        # by the course.
-        context['show_chat'] = course.show_chat and settings.MITX_FEATURES.get('ENABLE_CHAT')
-        if context['show_chat']:
-            context['chat'] = {
-                'bosh_url': jabber.utils.get_bosh_url(),
-                'course_room': jabber.utils.get_room_name_for_course(course.id),
-                'username': "%s@%s" % (user.username, settings.JABBER.get('HOST')),
-                'password': jabber.utils.get_or_create_password_for_user(user.username)
-            }
 
         chapter_descriptor = course.get_child_by(lambda m: m.url_name == chapter)
         if chapter_descriptor is not None:
