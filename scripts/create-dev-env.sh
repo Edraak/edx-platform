@@ -222,7 +222,7 @@ case `uname -s` in
                         Press return to continue or control-C to abort"
 
                 [[ -z $no_prompts ]] && read dummy
-                sudo apt-get install -qy git ;;
+                sudo -E apt-get install -qy git ;;
             squeeze|lisa|katya|oneiric|natty|raring)
                 warning "
                           It seems like you're using $distro which has been deprecated.
@@ -234,7 +234,7 @@ case `uname -s` in
 
                           Press return to continue or control-C to abort"
                 [[ -z $no_prompts ]] && read dummy
-                sudo apt-get install -qy git
+                sudo -E apt-get install -qy git
                 ;;
 
             *)
@@ -320,7 +320,7 @@ case `uname -s` in
         warning "Setting up rvm on linux. This is a known pain point. If the script fails here
                 refer to the following stack overflow question:
                 http://stackoverflow.com/questions/9056008/installed-ruby-1-9-3-with-rvm-but-command-line-doesnt-show-ruby-v/9056395#9056395"
-        sudo apt-get --purge remove ruby-rvm
+        sudo -E apt-get --purge remove ruby-rvm
         sudo rm -rf /usr/share/ruby-rvm /etc/rvmrc /etc/profile.d/rvm.sh
         curl -sL https://get.rvm.io | bash -s stable --ruby --autolibs=enable --auto-dotfiles
     ;;

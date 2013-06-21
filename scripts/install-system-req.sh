@@ -39,14 +39,14 @@ case `uname -s` in
                 export DEBIAN_FRONTEND=noninteractive
 
                 # add repositories
-                cat $APT_REPOS_FILE | xargs -n 1 sudo add-apt-repository -y
-                sudo apt-get -y update
-                sudo apt-get install -qy gfortran
-                sudo apt-get install -qy graphviz libgraphviz-dev graphviz-dev
-                sudo apt-get install -qy libatlas-dev libblas-dev 
-                sudo apt-get install -qy ruby-rvm
+                cat $APT_REPOS_FILE | xargs -n 1 sudo -E add-apt-repository -y
+                sudo -E apt-get -y update
+                sudo -E apt-get install -qy gfortran
+                sudo -E apt-get install -qy graphviz libgraphviz-dev graphviz-dev
+                sudo -E apt-get install -qy libatlas-dev libblas-dev 
+                sudo -E apt-get install -qy ruby-rvm
                 # install packages listed in APT_PKGS_FILE
-                cat $APT_PKGS_FILE | xargs sudo apt-get install -qy
+                cat $APT_PKGS_FILE | xargs sudo -E apt-get install -qy
                 ;;
             *)
                 error "Unsupported distribution - $distro"
