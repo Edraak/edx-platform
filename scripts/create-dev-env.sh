@@ -154,7 +154,7 @@ while true; do
             shift
             ;;
         -n)
-            noprompts=true
+            no_prompts=true
             shift
             ;;
         -h)
@@ -190,7 +190,7 @@ cat<<EO
 EO
 info
 output "Press return to begin or control-C to abort"
-[[ -z $no_prompt ]] && read dummy
+[[ -z $no_prompts ]] && read dummy
 
 # Log all stdout and stderr
 
@@ -221,7 +221,7 @@ case `uname -s` in
 
                         Press return to continue or control-C to abort"
 
-                [[ -z $no_prompt ]] && read dummy
+                [[ -z $no_prompts ]] && read dummy
                 sudo apt-get install -qy git ;;
             squeeze|lisa|katya|oneiric|natty|raring)
                 warning "
@@ -233,7 +233,7 @@ case `uname -s` in
                           package manager does not yet include a package for rvm
 
                           Press return to continue or control-C to abort"
-                [[ -z $no_prompt ]] && read dummy
+                [[ -z $no_prompts ]] && read dummy
                 sudo apt-get install -qy git
                 ;;
 
