@@ -47,11 +47,12 @@ output() {
 usage() {
     cat<<EO
 
-    Usage: $PROG [-c] [-v] [-h]
+    Usage: $PROG [-s] [-c] [-v] [-h]
 
             -c        compile scipy and numpy
             -s        give access to global site-packages for virtualenv
             -v        set -x + spew
+            -n        no-prompts (for automation)
             -h        this
 
 EO
@@ -131,7 +132,7 @@ if [[ "x$VIRTUAL_ENV" != "x" ]]; then
 fi
 
 # Read arguments
-ARGS=$(getopt "cvhs" "$*")
+ARGS=$(getopt "cvhsn" "$*")
 if [[ $? != 0 ]]; then
     usage
     exit 1
@@ -150,6 +151,10 @@ while true; do
         -v)
             set -x
             verbose=true
+            shift
+            ;;
+        -n)
+            noprompts=true
             shift
             ;;
         -h)
@@ -185,8 +190,7 @@ cat<<EO
 EO
 info
 output "Press return to begin or control-C to abort"
-read dummy
-
+[[ -z $no_prompt ]] && read dummy
 
 # Log all stdout and stderr
 
@@ -217,8 +221,8 @@ case `uname -s` in
 
                         Press return to continue or control-C to abort"
 
-                read dummy
-                sudo apt-get install git ;;
+                [[ -z $no_prompt ]] && read dummy
+                sudo apt-get install -qy git ;;
             squeeze|lisa|katya|oneiric|natty|raring)
                 warning "
                           It seems like you're using $distro which has been deprecated.
@@ -229,8 +233,8 @@ case `uname -s` in
                           package manager does not yet include a package for rvm
 
                           Press return to continue or control-C to abort"
-                read dummy
-                sudo apt-get install git
+                [[ -z $no_prompt ]] && read dummy
+                sudo apt-get install -qy git
                 ;;
 
             *)
