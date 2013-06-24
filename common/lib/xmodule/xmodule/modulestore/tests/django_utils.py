@@ -125,6 +125,10 @@ class ModuleStoreTestCase(TestCase):
         settings.MODULESTORE['direct']['OPTIONS']['collection'] = 'modulestore_%s' % uuid4().hex
         xmodule.modulestore.django._MODULESTORES.clear()
 
+        #set up middleware
+        from mitxmako import middleware
+        middleware.MakoMiddleware()
+
         print settings.MODULESTORE
 
         TestCase.setUpClass()
