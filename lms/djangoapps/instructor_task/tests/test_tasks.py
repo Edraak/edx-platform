@@ -319,11 +319,9 @@ class TestInstructorTasks(InstructorTaskModuleTestCase):
         task_entry = self._create_input_entry()
         self.define_option_problem(PROBLEM_URL_NAME)
         action_name = 'x' * 1000
-        update_fcn = lambda(_module_descriptor, _student_module, _xmodule_instance_args): True
+        update_fcn = lambda(_module_descriptor, _student_module): True
         task_function = (lambda entry_id, xmodule_instance_args:
-                         update_problem_module_state(entry_id,
-                                                     update_fcn, action_name, filter_fcn=None,
-                                                     xmodule_instance_args=None))
+                         update_problem_module_state(entry_id, update_fcn, action_name, filter_fcn=None))
 
         with self.assertRaises(ValueError):
             self._run_task_with_mock_celery(task_function, task_entry.id, task_entry.task_id)

@@ -14,7 +14,8 @@ from xmodule.modulestore.django import modulestore
 from instructor_task.models import InstructorTask
 from instructor_task.tasks import (rescore_problem,
                                    reset_problem_attempts,
-                                   delete_problem_state)
+                                   delete_problem_state,
+                                   update_offline_grades)
 
 from instructor_task.api_helper import (check_arguments_for_rescoring,
                                         encode_problem_and_student_input,
@@ -161,4 +162,35 @@ def submit_delete_problem_state_for_all_students(request, course_id, problem_url
     task_type = 'delete_problem_state'
     task_class = delete_problem_state
     task_input, task_key = encode_problem_and_student_input(problem_url)
+    return submit_task(request, task_type, task_class, course_id, task_input, task_key)
+
+
+def submit_update_offline_grades(request, course_id):
+    """
+    Request to have state deleted for a problem as a background task.
+
+    The offline grades will be updated for all students who have enrolled
+    in a course.  Parameters are the `course_id`.
+
+    AlreadyRunningError is raised if the course's grades are already being updated.
+
+    This method makes sure the InstructorTask entry is committed.
+    When called from any view that is wrapped by TransactionMiddleware,
+    and thus in a "commit-on-success" transaction, an autocommit buried within here
+    will cause any pending transaction to be committed by a successful
+    save here.  Any future database operations will take place in a
+    separate transaction.
+    """
+    # check arguments:  make sure that the course is defined?
+    # TODO: what is the right test here?
+    # modulestore().get_instance(course_id, problem_url)
+
+    task_type = 'update_offline_grades'
+    task_class = update_offline_grades
+    # TODO: figure out if we need to encode in a standard way, or if we can get away
+    # with doing this manually.  Shouldn't be hard to make the encode call explicitly,
+    # and allow no problem_url or student to be defined.  Like this:
+    # task_input, task_key = encode_problem_and_student_input()
+    task_input = {}
+    task_key = ""
     return submit_task(request, task_type, task_class, course_id, task_input, task_key)

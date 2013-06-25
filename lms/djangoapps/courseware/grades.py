@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 
 from .model_data import ModelDataCache, LmsKeyValueStore
 from xblock.core import Scope
-from .module_render import get_module, get_module_for_descriptor
+from .module_render import get_module, get_module_for_descriptor, get_module_for_descriptor_internal
 from xmodule import graders
 from xmodule.capa_module import CapaModule
 from xmodule.graders import Score
@@ -19,7 +19,7 @@ from .models import StudentModule
 log = logging.getLogger("mitx.courseware")
 
 
-def yield_module_descendents(module):
+def _yield_module_descendents(module):
     stack = module.get_display_items()
     stack.reverse()
 
@@ -29,7 +29,7 @@ def yield_module_descendents(module):
         yield next_module
 
 
-def yield_dynamic_descriptor_descendents(descriptor, module_creator):
+def _yield_dynamic_descriptor_descendents(descriptor, module_creator):
     """
     This returns all of the descendants of a descriptor. If the descriptor
     has dynamic children, the module will be created using module_creator
@@ -50,7 +50,7 @@ def yield_dynamic_descriptor_descendents(descriptor, module_creator):
         yield next_descriptor
 
 
-def yield_problems(request, course, student):
+def _yield_problems(request, course, student):
     """
     Return an iterator over capa_modules that this student has
     potentially answered.  (all that student has answered will definitely be in
@@ -87,7 +87,7 @@ def yield_problems(request, course, student):
             #           .format(student.username, section_descriptor.location))
             continue
 
-        for problem in yield_module_descendents(section_module):
+        for problem in _yield_module_descendents(section_module):
             if isinstance(problem, CapaModule):
                 yield problem
 
@@ -109,7 +109,7 @@ def answer_distributions(request, course):
     enrolled_students = User.objects.filter(courseenrollment__course_id=course.id)
 
     for student in enrolled_students:
-        for capa_module in yield_problems(request, course, student):
+        for capa_module in _yield_problems(request, course, student):
             for problem_id in capa_module.lcp.student_answers:
                 # Answer can be a list or some other unhashable element.  Convert to string.
                 answer = str(capa_module.lcp.student_answers[problem_id])
@@ -117,6 +117,34 @@ def answer_distributions(request, course):
                 counts[key][answer] += 1
 
     return counts
+
+
+def _grade_section(section_descriptor, student, model_data_cache, create_module):
+    """
+    Collect scores and grades for a course section
+    """
+    scores = []
+    for module_descriptor in _yield_dynamic_descriptor_descendents(section_descriptor, create_module):
+
+        (correct, total) = _get_score(student, module_descriptor, create_module, model_data_cache)
+        if correct is None and total is None:
+            continue
+
+        if settings.GENERATE_PROFILE_SCORES:      # for debugging!
+            if total > 1:
+                correct = random.randrange(max(total - 2, 1), total + 1)
+            else:
+                correct = total
+
+        graded = module_descriptor.lms.graded
+        if not total > 0:
+            # We simply cannot grade a problem that is 12/0, because we might need it as a percentage
+            graded = False
+
+        scores.append(Score(correct, total, graded, module_descriptor.display_name_with_default))
+
+    _, graded_total = graders.aggregate_scores(scores, section_descriptor.display_name_with_default)
+    return graded_total, scores
 
 
 def grade(student, request, course, model_data_cache=None, keep_raw_scores=False):
@@ -139,12 +167,23 @@ def grade(student, request, course, model_data_cache=None, keep_raw_scores=False
     """
 
     grading_context = course.grading_context
-    raw_scores = []
 
     if model_data_cache is None:
         model_data_cache = ModelDataCache(grading_context['all_descriptors'], course.id, student)
 
+    def create_module(descriptor):
+        '''creates an XModule instance given a descriptor'''
+        # TODO: We need the request to pass into here. If we could forego that, our arguments
+        # would be simpler
+        return get_module_for_descriptor(student, request, descriptor, model_data_cache, course.id)
+
+    return _grade(student, course, grading_context, create_module, model_data_cache, keep_raw_scores)
+
+
+def _grade(student, course, grading_context, create_module_fcn, model_data_cache, keep_raw_scores):
+    raw_scores = []
     totaled_scores = {}
+
     # This next complicated loop is just to collect the totaled_scores, which is
     # passed to the grader
     for section_format, sections in grading_context['graded_sections'].iteritems():
@@ -163,7 +202,6 @@ def grade(student, request, course, model_data_cache=None, keep_raw_scores=False
                     break
 
                 # Create a fake key to pull out a StudentModule object from the ModelDataCache
-
                 key = LmsKeyValueStore.Key(
                     Scope.user_state,
                     student.id,
@@ -175,40 +213,15 @@ def grade(student, request, course, model_data_cache=None, keep_raw_scores=False
                     break
 
             if should_grade_section:
-                scores = []
 
-                def create_module(descriptor):
-                    '''creates an XModule instance given a descriptor'''
-                    # TODO: We need the request to pass into here. If we could forego that, our arguments
-                    # would be simpler
-                    return get_module_for_descriptor(student, request, descriptor, model_data_cache, course.id)
-
-                for module_descriptor in yield_dynamic_descriptor_descendents(section_descriptor, create_module):
-
-                    (correct, total) = get_score(course.id, student, module_descriptor, create_module, model_data_cache)
-                    if correct is None and total is None:
-                        continue
-
-                    if settings.GENERATE_PROFILE_SCORES:  	# for debugging!
-                        if total > 1:
-                            correct = random.randrange(max(total - 2, 1), total + 1)
-                        else:
-                            correct = total
-
-                    graded = module_descriptor.lms.graded
-                    if not total > 0:
-                        #We simply cannot grade a problem that is 12/0, because we might need it as a percentage
-                        graded = False
-
-                    scores.append(Score(correct, total, graded, module_descriptor.display_name_with_default))
-
-                _, graded_total = graders.aggregate_scores(scores, section_name)
+                graded_total, scores = _grade_section(section_descriptor, student, model_data_cache, create_module_fcn)
                 if keep_raw_scores:
                     raw_scores += scores
+
             else:
                 graded_total = Score(0.0, 1.0, True, section_name)
 
-            #Add the graded total to totaled_scores
+            # Add the graded total to totaled_scores
             if graded_total.possible > 0:
                 format_scores.append(graded_total)
             else:
@@ -219,11 +232,11 @@ def grade(student, request, course, model_data_cache=None, keep_raw_scores=False
 
     grade_summary = course.grader.grade(totaled_scores, generate_random_scores=settings.GENERATE_PROFILE_SCORES)
 
-    # We round the grade here, to make sure that the grade is an whole percentage and
+    # We round the grade here, to make sure that the grade is a whole percentage and
     # doesn't get displayed differently than it gets grades
     grade_summary['percent'] = round(grade_summary['percent'] * 100 + 0.05) / 100
 
-    letter_grade = grade_for_percentage(course.grade_cutoffs, grade_summary['percent'])
+    letter_grade = _grade_for_percentage(course.grade_cutoffs, grade_summary['percent'])
     grade_summary['grade'] = letter_grade
     grade_summary['totaled_scores'] = totaled_scores  	# make this available, eg for instructor download & debugging
     if keep_raw_scores:
@@ -232,7 +245,7 @@ def grade(student, request, course, model_data_cache=None, keep_raw_scores=False
     return grade_summary
 
 
-def grade_for_percentage(grade_cutoffs, percentage):
+def _grade_for_percentage(grade_cutoffs, percentage):
     """
     Returns a letter grade as defined in grading_policy (e.g. 'A' 'B' 'C' for 6.002x) or None.
 
@@ -305,10 +318,9 @@ def progress_summary(student, request, course, model_data_cache):
 
             module_creator = section_module.system.get_module
 
-            for module_descriptor in yield_dynamic_descriptor_descendents(section_module.descriptor, module_creator):
+            for module_descriptor in _yield_dynamic_descriptor_descendents(section_module.descriptor, module_creator):
 
-                course_id = course.id
-                (correct, total) = get_score(course_id, student, module_descriptor, module_creator, model_data_cache)
+                (correct, total) = _get_score(student, module_descriptor, module_creator, model_data_cache)
                 if correct is None and total is None:
                     continue
 
@@ -337,7 +349,7 @@ def progress_summary(student, request, course, model_data_cache):
     return chapters
 
 
-def get_score(course_id, user, problem_descriptor, module_creator, model_data_cache):
+def _get_score(user, problem_descriptor, module_creator, model_data_cache):
     """
     Return the score for a user on a problem, as a tuple (correct, total).
     e.g. (5,7) if you got 5 out of 7 points.
@@ -354,6 +366,10 @@ def get_score(course_id, user, problem_descriptor, module_creator, model_data_ca
     if not user.is_authenticated():
         return (None, None)
 
+    if not problem_descriptor.has_score:
+        # These are not problems, and do not have a score
+        return (None, None)
+
     # some problems have state that is updated independently of interaction
     # with the LMS, so they need to always be scored. (E.g. foldit.)
     if problem_descriptor.always_recalculate_grades:
@@ -363,10 +379,6 @@ def get_score(course_id, user, problem_descriptor, module_creator, model_data_ca
             return (score['score'], score['total'])
         else:
             return (None, None)
-
-    if not problem_descriptor.has_score:
-        # These are not problems, and do not have a score
-        return (None, None)
 
     # Create a fake KeyValueStore key to pull out the StudentModule
     key = LmsKeyValueStore.Key(
