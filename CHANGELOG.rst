@@ -29,6 +29,8 @@ LMS: Removed press releases
 
 Common: Updated Sass and Bourbon libraries, added Neat library
 
+LMS: Add analytics envs file to connect to ed-insights
+
 LMS: Users are no longer auto-activated if they click "reset password"
 This is now done when they click on the link in the reset password
 email they receive (along with usual path through activation email).
