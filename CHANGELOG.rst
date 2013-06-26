@@ -5,6 +5,8 @@ These are notable changes in edx-platform.  This is a rolling list of changes,
 in roughly chronological order, most recent first.  Add your entries at or near
 the top.  Include a label indicating the component affected.
 
+LMS: Add analytics envs file to connect to ed-insights
+
 LMS: Users are no longer auto-activated if they click "reset password"
 This is now done when they click on the link in the reset password
 email they receive (along with usual path through activation email).
