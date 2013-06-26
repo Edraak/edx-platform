@@ -21,7 +21,9 @@ of the query for traversing StudentModule objects.
 """
 from celery import task
 from functools import partial
-from instructor_task.tasks_helper import (update_problem_module_state,
+from instructor_task.tasks_helper import (run_update_task,
+                                          perform_module_state_update,
+                                          perform_enrolled_student_update,
                                           rescore_problem_module_state,
                                           reset_attempts_module_state,
                                           delete_problem_module_state,
@@ -50,8 +52,8 @@ def rescore_problem(entry_id, xmodule_instance_args):
     action_name = 'rescored'
     update_fcn = partial(rescore_problem_module_state, xmodule_instance_args)
     filter_fcn = lambda(modules_to_update): modules_to_update.filter(state__contains='"done": true')
-    return update_problem_module_state(entry_id,
-                                       update_fcn, action_name, filter_fcn=filter_fcn)
+    visit_fcn = perform_module_state_update
+    return run_update_task(entry_id, visit_fcn, update_fcn, action_name, filter_fcn=filter_fcn)
 
 
 @task
@@ -71,7 +73,8 @@ def reset_problem_attempts(entry_id, xmodule_instance_args):
     """
     action_name = 'reset'
     update_fcn = partial(reset_attempts_module_state, xmodule_instance_args)
-    return update_problem_module_state(entry_id, update_fcn, action_name, filter_fcn=None)
+    visit_fcn = perform_module_state_update
+    return run_update_task(entry_id, visit_fcn, update_fcn, action_name, filter_fcn=None)
 
 
 @task
@@ -91,7 +94,8 @@ def delete_problem_state(entry_id, xmodule_instance_args):
     """
     action_name = 'deleted'
     update_fcn = partial(delete_problem_module_state, xmodule_instance_args)
-    return update_problem_module_state(entry_id, update_fcn, action_name, filter_fcn=None)
+    visit_fcn = perform_module_state_update
+    return run_update_task(entry_id, visit_fcn, update_fcn, action_name, filter_fcn=None)
 
 
 @task
@@ -109,4 +113,5 @@ def update_offline_grades(entry_id, xmodule_instance_args):
     """
     action_name = 'graded'
     update_fcn = partial(update_offline_grade, xmodule_instance_args)
-    return update_students(entry_id, update_fcn, action_name, filter_fcn=None)
+    visit_fcn = perform_enrolled_student_update
+    return run_update_task(entry_id, visit_fcn, update_fcn, action_name, filter_fcn=None)

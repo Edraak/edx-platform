@@ -180,6 +180,22 @@ def grade(student, request, course, model_data_cache=None, keep_raw_scores=False
     return _grade(student, course, grading_context, create_module, model_data_cache, keep_raw_scores)
 
 
+def grade_as_task(student, course, track_function, xqueue_callback_url_prefix):
+    """
+    """
+    course_id = course.id
+    grading_context = course.grading_context
+    model_data_cache = ModelDataCache(grading_context['all_descriptors'], course_id, student)
+    keep_raw_scores = True
+
+    def create_module(descriptor):
+        """creates an XModule instance given a descriptor"""
+        return get_module_for_descriptor_internal(student, descriptor, model_data_cache, course_id,
+                                                  track_function, xqueue_callback_url_prefix)
+
+    return _grade(student, course, grading_context, create_module, model_data_cache, keep_raw_scores)
+
+
 def _grade(student, course, grading_context, create_module_fcn, model_data_cache, keep_raw_scores):
     raw_scores = []
     totaled_scores = {}
