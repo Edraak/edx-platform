@@ -96,7 +96,7 @@ class InstructorTaskTestCase(TestCase):
 
 
 @override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
-class InstructorTaskModuleTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase):
+class InstructorTaskModuleTestCase(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Base test class for InstructorTask-related tests that require
     the setup of a course and problem in order to access StudentModule state.
@@ -120,6 +120,7 @@ class InstructorTaskModuleTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase)
         # add a sequence to the course to which the problems can be added
         self.problem_section = ItemFactory.create(parent_location=chapter.location,
                                                   template='i4x://edx/templates/sequential/Empty',
+                                                  metadata={'graded': True, 'format': 'Homework'},
                                                   display_name=TEST_SECTION_NAME)
 
     @staticmethod
