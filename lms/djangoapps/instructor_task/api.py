@@ -35,14 +35,18 @@ def get_running_instructor_tasks(course_id):
     return instructor_tasks.order_by('-id')
 
 
-def get_instructor_task_history(course_id, problem_url, student=None):
+def get_instructor_task_history(course_id, problem_url=None, student=None, task_type=None):
     """
     Returns a query of InstructorTask objects of historical tasks for a given course,
-    that match a particular problem and optionally a student.
+    that optionally match a particular problem, a student, and/or a task type.
     """
-    _, task_key = encode_problem_and_student_input(problem_url, student)
+    instructor_tasks = InstructorTask.objects.filter(course_id=course_id)
+    if problem_url is not None or student is not None:
+        _, task_key = encode_problem_and_student_input(problem_url, student)
+        instructor_tasks = instructor_tasks.filter(task_key=task_key)
+    if task_type is not None:
+        instructor_tasks = instructor_tasks.filter(task_type=task_type)
 
-    instructor_tasks = InstructorTask.objects.filter(course_id=course_id, task_key=task_key)
     return instructor_tasks.order_by('-id')
 
 
