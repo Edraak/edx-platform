@@ -260,8 +260,45 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 # autogenerate models definitions
 
 import inspect
-from django.utils.html import strip_tags
-from django.utils.encoding import force_unicode
+import types
+from HTMLParser import HTMLParser
+
+
+def force_unicode(s, encoding='utf-8', strings_only=False, errors='strict'):
+    """
+    Similar to smart_unicode, except that lazy instances are resolved to
+    strings, rather than kept as lazy objects.
+
+    If strings_only is True, don't convert (some) non-string-like objects.
+    """
+    if strings_only and isinstance(s, (types.NoneType, int)):
+        return s
+    if not isinstance(s, basestring,):
+        if hasattr(s, '__unicode__'):
+            s = unicode(s)
+        else:
+            s = unicode(str(s), encoding, errors)
+    elif not isinstance(s, unicode):
+        s = unicode(s, encoding, errors)
+    return s
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 
 def process_docstring(app, what, name, obj, options, lines):
