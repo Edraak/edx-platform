@@ -96,19 +96,19 @@ MITX_FEATURES = {
     # This flag disables the requirement of having to agree to the TOS for users registering
     # with Shib.  Feature was requested by Stanford's office of general counsel
     'SHIB_DISABLE_TOS': False,
-    
+
     # Enables ability to restrict enrollment in specific courses by the user account login method
     'RESTRICT_ENROLL_BY_REG_METHOD': False,
 
     # analytics experiments
     'ENABLE_INSTRUCTOR_ANALYTICS': False,
 
-    # enable analytics server.  
+    # enable analytics server.
     # WARNING: THIS SHOULD ALWAYS BE SET TO FALSE UNDER NORMAL
     # LMS OPERATION. See analytics.py for details about what
-    # this does. 
+    # this does.
 
-    'RUN_AS_ANALYTICS_SERVER_ENABLED' : False, 
+    'RUN_AS_ANALYTICS_SERVER_ENABLED' : False,
 
     # Flip to True when the YouTube iframe API breaks (again)
     'USE_YOUTUBE_OBJECT_API': False,
@@ -743,6 +743,9 @@ INSTALLED_APPS = (
     'django_comment_client',
     'django_comment_common',
     'notes',
+
+    # Analytics Hackaton
+    'analytics',
 )
 
 ######################### MARKETING SITE ###############################
@@ -785,4 +788,3 @@ def enable_theme(theme_name):
     # avoid collisions with default edX static files
     STATICFILES_DIRS.append((u'themes/%s' % theme_name,
                              theme_root / 'static'))
-

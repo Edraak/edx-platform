@@ -435,6 +435,13 @@ if settings.MITX_FEATURES.get('ENABLE_HINTER_INSTRUCTOR_VIEW'):
             'instructor.hint_manager.hint_manager', name="hint_manager"),
     )
 
+# Analytics hackaton
+urlpatterns += (
+    url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/analytics$',
+        'analytics.views.default', name="analytics"),
+)
+
+
 urlpatterns = patterns(*urlpatterns)
 
 if settings.DEBUG:
