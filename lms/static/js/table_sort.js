@@ -26,7 +26,7 @@
     // sort direction
     var nr = $this.attr('data-sortkey');
     bsSort[nr] = bsSort[nr] == 'asc' ? 'desc' : 'asc';
-    if (bsSort[nr] == 'desc') { $this.find('span.arrow').addClass('up'); }
+    if (bsSort[nr] == 'asc') { $this.find('span.arrow').addClass('up'); }
 
     // sort rows
     var rows = $table.find('tbody tr');

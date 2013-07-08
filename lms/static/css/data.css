@@ -1,5 +1,5 @@
 .map {
-  height: 300px;
+  height: 1200px;
   width: 100%;
   float: left;
   margin: 30px 30px 30px 30px;
@@ -313,11 +313,11 @@ table.sortable span.arrow
     margin-top: -2px;
 }
 
-    table.sortable span.arrow.up
-    {
-        border-color: transparent transparent #ccc transparent;
-        margin-top: -7px;
-    }
+table.sortable span.arrow.up
+{
+    border-color: transparent transparent #ccc transparent;
+    margin-top: -7px;
+}
 
 table.sortable thead th
 {
@@ -327,7 +327,7 @@ table.sortable thead th
     left: 0;
 }
 
-    table.sortable thead th:hover
-    {
-        background: #efefef;
-    }
+table.sortable thead th:hover
+{
+    background: #efefef;
+}

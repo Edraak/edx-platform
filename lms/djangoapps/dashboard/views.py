@@ -219,7 +219,7 @@ def get_course_summary_table(secondary_db=None):
     course_id_certificates_map = {row[0]:row[1] for row in course_id_certificates[1:]}
 
     # New Headers
-    org_course_run_information = [["School", "Course", "Run", "Enrollees", "Certificates"]]
+    org_course_run_information = [["School", "Course", "Run", "Enrollees", "Certificates", "% Certified"]]
 
     # Updated Rows
     for course_id in set(course_id_certificates_map.keys()) | set(course_id_enrollments_map.keys()):
@@ -227,6 +227,10 @@ def get_course_summary_table(secondary_db=None):
         new_row = [org, course, run, \
             course_id_enrollments_map.get(course_id, "-"), \
             course_id_certificates_map.get(course_id, "-")]
+        if new_row[-1] is not "-":
+            new_row.append("{0:.2f}".format(100.0*new_row[-1]/new_row[-2]))
+        else:
+            new_row.append("-")
         org_course_run_information.append(new_row) 
 
     return org_course_run_information
@@ -260,7 +264,6 @@ def dashboard(request, secondary_db=None):
 
     results["scalars"].append(("Total Enrollments Across All Courses", CourseEnrollment.objects.using(secondary_db).count()))
     results["scalars"].append(("Unique Usernames", User.objects.using(secondary_db).filter().count()))
-    results["scalars"].append(("Activated Usernames", User.objects.using(secondary_db).filter(is_active=1).count()))
     results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(secondary_db).filter(status="downloadable").count() + 7157))
  
     # a summary list of lists (table) that shows enrollment and certificate information

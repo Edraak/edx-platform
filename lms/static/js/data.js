@@ -107,9 +107,13 @@ function render_map(data, target) {
 	var course_names = [];
 	var i = 0;
 
+	data["courses"].sort(function(a, b) {
+		return a.value-b.value
+	})
+
 	data["courses"].forEach(function (x) {
-		course_bars.push([i-.25, x["value"]]);
-		course_names.push([i, x["course_name"]]);
+		course_bars.push([ x["value"], i-.4]);
+		course_names.push([i, x["course_name"] + " (" + x["org"] + ", " + x["run"] + ")"]);
 		i++;
 	})
 
@@ -119,14 +123,19 @@ function render_map(data, target) {
 			data: course_bars,
 		 	bars: {
 		 		show: true,
-		 		barWidth: .5
+		 		barWidth: .8,
+		 		horizontal: true,
 		 	},
 		 	color: "rgb(13, 139, 227)"
 		}
 		], {
-			xaxis: {
+			yaxis: {
 				ticks: course_names
+			},
+			xaxis: {
+				position: "top"
 			}
+
 		});
 }
 
@@ -170,8 +179,8 @@ function load_and_plot(url, target, fake) {
 
 function add_graph_section(base_url, section_title, fake) {
 	section = $("<section>").addClass("graph_section");
-	map_div = $("<div>").addClass('map').text("map");
-	series_div = $("<div>").addClass('timeseries').text("series");
+	map_div = $("<div>").addClass('map').text("loading course-by-course enrollment rates...");
+	series_div = $("<div>").addClass('timeseries').text("loading edX wide day-over-day enrollments...");
 	title = $("<h2>"+section_title+"</h2>");
 
 	section.append(title);
