@@ -235,18 +235,6 @@ def get_course_summary_table(secondary_db=None):
 
     return org_course_run_information
 
-    # define the queries that will generate our user-facing tables
-    # table queries need not take the form of raw SQL, but do in this case since
-    # the MySQL backend for django isn't very friendly with group by or distinct
-    # table_queries = {}
-    # table_queries["Course Enrollments"]= 
-    # table_queries["Certificates Granted"]= 
-
-    # # add the result for each of the table_queries to the results object
-    # for query in table_queries.keys():
-    #     cursor.execute(table_queries[query])
-    #     results["tables"][query] = table_queries[query])
-
 @prefer_secondary_db('replica')
 def dashboard(request, secondary_db=None):
     """
