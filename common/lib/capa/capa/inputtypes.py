@@ -144,11 +144,11 @@ class InputTypeBase(object):
         self.tag = xml.tag
         self.system = system
 
-        ## NOTE: ID should only come from one place.  If it comes from multiple,
-        ## we use state first, XML second (in case the xml changed, but we have
-        ## existing state with an old id). Since we don't make this guarantee,
-        ## we can swap this around in the future if there's a more logical
-        ## order.
+        # NOTE: ID should only come from one place.  If it comes from multiple,
+        # we use state first, XML second (in case the xml changed, but we have
+        # existing state with an old id). Since we don't make this guarantee,
+        # we can swap this around in the future if there's a more logical
+        # order.
 
         self.input_id = state.get('id', xml.get('id'))
         if self.input_id is None:
@@ -223,13 +223,13 @@ class InputTypeBase(object):
         """
         pass
 
-    def handle_ajax(self, dispatch, get):
+    def handle_ajax(self, dispatch, data):
         """
         InputTypes that need to handle specialized AJAX should override this.
 
         Input:
             dispatch: a string that can be used to determine how to handle the data passed in
-            get: a dictionary containing the data that was sent with the ajax call
+            data: a dictionary containing the data that was sent with the ajax call
 
         Output:
             a dictionary object that can be serialized into JSON. This will be sent back to the Javascript.
@@ -451,6 +451,68 @@ class JavascriptInput(InputTypeBase):
 registry.register(JavascriptInput)
 
 
+
+#-----------------------------------------------------------------------------
+
+
+class JSInput(InputTypeBase):
+    """
+    DO NOT USE! HAS NOT BEEN TESTED BEYOND 700X PROBLEMS, AND MAY CHANGE IN
+    BACKWARDS-INCOMPATIBLE WAYS.
+      Inputtype for general javascript inputs. Intended to be used with
+    customresponse.  
+      Loads in a sandboxed iframe to help prevent css and js conflicts between
+    frame and top-level window. 
+    
+    iframe sandbox whitelist:
+        - allow-scripts
+        - allow-popups
+        - allow-forms
+        - allow-pointer-lock
+
+    This in turn means that the iframe cannot directly access the top-level
+    window elements.
+      Example:
+
+        <jsinput html_file="/static/test.html" 
+                 gradefn="grade" 
+                 height="500" 
+                 width="400"/>
+
+     See the documentation in the /doc/public folder for more information.
+    """
+
+    template = "jsinput.html"
+    tags = ['jsinput']
+
+    @classmethod
+    def get_attributes(cls):
+        """
+        Register the attributes.
+        """
+        return [Attribute('params', None),       # extra iframe params
+                Attribute('html_file', None),
+                Attribute('gradefn', "gradefn"),
+                Attribute('get_statefn', None), # Function to call in iframe
+                                                 #   to get current state.
+                Attribute('set_statefn', None), # Function to call iframe to
+                                                 #   set state
+                Attribute('width', "400"),       # iframe width
+                Attribute('height', "300")]      # iframe height
+
+        
+
+    def _extra_context(self):
+        context = {
+            'applet_loader': '/static/js/capa/src/jsinput.js',
+            'saved_state': self.value
+        }
+
+        return context
+
+        
+
+registry.register(JSInput)
 #-----------------------------------------------------------------------------
 
 class TextLine(InputTypeBase):
@@ -677,20 +739,20 @@ class MatlabInput(CodeInput):
             self.queue_len = 1
             self.msg = self.plot_submitted_msg
 
-    def handle_ajax(self, dispatch, get):
+    def handle_ajax(self, dispatch, data):
         '''
         Handle AJAX calls directed to this input
 
         Args:
             - dispatch (str) - indicates how we want this ajax call to be handled
-            - get (dict) - dictionary of key-value pairs that contain useful data
+            - data (dict) - dictionary of key-value pairs that contain useful data
         Returns:
             dict - 'success' - whether or not we successfully queued this submission
                  - 'message' - message to be rendered in case of error
         '''
 
         if dispatch == 'plot':
-            return self._plot_data(get)
+            return self._plot_data(data)
         return {}
 
     def ungraded_response(self, queue_msg, queuekey):
@@ -751,7 +813,7 @@ class MatlabInput(CodeInput):
         msg = result['msg']
         return msg
 
-    def _plot_data(self, get):
+    def _plot_data(self, data):
         '''
         AJAX handler for the plot button
         Args:
@@ -765,11 +827,11 @@ class MatlabInput(CodeInput):
             return {'success': False, 'message': 'Cannot connect to the queue'}
 
         # pull relevant info out of get
-        response = get['submission']
+        response = data['submission']
 
         # construct xqueue headers
         qinterface = self.system.xqueue['interface']
-        qtime = datetime.strftime(datetime.utcnow(), xqueue_interface.dateformat)
+        qtime = datetime.utcnow().strftime(xqueue_interface.dateformat)
         callback_url = self.system.xqueue['construct_callback']('ungraded_response')
         anonymous_student_id = self.system.anonymous_student_id
         queuekey = xqueue_interface.make_hashkey(str(self.system.seed) + qtime +
@@ -856,7 +918,7 @@ class ImageInput(InputTypeBase):
         """
         if value is of the form [x,y] then parse it and send along coordinates of previous answer
         """
-        m = re.match('\[([0-9]+),([0-9]+)]',
+        m = re.match(r'\[([0-9]+),([0-9]+)]',
                      self.value.strip().replace(' ', ''))
         if m:
             # Note: we subtract 15 to compensate for the size of the dot on the screen.
@@ -951,16 +1013,16 @@ class ChemicalEquationInput(InputTypeBase):
         """
         return {'previewer': '/static/js/capa/chemical_equation_preview.js', }
 
-    def handle_ajax(self, dispatch, get):
+    def handle_ajax(self, dispatch, data):
         '''
         Since we only have chemcalc preview this input, check to see if it
         matches the corresponding dispatch and send it through if it does
         '''
         if dispatch == 'preview_chemcalc':
-            return self.preview_chemcalc(get)
+            return self.preview_chemcalc(data)
         return {}
 
-    def preview_chemcalc(self, get):
+    def preview_chemcalc(self, data):
         """
         Render an html preview of a chemical formula or equation.  get should
         contain a key 'formula' and value 'some formula string'.
@@ -974,7 +1036,7 @@ class ChemicalEquationInput(InputTypeBase):
 
         result = {'preview': '',
                   'error': ''}
-        formula = get['formula']
+        formula = data['formula']
         if formula is None:
             result['error'] = "No formula specified."
             return result

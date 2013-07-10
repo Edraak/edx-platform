@@ -1,29 +1,30 @@
-from bson.son import SON
 from pymongo import Connection
 import gridfs
 from gridfs.errors import NoFile
 
-from xmodule.modulestore.mongo import location_to_query, Location
+from xmodule.modulestore import Location
+from xmodule.modulestore.mongo.base import location_to_query
 from xmodule.contentstore.content import XASSET_LOCATION_TAG
 
 import logging
 
-from .content import StaticContent, ContentStore
+from .content import StaticContent, ContentStore, StaticContentStream
 from xmodule.exceptions import NotFoundError
 from fs.osfs import OSFS
 import os
 
 
 class MongoContentStore(ContentStore):
-    def __init__(self, host, db, port=27017, user=None, password=None, **kwargs):
+    def __init__(self, host, db, port=27017, user=None, password=None, bucket='fs', **kwargs):
         logging.debug('Using MongoDB for static content serving at host={0} db={1}'.format(host, db))
         _db = Connection(host=host, port=port, **kwargs)[db]
 
         if user is not None and password is not None:
             _db.authenticate(user, password)
 
-        self.fs = gridfs.GridFS(_db)
-        self.fs_files = _db["fs.files"]   # the underlying collection GridFS uses
+        self.fs = gridfs.GridFS(_db, bucket)
+
+        self.fs_files = _db[bucket + ".files"]   # the underlying collection GridFS uses
 
     def save(self, content):
         id = content.get_id()
@@ -34,8 +35,11 @@ class MongoContentStore(ContentStore):
         with self.fs.new_file(_id=id, filename=content.get_url_path(), content_type=content.content_type,
                               displayname=content.name, thumbnail_location=content.thumbnail_location,
                               import_path=content.import_path) as fp:
-
-            fp.write(content.data)
+            if hasattr(content.data, '__iter__'):
+                for chunk in content.data:
+                    fp.write(chunk)
+            else:
+                fp.write(content.data)
 
         return content
 
@@ -43,16 +47,41 @@ class MongoContentStore(ContentStore):
         if self.fs.exists({"_id": id}):
             self.fs.delete(id)
 
-    def find(self, location):
+    def find(self, location, throw_on_not_found=True, as_stream=False):
         id = StaticContent.get_id_from_location(location)
         try:
-            with self.fs.get(id) as fp:
-                return StaticContent(location, fp.displayname, fp.content_type, fp.read(),
-                                     fp.uploadDate,
-                                     thumbnail_location=fp.thumbnail_location if hasattr(fp, 'thumbnail_location') else None,
-                                     import_path=fp.import_path if hasattr(fp, 'import_path') else None)
+            if as_stream:
+                fp = self.fs.get(id)
+                return StaticContentStream(location, fp.displayname, fp.content_type, fp, last_modified_at=fp.uploadDate,
+                                           thumbnail_location=fp.thumbnail_location if hasattr(fp, 'thumbnail_location') else None,
+                                           import_path=fp.import_path if hasattr(fp, 'import_path') else None,
+                                           length=fp.length)
+            else:
+                with self.fs.get(id) as fp:
+                    return StaticContent(location, fp.displayname, fp.content_type, fp.read(), last_modified_at=fp.uploadDate,
+                                         thumbnail_location=fp.thumbnail_location if hasattr(fp, 'thumbnail_location') else None,
+                                         import_path=fp.import_path if hasattr(fp, 'import_path') else None,
+                                         length=fp.length)
+        except NoFile:
+            if throw_on_not_found:
+                raise NotFoundError()
+            else:
+                return None
+
+    def get_stream(self, location):
+        id = StaticContent.get_id_from_location(location)
+        try:
+            handle = self.fs.get(id)
         except NoFile:
             raise NotFoundError()
+
+        return handle
+
+    def close_stream(self, handle):
+        try:
+            handle.close()
+        except:
+            pass
 
     def export(self, location, output_directory):
         content = self.find(location)

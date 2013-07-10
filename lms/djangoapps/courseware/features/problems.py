@@ -2,13 +2,14 @@
 Steps for problem.feature lettuce tests
 '''
 
-#pylint: disable=C0111
-#pylint: disable=W0621
+# pylint: disable=C0111
+# pylint: disable=W0621
 
 from lettuce import world, step
 from lettuce.django import django_url
 from common import i_am_registered_for_the_course, TEST_SECTION_NAME
 from problems_setup import PROBLEM_DICT, answer_problem, problem_has_answer, add_problem_to_course
+from nose.tools import assert_equal
 
 
 @step(u'I am viewing a "([^"]*)" problem with "([^"]*)" attempt')
@@ -112,17 +113,33 @@ def assert_problem_has_answer(step, problem_type, answer_class):
 
 
 @step(u'I reset the problem')
-def reset_problem(step):
+def reset_problem(_step):
     world.css_click('input.reset')
 
 
+@step(u'I press the button with the label "([^"]*)"$')
+def press_the_button_with_label(_step, buttonname):
+    button_css = 'button span.show-label'
+    elem = world.css_find(button_css).first
+    assert_equal(elem.text, buttonname)
+    world.css_click(button_css)
+
+
 @step(u'The "([^"]*)" button does( not)? appear')
-def action_button_present(step, buttonname, doesnt_appear):
+def action_button_present(_step, buttonname, doesnt_appear):
     button_css = 'section.action input[value*="%s"]' % buttonname
     if doesnt_appear:
         assert world.is_css_not_present(button_css)
     else:
         assert world.is_css_present(button_css)
+
+
+@step(u'the button with the label "([^"]*)" does( not)? appear')
+def button_with_label_present(_step, buttonname, doesnt_appear):
+    if doesnt_appear:
+        assert world.browser.is_text_not_present(buttonname, wait_time=5)
+    else:
+        assert world.browser.is_text_present(buttonname, wait_time=5)
 
 
 @step(u'My "([^"]*)" answer is marked "([^"]*)"')

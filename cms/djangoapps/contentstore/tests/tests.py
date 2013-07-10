@@ -3,14 +3,20 @@ from django.core.urlresolvers import reverse
 
 from .utils import parse_json, user, registration
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from contentstore.tests.test_course_settings import CourseTestCase
+from xmodule.modulestore.tests.factories import CourseFactory
+import datetime
+from pytz import UTC
 
 
 class ContentStoreTestCase(ModuleStoreTestCase):
-    def _login(self, email, pw):
-        """Login.  View should always return 200.  The success/fail is in the
-        returned json"""
+    def _login(self, email, password):
+        """
+        Login.  View should always return 200.  The success/fail is in the
+        returned json
+        """
         resp = self.client.post(reverse('login_post'),
-                                {'email': email, 'password': pw})
+                                {'email': email, 'password': password})
         self.assertEqual(resp.status_code, 200)
         return resp
 
@@ -21,12 +27,12 @@ class ContentStoreTestCase(ModuleStoreTestCase):
         self.assertTrue(data['success'])
         return resp
 
-    def _create_account(self, username, email, pw):
+    def _create_account(self, username, email, password):
         """Try to create an account.  No error checking"""
         resp = self.client.post('/create_account', {
             'username': username,
             'email': email,
-            'password': pw,
+            'password': password,
             'location': 'home',
             'language': 'Franglish',
             'name': 'Fred Weasley',
@@ -35,9 +41,9 @@ class ContentStoreTestCase(ModuleStoreTestCase):
         })
         return resp
 
-    def create_account(self, username, email, pw):
+    def create_account(self, username, email, password):
         """Create the account and check that it worked"""
-        resp = self._create_account(username, email, pw)
+        resp = self._create_account(username, email, password)
         self.assertEqual(resp.status_code, 200)
         data = parse_json(resp)
         self.assertEqual(data['success'], True)
@@ -84,7 +90,7 @@ class AuthTestCase(ContentStoreTestCase):
             reverse('signup'),
         )
         for page in pages:
-            print "Checking '{0}'".format(page)
+            print("Checking '{0}'".format(page))
             self.check_page_get(page, 200)
 
     def test_create_account_errors(self):
@@ -142,17 +148,17 @@ class AuthTestCase(ContentStoreTestCase):
         self.client = Client()
 
         # Not logged in.  Should redirect to login.
-        print 'Not logged in'
+        print('Not logged in')
         for page in auth_pages:
-            print "Checking '{0}'".format(page)
+            print("Checking '{0}'".format(page))
             self.check_page_get(page, expected=302)
 
         # Logged in should work.
         self.login(self.email, self.pw)
 
-        print 'Logged in'
+        print('Logged in')
         for page in simple_auth_pages:
-            print "Checking '{0}'".format(page)
+            print("Checking '{0}'".format(page))
             self.check_page_get(page, expected=200)
 
     def test_index_auth(self):
@@ -162,3 +168,21 @@ class AuthTestCase(ContentStoreTestCase):
         self.assertEqual(resp.status_code, 302)
 
         # Logged in should work.
+
+
+class ForumTestCase(CourseTestCase):
+    def setUp(self):
+        """ Creates the test course. """
+        super(ForumTestCase, self).setUp()
+        self.course = CourseFactory.create(org='testX', number='727', display_name='Forum Course')
+
+    def test_blackouts(self):
+        now = datetime.datetime.now(UTC)
+        self.course.discussion_blackouts = [(t.isoformat(), t2.isoformat()) for t, t2 in
+            [(now - datetime.timedelta(days=14), now - datetime.timedelta(days=11)),
+                (now + datetime.timedelta(days=24), now + datetime.timedelta(days=30))]]
+        self.assertTrue(self.course.forum_posts_allowed)
+        self.course.discussion_blackouts = [(t.isoformat(), t2.isoformat()) for t, t2 in
+            [(now - datetime.timedelta(days=14), now + datetime.timedelta(days=2)),
+                (now + datetime.timedelta(days=24), now + datetime.timedelta(days=30))]]
+        self.assertFalse(self.course.forum_posts_allowed)

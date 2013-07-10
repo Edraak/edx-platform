@@ -1,14 +1,9 @@
-import time
+import pytz
 from collections import defaultdict
 import logging
-import time
 import urllib
 from datetime import datetime
 
-from courseware.module_render import get_module
-from xmodule.modulestore import Location
-from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.search import path_to_location
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import connection
@@ -16,13 +11,12 @@ from django.http import HttpResponse
 from django.utils import simplejson
 from django_comment_common.models import Role
 from django_comment_client.permissions import check_permissions_by_view
-from xmodule.modulestore.exceptions import NoPathToItem
 
 from mitxmako import middleware
 import pystache_custom as pystache
 
-from xmodule.modulestore import Location
 from xmodule.modulestore.django import modulestore
+from django.utils.timezone import UTC
 
 log = logging.getLogger(__name__)
 
@@ -79,28 +73,24 @@ def get_discussion_id_map(course):
     """
         return a dict of the form {category: modules}
     """
-    global _DISCUSSIONINFO
     initialize_discussion_info(course)
     return _DISCUSSIONINFO[course.id]['id_map']
 
 
 def get_discussion_title(course, discussion_id):
-    global _DISCUSSIONINFO
     initialize_discussion_info(course)
     title = _DISCUSSIONINFO[course.id]['id_map'].get(discussion_id, {}).get('title', '(no title)')
     return title
 
 
 def get_discussion_category_map(course):
-
-    global _DISCUSSIONINFO
     initialize_discussion_info(course)
     return filter_unstarted_categories(_DISCUSSIONINFO[course.id]['category_map'])
 
 
 def filter_unstarted_categories(category_map):
 
-    now = time.gmtime()
+    now = datetime.now(UTC())
 
     result_map = {}
 
@@ -147,8 +137,6 @@ def sort_map_entries(category_map):
 
 
 def initialize_discussion_info(course):
-    global _DISCUSSIONINFO
-
     course_id = course.id
 
     discussion_id_map = {}
@@ -175,7 +163,9 @@ def initialize_discussion_info(course):
         category = " / ".join([x.strip() for x in category.split("/")])
         last_category = category.split("/")[-1]
         discussion_id_map[id] = {"location": module.location, "title": last_category + " / " + title}
-        unexpanded_category_map[category].append({"title": title, "id": id, "sort_key": sort_key, "start_date": module.lms.start})
+        #Handle case where module.lms.start is None
+        entry_start_date = module.lms.start if module.lms.start else datetime.max.replace(tzinfo=pytz.UTC)
+        unexpanded_category_map[category].append({"title": title, "id": id, "sort_key": sort_key, "start_date": entry_start_date})
 
     category_map = {"entries": defaultdict(dict), "subcategories": defaultdict(dict)}
     for category_path, entries in unexpanded_category_map.items():
@@ -220,12 +210,12 @@ def initialize_discussion_info(course):
     for topic, entry in course.discussion_topics.items():
         category_map['entries'][topic] = {"id": entry["id"],
                                           "sort_key": entry.get("sort_key", topic),
-                                          "start_date": time.gmtime()}
+                                          "start_date": datetime.now(UTC())}
     sort_map_entries(category_map)
 
     _DISCUSSIONINFO[course.id]['id_map'] = discussion_id_map
     _DISCUSSIONINFO[course.id]['category_map'] = category_map
-    _DISCUSSIONINFO[course.id]['timestamp'] = datetime.now()
+    _DISCUSSIONINFO[course.id]['timestamp'] = datetime.now(UTC())
 
 
 class JsonResponse(HttpResponse):
@@ -292,7 +282,7 @@ def get_ability(course_id, content, user):
         'can_vote': check_permissions_by_view(user, course_id, content, "vote_for_thread" if content['type'] == 'thread' else "vote_for_comment"),
     }
 
-#TODO: RENAME
+# TODO: RENAME
 
 
 def get_annotated_content_info(course_id, content, user, user_info):
@@ -310,7 +300,7 @@ def get_annotated_content_info(course_id, content, user, user_info):
         'ability': get_ability(course_id, content, user),
     }
 
-#TODO: RENAME
+# TODO: RENAME
 
 
 def get_annotated_content_infos(course_id, thread, user, user_info):

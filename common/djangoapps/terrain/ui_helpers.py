@@ -3,6 +3,7 @@
 
 from lettuce import world
 import time
+import platform
 from urllib import quote_plus
 from selenium.common.exceptions import WebDriverException, StaleElementReferenceException
 from selenium.webdriver.support import expected_conditions as EC
@@ -48,7 +49,7 @@ def css_has_text(css_selector, text):
 
 @world.absorb
 def css_find(css, wait_time=5):
-    def is_visible(driver):
+    def is_visible(_driver):
         return EC.visibility_of_element_located((By.CSS_SELECTOR, css,))
 
     world.browser.is_element_present_by_css(css, wait_time=wait_time)
@@ -57,32 +58,79 @@ def css_find(css, wait_time=5):
 
 
 @world.absorb
-def css_click(css_selector):
+def css_click(css_selector, index=0, max_attempts=5, success_condition=lambda: True):
     """
-    Perform a click on a CSS selector, retrying if it initially fails
-    """
-    assert is_css_present(css_selector)
-    try:
-        world.browser.find_by_css(css_selector).click()
+    Perform a click on a CSS selector, retrying if it initially fails.
 
-    except WebDriverException:
-        # Occassionally, MathJax or other JavaScript can cover up
-        # an element  temporarily.
-        # If this happens, wait a second, then try again
-        world.wait(1)
-        world.browser.find_by_css(css_selector).click()
+    This function handles errors that may be thrown if the component cannot be clicked on.
+    However, there are cases where an error may not be thrown, and yet the operation did not
+    actually succeed. For those cases, a success_condition lambda can be supplied to verify that the click worked.
+
+    This function will return True if the click worked (taking into account both errors and the optional
+    success_condition).
+    """
+    assert is_css_present(css_selector), "{} is not present".format(css_selector)
+    for _ in range(max_attempts):
+        try:
+            world.css_find(css_selector)[index].click()
+            if success_condition():
+                return
+        except WebDriverException:
+            # Occasionally, MathJax or other JavaScript can cover up
+            # an element temporarily.
+            # If this happens, wait a second, then try again
+            world.wait(1)
+        except:
+            pass
+    else:
+        # try once more, letting exceptions raise
+        world.css_find(css_selector)[index].click()
+        if not success_condition():
+            raise Exception("unsuccessful click")
 
 
 @world.absorb
-def css_click_at(css, x=10, y=10):
+def css_check(css_selector, index=0, max_attempts=5, success_condition=lambda: True):
+    """
+    Checks a check box based on a CSS selector, retrying if it initially fails.
+
+    This function handles errors that may be thrown if the component cannot be clicked on.
+    However, there are cases where an error may not be thrown, and yet the operation did not
+    actually succeed. For those cases, a success_condition lambda can be supplied to verify that the check worked.
+
+    This function will return True if the check worked (taking into account both errors and the optional
+    success_condition).
+    """
+    assert is_css_present(css_selector), "{} is not present".format(css_selector)
+    for _ in range(max_attempts):
+        try:
+            world.css_find(css_selector)[index].check()
+            if success_condition():
+                return
+        except WebDriverException:
+            # Occasionally, MathJax or other JavaScript can cover up
+            # an element temporarily.
+            # If this happens, wait a second, then try again
+            world.wait(1)
+        except:
+            pass
+    else:
+        # try once more, letting exceptions raise
+        world.css_find(css_selector)[index].check()
+        if not success_condition():
+            raise Exception("unsuccessful check")
+
+
+@world.absorb
+def css_click_at(css, x_cord=10, y_cord=10):
     '''
     A method to click at x,y coordinates of the element
     rather than in the center of the element
     '''
-    e = css_find(css).first
-    e.action_chains.move_to_element_with_offset(e._element, x, y)
-    e.action_chains.click()
-    e.action_chains.perform()
+    element = css_find(css).first
+    element.action_chains.move_to_element_with_offset(element._element, x_cord, y_cord)
+    element.action_chains.click()
+    element.action_chains.perform()
 
 
 @world.absorb
@@ -95,7 +143,7 @@ def id_click(elem_id):
 
 @world.absorb
 def css_fill(css_selector, text):
-    assert is_css_present(css_selector)
+    assert is_css_present(css_selector), "{} is not present".format(css_selector)
     world.browser.find_by_css(css_selector).first.fill(text)
 
 
@@ -105,29 +153,44 @@ def click_link(partial_text):
 
 
 @world.absorb
-def css_text(css_selector):
+def css_text(css_selector, index=0):
 
     # Wait for the css selector to appear
     if world.is_css_present(css_selector):
         try:
-            return world.browser.find_by_css(css_selector).first.text
+            return world.browser.find_by_css(css_selector)[index].text
         except StaleElementReferenceException:
             # The DOM was still redrawing. Wait a second and try again.
             world.wait(1)
-            return world.browser.find_by_css(css_selector).first.text
+            return world.browser.find_by_css(css_selector)[index].text
     else:
         return ""
 
 
 @world.absorb
-def css_visible(css_selector):
+def css_html(css_selector, index=0, max_attempts=5):
+    """
+    Returns the HTML of a css_selector and will retry if there is a StaleElementReferenceException
+    """
     assert is_css_present(css_selector)
+    attempt = 0
+    while attempt < max_attempts:
+        try:
+            return world.browser.find_by_css(css_selector)[index].html
+        except:
+            attempt += 1
+    return ''
+
+
+@world.absorb
+def css_visible(css_selector):
+    assert is_css_present(css_selector), "{} is not present".format(css_selector)
     return world.browser.find_by_css(css_selector).visible
 
 
 @world.absorb
 def dialogs_closed():
-    def are_dialogs_closed(driver):
+    def are_dialogs_closed(_driver):
         '''
         Return True when no modal dialogs are visible
         '''
@@ -138,12 +201,18 @@ def dialogs_closed():
 
 @world.absorb
 def save_the_html(path='/tmp'):
-    u = world.browser.url
+    url = world.browser.url
     html = world.browser.html.encode('ascii', 'ignore')
-    filename = '%s.html' % quote_plus(u)
-    f = open('%s/%s' % (path, filename), 'w')
-    f.write(html)
-    f.close()
+    filename = "{path}/{name}.html".format(path=path, name=quote_plus(url))
+    with open(filename, "w") as f:
+        f.write(html)
+
+
+@world.absorb
+def click_course_content():
+    course_content_css = 'li.nav-course-courseware'
+    if world.browser.is_element_present_by_css(course_content_css):
+        world.css_click(course_content_css)
 
 
 @world.absorb
@@ -158,3 +227,8 @@ def click_tools():
     tools_css = 'li.nav-course-tools'
     if world.browser.is_element_present_by_css(tools_css):
         world.css_click(tools_css)
+
+
+@world.absorb
+def is_mac():
+    return platform.mac_ver()[0] is not ''

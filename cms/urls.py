@@ -1,10 +1,13 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+
+# Import this file so it can do its work, even though we don't use the name.
+# pylint: disable=W0611
 from . import one_time_startup
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+# There is a course creators admin table.
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = ('',  # nopep8
     url(r'^$', 'contentstore.views.howitworks', name='homepage'),
@@ -35,6 +38,8 @@ urlpatterns = ('',  # nopep8
         'contentstore.views.preview_dispatch', name='preview_dispatch'),
     url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/course/(?P<coursename>[^/]+)/upload_asset$',
         'contentstore.views.upload_asset', name='upload_asset'),
+
+
     url(r'^manage_users/(?P<location>.*?)$', 'contentstore.views.manage_users', name='manage_users'),
     url(r'^add_user/(?P<location>.*?)$',
         'contentstore.views.add_user', name='add_user'),
@@ -71,8 +76,17 @@ urlpatterns = ('',  # nopep8
         'contentstore.views.edit_static', name='edit_static'),
     url(r'^edit_tabs/(?P<org>[^/]+)/(?P<course>[^/]+)/course/(?P<coursename>[^/]+)$',
         'contentstore.views.edit_tabs', name='edit_tabs'),
+
     url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/assets/(?P<name>[^/]+)$',
         'contentstore.views.asset_index', name='asset_index'),
+    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/assets/(?P<name>[^/]+)/remove$',
+        'contentstore.views.assets.remove_asset', name='remove_asset'),
+    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/textbooks/(?P<name>[^/]+)$',
+        'contentstore.views.textbook_index', name='textbook_index'),
+    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/textbooks/(?P<name>[^/]+)/new$',
+        'contentstore.views.create_textbook', name='create_textbook'),
+    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/textbooks/(?P<name>[^/]+)/(?P<tid>\d[^/]*)$',
+        'contentstore.views.textbook_by_id', name='textbook_by_id'),
 
     # this is a generic method to return the data/metadata associated with a xmodule
     url(r'^module_info/(?P<module_location>.*)$',
@@ -85,9 +99,6 @@ urlpatterns = ('',  # nopep8
 
     url(r'^not_found$', 'contentstore.views.not_found', name='not_found'),
     url(r'^server_error$', 'contentstore.views.server_error', name='server_error'),
-
-    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/assets/(?P<name>[^/]+)$',
-        'contentstore.views.asset_index', name='asset_index'),
 
     # temporary landing page for edge
     url(r'^edge$', 'contentstore.views.edge', name='edge'),
@@ -138,8 +149,11 @@ if settings.MITX_FEATURES.get('ENABLE_SERVICE_STATUS'):
         url(r'^status/', include('service_status.urls')),
     )
 
+urlpatterns += (url(r'^admin/', include(admin.site.urls)),)
+
 urlpatterns = patterns(*urlpatterns)
 
 # Custom error pages
+#pylint: disable=C0103
 handler404 = 'contentstore.views.render_404'
 handler500 = 'contentstore.views.render_500'

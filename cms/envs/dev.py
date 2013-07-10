@@ -27,7 +27,7 @@ modulestore_options = {
 
 MODULESTORE = {
     'default': {
-        'ENGINE': 'xmodule.modulestore.mongo.DraftMongoModuleStore',
+        'ENGINE': 'xmodule.modulestore.draft.DraftModuleStore',
         'OPTIONS': modulestore_options
     },
     'direct': {
@@ -36,6 +36,7 @@ MODULESTORE = {
     }
 }
 
+
 # cdodge: This is the specifier for the MongoDB (using GridFS) backed static content store
 # This is for static content for courseware, not system static content (e.g. javascript, css, edX branding, etc)
 CONTENTSTORE = {
@@ -43,9 +44,14 @@ CONTENTSTORE = {
     'OPTIONS': {
         'host': 'localhost',
         'db': 'xcontent',
+    },
+    # allow for additional options that can be keyed on a name, e.g. 'trashcan'
+    'ADDITIONAL_OPTIONS': {
+        'trashcan': {
+            'bucket': 'trash_fs'
+        }
     }
 }
-
 
 DATABASES = {
     'default': {
@@ -64,7 +70,7 @@ REPOS = {
     },
     'content-mit-6002x': {
         'branch': 'master',
-        #'origin': 'git@github.com:MITx/6002x-fall-2012.git',
+        # 'origin': 'git@github.com:MITx/6002x-fall-2012.git',
         'origin': 'git@github.com:MITx/content-mit-6002x.git',
     },
     '6.00x': {
@@ -163,5 +169,19 @@ MITX_FEATURES['STUDIO_NPS_SURVEY'] = False
 # Enable URL that shows information about the status of variuous services
 MITX_FEATURES['ENABLE_SERVICE_STATUS'] = True
 
-# segment-io key for dev
-SEGMENT_IO_KEY = 'mty8edrrsg'
+############################# SEGMENT-IO ##################################
+
+# If there's an environment variable set, grab it and turn on Segment.io
+# Note that this is the Studio key. There is a separate key for the LMS.
+import os
+SEGMENT_IO_KEY = os.environ.get('SEGMENT_IO_KEY')
+if SEGMENT_IO_KEY:
+    MITX_FEATURES['SEGMENT_IO'] = True
+
+
+#####################################################################
+# Lastly, see if the developer has any local overrides.
+try:
+    from .private import *      # pylint: disable=F0401
+except ImportError:
+    pass

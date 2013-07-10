@@ -3,6 +3,8 @@ AjaxPrefix.addAjaxPrefix(jQuery, -> CMS.prefix)
 @CMS =
   Models: {}
   Views: {}
+  Collections: {}
+  URL: {}
 
   prefix: $("meta[name='path_prefix']").attr('content')
 
@@ -17,12 +19,19 @@ $ ->
 
   $(document).ajaxError (event, jqXHR, ajaxSettings, thrownError) ->
     if ajaxSettings.notifyOnError is false
-      return
-    msg = new CMS.Models.ErrorMessage(
-        "title": gettext("Studio's having trouble saving your work")
-        "message": jqXHR.responseText || gettext("This may be happening because of an error with our server or your internet connection. Try refreshing the page or making sure you are online.")
+        return
+    if jqXHR.responseText
+      try
+        message = JSON.parse(jqXHR.responseText).error
+      catch error
+        message = _.str.truncate(jqXHR.responseText, 300)
+    else
+      message = gettext("This may be happening because of an error with our server or your internet connection. Try refreshing the page or making sure you are online.")
+    msg = new CMS.Views.Notification.Error(
+      "title": gettext("Studio's having trouble saving your work")
+      "message": message
     )
-    new CMS.Views.Notification({model: msg})
+    msg.show()
 
   window.onTouchBasedDevice = ->
     navigator.userAgent.match /iPhone|iPod|iPad/i

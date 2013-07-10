@@ -53,7 +53,7 @@ MODULESTORE_OPTIONS = {
 
 MODULESTORE = {
     'default': {
-        'ENGINE': 'xmodule.modulestore.mongo.DraftMongoModuleStore',
+        'ENGINE': 'xmodule.modulestore.draft.DraftModuleStore',
         'OPTIONS': MODULESTORE_OPTIONS
     },
     'direct': {
@@ -61,7 +61,7 @@ MODULESTORE = {
         'OPTIONS': MODULESTORE_OPTIONS
     },
     'draft': {
-        'ENGINE': 'xmodule.modulestore.mongo.DraftMongoModuleStore',
+        'ENGINE': 'xmodule.modulestore.draft.DraftModuleStore',
         'OPTIONS': MODULESTORE_OPTIONS
     }
 }
@@ -70,7 +70,13 @@ CONTENTSTORE = {
     'ENGINE': 'xmodule.contentstore.mongo.MongoContentStore',
     'OPTIONS': {
         'host': 'localhost',
-        'db': 'xcontent',
+        'db': 'test_xcontent',
+    },
+    # allow for additional options that can be keyed on a name, e.g. 'trashcan'
+    'ADDITIONAL_OPTIONS': {
+        'trashcan': {
+            'bucket': 'trash_fs'
+        }
     }
 }
 
@@ -121,7 +127,7 @@ CELERY_RESULT_BACKEND = 'cache'
 BROKER_TRANSPORT = 'memory'
 
 ################### Make tests faster
-#http://slacy.com/blog/2012/04/make-your-tests-faster-in-django-1-4/
+# http://slacy.com/blog/2012/04/make-your-tests-faster-in-django-1-4/
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.SHA1PasswordHasher',
     'django.contrib.auth.hashers.MD5PasswordHasher',
@@ -134,3 +140,9 @@ SEGMENT_IO_KEY = '***REMOVED***'
 MITX_FEATURES['STUDIO_NPS_SURVEY'] = False
 
 MITX_FEATURES['ENABLE_SERVICE_STATUS'] = True
+
+# Enabling SQL tracking logs for testing on common/djangoapps/track
+MITX_FEATURES['ENABLE_SQL_TRACKING_LOGS'] = True
+
+# This is to disable a test under the common directory that will not pass when run under CMS
+MITX_FEATURES['DISABLE_PASSWORD_RESET_EMAIL_TEST'] = True

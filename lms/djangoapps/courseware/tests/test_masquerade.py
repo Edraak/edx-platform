@@ -12,12 +12,14 @@ from django.test.utils import override_settings
 
 from django.core.urlresolvers import reverse
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from courseware.access import _course_staff_group_name
-from courseware.tests.tests import LoginEnrollmentTestCase, TEST_DATA_XML_MODULESTORE, get_user
+from courseware.tests.helpers import LoginEnrollmentTestCase
+from modulestore_config import TEST_DATA_XML_MODULESTORE
 from xmodule.modulestore.django import modulestore
 import xmodule.modulestore.django
 import json
+
 
 @override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
 class TestStaffMasqueradeAsStudent(LoginEnrollmentTestCase):
@@ -41,7 +43,7 @@ class TestStaffMasqueradeAsStudent(LoginEnrollmentTestCase):
         def make_instructor(course):
             group_name = _course_staff_group_name(course.location)
             g = Group.objects.create(name=group_name)
-            g.user_set.add(get_user(self.instructor))
+            g.user_set.add(User.objects.get(email=self.instructor))
 
         make_instructor(self.graded_course)
 
@@ -64,9 +66,8 @@ class TestStaffMasqueradeAsStudent(LoginEnrollmentTestCase):
     def test_staff_debug_for_staff(self):
         resp = self.get_cw_section()
         sdebug = '<div><a href="#i4x_edX_graded_problem_H1P1_debug" id="i4x_edX_graded_problem_H1P1_trig">Staff Debug Info</a></div>'
-    
-        self.assertTrue(sdebug in resp.content)
 
+        self.assertTrue(sdebug in resp.content)
 
     def toggle_masquerade(self):
         '''
@@ -84,9 +85,9 @@ class TestStaffMasqueradeAsStudent(LoginEnrollmentTestCase):
 
         resp = self.get_cw_section()
         sdebug = '<div><a href="#i4x_edX_graded_problem_H1P1_debug" id="i4x_edX_graded_problem_H1P1_trig">Staff Debug Info</a></div>'
-    
+
         self.assertFalse(sdebug in resp.content)
-        
+
     def get_problem(self):
         pun = 'H1P1'
         problem_location = "i4x://edX/graded/problem/%s" % pun
@@ -105,7 +106,7 @@ class TestStaffMasqueradeAsStudent(LoginEnrollmentTestCase):
         resp = self.get_problem()
         html = json.loads(resp.content)['html']
         print html
-        sabut = '<input class="show" type="button" value="Show Answer">'
+        sabut = '<button class="show"><span class="show-label">Show Answer(s)</span> <span class="sr">(for question(s) above - adjacent to each field)</span></button>'
         self.assertTrue(sabut in html)
 
     def test_no_showanswer_for_student(self):
@@ -116,5 +117,5 @@ class TestStaffMasqueradeAsStudent(LoginEnrollmentTestCase):
         resp = self.get_problem()
         html = json.loads(resp.content)['html']
         print html
-        sabut = '<input class="show" type="button" value="Show Answer">'
+        sabut = '<button class="show"><span class="show-label">Show Answer(s)</span> <span class="sr">(for question(s) above - adjacent to each field)</span></button>'
         self.assertFalse(sabut in html)

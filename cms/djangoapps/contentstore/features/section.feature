@@ -3,6 +3,7 @@ Feature: Create Section
   As a course author
   I want to create and edit sections
 
+  @skip
   Scenario: Add a new section to a course
     Given I have opened a new course in Studio
     When I click the New Section link
@@ -26,11 +27,9 @@ Feature: Create Section
     And I save a new section release date
     Then the section release date is updated
 
-  # Skipped because Ubuntu ChromeDriver hangs on alert
-  @skip
   Scenario: Delete section
     Given I have opened a new course in Studio
     And I have added a new section
-    When I press the "section" delete icon
-    And I confirm the alert
+    When I will confirm all alerts
+    And I press the "section" delete icon
     Then the section does not exist

@@ -20,10 +20,17 @@ from path import path
 # can test everything else :)
 MITX_FEATURES['DISABLE_START_DATES'] = True
 
-# Until we have discussion actually working in test mode, just turn it off
-MITX_FEATURES['ENABLE_DISCUSSION_SERVICE'] = True
+# Most tests don't use the discussion service, so we turn it off to speed them up.
+# Tests that do can enable this flag, but must use the UrlResetMixin class to force urls.py
+# to reload
+MITX_FEATURES['ENABLE_DISCUSSION_SERVICE'] = False
 
 MITX_FEATURES['ENABLE_SERVICE_STATUS'] = True
+
+MITX_FEATURES['ENABLE_HINTER_INSTRUCTOR_VIEW'] = True
+
+# Enabling SQL tracking logs for testing on common/djangoapps/track
+MITX_FEATURES['ENABLE_SQL_TRACKING_LOGS'] = True
 
 # Need wiki for courseware views to work. TODO (vshnayder): shouldn't need it.
 WIKI_ENABLED = True
@@ -135,13 +142,15 @@ SECRET_KEY = '85920908f28904ed733fe576320db18cabd7b6cd'
 MITX_FEATURES['AUTH_USE_OPENID'] = True
 MITX_FEATURES['AUTH_USE_OPENID_PROVIDER'] = True
 
+################################## SHIB #######################################
+MITX_FEATURES['AUTH_USE_SHIB'] = True
+MITX_FEATURES['SHIB_DISABLE_TOS'] = True
+MITX_FEATURES['RESTRICT_ENROLL_BY_REG_METHOD'] = True
+
 OPENID_CREATE_USERS = False
 OPENID_UPDATE_DETAILS_FROM_SREG = True
 OPENID_USE_AS_ADMIN_LOGIN = False
 OPENID_PROVIDER_TRUSTED_ROOTS = ['*']
-
-INSTALLED_APPS += ('external_auth',)
-INSTALLED_APPS += ('django_openid_auth',)
 
 ################################# CELERY ######################################
 
@@ -186,3 +195,11 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     # 'django.contrib.auth.hashers.CryptPasswordHasher',
 )
+
+################### Make tests quieter
+
+# OpenID spews messages like this to stderr, we don't need to see them:
+#   Generated checkid_setup request to http://testserver/openid/provider/login/ with assocication {HMAC-SHA1}{51d49995}{s/kRmA==}
+
+import openid.oidutil
+openid.oidutil.log = lambda message, level=0: None

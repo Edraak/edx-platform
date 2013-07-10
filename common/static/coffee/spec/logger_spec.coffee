@@ -4,9 +4,9 @@ describe 'Logger', ->
 
   describe 'log', ->
     it 'send a request to log event', ->
-      spyOn $, 'getWithPrefix'
+      spyOn $, 'postWithPrefix'
       Logger.log 'example', 'data'
-      expect($.getWithPrefix).toHaveBeenCalledWith '/event',
+      expect($.postWithPrefix).toHaveBeenCalledWith '/event',
         event_type: 'example'
         event: '"data"'
         page: window.location.href

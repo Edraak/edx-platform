@@ -3,27 +3,28 @@ import feedparser
 import json
 import logging
 import random
-import string
-import sys
+import re
+import string       # pylint: disable=W0402
 import urllib
 import uuid
 import time
 
 from django.conf import settings
 from django.contrib.auth import logout, authenticate, login
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import password_reset_confirm
 from django.core.cache import cache
 from django.core.context_processors import csrf
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.core.validators import validate_email, validate_slug, ValidationError
 from django.db import IntegrityError, transaction
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotAllowed, Http404
 from django.shortcuts import redirect
-from django_future.csrf import ensure_csrf_cookie, csrf_exempt
+from django_future.csrf import ensure_csrf_cookie
 from django.utils.http import cookie_date
+from django.utils.http import base36_to_int
 
 from mitxmako.shortcuts import render_to_response, render_to_string
 from bs4 import BeautifulSoup
@@ -32,23 +33,25 @@ from student.models import (Registration, UserProfile, TestCenterUser, TestCente
                             TestCenterRegistration, TestCenterRegistrationForm,
                             PendingNameChange, PendingEmailChange,
                             CourseEnrollment, unique_id_for_user,
-                            get_testcenter_registration)
+                            get_testcenter_registration, CourseEnrollmentAllowed)
+
+from student.forms import PasswordResetFormNoActive
 
 from certificates.models import CertificateStatuses, certificate_status_for_student
 
 from xmodule.course_module import CourseDescriptor
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore import Location
 
 from collections import namedtuple
 
 from courseware.courses import get_courses, sort_by_announcement
 from courseware.access import has_access
-from courseware.views import get_module_for_descriptor, jump_to
-from courseware.model_data import ModelDataCache
+
+from external_auth.models import ExternalAuthMap
 
 from statsd import statsd
+from pytz import UTC
 
 log = logging.getLogger("mitx.student")
 Article = namedtuple('Article', 'title url author image deck publication publish_date')
@@ -77,7 +80,7 @@ def index(request, extra_context={}, user=None):
     '''
 
     # The course selection work is done in courseware.courses.
-    domain = settings.MITX_FEATURES.get('FORCE_UNIVERSITY_DOMAIN')     # normally False
+    domain = settings.MITX_FEATURES.get('FORCE_UNIVERSITY_DOMAIN')  # normally False
     # do explicit check, because domain=None is valid
     if domain == False:
         domain = request.META.get('HTTP_HOST')
@@ -98,9 +101,8 @@ def course_from_id(course_id):
     course_loc = CourseDescriptor.id_to_location(course_id)
     return modulestore().get_instance(course_id, course_loc)
 
-import re
-day_pattern = re.compile('\s\d+,\s')
-multimonth_pattern = re.compile('\s?\-\s?\S+\s')
+day_pattern = re.compile(r'\s\d+,\s')
+multimonth_pattern = re.compile(r'\s?\-\s?\S+\s')
 
 
 def get_date_for_press(publish_date):
@@ -177,7 +179,7 @@ def _cert_info(user, course, cert_status):
         CertificateStatuses.downloadable: 'ready',
         CertificateStatuses.notpassing: 'notpassing',
         CertificateStatuses.restricted: 'restricted',
-        }
+    }
 
     status = template_state.get(cert_status['status'], default_status)
 
@@ -186,10 +188,10 @@ def _cert_info(user, course, cert_status):
          'show_disabled_download_button': status == 'generating', }
 
     if (status in ('generating', 'ready', 'notpassing', 'restricted') and
-        course.end_of_course_survey_url is not None):
+            course.end_of_course_survey_url is not None):
         d.update({
-         'show_survey_button': True,
-         'survey_url': process_survey_link(course.end_of_course_survey_url, user)})
+            'show_survey_button': True,
+            'survey_url': process_survey_link(course.end_of_course_survey_url, user)})
     else:
         d['show_survey_button'] = False
 
@@ -229,7 +231,7 @@ def signin_user(request):
 
 
 @ensure_csrf_cookie
-def register_user(request):
+def register_user(request, extra_context={}):
     """
     This view will display the non-modal registration form
     """
@@ -240,6 +242,8 @@ def register_user(request):
         'course_id': request.GET.get('course_id'),
         'enrollment_action': request.GET.get('enrollment_action')
     }
+    context.update(extra_context)
+
     return render_to_response('register.html', context)
 
 
@@ -264,7 +268,6 @@ def dashboard(request):
     if not user.is_active:
         message = render_to_string('registration/activate_account_notice.html', {'email': user.email})
 
-
     # Global staff can see what courses errored on their dashboard
     staff_access = False
     errored_courses = {}
@@ -282,9 +285,17 @@ def dashboard(request):
 
     # Get the 3 most recent news
     top_news = _get_news(top=3) if not settings.MITX_FEATURES.get('ENABLE_MKTG_SITE', False) else None
+            
+    # get info w.r.t ExternalAuthMap
+    external_auth_map = None
+    try:
+        external_auth_map = ExternalAuthMap.objects.get(user=user)
+    except ExternalAuthMap.DoesNotExist:
+        pass
 
     context = {'courses': courses,
                'message': message,
+               'external_auth_map': external_auth_map,
                'staff_access': staff_access,
                'errored_courses': errored_courses,
                'show_courseware_links_for': show_courseware_links_for,
@@ -355,7 +366,7 @@ def change_enrollment(request):
             course = course_from_id(course_id)
         except ItemNotFoundError:
             log.warning("User {0} tried to enroll in non-existent course {1}"
-                      .format(user.username, course_id))
+                        .format(user.username, course_id))
             return HttpResponseBadRequest("Course id is invalid")
 
         if not has_access(user, course, 'enroll'):
@@ -363,9 +374,9 @@ def change_enrollment(request):
 
         org, course_num, run = course_id.split("/")
         statsd.increment("common.student.enrollment",
-                        tags=["org:{0}".format(org),
-                              "course:{0}".format(course_num),
-                              "run:{0}".format(run)])
+                         tags=["org:{0}".format(org),
+                               "course:{0}".format(course_num),
+                               "run:{0}".format(run)])
 
         try:
             enrollment, created = CourseEnrollment.objects.get_or_create(user=user, course_id=course.id)
@@ -382,9 +393,9 @@ def change_enrollment(request):
 
             org, course_num, run = course_id.split("/")
             statsd.increment("common.student.unenrollment",
-                            tags=["org:{0}".format(org),
-                                  "course:{0}".format(course_num),
-                                  "run:{0}".format(run)])
+                             tags=["org:{0}".format(org),
+                                   "course:{0}".format(course_num),
+                                   "run:{0}".format(run)])
 
             return HttpResponse()
         except CourseEnrollment.DoesNotExist:
@@ -454,7 +465,6 @@ def login_user(request, error=""):
             expires_time = time.time() + max_age
             expires = cookie_date(expires_time)
 
-
         response.set_cookie(settings.EDXMKTG_COOKIE_NAME,
                             'true', max_age=max_age,
                             expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
@@ -515,8 +525,8 @@ def _do_create_account(post_vars):
     Note: this function is also used for creating test users.
     """
     user = User(username=post_vars['username'],
-             email=post_vars['email'],
-             is_active=False)
+                email=post_vars['email'],
+                is_active=False)
     user.set_password(post_vars['password'])
     registration = Registration()
     # TODO: Rearrange so that if part of the process fails, the whole process fails.
@@ -572,15 +582,23 @@ def create_account(request, post_override=None):
 
     # if doing signup for an external authorization, then get email, password, name from the eamap
     # don't use the ones from the form, since the user could have hacked those
+    # unless originally we didn't get a valid email or name from the external auth
     DoExternalAuth = 'ExternalAuthMap' in request.session
     if DoExternalAuth:
         eamap = request.session['ExternalAuthMap']
-        email = eamap.external_email
-        name = eamap.external_name
+        try:
+            validate_email(eamap.external_email)
+            email = eamap.external_email
+        except ValidationError:
+            email = post_vars.get('email', '')
+        if eamap.external_name.strip() == '':
+            name = post_vars.get('name', '')
+        else:
+            name = eamap.external_name 
         password = eamap.internal_password
         post_vars = dict(post_vars.items())
         post_vars.update(dict(email=email, name=name, password=password))
-        log.debug('extauth test: post_vars = %s' % post_vars)
+        log.info('In create_account with external_auth: post_vars = %s' % post_vars)
 
     # Confirm we have a properly formed request
     for a in ['username', 'email', 'password', 'name']:
@@ -594,17 +612,28 @@ def create_account(request, post_override=None):
         js['field'] = 'honor_code'
         return HttpResponse(json.dumps(js))
 
-    if post_vars.get('terms_of_service', 'false') != u'true':
-        js['value'] = "You must accept the terms of service.".format(field=a)
-        js['field'] = 'terms_of_service'
-        return HttpResponse(json.dumps(js))
+    # Can't have terms of service for certain SHIB users, like at Stanford
+    tos_not_required = settings.MITX_FEATURES.get("AUTH_USE_SHIB") \
+                       and settings.MITX_FEATURES.get('SHIB_DISABLE_TOS') \
+                       and DoExternalAuth and ("shib" in eamap.external_domain)
+
+    if not tos_not_required:
+        if post_vars.get('terms_of_service', 'false') != u'true':
+            js['value'] = "You must accept the terms of service.".format(field=a)
+            js['field'] = 'terms_of_service'
+            return HttpResponse(json.dumps(js))
 
     # Confirm appropriate fields are there.
     # TODO: Check e-mail format is correct.
     # TODO: Confirm e-mail is not from a generic domain (mailinator, etc.)? Not sure if
     # this is a good idea
     # TODO: Check password is sane
-    for a in ['username', 'email', 'name', 'password', 'terms_of_service', 'honor_code']:
+
+    required_post_vars = ['username', 'email', 'name', 'password', 'terms_of_service', 'honor_code']
+    if tos_not_required:
+        required_post_vars =  ['username', 'email', 'name', 'password', 'honor_code']
+
+    for a in required_post_vars:
         if len(post_vars[a]) < 2:
             error_str = {'username': 'Username must be minimum of two characters long.',
                          'email': 'A properly formatted e-mail is required.',
@@ -632,7 +661,7 @@ def create_account(request, post_override=None):
 
     # Ok, looks like everything is legit.  Create the account.
     ret = _do_create_account(post_vars)
-    if isinstance(ret, HttpResponse):		# if there was an error then return that
+    if isinstance(ret, HttpResponse):  # if there was an error then return that
         return ret
     (user, profile, registration) = ret
 
@@ -666,18 +695,19 @@ def create_account(request, post_override=None):
     login(request, login_user)
     request.session.set_expiry(0)
 
-    try_change_enrollment(request)
-
     if DoExternalAuth:
         eamap.user = login_user
-        eamap.dtsignup = datetime.datetime.now()
+        eamap.dtsignup = datetime.datetime.now(UTC)
         eamap.save()
-        log.debug('Updated ExternalAuthMap for %s to be %s' % (post_vars['username'], eamap))
+        log.info("User registered with external_auth %s" % post_vars['username'])
+        log.info('Updated ExternalAuthMap for %s to be %s' % (post_vars['username'], eamap))
 
         if settings.MITX_FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH'):
-            log.debug('bypassing activation email')
+            log.info('bypassing activation email')
             login_user.is_active = True
             login_user.save()
+
+    try_change_enrollment(request)
 
     statsd.increment("common.student.account_created")
 
@@ -698,7 +728,6 @@ def create_account(request, post_override=None):
         expires_time = time.time() + max_age
         expires = cookie_date(expires_time)
 
-
     response.set_cookie(settings.EDXMKTG_COOKIE_NAME,
                         'true', max_age=max_age,
                         expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
@@ -706,7 +735,6 @@ def create_account(request, post_override=None):
                         secure=None,
                         httponly=None)
     return response
-
 
 
 def exam_registration_info(user, course):
@@ -849,7 +877,6 @@ def create_exam_registration(request, post_override=None):
             response_data['non_field_errors'] = form.non_field_errors()
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
-
     # only do the following if there is accommodation text to send,
     # and a destination to which to send it.
     # TODO: still need to create the accommodation email templates
@@ -872,7 +899,6 @@ def create_exam_registration(request, post_override=None):
 #            response_data['non_field_errors'] =  [ 'Could not send accommodation e-mail.', ]
 #            return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
-
     js = {'success': True}
     return HttpResponse(json.dumps(js), mimetype="application/json")
 
@@ -890,8 +916,8 @@ def get_random_post_override():
             'password': id_generator(),
             'name': (id_generator(size=5, chars=string.ascii_lowercase) + " " +
                      id_generator(size=7, chars=string.ascii_lowercase)),
-                     'honor_code': u'true',
-                     'terms_of_service': u'true', }
+            'honor_code': u'true',
+            'terms_of_service': u'true', }
 
 
 def create_random_account(create_account_function):
@@ -916,6 +942,16 @@ def activate_account(request, key):
         if not r[0].user.is_active:
             r[0].activate()
             already_active = False
+
+        #Enroll student in any pending courses he/she may have if auto_enroll flag is set
+        student = User.objects.filter(id=r[0].user_id)
+        if student:
+            ceas = CourseEnrollmentAllowed.objects.filter(email=student[0].email)
+            for cea in ceas:
+                if cea.auto_enroll:
+                    course_id = cea.course_id
+                    enrollment, created = CourseEnrollment.objects.get_or_create(user_id=student[0].id, course_id=course_id)
+
         resp = render_to_response("registration/activation_complete.html", {'user_logged_in': user_logged_in, 'already_active': already_active})
         return resp
     if len(r) == 0:
@@ -929,17 +965,7 @@ def password_reset(request):
     if request.method != "POST":
         raise Http404
 
-    # By default, Django doesn't allow Users with is_active = False to reset their passwords,
-    # but this bites people who signed up a long time ago, never activated, and forgot their
-    # password. So for their sake, we'll auto-activate a user for whom password_reset is called.
-    try:
-        user = User.objects.get(email=request.POST['email'])
-        user.is_active = True
-        user.save()
-    except:
-        log.exception("Tried to auto-activate user to enable password reset, but failed.")
-
-    form = PasswordResetForm(request.POST)
+    form = PasswordResetFormNoActive(request.POST)
     if form.is_valid():
         form.save(use_https=request.is_secure(),
                   from_email=settings.DEFAULT_FROM_EMAIL,
@@ -949,24 +975,29 @@ def password_reset(request):
                                         'value': render_to_string('registration/password_reset_done.html', {})}))
     else:
         return HttpResponse(json.dumps({'success': False,
-                                        'error': 'Invalid e-mail'}))
+                                        'error': 'Invalid e-mail or user'}))
 
-
-@ensure_csrf_cookie
-def reactivation_email(request):
-    ''' Send an e-mail to reactivate a deactivated account, or to
-    resend an activation e-mail. Untested. '''
-    email = request.POST['email']
+def password_reset_confirm_wrapper(request, uidb36=None, token=None):
+    ''' A wrapper around django.contrib.auth.views.password_reset_confirm.
+        Needed because we want to set the user as active at this step.
+    '''
+    #cribbed from django.contrib.auth.views.password_reset_confirm
     try:
-        user = User.objects.get(email='email')
-    except User.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False,
-                                        'error': 'No inactive user with this e-mail exists'}))
-    return reactivation_email_for_user(user)
+        uid_int = base36_to_int(uidb36)
+        user = User.objects.get(id=uid_int)
+        user.is_active = True
+        user.save()
+    except (ValueError, User.DoesNotExist):
+        pass
+    return password_reset_confirm(request, uidb36=uidb36, token=token)
 
 
 def reactivation_email_for_user(user):
-    reg = Registration.objects.get(user=user)
+    try:
+        reg = Registration.objects.get(user=user)
+    except Registration.DoesNotExist:
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': 'No inactive user with this e-mail exists'}))
 
     d = {'name': user.profile.name,
          'key': reg.activation_key}
@@ -1193,6 +1224,10 @@ def accept_name_change(request):
 
 def _get_news(top=None):
     "Return the n top news items on settings.RSS_URL"
+
+    # Don't return anything if we're in a themed site
+    if settings.MITX_FEATURES["USE_CUSTOM_THEME"]:
+        return None
 
     feed_data = cache.get("students_index_rss_feed_data")
     if feed_data is None:

@@ -91,11 +91,21 @@ CACHES = ENV_TOKENS['CACHES']
 
 SESSION_COOKIE_DOMAIN = ENV_TOKENS.get('SESSION_COOKIE_DOMAIN')
 
+# allow for environments to specify what cookie name our login subsystem should use
+# this is to fix a bug regarding simultaneous logins between edx.org and edge.edx.org which can
+# happen with some browsers (e.g. Firefox)
+if ENV_TOKENS.get('SESSION_COOKIE_NAME', None):
+    # NOTE, there's a bug in Django (http://bugs.python.org/issue18012) which necessitates this being a str()
+    SESSION_COOKIE_NAME = str(ENV_TOKENS.get('SESSION_COOKIE_NAME'))
+
 #Email overrides
 DEFAULT_FROM_EMAIL = ENV_TOKENS.get('DEFAULT_FROM_EMAIL', DEFAULT_FROM_EMAIL)
 DEFAULT_FEEDBACK_EMAIL = ENV_TOKENS.get('DEFAULT_FEEDBACK_EMAIL', DEFAULT_FEEDBACK_EMAIL)
 ADMINS = ENV_TOKENS.get('ADMINS', ADMINS)
 SERVER_EMAIL = ENV_TOKENS.get('SERVER_EMAIL', SERVER_EMAIL)
+MKTG_URLS = ENV_TOKENS.get('MKTG_URLS', MKTG_URLS)
+
+COURSES_WITH_UNSAFE_CODE = ENV_TOKENS.get("COURSES_WITH_UNSAFE_CODE", [])
 
 #Timezone overrides
 TIME_ZONE = ENV_TOKENS.get('TIME_ZONE', TIME_ZONE)
@@ -103,9 +113,6 @@ TIME_ZONE = ENV_TOKENS.get('TIME_ZONE', TIME_ZONE)
 
 for feature, value in ENV_TOKENS.get('MITX_FEATURES', {}).items():
     MITX_FEATURES[feature] = value
-
-# load segment.io key, provide a dummy if it does not exist
-SEGMENT_IO_KEY = ENV_TOKENS.get('SEGMENT_IO_KEY', '***REMOVED***')
 
 LOGGING = get_logger_config(LOG_DIR,
                             logging_env=ENV_TOKENS['LOGGING_ENV'],
@@ -117,6 +124,13 @@ LOGGING = get_logger_config(LOG_DIR,
 # Secret things: passwords, access keys, etc.
 with open(ENV_ROOT / CONFIG_PREFIX + "auth.json") as auth_file:
     AUTH_TOKENS = json.load(auth_file)
+
+# If Segment.io key specified, load it and turn on Segment.io if the feature flag is set
+# Note that this is the Studio key. There is a separate key for the LMS.
+SEGMENT_IO_KEY = AUTH_TOKENS.get('SEGMENT_IO_KEY')
+if SEGMENT_IO_KEY:
+    MITX_FEATURES['SEGMENT_IO'] = ENV_TOKENS.get('SEGMENT_IO', False)
+
 
 AWS_ACCESS_KEY_ID = AUTH_TOKENS["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = AUTH_TOKENS["AWS_SECRET_ACCESS_KEY"]
@@ -130,10 +144,12 @@ DATADOG_API = AUTH_TOKENS.get("DATADOG_API")
 # Celery Broker
 CELERY_BROKER_TRANSPORT = ENV_TOKENS.get("CELERY_BROKER_TRANSPORT", "")
 CELERY_BROKER_HOSTNAME = ENV_TOKENS.get("CELERY_BROKER_HOSTNAME", "")
+CELERY_BROKER_VHOST = ENV_TOKENS.get("CELERY_BROKER_VHOST", "")
 CELERY_BROKER_USER = AUTH_TOKENS.get("CELERY_BROKER_USER", "")
 CELERY_BROKER_PASSWORD = AUTH_TOKENS.get("CELERY_BROKER_PASSWORD", "")
 
-BROKER_URL = "{0}://{1}:{2}@{3}".format(CELERY_BROKER_TRANSPORT,
-                                        CELERY_BROKER_USER,
-                                        CELERY_BROKER_PASSWORD,
-                                        CELERY_BROKER_HOSTNAME)
+BROKER_URL = "{0}://{1}:{2}@{3}/{4}".format(CELERY_BROKER_TRANSPORT,
+                                            CELERY_BROKER_USER,
+                                            CELERY_BROKER_PASSWORD,
+                                            CELERY_BROKER_HOSTNAME,
+                                            CELERY_BROKER_VHOST)

@@ -1,4 +1,3 @@
-from contentstore.utils import get_modulestore, get_url_reverse
 from contentstore.tests.test_course_settings import CourseTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 from django.core.urlresolvers import reverse
@@ -23,7 +22,3 @@ class DeleteItem(CourseTestCase):
         # Now delete it. There was a bug that the delete was failing (static tabs do not exist in draft modulestore).
         resp = self.client.post(reverse('delete_item'), resp.content, "application/json")
         self.assertEqual(resp.status_code, 200)
-
-
-
-

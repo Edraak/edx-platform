@@ -8,6 +8,7 @@ from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
+from util.testing import UrlResetMixin
 
 from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
 from nose.tools import assert_true, assert_equal
@@ -18,8 +19,16 @@ log = logging.getLogger(__name__)
 
 @override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
 @patch('comment_client.utils.requests.request')
-class ViewsTestCase(ModuleStoreTestCase):
+class ViewsTestCase(UrlResetMixin, ModuleStoreTestCase):
+
+    @patch.dict("django.conf.settings.MITX_FEATURES", {"ENABLE_DISCUSSION_SERVICE": True})
     def setUp(self):
+
+        # Patching the ENABLE_DISCUSSION_SERVICE value affects the contents of urls.py,
+        # so we need to call super.setUp() which reloads urls.py (because
+        # of the UrlResetMixin)
+        super(ViewsTestCase, self).setUp()
+
         # create a course
         self.course = CourseFactory.create(org='MITx', course='999',
                                            display_name='Robot Super Course')

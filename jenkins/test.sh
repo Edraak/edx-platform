@@ -60,33 +60,23 @@ fi
 
 export PIP_DOWNLOAD_CACHE=/mnt/pip-cache
 
-# Allow django liveserver tests to use a range of ports
-export DJANGO_LIVE_TEST_SERVER_ADDRESS=${DJANGO_LIVE_TEST_SERVER_ADDRESS-localhost:8000-9000}
+source $VIRTUALENV_DIR/bin/activate
 
-source /mnt/virtualenvs/"$JOB_NAME"/bin/activate
+bundle install
 
 rake install_prereqs
 rake clobber
+
+# Run the unit tests (use phantomjs for javascript unit tests)
+rake test
+
+# Generate pylint and pep8 reports
 rake pep8 > pep8.log || cat pep8.log
 rake pylint > pylint.log || cat pylint.log
 
-TESTS_FAILED=0
+# Generate coverage reports
+rake coverage
 
-# Run the python unit tests
-rake test_cms || TESTS_FAILED=1
-rake test_lms || TESTS_FAILED=1
-rake test_common/lib/capa || TESTS_FAILED=1
-rake test_common/lib/xmodule || TESTS_FAILED=1
-
-# Run the javascript unit tests
-rake phantomjs_jasmine_lms || TESTS_FAILED=1
-rake phantomjs_jasmine_cms || TESTS_FAILED=1
-rake phantomjs_jasmine_common/lib/xmodule || TESTS_FAILED=1
-rake phantomjs_jasmine_common/static/coffee || TESTS_FAILED=1
-
-rake coverage:xml coverage:html
-
-[ $TESTS_FAILED == '0' ]
 rake autodeploy_properties
 
 github_status state:success "passed"
