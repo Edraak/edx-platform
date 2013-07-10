@@ -1725,36 +1725,25 @@ class FormulaResponse(LoncapaResponse):
             self.correct_answer, given, self.samples)
         return CorrectMap(self.answer_id, correctness)
 
-    def check_formula(self, expected, given, samples):
-        variables = samples.split('@')[0].split(',')
-        numsamples = int(samples.split('@')[1].split('#')[1])
-        sranges = zip(*map(lambda x: map(float, x.split(",")),
-                           samples.split('@')[1].split('#')[0].split(':')))
+    def hash_answers(self, answer, var_dict_list):
+        """
+        Takes in an answer and a list of dictionaries mapping variables to values.
+        Each dictionary represents a test case for the answer.
 
-        ranges = dict(zip(variables, sranges))
-        for i in range(numsamples):
-            instructor_variables = self.strip_dict(dict(self.context))
-            student_variables = dict()
-            # ranges give numerical ranges for testing
-            for var in ranges:
-                # TODO: allow specified ranges (i.e. integers and complex numbers) for random variables
-                value = random.uniform(*ranges[var])
-                instructor_variables[str(var)] = value
-                student_variables[str(var)] = value
-            # log.debug('formula: instructor_vars=%s, expected=%s' %
-            # (instructor_variables,expected))
-            instructor_result = evaluator(instructor_variables, dict(),
-                                          expected, cs=self.case_sensitive)
+        Returns a tuple of formula evaluation results.
+        """
+        out = []
+        for var_dict in var_dict_list:
             try:
-                # log.debug('formula: student_vars=%s, given=%s' %
-                # (student_variables,given))
-                student_result = evaluator(student_variables,
-                                           dict(),
-                                           given,
-                                           cs=self.case_sensitive)
+                out.append(evaluator(
+                    var_dict,
+                    dict(),
+                    answer,
+                    cs=self.case_sensitive,
+                ))
             except UndefinedVariable as uv:
                 log.debug(
-                    'formularesponse: undefined variable in given=%s' % given)
+                    'formularesponse: undefined variable in formula=%s' % answer)
                 raise StudentInputError(
                     "Invalid input: " + uv.message + " not permitted in answer")
             except ValueError as ve:
@@ -1763,19 +1752,49 @@ class FormulaResponse(LoncapaResponse):
                     #   that tests on negative and/or non-integer inputs
                     # ve.message will be: `factorial() only accepts integral values` or `factorial() not defined for negative values`
                     log.debug(
-                        'formularesponse: factorial function used in response that tests negative and/or non-integer inputs. given={0}'.format(given))
+                        'formularesponse: factorial function used in response that tests negative and/or non-integer inputs. formula={0}'.format(answer))
                     raise StudentInputError(
-                        "factorial function not permitted in answer for this problem. Provided answer was: {0}".format(given))
+                        "factorial function not permitted in answer for this problem. Provided answer was: {0}".format(answer))
                 # If non-factorial related ValueError thrown, handle it the same as any other Exception
                 log.debug('formularesponse: error {0} in formula'.format(ve))
                 raise StudentInputError("Invalid input: Could not parse '%s' as a formula" %
-                                        cgi.escape(given))
+                                        cgi.escape(answer))
             except Exception as err:
                 # traceback.print_exc()
                 log.debug('formularesponse: error %s in formula' % err)
                 raise StudentInputError("Invalid input: Could not parse '%s' as a formula" %
-                                        cgi.escape(given))
-            if not compare_with_tolerance(student_result, instructor_result, self.tolerance):
+                                        cgi.escape(answer))
+        return tuple(out)
+
+    def randomize_variables(self, samples):
+        """
+        Returns a list of dictionaries mapping variables to random values in range,
+        as expected by hash_answers.
+        """
+        variables = samples.split('@')[0].split(',')
+        numsamples = int(samples.split('@')[1].split('#')[1])
+        sranges = zip(*map(lambda x: map(float, x.split(",")),
+                           samples.split('@')[1].split('#')[0].split(':')))
+        ranges = dict(zip(variables, sranges))
+
+        out = []
+        for i in range(numsamples):
+            var_dict = {}
+            # ranges give numerical ranges for testing
+            for var in ranges:
+                # TODO: allow specified ranges (i.e. integers and complex numbers) for random variables
+                value = random.uniform(*ranges[var])
+                var_dict[str(var)] = value
+            out.append(var_dict)
+        return out
+
+    def check_formula(self, expected, given, samples):
+        var_dict_list = self.randomize_variables(samples)
+        student_result = self.hash_answers(given, var_dict_list)
+        instructor_result = self.hash_answers(expected, var_dict_list)
+
+        for i in xrange(len(instructor_result)):
+            if not compare_with_tolerance(student_result[i], instructor_result[i], self.tolerance):
                 return "incorrect"
         return "correct"
 
