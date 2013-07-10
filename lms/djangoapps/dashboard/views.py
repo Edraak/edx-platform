@@ -4,14 +4,16 @@ import calendar
 import functools
 import time
 from datetime import date, datetime, timedelta
+from operator import itemgetter
+
 from django.http import Http404, HttpResponse
-from mitxmako.shortcuts import render_to_response
 from django.db import connections
 from django.conf import settings
+from mitxmako.shortcuts import render_to_response
 
+from django.contrib.auth.models import User
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
 from certificates.models import GeneratedCertificate
-from django.contrib.auth.models import User
 
 class prefer_secondary_db(object):
     """
@@ -19,7 +21,7 @@ class prefer_secondary_db(object):
 
     If an "replica" db is specified in django settings, 
     it is provided to the function as the the value of the
-    argument `readonly_db`.
+    argument `secondary_db`.
 
     Example:
 
@@ -34,7 +36,7 @@ class prefer_secondary_db(object):
     settings.py.  If a database named 'replica' is defined, it will
     return the number of users in the replica database.  If no such
     db is specified, it will return the number of users in the default
-    db
+    db.
 
     """
     def __init__(self, secondary_db):
@@ -46,9 +48,7 @@ class prefer_secondary_db(object):
     def __call__(self, fn):
         @functools.wraps(fn)
         def decorated(*args, **kwargs):
-            print "calling wrapped function with args", args, "end of args"
             kwargs['secondary_db'] = self.secondary_db
-            print "calling wrapped function with kwargs", kwargs
             return fn(*args, **kwargs)
 
         return decorated
@@ -100,7 +100,6 @@ def enrollment_history_map(request, days=7, secondary_db=None):
     
     # current time as a string
     start_of_interval = time.strftime("%Y-%m-%d %H:%M:%S", (datetime.now() - timedelta(days, 0)).timetuple())
-    print "summing enrollments since", start_of_interval
 
     # get a list of lists [[course_id, enrollments in last 7 days ]]
     recent_enrollments = SQL_query_to_list(cursor, """select course_id, count(*) 
@@ -127,7 +126,6 @@ def enrollment_history_map(request, days=7, secondary_db=None):
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
 def tojstime(sqldate):
-    print "Converting", sqldate, "to jstime.  It's of type", type(sqldate)
     pydt = None
 
     # depending on which db backend the django orm uses, we get different
@@ -139,9 +137,7 @@ def tojstime(sqldate):
         # MySQL returns datetime.date 
         pydt = datetime(sqldate.year, sqldate.month, sqldate.day)
     
-    print "python datetime is", pydt, type(pydt)
     jsts = (pydt - datetime(1970, 1, 1)).total_seconds()*1000
-    print "jstime timestamp is", jsts
     return jsts
 
 @prefer_secondary_db('replica')
@@ -184,14 +180,25 @@ def enrollment_history_timeseries(request, secondary_db=None):
                                            group by date(created)
                                            order by date(created) asc;""")[1:]    
     enrollments_each_day = [[tojstime(entry[0]), entry[1]] for entry in daily_enrollments]
+    
+    # get all daily signup counts, ignore the headers
+    daily_signups = SQL_query_to_list(cursor, """select date(date_joined), count(*) 
+                                           from auth_user 
+                                           group by date(date_joined)
+                                           order by date(date_joined) asc;""")[1:]    
+    signups_each_day = [[tojstime(entry[0]), entry[1]] for entry in daily_signups]
+   
     data = {
         "type": "timeseries",
-        "value_type": "Enrollments over the last few weeks",
         "all_series": 
         [
             {
-                "label": "edX-Wide Enrollments Each Day",
+                "label": "Enrollments Each Day",
                 "data": enrollments_each_day
+            },
+            {
+                "label": "New Accounts Each Day",
+                "data": signups_each_day
             }
         ]
     }
@@ -209,7 +216,7 @@ def get_course_summary_table(secondary_db=None):
     certificate_query = """
         select course_id as Course, count(user_id) as Certificates 
         from certificates_generatedcertificate
-        where status in ("downloadable", "restricted")
+        where status="downloadable"
         group by course_id
         order by Certificates desc;
         """
@@ -219,8 +226,8 @@ def get_course_summary_table(secondary_db=None):
     course_id_certificates_map = {row[0]:row[1] for row in course_id_certificates[1:]}
 
     # New Headers
-    org_course_run_information = [["School", "Course", "Run", "Enrollees", "Certificates", "% Certified"]]
-
+    headers = [["School", "Course", "Run", "Current Enrollees", "Certificates", "% Certified"]]
+    org_course_run_information = []
     # Updated Rows
     for course_id in set(course_id_certificates_map.keys()) | set(course_id_enrollments_map.keys()):
         org, course, run = parse_course_id(course_id)
@@ -232,8 +239,12 @@ def get_course_summary_table(secondary_db=None):
         else:
             new_row.append("-")
         org_course_run_information.append(new_row) 
+    
+    # sort by the number of enrolled students, descending
+    org_course_run_information = sorted(org_course_run_information, key=itemgetter(3))
+    org_course_run_information.reverse()
 
-    return org_course_run_information
+    return headers + org_course_run_information
 
 @prefer_secondary_db('replica')
 def dashboard(request, secondary_db=None):
@@ -250,12 +261,14 @@ def dashboard(request, secondary_db=None):
     # inner list represents a single row of the table
     results = {"scalars":[],"tables":{}}
 
-    results["scalars"].append(("Total Enrollments Across All Courses", CourseEnrollment.objects.using(secondary_db).count()))
-    results["scalars"].append(("Unique Usernames", User.objects.using(secondary_db).filter().count()))
+    results["scalars"].append(("Enrollments", CourseEnrollment.objects.using(secondary_db).count()))
+    results["scalars"].append(("Users", User.objects.using(secondary_db).filter().count()))
+
+    # include 7,157 for the first run of 6.002x... this should probably be a setting?
     results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(secondary_db).filter(status="downloadable").count() + 7157))
  
     # a summary list of lists (table) that shows enrollment and certificate information
-    results["tables"]["Course Enrollments"] = get_course_summary_table()
+    results["tables"]["Course Statistics"] = get_course_summary_table()
 
     context = {
         "results":results
