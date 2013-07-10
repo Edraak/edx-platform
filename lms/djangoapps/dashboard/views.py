@@ -1,9 +1,10 @@
 from django.http import Http404
 from mitxmako.shortcuts import render_to_response
-from django.db import connection
+from django.db import connections
 
 from student.models import CourseEnrollment
 from django.contrib.auth.models import User
+from util.databases import prefer_secondary_db
 
 
 def dictfetchall(cursor):
@@ -24,7 +25,8 @@ def SQL_query_to_list(cursor, query_string):
     raw_result=dictfetchall(cursor)
     return raw_result
 
-def dashboard(request):
+@prefer_secondary_db('replica')
+def dashboard(request, secondary_db=None):
     """
     Slightly less hackish hack to show staff enrollment numbers and other
     simple queries.  
@@ -36,21 +38,13 @@ def dashboard(request):
     if not request.user.is_staff:
         raise Http404
 
-    # results are passed to the template.  The template knows how to render
-    # two types of results: scalars and tables.  Scalars should be represented
-    # as "Visible Title": Value and tables should be lists of lists where each
-    # inner list represents a single row of the table
     results = {"scalars":{},"tables":{}}
 
-    # count how many users we have
-    results["scalars"]["Unique Usernames"]=User.objects.filter().count()
-    results["scalars"]["Activated Usernames"]=User.objects.filter(is_active=1).count()
-    
-    # count how many enrollments we have
-    results["scalars"]["Total Enrollments Across All Courses"]=CourseEnrollment.objects.count()
-
+    results["scalars"]["Total Enrollments Across All Courses"] = CourseEnrollment.objects.using(secondary_db).count()
+    results["scalars"]["Unique Usernames"] = User.objects.using(secondary_db).filter().count()
+    results["scalars"]["Activated Usernames"] = User.objects.using(secondary_db).filter(is_active=1).count()
     # establish a direct connection to the database (for executing raw SQL)
-    cursor = connection.cursor()
+    cursor = connections[secondary_db].cursor()
 
     # define the queries that will generate our user-facing tables
     # table queries need not take the form of raw SQL, but do in this case since
