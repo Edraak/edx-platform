@@ -4,7 +4,7 @@ from django.db import connections
 
 from student.models import CourseEnrollment
 from django.contrib.auth.models import User
-from util.databases import prefer_secondary_db
+from util.databases import prefer_alternate_db
 
 
 def dictfetchall(cursor):
@@ -25,8 +25,8 @@ def SQL_query_to_list(cursor, query_string):
     raw_result=dictfetchall(cursor)
     return raw_result
 
-@prefer_secondary_db('replica')
-def dashboard(request, secondary_db=None):
+@prefer_alternate_db('replica')
+def dashboard(request, alternate_db=None):
     """
     Slightly less hackish hack to show staff enrollment numbers and other
     simple queries.  
@@ -40,11 +40,11 @@ def dashboard(request, secondary_db=None):
 
     results = {"scalars":{},"tables":{}}
 
-    results["scalars"]["Total Enrollments Across All Courses"] = CourseEnrollment.objects.using(secondary_db).count()
-    results["scalars"]["Unique Usernames"] = User.objects.using(secondary_db).filter().count()
-    results["scalars"]["Activated Usernames"] = User.objects.using(secondary_db).filter(is_active=1).count()
+    results["scalars"]["Total Enrollments Across All Courses"] = CourseEnrollment.objects.using(alternate_db).count()
+    results["scalars"]["Unique Usernames"] = User.objects.using(alternate_db).filter().count()
+    results["scalars"]["Activated Usernames"] = User.objects.using(alternate_db).filter(is_active=1).count()
     # establish a direct connection to the database (for executing raw SQL)
-    cursor = connections[secondary_db].cursor()
+    cursor = connections[alternate_db].cursor()
 
     # define the queries that will generate our user-facing tables
     # table queries need not take the form of raw SQL, but do in this case since
