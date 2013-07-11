@@ -39,3 +39,6 @@ DATABASES["replica"] = {
     'HOST': '127.0.0.1',
     'PORT': '3306'
 }
+
+# Let admin_dashboard know about certificates issued to 6.002x's first run
+MITX_FEATURES['LEGACY_CERT_COUNT'] = 7157

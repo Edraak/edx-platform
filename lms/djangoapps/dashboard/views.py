@@ -219,7 +219,7 @@ def dashboard(request, alternate_db=None):
     # Calculate heads up numbers
     results["scalars"].append(("Enrollments", CourseEnrollment.objects.using(alternate_db).count()))
     results["scalars"].append(("Users", User.objects.using(alternate_db).filter().count()))
-    results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(alternate_db).filter(status="downloadable").count()))
+    results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(alternate_db).filter(status="downloadable").count() + settings.MITX_FEATURES.get('LEGACY_CERT_COUNT', 0)))
  
     # a summary list of lists (table) that shows enrollment and certificate information
     results["tables"]["Course Statistics"] = get_course_summary_table()
