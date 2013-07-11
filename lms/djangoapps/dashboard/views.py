@@ -7,12 +7,12 @@ from operator import itemgetter
 from django.http import Http404, HttpResponse
 from django.db import connections
 from django.conf import settings
-
 from mitxmako.shortcuts import render_to_response
+
 from django.contrib.auth.models import User
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
 from certificates.models import GeneratedCertificate
-from util.databases import prefer_secondary_db
+from util.databases import prefer_alternate_db
 
 def parse_course_id(course_id):
     """
@@ -46,8 +46,8 @@ def SQL_query_to_list(cursor, query_string):
     raw_result=dictfetchall(cursor)
     return raw_result
 
-@prefer_secondary_db('replica')
-def enrollment_history_map(request, days=7, secondary_db=None):
+@prefer_alternate_db('replica')
+def enrollment_history_map(request, days=7, alternate_db=None):
     """
     Returns a json object mapping each course_id to the number
     of enrollments in that course in the last `days`
@@ -55,9 +55,8 @@ def enrollment_history_map(request, days=7, secondary_db=None):
     """
     if not request.user.is_staff:
         raise Http404
-    assert secondary_db is not None
 
-    cursor = connections[secondary_db].cursor() 
+    cursor = connections[alternate_db].cursor() 
     
     # current time as a string
     start_of_interval = time.strftime("%Y-%m-%d %H:%M:%S", (datetime.now() - timedelta(days, 0)).timetuple())
@@ -101,8 +100,8 @@ def tojstime(sqldate):
     jsts = (pydt - datetime(1970, 1, 1)).total_seconds()*1000
     return jsts
 
-@prefer_secondary_db('replica')
-def enrollment_history_timeseries(request, secondary_db=None):
+@prefer_alternate_db('replica')
+def enrollment_history_timeseries(request, alternate_db=None):
     """
     Return a json object representing enrollment history for edX as a whole.
     Format:
@@ -124,13 +123,11 @@ def enrollment_history_timeseries(request, secondary_db=None):
         ]
     }
 
-
     """
     if not request.user.is_staff:
         raise Http404
-    assert secondary_db is not None
     
-    cursor = connections[secondary_db].cursor()
+    cursor = connections[alternate_db].cursor()
     today = calendar.timegm(datetime.now().timetuple()) * 1000
     yesterday = today - 86400000
     day_before_yesterday = today - 86400000*2
@@ -165,10 +162,10 @@ def enrollment_history_timeseries(request, secondary_db=None):
     }
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
-@prefer_secondary_db('replica')
-def get_course_summary_table(secondary_db=None):
+@prefer_alternate_db('replica')
+def get_course_summary_table(alternate_db=None):
     # establish a direct connections to the database (for executing raw SQL)
-    cursor = connections[secondary_db].cursor()
+    cursor = connections[alternate_db].cursor()
     enrollment_query = """
         select course_id as Course, count(user_id) as Students 
         from student_courseenrollment
@@ -207,32 +204,28 @@ def get_course_summary_table(secondary_db=None):
 
     return headers + org_course_run_information
 
-@prefer_secondary_db('replica')
-def dashboard(request, secondary_db=None):
+@prefer_alternate_db('replica')
+def dashboard(request, alternate_db=None):
     """
     Shows Enrollment and Certification KPIs to edX Staff
-
     """
+    # Show only to global staff users
     if not request.user.is_staff:
         raise Http404
 
-    # results are passed to the template.  The template knows how to render
-    # two types of results: scalars and tables.  Scalars should be represented
-    # as "Visible Title": Value and tables should be lists of lists where each
-    # inner list represents a single row of the table
+    # Everything but the data for the charts are passed with the template
     results = {"scalars":[],"tables":{}}
 
-    results["scalars"].append(("Enrollments", CourseEnrollment.objects.using(secondary_db).count()))
-    results["scalars"].append(("Users", User.objects.using(secondary_db).filter().count()))
-
-    # include 7,157 for the first run of 6.002x... this should probably be a setting?
-    results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(secondary_db).filter(status="downloadable").count() + 7157))
+    # Calculate heads up numbers
+    results["scalars"].append(("Enrollments", CourseEnrollment.objects.using(alternate_db).count()))
+    results["scalars"].append(("Users", User.objects.using(alternate_db).filter().count()))
+    results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(alternate_db).filter(status="downloadable").count()))
  
     # a summary list of lists (table) that shows enrollment and certificate information
     results["tables"]["Course Statistics"] = get_course_summary_table()
 
     context = {
-        "results":results
+        "results": results
     }
 
     return render_to_response("admin_dashboard.html",context)

@@ -2,20 +2,20 @@ import functools
 
 from django.conf import settings
 
-class prefer_secondary_db(object):
+class prefer_alternate_db(object):
     """
     Decorator. 
 
     If an "replica" db is specified in django settings, 
     it is provided to the function as the the value of the
-    argument `secondary_db`.
+    argument `alternate_db`.
 
     Example:
 
-    @prefer_secondary_db('replica')
-    def count_users(secondary_db=None):
-        assert secondary_db is not None
-        return User.objects.using(secondary_db).filter().count()
+    @prefer_alternate_db('replica')
+    def count_users(alternate_db=None):
+        assert alternate_db is not None
+        return User.objects.using(alternate_db).filter().count()
 
     count_users()
     
@@ -26,16 +26,17 @@ class prefer_secondary_db(object):
     db.
 
     """
-    def __init__(self, secondary_db):
-        if secondary_db in settings.DATABASES:
-            self.secondary_db = secondary_db
+
+    def __init__(self, alternate_db):
+        if alternate_db in settings.DATABASES:
+            self.alternate_db = alternate_db
         else:
-            self.secondary_db = 'default'
+            self.alternate_db = 'default'
 
     def __call__(self, fn):
         @functools.wraps(fn)
         def decorated(*args, **kwargs):
-            kwargs['secondary_db'] = self.secondary_db
+            kwargs['alternate_db'] = self.alternate_db
             return fn(*args, **kwargs)
 
         return decorated
