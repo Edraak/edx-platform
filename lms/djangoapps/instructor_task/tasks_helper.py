@@ -9,7 +9,7 @@ from time import time
 from sys import exc_info
 from traceback import format_exc
 import meliae.scanner as scanner
-
+from os.path import exists
 from celery import current_task
 from celery.utils.log import get_task_logger
 from celery.signals import worker_process_init
@@ -152,6 +152,11 @@ def perform_enrolled_student_update(course_id, _module_state_key, student_identi
     if getattr(settings, 'PERFORM_TASK_MEMORY_DUMP', True):
         request_task_id = _get_current_task().request.id
         filename = "meliae_dump_{}.dat".format(request_task_id)
+        # Hardcode the name of a dump directory to try to use.
+        # If if doesn't exist, just continue to use the "local" directory.
+        dirname = '/mnt/memdump/'
+        if exists(dirname):
+            filename = dirname + filename
         scanner.dump_all_objects(filename)
 
     return task_progress
