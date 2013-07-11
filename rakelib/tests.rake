@@ -46,6 +46,8 @@ task :test_docs do
     test_sh('rake builddocs')
     puts  (test_message  % ["rake doc[pub]"]).colorize( :light_green )
     test_sh('rake builddocs[pub]')
+    puts  (test_message  % ["rake doc[user]"]).colorize( :light_green )
+    test_sh('rake builddocs[user]')
 end
 
 task :clean_test_files do

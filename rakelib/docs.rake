@@ -4,9 +4,11 @@ require 'launchy'
 desc "Invoke sphinx 'make build' to generate docs."
 task :builddocs, [:options] do |t, args|
     if args.options == 'pub'
-        path = "doc/public"
+        path = "edxdocs/doc/public"
+    elsif args.options = 'user'
+        path = "edxdocs/userdocs"
     else
-        path = "docs"
+        path = "edxdocs/docs"
     end
 
     Dir.chdir(path) do
