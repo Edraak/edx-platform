@@ -26,7 +26,6 @@ class prefer_alternate_db(object):
     db.
 
     """
-
     def __init__(self, alternate_db):
         if alternate_db in settings.DATABASES:
             self.alternate_db = alternate_db
