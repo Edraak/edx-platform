@@ -37,6 +37,7 @@ from django_comment_common.models import (Role,
                                           FORUM_ROLE_COMMUNITY_TA)
 from django_comment_client.utils import has_forum_access
 from instructor.offline_gradecalc import student_grades, offline_grades_available
+from instructor import dashboard_data
 from instructor_task.api import (get_running_instructor_tasks,
                                  get_instructor_task_history,
                                  submit_rescore_problem_for_all_students,
@@ -704,6 +705,27 @@ def instructor_dashboard(request, course_id):
                       url, res.status_code, res.content)
         return None
 
+    sandbox_stuff = {}
+
+    if idash_mode == 'Sandbox':
+        sandbox_stuff = {"test":"hello world"}
+        # allgrades = get_student_grade_summary_data(request, course, course_id, get_grades=True, use_offline=use_offline)
+        # studentSubset = []
+        # count = 0
+        # for student in allgrades['students']:
+        #     if count < 10:
+        #         studentSubset.append(student)
+        #         count += 1
+        #     else:
+        #         break
+        # for i in range(max):
+        #     print "i", i
+        #     studentSubset[i] = allgrades['students'][i]
+        # allgrades['students'] = studentSubset
+        # sandbox_stuff['all_grades'] = allgrades
+#        sandbox_stuff['get_grades_false'] = get_student_grade_summary_data(request, course, course_id, get_grades=False, use_offline=use_offline)
+        sandbox_stuff['prob_grade_distrib'] = dashboard_data.get_problem_grade_distribution(course_id)
+
     analytics_results = {}
 
     if idash_mode == 'Analytics':
@@ -758,6 +780,7 @@ def instructor_dashboard(request, course_id):
                'cohorts_ajax_url': reverse('cohorts', kwargs={'course_id': course_id}),
 
                'analytics_results': analytics_results,
+               'sandbox_stuff':sandbox_stuff,
                }
 
     return render_to_response('courseware/instructor_dashboard.html', context)
