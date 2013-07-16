@@ -37,48 +37,4 @@ $(function () {
   };
   var barGraph = edx_d3CreateStackedBarGraph(param, svg, div);
   barGraph.drawGraph();
-
-  // Test code to make sure D3 working
-  // Adds an svg element to the div and sets it's size
-  var sampleSVG = d3.select("#viz")
-    .append("svg")
-    .attr("width", 500)
-    .attr("height", 500);    
-  
-  sampleSVG.append("circle")
-    .style("stroke", "gray")
-    .style("fill", "white")
-    .attr("r", 50)
-    .attr("cx", 100)
-    .attr("cy", 200)
-    .on("click", animate4)
-    .on("dblclick", animate1);
-  
-  function animate1() {
-    var element = d3.select(this);
-        element.transition()
-      .duration(1000)
-      .attr("cx",element.attr("cx") - 10);
-  }
-  
-  function animate4() {
-    var r = 10 + Math.floor(Math.random()*80);
-    var x = r + Math.floor(Math.random()*(500-r*2));
-    var y = r + Math.floor(Math.random()*(500-r*2));
-    var rColor = Math.floor(Math.random()*255);
-    var gColor = Math.floor(Math.random()*255);
-    var bColor = Math.floor(Math.random()*255);
-    d3.select(this)
-      .transition()
-      .duration(1000)
-      .attr("r", r)
-      .transition()
-      .delay(1000)
-      .duration(1000)
-      .attr("cy", y)
-      .attr("cx", x)
-            .style("fill", "rgb("+rColor+","+gColor+","+bColor+")");
-    
-  }
-  
 });
