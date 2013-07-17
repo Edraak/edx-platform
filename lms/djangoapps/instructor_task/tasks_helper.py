@@ -8,14 +8,12 @@ from json import JSONEncoder
 from time import time
 from sys import exc_info
 from traceback import format_exc
-import meliae.scanner as scanner
-from os.path import exists
+
 from celery import current_task
 from celery.utils.log import get_task_logger
 from celery.signals import worker_process_init
 from celery.states import SUCCESS, FAILURE
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import transaction, reset_queries
 from dogapi import dog_stats_api
@@ -102,7 +100,6 @@ def perform_enrolled_student_update(course_id, _module_state_key, student_identi
     # enrolled_students is too large to fit comfortably in memory, and subsequent
     # course grading requests lead to memory fragmentation.  So we will err here on the
     # side of smaller memory allocations at the cost of additional lookups.
-    # enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username')
     enrolled_students = User.objects.filter(courseenrollment__course_id=course_id)
 
     # Give the option of updating an individual student. If not specified,
@@ -153,11 +150,6 @@ def perform_enrolled_student_update(course_id, _module_state_key, student_identi
         # update task status:
         task_progress = get_task_progress()
         _get_current_task().update_state(state=PROGRESS, meta=task_progress)
-
-        # add temporary hack to make grading tasks finish more quickly!
-        # TODO: REMOVE THIS when done with debugging
-        if num_attempted == 1000:
-            break
 
     return task_progress
 
@@ -343,18 +335,6 @@ def run_update_task(entry_id, visit_fcn, update_fcn, action_name, filter_fcn):
 
     # Release any queries that the connection has been hanging onto:
     reset_queries()
-
-    # write out a dump of memory usage at the end of this, to see what is left
-    # around.  Enable it if it hasn't been explicitly disabled.
-    if action_name == 'graded' and getattr(settings, 'PERFORM_TASK_MEMORY_DUMP', True):
-        filename = "meliae_dump_{}.dat".format(task_id)
-        # Hardcode the name of a dump directory to try to use.
-        # If if doesn't exist, just continue to use the "local" directory.
-        dirname = '/mnt/memdump/'
-        if exists(dirname):
-            filename = dirname + filename
-        TASK_LOG.info('Dumping memory information to %s', filename)
-        scanner.dump_all_objects(filename)
 
     # log and exit, returning task_progress info as task result:
     TASK_LOG.info('Finishing %s: final: %s', task_info_string, task_progress)
