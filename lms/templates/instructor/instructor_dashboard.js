@@ -10,7 +10,7 @@ $(function () {
   var data = [];
   for (var key in prob_grade_distrib) {
     var d = {}
-    d.xValue = key;
+    d.xValue = prob_grade_distrib[key]['display_name'];
     d.stackData = [];
     for (var key2 in prob_grade_distrib[key]["grade_distrib"]) {
       var ary = prob_grade_distrib[key]["grade_distrib"][key2];
@@ -20,7 +20,7 @@ $(function () {
 
       bar.color = Math.floor(grade);
       bar.value = ary[1];
-      bar.tooltip = key+": Grade("+Math.floor(grade)+"%) "+ary[1]+" student(s)";
+      bar.tooltip = prob_grade_distrib[key]['display_name']+": Grade("+Math.floor(grade)+"%) "+ary[1]+" student(s)";
 
       d.stackData.push(bar);
     }
@@ -34,6 +34,8 @@ $(function () {
   var param = {
     data: data,
     width: 1000,
+    height: 1000,
+    bVerticalXAxisLabel: true,
   };
   var barGraph = edx_d3CreateStackedBarGraph(param, svg, div);
   barGraph.drawGraph();

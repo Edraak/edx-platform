@@ -24,6 +24,8 @@ There are three parameters:
 
   colorRange - Array of either the min and max or ordered ordinals (default: calculated min and max or ordered ordinals given in data)
 
+  bVerticalXAxisLabel - Boolean whether to make the labels in the x-axis veritcal (default: false)
+
 (2) Parameter is a d3 pointer to the SVG the graph will draw itself in.
 
 (3) Parameter is a d3 pointer to a div that will be used for the graph's tooltip.
@@ -81,6 +83,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
       xRange : undefined,
       colorRange : undefined,
       tag : "",
+      bVerticalXAxisLabel : false,
     },
     divTooltip : divTooltip,
   };
@@ -181,8 +184,13 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
   }
 
   tmpEl.text(longestXAxisStr);
-  state.margin.axisX = document.getElementById("stacked-bar-graph-long-str")
-    .clientHeight+state.margin.bottom;
+  if (state.bVerticalXAxisLabel) {
+    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str")
+      .getComputedTextLength()+state.margin.bottom;
+  } else {
+    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str")
+      .clientHeight+state.margin.bottom;
+  }
 
   tmpEl.remove();
 
@@ -393,9 +401,14 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
     // Draw Axes
     graph.svgGroup.xAxis = graph.svgGroup.main.append("g")
       .attr("class","stacked-bar-graph-axis")
-      .attr("id",graph.state.tag+"x-axis")
-      .attr("transform","translate(0,"+
-            (graph.state.height-graph.state.margin.axisX)+")")
+      .attr("id",graph.state.tag+"x-axis");
+
+    var tmpS = "translate(0,"+(graph.state.height-graph.state.margin.axisX)+")";
+    if (graph.state.bVerticalXAxisLabel) {
+      graph.axis.x.orient("left");
+      tmpS = "rotate(270), translate(-"+(graph.state.height-graph.state.margin.axisX)+",0)";
+    }
+    graph.svgGroup.xAxis.attr("transform", tmpS)
       .call(graph.axis.x);
 
     graph.svgGroup.yAxis = graph.svgGroup.main.append("g")
