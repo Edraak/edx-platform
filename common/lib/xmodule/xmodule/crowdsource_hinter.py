@@ -7,6 +7,7 @@ Currently experimental - not for instructor use, yet.
 import logging
 import json
 import random
+import requests
 
 from pkg_resources import resource_string
 
@@ -89,6 +90,16 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         except AttributeError:
             # This response type is not supported!
             log.exception('Response type not supported for hinting: ' + str(responder))
+
+        # Transmit info to edInsights.
+        payload = {'msg': json.dumps({
+            'course_id': self.system.course_id,
+            'problem_id': self.location,
+            'moderate': self.moderate,
+            'display_only': False,
+            'debug': self.debug,
+        })}
+        r = requests.get('http://127.0.0.1:9022/httpevent', params=payload)
 
     def get_html(self):
         """
