@@ -6,35 +6,10 @@
 $(function () {
   var d3_prob_grade_distrib = ${json.dumps(sandbox_stuff['d3_prob_grade_distrib'])}
   console.log(d3_prob_grade_distrib);
-  var prob_grade_distrib = ${json.dumps(sandbox_stuff['prob_grade_distrib'])}
-  console.log(prob_grade_distrib);
 
-  var data = [];
-  for (var key in prob_grade_distrib) {
-    var d = {}
-    d.xValue = prob_grade_distrib[key]['display_name'];
-    d.stackData = [];
-    for (var key2 in prob_grade_distrib[key]["grade_distrib"]) {
-      var ary = prob_grade_distrib[key]["grade_distrib"][key2];
-      var bar = {};
-
-      var grade = (ary[0]*100.0)/prob_grade_distrib[key]["max_grade"];
-
-      bar.color = Math.floor(grade);
-      bar.value = ary[1];
-      bar.tooltip = prob_grade_distrib[key]['display_name']+": Grade("+Math.floor(grade)+"%) "+ary[1]+" student(s)";
-
-      d.stackData.push(bar);
-    }
-    data.push(d);
-  }
-
-  console.log("instructor_dashboard.js line 30");
-  console.log(data);
   var svg = d3.select("#viz").append("svg");
   var div = d3.select("#viz").append("div");
   var param = {
-//    data: data,
     data: d3_prob_grade_distrib,
     width: 1000,
     height: 1000,

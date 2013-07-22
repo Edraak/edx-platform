@@ -701,48 +701,6 @@ def instructor_dashboard(request, course_id):
 
     if idash_mode == 'Sandbox':
         sandbox_stuff = {"test":"hello world"}
-        # allgrades = get_student_grade_summary_data(request, course, course_id, get_grades=True, use_offline=use_offline)
-        # studentSubset = []
-        # count = 0
-        # for student in allgrades['students']:
-        #     if count < 10:
-        #         studentSubset.append(student)
-        #         count += 1
-        #     else:
-        #         break
-        # for i in range(max):
-        #     print "i", i
-        #     studentSubset[i] = allgrades['students'][i]
-        # allgrades['students'] = studentSubset
-        # sandbox_stuff['all_grades'] = allgrades
-#        sandbox_stuff['get_grades_false'] = get_student_grade_summary_data(request, course, course_id, get_grades=False, use_offline=use_offline)
-        filter_list = ['xml_attributes', 'checklists']
-        course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
-        info = {}
-        def dump_into_dict(module, info):
-            filtered_metadata = dict((key, value) for key, value in own_metadata(module).iteritems()
-                                     if key not in filter_list)
-            info[module.location.url()] = {
-                'category': module.location.category,
-                'children': module.children if hasattr(module, 'children') else [],
-                'metadata': filtered_metadata
-                }
-            
-            for child in module.get_children():
-                dump_into_dict(child, info)
-                
-        dump_into_dict(course, info)
-        sandbox_stuff['info'] = info
-
-        prob_grade_distrib = dashboard_data.get_problem_grade_distribution(course_id)
-
-        for prob_id in prob_grade_distrib:
-            if prob_id in info:
-                prob_grade_distrib[prob_id]['display_name'] = "("+ prob_id+") "+info[prob_id]['metadata']['display_name']
-            else:
-                prob_grade_distrib[prob_id]['display_name'] = "("+ prob_id+") ???"
-
-        sandbox_stuff['prob_grade_distrib'] = prob_grade_distrib
         sandbox_stuff['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
 
     analytics_results = {}
