@@ -4,6 +4,8 @@
 %>
 
 $(function () {
+  var d3_prob_grade_distrib = ${json.dumps(sandbox_stuff['d3_prob_grade_distrib'])}
+  console.log(d3_prob_grade_distrib);
   var prob_grade_distrib = ${json.dumps(sandbox_stuff['prob_grade_distrib'])}
   console.log(prob_grade_distrib);
 
@@ -32,7 +34,8 @@ $(function () {
   var svg = d3.select("#viz").append("svg");
   var div = d3.select("#viz").append("div");
   var param = {
-    data: data,
+//    data: data,
+    data: d3_prob_grade_distrib,
     width: 1000,
     height: 1000,
     bVerticalXAxisLabel: true,

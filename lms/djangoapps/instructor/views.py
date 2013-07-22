@@ -743,6 +743,7 @@ def instructor_dashboard(request, course_id):
                 prob_grade_distrib[prob_id]['display_name'] = "("+ prob_id+") ???"
 
         sandbox_stuff['prob_grade_distrib'] = prob_grade_distrib
+        sandbox_stuff['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
 
     analytics_results = {}
 
