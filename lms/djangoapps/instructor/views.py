@@ -11,6 +11,7 @@ import re
 import requests
 from requests.status_codes import codes
 from collections import OrderedDict
+from time import time
 
 from StringIO import StringIO
 
@@ -64,6 +65,30 @@ def split_by_comma_and_whitespace(s):
     return re.split(r'[\s,]', s)
 
 
+def return_csv(fn, datatable, fp=None):
+    """
+    Outputs a CSV file from the contents of a datatable.
+
+    Uses the 'header' and 'data' keys of the datatable dict.
+    """
+    starttime = time()
+    if fp is None:
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(fn)
+    else:
+        response = fp
+    writer = csv.writer(response, dialect='excel', quotechar='"', quoting=csv.QUOTE_ALL)
+#    writer.writerow(datatable['header'])
+    writer.writerow(unicode(datatable['header']).encode('utf-8'))
+    for datarow in datatable['data']:
+        encoded_row = [unicode(s).encode('utf-8') for s in datarow]
+        writer.writerow(encoded_row)
+
+    endtime = time()
+    print("   Duration for return_csv call on {}: {} secs".format(fn, (endtime - starttime)))
+    return response
+
+
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 def instructor_dashboard(request, course_id):
@@ -108,20 +133,6 @@ def instructor_dashboard(request, course_id):
                     data.append(["{}.{}".format(namespace, field.name), json.dumps(field.read_json(course))])
         datatable['data'] = data
         return datatable
-
-    def return_csv(fn, datatable, fp=None):
-        """Outputs a CSV file from the contents of a datatable."""
-        if fp is None:
-            response = HttpResponse(mimetype='text/csv')
-            response['Content-Disposition'] = 'attachment; filename={0}'.format(fn)
-        else:
-            response = fp
-        writer = csv.writer(response, dialect='excel', quotechar='"', quoting=csv.QUOTE_ALL)
-        writer.writerow(datatable['header'])
-        for datarow in datatable['data']:
-            encoded_row = [unicode(s).encode('utf-8') for s in datarow]
-            writer.writerow(encoded_row)
-        return response
 
     def get_staff_group(course):
         """Get or create the staff access group"""
@@ -187,7 +198,6 @@ def instructor_dashboard(request, course_id):
 
     # process actions from form POST
     action = request.POST.get('action', '')
-    use_offline = True  # request.POST.get('use_offline_grades', False)
 
     if settings.MITX_FEATURES['ENABLE_MANUAL_GIT_RELOAD']:
         if 'GIT pull' in action:
@@ -979,7 +989,7 @@ def remove_user_from_group(request, username_or_email, group, group_title, event
     return _add_or_remove_user_group(request, username_or_email, group, group_title, event_name, False)
 
 
-def get_student_grade_summary_data(request, course, course_id, get_grades=True, get_raw_scores=False):
+def get_student_grade_summary_data(request, course, course_id, get_grades=True, get_raw_scores=False, get_external_email=True):
     '''
     Return data arrays with student identity and grades for specified course.
 
@@ -997,15 +1007,29 @@ def get_student_grade_summary_data(request, course, course_id, get_grades=True, 
     If get_raw_scores=True, then instead of grade summaries, the raw grades for all graded modules are returned.
 
     '''
+    starttime = time()
     # add check that grades exist
     if get_grades and not offline_grades_available(course_id):
         return None
 
-    enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username')
+    # Fetch the current list of enrolled students -- we only want to return grades for them.
+    # So we will skip the students who had grades calculated before but who are no longer enrolled,
+    # and we output (flagged) entries for those students who enrolled since grades were last calculated.
+    # (Note that we no longer prefetch "groups" here, since we are not calculating grades here anyway.)
+    enrolled_students = User.objects.filter(courseenrollment__course_id=course_id)
+    enrolled_students = enrolled_students.order_by('username').select_related("profile", "externalauthmap")
 
-    header = ['ID', 'Username', 'Full Name', 'edX email', 'External email', 'Updated']
+    # For "small" courses, we will add extra columns that are too expensive to determine for large courses.
+    is_small_course = enrolled_students.count() < 500
+
+    # set up header:
+    header = ['ID', 'Username', 'Full Name', 'edX email']
+    if (get_external_email or is_small_course):
+        header.append('External email')
+
     assignments = []
     if get_grades and enrolled_students.count() > 0:
+        header.append('Updated')
         # get grades for the first student, just to construct the header
         gradeset = student_grades(enrolled_students[0], request, course)
         # log.debug('student {0} gradeset {1}'.format(enrolled_students[0], gradeset))
@@ -1020,18 +1044,19 @@ def get_student_grade_summary_data(request, course, course_id, get_grades=True, 
 
     for student in enrolled_students:
         datarow = [student.id, student.username, student.profile.name, student.email]
-        try:
-            datarow.append(student.externalauthmap.external_email)
-        except:  # ExternalAuthMap.DoesNotExist
-            datarow.append('')
+        if (get_external_email or is_small_course):
+            try:
+                datarow.append(student.externalauthmap.external_email)
+            except:  # ExternalAuthMap.DoesNotExist
+                datarow.append('')
 
         if get_grades:
             gradeset = student_grades(student, request, course)
-            log.debug('student={0}, gradeset={1}'.format(student, gradeset))
+#            log.debug('student={0}, gradeset={1}'.format(student, gradeset))
             # add date when grade was fetched:
             # TODO: figure out if this needs formatting, particularly for csv
-            # datarow.append(gradeset['updated'].isoformat())
-            datarow.append('updated-goes-here')
+            datarow.append(gradeset['updated'].isoformat())
+
             if get_raw_scores:
                 # TODO (ichuang) encode Score as dict instead of as list, so score[0] -> score['earned']
                 sgrades = [(getattr(score, 'earned', '') or score[0]) for score in gradeset['raw_scores']]
@@ -1042,6 +1067,10 @@ def get_student_grade_summary_data(request, course, course_id, get_grades=True, 
 
         data.append(datarow)
     datatable['data'] = data
+
+    endtime = time()
+    print("   Duration for get_student_grade_summary_data call on {}: {} secs".format(course_id, (endtime - starttime)))
+
     return datatable
 
 #-----------------------------------------------------------------------------
@@ -1524,4 +1553,3 @@ def student_grades(student, request, course):
         gradedict['created'] = ocg.created
         gradedict['updated'] = ocg.updated
         return gradedict
-
