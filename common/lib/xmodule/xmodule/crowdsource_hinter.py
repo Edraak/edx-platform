@@ -76,7 +76,8 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
     def __init__(self, *args, **kwargs):
         XModule.__init__(self, *args, **kwargs)
         # We need to know whether we are working with a FormulaResponse problem.
-        responder = self.get_display_items()[0].lcp.responders.values()[0]
+        self.problem = self.get_display_items()[0]
+        responder = self.problem.lcp.responders.values()[0]
         self.is_formula = (type(responder) == FormulaResponse)
         if self.is_formula:
             self.answer_to_str = self.formula_answer_to_str
@@ -93,8 +94,8 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
 
         # Transmit info to edInsights.
         payload = {'msg': json.dumps({
-            'course_id': self.system.course_id,
-            'problem_id': self.location,
+            'location': self.problem.location,
+            'user': self.system.anonymous_student_id,
             'moderate': self.moderate,
             'display_only': False,
             'debug': self.debug,
@@ -196,67 +197,66 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             # Sometimes, we get an answer that's just not parsable.  Do nothing.
             log.exception('Answer not parsable: ' + str(data))
             return
-        if not self.validate_answer(answer):
-            # Answer is not in the right form.
-            log.exception('Answer not valid: ' + str(answer))
-            return
-        if answer not in self.user_submissions:
-            self.user_submissions += [answer]
-        # Look for a hint to give.
-        # Make a local copy of self.hints - this means we only need to do one json unpacking.
-        # (This is because xblocks storage makes the following command a deep copy.)
-        local_hints = self.hints
-        # For all answers similar enough to our own, accumulate all hints together.
-        # Also track the original answer of each hint.
-        matching_answers = self.get_matching_answers(answer)
-        matching_hints = {}
-        for matching_answer in matching_answers:
-            temp_dict = local_hints[matching_answer]
-            for key, value in temp_dict.items():
-                # Each value now has hint, votes, matching_answer.
-                temp_dict[key] = value + [matching_answer]
-            matching_hints.update(local_hints[matching_answer])
-        # matching_hints now maps pk's to lists of [hint, votes, matching_answer]
-        if len(matching_hints) == 0:
-            # No hints to give.  Return.
-            return
-        # Get the top hint, plus two random hints.
-        n_hints = len(matching_hints)
-        hints = []
-        best_hint_index = max(matching_hints, key=lambda key: matching_hints[key][1])
-        hints.append(matching_hints[best_hint_index][0])
-        best_hint_answer = matching_hints[best_hint_index][2]
-        # The brackets surrounding the index are for backwards compatability purposes.
-        # (It used to be that each answer was paired with multiple hints in a list.)
-        self.previous_answers += [[best_hint_answer, [best_hint_index]]]
-        for i in xrange(min(2, n_hints-1)):
-            # Keep making random hints until we hit a target, or run out.
-            go_on = False
-            while not go_on:
-                (hint_index, (rand_hint, votes, hint_answer)) =\
-                    random.choice(matching_hints.items())
-                if not rand_hint in hints:
-                    go_on = True
-            hints.append(rand_hint)
-            self.previous_answers += [[hint_answer, [hint_index]]]
-        return {'hints': hints,
-                'answer': answer}
+        # Transmit info to edInsights.
+        payload = {'in_dict_json': json.dumps({
+            'location': self.problem.location,
+            'answer': answer,
+            'user': self.system.anonymous_student_id,
+            'number_best': 1,
+            'number_random': 2,
+        })}
+        r = requests.get('http://127.0.0.1:9022/query/get_hint', params=payload)
+        response_dict = json.loads(r.text)
+        return {
+            'hints': response_dict['hints'],
+            'answer': answer,
+        }
 
-        # rand_hint_1 = ''
-        # rand_hint_2 = ''
-        # if n_hints == 2:
-        #     best_hint = matching_hints.values()[0][0]
-        #     best_hint_index = matching_hints.keys()[0]
-        #     rand_hint_1 = matching_hints.values()[1][0]
-        #     hint_index_1 = matching_hints.keys()[1]
-        #     rand_hint_2 = ''
-        #     self.previous_answers += [[answer, [best_hint_index, hint_index_1]]]
-        # else:
-        #     (hint_index_1, rand_hint_1), (hint_index_2, rand_hint_2) =\
-        #         random.sample(matching_hints.items(), 2)
-        #     rand_hint_1 = rand_hint_1[0]
-        #     rand_hint_2 = rand_hint_2[0]
-        #     self.previous_answers += [[answer, [best_hint_index, hint_index_1, hint_index_2]]]
+        # if not self.validate_answer(answer):
+        #     # Answer is not in the right form.
+        #     log.exception('Answer not valid: ' + str(answer))
+        #     return
+        # if answer not in self.user_submissions:
+        #     self.user_submissions += [answer]
+        # # Look for a hint to give.
+        # # Make a local copy of self.hints - this means we only need to do one json unpacking.
+        # # (This is because xblocks storage makes the following command a deep copy.)
+        # local_hints = self.hints
+        # # For all answers similar enough to our own, accumulate all hints together.
+        # # Also track the original answer of each hint.
+        # matching_answers = self.get_matching_answers(answer)
+        # matching_hints = {}
+        # for matching_answer in matching_answers:
+        #     temp_dict = local_hints[matching_answer]
+        #     for key, value in temp_dict.items():
+        #         # Each value now has hint, votes, matching_answer.
+        #         temp_dict[key] = value + [matching_answer]
+        #     matching_hints.update(local_hints[matching_answer])
+        # # matching_hints now maps pk's to lists of [hint, votes, matching_answer]
+        # if len(matching_hints) == 0:
+        #     # No hints to give.  Return.
+        #     return
+        # # Get the top hint, plus two random hints.
+        # n_hints = len(matching_hints)
+        # hints = []
+        # best_hint_index = max(matching_hints, key=lambda key: matching_hints[key][1])
+        # hints.append(matching_hints[best_hint_index][0])
+        # best_hint_answer = matching_hints[best_hint_index][2]
+        # # The brackets surrounding the index are for backwards compatability purposes.
+        # # (It used to be that each answer was paired with multiple hints in a list.)
+        # self.previous_answers += [[best_hint_answer, [best_hint_index]]]
+        # for i in xrange(min(2, n_hints-1)):
+        #     # Keep making random hints until we hit a target, or run out.
+        #     go_on = False
+        #     while not go_on:
+        #         (hint_index, (rand_hint, votes, hint_answer)) =\
+        #             random.choice(matching_hints.items())
+        #         if not rand_hint in hints:
+        #             go_on = True
+        #     hints.append(rand_hint)
+        #     self.previous_answers += [[hint_answer, [hint_index]]]
+        # return {'hints': hints,
+        #         'answer': answer}
 
     def get_feedback(self, data):
         """
@@ -361,32 +361,14 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         # Do html escaping.  Perhaps in the future do profanity filtering, etc. as well.
         hint = escape(data['hint'])
         answer = data['answer']
-        if not self.validate_answer(answer):
-            log.exception('Failure in hinter submit_hint: Unable to parse answer: ' + answer)
-            return {'error': 'Could not submit answer'}
-        # Only allow a student to vote or submit a hint once.
-        if self.user_voted:
-            return {'message': 'Sorry, but you have already voted!'}
-        # Add the new hint to self.hints or self.mod_queue.  (Awkward because a direct write
-        # is necessary.)
-        if self.moderate == 'True':
-            temp_dict = self.mod_queue
-        else:
-            temp_dict = self.hints
-        if answer in temp_dict:
-            temp_dict[answer][str(self.hint_pk)] = [hint, 1]     # With one vote (the user himself).
-        else:
-            temp_dict[answer] = {str(self.hint_pk): [hint, 1]}
-        self.hint_pk += 1
-        if self.moderate == 'True':
-            self.mod_queue = temp_dict
-        else:
-            self.hints = temp_dict
-        # Mark the user has having voted; reset previous_answers
-        self.user_voted = True
-        self.previous_answers = []
-        self.user_submissions = []
-        return {'message': 'Thank you for your hint!'}
+        payload = {'in_dict_json': json.dumps({
+            'answer': answer,
+            'hint': hint,
+            'user': self.system.anonymous_student_id,
+            'location': self.problem.location,
+        })}
+        r = requests.get('http://127.0.0.1:9022/query/submit_hint', params=payload)
+        return {'message': r.text}
 
 
 class CrowdsourceHinterDescriptor(CrowdsourceHinterFields, RawDescriptor):
