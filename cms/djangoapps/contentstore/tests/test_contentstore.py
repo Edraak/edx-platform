@@ -87,6 +87,8 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         self.user.is_active = True
         # Staff has access to view all courses
         self.user.is_staff = True
+
+        # Save the data that we've just changed to the db.
         self.user.save()
 
         self.client = Client()
@@ -117,6 +119,10 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
 
         course.advanced_modules = component_types
 
+        # Save the data that we've just changed to the underlying
+        # MongoKeyValueStore before we update the mongo datastore.
+        course.save()
+
         store.update_metadata(course.location, own_metadata(course))
 
         # just pick one vertical
@@ -134,7 +140,7 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         self.check_components_on_page(ADVANCED_COMPONENT_TYPES, ['Video Alpha',
                                                                  'Word cloud',
                                                                  'Annotation',
-                                                                 'Open Ended Grading',
+                                                                 'Open Response Assessment',
                                                                  'Peer Grading Interface'])
 
     def test_advanced_components_require_two_clicks(self):
@@ -239,6 +245,9 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
 
         self.assertNotIn('graceperiod', own_metadata(html_module))
         html_module.lms.graceperiod = new_graceperiod
+        # Save the data that we've just changed to the underlying
+        # MongoKeyValueStore before we update the mongo datastore.
+        html_module.save()
         self.assertIn('graceperiod', own_metadata(html_module))
         self.assertEqual(html_module.lms.graceperiod, new_graceperiod)
 
@@ -801,6 +810,34 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
 
         shutil.rmtree(root_dir)
 
+    def test_export_course_with_metadata_only_video(self):
+        module_store = modulestore('direct')
+        draft_store = modulestore('draft')
+        content_store = contentstore()
+
+        import_from_xml(module_store, 'common/test/data/', ['toy'])
+        location = CourseDescriptor.id_to_location('edX/toy/2012_Fall')
+
+        # create a new video module and add it as a child to a vertical
+        # this re-creates a bug whereby since the video template doesn't have
+        # anything in 'data' field, the export was blowing up
+        verticals = module_store.get_items(['i4x', 'edX', 'toy', 'vertical', None, None])
+
+        self.assertGreater(len(verticals), 0)
+
+        parent = verticals[0]
+
+        ItemFactory.create(parent_location=parent.location, category="video", display_name="untitled")
+
+        root_dir = path(mkdtemp_clean())
+
+        print 'Exporting to tempdir = {0}'.format(root_dir)
+
+        # export out to a tempdir
+        export_to_xml(module_store, content_store, location, root_dir, 'test_export', draft_modulestore=draft_store)
+
+        shutil.rmtree(root_dir)
+
     def test_course_handouts_rewrites(self):
         module_store = modulestore('direct')
 
@@ -855,6 +892,9 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         # add a bool piece of unknown metadata so we can verify we don't throw an exception
         metadata['new_metadata'] = True
 
+        # Save the data that we've just changed to the underlying
+        # MongoKeyValueStore before we update the mongo datastore.
+        course.save()
         module_store.update_metadata(location, metadata)
 
         print 'Exporting to tempdir = {0}'.format(root_dir)
@@ -1271,6 +1311,7 @@ class ContentStoreTest(ModuleStoreTestCase):
         # now let's define an override at the leaf node level
         #
         new_module.lms.graceperiod = timedelta(1)
+        new_module.save()
         module_store.update_metadata(new_module.location, own_metadata(new_module))
 
         # flush the cache and refetch

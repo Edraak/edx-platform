@@ -125,8 +125,15 @@ class VideoDescriptor(VideoFields,
             url identifiers
         """
         video = super(VideoDescriptor, cls).from_xml(xml_data, system, org, course)
-        _parse_video_xml(video, xml_data)
+        _parse_video_xml(video, video.data)
         return video
+
+    def definition_to_xml(self, resource_fs):
+        """
+        Override the base implementation. We don't actually have anything in the 'data' field
+        (it's an empty string), so we just return a simple XML element
+        """
+        return etree.Element('video')
 
 
 def _parse_video_xml(video, xml_data):
@@ -139,10 +146,6 @@ def _parse_video_xml(video, xml_data):
     display_name = xml.get('display_name')
     if display_name:
         video.display_name = display_name
-    elif video.url_name is not None:
-        # copies the logic of display_name_with_default in order that studio created videos will have an
-        # initial non guid name
-        video.display_name = video.url_name.replace('_', ' ')
 
     youtube = xml.get('youtube')
     if youtube:
