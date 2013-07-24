@@ -326,7 +326,9 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
       .attr("height", function(d) {
           return graph.scale.y(d.y0) - graph.scale.y(d.y1);
       })
-      .style("fill", function(d) { return graph.scale.stackColor(d.color); });
+      .style("fill", function(d) { return graph.scale.stackColor(d.color); })
+      .style("stroke", "white")
+      .style("stroke-width", "0.5px");
 
     // Setup tooltip
     if (graph.divTooltip != undefined) {
@@ -379,7 +381,8 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
         .attr("class","stacked-bar-graph-legend-rect")
         .attr("height", graph.legend.barHeight)
         .attr("width", graph.legend.width)
-        .style("fill", graph.scale.stackColor);
+        .style("fill", graph.scale.stackColor)
+        .style("stroke", "white");
 
       graph.svgGroup.legendGs.append("text")
         .attr("class","axis-label")
