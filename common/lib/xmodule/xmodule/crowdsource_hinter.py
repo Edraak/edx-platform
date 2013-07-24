@@ -23,6 +23,7 @@ from calc import evaluator, UndefinedVariable
 from pyparsing import ParseException
 
 from django.utils.html import escape
+from django.conf import settings
 
 log = logging.getLogger(__name__)
 
@@ -96,11 +97,11 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         payload = {'msg': json.dumps({
             'location': self.problem.location,
             'user': self.system.anonymous_student_id,
-            'moderate': self.moderate,
+            'moderate': False,    # self.moderate,
             'display_only': False,
             'debug': self.debug,
         })}
-        r = requests.get('http://127.0.0.1:9022/httpevent', params=payload)
+        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'httpevent', params=payload)
 
     def get_html(self):
         """
@@ -205,58 +206,14 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             'number_best': 1,
             'number_random': 2,
         })}
-        r = requests.get('http://127.0.0.1:9022/query/get_hint', params=payload)
+        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/get_hint', params=payload)
         response_dict = json.loads(r.text)
+        if not response_dict['success']:
+            return response_dict
         return {
             'hints': response_dict['hints'],
             'answer': answer,
         }
-
-        # if not self.validate_answer(answer):
-        #     # Answer is not in the right form.
-        #     log.exception('Answer not valid: ' + str(answer))
-        #     return
-        # if answer not in self.user_submissions:
-        #     self.user_submissions += [answer]
-        # # Look for a hint to give.
-        # # Make a local copy of self.hints - this means we only need to do one json unpacking.
-        # # (This is because xblocks storage makes the following command a deep copy.)
-        # local_hints = self.hints
-        # # For all answers similar enough to our own, accumulate all hints together.
-        # # Also track the original answer of each hint.
-        # matching_answers = self.get_matching_answers(answer)
-        # matching_hints = {}
-        # for matching_answer in matching_answers:
-        #     temp_dict = local_hints[matching_answer]
-        #     for key, value in temp_dict.items():
-        #         # Each value now has hint, votes, matching_answer.
-        #         temp_dict[key] = value + [matching_answer]
-        #     matching_hints.update(local_hints[matching_answer])
-        # # matching_hints now maps pk's to lists of [hint, votes, matching_answer]
-        # if len(matching_hints) == 0:
-        #     # No hints to give.  Return.
-        #     return
-        # # Get the top hint, plus two random hints.
-        # n_hints = len(matching_hints)
-        # hints = []
-        # best_hint_index = max(matching_hints, key=lambda key: matching_hints[key][1])
-        # hints.append(matching_hints[best_hint_index][0])
-        # best_hint_answer = matching_hints[best_hint_index][2]
-        # # The brackets surrounding the index are for backwards compatability purposes.
-        # # (It used to be that each answer was paired with multiple hints in a list.)
-        # self.previous_answers += [[best_hint_answer, [best_hint_index]]]
-        # for i in xrange(min(2, n_hints-1)):
-        #     # Keep making random hints until we hit a target, or run out.
-        #     go_on = False
-        #     while not go_on:
-        #         (hint_index, (rand_hint, votes, hint_answer)) =\
-        #             random.choice(matching_hints.items())
-        #         if not rand_hint in hints:
-        #             go_on = True
-        #     hints.append(rand_hint)
-        #     self.previous_answers += [[hint_answer, [hint_index]]]
-        # return {'hints': hints,
-        #         'answer': answer}
 
     def get_feedback(self, data):
         """
@@ -268,32 +225,27 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             - 'answer_to_hints': a nested dictionary.
               answer_to_hints[answer][hint_pk] returns the text of the hint.
         """
-        # The student got it right.
-        # Did he submit at least one wrong answer?
-        if len(self.previous_answers) == 0:
-            # No.  Nothing to do here.
-            return
-        # Make a hint-voting interface for each wrong answer.  The student will only
-        # be allowed to make one vote / submission, but he can choose which wrong answer
-        # he wants to look at.
-        answer_to_hints = {}    # answer_to_hints[answer text][hint pk] -> hint text
+        # Talk to edInsights.
+        payload = {'in_dict_json': json.dumps({
+            'location': self.problem.location,
+            'user': self.system.anonymous_student_id,
+        })}
+        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/hint_history', params=payload)
+        response_dict = json.loads(r.text)
+        if not response_dict['success']:
+            return response_dict
 
-        # Go through each previous answer, and populate index_to_hints and index_to_answer.
-        for i in xrange(len(self.previous_answers)):
-            answer, hints_offered = self.previous_answers[i]
+        # Process the response.
+        if len(response_dict['previous_answers']) == 0:
+            # No wrong answers = nothing for user to submit here.
+            return
+        answer_to_hints = {}
+        for hint_id, answer, text in response_dict['hints_shown']:
             if answer not in answer_to_hints:
                 answer_to_hints[answer] = {}
-            if answer in self.hints:
-                # Go through each hint, and add to index_to_hints
-                for hint_id in hints_offered:
-                    if (hint_id is not None) and (hint_id not in answer_to_hints[answer]):
-                        try:
-                            answer_to_hints[answer][hint_id] = self.hints[answer][str(hint_id)][0]
-                        except KeyError:
-                            # Sometimes, the hint that a user saw will have been deleted by the instructor.
-                            continue
+            answer_to_hints[answer][hint_id] = text
         return {'answer_to_hints': answer_to_hints,
-                'user_submissions': self.user_submissions}
+                'user_submissions': response_dict['previous_answers']}
 
     def tally_vote(self, data):
         """
@@ -367,8 +319,11 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             'user': self.system.anonymous_student_id,
             'location': self.problem.location,
         })}
-        r = requests.get('http://127.0.0.1:9022/query/submit_hint', params=payload)
-        return {'message': r.text}
+        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/submit_hint', params=payload)
+        response_dict = json.loads(r.text)
+        if not response_dict['success']:
+            return response_dict
+        return {'message': 'Thank you for your hint!'}
 
 
 class CrowdsourceHinterDescriptor(CrowdsourceHinterFields, RawDescriptor):

@@ -248,6 +248,8 @@ MITX_FEATURES['ENABLE_PEARSON_LOGIN'] = False
 ANALYTICS_SERVER_URL = "http://127.0.0.1:9000/"
 ANALYTICS_API_KEY = ""
 
+EDINSIGHTS_SERVER_URL = "http://127.0.0.1:9022/"
+
 ##### segment-io  ######
 
 # If there's an environment variable set, grab it and turn on segment io
