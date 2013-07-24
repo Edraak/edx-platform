@@ -7,9 +7,11 @@ experimental, and should not be used in new courses, yet.
 
 import json
 import re
+import requests
 
 from django.http import HttpResponse, Http404
 from django_future.csrf import ensure_csrf_cookie
+from django.conf import settings
 
 from mitxmako.shortcuts import render_to_response, render_to_string
 
@@ -29,9 +31,7 @@ def hint_manager(request, course_id):
         out = 'Sorry, but students are not allowed to access the hint manager!'
         return HttpResponse(out)
     if request.method == 'GET':
-        out = get_hints(request, course_id, 'mod_queue')
-        out.update({'error': ''})
-        return render_to_response('instructor/hint_manager.html', out)
+        return pick_problem(request, course_id)
     field = request.POST['field']
     if not (field == 'mod_queue' or field == 'hints'):
         # Invalid field.  (Don't let users continue - they may overwrite other db's)
@@ -54,6 +54,20 @@ def hint_manager(request, course_id):
     render_dict.update({'error': error_text})
     rendered_html = render_to_string('instructor/hint_manager_inner.html', render_dict)
     return HttpResponse(json.dumps({'success': True, 'contents': rendered_html}))
+
+
+def pick_problem(request, course_id):
+    # Make a menu of all the problems that have hinting.
+    payload = {'in_dict_json': json.dumps({
+        'course': course_id,
+    })}
+    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/list_problems', params=payload)
+    response_dict = json.loads(r.text)
+    # r_d['problems'] contains a list of [location, name] tuples.
+    return render_to_response(
+        'instructor/hint_manager.html', 
+        {'problems': response_dict['problems']}
+    )
 
 
 def get_hints(request, course_id, field):

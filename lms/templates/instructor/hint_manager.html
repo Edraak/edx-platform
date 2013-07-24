@@ -19,7 +19,7 @@
             changed_votes.push($(this))
           });
 
-        $("#hint-delete").click(function(){
+        $("#hint-delete").bind("click", function(){
             var data_dict = {'op': 'delete hints',
                              'field': field}
             var i = 1
@@ -38,7 +38,7 @@
             });
         });
 
-        $("#update-votes").click(function(){
+        $("#update-votes").bind("click", function(){
             var data_dict = {'op': 'change votes',
                              'field': field}
             for (var i=0; i<changed_votes.length; i++) {
@@ -54,7 +54,7 @@
             });        
         });
 
-        $("#switch-fields").click(function(){
+        $("#switch-fields").bind("click", function(){
             out_dict = {'op': 'switch fields',
                         'field': $(this).attr("other-field")};
             $.ajax(window.location.pathname, {
@@ -65,7 +65,7 @@
               });
         });
 
-        $(".submit-new-hint").click(function(){
+        $(".submit-new-hint").bind("click", function(){
             problem_name = $(this).data("problem");
             hint_text = $(".submit-hint-text").filter('*[data-problem="'+problem_name+'"]').val();
             hint_answer = $(".submit-hint-answer").filter('*[data-problem="'+problem_name+'"]').val();
@@ -81,7 +81,7 @@
             });
         });
 
-        $("#approve").click(function(){
+        $("#approve").bind("click", function(){
             var data_dict = {'op': 'approve',
                              'field': field}
             var i = 1
@@ -98,6 +98,16 @@
                 data: data_dict,
                 success: update_contents
             });
+        });
+
+        $(".problem-name").bind("click", function(){
+            // When a user initially picks a problem.
+            var data_dict = {
+                'problem': $(this).attr("data-location"),
+                'op': 'switch-fields',
+                'field': 'mod_queue',
+            };
+
         });
     }
 
@@ -117,7 +127,14 @@
 <div class="instructor-dashboard-wrapper">
 
     <section class="instructor-dashboard-content">
-        ${content.main()}
+        ## This stuff gets replaced when ajax calls are made.
+        <h1> Welcome to hint management </h1>
+        <p> Pick a problem below: </p>
+        % for location, name in problems:
+            <p><a class="problem-name" data-location="${location}">
+                ${name}
+            </a></p>
+        % endfor
     </section>
 
 </div>

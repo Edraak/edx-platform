@@ -32,6 +32,13 @@ class CrowdsourceHinterFields(object):
     """Defines fields for the crowdsource hinter module."""
     has_children = True
 
+    moderate = String(help='String "True"/"False" - activates moderation', scope=Scope.content,
+                      default='False')
+    debug = String(help='String "True"/"False" - allows multiple voting', scope=Scope.content,
+                   default='False')
+    display_only = String(help='If True, then students will not be asked to submit hints',
+                          scope=Scope.content, default='False')
+
 
 class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
     """
@@ -77,11 +84,11 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         payload = {'msg': json.dumps({
             'location': self.problem.location,
             'user': self.system.anonymous_student_id,
-            'moderate': False,    # self.moderate,
-            'display_only': False,
-            'debug': self.debug,
+            'moderate': self.moderate == 'True',
+            'display_only': self.display_only == 'True',
+            'debug': self.debug == 'True',
         })}
-        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'httpevent', params=payload)
+        requests.get(settings.EDINSIGHTS_SERVER_URL + 'httpevent', params=payload)
 
     def get_html(self):
         """
@@ -89,14 +96,6 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         hinter and of the problem.
         - Dependent on lon-capa problem.
         """
-        if self.debug == 'True':
-            # Reset the user vote, for debugging only!
-            self.user_voted = False
-        if self.hints == {}:
-            # Force self.hints to be written into the database.  (When an xmodule is initialized,
-            # fields are not added to the db until explicitly changed at least once.)
-            self.hints = {}
-
         try:
             child = self.get_display_items()[0]
             out = child.get_html()
@@ -205,6 +204,9 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             - 'answer_to_hints': a nested dictionary.
               answer_to_hints[answer][hint_pk] returns the text of the hint.
         """
+        if self.display_only == 'True':
+            # display_only means that we don't collect hints.
+            return
         # Talk to edInsights.
         payload = {'in_dict_json': json.dumps({
             'location': self.problem.location,
