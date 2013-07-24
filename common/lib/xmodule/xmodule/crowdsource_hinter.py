@@ -32,26 +32,6 @@ class CrowdsourceHinterFields(object):
     """Defines fields for the crowdsource hinter module."""
     has_children = True
 
-    moderate = String(help='String "True"/"False" - activates moderation', scope=Scope.content,
-                      default='False')
-    debug = String(help='String "True"/"False" - allows multiple voting', scope=Scope.content,
-                   default='False')
-    # Usage: hints[answer] = {str(pk): [hint_text, #votes]}
-    # hints is a dictionary that takes answer keys.
-    # Each value is itself a dictionary, accepting hint_pk strings as keys,
-    # and returning [hint text, #votes] pairs as values
-    hints = Dict(help='A dictionary containing all the active hints.', scope=Scope.content, default={})
-    mod_queue = Dict(help='A dictionary containing hints still awaiting approval', scope=Scope.content,
-                     default={})
-    hint_pk = Integer(help='Used to index hints.', scope=Scope.content, default=0)
-
-    # A list of previous answers this student made to this problem.
-    # Of the form [answer, [hint_pk_1, ...]] for each problem.
-    previous_answers = List(help='A list of hints viewed.', scope=Scope.user_state, default=[])
-    user_submissions = List(help='A list of previous submissions', scope=Scope.user_state, default=[])
-    user_voted = Boolean(help='Specifies if the user has voted on this problem or not.',
-                         scope=Scope.user_state, default=False)
-
 
 class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
     """
@@ -261,43 +241,18 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
                        
         Returns key 'hint_and_votes', a list of (hint_text, #votes) pairs.
         """
-        if self.user_voted:
-            return {'error': 'Sorry, but you have already voted!'}
-        ans = data['answer']
-        if not self.validate_answer(ans):
-            # Uh oh.  Invalid answer.
-            log.exception('Failure in hinter tally_vote: Unable to parse answer: ' + ans)
-            return {'error': 'Failure in voting!'}
-        hint_pk = str(data['hint'])
-        # We use temp_dict because we need to do a direct write for the database to update.
-        temp_dict = self.hints
-        try:
-            temp_dict[ans][hint_pk][1] += 1
-        except KeyError:
-            log.exception('Failure in hinter tally_vote: User voted for non-existant hint: Answer=' +
-                          ans + ' pk=' + hint_pk)
-            return {'error': 'Failure in voting!'}
-        self.hints = temp_dict
-        # Don't let the user vote again!
-        self.user_voted = True
+        # Talk to edInsights.
+        payload = {'in_dict_json': json.dumps({
+            'location': self.problem.location,
+            'user': self.system.anonymous_student_id,
+            'id': str(data['hint']),
+        })}
+        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/vote', params=payload)
+        response_dict = json.loads(r.text)
+        if not response_dict['success']:
+            return response_dict
 
-        # Return a list of how many votes each hint got.
-        pk_list = json.loads(data['pk_list'])
-        hint_and_votes = []
-        for answer, vote_pk in pk_list:
-            if not self.validate_answer(answer):
-                log.exception('In hinter tally_vote, couldn\'t parse ' + answer)
-                continue
-            try:
-                hint_and_votes.append(temp_dict[answer][str(vote_pk)])
-            except KeyError:
-                log.exception('In hinter tally_vote, couldn\'t find: '
-                              + answer + ', ' + str(vote_pk))
-
-        hint_and_votes.sort(key=lambda pair: pair[1], reverse=True)
-        # Reset self.previous_answers and user_submissions.
-        self.previous_answers = []
-        self.user_submissions = []
+        hint_and_votes = [[hint, votes] for hint, hint_id, votes in response_dict['vote_counts']]
         return {'hint_and_votes': hint_and_votes}
 
     def submit_hint(self, data):
