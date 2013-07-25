@@ -6,7 +6,6 @@ experimental, and should not be used in new courses, yet.
 """
 
 import json
-import re
 import requests
 
 from django.http import HttpResponse, Http404
@@ -16,11 +15,8 @@ from django.conf import settings
 from mitxmako.shortcuts import render_to_response, render_to_string
 
 from courseware.courses import get_course_with_access
-from courseware.models import XModuleContentField
-import courseware.module_render as module_render
-import courseware.model_data as model_data
-from xmodule.modulestore import Location
-from xmodule.modulestore.django import modulestore
+
+special_keys = ['field', 'op', 'location']
 
 
 @ensure_csrf_cookie
@@ -50,14 +46,14 @@ def hint_manager(request, course_id):
     error_text = switch_dict[request.POST['op']](request, course_id, field)
     if error_text is None:
         error_text = ''
-    render_dict = get_hints(request, course_id, field)
+    render_dict = get_hints(request, course_id)
     render_dict.update({'error': error_text})
     rendered_html = render_to_string('instructor/hint_manager_inner.html', render_dict)
     return HttpResponse(json.dumps({'success': True, 'contents': rendered_html}))
 
 
 def pick_problem(request, course_id):
-    # Make a menu of all the problems that have hinting.
+    """Make a menu of all the problems that have hinting."""
     payload = {'in_dict_json': json.dumps({
         'course': course_id,
     })}
@@ -65,19 +61,20 @@ def pick_problem(request, course_id):
     response_dict = json.loads(r.text)
     # r_d['problems'] contains a list of [location, name] tuples.
     return render_to_response(
-        'instructor/hint_manager.html', 
+        'instructor/hint_manager.html',
         {'problems': response_dict['problems']}
     )
 
 
-def get_hints(request, course_id, field):
+def get_hints(request, course_id):
     """
     Load all of the hints submitted to the course.
 
     Args:
-    `request` -- Django request object.
+    `request` -- Django request object.  Required to have the following keys:
+        - 'field' - either 'mod_queue' or 'hints'
+        - 'location' - a json-encoded list representing the location of the problem.
     `course_id` -- The course id, like 'Me/19.002/test_course'
-    `field` -- Either 'hints' or 'mod_queue'; specifies which set of hints to load.
 
     Keys in returned dict:
         - 'field': Same as input
@@ -87,6 +84,7 @@ def get_hints(request, course_id, field):
           Sorted by answer.
         - 'id_to_name': A dictionary mapping problem id to problem name.
     """
+    field = request.POST['field']
     if field == 'mod_queue':
         other_field = 'hints'
         field_label = 'Hints Awaiting Moderation'
@@ -95,63 +93,28 @@ def get_hints(request, course_id, field):
         other_field = 'mod_queue'
         field_label = 'Approved Hints'
         other_field_label = 'Hints Awaiting Moderation'
-    # The course_id is of the form school/number/classname.
-    # We want to use the course_id to find all matching definition_id's.
-    # To do this, just take the school/number part - leave off the classname.
-    chopped_id = '/'.join(course_id.split('/')[:-1])
-    chopped_id = re.escape(chopped_id)
-    all_hints = XModuleContentField.objects.filter(field_name=field, definition_id__regex=chopped_id)
-    # big_out_dict[problem id] = [[answer, {pk: [hint, votes]}], sorted by answer]
-    # big_out_dict maps a problem id to a list of [answer, hints] pairs, sorted in order of answer.
-    big_out_dict = {}
-    # id_to name maps a problem id to the name of the problem.
-    # id_to_name[problem id] = Display name of problem
-    id_to_name = {}
 
-    for hints_by_problem in all_hints:
-        loc = Location(hints_by_problem.definition_id)
-        name = location_to_problem_name(loc)
-        if name is None:
-            continue
-        id_to_name[hints_by_problem.definition_id] = name
-
-        def answer_sorter(thing):
-            """
-            `thing` is a tuple, where `thing[0]` contains an answer, and `thing[1]` contains
-            a dict of hints.  This function returns an index based on `thing[0]`, which
-            is used as a key to sort the list of things.
-            """
-            try:
-                return float(thing[0])
-            except ValueError:
-                # Put all non-numerical answers first.
-                return float('-inf')
-
-        # Answer list contains [answer, dict_of_hints] pairs.
-        answer_list = sorted(json.loads(hints_by_problem.value).items(), key=answer_sorter)
-        big_out_dict[hints_by_problem.definition_id] = answer_list
-
+    # Make request to edInsights
+    location_list = json.loads(request.POST['location'])
+    payload = {'in_dict_json': json.dumps({
+        'location': location_list,
+        'field': field,
+    })}
+    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/dump_hints', params=payload)
+    response_dict = json.loads(r.text)
+    # all_hints is a list of [id, answer, hint text, votes] sublists for each hint.
+    all_hints = response_dict['hints']
+    # Sort by answer, then by number of votes.
+    all_hints.sort(key=lambda sublist: sublist[3], reverse=True)    # Number of votes
+    all_hints.sort(key=lambda sublist: sublist[1])    # Answer
     render_dict = {'field': field,
                    'other_field': other_field,
                    'field_label': field_label,
                    'other_field_label': other_field_label,
-                   'all_hints': big_out_dict,
-                   'id_to_name': id_to_name}
+                   'all_hints': all_hints,
+                   'location': request.POST['location'],
+                   'problem_name': response_dict['problem_name']}
     return render_dict
-
-
-def location_to_problem_name(loc):
-    """
-    Given the location of a crowdsource_hinter module, try to return the name of the
-    problem it wraps around.  Return None if the hinter no longer exists.
-    """
-    try:
-        descriptor = modulestore().get_items(loc)[0]
-        return descriptor.get_children()[0].display_name
-    except IndexError:
-        # Sometimes, the problem is no longer in the course.  Just
-        # don't include said problem.
-        return None
 
 
 def delete_hints(request, course_id, field):
@@ -159,26 +122,28 @@ def delete_hints(request, course_id, field):
     Deletes the hints specified.
 
     `request.POST` contains some fields keyed by integers.  Each such field contains a
-    [problem_defn_id, answer, pk] tuple.  These tuples specify the hints to be deleted.
+    [answer, pk] tuple.  These tuples specify the hints to be deleted.
 
     Example `request.POST`:
     {'op': 'delete_hints',
      'field': 'mod_queue',
-      1: ['problem_whatever', '42.0', '3'],
-      2: ['problem_whatever', '32.5', '12']}
+     'location': [...],
+      1: ['42.0', '3'],
+      2: ['32.5', '12']}
     """
-
+    pks_to_delete = []
     for key in request.POST:
-        if key == 'op' or key == 'field':
+        if key in special_keys:
             continue
-        problem_id, answer, pk = request.POST.getlist(key)
-        # Can be optimized - sort the delete list by problem_id, and load each problem
-        # from the database only once.
-        this_problem = XModuleContentField.objects.get(field_name=field, definition_id=problem_id)
-        problem_dict = json.loads(this_problem.value)
-        del problem_dict[answer][pk]
-        this_problem.value = json.dumps(problem_dict)
-        this_problem.save()
+        answer, pk = request.POST.getlist(key)
+        pks_to_delete.append(pk)
+    payload = {'in_dict_json': json.dumps({
+        'to_delete': pks_to_delete
+    })}
+    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/delete_hints', params=payload)
+    response = json.loads(r.text)
+    if not response['success']:
+        return response['error']
 
 
 def change_votes(request, course_id, field):
@@ -186,19 +151,20 @@ def change_votes(request, course_id, field):
     Updates the number of votes.
 
     The numbered fields of `request.POST` contain [problem_id, answer, pk, new_votes] tuples.
-    - Very similar to `delete_hints`.  Is there a way to merge them?  Nah, too complicated.
+    - Very similar to `delete_hints`.
     """
-
+    updated_votes = []    # List of [pk, new_votes]
     for key in request.POST:
-        if key == 'op' or key == 'field':
+        if key in special_keys:
             continue
-        problem_id, answer, pk, new_votes = request.POST.getlist(key)
-        this_problem = XModuleContentField.objects.get(field_name=field, definition_id=problem_id)
-        problem_dict = json.loads(this_problem.value)
-        # problem_dict[answer][pk] points to a [hint_text, #votes] pair.
-        problem_dict[answer][pk][1] = int(new_votes)
-        this_problem.value = json.dumps(problem_dict)
-        this_problem.save()
+        updated_votes.append(request.POST.getlist(key)[1:3])
+    payload = {'in_dict_json': json.dumps({
+        'updated_votes': updated_votes
+    })}
+    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/change_votes', params=payload)
+    response = json.loads(r.text)
+    if not response['success']:
+        return response['error']
 
 
 def add_hint(request, course_id, field):
@@ -206,39 +172,23 @@ def add_hint(request, course_id, field):
     Add a new hint.  `request.POST`:
     op
     field
-    problem - The problem id
+    location - A json-encoded location tuple for the problem
     answer - The answer to which a hint will be added
     hint - The text of the hint
     """
-
-    problem_id = request.POST['problem']
+    location = request.POST['location']
     answer = request.POST['answer']
     hint_text = request.POST['hint']
-
-    # Validate the answer.  This requires initializing the xmodules, which
-    # is annoying.
-    loc = Location(problem_id)
-    descriptors = modulestore().get_items(loc)
-    m_d_c = model_data.ModelDataCache(descriptors, course_id, request.user)
-    hinter_module = module_render.get_module(request.user, request, loc, m_d_c, course_id)
-    if not hinter_module.validate_answer(answer):
-        # Invalid answer.  Don't add it to the database, or else the
-        # hinter will crash when we encounter it.
-        return 'Error - the answer you specified is not properly formatted: ' + str(answer)
-
-    this_problem = XModuleContentField.objects.get(field_name=field, definition_id=problem_id)
-
-    hint_pk_entry = XModuleContentField.objects.get(field_name='hint_pk', definition_id=problem_id)
-    this_pk = int(hint_pk_entry.value)
-    hint_pk_entry.value = this_pk + 1
-    hint_pk_entry.save()
-
-    problem_dict = json.loads(this_problem.value)
-    if answer not in problem_dict:
-        problem_dict[answer] = {}
-    problem_dict[answer][this_pk] = [hint_text, 1]
-    this_problem.value = json.dumps(problem_dict)
-    this_problem.save()
+    payload = {'in_dict_json': json.dumps({
+        'location': json.loads(location),
+        'answer': answer,
+        'hint': hint_text,
+        'user': 'instructor',
+    })}
+    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/submit_hint', params=payload)
+    response = json.loads(r.text)
+    if not response['success']:
+        return response['error']
 
 
 def approve(request, course_id, field):
@@ -248,24 +198,16 @@ def approve(request, course_id, field):
     op, field
     (some number) -> [problem, answer, pk]
     """
-
+    to_approve = []    # List of pk's to approve.
     for key in request.POST:
-        if key == 'op' or key == 'field':
+        if key in special_keys:
             continue
-        problem_id, answer, pk = request.POST.getlist(key)
-        # Can be optimized - sort the delete list by problem_id, and load each problem
-        # from the database only once.
-        problem_in_mod = XModuleContentField.objects.get(field_name=field, definition_id=problem_id)
-        problem_dict = json.loads(problem_in_mod.value)
-        hint_to_move = problem_dict[answer][pk]
-        del problem_dict[answer][pk]
-        problem_in_mod.value = json.dumps(problem_dict)
-        problem_in_mod.save()
-
-        problem_in_hints = XModuleContentField.objects.get(field_name='hints', definition_id=problem_id)
-        problem_dict = json.loads(problem_in_hints.value)
-        if answer not in problem_dict:
-            problem_dict[answer] = {}
-        problem_dict[answer][pk] = hint_to_move
-        problem_in_hints.value = json.dumps(problem_dict)
-        problem_in_hints.save()
+        answer, pk = request.POST.getlist(key)
+        to_approve.append(pk)
+    payload = {'in_dict_json': json.dumps({
+        'to_approve': to_approve
+    })}
+    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/approve_hints', params=payload)
+    response = json.loads(r.text)
+    if not response['success']:
+        return response['error']

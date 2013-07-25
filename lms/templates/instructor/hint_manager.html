@@ -13,21 +13,24 @@
 
   <script>
     function setup() {
-        field = $("#field-label").html()
-        changed_votes = []
+        var field = $("#field-label").html();
+        var prob_location = $("#location").attr("data-location");
+        var changed_votes = [];
         $(".votes").on('input', function() {
-            changed_votes.push($(this))
+            changed_votes.push($(this));
           });
 
         $("#hint-delete").bind("click", function(){
             var data_dict = {'op': 'delete hints',
-                             'field': field}
+                             'field': field,
+                             'location': prob_location}
             var i = 1
             $(".hint-select").each(function(){
                 if ($(this).is(":checked")) {
-                    data_dict[i] = [$(this).parent().attr("data-problem"), 
-                                    $(this).parent().attr("data-answer"), 
-                                    $(this).parent().attr("data-pk")];
+                    data_dict[i] = [
+                        $(this).parent().attr("data-answer"), 
+                        $(this).parent().attr("data-pk")
+                    ];
                     i += 1
                 }
             });
@@ -40,12 +43,14 @@
 
         $("#update-votes").bind("click", function(){
             var data_dict = {'op': 'change votes',
-                             'field': field}
+                             'field': field,
+                             'location': prob_location}
             for (var i=0; i<changed_votes.length; i++) {
-                data_dict[i] = [$(changed_votes[i]).parent().attr("data-problem"), 
-                                $(changed_votes[i]).parent().attr("data-answer"), 
-                                $(changed_votes[i]).parent().attr("data-pk"),
-                                $(changed_votes[i]).val()];
+                data_dict[i] = [
+                    $(changed_votes[i]).parent().attr("data-answer"), 
+                    $(changed_votes[i]).parent().attr("data-pk"),
+                    $(changed_votes[i]).val()
+                ];
             }
             $.ajax(window.location.pathname, {
                 type: "POST", 
@@ -56,7 +61,8 @@
 
         $("#switch-fields").bind("click", function(){
             out_dict = {'op': 'switch fields',
-                        'field': $(this).attr("other-field")};
+                        'field': $(this).attr("other-field"),
+                        'location': prob_location};
             $.ajax(window.location.pathname, {
                 type: "POST",
                 data: out_dict,
@@ -65,13 +71,12 @@
               });
         });
 
-        $(".submit-new-hint").bind("click", function(){
-            problem_name = $(this).data("problem");
-            hint_text = $(".submit-hint-text").filter('*[data-problem="'+problem_name+'"]').val();
-            hint_answer = $(".submit-hint-answer").filter('*[data-problem="'+problem_name+'"]').val();
+        $("#submit-new-hint").bind("click", function(){
+            hint_answer = $("#submit-hint-answer").val();
+            hint_text = $("#submit-hint-text").val();
             data_dict = {'op': 'add hint',
                          'field': field,
-                         'problem': problem_name,
+                         'location': prob_location,
                          'answer': hint_answer,
                          'hint': hint_text};
             $.ajax(window.location.pathname, {
@@ -83,13 +88,15 @@
 
         $("#approve").bind("click", function(){
             var data_dict = {'op': 'approve',
-                             'field': field}
+                             'field': field,
+                             'location': prob_location}
             var i = 1
             $(".hint-select").each(function(){
                 if ($(this).is(":checked")) {
-                    data_dict[i] = [$(this).parent().attr("data-problem"), 
-                                    $(this).parent().attr("data-answer"), 
-                                    $(this).parent().attr("data-pk")];
+                    data_dict[i] = [
+                        $(this).parent().attr("data-answer"), 
+                        $(this).parent().attr("data-pk")
+                    ];
                     i += 1
                 }
             });
@@ -103,10 +110,15 @@
         $(".problem-name").bind("click", function(){
             // When a user initially picks a problem.
             var data_dict = {
-                'problem': $(this).attr("data-location"),
-                'op': 'switch-fields',
+                'op': 'switch fields',
                 'field': 'mod_queue',
+                'location': $(this).attr("data-location"),
             };
+            $.ajax(window.location.pathname, {
+                type: "POST",
+                data: data_dict,
+                success: update_contents
+            });
 
         });
     }
@@ -130,8 +142,9 @@
         ## This stuff gets replaced when ajax calls are made.
         <h1> Welcome to hint management </h1>
         <p> Pick a problem below: </p>
+        <% import json %>
         % for location, name in problems:
-            <p><a class="problem-name" data-location="${location}">
+            <p><a class="problem-name" data-location='${json.dumps(location)}'>
                 ${name}
             </a></p>
         % endfor
