@@ -17,7 +17,7 @@ class StudentModuleExpand(models.Model):
     attempts = models.IntegerField(null=True, blank=True, db_index=True)
 
     # Values from StudentModule
-    module_type = models.CharField(max_length=32 default='problem', db_index=True)
+    module_type = models.CharField(max_length=32, default='problem', db_index=True)
     module_state_key = models.CharField(max_length=255, db_index=True, db_column='module_id')
     student = models.ForeignKey(User, db_index=True)
     course_id = models.CharField(max_length=255, db_index=True)
@@ -32,17 +32,15 @@ class StudentModuleExpand(models.Model):
     modified = models.DateTimeField(auto_now=True, db_index=True)
 
 
-class OfflineComputedGradeConverted(models.Model):
+class StudentGrades(models.Model):
     """
     Converted version of courseware's model OfflineComputedGrade. For a given
     instance of OfflineComptuedGrade there will be multiple instances of this.
       
     """
 
-    # From OfflineComputedGrade
-    offline_computed_grade_id = models.ForeignKey(OfflineComputedGrade)
-    user = models.ForeignKey(User, db_index=True)
     course_id = models.CharField(max_length=255, db_index=True)
+    user = models.ForeignKey(User, db_index=True)
 
     # New Stuff
     LEVEL_TYPES = (('course','course'),
