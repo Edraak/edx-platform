@@ -19,6 +19,7 @@ from xmodule.x_module import XModule
 from xmodule.stringify import stringify_children
 from xmodule.mako_module import MakoModuleDescriptor
 from xmodule.xml_module import XmlDescriptor
+from xmodule.editing_module import XMLEditingDescriptor
 from xblock.core import Scope, String, Dict, Boolean, List
 
 log = logging.getLogger(__name__)
@@ -135,7 +136,7 @@ class PollModule(PollFields, XModule):
             'reset': str(self.descriptor.xml_attributes.get('reset', 'true')).lower()})
 
 
-class PollDescriptor(PollFields, MakoModuleDescriptor, XmlDescriptor):
+class PollDescriptor(PollFields, XMLEditingDescriptor, XmlDescriptor):
     _tag_name = 'poll_question'
     _child_tag_name = 'answer'
 
