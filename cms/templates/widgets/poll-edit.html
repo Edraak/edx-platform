@@ -1,0 +1,14 @@
+<%! from django.utils.translation import ugettext as _ %>
+
+<div class="wrapper-comp-editor" id="editor-tab">
+    <section class="html-editor editor">
+      <ul class="editor-tabs">
+        <li><a href="#" class="html-tab tab" data-tab="advanced">${_("HTML")}</a></li>
+      </ul>
+
+      <div class="row">
+        <textarea name="" class="edit-box">${module.question |h}</textarea>
+      </div>
+    </section>
+</div>
+<%include file="metadata-edit.html" />
