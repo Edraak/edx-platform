@@ -268,4 +268,4 @@ except ImportError:
 
 
 ########################## QUERYABLE TABLES ########################
-INSTALLED_APPS += ('queryable_tables',)
+INSTALLED_APPS += ('queryable',)
