@@ -6,7 +6,7 @@ class StudentModuleExpand(models.Model):
     """
     Expanded version of courseware's model StudentModule. This is only for
     instances of module type 'problem'. Adds attribute 'attempts' that is pulled
-    out of the json in the state.
+    out of the json in the state attribute.
     """
     
     EXPAND_TYPES = {'problem'}
@@ -34,9 +34,7 @@ class StudentModuleExpand(models.Model):
 
 class StudentGrades(models.Model):
     """
-    Converted version of courseware's model OfflineComputedGrade. For a given
-    instance of OfflineComptuedGrade there will be multiple instances of this.
-      
+    Holds student grades, as seen on the progress page, at three levels: course, assignment type, and assignment.
     """
 
     course_id = models.CharField(max_length=255, db_index=True)
