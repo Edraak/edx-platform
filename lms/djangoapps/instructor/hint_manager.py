@@ -19,6 +19,19 @@ from courseware.courses import get_course_with_access
 special_keys = ['field', 'op', 'location']
 
 
+def _make_edInsights_query(query_name, data):
+    """
+    Makes a request to edInsights, and returns the response as a
+    dictionary.
+    """
+    payload = {'in_dict_json': json.dumps(data)}
+    r = requests.get(
+        settings.EDINSIGHTS_SERVER_URL + 'query/' + query_name, 
+        params=payload,
+        headers={'AUTHORIZATION': settings.EDINSIGHTS_PASSWORD}
+    )
+    return json.loads(r.text)
+
 @ensure_csrf_cookie
 def hint_manager(request, course_id):
     try:
@@ -54,11 +67,8 @@ def hint_manager(request, course_id):
 
 def pick_problem(request, course_id):
     """Make a menu of all the problems that have hinting."""
-    payload = {'in_dict_json': json.dumps({
-        'course': course_id,
-    })}
-    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/list_problems', params=payload)
-    response_dict = json.loads(r.text)
+    data = {'course': course_id}
+    response_dict = _make_edInsights_query('list_problems', data)
     # r_d['problems'] contains a list of [location, name] tuples.
     return render_to_response(
         'instructor/hint_manager.html',
@@ -96,12 +106,11 @@ def get_hints(request, course_id):
 
     # Make request to edInsights
     location_list = json.loads(request.POST['location'])
-    payload = {'in_dict_json': json.dumps({
+    data = {
         'location': location_list,
         'field': field,
-    })}
-    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/dump_hints', params=payload)
-    response_dict = json.loads(r.text)
+    }
+    response_dict = _make_edInsights_query('dump_hints', data)
     # all_hints is a list of [id, answer, hint text, votes] sublists for each hint.
     all_hints = response_dict['hints']
     # Sort by answer, then by number of votes.
@@ -137,11 +146,8 @@ def delete_hints(request, course_id, field):
             continue
         answer, pk = request.POST.getlist(key)
         pks_to_delete.append(pk)
-    payload = {'in_dict_json': json.dumps({
-        'to_delete': pks_to_delete
-    })}
-    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/delete_hints', params=payload)
-    response = json.loads(r.text)
+    data = {'to_delete': pks_to_delete}
+    response = _make_edInsights_query('delete_hints', data)
     if not response['success']:
         return response['error']
 
@@ -158,11 +164,8 @@ def change_votes(request, course_id, field):
         if key in special_keys:
             continue
         updated_votes.append(request.POST.getlist(key)[1:3])
-    payload = {'in_dict_json': json.dumps({
-        'updated_votes': updated_votes
-    })}
-    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/change_votes', params=payload)
-    response = json.loads(r.text)
+    data = {'updated_votes': updated_votes}
+    response = _make_edInsights_query('change_votes', data)
     if not response['success']:
         return response['error']
 
@@ -179,14 +182,13 @@ def add_hint(request, course_id, field):
     location = request.POST['location']
     answer = request.POST['answer']
     hint_text = request.POST['hint']
-    payload = {'in_dict_json': json.dumps({
+    data = {
         'location': json.loads(location),
         'answer': answer,
         'hint': hint_text,
         'user': 'instructor',
-    })}
-    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/submit_hint', params=payload)
-    response = json.loads(r.text)
+    }
+    response = _make_edInsights_query('submit_hint', data)
     if not response['success']:
         return response['error']
 
@@ -204,10 +206,7 @@ def approve(request, course_id, field):
             continue
         answer, pk = request.POST.getlist(key)
         to_approve.append(pk)
-    payload = {'in_dict_json': json.dumps({
-        'to_approve': to_approve
-    })}
-    r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/approve_hints', params=payload)
-    response = json.loads(r.text)
+    data = {'to_approve': to_approve}
+    response = _make_edInsights_query('approve_hints', data)
     if not response['success']:
         return response['error']

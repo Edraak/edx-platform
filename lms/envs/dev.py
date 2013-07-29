@@ -249,6 +249,7 @@ ANALYTICS_SERVER_URL = "http://127.0.0.1:9000/"
 ANALYTICS_API_KEY = ""
 
 EDINSIGHTS_SERVER_URL = "http://127.0.0.1:9022/"
+EDINSIGHTS_PASSWORD = "Basic swordfish"    # For dev purposes only.
 
 ##### segment-io  ######
 

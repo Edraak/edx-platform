@@ -71,24 +71,16 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             self.answer_to_str = self.formula_answer_to_str
         else:
             self.answer_to_str = self.numerical_answer_to_str
-        # answer_compare is expected to return whether its two inputs are close enough
-        # to be equal, or raise a StudentInputError if one of the inputs is malformatted.
-        try:
-            self.answer_compare = responder.answer_compare
-            self.validate_answer = responder.validate_answer
-        except AttributeError:
-            # This response type is not supported!
-            log.exception('Response type not supported for hinting: ' + str(responder))
 
         # Transmit info to edInsights.
-        payload = {'msg': json.dumps({
+        data = {
             'location': self.problem.location,
             'user': self.system.anonymous_student_id,
             'moderate': self.moderate == 'True',
             'display_only': self.display_only == 'True',
             'debug': self.debug == 'True',
-        })}
-        requests.get(settings.EDINSIGHTS_SERVER_URL + 'httpevent', params=payload)
+        }
+        self.make_edInsights_query('hinting_setup', data)
 
     def get_html(self):
         """
@@ -128,12 +120,18 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         """
         return str(answer.values()[0])
 
-    def get_matching_answers(self, answer):
+    def make_edInsights_query(self, query_name, data):
         """
-        Look in self.hints, and find all answer keys that are "equal with tolerance"
-        to the input answer.
+        Makes a request to edInsights, and returns the response as a
+        dictionary.
         """
-        return [key for key in self.hints if self.answer_compare(key, answer)]
+        payload = {'in_dict_json': json.dumps(data)}
+        r = requests.get(
+            settings.EDINSIGHTS_SERVER_URL + 'query/' + query_name, 
+            params=payload,
+            headers={'AUTHORIZATION': settings.EDINSIGHTS_PASSWORD}
+        )
+        return json.loads(r.text)
 
     def handle_ajax(self, dispatch, data):
         """
@@ -178,15 +176,14 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             log.exception('Answer not parsable: ' + str(data))
             return
         # Transmit info to edInsights.
-        payload = {'in_dict_json': json.dumps({
+        data = {
             'location': self.problem.location,
             'answer': answer,
             'user': self.system.anonymous_student_id,
             'number_best': 1,
             'number_random': 2,
-        })}
-        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/get_hint', params=payload)
-        response_dict = json.loads(r.text)
+        }
+        response_dict = self.make_edInsights_query('get_hint', data)
         if not response_dict['success']:
             return response_dict
         return {
@@ -208,12 +205,11 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
             # display_only means that we don't collect hints.
             return
         # Talk to edInsights.
-        payload = {'in_dict_json': json.dumps({
+        data = {
             'location': self.problem.location,
             'user': self.system.anonymous_student_id,
-        })}
-        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/hint_history', params=payload)
-        response_dict = json.loads(r.text)
+        }
+        response_dict = self.make_edInsights_query('hint_history', data)
         if not response_dict['success']:
             return response_dict
 
@@ -244,13 +240,12 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         Returns key 'hint_and_votes', a list of (hint_text, #votes) pairs.
         """
         # Talk to edInsights.
-        payload = {'in_dict_json': json.dumps({
+        data = {
             'location': self.problem.location,
             'user': self.system.anonymous_student_id,
             'id': str(data['hint']),
-        })}
-        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/vote', params=payload)
-        response_dict = json.loads(r.text)
+        }
+        response_dict = self.make_edInsights_query('vote', data)
         if not response_dict['success']:
             return response_dict
 
@@ -270,14 +265,13 @@ class CrowdsourceHinterModule(CrowdsourceHinterFields, XModule):
         # Do html escaping.  Perhaps in the future do profanity filtering, etc. as well.
         hint = escape(data['hint'])
         answer = data['answer']
-        payload = {'in_dict_json': json.dumps({
+        data = {
             'answer': answer,
             'hint': hint,
             'user': self.system.anonymous_student_id,
             'location': self.problem.location,
-        })}
-        r = requests.get(settings.EDINSIGHTS_SERVER_URL + 'query/submit_hint', params=payload)
-        response_dict = json.loads(r.text)
+        }
+        response_dict = self.make_edInsights_query('submit_hint', data)
         if not response_dict['success']:
             return response_dict
         return {'message': 'Thank you for your hint!'}
