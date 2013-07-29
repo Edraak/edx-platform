@@ -136,11 +136,17 @@ class PollModule(PollFields, XModule):
             'reset': str(self.descriptor.xml_attributes.get('reset', 'true')).lower()})
 
 
-class PollDescriptor(PollFields, XMLEditingDescriptor, XmlDescriptor):
+class PollDescriptor(PollFields, MakoModuleDescriptor, XmlDescriptor):
     _tag_name = 'poll_question'
     _child_tag_name = 'answer'
 
     module_class = PollModule
+
+    mako_template = "widgets/poll-edit.html"
+
+    js = {'coffee': [resource_string(__name__, 'js/src/html/edit.coffee')]}
+    js_module_name = "HTMLEditingDescriptor"
+    css = {'scss': [resource_string(__name__, 'css/editor/edit.scss'), resource_string(__name__, 'css/html/edit.scss')]}
 
     @classmethod
     def definition_from_xml(cls, xml_object, system):
