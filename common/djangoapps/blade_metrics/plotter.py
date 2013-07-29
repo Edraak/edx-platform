@@ -3,6 +3,8 @@ import re
 import collections
 import matplotlib.pyplot as plt
 import os.path
+from itertools import chain
+import bson
 
 
 class MongoIndexer:
@@ -44,6 +46,11 @@ class MongoIndexer:
         query = {"_id.category": "problem", "definition.data": re.compile(".*?<"+tag+".*?")}
         return self.module_collection.find(query)
 
+    def find_category_with_field(self, category, field):
+        """Returns a cursor that iterates through all modules with the given category and something in given field"""
+        query = {"_id.category": category, field: re.compile(".+")}
+        return self.module_collection.find(query)
+
     def find_problems_by_tag_with_tag(self, problem, tag):
         pattern = re.compile(".*?<"+problem+".*?"+"<"+tag+".*?")
         query = {"_id.category": "problem",
@@ -64,27 +71,40 @@ class Plotter:
     def __init__(self, content="xcontent", module="xmodule",
                  edge_content="edge-xcontent", edge_module="edge-xmodule"):
         self.prod_index = MongoIndexer(content_database=content, module_database=module)
-        self.edge_index = MongoIndexer(content_database=edge_content, module_database=edge-xmodule)
+        self.edge_index = MongoIndexer(content_database=edge_content, module_database=edge_module)
 
     def get_course_usage(self, cursor):
         get_course = lambda dao: dao["_id"]["course"]
         usage = []
         for i in range(0, cursor.count()):
-            usage.append(get_course(cursor.next()))
+            item = cursor.next()
+            if isinstance(item["_id"], bson.objectid.ObjectId):
+                continue
+            else:
+                usage.append(get_course(item))
         return collections.Counter(usage)
 
     def produce_graphs(self, category, bins, xlabel="Number of Appearances",
-                       ylabel="Number of Courses", problem=False):
+                       ylabel="Number of Courses", problem=False, **kwargs):
         """Produces relevant plots for modules of a given category for edge, prod, and both
 
         If problem is set to true then category becomes the xml tag being searched within the problem category"""
-        if not problem:
+        if kwargs.get("queries", False):
+            prod_cursor = self.prod_index.find_modules_by_category("fakeqwerty")  # empty generators
+            edge_cursor = self.edge_index.find_modules_by_category("fakeqwerty")
+            for k, v in kwargs["queries"].items():
+                prod_function = getattr(self.prod_index, k)
+                prod_cursor = chain(prod_cursor, prod_function(*v))
+                edge_function = getattr(self.edge_index, k)
+                edge_cursor = chain(edge_cursor, edge_function(*v))
+        elif not problem:
             prod_cursor = self.prod_index.find_modules_by_category(category)
             edge_cursor = self.edge_index.find_modules_by_category(category)
         else:
             prod_cursor = self.prod_index.find_problems_by_tag(category)
             edge_cursor = self.edge_index.find_problems_by_tag(category)
-
+        print prod_cursor.count()
+        print edge_cursor.count()
         prod_usage = self.get_course_usage(prod_cursor)
         edge_usage = self.get_course_usage(edge_cursor)
         # If constrained bins are passed in, the top bin should hold everything above that limit as well
@@ -137,7 +157,7 @@ class Plotter:
                 os.makedirs(directory)
             plt.savefig(path)
 
-# test = Plotter()
+test = Plotter()
 # test.produce_graphs("video", [5, 25, 45, 65, 85, 105])
 # test.produce_graphs("discussion", [5, 25, 45, 65, 85, 105])
 # test.produce_graphs("html", [5, 25, 45, 65, 85, 105])
@@ -161,3 +181,4 @@ class Plotter:
 # test.produce_graphs("customresponse", 5, problem=True)
 # test.produce_graphs("coderesponse", 5, problem=True)
 # test.produce_graphs("externalresponse", 5, problem=True)
+test.produce_graphs("latex", 5, queries={"find_category_with_field": ["html", "metadata.source_code"], "find_category_with_field": ["problem", "metadata.source_code"]})
