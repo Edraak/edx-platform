@@ -3,8 +3,8 @@
 # Populates the StudentModuleExpand table of the queryable_table model.
 #
 # For the provided course_id, it will find all rows in the StudentModule table of the courseware model that have
-# module_type 'problem' and the grade is not null. Then for any rows that have changed since the last populate, update
-# the attempts value.
+# module_type 'problem' and the grade is not null. Then for any rows that have changed since the last populate or do not
+# have a corresponding row, update the attempts value.
 
 import json
 
@@ -56,5 +56,6 @@ class Command(BaseCommand):
                 sme.save()
 
         cAllRows = len(smRows)
+        print "---------------------------------------------------------------------------------"
         print "Done! Updated/Created {0} queryable rows out of {1} from courseware_studentmodule".format(
             cUpdatedRows, cAllRows)
