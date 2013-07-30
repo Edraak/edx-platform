@@ -42,8 +42,8 @@ MITX_FEATURES = {
     # do not display video when running automated acceptance tests
     'STUB_VIDEO_FOR_TESTING': False,
 
-    # email address for staff (eg to request course creation)
-    'STAFF_EMAIL': '',
+    # email address for studio staff (eg to request course creation)
+    'STUDIO_REQUEST_EMAIL': '',
 
     'STUDIO_NPS_SURVEY': True,
 
@@ -247,7 +247,7 @@ PIPELINE_JS = {
              'js/models/section.js', 'js/views/section.js',
              'js/models/metadata_model.js', 'js/views/metadata_editor_view.js',
              'js/models/textbook.js', 'js/views/textbook.js',
-             'js/views/assets.js'],
+             'js/views/assets.js', 'js/utility.js'],
         'output_filename': 'js/cms-application.js',
         'test_order': 0
     },
