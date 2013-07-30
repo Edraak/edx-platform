@@ -8,11 +8,14 @@
 
 import json
 
+from datetime import datetime
+from pytz import UTC
 from django.core.management.base import BaseCommand
 
 from xmodule.modulestore.django import modulestore
 
 from courseware.models import StudentModule
+from queryable.models import QueryableLog
 from queryable.models import StudentModuleExpand
 
 class Command(BaseCommand):
@@ -21,6 +24,7 @@ class Command(BaseCommand):
     help += "   course_id: course's ID, such as Medicine/HRP258/Statistics_in_Medicine\n"
 
     def handle(self, *args, **options):
+        script_id = "studentmoduleexpand"
 
         print "args = ", args
 
@@ -30,12 +34,26 @@ class Command(BaseCommand):
             print self.help
             return
 
-        print "-------------------------------------------------------------------------"
+        print "--------------------------------------------------------------------------------"
         print "Populating queryable.StudentModuleExpand table for course {0}".format(course_id)
+        print "--------------------------------------------------------------------------------"
 
-        # Get all the problems that students have submitted an answer to for this course
-        smRows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
-                                              module_type__exact="problem")
+        # Grab when we start, to log later
+        tstart = datetime.now(UTC)
+
+        # Get when this script was last run for this course
+        last_log_run = QueryableLog.objects.filter(script_id__exact=script_id, course_id__exact=course_id)
+        
+        # Get all the problems that students have submitted an answer to for this course, since the last run
+        if len(last_log_run) > 0:
+            print "--------------------------------------------------------------------------------"
+            print "Last log run", last_log_run[0].created, ". Finding all rows created or modified since then."
+            print "--------------------------------------------------------------------------------"
+            smRows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
+                                                  module_type__exact="problem", modified__gte=last_log_run[0].created)
+        else:
+            smRows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
+                                                  module_type__exact="problem")
 
         cUpdatedRows = 0
         # For each problem, get or create the corresponding StudentModuleExpand row
@@ -56,6 +74,11 @@ class Command(BaseCommand):
                 sme.save()
 
         cAllRows = len(smRows)
-        print "---------------------------------------------------------------------------------"
+        print "--------------------------------------------------------------------------------"
         print "Done! Updated/Created {0} queryable rows out of {1} from courseware_studentmodule".format(
             cUpdatedRows, cAllRows)
+        print "--------------------------------------------------------------------------------"
+
+        # Save since everything finished successfully, log latest run.
+        q_log = QueryableLog(script_id=script_id, course_id=course_id, created=tstart)
+        q_log.save()

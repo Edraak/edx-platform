@@ -57,3 +57,18 @@ class StudentGrades(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True)
+
+
+class QueryableLog(models.Model):
+    """
+    Log of when a script in this django app was last run. Use to filter out students or rows that don't need to be
+    processed in the populate scripts and show instructors how fresh the data is.
+    """
+
+    script_id = models.CharField(max_length=255, db_index=True)
+    course_id = models.CharField(max_length=255, db_index=True)
+    created = models.DateTimeField(null=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created"]
+        get_latest_by = "created"
