@@ -16,7 +16,7 @@ from django.core.management.base import BaseCommand
 from xmodule.modulestore.django import modulestore
 
 from courseware.models import StudentModule
-from queryable.models import QueryableLog
+from queryable.models import Log
 from queryable.models import StudentModuleExpand
 
 class Command(BaseCommand):
@@ -59,7 +59,7 @@ class Command(BaseCommand):
 
         if iterative_populate:
             # Get when this script was last run for this course
-            last_log_run = QueryableLog.objects.filter(script_id__exact=script_id, course_id__exact=course_id)
+            last_log_run = Log.objects.filter(script_id__exact=script_id, course_id__exact=course_id)
 
             length = len(last_log_run)
             print "--------------------------------------------------------------------------------"
@@ -73,15 +73,15 @@ class Command(BaseCommand):
         # If iterative populate, get all the problems that students have submitted an answer to for this course,
         # since the last run
         if iterative_populate:
-            smRows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
+            sm_rows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
                                                   module_type__exact="problem", modified__gte=last_log_run[0].created)
         else:
-            smRows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
+            sm_rows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
                                                   module_type__exact="problem")
 
-        cUpdatedRows = 0
+        c_updated_rows = 0
         # For each problem, get or create the corresponding StudentModuleExpand row
-        for sm in smRows:
+        for sm in sm_rows:
             sme, created = StudentModuleExpand.objects.get_or_create(student=sm.student, course_id=course_id,
                                                                      module_state_key=sm.module_state_key,
                                                                      student_module=sm)
@@ -90,19 +90,19 @@ class Command(BaseCommand):
             # more recently updated than the StudentModuleExpand row, fill in/update
             # everything and save
             if created or (sme.modified < sm.modified):
-                cUpdatedRows += 1
+                c_updatedo_rows += 1
                 sme.grade = sm.grade
                 sme.max_grade = sm.max_grade
                 state = json.loads(sm.state)
                 sme.attempts = state["attempts"]
                 sme.save()
 
-        cAllRows = len(smRows)
+        c_all_rows = len(sm_rows)
         print "--------------------------------------------------------------------------------"
         print "Done! Updated/Created {0} queryable rows out of {1} from courseware_studentmodule".format(
-            cUpdatedRows, cAllRows)
+            c_updated_rows, c_all_rows)
         print "--------------------------------------------------------------------------------"
 
         # Save since everything finished successfully, log latest run.
-        q_log = QueryableLog(script_id=script_id, course_id=course_id, created=tstart)
+        q_log = Log(script_id=script_id, course_id=course_id, created=tstart)
         q_log.save()
