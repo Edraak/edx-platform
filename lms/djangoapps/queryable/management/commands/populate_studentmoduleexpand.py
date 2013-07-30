@@ -10,6 +10,7 @@ import json
 
 from datetime import datetime
 from pytz import UTC
+from optparse import make_option
 from django.core.management.base import BaseCommand
 
 from xmodule.modulestore.django import modulestore
@@ -22,6 +23,14 @@ class Command(BaseCommand):
     help = "Populates the queryable.StudentModuleExpand table.\n"
     help += "Usage: populate_studentmoduleexpand course_id\n"
     help += "   course_id: course's ID, such as Medicine/HRP258/Statistics_in_Medicine\n"
+
+    option_list = BaseCommand.option_list + (
+        make_option('-f', '--force',
+                    action='store_true',
+                    dest='force',
+                    default=False,
+                    help='Forces a full populate for all students and rows, rather than iterative.'),
+        )
 
     def handle(self, *args, **options):
         script_id = "studentmoduleexpand"
@@ -41,14 +50,29 @@ class Command(BaseCommand):
         # Grab when we start, to log later
         tstart = datetime.now(UTC)
 
-        # Get when this script was last run for this course
-        last_log_run = QueryableLog.objects.filter(script_id__exact=script_id, course_id__exact=course_id)
+        iterative_populate = True
+        if options['force']:
+            print "--------------------------------------------------------------------------------"
+            print "Full populate: Forced full populate"
+            print "--------------------------------------------------------------------------------"
+            iterative_populate = False
+
+        if iterative_populate:
+            # Get when this script was last run for this course
+            last_log_run = QueryableLog.objects.filter(script_id__exact=script_id, course_id__exact=course_id)
+
+            length = len(last_log_run)
+            print "--------------------------------------------------------------------------------"
+            if length > 0:
+                print "Iterative populate: Last log run", last_log_run[0].created
+            else:
+                print "Full populate: Can't find log of last run"
+                iterative_populate = False
+            print "--------------------------------------------------------------------------------"
         
-        # Get all the problems that students have submitted an answer to for this course, since the last run
-        if len(last_log_run) > 0:
-            print "--------------------------------------------------------------------------------"
-            print "Last log run", last_log_run[0].created, ". Finding all rows created or modified since then."
-            print "--------------------------------------------------------------------------------"
+        # If iterative populate, get all the problems that students have submitted an answer to for this course,
+        # since the last run
+        if iterative_populate:
             smRows = StudentModule.objects.filter(course_id__exact=course_id, grade__isnull=False,
                                                   module_type__exact="problem", modified__gte=last_log_run[0].created)
         else:
