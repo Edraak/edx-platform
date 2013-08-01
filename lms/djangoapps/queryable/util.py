@@ -5,6 +5,12 @@ from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.inheritance import own_metadata
 
 def get_assignment_to_problem_map(course_id):
+    """
+    Returns a dictionary with assignment types/categories as keys and the value is an array of arrays. Each inner array
+    holds problem ids for an assignment. The arrays are ordered in the outer array as they are seen in the course, which
+    is how they are numbered in a student's progress page.
+    """
+
     course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
 
     assignment_problems_map = {}
