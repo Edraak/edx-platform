@@ -217,3 +217,7 @@ class Command(BaseCommand):
         print "--------------------------------------------------------------------------------"
         print "Done! Updated {0} students' grades out of {1}".format(c_updated_students, c_all_students)
         print "--------------------------------------------------------------------------------"
+
+        # Save since everything finished successfully, log latest run.
+        q_log = Log(script_id=script_id, course_id=course_id, created=tstart)
+        q_log.save()
