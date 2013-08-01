@@ -28,11 +28,11 @@ text
 
 Image format, uses images as a reference from the soure/image file
 
-       .. image:: images/image029.png
+       .. image:: Images/image029.png
        : width: 800
 
-       .. image:: images/image009.png
-       :width: 800  
+       .. image:: Images/image009.png
+       :width: 800
 
 
 For references to edX1010 pages:
@@ -54,6 +54,6 @@ To make the cross reference in text:
 
 External page reference
 
-        see `Create a Problem <Create_Problem.html>`_ 
+        see `Create a Problem <Create_Problem.html>`_
 
-      
+
