@@ -50,9 +50,6 @@ class Command(BaseCommand):
             return
 
         assignment_problems_map = get_assignment_to_problem_map(course_id)
-        print "--------------------------------------------------------------------------------"
-        print assignment_problems_map
-        print "--------------------------------------------------------------------------------"
 
         print "--------------------------------------------------------------------------------"
         print "Populating queryable.StudentGrades table for course {0}".format(course_id)
@@ -111,9 +108,6 @@ class Command(BaseCommand):
 
         c_updated_students = 0
         for student in students:
-        # if True:
-        #     student = students[0]
-            print "*********PROCESSING STUDENT", student
             updated = False
 
             # Create dummy request and set its user and session
@@ -123,22 +117,16 @@ class Command(BaseCommand):
 
             # Call grade to get the gradeset
             gradeset = grades.grade(student, request, course, keep_raw_scores=False)
-            print "--------------------------------------------------------------------------------"
-            print gradeset
-            print "--------------------------------------------------------------------------------"
 
             # Get or create the overall grade for this student, save if needed
             course_grade, created = CourseGrade.objects.get_or_create(user=student, course_id=course_id)
             
             if created or not approx_equal(course_grade.percent, gradeset['percent']) or \
                     (course_grade.grade != gradeset['grade']):
-                if (course_grade.percent != gradeset['percent']) or (course_grade.grade != gradeset['grade']):
-                    print "**********NOT EQUAL COURSE",course_grade.percent, gradeset['percent'], course_grade.grade, gradeset['grade']
                 course_grade.percent = gradeset['percent']
                 course_grade.grade = gradeset['grade']
                 course_grade.save()
                 updated = True
-                print "********COURSE GRADE UPDATE*********"
 
             student_problems = None
 
@@ -150,12 +138,9 @@ class Command(BaseCommand):
                                                                                            course_id=course_id,
                                                                                            category=section['category'])
                     if created or not approx_equal(assign_type_grade.percent, section['percent']):
-                        if (assign_type_grade.percent != section['percent']):
-                            print "*****************NOT EQUAL ASSIGNMENT TYPE:",assign_type_grade.percent, section['percent']
                         assign_type_grade.percent = section['percent']
                         assign_type_grade.save()
                         updated = True
-                        print "********ASSIGNMENT TYPE UPDATE*********"
 
                 else: #If no 'prominent' or it's False this is at the assignment level
                     store = True
@@ -194,8 +179,6 @@ class Command(BaseCommand):
                                 for problem in query:
                                     student_problems.append(problem['module_state_key'])
 
-                            print "********",assignment_problems_map[section['category']][index]
-                            print "********",student_problems
                             if (not (set(assignment_problems_map[section['category']][index]) & set(student_problems))):
                                 store = False
 
@@ -207,7 +190,6 @@ class Command(BaseCommand):
                             assign_grade.percent = section['percent']
                             assign_grade.save()
                             updated = True
-                            print "********ASSIGNMENT UPDATE*********"
 
 
             if updated:
