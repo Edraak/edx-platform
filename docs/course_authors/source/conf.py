@@ -6,7 +6,7 @@ import sys, os
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd:   # Add to syspath so RTD will find the common conf file
-    sys.path.append(os.path.abspath('../../'))
+    sys.path.append(os.path.abspath('../../../'))
 
 from docs.shared.conf import *
 
