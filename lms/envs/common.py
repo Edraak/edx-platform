@@ -73,7 +73,7 @@ MITX_FEATURES = {
     'ENABLE_DISCUSSION_SERVICE': True,
     # discussion home panel, which includes a subscription on/off setting for discussion digest emails.
     # this should remain off in production until digest notifications are online. 
-    'ENABLE_DISCUSSION_HOME_PANEL': True,
+    'ENABLE_DISCUSSION_HOME_PANEL': False,
 
     'ENABLE_PSYCHOMETRICS': False,  # real-time psychometrics (eg item response theory analysis in instructor dashboard)
 
@@ -166,7 +166,7 @@ XQUEUE_WAITTIME_BETWEEN_REQUESTS = 5  # seconds
 
 
 ############################# SET PATH INFORMATION #############################
-PROJECT_ROOT = path(__file__).abspath().dirname().dirname()  # /mitx/lms
+PROJECT_ROOT = path(__file__).abspath().dirname().dirname()  # /edx-platform/lms
 REPO_ROOT = PROJECT_ROOT.dirname()
 COMMON_ROOT = REPO_ROOT / "common"
 ENV_ROOT = REPO_ROOT.dirname()  # virtualenv dir /mitx is in
@@ -223,6 +223,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     #'django.core.context_processors.i18n',
     'django.contrib.auth.context_processors.auth',  # this is required for admin
+    'django.core.context_processors.csrf',
 
     # Added for django-wiki
     'django.core.context_processors.media',
@@ -234,10 +235,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     # Hack to get required link URLs to password reset templates
     'mitxmako.shortcuts.marketing_link_context_processor',
 )
-
-# add csrf support unless disabled for load testing
-if not MITX_FEATURES.get('AUTOMATIC_AUTH_FOR_LOAD_TESTING'):
-    TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.csrf',)  # necessary for csrf protection
 
 STUDENT_FILEUPLOAD_MAX_SIZE = 4 * 1000 * 1000  # 4 MB
 MAX_FILEUPLOADS_PER_INPUT = 20
@@ -320,8 +317,6 @@ CODE_JAIL = {
     'limits': {
         # How many CPU seconds can jailed code use?
         'CPU': 1,
-        # How large a file can jailed code write?
-        'FSIZE': 50000,
     },
 }
 
@@ -383,6 +378,8 @@ LANGUAGE_CODE = 'en'  # http://www.i18nguy.com/unicode/language-identifiers.html
 USE_I18N = True
 USE_L10N = True
 
+# Localization strings (e.g. django.po) are under this directory
+LOCALE_PATHS = (REPO_ROOT + '/conf/locale',)  # edx-platform/conf/locale/
 # Messages
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -485,8 +482,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'track.middleware.TrackMiddleware',
     'mitxmako.middleware.MakoMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 
     'course_wiki.course_nav.Middleware',
+
+    # Detects user-requested locale from 'accept-language' header in http request
+    'django.middleware.locale.LocaleMiddleware',
 
     'django.middleware.transaction.TransactionMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -494,10 +495,6 @@ MIDDLEWARE_CLASSES = (
     'django_comment_client.utils.ViewNameMiddleware',
     'codejail.django_integration.ConfigureCodeJailMiddleware',
 )
-
-# add in csrf middleware unless disabled for load testing
-if not MITX_FEATURES.get('AUTOMATIC_AUTH_FOR_LOAD_TESTING'):
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('django.middleware.csrf.CsrfViewMiddleware',)
 
 ############################### Pipeline #######################################
 

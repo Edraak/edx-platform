@@ -105,11 +105,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'django.contrib.auth.context_processors.auth',  # this is required for admin
+    'django.core.context_processors.csrf'
 )
-
-# add csrf support unless disabled for load testing
-if not MITX_FEATURES.get('AUTOMATIC_AUTH_FOR_LOAD_TESTING'):
-    TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.csrf',)  # necessary for csrf protection
 
 LMS_BASE = None
 
@@ -141,6 +138,7 @@ MIDDLEWARE_CLASSES = (
     'request_cache.middleware.RequestCache',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'method_override.middleware.MethodOverrideMiddleware',
 
@@ -156,10 +154,6 @@ MIDDLEWARE_CLASSES = (
 
     'django.middleware.transaction.TransactionMiddleware'
 )
-
-# add in csrf middleware unless disabled for load testing
-if not MITX_FEATURES.get('AUTOMATIC_AUTH_FOR_LOAD_TESTING'):
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('django.middleware.csrf.CsrfViewMiddleware',)
 
 ############################ SIGNAL HANDLERS ################################
 # This is imported to register the exception signal handling that logs exceptions
@@ -244,6 +238,7 @@ PIPELINE_JS = {
             rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/**/*.js') +
             rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/**/*.js')
         ) + ['js/hesitate.js', 'js/base.js', 'js/views/feedback.js',
+             'js/models/course.js',
              'js/models/section.js', 'js/views/section.js',
              'js/models/metadata_model.js', 'js/views/metadata_editor_view.js',
              'js/models/textbook.js', 'js/views/textbook.js',
