@@ -1,10 +1,12 @@
-# ======== Populate StudentModuleExpand  ===============================================================================
+# ======== Populate Student Grades  ====================================================================================
 #
-# Populates the StudentModuleExpand table of the queryable_table model.
+# Populates the student grade tables of the queryable_table model (CourseGrade, AssignmentTypeGrade, AssignmentGrade).
 #
-# For the provided course_id, it will find all rows in the StudentModule table of the courseware model that have
-# module_type 'problem' and the grade is not null. Then for any rows that have changed since the last populate, update
-# the attempts value.
+# For the provided course_id, it will find all students that may have changed their grade since the last populate. Of
+# these students rows for the course grade and assignment type are created only if the student has submitted at
+# least one answer to any problem in the course. Rows for assignments are only created if the student has submitted an
+# answer to one of the problems in that assignment. Updates only occur if there is a change in the values the row should
+# be storing. 
 
 import json
 import re
