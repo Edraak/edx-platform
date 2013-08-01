@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from courseware.models import StudentModule, OfflineComputedGrade
+from courseware.models import StudentModule
 
 class StudentModuleExpand(models.Model):
     """
@@ -34,56 +34,58 @@ class StudentModuleExpand(models.Model):
 
 class CourseGrade(models.Model):
     """
-    Holds student grades, as seen on the progress page, at three levels: course, assignment type, and assignment.
+    Holds student's overall course grade as a percentage and letter grade (if letter grade present).
     """
 
-    course_id = models.CharField(max_length=255, db_index=True)
     user = models.ForeignKey(User, db_index=True)
+    course_id = models.CharField(max_length=255, db_index=True)
 
-    # New Stuff
-    LEVEL_TYPES = (('course','course'),
-                   ('assignment_type','assignment_type'),
-                   ('assignment','assignment'),
-                   )
-    level = models.CharField(max_length=32, choices=LEVEL_TYPES, db_index=True)
-
-    category = models.CharField(max_length=255, db_index=True)
-    percent = models.FloatField(db_index=True)
-    label = models.CharField(max_length=32, db_index=True)
-    detail = models.CharField(max_length=255, blank=True, null=True)
+    percent = models.FloatField(db_index=True, null=True)
+    grade = models.CharField(max_length=32, db_index=True, null=True)
 
     class Meta:
-        unique_together = (('user', 'course_id', 'label'), )
+        unique_together = (('user', 'course_id'), )
 
-    created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated = models.DateTimeField(auto_now=True, db_index=True)
+
+
+class AssignmentTypeGrade(models.Model):
+    """
+    Holds student's average grade for each assignment type per course.
+    """
+
+    user = models.ForeignKey(User, db_index=True)
+    course_id = models.CharField(max_length=255, db_index=True)
+
+    category = models.CharField(max_length=255, db_index=True)
+    percent = models.FloatField(db_index=True, null=True)
+
+    class Meta:
+        unique_together = (('user', 'course_id', 'category'), )
+
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True)
 
 
 
-class StudentGrades(models.Model):
+class AssignmentGrade(models.Model):
     """
-    Holds student grades, as seen on the progress page, at three levels: course, assignment type, and assignment.
+    Holds student's assignment grades per course.
     """
 
-    course_id = models.CharField(max_length=255, db_index=True)
     user = models.ForeignKey(User, db_index=True)
-
-    # New Stuff
-    LEVEL_TYPES = (('course','course'),
-                   ('assignment_type','assignment_type'),
-                   ('assignment','assignment'),
-                   )
-    level = models.CharField(max_length=32, choices=LEVEL_TYPES, db_index=True)
+    course_id = models.CharField(max_length=255, db_index=True)
 
     category = models.CharField(max_length=255, db_index=True)
-    percent = models.FloatField(db_index=True)
+    percent = models.FloatField(db_index=True, null=True)
     label = models.CharField(max_length=32, db_index=True)
     detail = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         unique_together = (('user', 'course_id', 'label'), )
 
-    created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True)
 
 
