@@ -32,11 +32,12 @@ class MakoMiddleware(object):
             module_directory = tempdir.mkdtemp_clean()
 
         for location in template_locations:
+            default_filters = settings.MAKO_DEFAULT_FILTERS.get(location, [])
             lookup[location] = TemplateLookup(directories=template_locations[location],
                                 module_directory=module_directory,
                                 output_encoding='utf-8',
                                 input_encoding='utf-8',
-                                default_filters=['decode.utf8'],
+                                default_filters=default_filters,
                                 encoding_errors='replace',
                                 )
 

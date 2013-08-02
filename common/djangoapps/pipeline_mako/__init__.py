@@ -30,7 +30,7 @@ def render_css(package, path):
         'type': guess_type(path, 'text/css'),
         'url': url,
     })
-    return render_to_string(template_name, context)
+    return render_to_string(template_name, context, namespace='content')
 
 
 def render_individual_css(package, paths):
@@ -61,7 +61,7 @@ def render_js(package, path):
         'type': guess_type(path, 'text/javascript'),
         'url': try_staticfiles_lookup(path)
     })
-    return render_to_string(template_name, context)
+    return render_to_string(template_name, context, namespace='content')
 
 
 def render_inline_js(package, js):
@@ -69,7 +69,7 @@ def render_inline_js(package, js):
     context.update({
         'source': js
     })
-    return render_to_string("mako/inline_js.html", context)
+    return render_to_string("mako/inline_js.html", context, namespace='content')
 
 
 def render_individual_js(package, paths, templates=None):

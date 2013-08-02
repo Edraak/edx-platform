@@ -87,7 +87,7 @@
   <%static:js group='application'/>
   <%static:js group='module-js'/>
 
-  <%block name="js_extra"/>
+  <%block name="js_extra" filter="n,decode.utf8"/>
 </body>
 </html>
 

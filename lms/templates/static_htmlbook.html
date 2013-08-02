@@ -8,7 +8,7 @@
 <%static:js group='courseware'/>
 </%block>
 
-<%block name="js_extra">
+<%block name="js_extra" filter="n,decode.utf8">
   <script type="text/javascript">
 (function($) {
     $.fn.myHTMLViewer = function(options) {

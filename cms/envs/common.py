@@ -83,11 +83,21 @@ sys.path.append(COMMON_ROOT / 'lib')
 from tempdir import mkdtemp_clean
 MAKO_MODULE_DIR = mkdtemp_clean('mako')
 MAKO_TEMPLATES = {}
+MAKO_DEFAULT_FILTERS = {}
 MAKO_TEMPLATES['main'] = [
     PROJECT_ROOT / 'templates',
     COMMON_ROOT / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates'
 ]
+MAKO_DEFAULT_FILTERS['main'] = ['decode.utf8', 'h']
+# For now, look for content templates in all the same places
+MAKO_TEMPLATES['content'] = [
+    PROJECT_ROOT / 'templates',
+    COMMON_ROOT / 'templates',
+    COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates'
+]
+MAKO_DEFAULT_FILTERS['content'] = ['decode.utf8']
+ 
 
 for namespace, template_dirs in lms.envs.common.MAKO_TEMPLATES.iteritems():
     MAKO_TEMPLATES['lms.' + namespace] = template_dirs

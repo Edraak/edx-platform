@@ -2,26 +2,27 @@
 from staticfiles.storage import staticfiles_storage
 from pipeline_mako import compressed_css, compressed_js
 %>
+<%page expression_filter="n"/>
 
-<%def name='url(file)'><%
+<%def name='url(file)' filter="n,decode.utf8"><%
 try:
     url = staticfiles_storage.url(file)
 except:
     url = file
 %>${url}</%def>
 
-<%def name='css(group)'>
+<%def name='css(group)'  filter="n,decode.utf8">
   % if settings.MITX_FEATURES['USE_DJANGO_PIPELINE']:
-    ${compressed_css(group)}
+    ${compressed_css(group)|n}
   % else:
     % for filename in settings.PIPELINE_CSS[group]['source_filenames']:
       <link rel="stylesheet" href="${staticfiles_storage.url(filename.replace('.scss', '.css'))}" type="text/css" media="all" / >
     % endfor
   %endif
 </%def>
-<%def name='js(group)'>
+<%def name='js(group)' filter="n,decode.utf8">
   % if settings.MITX_FEATURES['USE_DJANGO_PIPELINE']:
-    ${compressed_js(group)}
+    ${compressed_js(group)|n}
   % else:
     % for filename in settings.PIPELINE_JS[group]['source_filenames']:
       <script type="text/javascript" src="${staticfiles_storage.url(filename.replace('.coffee', '.js'))}"></script>
@@ -29,7 +30,7 @@ except:
   %endif
 </%def>
 
-<%def name="include(path)"><%
+<%def name="include(path)" filter="n,decode.utf8"><%
 from django.template.loaders.filesystem import _loader
 source, template_path = _loader.load_template_source(path)
-%>${source}</%def>
+%>${source|n}</%def>

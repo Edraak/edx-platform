@@ -329,12 +329,16 @@ def get_module_for_descriptor_internal(user, descriptor, model_data_cache, cours
 
         statsd.increment("lms.courseware.question_answered", tags=tags)
 
+    def render_template_method(template_name, dictionary, context=None):
+        """Wrapper for render_to_string that defines a separate namespace"""
+        return render_to_string(template_name, dictionary, context, namespace='content')
+
     # TODO (cpennington): When modules are shared between courses, the static
     # prefix is going to have to be specific to the module, not the directory
     # that the xml was loaded from
     system = ModuleSystem(
         track_function=track_function,
-        render_template=render_to_string,
+        render_template=render_template_method,
         ajax_url=ajax_url,
         xqueue=xqueue,
         # TODO (cpennington): Figure out how to share info between systems

@@ -229,7 +229,7 @@
 </section>
 
 
-<%block name="js_extra">
+<%block name="js_extra" filter="n,decode.utf8">
    <script type="text/javascript"">
       $(window).load(function() {
          if(getParameterByName('next')) {

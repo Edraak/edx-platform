@@ -177,14 +177,14 @@
 
       <div id="accordion" style="display: none">
         <nav>
-          ${accordion}
+          ${accordion|n,decode.utf8}
         </nav>
       </div>
     </section>
 % endif
 
     <section class="course-content">
-      ${content}
+      ${content|n,decode.utf8}
     </section>
   </div>
 </section>

@@ -70,10 +70,10 @@ def update_creator_group_callback(sender, **kwargs):
     updated_state = kwargs['state']
     update_course_creator_group(kwargs['caller'], user, updated_state == CourseCreator.GRANTED)
 
-    studio_request_email = settings.MITX_FEATURES.get('STUDIO_REQUEST_EMAIL','')
+    studio_request_email = settings.MITX_FEATURES.get('STUDIO_REQUEST_EMAIL', '')
     context = {'studio_request_email': studio_request_email}
 
-    subject = render_to_string('emails/course_creator_subject.txt', context)
+    subject = render_to_string('emails/course_creator_subject.txt', context, namespace='content')
     subject = ''.join(subject.splitlines())
     if updated_state == CourseCreator.GRANTED:
         message_template = 'emails/course_creator_granted.txt'
@@ -82,7 +82,7 @@ def update_creator_group_callback(sender, **kwargs):
     else:
         # changed to unrequested or pending
         message_template = 'emails/course_creator_revoked.txt'
-    message = render_to_string(message_template, context)
+    message = render_to_string(message_template, context, namespace='content')
 
     try:
         user.email_user(subject, message, studio_request_email)

@@ -7,7 +7,7 @@
 <%static:js group='courseware'/>
 </%block>
 
-<%block name="js_extra">
+<%block name="js_extra" filter="n,decode.utf8">
   <script type="text/javascript" src="${static.url('js/jquery.treeview.js')}"></script>
 <script>
 var page=${ page };

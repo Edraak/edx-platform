@@ -268,7 +268,9 @@ def dashboard(request):
 
     message = ""
     if not user.is_active:
-        message = render_to_string('registration/activate_account_notice.html', {'email': user.email})
+        message = render_to_string(
+            'registration/activate_account_notice.html', {'email': user.email}, namespace='content'
+        )
 
     # Global staff can see what courses errored on their dashboard
     staff_access = False
@@ -670,10 +672,10 @@ def create_account(request, post_override=None):
          }
 
     # composes activation email
-    subject = render_to_string('emails/activation_email_subject.txt', d)
+    subject = render_to_string('emails/activation_email_subject.txt', d, namespace='content')
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
-    message = render_to_string('emails/activation_email.txt', d)
+    message = render_to_string('emails/activation_email.txt', d, namespace='content')
 
     # dont send email if we are doing load testing or random user generation for some reason
     if not (settings.MITX_FEATURES.get('AUTOMATIC_AUTH_FOR_LOAD_TESTING')):
@@ -886,10 +888,10 @@ def create_exam_registration(request, post_override=None):
 #        d = {'accommodation_request': post_vars['accommodation_request'] }
 #
 #        # composes accommodation email
-#        subject = render_to_string('emails/accommodation_email_subject.txt', d)
+#        subject = render_to_string('emails/accommodation_email_subject.txt', d, namespace='content')
 #        # Email subject *must not* contain newlines
 #        subject = ''.join(subject.splitlines())
-#        message = render_to_string('emails/accommodation_email.txt', d)
+#        message = render_to_string('emails/accommodation_email.txt', d, namespace='content')
 #
 #        try:
 #            dest_addr = settings['TESTCENTER_ACCOMMODATION_REQUEST_EMAIL']
@@ -1024,9 +1026,9 @@ def reactivation_email_for_user(user):
     d = {'name': user.profile.name,
          'key': reg.activation_key}
 
-    subject = render_to_string('emails/activation_email_subject.txt', d)
+    subject = render_to_string('emails/activation_email_subject.txt', d, namespace='content')
     subject = ''.join(subject.splitlines())
-    message = render_to_string('emails/activation_email.txt', d)
+    message = render_to_string('emails/activation_email.txt', d, namespace='content')
 
     try:
         res = user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
@@ -1083,9 +1085,9 @@ def change_email_request(request):
          'old_email': user.email,
          'new_email': pec.new_email}
 
-    subject = render_to_string('emails/email_change_subject.txt', d)
+    subject = render_to_string('emails/email_change_subject.txt', d, namespace='content')
     subject = ''.join(subject.splitlines())
-    message = render_to_string('emails/email_change.txt', d)
+    message = render_to_string('emails/email_change.txt', d, namespace='content')
 
     res = send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [pec.new_email])
 
@@ -1115,9 +1117,9 @@ def confirm_email_change(request, key):
             transaction.rollback()
             return render_to_response("email_exists.html", {})
 
-        subject = render_to_string('emails/email_change_subject.txt', address_context)
+        subject = render_to_string('emails/email_change_subject.txt', address_context, namespace='content')
         subject = ''.join(subject.splitlines())
-        message = render_to_string('emails/confirm_email_change.txt', address_context)
+        message = render_to_string('emails/confirm_email_change.txt', address_context, namespace='content')
         up = UserProfile.objects.get(user=user)
         meta = up.get_meta()
         if 'old_emails' not in meta:
@@ -1256,7 +1258,7 @@ def _get_news(top=None):
         if hasattr(settings, 'RSS_URL'):
             feed_data = urllib.urlopen(settings.RSS_URL).read()
         else:
-            feed_data = render_to_string("feed.rss", None)
+            feed_data = render_to_string("feed.rss", None, namespace='content')
         cache.set("students_index_rss_feed_data", feed_data, settings.RSS_TIMEOUT)
 
     feed = feedparser.parse(feed_data)

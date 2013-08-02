@@ -203,10 +203,18 @@ OPENID_PROVIDER_TRUSTED_ROOTS = ['cs50.net', '*.cs50.net']
 from tempdir import mkdtemp_clean
 MAKO_MODULE_DIR = mkdtemp_clean('mako')
 MAKO_TEMPLATES = {}
+MAKO_DEFAULT_FILTERS = {}
 MAKO_TEMPLATES['main'] = [PROJECT_ROOT / 'templates',
                           COMMON_ROOT / 'templates',
                           COMMON_ROOT / 'lib' / 'capa' / 'capa' / 'templates',
                           COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates']
+MAKO_DEFAULT_FILTERS['main'] = ['decode.utf8', 'h']
+# For now, look for content templates in all the same places
+MAKO_TEMPLATES['content'] = [PROJECT_ROOT / 'templates',
+                             COMMON_ROOT / 'templates',
+                             COMMON_ROOT / 'lib' / 'capa' / 'capa' / 'templates',
+                             COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates']
+MAKO_DEFAULT_FILTERS['content'] = ['decode.utf8']
 
 # This is where Django Template lookup is defined. There are a few of these
 # still left lying around.
@@ -805,6 +813,7 @@ def enable_theme(theme_name):
     # Include the theme's templates in the template search paths
     TEMPLATE_DIRS.append(theme_root / 'templates')
     MAKO_TEMPLATES['main'].append(theme_root / 'templates')
+    MAKO_TEMPLATES['content'].append(theme_root / 'templates')
 
     # Namespace the theme's static files to 'themes/<theme_name>' to
     # avoid collisions with default edX static files

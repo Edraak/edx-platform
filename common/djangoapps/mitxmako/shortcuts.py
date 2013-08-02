@@ -88,6 +88,7 @@ def render_to_string(template_name, dictionary, context=None, namespace='main'):
     if context:
         context_dictionary.update(context)
     # fetch and render template
+    log.info("Calling render_to_string: template '%s' namespace '%s'", template_name, namespace)
     template = middleware.lookup[namespace].get_template(template_name)
     return template.render_unicode(**context_dictionary)
 
