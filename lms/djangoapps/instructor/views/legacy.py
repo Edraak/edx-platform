@@ -1,6 +1,14 @@
 """
 Instructor Views
 """
+# Remove later
+from django.core.management.base import BaseCommand, CommandError
+from xmodule.course_module import CourseDescriptor
+from xmodule.modulestore.django import modulestore
+from json import dumps
+from xmodule.modulestore.inheritance import own_metadata
+from django.conf import settings
+
 from collections import defaultdict
 import csv
 import json
@@ -38,6 +46,7 @@ from django_comment_common.models import (Role,
                                           FORUM_ROLE_COMMUNITY_TA)
 from django_comment_client.utils import has_forum_access
 from instructor.offline_gradecalc import student_grades, offline_grades_available
+from instructor import dashboard_data
 from instructor_task.api import (get_running_instructor_tasks,
                                  get_instructor_task_history,
                                  submit_rescore_problem_for_all_students,
@@ -721,6 +730,12 @@ def instructor_dashboard(request, course_id):
                       url, res.status_code, res.content)
         return None
 
+    sandbox_stuff = {}
+
+    if idash_mode == 'Sandbox':
+        sandbox_stuff = {"test":"hello world"}
+        sandbox_stuff['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
+
     analytics_results = {}
 
     if idash_mode == 'Analytics':
@@ -773,6 +788,7 @@ def instructor_dashboard(request, course_id):
                'cohorts_ajax_url': reverse('cohorts', kwargs={'course_id': course_id}),
 
                'analytics_results': analytics_results,
+               'sandbox_stuff':sandbox_stuff,
                }
 
     if settings.MITX_FEATURES.get('ENABLE_INSTRUCTOR_BETA_DASHBOARD'):

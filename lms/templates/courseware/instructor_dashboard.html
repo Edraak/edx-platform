@@ -121,12 +121,49 @@ function goto( mode)
           %if settings.MITX_FEATURES.get('ENABLE_INSTRUCTOR_ANALYTICS'):
              | <a href="#" onclick="goto('Analytics');" class="${modeflag.get('Analytics')}">${_("Analytics")}</a>
           %endif
+          | <a href="#" onclick="goto('Sandbox');" class="${modeflag.get('Sandbox')}">Sandbox</a>
 	  ]
     </h2>
 
     <form name="idashform" method="POST">
     <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
     <input type="hidden" name="idash_mode" value="">
+
+##-----------------------------------------------------------------------------
+%if modeflag.get('Sandbox'):
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+    <%namespace name="d3_stacked_bar_graph" file="/instructor/d3_stacked_bar_graph.js"/>
+    <%namespace name="sandbox" file="/instructor/instructor_dashboard.js"/>
+
+
+    %if any(sandbox_stuff):
+      <script>
+        ${d3_stacked_bar_graph.body()}
+      </script>
+      <script>
+        ${sandbox.body(sandbox_stuff)}
+      </script>
+
+      %if "all_grades" in sandbox_stuff:
+      <p>info: ${sandbox_stuff["info"]}</p>
+        <p>prob_grade_distrib: ${sandbox_stuff["prob_grade_distrib"]}</p>
+
+        <p>header: ${sandbox_stuff["all_grades"]["header"]}</p>
+        %for student in sandbox_stuff["all_grades"]["students"]:
+          <p>student: ${student}</p>
+        %endfor
+        <p>assignments: ${sandbox_stuff["all_grades"]["assignments"]}</p>
+        <p>data: ${sandbox_stuff["all_grades"]["data"]}</p>
+        <p>get_grades=true: ${sandbox_stuff["all_grades"]}</p>
+        <p>get_grades=false: ${sandbox_stuff["get_grades_false"]}</p>
+      %endif
+    %endif
+
+    <div id="viz"></div>
+    <script type="text/javascript">
+    </script
+%endif
 
 ##-----------------------------------------------------------------------------
 %if modeflag.get('Grades'):
