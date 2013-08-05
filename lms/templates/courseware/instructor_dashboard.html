@@ -121,6 +121,9 @@ function goto( mode)
           %if settings.MITX_FEATURES.get('ENABLE_INSTRUCTOR_ANALYTICS'):
              | <a href="#" onclick="goto('Analytics');" class="${modeflag.get('Analytics')}">${_("Analytics")}</a>
           %endif
+          %if settings.MITX_FEATURES.get('CLASS_DASHBOARD'):
+             | <a href="#" onclick="goto('Class Dashboard');" class="${modeflag.get('Class Dashboard')}">${_("Class Dashboard")}</a>
+          %endif
 	  ]
     </h2>
 
@@ -514,6 +517,24 @@ function goto( mode)
       %endfor
       </table>
     </div>
+  %endif
+%endif
+
+%if modeflag.get('Class Dashboard'):
+  %if not any (class_dashboard_results.values()):
+    <p>${_("There is no class data available to display at this time.")}</p>
+  %else:
+    <%namespace name="d3_stacked_bar_graph" file="/class_dashboard/d3_stacked_bar_graph.js"/>
+    <%namespace name="class_dashboard" file="/class_dashboard/class_dashboard.js"/>
+
+    <script>
+      ${d3_stacked_bar_graph.body()}
+    </script>
+    <script>
+      ${class_dashboard.body(class_dashboard_results)}
+    </script>
+
+    <div id="class_dashboard"></div>
   %endif
 %endif
 

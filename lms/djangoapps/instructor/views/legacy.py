@@ -44,6 +44,7 @@ from instructor_task.api import (get_running_instructor_tasks,
                                  submit_rescore_problem_for_student,
                                  submit_reset_problem_attempts_for_all_students)
 from instructor_task.views import get_task_completion_info
+from class_dashboard import dashboard_data
 from mitxmako.shortcuts import render_to_response
 from psychometrics import psychoanalyze
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
@@ -738,6 +739,14 @@ def instructor_dashboard(request, course_id):
             analytics_results[analytic_name] = get_analytics_result(analytic_name)
 
     #----------------------------------------
+    # Class Dashboard
+
+    class_dashboard_results = {};
+    if settings.MITX_FEATURES.get('CLASS_DASHBOARD') and idash_mode == 'Class Dashboard':
+        class_dashboard_results['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
+
+
+    #----------------------------------------
     # offline grades?
 
     if use_offline:
@@ -773,6 +782,7 @@ def instructor_dashboard(request, course_id):
                'cohorts_ajax_url': reverse('cohorts', kwargs={'course_id': course_id}),
 
                'analytics_results': analytics_results,
+               'class_dashboard_results': class_dashboard_results,
                }
 
     if settings.MITX_FEATURES.get('ENABLE_INSTRUCTOR_BETA_DASHBOARD'):

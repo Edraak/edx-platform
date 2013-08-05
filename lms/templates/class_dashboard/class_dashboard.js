@@ -7,8 +7,8 @@ $(function () {
   var d3_prob_grade_distrib = ${json.dumps(sandbox_stuff['d3_prob_grade_distrib'])}
   console.log(d3_prob_grade_distrib);
 
-  var svg = d3.select("#viz").append("svg");
-  var div = d3.select("#viz").append("div");
+  var svg = d3.select("#class_dashboard").append("svg");
+  var div = d3.select("#class_dashboard").append("div");
   var param = {
     data: d3_prob_grade_distrib,
     width: 1000,
