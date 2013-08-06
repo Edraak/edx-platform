@@ -1,10 +1,10 @@
-<%page args="sandbox_stuff, **kwargs"/>
+<%page args="class_dashboard_results, **kwargs"/>
 <%!
   import json
 %>
 
 $(function () {
-  var d3_prob_grade_distrib = ${json.dumps(sandbox_stuff['d3_prob_grade_distrib'])}
+  var d3_prob_grade_distrib = ${json.dumps(class_dashboard_results['d3_prob_grade_distrib'])}
   console.log(d3_prob_grade_distrib);
 
   var svg = d3.select("#class_dashboard").append("svg");

@@ -526,6 +526,7 @@ function goto( mode)
   %else:
     <%namespace name="d3_stacked_bar_graph" file="/class_dashboard/d3_stacked_bar_graph.js"/>
     <%namespace name="class_dashboard" file="/class_dashboard/class_dashboard.js"/>
+    <%namespace name="section_class_dashboard" file="/class_dashboard/section_class_dashboard.js"/>
 
     <script>
       ${d3_stacked_bar_graph.body()}
@@ -535,6 +536,15 @@ function goto( mode)
     </script>
 
     <div id="class_dashboard"></div>
+
+    %for i in range(0,len(class_dashboard_results['d3_prob_attempt_distrib'])):
+      <div id="class_dashboard_section_${i}">
+        <h3>${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h3>
+      </div>
+      <script>
+        ${section_class_dashboard.body(i, class_dashboard_results['d3_prob_attempt_distrib'][i]['data'])}
+      </script>
+    %endfor
   %endif
 %endif
 
