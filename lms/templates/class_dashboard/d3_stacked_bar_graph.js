@@ -93,7 +93,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
   // Handle parameters
   state.data = parameters.data;
   console.log("d3_stacked...line 83");
-  console.log(state.data);
+  console.log(state);
   if (parameters.margin != undefined) {
     for (var key in state.margin) {
       if ((state.margin.hasOwnProperty(key) &&
@@ -169,8 +169,8 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
 
   // Find needed spacing for axes
   var tmpEl = graph.svg.append("text").text(state.yRange[1]+"1234")
-    .attr("id","stacked-bar-graph-long-str");
-  state.margin.axisY = document.getElementById("stacked-bar-graph-long-str")
+    .attr("id","stacked-bar-graph-long-str"+state.tag);
+  state.margin.axisY = document.getElementById("stacked-bar-graph-long-str"+state.tag)
     .getComputedTextLength()+state.margin.left;
 
   var longestXAxisStr = "";
@@ -185,10 +185,10 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
 
   tmpEl.text(longestXAxisStr);
   if (state.bVerticalXAxisLabel) {
-    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str")
+    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str"+state.tag)
       .getComputedTextLength()+state.margin.bottom;
   } else {
-    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str")
+    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str"+state.tag)
       .clientHeight+state.margin.bottom;
   }
 
@@ -324,7 +324,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
       })
       .attr("y", function(d) { return graph.scale.y(d.y1); })
       .attr("height", function(d) {
-          return graph.scale.y(d.y0) - graph.scale.y(d.y1);
+        return graph.scale.y(d.y0) - graph.scale.y(d.y1);
       })
       .style("fill", function(d) { return graph.scale.stackColor(d.color); })
       .style("stroke", "white")
