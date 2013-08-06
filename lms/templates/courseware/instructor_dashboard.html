@@ -542,7 +542,10 @@ function goto( mode)
         <h3>${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h3>
       </div>
       <script>
-        ${section_class_dashboard.body(i, class_dashboard_results['d3_prob_attempt_distrib'][i]['data'])}
+        ${section_class_dashboard.body(i,class_dashboard_results['d3_sequential_open_distrib'][i]['data'],"open"+str(i))}
+      </script>
+      <script>
+        ${section_class_dashboard.body(i,class_dashboard_results['d3_prob_attempt_distrib'][i]['data'],"attempt"+str(i))}
       </script>
     %endfor
   %endif

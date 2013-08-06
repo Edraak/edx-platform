@@ -744,15 +744,22 @@ def instructor_dashboard(request, course_id):
     class_dashboard_results = {};
     if settings.MITX_FEATURES.get('CLASS_DASHBOARD') and idash_mode == 'Class Dashboard':
         class_dashboard_results['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
-        attempt_distrib = dashboard_data.get_d3_problem_attempt_distribution(course_id)
 
+        max_str_len = 30 # TODO: Hack, should do this nicer somewhere elsbe
+
+        attempt_distrib = dashboard_data.get_d3_problem_attempt_distribution(course_id)
         for section in attempt_distrib:
             for problem in section['data']:
-                max_str_len = 30
-                if len(problem['xValue']) > max_str_len: # TODO: Hack, should do this nicer somewhere elsbe
+                if len(problem['xValue']) > max_str_len:
                     problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
-
         class_dashboard_results['d3_prob_attempt_distrib'] = attempt_distrib
+
+        sequential_open_distrib = dashboard_data.get_d3_sequential_open_distribution(course_id)
+        for section in sequential_open_distrib:
+            for subsection in section['data']:
+                if len(subsection['xValue']) > max_str_len:
+                    subsection['xValue'] = "{0}...".format(subsection['xValue'][:(max_str_len-3)])
+        class_dashboard_results['d3_sequential_open_distrib'] = sequential_open_distrib
 
 
     #----------------------------------------

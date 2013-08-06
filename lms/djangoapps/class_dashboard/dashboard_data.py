@@ -65,7 +65,8 @@ def get_problem_attempt_distrib(course_id, max_attempts=10):
 
 
 def get_sequential_open_distrib(course_id):
-    """Returns the number of students that opened each subsection/sequential of the course
+    """
+    Returns the number of students that opened each subsection/sequential of the course
 
     Outputs a dict mapping the module id to the number of students that have opened that subsection/sequential.
     """
@@ -74,7 +75,7 @@ def get_sequential_open_distrib(course_id):
 
     sequential_open_distrib = {}
     for row in db_query:
-        squential_open_distrib[row['module_state_key']] = row['count_sequential']
+        sequential_open_distrib[row['module_state_key']] = row['count_sequential']
 
     return sequential_open_distrib
 
@@ -178,8 +179,8 @@ def get_d3_problem_attempt_distribution(course_id, max_attempts=10):
                             stack_data.append({
                                 'color' : (i if i != max_attempts else "{0}+".format(max_attempts)),
                                 'value' : attempts_distrib[i],
-                                'tooltip' : "{0} - {1} Student(s) had {2} attempt(s)".format(label, attempts_distrib[i],
-                                                                                             i+1),
+                                'tooltip' : "{0} - {1} Student(s) had {2} attempt(s)".format(
+                                        label, attempts_distrib[i], i+1),
                                 })
 
                         problem = {
@@ -192,3 +193,56 @@ def get_d3_problem_attempt_distribution(course_id, max_attempts=10):
         d3_data.append(curr_section)
 
     return d3_data
+
+
+def get_d3_sequential_open_distribution(course_id):
+    """
+    Returns how many students opened a sequential/subsection for each section, data already in format for d3 function.
+
+    Returns an array in the order of the sections and each dict has:
+      'display_name' - display name for the section
+      'data' - data for the d3 stacked bar graph function of how many students opened each sequential/subsection
+    """
+    sequential_open_distrib = get_sequential_open_distrib(course_id)
+
+    d3_data = []
+
+    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    for section in course.get_children():
+        curr_section = {}
+        curr_section['display_name'] = own_metadata(section)['display_name']
+        data = []
+        c_subsection = 0
+        for subsection in section.get_children():
+            c_subsection += 1
+            subsection_name = own_metadata(subsection)['display_name']
+
+            num_students = 0
+            if subsection.location.url() in sequential_open_distrib:
+                num_students = sequential_open_distrib[subsection.location.url()]
+
+            stack_data = []
+            stack_data.append({
+                    'color' : 0,
+                    'value' : num_students,
+                    'tooltip' : "{0} student(s) opened Subsection {1}: {2}".format(
+                        num_students, c_subsection, subsection_name),
+                    })
+            subsection = {
+                'xValue' : "{0}. {1}".format(c_subsection, subsection_name),
+                'stackData' : stack_data,
+                }
+            data.append(subsection)
+
+        curr_section['data'] = data
+        d3_data.append(curr_section)
+
+    return d3_data
+
+
+def get_d3_problem_grade_distribution_by_section(course_id):
+    """
+    Returns problem grade distribution information for each section, data already in format for d3 function.
+
+    
+    """
