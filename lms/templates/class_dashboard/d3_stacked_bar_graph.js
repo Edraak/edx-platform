@@ -169,8 +169,8 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
 
   // Find needed spacing for axes
   var tmpEl = graph.svg.append("text").text(state.yRange[1]+"1234")
-    .attr("id","stacked-bar-graph-long-str"+state.tag);
-  state.margin.axisY = document.getElementById("stacked-bar-graph-long-str"+state.tag)
+    .attr("id",state.tag+"stacked-bar-graph-long-str");
+  state.margin.axisY = document.getElementById(state.tag+"stacked-bar-graph-long-str")
     .getComputedTextLength()+state.margin.left;
 
   var longestXAxisStr = "";
@@ -185,10 +185,10 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
 
   tmpEl.text(longestXAxisStr);
   if (state.bVerticalXAxisLabel) {
-    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str"+state.tag)
+    state.margin.axisX = document.getElementById(state.tag+"stacked-bar-graph-long-str")
       .getComputedTextLength()+state.margin.bottom;
   } else {
-    state.margin.axisX = document.getElementById("stacked-bar-graph-long-str"+state.tag)
+    state.margin.axisX = document.getElementById(state.tag+"stacked-bar-graph-long-str")
       .clientHeight+state.margin.bottom;
   }
 
