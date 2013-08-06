@@ -761,6 +761,13 @@ def instructor_dashboard(request, course_id):
                     subsection['xValue'] = "{0}...".format(subsection['xValue'][:(max_str_len-3)])
         class_dashboard_results['d3_sequential_open_distrib'] = sequential_open_distrib
 
+        grade_distrib = dashboard_data.get_d3_problem_grade_distribution_by_section(course_id)
+        for section in grade_distrib:
+            for problem in section['data']:
+                if len(problem['xValue']) > max_str_len:
+                    problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
+        class_dashboard_results['d3_section_grade_distrib'] = grade_distrib
+
 
     #----------------------------------------
     # offline grades?

@@ -531,9 +531,6 @@ function goto( mode)
     <script>
       ${d3_stacked_bar_graph.body()}
     </script>
-    <script>
-      ${class_dashboard.body(class_dashboard_results)}
-    </script>
 
     <div id="class_dashboard"></div>
 
@@ -543,6 +540,9 @@ function goto( mode)
       </div>
       <script>
         ${section_class_dashboard.body(i,class_dashboard_results['d3_sequential_open_distrib'][i]['data'],"open"+str(i))}
+      </script>
+      <script>
+        ${section_class_dashboard.body(i,class_dashboard_results['d3_section_grade_distrib'][i]['data'],"grade"+str(i))}
       </script>
       <script>
         ${section_class_dashboard.body(i,class_dashboard_results['d3_prob_attempt_distrib'][i]['data'],"attempt"+str(i))}

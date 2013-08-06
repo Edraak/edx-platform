@@ -244,5 +244,52 @@ def get_d3_problem_grade_distribution_by_section(course_id):
     """
     Returns problem grade distribution information for each section, data already in format for d3 function.
 
-    
+    Returns an array of dicts in the order of the sections. Each dict has:
+      'display_name' - display name for the section
+      'data' - data for the d3 stacked bar graph function of the grade distribution for that problem
     """
+
+    prob_grade_distrib = get_problem_grade_distribution(course_id)
+    d3_data = []
+
+    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    c_section = 0
+    for section in course.get_children():
+        c_section += 1
+        curr_section = {}
+        curr_section['display_name'] = own_metadata(section)['display_name']
+        data = []
+        c_subsection = 0
+        for subsection in section.get_children():
+            c_subsection += 1
+            c_unit = 0
+            for unit in subsection.get_children():
+                c_unit += 1
+                c_problem = 0
+                for child in unit.get_children():
+                    if (child.location.category == 'problem') and (child.location.url() in prob_grade_distrib):
+                        c_problem += 1
+                        stack_data = []
+                        problem_info = prob_grade_distrib[child.location.url()]
+                        problem_name = own_metadata(child)['display_name']
+                        label = "P{0}.{1}.{2} {3}".format(c_subsection, c_unit, c_problem, problem_name)
+                        max_grade = float(problem_info['max_grade'])
+                        for (grade, count_grade) in problem_info['grade_distrib']:
+                            percent = (grade*100.0)/max_grade
+
+                            stack_data.append({
+                                'color' : percent,
+                                'value' : count_grade,
+                                'tooltip' : "{0} - {1} students ({2:.0f}%)".format(label, count_grade, percent),
+                                })
+
+                        problem = {
+                            'xValue' : label,
+                            'stackData' : stack_data,
+                            }
+                        data.append(problem)
+        curr_section['data'] = data
+
+        d3_data.append(curr_section)
+
+    return d3_data
