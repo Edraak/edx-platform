@@ -174,13 +174,14 @@ def get_d3_problem_attempt_distribution(course_id, max_attempts=10):
                         stack_data = []
                         attempts_distrib = prob_attempts_distrib[child.location.url()]
                         problem_name = own_metadata(child)['display_name']
-                        label = "P{0}.{1}.{2} {3}".format(c_subsection, c_unit, c_problem, problem_name)
+                        label = "P{0}.{1}.{2}".format(c_subsection, c_unit, c_problem)
                         for i in range(0, max_attempts+1):
+                            color = (i+1 if i != max_attempts else "{0}+".format(max_attempts))
                             stack_data.append({
-                                'color' : (i if i != max_attempts else "{0}+".format(max_attempts)),
+                                'color' : color,
                                 'value' : attempts_distrib[i],
-                                'tooltip' : "{0} - {1} Student(s) had {2} attempt(s)".format(
-                                        label, attempts_distrib[i], i+1),
+                                'tooltip' : "{0} {3} - {1} Student(s) had {2} attempt(s)".format(
+                                        label, attempts_distrib[i], color, problem_name),
                                 })
 
                         problem = {
@@ -229,7 +230,7 @@ def get_d3_sequential_open_distribution(course_id):
                         num_students, c_subsection, subsection_name),
                     })
             subsection = {
-                'xValue' : "{0}. {1}".format(c_subsection, subsection_name),
+                'xValue' : "SS {0}".format(c_subsection),
                 'stackData' : stack_data,
                 }
             data.append(subsection)
@@ -272,7 +273,7 @@ def get_d3_problem_grade_distribution_by_section(course_id):
                         stack_data = []
                         problem_info = prob_grade_distrib[child.location.url()]
                         problem_name = own_metadata(child)['display_name']
-                        label = "P{0}.{1}.{2} {3}".format(c_subsection, c_unit, c_problem, problem_name)
+                        label = "P{0}.{1}.{2}".format(c_subsection, c_unit, c_problem)
                         max_grade = float(problem_info['max_grade'])
                         for (grade, count_grade) in problem_info['grade_distrib']:
                             percent = (grade*100.0)/max_grade
@@ -280,7 +281,8 @@ def get_d3_problem_grade_distribution_by_section(course_id):
                             stack_data.append({
                                 'color' : percent,
                                 'value' : count_grade,
-                                'tooltip' : "{0} - {1} students ({2:.0f}%)".format(label, count_grade, percent),
+                                'tooltip' : "{0} {3} - {1} students ({2:.0f}%)".format(
+                                        label, count_grade, percent, problem_name),
                                 })
 
                         problem = {
