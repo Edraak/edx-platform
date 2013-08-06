@@ -1,4 +1,4 @@
-<%page args="i, data, tag, **kwargs"/>
+<%page args="id_str, i, data, width, height, tag, **kwargs"/>
 <%!
   import json
 %>
@@ -9,15 +9,14 @@ $(function () {
   console.log(data${i});
 
   if (data${i}.length > 0) {
-    var svg${i} = d3.select("#class_dashboard_section_${i}").append("svg")
+    var svg${i} = d3.select("#${id_str}").append("svg")
       .attr("id", "attempts_svg_${i}");
-    var div${i} = d3.select("#class_dashboard_section_${i}").append("div");
+    var div${i} = d3.select("#${id_str}").append("div");
     var param${i} = {
       data: data${i},
-      width: 300,
-      height: 500,
+      width: ${width},
+      height: ${height},
       tag: "${tag}",
-      bVerticalXAxisLabel: true,
     };
     var barGraph${i} = edx_d3CreateStackedBarGraph(param${i}, svg${i}, div${i});
     barGraph${i}.drawGraph();

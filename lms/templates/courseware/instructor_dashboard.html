@@ -535,17 +535,28 @@ function goto( mode)
     <div id="class_dashboard"></div>
 
     %for i in range(0,len(class_dashboard_results['d3_prob_attempt_distrib'])):
-      <div id="class_dashboard_section_${i}">
-        <h3>${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h3>
+      <div id="class_dashboard_section_${i}" style="height:750px; width:100%">
+        <h2>Section: ${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h2>
+        <div id="class_dashboard_open_subsection_${i}" style="float:left; width:40%;">
+          <h3>Count of Students Opened a Subsection</h3>
+        </div>
+        <div style="float:left; width:60%">
+          <div id="class_dashboard_grade_problem_${i}" style="float:left; height:50%">
+            <h3>Grade Distribution per Problem</h3>
+          </div>
+          <div id="class_dashboard_attempt_problem_${i}" style="float:left; height:50%">
+            <h3>Attempt Distribution per Problem</h3>
+          </div>
+        </div>
       </div>
       <script>
-        ${section_class_dashboard.body(i,class_dashboard_results['d3_sequential_open_distrib'][i]['data'],"open"+str(i))}
+        ${section_class_dashboard.body("class_dashboard_open_subsection_"+str(i),i,class_dashboard_results['d3_sequential_open_distrib'][i]['data'], 325, 700,"open"+str(i))}
       </script>
       <script>
-        ${section_class_dashboard.body(i,class_dashboard_results['d3_section_grade_distrib'][i]['data'],"grade"+str(i))}
+        ${section_class_dashboard.body("class_dashboard_grade_problem_"+str(i),i,class_dashboard_results['d3_section_grade_distrib'][i]['data'], 600, 340, "grade"+str(i))}
       </script>
       <script>
-        ${section_class_dashboard.body(i,class_dashboard_results['d3_prob_attempt_distrib'][i]['data'],"attempt"+str(i))}
+        ${section_class_dashboard.body("class_dashboard_attempt_problem_"+str(i),i,class_dashboard_results['d3_prob_attempt_distrib'][i]['data'], 600, 340, "attempt"+str(i))}
       </script>
     %endfor
   %endif
