@@ -92,8 +92,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
 
   // Handle parameters
   state.data = parameters.data;
-  console.log("d3_stacked...line 83");
-  console.log(state);
+
   if (parameters.margin != undefined) {
     for (var key in state.margin) {
       if ((state.margin.hasOwnProperty(key) &&
@@ -279,8 +278,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
     !(isNaN(state.colorRange[1]))) {
     graph.scale.stackColor = d3.scale.linear()
       .domain(state.colorRange)
-      .range(["#ff4500","#00b060"]);
-//      .range(["#ff9b8e","#8EC6E8"]);
+      .range(["#e13f29","#17a74d"]);
   }
 
   // Setup axes
@@ -343,9 +341,13 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
         var pos = d3.mouse(graph.divTooltip.node().parentNode);
         var left = pos[0]+10;
         var top = pos[1]-10;
+        var width = $('#'+graph.divTooltip.attr("id")).width();
 
         graph.divTooltip.style("visibility", "visible")
           .text(d.tooltip);
+
+        if ((left+width+30) > $("#"+graph.divTooltip.node().parentNode.id).width())
+          left -= (width+30);
         
         graph.divTooltip.style("top", top+"px")
           .style("left", left+"px");
@@ -381,10 +383,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
         .attr("transform", function(d) {
           var str = "translate("+(graph.legend.width/2)+","+
             (graph.legend.barHeight/2)+")";
-          if (!isNaN(d))
-            return str;
-          else
-            return str + " rotate(-90)";
+          return str;
         })
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
