@@ -12,6 +12,8 @@ $(function () {
     height: $("#${id_str_opened}").height(),
     tag: "opened",
     bVerticalXAxisLabel : true,
+    bLegend : false,
+    margin: {left:0}
   };
 
   var paramGrade = {
@@ -38,13 +40,16 @@ $(function () {
 
   if ( paramGrade.data.length > 0 ) {
     barGraphGrade = edx_d3CreateStackedBarGraph(paramGrade, d3.select("#${id_str_grade}").append("svg"), divTooltip);
-    barGraphGrade.scale.stackColor.domain([0,50,100]).range(["#e13f29","#ffffff","#17a74d"]);
+    barGraphGrade.scale.stackColor.domain([0,50,100]).range(["#e13f29","#ebc40f","#17a74d"]);
     barGraphGrade.drawGraph();
   }
 
   if ( paramAttempts.data.length > 0 ) {
     barGraphAttempts = edx_d3CreateStackedBarGraph(paramAttempts, d3.select("#${id_str_attempts}").append("svg"),
                                                    divTooltip);
+    barGraphAttempts.scale.stackColor
+      .range(["#b3b9fd","#b1b7fd","#a1a7fd","#8e96fe","#7c85fe","#6a75fe",
+              "#5a66fe","#4a57fe","#3946fd","#2635fe","#1425fe"]);
     barGraphAttempts.drawGraph();
   }
 });
