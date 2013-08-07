@@ -333,7 +333,6 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
     // Setup tooltip
     if (graph.divTooltip != undefined) {
       graph.divTooltip
-        .attr("id","stacked-bar-graph-tooltip")
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden");
@@ -341,19 +340,12 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
 
     graph.rects
       .on("mouseover", function(d) {
-        var top = event.pageY-10;
-        var left = event.pageX+10;
-        
+        var pos = d3.mouse(graph.divTooltip.node().parentNode);
+        var left = pos[0]+10;
+        var top = pos[1]-10;
+
         graph.divTooltip.style("visibility", "visible")
           .text(d.tooltip);
-        
-        var height = $('#stacked-bar-graph-tooltip').height();
-        var width = $('#stacked-bar-graph-tooltip').width();
-        
-        if (top+height > $(window).height())
-          top -= height;
-        if (left+width+30 > $(window).width())
-            left -= (width+30);
         
         graph.divTooltip.style("top", top+"px")
           .style("left", left+"px");
@@ -362,7 +354,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
         graph.divTooltip.style("visibility", "hidden")
       });
 
-    // TODO: Add legend
+    // Add legend
     graph.svgGroup.legendG = graph.svgGroup.main.append("g")
       .attr("class","stacked-bar-graph-legend")
       .attr("transform","translate("+graph.state.margin.left+","+
@@ -395,7 +387,6 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
             return str + " rotate(-90)";
         })
         .attr("dy", ".35em")
-//        .style("font-size","9px")
         .style("text-anchor", "middle")
         .text(function(d,i) { return d; });
 
