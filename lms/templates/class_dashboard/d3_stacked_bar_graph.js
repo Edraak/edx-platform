@@ -4,7 +4,7 @@ There are three parameters:
   data* - Array of objects with key, value pairs that represent a single stack of bars:
     xValue - Corresponding value for the x-axis
     stackData - Array of objects with key, value pairs that represent a bar:
-      color - Defines what "color" the bar with map to
+      color - Defines what "color" the bar will map to
       value - Maps to the height of the bar, along the y-axis
       tooltip - (Optional) Text to display on mouse hover
   
@@ -25,6 +25,8 @@ There are three parameters:
   colorRange - Array of either the min and max or ordered ordinals (default: calculated min and max or ordered ordinals given in data)
 
   bVerticalXAxisLabel - Boolean whether to make the labels in the x-axis veritcal (default: false)
+
+  bLegend - Boolean if false does not create the graph with a legend (default: true)
 
 (2) Parameter is a d3 pointer to the SVG the graph will draw itself in.
 
@@ -78,12 +80,13 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
       data : undefined,
       height : 500,
       width : 500,
-      margin: {top: 10, bottom:10, right: 10, left: 10},
+      margin: {top: 10, bottom: 10, right: 10, left: 10},
       yRange: [0],
       xRange : undefined,
       colorRange : undefined,
       tag : "",
       bVerticalXAxisLabel : false,
+      bLegend : true,
     },
     divTooltip : divTooltip,
   };
@@ -231,27 +234,29 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
   }
 
   // Add information to create legend
-  graph.legend = {
-    height : (state.height-state.margin.top-state.margin.axisX),
-    width : 30,
-    range : state.colorRange,
-  };
-  if ((state.colorRange.length == 2) && !(isNaN(state.colorRange[0])) &&
-    !(isNaN(state.colorRange[1]))) {
-    graph.legend.range = [];
-
-    var i = 0;
-    var min = state.colorRange[0];
+  if (state.bLegend) {
+    graph.legend = {
+      height : (state.height-state.margin.top-state.margin.axisX),
+      width : 30,
+      range : state.colorRange,
+    };
+    if ((state.colorRange.length == 2) && !(isNaN(state.colorRange[0])) &&
+        !(isNaN(state.colorRange[1]))) {
+      graph.legend.range = [];
+      
+      var i = 0;
+      var min = state.colorRange[0];
     var max = state.colorRange[1];
-    while (i <= 10) {
-      graph.legend.range[i] = min+((max-min)/10)*i;
-      i += 1;
+      while (i <= 10) {
+        graph.legend.range[i] = min+((max-min)/10)*i;
+        i += 1;
+      }
     }
+    graph.legend.barHeight = graph.legend.height/graph.legend.range.length;
+    
+    // Shifting the axis over to make room
+    graph.state.margin.axisY += graph.legend.width;
   }
-  graph.legend.barHeight = graph.legend.height/graph.legend.range.length;
-
-  // Shifting the axis over to make room
-  graph.state.margin.axisY += graph.legend.width;
 
   // Make the scales
   graph.scale = {
@@ -357,20 +362,21 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
       });
 
     // Add legend
-    graph.svgGroup.legendG = graph.svgGroup.main.append("g")
-      .attr("class","stacked-bar-graph-legend")
-      .attr("transform","translate("+graph.state.margin.left+","+
-            graph.state.margin.top+")");
-    graph.svgGroup.legendGs = graph.svgGroup.legendG.selectAll(".stacked-bar-graph-legend-g")
-      .data(graph.legend.range)
-      .enter().append("g")
-      .attr("class","stacked-bar-graph-legend-g")
-      .attr("id",function(d,i) { return graph.state.tag+"legend-"+i; })
-      .attr("transform", function(d,i) {
-        return "translate(0,"+
-          (graph.state.height-graph.state.margin.axisX-((i+1)*(graph.legend.barHeight))) + ")";
-      });
-
+    if (graph.state.bLegend) {
+      graph.svgGroup.legendG = graph.svgGroup.main.append("g")
+        .attr("class","stacked-bar-graph-legend")
+        .attr("transform","translate("+graph.state.margin.left+","+
+              graph.state.margin.top+")");
+      graph.svgGroup.legendGs = graph.svgGroup.legendG.selectAll(".stacked-bar-graph-legend-g")
+        .data(graph.legend.range)
+        .enter().append("g")
+        .attr("class","stacked-bar-graph-legend-g")
+        .attr("id",function(d,i) { return graph.state.tag+"legend-"+i; })
+        .attr("transform", function(d,i) {
+          return "translate(0,"+
+            (graph.state.height-graph.state.margin.axisX-((i+1)*(graph.legend.barHeight))) + ")";
+        });
+      
       graph.svgGroup.legendGs.append("rect")
         .attr("class","stacked-bar-graph-legend-rect")
         .attr("height", graph.legend.barHeight)
@@ -388,7 +394,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .text(function(d,i) { return d; });
-
+    }
 
 
     // Draw Axes
