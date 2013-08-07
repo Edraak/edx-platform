@@ -21,7 +21,7 @@ $(function () {
     var barGraph${i} = edx_d3CreateStackedBarGraph(param${i}, svg${i}, div${i});
     barGraph${i}.drawGraph();
   } else {
-    d3.select("#class_dashboard_section_${i}").append("div")
+    d3.select("#${id_str}").append("div")
       .append("p").text("No problems for this section");
   }
 });

@@ -89,6 +89,28 @@ textarea {
     top: 30px;
 }
 
+.class-dashboard-container {
+    position: relative;
+    width: 100%;
+    float: left;
+    clear: both;
+}
+.class-dashboard-left {
+    position: relative;
+    width: 30%;
+    height: 800px;
+    float: left;
+    margin-right: 2.5%;
+}
+.class-dashboard-right {
+    position: relative;
+    width: 65%;
+    height: 375px;
+    float: left;
+    margin-left: 2.5%;
+    margin-bottom: 25px;
+}
+
 </style>
 
 <script language="JavaScript" type="text/javascript">
@@ -535,18 +557,16 @@ function goto( mode)
     <div id="class_dashboard"></div>
 
     %for i in range(0,len(class_dashboard_results['d3_prob_attempt_distrib'])):
-      <div id="class_dashboard_section_${i}" style="height:750px; width:100%">
+      <div class="class-dashboard-container" id="class_dashboard_section_${i}">
         <h2>Section: ${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h2>
-        <div id="class_dashboard_open_subsection_${i}" style="float:left; width:40%;">
+        <div class="class-dashboard-left" id="class_dashboard_open_subsection_${i}">
           <h3>Count of Students Opened a Subsection</h3>
         </div>
-        <div style="float:left; width:60%">
-          <div id="class_dashboard_grade_problem_${i}" style="float:left; height:50%">
-            <h3>Grade Distribution per Problem</h3>
-          </div>
-          <div id="class_dashboard_attempt_problem_${i}" style="float:left; height:50%">
-            <h3>Attempt Distribution per Problem</h3>
-          </div>
+        <div class="class-dashboard-right" id="class_dashboard_grade_problem_${i}">
+          <h3>Grade Distribution per Problem</h3>
+        </div>
+        <div class="class-dashboard-right" id="class_dashboard_attempt_problem_${i}">
+          <h3>Attempt Distribution per Problem</h3>
         </div>
       </div>
       <script>
