@@ -89,20 +89,20 @@ textarea {
     top: 30px;
 }
 
-.class-dashboard-container {
+.metrics-container {
     position: relative;
     width: 100%;
     float: left;
     clear: both;
 }
-.class-dashboard-left {
+.metrics-left {
     position: relative;
     width: 30%;
     height: 640px;
     float: left;
     margin-right: 2.5%;
 }
-.class-dashboard-right {
+.metrics-right {
     position: relative;
     width: 65%;
     height: 295px;
@@ -111,7 +111,7 @@ textarea {
     margin-bottom: 25px;
 }
 
-.class-dashboard-tooltip {
+.metrics-tooltip {
     width: 250px;
     background-color: lightgray;
     padding: 3px;
@@ -553,42 +553,40 @@ function goto( mode)
 %endif
 
 %if modeflag.get('Metrics'):
-  %if not any (class_dashboard_results.values()):
+  %if not any (metrics_results.values()):
     <p>${_("There is no data available to display at this time.")}</p>
   %else:
     <%namespace name="d3_stacked_bar_graph" file="/class_dashboard/d3_stacked_bar_graph.js"/>
-    <%namespace name="class_dashboard" file="/class_dashboard/class_dashboard.js"/>
-    <%namespace name="section_class_dashboard" file="/class_dashboard/section_class_dashboard.js"/>
     <%namespace name="section_metrics" file="/class_dashboard/section_metrics.js"/>
 
     <script>
       ${d3_stacked_bar_graph.body()}
     </script>
 
-    <div id="class_dashboard"></div>
+    <div id="metrics"></div>
 
-    %for i in range(0,len(class_dashboard_results['d3_prob_attempt_distrib'])):
-      <div class="class-dashboard-container" id="class_dashboard_section_${i}">
-        <h2>Section: ${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h2>
-        <div class="class-dashboard-tooltip" id="metric_tooltip_${i}"></div>
-        <div class="class-dashboard-left" id="metric_opened_${i}">
+    %for i in range(0,len(metrics_results['d3_prob_attempt_distrib'])):
+      <div class="metrics-container" id="metrics_section_${i}">
+        <h2>Section: ${metrics_results['d3_prob_attempt_distrib'][i]['display_name']}</h2>
+        <div class="metrics-tooltip" id="metric_tooltip_${i}"></div>
+        <div class="metrics-left" id="metric_opened_${i}">
           <h3>Count of Students Opened a Subsection</h3>
         </div>
-        <div class="class-dashboard-right" id="metric_grade_${i}">
+        <div class="metrics-right" id="metric_grade_${i}">
           <h3>Grade Distribution per Problem</h3>
-          %if len(class_dashboard_results['d3_section_grade_distrib'][i]['data']) == 0:
+          %if len(metrics_results['d3_section_grade_distrib'][i]['data']) == 0:
             <p>${_("There is no data available to display at this time.")}</p>
           %endif
         </div>
-        <div class="class-dashboard-right" id="metric_attempts_${i}">
-          <h3>Attempt Distribution per Problem (Last update: ${class_dashboard_results['attempts_timestamp']})</h3>
-          %if len(class_dashboard_results['d3_prob_attempt_distrib'][i]['data']) == 0:
+        <div class="metrics-right" id="metric_attempts_${i}">
+          <h3>Attempt Distribution per Problem (Last update: ${metrics_results['attempts_timestamp']})</h3>
+          %if len(metrics_results['d3_prob_attempt_distrib'][i]['data']) == 0:
             <p>${_("There is no data available to display at this time.")}</p>
           %endif
         </div>
       </div>
       <script>
-        ${section_metrics.body("metric_opened_"+str(i),"metric_grade_"+str(i),"metric_attempts_"+str(i),"metric_tooltip_"+str(i),class_dashboard_results['d3_sequential_open_distrib'][i]['data'],class_dashboard_results['d3_section_grade_distrib'][i]['data'],class_dashboard_results['d3_prob_attempt_distrib'][i]['data'],i)}
+        ${section_metrics.body("metric_opened_"+str(i),"metric_grade_"+str(i),"metric_attempts_"+str(i),"metric_tooltip_"+str(i),metrics_results['d3_sequential_open_distrib'][i]['data'],metrics_results['d3_section_grade_distrib'][i]['data'],metrics_results['d3_prob_attempt_distrib'][i]['data'],i)}
       </script>
     %endfor
   %endif

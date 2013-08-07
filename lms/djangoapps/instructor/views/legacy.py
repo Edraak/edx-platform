@@ -739,11 +739,11 @@ def instructor_dashboard(request, course_id):
             analytics_results[analytic_name] = get_analytics_result(analytic_name)
 
     #----------------------------------------
-    # Class Dashboard
+    # Metrics
 
-    class_dashboard_results = {};
+    metrics_results = {};
     if settings.MITX_FEATURES.get('CLASS_DASHBOARD') and idash_mode == 'Metrics':
-        class_dashboard_results['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
+        metrics_results['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
 
         max_str_len = 30 # TODO: Hack, should do this nicer somewhere elsbe
 
@@ -752,23 +752,23 @@ def instructor_dashboard(request, course_id):
             for problem in section['data']:
                 if len(problem['xValue']) > max_str_len:
                     problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
-        class_dashboard_results['d3_prob_attempt_distrib'] = attempt_distrib
+        metrics_results['d3_prob_attempt_distrib'] = attempt_distrib
 
         sequential_open_distrib = dashboard_data.get_d3_sequential_open_distribution(course_id)
         for section in sequential_open_distrib:
             for subsection in section['data']:
                 if len(subsection['xValue']) > max_str_len:
                     subsection['xValue'] = "{0}...".format(subsection['xValue'][:(max_str_len-3)])
-        class_dashboard_results['d3_sequential_open_distrib'] = sequential_open_distrib
+        metrics_results['d3_sequential_open_distrib'] = sequential_open_distrib
 
         grade_distrib = dashboard_data.get_d3_problem_grade_distribution_by_section(course_id)
         for section in grade_distrib:
             for problem in section['data']:
                 if len(problem['xValue']) > max_str_len:
                     problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
-        class_dashboard_results['d3_section_grade_distrib'] = grade_distrib
+        metrics_results['d3_section_grade_distrib'] = grade_distrib
 
-        class_dashboard_results['attempts_timestamp'] = dashboard_data.get_last_populate(course_id, "studentmoduleexpand")
+        metrics_results['attempts_timestamp'] = dashboard_data.get_last_populate(course_id, "studentmoduleexpand")
 
 
     #----------------------------------------
@@ -807,7 +807,7 @@ def instructor_dashboard(request, course_id):
                'cohorts_ajax_url': reverse('cohorts', kwargs={'course_id': course_id}),
 
                'analytics_results': analytics_results,
-               'class_dashboard_results': class_dashboard_results,
+               'metrics_results': metrics_results,
                }
 
     if settings.MITX_FEATURES.get('ENABLE_INSTRUCTOR_BETA_DASHBOARD'):
