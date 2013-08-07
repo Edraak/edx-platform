@@ -742,7 +742,7 @@ def instructor_dashboard(request, course_id):
     # Class Dashboard
 
     class_dashboard_results = {};
-    if settings.MITX_FEATURES.get('CLASS_DASHBOARD') and idash_mode == 'Class Dashboard':
+    if settings.MITX_FEATURES.get('CLASS_DASHBOARD') and idash_mode == 'Metrics':
         class_dashboard_results['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
 
         max_str_len = 30 # TODO: Hack, should do this nicer somewhere elsbe
