@@ -111,6 +111,12 @@ textarea {
     margin-bottom: 25px;
 }
 
+.class-dashboard-tooltip {
+    width: 250px;
+    background-color: lightgray;
+    padding: 3px;
+}
+
 </style>
 
 <script language="JavaScript" type="text/javascript">
@@ -560,7 +566,7 @@ function goto( mode)
     %for i in range(0,len(class_dashboard_results['d3_prob_attempt_distrib'])):
       <div class="class-dashboard-container" id="class_dashboard_section_${i}">
         <h2>Section: ${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h2>
-        <div id="metric_tooltip_${i}"></div>
+        <div class="class-dashboard-tooltip" id="metric_tooltip_${i}"></div>
         <div class="class-dashboard-left" id="metric_opened_${i}">
           <h3>Count of Students Opened a Subsection</h3>
         </div>
