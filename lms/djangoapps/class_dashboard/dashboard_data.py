@@ -8,6 +8,7 @@ from courseware import grades, models
 from courseware.courses import get_course_by_id
 from django.db.models import Count
 from queryable.models import StudentModuleExpand
+from queryable.models import Log
 
 from xmodule.course_module import CourseDescriptor
 from xmodule.modulestore.django import modulestore
@@ -78,6 +79,20 @@ def get_sequential_open_distrib(course_id):
         sequential_open_distrib[row['module_state_key']] = row['count_sequential']
 
     return sequential_open_distrib
+
+def get_last_populate(course_id, script_id):
+    """
+    Returns the timestamp when a script was last run for a course.
+
+    Returns None if there is no known time the script was last run for that course.
+    """
+
+    db_query = Log.objects.filter(course_id__exact=course_id, script_id__exact=script_id)
+
+    if len(db_query) > 0:
+        return db_query[0].created
+    else:
+        return None
 
 def get_d3_problem_grade_distribution(course_id):
     prob_grade_distrib = get_problem_grade_distribution(course_id)

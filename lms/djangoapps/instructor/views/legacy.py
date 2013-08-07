@@ -768,6 +768,8 @@ def instructor_dashboard(request, course_id):
                     problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
         class_dashboard_results['d3_section_grade_distrib'] = grade_distrib
 
+        class_dashboard_results['attempts_timestamp'] = dashboard_data.get_last_populate(course_id, "studentmoduleexpand")
+
 
     #----------------------------------------
     # offline grades?

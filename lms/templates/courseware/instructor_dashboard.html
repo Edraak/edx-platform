@@ -577,7 +577,7 @@ function goto( mode)
           %endif
         </div>
         <div class="class-dashboard-right" id="metric_attempts_${i}">
-          <h3>Attempt Distribution per Problem</h3>
+          <h3>Attempt Distribution per Problem (Last update: ${class_dashboard_results['attempts_timestamp']})</h3>
           %if len(class_dashboard_results['d3_prob_attempt_distrib'][i]['data']) == 0:
             <p>${_("There is no data available to display at this time.")}</p>
           %endif
