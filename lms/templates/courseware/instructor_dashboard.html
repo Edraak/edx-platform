@@ -144,7 +144,7 @@ function goto( mode)
              | <a href="#" onclick="goto('Analytics');" class="${modeflag.get('Analytics')}">${_("Analytics")}</a>
           %endif
           %if settings.MITX_FEATURES.get('CLASS_DASHBOARD'):
-             | <a href="#" onclick="goto('Class Dashboard');" class="${modeflag.get('Class Dashboard')}">${_("Class Dashboard")}</a>
+             | <a href="#" onclick="goto('Metrics');" class="${modeflag.get('Metrics')}">${_("Metrics")}</a>
           %endif
 	  ]
     </h2>
@@ -542,7 +542,7 @@ function goto( mode)
   %endif
 %endif
 
-%if modeflag.get('Class Dashboard'):
+%if modeflag.get('Metrics'):
   %if not any (class_dashboard_results.values()):
     <p>${_("There is no class data available to display at this time.")}</p>
   %else:
