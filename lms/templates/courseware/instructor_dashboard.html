@@ -544,11 +544,12 @@ function goto( mode)
 
 %if modeflag.get('Metrics'):
   %if not any (class_dashboard_results.values()):
-    <p>${_("There is no class data available to display at this time.")}</p>
+    <p>${_("There is no data available to display at this time.")}</p>
   %else:
     <%namespace name="d3_stacked_bar_graph" file="/class_dashboard/d3_stacked_bar_graph.js"/>
     <%namespace name="class_dashboard" file="/class_dashboard/class_dashboard.js"/>
     <%namespace name="section_class_dashboard" file="/class_dashboard/section_class_dashboard.js"/>
+    <%namespace name="section_metrics" file="/class_dashboard/section_metrics.js"/>
 
     <script>
       ${d3_stacked_bar_graph.body()}
@@ -559,24 +560,25 @@ function goto( mode)
     %for i in range(0,len(class_dashboard_results['d3_prob_attempt_distrib'])):
       <div class="class-dashboard-container" id="class_dashboard_section_${i}">
         <h2>Section: ${class_dashboard_results['d3_prob_attempt_distrib'][i]['display_name']}</h2>
-        <div class="class-dashboard-left" id="class_dashboard_open_subsection_${i}">
+        <div id="metric_tooltip_${i}"></div>
+        <div class="class-dashboard-left" id="metric_opened_${i}">
           <h3>Count of Students Opened a Subsection</h3>
         </div>
-        <div class="class-dashboard-right" id="class_dashboard_grade_problem_${i}">
+        <div class="class-dashboard-right" id="metric_grade_${i}">
           <h3>Grade Distribution per Problem</h3>
+          %if len(class_dashboard_results['d3_section_grade_distrib'][i]['data']) == 0:
+            <p>${_("There is no data available to display at this time.")}</p>
+          %endif
         </div>
-        <div class="class-dashboard-right" id="class_dashboard_attempt_problem_${i}">
+        <div class="class-dashboard-right" id="metric_attempts_${i}">
           <h3>Attempt Distribution per Problem</h3>
+          %if len(class_dashboard_results['d3_prob_attempt_distrib'][i]['data']) == 0:
+            <p>${_("There is no data available to display at this time.")}</p>
+          %endif
         </div>
       </div>
       <script>
-        ${section_class_dashboard.body("class_dashboard_open_subsection_"+str(i),i,class_dashboard_results['d3_sequential_open_distrib'][i]['data'], 325, 700,"open"+str(i))}
-      </script>
-      <script>
-        ${section_class_dashboard.body("class_dashboard_grade_problem_"+str(i),i,class_dashboard_results['d3_section_grade_distrib'][i]['data'], 600, 340, "grade"+str(i))}
-      </script>
-      <script>
-        ${section_class_dashboard.body("class_dashboard_attempt_problem_"+str(i),i,class_dashboard_results['d3_prob_attempt_distrib'][i]['data'], 600, 340, "attempt"+str(i))}
+        ${section_metrics.body("metric_opened_"+str(i),"metric_grade_"+str(i),"metric_attempts_"+str(i),"metric_tooltip_"+str(i),class_dashboard_results['d3_sequential_open_distrib'][i]['data'],class_dashboard_results['d3_section_grade_distrib'][i]['data'],class_dashboard_results['d3_prob_attempt_distrib'][i]['data'],i)}
       </script>
     %endfor
   %endif
