@@ -246,7 +246,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
       
       var i = 0;
       var min = state.colorRange[0];
-    var max = state.colorRange[1];
+      var max = state.colorRange[1];
       while (i <= 10) {
         graph.legend.range[i] = min+((max-min)/10)*i;
         i += 1;
@@ -392,6 +392,7 @@ edx_d3CreateStackedBarGraph = function(parameters, svg, divTooltip) {
           return str;
         })
         .attr("dy", ".35em")
+        .attr("dx", "-1px")
         .style("text-anchor", "middle")
         .text(function(d,i) { return d; });
     }
