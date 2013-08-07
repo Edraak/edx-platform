@@ -147,7 +147,8 @@ def get_d3_problem_grade_distribution(course_id):
             bar = {
                 'color' : percent,
                 'value' : count_grade,
-                'tooltip' : "{0} - {1} students ({2:.0f}%)".format(detail, count_grade, percent),
+                'tooltip' : "{0} - {1} students ({2:.0f}%:{3}/{4} questions)".format(detail, count_grade, 
+                                                                                     percent, grade, max_grade),
                 }
             stack_data.append(bar)
 
@@ -296,8 +297,8 @@ def get_d3_problem_grade_distribution_by_section(course_id):
                             stack_data.append({
                                 'color' : percent,
                                 'value' : count_grade,
-                                'tooltip' : "{0} {3} - {1} students ({2:.0f}%)".format(
-                                        label, count_grade, percent, problem_name),
+                                'tooltip' : "{0} {3} - {1} students ({2:.0f}%: {4:.0f}/{5:.0f} questions)".format(
+                                        label, count_grade, percent, problem_name, grade, max_grade),
                                 })
 
                         problem = {
