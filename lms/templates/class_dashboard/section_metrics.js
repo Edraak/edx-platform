@@ -37,7 +37,7 @@ $(function () {
     barGraphOpened.scale.stackColor.range(["#555555","#555555"]);
     barGraphOpened.drawGraph();
   }
-p
+
   if ( paramGrade.data.length > 0 ) {
     barGraphGrade = edx_d3CreateStackedBarGraph(paramGrade, d3.select("#${id_str_grade}").append("svg"), divTooltip);
     barGraphGrade.scale.stackColor.domain([0,50,100]).range(["#e13f29","#dddddd","#17a74d"]);
