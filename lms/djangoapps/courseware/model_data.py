@@ -64,7 +64,9 @@ class ModelDataCache(object):
         if user.is_authenticated():
             for scope, fields in self._fields_to_cache().items():
                 for field_object in self._retrieve_fields(scope, fields):
-                    self.cache[self._cache_key_from_field_object(scope, field_object)] = field_object
+                    self.cache[self._cache_key_from_field_object(
+                        scope, field_object
+                    )] = field_object
 
     @classmethod
     def cache_for_descriptor_descendents(cls, course_id, user, descriptor, depth=None,
@@ -382,7 +384,7 @@ class LmsKeyValueStore(KeyValueStore):
                 # If save is successful on this scope, add the saved fields to
                 # the list of successful saves
                 saved_fields.extend([field.field_name for field in field_objects[field_object]])
-            except DatabaseError:
+            except DatabaseError, IntegrityError:
                 log.error('Error saving fields %r', field_objects[field_object])
                 raise KeyValueMultiSaveError(saved_fields)
 
