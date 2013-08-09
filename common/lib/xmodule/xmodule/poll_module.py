@@ -17,15 +17,16 @@ from pkg_resources import resource_string
 
 from xmodule.x_module import XModule
 from xmodule.stringify import stringify_children
-from xmodule.mako_module import MakoModuleDescriptor
 from xmodule.xml_module import XmlDescriptor
-from xmodule.editing_module import XMLEditingDescriptor
+from xmodule.editing_module import MetadataOnlyEditingDescriptor
 from xblock.core import Scope, String, Dict, Boolean, List
 
 log = logging.getLogger(__name__)
 
 
 class PollFields(object):
+    """Fieds of poll module"""
+
     # Name of poll to use in links to this poll
     display_name = String(help="Display name for this module", scope=Scope.settings)
 
@@ -33,27 +34,27 @@ class PollFields(object):
     poll_answer = String(help="Student answer", scope=Scope.user_state, default='')
     poll_answers = Dict(help="All possible answers for the poll fro other students", scope=Scope.content)
 
-    answers = List(help="Poll answers from xml", scope=Scope.content, default=[])
-    question = String(help="Poll question", scope=Scope.content, default='')
+    answers = List(help="Poll answers from xml", scope=Scope.settings, default=[], display_name="Answers")
+    question = String(help="Poll question", scope=Scope.settings, default='', display_name="Question")
 
 
 class PollModule(PollFields, XModule):
     """Poll Module"""
     js = {
-      'coffee': [resource_string(__name__, 'js/src/javascript_loader.coffee')],
-      'js': [resource_string(__name__, 'js/src/poll/logme.js'),
-             resource_string(__name__, 'js/src/poll/poll.js'),
-             resource_string(__name__, 'js/src/poll/poll_main.js')]
-         }
+        'coffee': [resource_string(__name__, 'js/src/javascript_loader.coffee')],
+        'js': [
+            resource_string(__name__, 'js/src/poll/logme.js'),
+            resource_string(__name__, 'js/src/poll/poll.js'),
+            resource_string(__name__, 'js/src/poll/poll_main.js')]
+    }
     css = {'scss': [resource_string(__name__, 'css/poll/display.scss')]}
     js_module_name = "Poll"
 
-    def handle_ajax(self, dispatch, data):
+    def handle_ajax(self, dispatch, _):
         """Ajax handler.
 
         Args:
             dispatch: string request slug
-            data: dict request data parameters
 
         Returns:
             json string
@@ -94,13 +95,13 @@ class PollModule(PollFields, XModule):
     def get_html(self):
         """Renders parameters to template."""
         params = {
-                  'element_id': self.location.html_id(),
-                  'element_class': self.location.category,
-                  'ajax_url': self.system.ajax_url,
-                  'configuration_json': self.dump_poll(),
-                  }
-        self.content = self.system.render_template('poll.html', params)
-        return self.content
+            'element_id': self.location.html_id(),
+            'element_class': self.location.category,
+            'ajax_url': self.system.ajax_url,
+            'configuration_json': self.dump_poll(),
+        }
+        content = self.system.render_template('poll.html', params)
+        return content
 
     def dump_poll(self):
         """Dump poll information.
@@ -127,7 +128,8 @@ class PollModule(PollFields, XModule):
             answers_to_json[answer['id']] = cgi.escape(answer['text'])
         self.poll_answers = temp_poll_answers
 
-        return json.dumps({'answers': answers_to_json,
+        return json.dumps({
+            'answers': answers_to_json,
             'question': cgi.escape(self.question),
             # to show answered poll after reload:
             'poll_answer': self.poll_answer,
@@ -136,17 +138,12 @@ class PollModule(PollFields, XModule):
             'reset': str(self.descriptor.xml_attributes.get('reset', 'true')).lower()})
 
 
-class PollDescriptor(PollFields, MakoModuleDescriptor, XmlDescriptor):
+class PollDescriptor(PollFields, MetadataOnlyEditingDescriptor, XmlDescriptor):
+    """Descriptor for Poll module"""
     _tag_name = 'poll_question'
     _child_tag_name = 'answer'
 
     module_class = PollModule
-
-    mako_template = "widgets/poll-edit.html"
-
-    js = {'coffee': [resource_string(__name__, 'js/src/html/edit.coffee')]}
-    js_module_name = "HTMLEditingDescriptor"
-    css = {'scss': [resource_string(__name__, 'css/editor/edit.scss'), resource_string(__name__, 'css/html/edit.scss')]}
 
     @classmethod
     def definition_from_xml(cls, xml_object, system):
