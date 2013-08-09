@@ -1413,13 +1413,30 @@ class CodeResponse(LoncapaResponse):
 
         # Submit request. When successful, 'msg' is the prior length of the
         # queue
-
         if is_list_of_files(submission):
-            # TODO: Is there any information we want to send here?
-            contents.update({'student_response': ''})
+            # Upload to S3 now.
+            import hashlib
+            def make_hashkey(seed):
+                '''
+                Generate a hashkey (string)
+                '''
+                h = hashlib.md5()
+                h.update(str(seed))
+                return h.hexdigest()
+
+            s3_key_to_url = {}
+            for sub_file in submission:
+                # Make a hashed filename, so that you can't match submissions back
+                # to students.
+                filename = make_hashkey(str(self.system.anonymous_student_id) + str(sub_file.name))
+                s3_file = self.system.s3_interface.open(filename, 'w')
+                s3_file.write(sub_file.read())
+                s3_file.close()
+                s3_key_to_url[filename] = self.system.s3_interface.url(filename)
+            contents.update({'student_response': '',
+                             'files': s3_key_to_url})
             (error, msg) = qinterface.send_to_queue(header=xheader,
-                                                    body=json.dumps(contents),
-                                                    files_to_upload=submission)
+                                                    body=json.dumps(contents))
         else:
             contents.update({'student_response': submission})
             (error, msg) = qinterface.send_to_queue(header=xheader,

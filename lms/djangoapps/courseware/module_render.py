@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.core.files.storage import default_storage
 from django.http import Http404
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -258,19 +259,14 @@ def get_module_for_descriptor_internal(user, descriptor, model_data_cache, cours
 
     # Initialize interfaces to None
     open_ended_grading_interface = None
-    s3_interface = None
 
     # Create interfaces if needed
     if needs_open_ended_interface:
         open_ended_grading_interface = settings.OPEN_ENDED_GRADING_INTERFACE
         open_ended_grading_interface['mock_peer_grading'] = settings.MOCK_PEER_GRADING
         open_ended_grading_interface['mock_staff_grading'] = settings.MOCK_STAFF_GRADING
-    if needs_s3_interface:
-        s3_interface = {
-            'access_key': getattr(settings, 'AWS_ACCESS_KEY_ID', ''),
-            'secret_access_key': getattr(settings, 'AWS_SECRET_ACCESS_KEY', ''),
-            'storage_bucket_name': getattr(settings, 'AWS_STORAGE_BUCKET_NAME', 'openended')
-        }
+
+    s3_interface = default_storage
 
     def inner_get_module(descriptor):
         """

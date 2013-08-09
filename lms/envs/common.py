@@ -773,7 +773,9 @@ INSTALLED_APPS = (
     'notification_prefs',
 
     # Different Course Modes
-    'course_modes'
+    'course_modes',
+    # Unified storage interface (for S3)
+    'storages',
 )
 
 ######################### MARKETING SITE ###############################

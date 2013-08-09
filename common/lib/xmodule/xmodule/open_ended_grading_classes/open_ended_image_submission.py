@@ -224,39 +224,12 @@ def upload_to_s3(file_to_upload, keyname, s3_interface):
     Returns:
         public_url: URL to access uploaded file
     '''
-
-    #This commented out code is kept here in case we change the uploading method and require images to be
-    #converted before they are sent to S3.
-    #TODO: determine if commented code is needed and remove
-    #im = Image.open(file_to_upload)
-    #out_im = cStringIO.StringIO()
-    #im.save(out_im, 'PNG')
-
-    try:
-        conn = S3Connection(s3_interface['access_key'], s3_interface['secret_access_key'])
-        bucketname = str(s3_interface['storage_bucket_name'])
-        bucket = conn.create_bucket(bucketname.lower())
-
-        k = Key(bucket)
-        k.key = keyname
-        k.set_metadata('filename', file_to_upload.name)
-        k.set_contents_from_file(file_to_upload)
-
-        #This commented out code is kept here in case we change the uploading method and require images to be
-        #converted before they are sent to S3.
-        #k.set_contents_from_string(out_im.getvalue())
-        #k.set_metadata("Content-Type", 'images/png')
-
-        k.set_acl("public-read")
-        public_url = k.generate_url(60 * 60 * 24 * 365)   # URL timeout in seconds.
-
-        return True, public_url
-    except:
-        #This is a dev_facing_error
-        error_message = "Could not connect to S3 to upload peer grading image.  Trying to utilize bucket: {0}".format(
-            bucketname.lower())
-        log.error(error_message)
-        return False, error_message
+    import pdb
+    pdb.set_trace()
+    s3_file = s3_interface.open(keyname, 'w')
+    s3_file.write(file_to_upload.read())
+    s3_file.close()
+    return s3_interface.url(keyname)
 
 
 def get_from_s3(s3_public_url):
