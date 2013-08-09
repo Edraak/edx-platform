@@ -1,0 +1,8 @@
+<course name="A Simple Course Videoalpga" org="edX" course="simple_videoalpha" graceperiod="1 day 5 hours 59 minutes 59 seconds" slug="2012_Fall">
+  <chapter name="Overview VA">
+    <!-- <videoalpha display_name="Welcome" youtube_id_0_75="izygArpw-Qo" youtube_id_1_0="p2Q6BrNhdh8" youtube_id_1_25="1EeWXzPdhSA" youtube_id_1_5="rABDYkeK0x8"/> -->
+    <videoalpha show_captions="true" youtube="0.75:jNCf2gIqpeE,1.0:ZwkTiUPN0mg,1.25:rsq9auxASqI,1.50:kMyNdzVHHgg" display_name="S19V3: Vacancies 2">
+      <source src="https://s3.amazonaws.com/edx-course-videos/mit-3091x/M-3091X-FA12-L21-3_100.mp4"/>
+    </videoalpha>
+      </chapter>
+</course>

@@ -86,7 +86,6 @@ class RoundTripTestCase(unittest.TestCase):
         # during imports from old-style courses.  Ignore them.
         strip_filenames(initial_course)
         strip_filenames(exported_course)
-
         self.assertEquals(initial_course, exported_course)
         self.assertEquals(initial_course.id, exported_course.id)
         course_id = initial_course.id
@@ -117,6 +116,9 @@ class RoundTripTestCase(unittest.TestCase):
 
     def test_simple_roundtrip(self):
         self.check_export_roundtrip(DATA_DIR, "simple")
+
+    def test_simple_va_roundtrip(self):
+        self.check_export_roundtrip(DATA_DIR, "simple_videoalpha")
 
     def test_conditional_and_poll_roundtrip(self):
         self.check_export_roundtrip(DATA_DIR, "conditional_and_poll")
