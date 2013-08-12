@@ -249,7 +249,6 @@ def remove_asset(request, org, course, name):
     return HttpResponse()
 
 
-@ensure_csrf_cookie
 @require_http_methods(("GET", "POST", "PUT"))
 @login_required
 def import_course(request, org, course, name):
@@ -258,7 +257,8 @@ def import_course(request, org, course, name):
     """
     location = get_location_and_verify_access(request, org, course, name)
 
-    if request.method in ('POST', 'PUT'):
+    if request.method in ('POST'):
+         
         filename = request.FILES['course-data'].name
 
         if not filename.endswith('.tar.gz'):
