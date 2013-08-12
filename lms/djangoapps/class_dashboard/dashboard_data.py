@@ -142,7 +142,9 @@ def get_d3_problem_grade_distribution(course_id):
             
         stack_data = []
         for (grade,count_grade) in value['grade_distrib']:
-            percent = (grade*100.0)/max_grade
+            percent = 0.0
+            if max_grade != 0:
+                percent = (grade*100.0)/max_grade
 
             bar = {
                 'color' : percent,
