@@ -504,6 +504,7 @@ class JSInput(InputTypeBase):
 
     def _extra_context(self):
         context = {
+            'easyXDM' : '/static/js/vendor/easyXDM.min.js',
             'applet_loader': '/static/js/capa/src/jsinput.js',
             'saved_state': self.value
         }
