@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, get_callable
 from django.core.files.storage import default_storage
 from django.http import Http404
 from django.http import HttpResponse
@@ -266,7 +266,7 @@ def get_module_for_descriptor_internal(user, descriptor, model_data_cache, cours
         open_ended_grading_interface['mock_peer_grading'] = settings.MOCK_PEER_GRADING
         open_ended_grading_interface['mock_staff_grading'] = settings.MOCK_STAFF_GRADING
 
-    s3_interface = default_storage
+    s3_interface = get_callable(settings.RESPONSE_FILE_STORAGE)()
 
     def inner_get_module(descriptor):
         """

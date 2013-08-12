@@ -310,6 +310,9 @@ MODULESTORE = {
 }
 CONTENTSTORE = None
 
+# How do we store student file submissions?  (Like code in CodeResponse.)
+RESPONSE_FILE_STORAGE = 'full_url_file_system.FullUrlFileSystem'
+
 #################### Python sandbox ############################################
 
 CODE_JAIL = {
@@ -351,6 +354,7 @@ SITE_NAME = "edx.org"
 HTTPS = 'on'
 ROOT_URLCONF = 'lms.urls'
 IGNORABLE_404_ENDS = ('favicon.ico')
+BASE_URL = 'http://127.0.0.1:8000'
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

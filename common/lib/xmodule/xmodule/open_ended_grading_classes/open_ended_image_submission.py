@@ -12,8 +12,6 @@ except:
 
 from urlparse import urlparse
 import requests
-from boto.s3.connection import S3Connection
-from boto.s3.key import Key
 import logging
 
 log = logging.getLogger(__name__)
@@ -224,8 +222,6 @@ def upload_to_s3(file_to_upload, keyname, s3_interface):
     Returns:
         public_url: URL to access uploaded file
     '''
-    import pdb
-    pdb.set_trace()
     s3_file = s3_interface.open(keyname, 'w')
     s3_file.write(file_to_upload.read())
     s3_file.close()
