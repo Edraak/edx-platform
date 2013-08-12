@@ -128,14 +128,15 @@ class ElasticDatabase:
                 responses.append(callback(index, type_, file_, silent, **callback_kwargs))
         return responses
 
-    def searchable_text_from_transcript_file(self, transcript_file, silent=False):
+    def get_searchable_text_from_transcript_file(self, transcript_file, silent=False):
         """
         Returns human-readable text string from raw transcript file
         """
 
         transcript = open(transcript_file, 'rb')
         try:
-            searchable_text = " ".join(filter(None, json.load(transcript)["text"])).replace("\n", " ")
+            # Replacing newlines to make sure that everything plays nice with Punkt and Elasticsearch
+            searchable_text = " ".join(filter(None, json.load(transcript).get("text", ""))).replace("\n", " ")
         except ValueError:
             if silent:
                 searchable_text = transcript.read()
@@ -177,9 +178,15 @@ class ElasticDatabase:
         """
 
         if id_ is None:
-            id_ = data["hash"]
+            try:
+                id_ = data["hash"]
+            except KeyError:
+                return None
         if type_ is None:
-            type_ = data["type_hash"]
+            try:
+                type_ = data["type_hash"]
+            except KeyError:
+                return None
         full_url = "/".join([self.url, index, type_, id_])
         return flaky_request("post", full_url, data=json.dumps(data))
 
@@ -190,7 +197,8 @@ class ElasticDatabase:
         {"index": {"_index": "transcript-index", "_type": "course_hash", "_id": "id_hash"}}
         {"field1": "value1"...}
 
-        Important: Bulk indexing is newline delimited, make sure the newlines are properly used
+        Important: Bulk indexing is newline delimited, make sure newlines are only
+        between action (line starting with index) and data (line starting with field1)
         """
 
         url = self.url + "/_bulk"
@@ -576,7 +584,6 @@ class MongoIndexer:
         bulk_string = ""
         for i in range(cursor.count()):
             item = cursor.next()
-            print i
             try:
                 data = self.basic_dict(item, "problem")
             except IOError:  # In case the connection is refused for whatever reason, try again

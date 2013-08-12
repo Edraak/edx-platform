@@ -44,7 +44,7 @@ def index_course(request):
     Is called via AJAX from Studio, and doesn't render any templates.
     """
     indexer = MongoIndexer()
-    if "type_id" in request.POST.keys():
+    if "course" in request.POST.keys():
         indexer.index_course(request.POST["type_id"])
         return HttpResponse(status=204)
     else:
