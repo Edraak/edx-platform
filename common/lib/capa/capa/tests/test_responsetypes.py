@@ -763,6 +763,37 @@ class CodeResponseTest(ResponseTest):
                     else:
                         self.assertTrue(self.problem.correct_map.is_queued(test_id))  # Should be queued, message undelivered
 
+    def test_regular_grade(self):
+        """
+        Test the whole grading process, happy path.
+        """
+        self.problem.grade_answers({
+            '1_2_1': 'blah',
+            '1_3_1': 'blah',
+        })
+        # Get the last call to send_to_queue.  Get the kwargs of the last call.
+        kwargs = self.problem.system.xqueue['interface'].send_to_queue.call_args_list[-1][1]
+        body = json.loads(kwargs['body'])
+        self.assertTrue(json.loads(body['student_info'])['anonymous_student_id'] == 'student')
+        self.assertTrue(body['student_response'] == 'blah')
+        header = json.loads(kwargs['header'])
+        self.assertTrue(header['lms_callback_url'] == 'score_update')
+        self.assertTrue(header['queue_name'] == 'testqueue')
+
+    def test_upload_grade(self):
+        """
+        Test grading with file uploads.
+        """
+        problem_file = os.path.join(os.path.dirname(__file__), "test_files/filename_convert_test.txt")
+        file_pointer = open(problem_file)
+        self.problem.grade_answers({
+            '1_2_1': [file_pointer],
+            '1_3_1': [file_pointer],
+        })
+        kwargs = self.problem.system.xqueue['interface'].send_to_queue.call_args_list[-1][1]
+        body = json.loads(kwargs['body'])
+        self.assertTrue('fake/storage/url' in body['files'].values())
+
     def test_recentmost_queuetime(self):
         '''
         Test whether the LoncapaProblem knows about the time of queue requests

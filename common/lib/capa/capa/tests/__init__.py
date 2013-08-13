@@ -22,6 +22,9 @@ def calledback_url(dispatch = 'score_update'):
 xqueue_interface = MagicMock()
 xqueue_interface.send_to_queue.return_value = (0, 'Success!')
 
+storage_interface = MagicMock()
+storage_interface.url = MagicMock(return_value='fake/storage/url')
+
 def test_system():
     """
     Construct a mock ModuleSystem instance.
@@ -41,6 +44,7 @@ def test_system():
         anonymous_student_id='student',
         cache=None,
         can_execute_unsafe_code=lambda: False,
+        storage_interface=storage_interface,
     )
     return the_system
 

@@ -1410,7 +1410,6 @@ class CodeResponse(LoncapaResponse):
             'submission_time': qtime,
         }
         contents.update({'student_info': json.dumps(student_info)})
-
         # Submit request. When successful, 'msg' is the prior length of the
         # queue
         if is_list_of_files(submission):
