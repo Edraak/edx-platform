@@ -400,6 +400,61 @@ class LoncapaResponse(object):
 
         return response_msg_div
 
+    def upload_to_storage(self, submission):
+        """
+        Upload subission, which is expected to contain a list of file pointers,
+        to s3.
+
+        Return a dict mapping s3 filenames to s3 urls for this submission.
+        """
+        # Upload to S3 now.
+        import hashlib
+        def make_hashkey(seed):
+            '''
+            Generate a hashkey (string)
+            '''
+            h = hashlib.md5()
+            h.update(str(seed))
+            return h.hexdigest()
+
+        storage_key_to_url = {}
+        for sub_file in submission:
+            # Make a hashed filename, so that you can't match submissions back
+            # to students.
+            filename = make_hashkey(str(self.system.anonymous_student_id) + str(sub_file.name))
+            storage_file = self.system.storage_interface.open(filename, 'w')
+            storage_file.write(sub_file.read())
+            storage_file.close()
+            storage_key_to_url[filename] = self.system.storage_interface.url(filename)
+        return storage_key_to_url
+
+    def submit_to_queue(self, body):
+        """
+        Submits body to a queue.  Xqueues expect body to be valid json,
+        but this function doesn't actually care.
+        The target xqueue is determined by self.queue_name, which should
+        be specified prior to calling this method.
+
+        Returns a tuple (error, message)
+        """
+        qinterface = self.system.xqueue['interface']
+        qtime = datetime.strftime(datetime.now(UTC), xqueue_interface.dateformat)
+
+        anonymous_student_id = self.system.anonymous_student_id
+
+        # Generate header
+        queuekey = xqueue_interface.make_hashkey(
+            str(self.system.seed) + qtime + anonymous_student_id + self.answer_id
+        )
+        callback_url = self.system.xqueue['construct_callback']()
+        xheader = xqueue_interface.make_xheader(
+            lms_callback_url=callback_url,
+            lms_key=queuekey,
+            queue_name=self.queue_name
+        )
+        return qinterface.send_to_queue(header=xheader, body=contents)
+
+
 
 #-----------------------------------------------------------------------------
 
@@ -918,6 +973,46 @@ class StringResponse(LoncapaResponse):
 
 #-----------------------------------------------------------------------------
 
+class NewExternalResponse(LoncapaResponse):
+    """
+    A generic response that sends its answers out to an external
+    server for checking.
+
+    POSTs to the xqueue have the following keys:
+    - 'student' is some hashed id representing the student.
+    - 'answers' is a dictionary mapping input field name to answers.
+    Specify the name of your input fields with <textline name="my_name />
+    """
+    response_tag = 'externalresponse2'
+    allowed_inputfields = ['textline', 'textbox', 'crystallography',
+                           'chemicalequationinput', 'vsepr_input',
+                           'drag_and_drop_input', 'editamoleculeinput',
+                           'designprotein2dinput', 'editageneinput',
+                           'annotationinput', 'jsinput',
+                           'filesubmission', 'matlabinput']
+
+    def setup_response(self):
+        self.url = self.xml.get('url')
+
+        if self.system.xqueue is not None:
+            default_queuename = self.system.xqueue['default_queuename']
+        else:
+            default_queuename = None
+        self.queue_name = xml.get('queuename', default_queuename)
+        self.answer = self.xml.get('answer')
+
+    def get_score(self, student_answers):
+        # We do not support xqueue within Studio.
+        if self.system.xqueue is None:
+            cmap = CorrectMap()
+            cmap.set(self.answer_id, queuestate=None,
+                     msg='Error checking problem: no external queueing server is configured.')
+            return cmap
+
+        for answer_id in self.answer_ids:
+            submission = student_answers[answer_id]
+            contents = {}
+
 
 class CustomResponse(LoncapaResponse):
     '''
@@ -1378,22 +1473,6 @@ class CodeResponse(LoncapaResponse):
         # Prepare xqueue request
         #------------------------------------------------------------
 
-        qinterface = self.system.xqueue['interface']
-        qtime = datetime.strftime(datetime.now(UTC), xqueue_interface.dateformat)
-
-        anonymous_student_id = self.system.anonymous_student_id
-
-        # Generate header
-        queuekey = xqueue_interface.make_hashkey(
-            str(self.system.seed) + qtime + anonymous_student_id + self.answer_id
-        )
-        callback_url = self.system.xqueue['construct_callback']()
-        xheader = xqueue_interface.make_xheader(
-            lms_callback_url=callback_url,
-            lms_key=queuekey,
-            queue_name=self.queue_name
-        )
-
         # Generate body
         if is_list_of_files(submission):
             # TODO: Get S3 pointer from the Queue
@@ -1413,33 +1492,12 @@ class CodeResponse(LoncapaResponse):
         # Submit request. When successful, 'msg' is the prior length of the
         # queue
         if is_list_of_files(submission):
-            # Upload to S3 now.
-            import hashlib
-            def make_hashkey(seed):
-                '''
-                Generate a hashkey (string)
-                '''
-                h = hashlib.md5()
-                h.update(str(seed))
-                return h.hexdigest()
-
-            storage_key_to_url = {}
-            for sub_file in submission:
-                # Make a hashed filename, so that you can't match submissions back
-                # to students.
-                filename = make_hashkey(str(self.system.anonymous_student_id) + str(sub_file.name))
-                storage_file = self.system.storage_interface.open(filename, 'w')
-                storage_file.write(sub_file.read())
-                storage_file.close()
-                storage_key_to_url[filename] = self.system.storage_interface.url(filename)
+            storage_key_to_url = self.upload_to_storage(submission)
             contents.update({'student_response': '',
                              'files': storage_key_to_url})
-            (error, msg) = qinterface.send_to_queue(header=xheader,
-                                                    body=json.dumps(contents))
         else:
             contents.update({'student_response': submission})
-            (error, msg) = qinterface.send_to_queue(header=xheader,
-                                                    body=json.dumps(contents))
+        (error, msg) = self.submit_to_queue(json.dumps(contents))
 
         # State associated with the queueing request
         queuestate = {'key': queuekey,
