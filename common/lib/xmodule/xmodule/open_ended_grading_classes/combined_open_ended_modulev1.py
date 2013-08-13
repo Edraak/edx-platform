@@ -134,7 +134,7 @@ class CombinedOpenEndedV1Module():
             'display_name': self.display_name,
             'accept_file_upload': self.accept_file_upload,
             'close_date': self.timeinfo.close_date,
-            's3_interface': self.system.s3_interface,
+            'storage_interface': self.system.storage_interface,
             'skip_basic_checks': self.skip_basic_checks,
             'control': {
                 'required_peer_grading': self.required_peer_grading,

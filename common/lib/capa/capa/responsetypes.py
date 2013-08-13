@@ -1424,17 +1424,17 @@ class CodeResponse(LoncapaResponse):
                 h.update(str(seed))
                 return h.hexdigest()
 
-            s3_key_to_url = {}
+            storage_key_to_url = {}
             for sub_file in submission:
                 # Make a hashed filename, so that you can't match submissions back
                 # to students.
                 filename = make_hashkey(str(self.system.anonymous_student_id) + str(sub_file.name))
-                s3_file = self.system.s3_interface.open(filename, 'w')
-                s3_file.write(sub_file.read())
-                s3_file.close()
-                s3_key_to_url[filename] = self.system.s3_interface.url(filename)
+                storage_file = self.system.storage_interface.open(filename, 'w')
+                storage_file.write(sub_file.read())
+                storage_file.close()
+                storage_key_to_url[filename] = self.system.storage_interface.url(filename)
             contents.update({'student_response': '',
-                             'files': s3_key_to_url})
+                             'files': storage_key_to_url})
             (error, msg) = qinterface.send_to_queue(header=xheader,
                                                     body=json.dumps(contents))
         else:

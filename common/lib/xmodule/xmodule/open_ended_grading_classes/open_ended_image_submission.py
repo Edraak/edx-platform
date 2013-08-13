@@ -215,25 +215,25 @@ def run_image_tests(image):
     return success
 
 
-def upload_to_s3(file_to_upload, keyname, s3_interface):
+def upload_to_storage(file_to_upload, keyname, storage_interface):
     '''
     Upload file to S3 using provided keyname.
 
     Returns:
         public_url: URL to access uploaded file
     '''
-    s3_file = s3_interface.open(keyname, 'w')
-    s3_file.write(file_to_upload.read())
-    s3_file.close()
-    return s3_interface.url(keyname)
+    storage_file = storage_interface.open(keyname, 'w')
+    storage_file.write(file_to_upload.read())
+    storage_file.close()
+    return storage_interface.url(keyname)
 
 
-def get_from_s3(s3_public_url):
+def get_from_storage(storage_public_url):
     """
     Gets an image from a given S3 url
-    @param s3_public_url: The URL where an image is located
+    @param storage_public_url: The URL where an image is located
     @return: The image data
     """
-    r = requests.get(s3_public_url, timeout=2)
+    r = requests.get(storage_public_url, timeout=2)
     data = r.text
     return data

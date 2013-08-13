@@ -255,7 +255,7 @@ def get_module_for_descriptor_internal(user, descriptor, model_data_cache, cours
 
     # Get descriptor metadata fields indicating needs for various settings
     needs_open_ended_interface = getattr(descriptor, "needs_open_ended_interface", False)
-    needs_s3_interface = getattr(descriptor, "needs_s3_interface", False)
+    needs_storage_interface = getattr(descriptor, "needs_storage_interface", False)
 
     # Initialize interfaces to None
     open_ended_grading_interface = None
@@ -266,7 +266,11 @@ def get_module_for_descriptor_internal(user, descriptor, model_data_cache, cours
         open_ended_grading_interface['mock_peer_grading'] = settings.MOCK_PEER_GRADING
         open_ended_grading_interface['mock_staff_grading'] = settings.MOCK_STAFF_GRADING
 
-    s3_interface = get_callable(settings.RESPONSE_FILE_STORAGE)()
+    storage_interface = None
+
+    if needs_storage_interface:
+        storage_settings = settings.EXTERNAL_STORAGE
+        storage_interface = get_callable(storage_settings['class_name'])(**storage_settings['options'])
 
     def inner_get_module(descriptor):
         """
@@ -360,7 +364,7 @@ def get_module_for_descriptor_internal(user, descriptor, model_data_cache, cours
         anonymous_student_id=unique_id_for_user(user),
         course_id=course_id,
         open_ended_grading_interface=open_ended_grading_interface,
-        s3_interface=s3_interface,
+        storage_interface=storage_interface,
         cache=cache,
         can_execute_unsafe_code=(lambda: can_execute_unsafe_code(course_id)),
     )

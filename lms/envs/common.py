@@ -311,7 +311,11 @@ MODULESTORE = {
 CONTENTSTORE = None
 
 # How do we store student file submissions?  (Like code in CodeResponse.)
-RESPONSE_FILE_STORAGE = 'full_url_file_system.FullUrlFileSystem'
+# The FileSystem storage is for dev only.  In prod, we use s3.
+EXTERNAL_STORAGE = {
+    'class_name': 'full_url_file_system.FullUrlFileSystem',
+    'options': {}
+}
 
 #################### Python sandbox ############################################
 

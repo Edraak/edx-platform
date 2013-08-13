@@ -89,7 +89,7 @@ class OpenEndedChild(object):
         self.display_name = static_data['display_name']
         self.accept_file_upload = static_data['accept_file_upload']
         self.close_date = static_data['close_date']
-        self.s3_interface = static_data['s3_interface']
+        self.storage_interface = static_data['storage_interface']
         self.skip_basic_checks = static_data['skip_basic_checks']
         self._max_score = static_data['max_score']
         self.control = static_data['control']
@@ -320,14 +320,14 @@ class OpenEndedChild(object):
         correctness = 'correct' if self.is_submission_correct(score) else 'incorrect'
         return correctness
 
-    def upload_image_to_s3(self, image_data):
+    def upload_image_to_storage(self, image_data):
         """
         Uploads an image to S3
         Image_data: InMemoryUploadedFileObject that responds to read() and seek()
         @return:Success and a URL corresponding to the uploaded object
         """
         success = False
-        s3_public_url = ""
+        storage_public_url = ""
         image_ok = False
         try:
             image_data.seek(0)
@@ -342,13 +342,13 @@ class OpenEndedChild(object):
 
             try:
                 image_data.seek(0)
-                success, s3_public_url = open_ended_image_submission.upload_to_s3(
-                    image_data, image_key, self.s3_interface
+                success, storage_public_url = open_ended_image_submission.upload_to_storage(
+                    image_data, image_key, self.storage_interface
                 )
             except:
                 log.exception("Could not upload image to S3.")
 
-        return success, image_ok, s3_public_url
+        return success, image_ok, storage_public_url
 
     def check_for_image_and_upload(self, data):
         """
@@ -358,29 +358,29 @@ class OpenEndedChild(object):
         and the html corresponding to the uploaded image
         """
         has_file_to_upload = False
-        uploaded_to_s3 = False
+        uploaded_to_storage = False
         image_tag = ""
         image_ok = False
         if 'can_upload_files' in data:
             if data['can_upload_files'] in ['true', '1']:
                 has_file_to_upload = True
                 student_file = data['student_file'][0]
-                uploaded_to_s3, image_ok, s3_public_url = self.upload_image_to_s3(student_file)
-                if uploaded_to_s3:
-                    image_tag = self.generate_image_tag_from_url(s3_public_url, student_file.name)
+                uploaded_to_storage, image_ok, storage_public_url = self.upload_image_to_storage(student_file)
+                if uploaded_to_storage:
+                    image_tag = self.generate_image_tag_from_url(storage_public_url, student_file.name)
 
-        return has_file_to_upload, uploaded_to_s3, image_ok, image_tag
+        return has_file_to_upload, uploaded_to_storage, image_ok, image_tag
 
-    def generate_image_tag_from_url(self, s3_public_url, image_name):
+    def generate_image_tag_from_url(self, storage_public_url, image_name):
         """
         Makes an image tag from a given URL
-        @param s3_public_url: URL of the image
+        @param storage_public_url: URL of the image
         @param image_name: Name of the image
         @return: Boolean success, updated AJAX data
         """
         image_template = """
                         <a href="{0}" target="_blank">{1}</a>
-                         """.format(s3_public_url, image_name)
+                         """.format(storage_public_url, image_name)
         return image_template
 
     def append_image_to_student_answer(self, data):
@@ -394,11 +394,11 @@ class OpenEndedChild(object):
             # If the question does not accept file uploads, do not do anything
             return True, data
 
-        has_file_to_upload, uploaded_to_s3, image_ok, image_tag = self.check_for_image_and_upload(data)
-        if uploaded_to_s3 and has_file_to_upload and image_ok:
+        has_file_to_upload, uploaded_to_storage, image_ok, image_tag = self.check_for_image_and_upload(data)
+        if uploaded_to_storage and has_file_to_upload and image_ok:
             data['student_answer'] += image_tag
             overall_success = True
-        elif has_file_to_upload and not uploaded_to_s3 and image_ok:
+        elif has_file_to_upload and not uploaded_to_storage and image_ok:
             # In this case, an image was submitted by the student, but the image could not be uploaded to S3.  Likely
             # a config issue (development vs deployment).  For now, just treat this as a "success"
             log.exception("Student AJAX post to combined open ended xmodule indicated that it contained an image, "
