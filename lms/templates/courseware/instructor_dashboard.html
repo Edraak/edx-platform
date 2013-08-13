@@ -586,7 +586,7 @@ function goto( mode)
         </div>
       </div>
       <script>
-        ${section_metrics.body("metric_opened_"+str(i),"metric_grade_"+str(i),"metric_attempts_"+str(i),"metric_tooltip_"+str(i),metrics_results['d3_sequential_open_distrib'][i]['data'],metrics_results['d3_section_grade_distrib'][i]['data'],metrics_results['d3_prob_attempt_distrib'][i]['data'],i)}
+        ${section_metrics.body("metric_opened_"+str(i),"metric_grade_"+str(i),"metric_attempts_"+str(i),"metric_tooltip_"+str(i),i,course.id)}
       </script>
     %endfor
   %endif
