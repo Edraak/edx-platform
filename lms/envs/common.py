@@ -500,6 +500,9 @@ MIDDLEWARE_CLASSES = (
 
     # catches any uncaught RateLimitExceptions and returns a 403 instead of a 500
     'ratelimitbackend.middleware.RateLimitMiddleware',
+
+    # masquerade
+    'masquerade.middleware.MasqueradeMiddleware',
 )
 
 ############################### Pipeline #######################################
@@ -773,7 +776,10 @@ INSTALLED_APPS = (
     'notification_prefs',
 
     # Different Course Modes
-    'course_modes'
+    'course_modes',
+
+    # masquerade
+    'masquerade',
 )
 
 ######################### MARKETING SITE ###############################
@@ -817,3 +823,6 @@ def enable_theme(theme_name):
     STATICFILES_DIRS.append((u'themes/%s' % theme_name,
                              theme_root / 'static'))
 
+
+DJANGO_MASQUERADE = True
+MASQUERADE_REDIRECT_URL = '/'

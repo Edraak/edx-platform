@@ -449,6 +449,13 @@ urlpatterns = patterns(*urlpatterns)
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+# masquerade
+if settings.DJANGO_MASQUERADE:
+    urlpatterns += (
+        url(r'^masq', include('masquerade.urls')),
+    )
+
+
 #Custom error pages
 handler404 = 'static_template_view.views.render_404'
 handler500 = 'static_template_view.views.render_500'
