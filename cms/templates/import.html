@@ -33,12 +33,12 @@
         <p class="file-name-block"><span class="file-name"></span><a href="#" class="choose-file-button-inline">${_("change")}</a></p>
         <input type="file" name="course-data" class="file-input" >
         <input type="submit" value="${_('Replace my course with the one above')}" class="submit-button" >
-        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
         <div class="progress-bar">
           <div class="progress-fill"></div>
           <div class="percent">0%</div>
         </div>
       </form>
+      <!--<input id="upload" tye="file" name="files[]" class="file-input"/>-->
     </article>
   </div>
 </div>
@@ -57,35 +57,55 @@ var percent = $('.percent');
 var status = $('#status');
 var submitBtn = $('.submit-button');
 
+<!--submitBtn.hide();-->
+
+function getCookie(name) {
+    return $.cookie(name);
+}
 
 $('#fileupload').fileupload({
 
 
+    <!--url: "${reverse('import_course', kwargs=dict(org=context_course.location.org, course=context_course.location.course, name=context_course.location.name))}",-->
     dataType: 'json',
     type: 'POST',
+    headers: { 'X-CSRF-Token': getCookie('csrftoken') },
+    <!--formData: {-->
+        <!--headers: { 'X-CSRF-Token': getCookie('csrftoken') },-->
+    <!--},-->
 
-    maxChunkSize: 20 * 1000000, // 20 MB
-
-    autoUpload: false,
+    maxChunkSize: 2000 * 1000000, // 2 GB - change when server accepts chunks
 
     add: function(e, data) {
-        submitBtn.show().click(function(e){ 
-            e.preventDefault();
-            data.submit();
+        console.log("sending: " + data);
+        submitBtn.show().click(function() {
+            data.submit()
+                .success(function(res, tstatus, xhr) {
+                    alert('${_("Your import was successful.")}');
+                    window.location = '${successful_import_redirect_url}';
+                })
+                .error(function(res, tstatus, xhr) {
+                    submitBtn.show();
+                    bar.hide();
+                });
         });
     },
 
     progressall: function(e, data){
-        var percentVal = parseInt(data.loaded / data.total * 100, 10) + "%";
+        var percentVal = parseInt(data.loaded / data.total * 120, 10) + "%";
         bar.show();
         fill.width(percentVal);
         percent.html(percentVal);
     },
     done: function(e, data){
-        bar.hide();
-        percent.html("Unpacking files...");
+        var percentVal = "100%";
+        fill.width(percentVal);
+        percent.html(percentVal);
+        setTimeout(1000, function() {
+                percent.html("Unpacking files...");
+        });
+
         alert('${_("Your import was successful.")}');
-        window.location = '${successful_import_redirect_url}';
     },
     fail: function(e, data) {
         alert('${_("Your import has failed.")}\n\n');
@@ -94,6 +114,31 @@ $('#fileupload').fileupload({
 
 });
 
+<!--$('form').ajaxForm({-->
+    <!--beforeSend: function() {-->
+        <!--status.empty();-->
+        <!--var percentVal = '0%';-->
+        <!--bar.show();-->
+        <!--fill.width(percentVal);-->
+        <!--percent.html(percentVal);-->
+        <!--submitBtn.hide();-->
+    <!--},-->
+    <!--uploadProgress: function(event, position, total, percentComplete) {-->
+        <!--var percentVal = percentComplete + '%';-->
+        <!--fill.width(percentVal);-->
+        <!--percent.html(percentVal);-->
+    <!--},-->
+    <!--complete: function(xhr) {-->
+      <!--if (xhr.status == 200) {-->
+        <!--alert('${_("Your import was successful.")}');-->
+        <!--window.location = '${successful_import_redirect_url}';-->
+      <!--}-->
+      <!--else-->
+        <!--alert('${_("Your import has failed.")}\n\n' + xhr.responseText);-->
+        <!--submitBtn.show();-->
+        <!--bar.hide();-->
+    <!--}-->
+  <!--});-->
 })();
 </script>
 </%block>
