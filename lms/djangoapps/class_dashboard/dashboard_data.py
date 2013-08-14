@@ -94,6 +94,50 @@ def get_last_populate(course_id, script_id):
     else:
         return None
 
+
+def get_problem_set_grade_distribution(course_id, problem_set):
+    """
+    Returns the grade distribution for the problems specified in `problem_set`.
+
+    Requests from the database the a count of each grade for each problem in the `problem_set`.
+
+    `course_id` a string that is the course's ID.
+
+    `problem_set` an array of strings representing problem module_id's.
+
+    Returns a dict, where the key is the problem module_id and the value is a dict with two parts:
+      `max_grade` - the maximum grade possible for the course
+      `grade_distrib` - array of tuples (`grade`,`count`) ordered by `grade`
+    """
+
+    db_query = models.StudentModule.objects.filter(
+        course_id__exact=course_id,
+        grade__isnull=False,
+        module_type__exact="problem",
+        module_state_key__in=problem_set,
+    ).values(
+        'module_state_key',
+        'grade',
+        'max_grade'
+    ).annotate(count_grade=Count('grade')).order_by('module_state_key','grade')
+
+    prob_grade_distrib = {}
+    for row in db_query:
+        if row['module_state_key'] not in prob_grade_distrib:
+            prob_grade_distrib[row['module_state_key']] = {
+                'max_grade' : 0,
+                'grade_distrib' : [],
+            }
+
+        curr_grade_distrib = prob_grade_distrib[row['module_state_key']]
+        curr_grade_distrib['grade_distrib'].append((row['grade'],row['count_grade']))
+
+        if curr_grade_distrib['max_grade'] < row['max_grade']:
+            curr_grade_distrib['max_grade'] = row['max_grade']
+
+    return prob_grade_distrib
+
+
 def get_d3_problem_grade_distribution(course_id):
     prob_grade_distrib = get_problem_grade_distribution(course_id)
 
@@ -187,25 +231,27 @@ def get_d3_problem_attempt_distribution(course_id, max_attempts=10):
                 c_unit += 1
                 c_problem = 0
                 for child in unit.get_children():
-                    if (child.location.category == 'problem') and (child.location.url() in prob_attempts_distrib):
+                    if (child.location.category == 'problem'):
                         c_problem += 1
                         stack_data = []
-                        attempts_distrib = prob_attempts_distrib[child.location.url()]
-                        problem_name = own_metadata(child)['display_name']
                         label = "P{0}.{1}.{2}".format(c_subsection, c_unit, c_problem)
-                        for i in range(0, max_attempts+1):
-                            color = (i+1 if i != max_attempts else "{0}+".format(max_attempts))
-                            stack_data.append({
-                                'color' : color,
-                                'value' : attempts_distrib[i],
-                                'tooltip' : "{0} {3} - {1} Student(s) had {2} attempt(s)".format(
-                                        label, attempts_distrib[i], color, problem_name),
+                        
+                        if child.location.url() in prob_attempts_distrib:
+                            attempts_distrib = prob_attempts_distrib[child.location.url()]
+                            problem_name = own_metadata(child)['display_name']
+                            for i in range(0, max_attempts+1):
+                                color = (i+1 if i != max_attempts else "{0}+".format(max_attempts))
+                                stack_data.append({
+                                    'color' : color,
+                                    'value' : attempts_distrib[i],
+                                    'tooltip' : "{0} {3} - {1} Student(s) had {2} attempt(s)".format(
+                                            label, attempts_distrib[i], color, problem_name),
                                 })
 
                         problem = {
                             'xValue' : label,
                             'stackData' : stack_data,
-                            }
+                        }
                         data.append(problem)
         curr_section['data'] = data
 
@@ -286,23 +332,28 @@ def get_d3_problem_grade_distribution_by_section(course_id):
                 c_unit += 1
                 c_problem = 0
                 for child in unit.get_children():
-                    if (child.location.category == 'problem') and (child.location.url() in prob_grade_distrib):
+                    if (child.location.category == 'problem'):
                         c_problem += 1
                         stack_data = []
-                        problem_info = prob_grade_distrib[child.location.url()]
-                        problem_name = own_metadata(child)['display_name']
                         label = "P{0}.{1}.{2}".format(c_subsection, c_unit, c_problem)
-                        max_grade = float(problem_info['max_grade'])
-                        for (grade, count_grade) in problem_info['grade_distrib']:
-                            percent = (grade*100.0)/max_grade
+                        
+                        # Some problems have no data because students have not tried them yet
+                        if child.location.url() in prob_grade_distrib:
+                            problem_info = prob_grade_distrib[child.location.url()]
+                            problem_name = own_metadata(child)['display_name']
+                            max_grade = float(problem_info['max_grade'])
+                            for (grade, count_grade) in problem_info['grade_distrib']:
+                                percent = 0.0
+                                if max_grade > 0:
+                                    percent = (grade*100.0)/max_grade
 
-                            stack_data.append({
-                                'color' : percent,
-                                'value' : count_grade,
-                                'tooltip' : "{0} {3} - {1} students ({2:.0f}%: {4:.0f}/{5:.0f} questions)".format(
-                                        label, count_grade, percent, problem_name, grade, max_grade),
+                                stack_data.append({
+                                    'color' : percent,
+                                    'value' : count_grade,
+                                    'tooltip' : "{0} {3} - {1} students ({2:.0f}%: {4:.0f}/{5:.0f} questions)".format(
+                                            label, count_grade, percent, problem_name, grade, max_grade),
                                 })
-
+                                
                         problem = {
                             'xValue' : label,
                             'stackData' : stack_data,
@@ -313,3 +364,122 @@ def get_d3_problem_grade_distribution_by_section(course_id):
         d3_data.append(curr_section)
 
     return d3_data
+
+
+def get_d3_section_grade_distribution(course_id, section):
+    """
+    Returns the grade distribution for the problems in the `section` section in a format for the d3 code.
+
+    Navigates the section specified to find all the problems associated with that section and then finds the grade
+    distribution for those problems. Then returns an object formated the way the d3_stacked_bar_graph.js expects its
+    data object to be in.
+
+    `course_id` a string that is the course's ID.
+
+    `section` an int that is a zero-based index into the course's list of sections.
+
+    Returns an array of dicts with the following keys (taken from d3_stacked_bar_graph.js's documentation)
+      `xValue` - Corresponding value for the x-axis
+      `stackData` - Array of objects with key, value pairs that represent a bar:
+        `color` - Defines what "color" the bar will map to
+        `value` - Maps to the height of the bar, along the y-axis
+        `tooltip` - (Optional) Text to display on mouse hover
+    """
+
+    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+
+    problem_set = []
+    problem_info = {}
+    c_subsection = 1
+    for subsection in course.get_children()[section].get_children():
+        c_unit = 1
+        for unit in subsection.get_children():
+            c_problem = 1
+            for child in unit.get_children():
+                if (child.location.category == 'problem'):
+                    problem_set.append(child.location.url())
+                    problem_info[child.location.url()] = {
+                        'id' : child.location.url(),
+                        'x_value' : "P{0}.{1}.{2}".format(c_subsection, c_unit, c_problem),
+                        'display_name' : own_metadata(child)['display_name'],
+                    }
+                    c_problem+=1
+            c_unit+=1
+        c_subsection+=1
+
+    grade_distrib = get_problem_set_grade_distribution(course_id, problem_set)
+
+    d3_data = []
+    for problem in problem_set:
+        stack_data = []
+
+        if problem in grade_distrib: # Some problems have no data because students have not tried them yet.
+            max_grade = float(grade_distrib[problem]['max_grade'])
+            for (grade, count_grade) in grade_distrib[problem]['grade_distrib']:
+                percent = 0.0
+                if max_grade > 0:
+                    percent = (grade*100.0)/max_grade
+                    stack_data.append({
+                            'color' : percent,
+                            'value' : count_grade,
+                            'tooltip' : "{0} {3} - {1} students ({2:.0f}%: {4:.0f}/{5:.0f} questions)".format(
+                                problem_info[problem]['x_value'],
+                                count_grade,
+                                percent,
+                                problem_info[problem]['display_name'],
+                                grade,
+                                max_grade),
+                            })
+                    
+        d3_data.append({
+            'xValue' : problem_info[problem]['x_value'],
+            'stackData' : stack_data,
+        })
+
+    return d3_data
+
+
+def get_section_display_name(course_id):
+    """
+    Returns an array of the display names for each section in the course.
+
+    The ith string in the array is the display name of the ith section in the course.
+    """
+
+    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+
+    section_display_name = [""] * len(course.get_children())
+    i = 0
+    for section in course.get_children():
+        section_display_name[i] = own_metadata(section)['display_name']
+        i+=1
+
+    return section_display_name
+
+
+def get_array_section_has_problem(course_id):
+    """
+    Returns an array of true/false whether each section has problems.
+
+    The ith value in the array is true if the ith section in the course contains problems and false otherwise.
+    """
+
+    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+
+    b_section_has_problem = [False] * len(course.get_children())
+    i = 0
+    for section in course.get_children():
+        for subsection in section.get_children():
+            for unit in subsection.get_children():
+                for child in unit.get_children():
+                    if child.location.category == 'problem':
+                        b_section_has_problem[i] = True
+                        break # out of child loop
+                if b_section_has_problem[i]:
+                    break # out of unit loop
+            if b_section_has_problem[i]:
+                break # out of subsection loop
+
+        i+=1
+
+    return b_section_has_problem

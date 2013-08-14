@@ -20,12 +20,14 @@ $(function () {
     width: $("#${id_str_grade}").width(),
     height: $("#${id_str_grade}").height()-25, // Account for header
     tag: "grade",
+    bVerticalXAxisLabel : true,
   };
 
   var paramAttempts = {
     width: $("#${id_str_attempts}").width(),
     height: $("#${id_str_attempts}").height()-25, // Account for header
     tag: "attempts",
+    bVerticalXAxisLabel : true,
   };
 
   var barGraphOpened, barGraphGrade, barGraphAttempts;
@@ -41,8 +43,10 @@ $(function () {
     }
   });
 
-  d3.json("${reverse('all_problem_grade_distribution', kwargs=dict(course_id=course_id))}", function(error, json) {
-    paramGrade.data = json[${i}].data;
+  d3.json("${reverse('section_problem_grade_distribution', kwargs={'course_id':course_id, 'section':str(i)})}", function(error, json) {
+//  d3.json("${reverse('all_problem_grade_distribution', kwargs=dict(course_id=course_id))}", function(error, json) {
+    paramGrade.data = json;
+//    paramGrade.data = json[${i}].data;
 
     if ( paramGrade.data.length > 0 ) {
       barGraphGrade = edx_d3CreateStackedBarGraph(paramGrade, d3.select("#${id_str_grade}").append("svg"), divTooltip);

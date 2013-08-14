@@ -743,33 +743,9 @@ def instructor_dashboard(request, course_id):
 
     metrics_results = {};
     if settings.MITX_FEATURES.get('CLASS_DASHBOARD') and idash_mode == 'Metrics':
-        metrics_results['d3_prob_grade_distrib'] = dashboard_data.get_d3_problem_grade_distribution(course_id)
-
-        max_str_len = 30 # TODO: Hack, should do this nicer somewhere else
-
-        attempt_distrib = dashboard_data.get_d3_problem_attempt_distribution(course_id)
-        for section in attempt_distrib:
-            for problem in section['data']:
-                if len(problem['xValue']) > max_str_len:
-                    problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
-        metrics_results['d3_prob_attempt_distrib'] = attempt_distrib
-
-        sequential_open_distrib = dashboard_data.get_d3_sequential_open_distribution(course_id)
-        for section in sequential_open_distrib:
-            for subsection in section['data']:
-                if len(subsection['xValue']) > max_str_len:
-                    subsection['xValue'] = "{0}...".format(subsection['xValue'][:(max_str_len-3)])
-        metrics_results['d3_sequential_open_distrib'] = sequential_open_distrib
-
-        grade_distrib = dashboard_data.get_d3_problem_grade_distribution_by_section(course_id)
-        for section in grade_distrib:
-            for problem in section['data']:
-                if len(problem['xValue']) > max_str_len:
-                    problem['xValue'] = "{0}...".format(problem['xValue'][:(max_str_len-3)])
-        metrics_results['d3_section_grade_distrib'] = grade_distrib
-
         metrics_results['attempts_timestamp'] = dashboard_data.get_last_populate(course_id, "studentmoduleexpand")
-
+        metrics_results['section_display_name'] = dashboard_data.get_section_display_name(course_id)
+        metrics_results['section_has_problem'] = dashboard_data.get_array_section_has_problem(course_id)
 
     #----------------------------------------
     # offline grades?
