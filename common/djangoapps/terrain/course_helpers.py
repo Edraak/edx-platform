@@ -12,19 +12,18 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from student.models import CourseEnrollment
 from xmodule.modulestore.django import modulestore
 from xmodule.contentstore.django import contentstore
-from xmodule.templates import update_templates
 from urllib import quote_plus
 
 
 @world.absorb
-def create_user(uname):
+def create_user(uname, password):
 
     # If the user already exists, don't try to create it again
     if len(User.objects.filter(username=uname)) > 0:
         return
 
     portal_user = UserFactory.build(username=uname, email=uname + '@edx.org')
-    portal_user.set_password('test')
+    portal_user.set_password(password)
     portal_user.save()
 
     registration = world.RegistrationFactory(user=portal_user)
@@ -35,38 +34,22 @@ def create_user(uname):
 
 
 @world.absorb
-def log_in(username, password):
+def log_in(username='robot', password='test', email='robot@edx.org', name='Robot'):
     """
-    Log the user in programatically.
-    This will delete any existing cookies to ensure that the user
-    logs in to the correct session.
+    Use the auto_auth feature to programmatically log the user in
     """
+    url = '/auto_auth?username=%s&password=%s&name=%s&email=%s' % (username,
+          password, name, email)
+    world.visit(url)
 
-    # Authenticate the user
-    user = authenticate(username=username, password=password)
-    assert(user is not None and user.is_active)
-
-    # Send a fake HttpRequest to log the user in
-    # We need to process the request using
-    # Session middleware and Authentication middleware
-    # to ensure that session state can be stored
-    request = HttpRequest()
-    SessionMiddleware().process_request(request)
-    AuthenticationMiddleware().process_request(request)
-    login(request, user)
-
-    # Save the session
-    request.session.save()
-
-    # Retrieve the sessionid and add it to the browser's cookies
-    cookie_dict = {settings.SESSION_COOKIE_NAME: request.session.session_key}
-    world.browser.cookies.delete()
-    world.browser.cookies.add(cookie_dict)
+    # Save the user info in the world scenario_dict for use in the tests
+    user = User.objects.get(username=username)
+    world.scenario_dict['USER'] = user
 
 
 @world.absorb
 def register_by_course_id(course_id, is_staff=False):
-    create_user('robot')
+    create_user('robot', 'password')
     u = User.objects.get(username='robot')
     if is_staff:
         u.is_staff = True
@@ -84,5 +67,4 @@ def clear_courses():
     # from the bash shell to drop it:
     # $ mongo test_xmodule --eval "db.dropDatabase()"
     modulestore().collection.drop()
-    update_templates(modulestore('direct'))
     contentstore().fs_files.drop()

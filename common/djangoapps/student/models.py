@@ -6,9 +6,9 @@ Migration Notes
 If you make changes to this model, be sure to create an appropriate migration
 file and check it in at the same time as your model changes. To do that,
 
-1. Go to the mitx dir
-2. django-admin.py schemamigration student --auto --settings=lms.envs.dev --pythonpath=. description_of_your_change
-3. Add the migration file created in mitx/common/djangoapps/student/migrations/
+1. Go to the edx-platform dir
+2. ./manage.py lms schemamigration student --auto description_of_your_change
+3. Add the migration file created in edx-platform/common/djangoapps/student/migrations/
 """
 from datetime import datetime
 import hashlib
@@ -20,6 +20,7 @@ from random import randint
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -30,6 +31,7 @@ from pytz import UTC
 
 
 log = logging.getLogger(__name__)
+AUDIT_LOG = logging.getLogger("audit")
 
 
 class UserProfile(models.Model):
@@ -69,30 +71,33 @@ class UserProfile(models.Model):
     location = models.CharField(blank=True, max_length=255, db_index=True)
 
     # Optional demographic data we started capturing from Fall 2012
-    this_year = datetime.now().year
+    this_year = datetime.now(UTC).year
     VALID_YEARS = range(this_year, this_year - 120, -1)
     year_of_birth = models.IntegerField(blank=True, null=True, db_index=True)
     GENDER_CHOICES = (('m', 'Male'), ('f', 'Female'), ('o', 'Other'))
-    gender = models.CharField(blank=True, null=True, max_length=6, db_index=True,
-                              choices=GENDER_CHOICES)
+    gender = models.CharField(
+        blank=True, null=True, max_length=6, db_index=True, choices=GENDER_CHOICES
+    )
 
     # [03/21/2013] removed these, but leaving comment since there'll still be
     # p_se and p_oth in the existing data in db.
     # ('p_se', 'Doctorate in science or engineering'),
     # ('p_oth', 'Doctorate in another field'),
-    LEVEL_OF_EDUCATION_CHOICES = (('p', 'Doctorate'),
-                                  ('m', "Master's or professional degree"),
-                                  ('b', "Bachelor's degree"),
-                                  ('a', "Associate's degree"),
-                                  ('hs', "Secondary/high school"),
-                                  ('jhs', "Junior secondary/junior high/middle school"),
-                                  ('el', "Elementary/primary school"),
-                                  ('none', "None"),
-                                  ('other', "Other"))
+    LEVEL_OF_EDUCATION_CHOICES = (
+        ('p', 'Doctorate'),
+        ('m', "Master's or professional degree"),
+        ('b', "Bachelor's degree"),
+        ('a', "Associate's degree"),
+        ('hs', "Secondary/high school"),
+        ('jhs', "Junior secondary/junior high/middle school"),
+        ('el', "Elementary/primary school"),
+        ('none', "None"),
+        ('other', "Other")
+    )
     level_of_education = models.CharField(
-                            blank=True, null=True, max_length=6, db_index=True,
-                            choices=LEVEL_OF_EDUCATION_CHOICES
-                         )
+        blank=True, null=True, max_length=6, db_index=True,
+        choices=LEVEL_OF_EDUCATION_CHOICES
+    )
     mailing_address = models.TextField(blank=True, null=True)
     goals = models.TextField(blank=True, null=True)
     allow_certificate = models.BooleanField(default=1)
@@ -307,18 +312,18 @@ class TestCenterUserForm(ModelForm):
 ACCOMMODATION_REJECTED_CODE = 'NONE'
 
 ACCOMMODATION_CODES = (
-                      (ACCOMMODATION_REJECTED_CODE, 'No Accommodation Granted'),
-                      ('EQPMNT', 'Equipment'),
-                      ('ET12ET', 'Extra Time - 1/2 Exam Time'),
-                      ('ET30MN', 'Extra Time - 30 Minutes'),
-                      ('ETDBTM', 'Extra Time - Double Time'),
-                      ('SEPRMM', 'Separate Room'),
-                      ('SRREAD', 'Separate Room and Reader'),
-                      ('SRRERC', 'Separate Room and Reader/Recorder'),
-                      ('SRRECR', 'Separate Room and Recorder'),
-                      ('SRSEAN', 'Separate Room and Service Animal'),
-                      ('SRSGNR', 'Separate Room and Sign Language Interpreter'),
-                      )
+    (ACCOMMODATION_REJECTED_CODE, 'No Accommodation Granted'),
+    ('EQPMNT', 'Equipment'),
+    ('ET12ET', 'Extra Time - 1/2 Exam Time'),
+    ('ET30MN', 'Extra Time - 30 Minutes'),
+    ('ETDBTM', 'Extra Time - Double Time'),
+    ('SEPRMM', 'Separate Room'),
+    ('SRREAD', 'Separate Room and Reader'),
+    ('SRRERC', 'Separate Room and Reader/Recorder'),
+    ('SRRECR', 'Separate Room and Recorder'),
+    ('SRSEAN', 'Separate Room and Service Animal'),
+    ('SRSGNR', 'Separate Room and Sign Language Interpreter'),
+)
 
 ACCOMMODATION_CODE_DICT = {code: name for (code, name) in ACCOMMODATION_CODES}
 
@@ -365,7 +370,7 @@ class TestCenterRegistration(models.Model):
     accommodation_code = models.CharField(max_length=64, blank=True)
 
     # store the original text of the accommodation request.
-    accommodation_request = models.CharField(max_length=1024, blank=True, db_index=True)
+    accommodation_request = models.CharField(max_length=1024, blank=True, db_index=False)
 
     # time at which edX sent the registration to the test center
     uploaded_at = models.DateTimeField(null=True, db_index=True)
@@ -572,7 +577,6 @@ class TestCenterRegistrationForm(ModelForm):
         return code
 
 
-
 def get_testcenter_registration(user, course_id, exam_series_code):
     try:
         tcu = TestCenterUser.objects.get(user=user)
@@ -777,3 +781,20 @@ def update_user_information(sender, instance, created, **kwargs):
         log = logging.getLogger("mitx.discussion")
         log.error(unicode(e))
         log.error("update user info to discussion failed for user with id: " + str(instance.id))
+
+# Define login and logout handlers here in the models file, instead of the views file,
+# so that they are more likely to be loaded when a Studio user brings up the Studio admin
+# page to login.  These are currently the only signals available, so we need to continue
+# identifying and logging failures separately (in views).
+
+
+@receiver(user_logged_in)
+def log_successful_login(sender, request, user, **kwargs):
+    """Handler to log when logins have occurred successfully."""
+    AUDIT_LOG.info(u"Login success - {0} ({1})".format(user.username, user.email))
+
+
+@receiver(user_logged_out)
+def log_successful_logout(sender, request, user, **kwargs):
+    """Handler to log when logouts have occurred successfully."""
+    AUDIT_LOG.info(u"Logout - {0}".format(request.user))

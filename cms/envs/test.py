@@ -15,6 +15,7 @@ sessions. Assumes structure:
 from .common import *
 import os
 from path import path
+from warnings import filterwarnings
 
 # Nose Test Runner
 INSTALLED_APPS += ('django_nose',)
@@ -62,6 +63,10 @@ MODULESTORE = {
     },
     'draft': {
         'ENGINE': 'xmodule.modulestore.draft.DraftModuleStore',
+        'OPTIONS': MODULESTORE_OPTIONS
+    },
+    'split': {
+        'ENGINE': 'xmodule.modulestore.split_mongo.SplitMongoModuleStore',
         'OPTIONS': MODULESTORE_OPTIONS
     }
 }
@@ -119,6 +124,9 @@ CACHES = {
         'KEY_FUNCTION': 'util.memcache.safe_key',
     }
 }
+
+# hide ratelimit warnings while running tests
+filterwarnings('ignore', message='No request passed to the backend, unable to rate-limit')
 
 ################################# CELERY ######################################
 

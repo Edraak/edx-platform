@@ -88,13 +88,13 @@ def the_page_title_should_contain(step, title):
 
 @step('I log in$')
 def i_log_in(step):
-    world.log_in('robot', 'test')
+    world.log_in(username='robot', password='test')
 
 
 @step('I am a logged in user$')
 def i_am_logged_in_user(step):
-    world.create_user('robot')
-    world.log_in('robot', 'test')
+    world.create_user('robot', 'test')
+    world.log_in(username='robot', password='test')
 
 
 @step('I am not logged in$')
@@ -129,6 +129,13 @@ def should_have_link_with_id_and_text(step, link_id, text):
     assert_equals(link.text, text)
 
 
+@step(r'should see a link to "([^"]*)" with the text "([^"]*)"$')
+def should_have_link_with_path_and_text(step, path, text):
+    link = world.browser.find_link_by_text(text)
+    assert len(link) > 0
+    assert_equals(link.first["href"], django_url(path))
+
+
 @step(r'should( not)? see "(.*)" (?:somewhere|anywhere) (?:in|on) (?:the|this) page')
 def should_see_in_the_page(step, doesnt_appear, text):
     if doesnt_appear:
@@ -139,8 +146,8 @@ def should_see_in_the_page(step, doesnt_appear, text):
 
 @step('I am logged in$')
 def i_am_logged_in(step):
-    world.create_user('robot')
-    world.log_in('robot', 'test')
+    world.create_user('robot', 'test')
+    world.log_in(username='robot', password='test')
     world.browser.visit(django_url('/'))
     # You should not see the login link
     assert_equals(world.browser.find_by_css('a#login'), [])
@@ -148,17 +155,22 @@ def i_am_logged_in(step):
 
 @step(u'I am an edX user$')
 def i_am_an_edx_user(step):
-    world.create_user('robot')
+    world.create_user('robot', 'test')
 
 
 @step(u'User "([^"]*)" is an edX user$')
 def registered_edx_user(step, uname):
-    world.create_user(uname)
+    world.create_user(uname, 'test')
 
 
 @step(u'All dialogs should be closed$')
 def dialogs_are_closed(step):
     assert world.dialogs_closed()
+
+
+@step(u'visit the url "([^"]*)"')
+def visit_url(step, url):
+    world.browser.visit(django_url(url))
 
 
 @step('I will confirm all alerts')

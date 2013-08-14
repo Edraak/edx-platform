@@ -2,10 +2,10 @@
 // ====================
 
 .wrapper-header {
-  @extend .depth3;
-  @include box-shadow(0 1px 2px 0 $shadow-l1);
+  @extend .ui-depth3;
   position: relative;
   width: 100%;
+  box-shadow: 0 1px 2px 0 $shadow-l1;
   margin: 0;
   padding: 0 $baseline;
   background: $white;
@@ -22,7 +22,6 @@
   // ====================
 
   // basic layout
-
   .wrapper-l, .wrapper-r {
     background: $white;
   }
@@ -76,8 +75,8 @@
 
     .title {
       @extend .t-action2;
-      @extend .btn-dd-nav-primary;
-      @include transition(all 0.25s ease-in-out 0);
+      @extend .ui-btn-dd-nav-primary;
+      @include transition(all $tmg-f2 ease-in-out 0s);
 
       .label, .icon-caret-down {
 
@@ -160,7 +159,7 @@
 
     // entire link
     .course-link {
-      @include transition(color 0.25s ease-in-out);
+      @include transition(color $tmg-f2 ease-in-out 0s);
       display: block;
       color: $gray-d1;
 
@@ -310,7 +309,6 @@
 
       .action-signup {
         @include blue-button;
-        @include transition(all .15s);
         @include font-size(14);
         padding: ($baseline/4) ($baseline/2);
         text-transform: uppercase;
@@ -319,7 +317,6 @@
 
       .action-signin {
         @include white-button;
-        @include transition(all .15s);
         @include font-size(14);
         padding: ($baseline/4) ($baseline/2);
         text-transform: uppercase;

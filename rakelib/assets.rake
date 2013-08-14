@@ -30,7 +30,11 @@ def coffee_cmd(watch=false, debug=false)
 
         end
     end
-    "node_modules/.bin/coffee --compile #{watch ? '--watch' : ''} ."
+    if watch
+        "node_modules/.bin/coffee --compile --watch . "
+    else
+        "node_modules/.bin/coffee --compile `find . -name *.coffee` "
+    end
 end
 
 def sass_cmd(watch=false, debug=false)
@@ -43,7 +47,6 @@ def sass_cmd(watch=false, debug=false)
 
     "sass #{debug ? '--debug-info' : '--style compressed'} " +
           "--load-path #{sass_load_paths.join(' ')} " +
-          "--require ./common/static/sass/bourbon/lib/bourbon.rb " +
           "#{watch ? '--watch' : '--update'} -E utf-8 #{sass_watch_paths.join(' ')}"
 end
 

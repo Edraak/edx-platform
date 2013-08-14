@@ -9,7 +9,7 @@ from common import type_in_codemirror
 @step(u'I go to the course updates page')
 def go_to_updates(_step):
     menu_css = 'li.nav-course-courseware'
-    updates_css = 'li.nav-course-courseware-updates'
+    updates_css = 'li.nav-course-courseware-updates a'
     world.css_click(menu_css)
     world.css_click(updates_css)
 
@@ -24,7 +24,7 @@ def add_update(_step, text):
 @step(u'I should( not)? see the update "([^"]*)"$')
 def check_update(_step, doesnt_see_update, text):
     update_css = 'div.update-contents'
-    update = world.css_find(update_css)
+    update = world.css_find(update_css, wait_time=1)
     if doesnt_see_update:
         assert len(update) == 0 or not text in update.html
     else:

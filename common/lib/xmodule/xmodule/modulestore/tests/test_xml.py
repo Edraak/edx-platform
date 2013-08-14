@@ -1,12 +1,12 @@
 import os.path
 
+from nose.tools import assert_raises
+
 from xmodule.course_module import CourseDescriptor
 from xmodule.modulestore.xml import XMLModuleStore
 
-from nose.tools import assert_raises
-
-from .test_modulestore import check_path_to_location
-from . import DATA_DIR
+from xmodule.tests import DATA_DIR
+from xmodule.modulestore.tests.test_modulestore import check_path_to_location
 
 
 class TestXMLModuleStore(object):
@@ -24,16 +24,16 @@ class TestXMLModuleStore(object):
         # uniquification of names, would raise a UnicodeError. It no longer does.
 
         # Ensure that there really is a non-ASCII character in the course.
-        with open(os.path.join(DATA_DIR, "full/sequential/Administrivia_and_Circuit_Elements.xml")) as xmlf:
+        with open(os.path.join(DATA_DIR, "toy/sequential/vertical_sequential.xml")) as xmlf:
             xml = xmlf.read()
             with assert_raises(UnicodeDecodeError):
                 xml.decode('ascii')
 
         # Load the course, but don't make error modules.  This will succeed,
         # but will record the errors.
-        modulestore = XMLModuleStore(DATA_DIR, course_dirs=['full'], load_error_modules=False)
+        modulestore = XMLModuleStore(DATA_DIR, course_dirs=['toy'], load_error_modules=False)
 
         # Look up the errors during load. There should be none.
-        location = CourseDescriptor.id_to_location("edX/full/6.002_Spring_2012")
+        location = CourseDescriptor.id_to_location("edX/toy/2012_Fall")
         errors = modulestore.get_item_errors(location)
         assert errors == []

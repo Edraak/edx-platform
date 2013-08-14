@@ -40,9 +40,16 @@ Feature: Advanced (manual) course policy
     And I reload the page
     Then the policy key value is unchanged
 
+  # This feature will work in Firefox only when Firefox is the active window
   Scenario: Test automatic quoting of non-JSON values
     Given I am on the Advanced Course Settings page in Studio
     When I create a non-JSON value not in quotes
     Then it is displayed as a string
     And I reload the page
     Then it is displayed as a string
+
+  Scenario: Confirmation is shown on save
+    Given I am on the Advanced Course Settings page in Studio
+    When I edit the value of a policy key
+    And I press the "Save" notification button
+    Then I see a confirmation that my changes have been saved

@@ -17,6 +17,9 @@ from selenium.common.exceptions import WebDriverException
 # These names aren't used, but do important work on import.
 from lms import one_time_startup        # pylint: disable=W0611
 from cms import one_time_startup        # pylint: disable=W0611
+from pymongo import MongoClient
+import xmodule.modulestore.django
+from xmodule.contentstore.django import _CONTENTSTORE
 
 # There is an import issue when using django-staticfiles with lettuce
 # Lettuce assumes that we are using django.contrib.staticfiles,
@@ -72,7 +75,7 @@ def initial_setup(server):
     # If we were unable to get a valid session within the limit of attempts,
     # then we cannot run the tests.
     if not success:
-        raise IOError("Could not acquire valid ChromeDriver browser session.")
+        raise IOError("Could not acquire valid {driver} browser session.".format(driver=browser_driver))
 
     # Set the browser size to 1280x1024
     world.browser.driver.set_window_size(1280, 1024)
@@ -86,6 +89,29 @@ def reset_data(scenario):
     """
     LOGGER.debug("Flushing the test database...")
     call_command('flush', interactive=False)
+    world.absorb({}, 'scenario_dict')
+
+
+@after.each_scenario
+def clear_data(scenario):
+    world.spew('scenario_dict')
+
+
+
+@after.each_scenario
+def reset_databases(scenario):
+    '''
+    After each scenario, all databases are cleared/dropped.  Contentstore data are stored in unique databases
+    whereas modulestore data is in unique collection names.  This data is created implicitly during the scenarios.
+    If no data is created during the test, these lines equivilently do nothing.
+    '''
+    mongo = MongoClient()
+    mongo.drop_database(settings.CONTENTSTORE['OPTIONS']['db'])
+    _CONTENTSTORE.clear()
+    modulestore = xmodule.modulestore.django.modulestore()
+    modulestore.collection.drop()
+    xmodule.modulestore.django._MODULESTORES.clear()
+
 
 # Uncomment below to trigger a screenshot on error
 # @after.each_scenario

@@ -29,6 +29,11 @@ MITX_FEATURES['ENABLE_PSYCHOMETRICS'] = False    # real-time psychometrics (eg i
 MITX_FEATURES['ENABLE_INSTRUCTOR_ANALYTICS'] = True
 MITX_FEATURES['ENABLE_SERVICE_STATUS'] = True
 MITX_FEATURES['ENABLE_HINTER_INSTRUCTOR_VIEW'] = True
+MITX_FEATURES['ENABLE_INSTRUCTOR_BETA_DASHBOARD'] = True
+
+FEEDBACK_SUBMISSION_EMAIL = "dummy@dummy.org"
+
+FEEDBACK_SUBMISSION_EMAIL = "dummy@example.com"
 
 WIKI_ENABLED = True
 
@@ -255,6 +260,9 @@ SEGMENT_IO_LMS_KEY = os.environ.get('SEGMENT_IO_LMS_KEY')
 if SEGMENT_IO_LMS_KEY:
     MITX_FEATURES['SEGMENT_IO_LMS'] = True
 
+
+########################## USER API ########################
+EDX_API_KEY = None
 
 #####################################################################
 # Lastly, see if the developer has any local overrides.

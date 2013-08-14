@@ -25,7 +25,7 @@ Longer TODO:
 
 import sys
 import lms.envs.common
-from lms.envs.common import USE_TZ
+from lms.envs.common import USE_TZ, TECH_SUPPORT_EMAIL, PLATFORM_NAME, BUGS_EMAIL
 from path import path
 
 ############################ FEATURE CONFIGURATION #############################
@@ -39,11 +39,8 @@ MITX_FEATURES = {
 
     'AUTH_USE_MIT_CERTIFICATES': False,
 
-    # do not display video when running automated acceptance tests
-    'STUB_VIDEO_FOR_TESTING': False,
-
-    # email address for staff (eg to request course creation)
-    'STAFF_EMAIL': '',
+    # email address for studio staff (eg to request course creation)
+    'STUDIO_REQUEST_EMAIL': '',
 
     'STUDIO_NPS_SURVEY': True,
 
@@ -61,9 +58,6 @@ MITX_FEATURES = {
     'ENABLE_CREATOR_GROUP': False
 }
 ENABLE_JASMINE = False
-
-# needed to use lms student app
-GENERATE_RANDOM_USER_CREDENTIALS = False
 
 
 ############################# SET PATH INFORMATION #############################
@@ -108,7 +102,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'django.contrib.auth.context_processors.auth',  # this is required for admin
-    'django.core.context_processors.csrf',  # necessary for csrf protection
+    'django.core.context_processors.csrf'
+)
+
+# use the ratelimit backend to prevent brute force attacks
+AUTHENTICATION_BACKENDS = (
+    'ratelimitbackend.backends.RateLimitModelBackend',
 )
 
 LMS_BASE = None
@@ -141,8 +140,8 @@ MIDDLEWARE_CLASSES = (
     'request_cache.middleware.RequestCache',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'method_override.middleware.MethodOverrideMiddleware',
 
     # Instead of AuthenticationMiddleware, we use a cache-backed version
@@ -155,7 +154,10 @@ MIDDLEWARE_CLASSES = (
     # Detects user-requested locale from 'accept-language' header in http request
     'django.middleware.locale.LocaleMiddleware',
 
-    'django.middleware.transaction.TransactionMiddleware'
+    'django.middleware.transaction.TransactionMiddleware',
+
+    # catches any uncaught RateLimitExceptions and returns a 403 instead of a 500
+    'ratelimitbackend.middleware.RateLimitMiddleware',
 )
 
 ############################ SIGNAL HANDLERS ################################
@@ -179,9 +181,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'registration@edx.org'
 DEFAULT_FEEDBACK_EMAIL = 'feedback@edx.org'
 SERVER_EMAIL = 'devops@edx.org'
-ADMINS = (
-    ('edX Admins', 'admin@edx.org'),
-)
+ADMINS = ()
 MANAGERS = ADMINS
 
 # Static content
@@ -193,8 +193,8 @@ STATICFILES_DIRS = [
     COMMON_ROOT / "static",
     PROJECT_ROOT / "static",
 
-# This is how you would use the textbook images locally
-# ("book", ENV_ROOT / "book_images")
+    # This is how you would use the textbook images locally
+    # ("book", ENV_ROOT / "book_images")
 ]
 
 # Locale/Internationalization
@@ -241,10 +241,11 @@ PIPELINE_JS = {
             rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/**/*.js') +
             rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/**/*.js')
         ) + ['js/hesitate.js', 'js/base.js', 'js/views/feedback.js',
+             'js/models/course.js',
              'js/models/section.js', 'js/views/section.js',
              'js/models/metadata_model.js', 'js/views/metadata_editor_view.js',
              'js/models/textbook.js', 'js/views/textbook.js',
-             'js/views/assets.js'],
+             'js/views/assets.js', 'js/utility.js'],
         'output_filename': 'js/cms-application.js',
         'test_order': 0
     },
@@ -368,3 +369,5 @@ MKTG_URL_LINK_MAP = {
     'HONOR': 'honor',
     'PRIVACY': 'privacy_edx',
 }
+
+COURSES_WITH_UNSAFE_CODE = []

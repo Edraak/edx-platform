@@ -35,11 +35,22 @@ def i_click_the_edit_link_for_the_release_date(_step):
     world.css_click(button_css)
 
 
-@step('I save a new section release date$')
-def i_save_a_new_section_release_date(_step):
-    set_date_and_time('input.start-date.date.hasDatepicker', '12/25/2013',
-        'input.start-time.time.ui-timepicker-input', '00:00')
+@step('I set the section release date to ([0-9/-]+)( [0-9:]+)?')
+def set_section_release_date(_step, datestring, timestring):
+    if hasattr(timestring, "strip"):
+        timestring = timestring.strip()
+    if not timestring:
+        timestring = "00:00"
+    set_date_and_time(
+        'input.start-date.date.hasDatepicker', datestring,
+        'input.start-time.time.ui-timepicker-input', timestring)
     world.browser.click_link_by_text('Save')
+
+
+@step('I see a "(saving|deleting)" notification')
+def i_see_a_mini_notification(_step, _type):
+    saving_css = '.wrapper-notification-mini'
+    assert world.is_css_present(saving_css)
 
 
 ############ ASSERTIONS ###################
@@ -64,7 +75,7 @@ def i_click_to_edit_section_name(_step):
 def i_see_complete_section_name_with_quote_in_editor(_step):
     css = '.section-name-edit input[type=text]'
     assert world.is_css_present(css)
-    assert_equal(world.browser.find_by_css(css).value, 'Section with "Quote"')
+    assert_equal(world.css_value(css), 'Section with "Quote"')
 
 
 @step('the section does not exist$')
@@ -79,7 +90,7 @@ def i_see_a_release_date_for_my_section(_step):
 
     css = 'span.published-status'
     assert world.is_css_present(css)
-    status_text = world.browser.find_by_css(css).text
+    status_text = world.css_text(css)
 
     # e.g. 11/06/2012 at 16:25
     msg = 'Will Release:'

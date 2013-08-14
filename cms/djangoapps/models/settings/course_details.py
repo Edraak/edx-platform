@@ -122,6 +122,10 @@ class CourseDetails(object):
             descriptor.enrollment_end = converted
 
         if dirty:
+            # Save the data that we've just changed to the underlying
+            # MongoKeyValueStore before we update the mongo datastore.
+            descriptor.save()
+
             get_modulestore(course_location).update_metadata(course_location, own_metadata(descriptor))
 
         # NOTE: below auto writes to the db w/o verifying that any of the fields actually changed
@@ -169,7 +173,7 @@ class CourseDetails(object):
         # the right thing
         result = None
         if video_key:
-            result = '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + \
+            result = '<iframe width="560" height="315" src="//www.youtube.com/embed/' + \
                 video_key + '?autoplay=1&rel=0" frameborder="0" allowfullscreen=""></iframe>'
         return result
 

@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from lettuce.django import django_url
+from nose.tools import assert_true
 
 
 @world.absorb
@@ -43,8 +44,8 @@ def is_css_not_present(css_selector, wait_time=5):
 
 
 @world.absorb
-def css_has_text(css_selector, text):
-    return world.css_text(css_selector) == text
+def css_has_text(css_selector, text, index=0, max_attempts=5):
+    return world.css_text(css_selector, index=index, max_attempts=max_attempts) == text
 
 
 @world.absorb
@@ -142,27 +143,32 @@ def id_click(elem_id):
 
 
 @world.absorb
-def css_fill(css_selector, text):
-    assert is_css_present(css_selector), "{} is not present".format(css_selector)
-    world.browser.find_by_css(css_selector).first.fill(text)
+def css_fill(css_selector, text, index=0, max_attempts=5):
+    assert is_css_present(css_selector)
+    return world.retry_on_exception(lambda: world.browser.find_by_css(css_selector)[index].fill(text), max_attempts=max_attempts)
 
 
 @world.absorb
-def click_link(partial_text):
-    world.browser.find_link_by_partial_text(partial_text).first.click()
+def click_link(partial_text, index=0, max_attempts=5):
+    return world.retry_on_exception(lambda: world.browser.find_link_by_partial_text(partial_text)[index].click(), max_attempts=max_attempts)
 
 
 @world.absorb
-def css_text(css_selector, index=0):
+def css_text(css_selector, index=0, max_attempts=5):
 
     # Wait for the css selector to appear
     if world.is_css_present(css_selector):
-        try:
-            return world.browser.find_by_css(css_selector)[index].text
-        except StaleElementReferenceException:
-            # The DOM was still redrawing. Wait a second and try again.
-            world.wait(1)
-            return world.browser.find_by_css(css_selector)[index].text
+        return world.retry_on_exception(lambda: world.browser.find_by_css(css_selector)[index].text, max_attempts=max_attempts)
+    else:
+        return ""
+
+
+@world.absorb
+def css_value(css_selector, index=0, max_attempts=5):
+
+    # Wait for the css selector to appear
+    if world.is_css_present(css_selector):
+        return world.retry_on_exception(lambda: world.browser.find_by_css(css_selector)[index].value, max_attempts=max_attempts)
     else:
         return ""
 
@@ -173,19 +179,18 @@ def css_html(css_selector, index=0, max_attempts=5):
     Returns the HTML of a css_selector and will retry if there is a StaleElementReferenceException
     """
     assert is_css_present(css_selector)
-    attempt = 0
-    while attempt < max_attempts:
-        try:
-            return world.browser.find_by_css(css_selector)[index].html
-        except:
-            attempt += 1
-    return ''
+    return world.retry_on_exception(lambda: world.browser.find_by_css(css_selector)[index].html, max_attempts=max_attempts)
 
 
 @world.absorb
-def css_visible(css_selector):
-    assert is_css_present(css_selector), "{} is not present".format(css_selector)
-    return world.browser.find_by_css(css_selector).visible
+def css_has_class(css_selector, class_name, index=0, max_attempts=5):
+    return world.retry_on_exception(lambda: world.css_find(css_selector)[index].has_class(class_name), max_attempts=max_attempts)
+
+
+@world.absorb
+def css_visible(css_selector, index=0, max_attempts=5):
+    assert is_css_present(css_selector)
+    return world.retry_on_exception(lambda: world.browser.find_by_css(css_selector)[index].visible, max_attempts=max_attempts)
 
 
 @world.absorb
@@ -211,24 +216,43 @@ def save_the_html(path='/tmp'):
 @world.absorb
 def click_course_content():
     course_content_css = 'li.nav-course-courseware'
-    if world.browser.is_element_present_by_css(course_content_css):
-        world.css_click(course_content_css)
+    world.css_click(course_content_css)
 
 
 @world.absorb
 def click_course_settings():
     course_settings_css = 'li.nav-course-settings'
-    if world.browser.is_element_present_by_css(course_settings_css):
-        world.css_click(course_settings_css)
+    world.css_click(course_settings_css)
 
 
 @world.absorb
 def click_tools():
     tools_css = 'li.nav-course-tools'
-    if world.browser.is_element_present_by_css(tools_css):
-        world.css_click(tools_css)
+    world.css_click(tools_css)
 
 
 @world.absorb
 def is_mac():
     return platform.mac_ver()[0] is not ''
+
+@world.absorb
+def is_firefox():
+    return world.browser.driver_name is 'Firefox'
+
+@world.absorb
+def trigger_event(css_selector, event='change', index=0):
+    world.browser.execute_script("$('{}:eq({})').trigger('{}')".format(css_selector, index, event))
+
+@world.absorb
+def retry_on_exception(func, max_attempts=5):
+    attempt = 0
+    while attempt < max_attempts:
+        try:
+            return func()
+            break
+        except WebDriverException:
+            world.wait(1)
+            attempt += 1
+        except:
+            attempt += 1
+    assert_true(attempt < max_attempts, 'Ran out of attempts to execute {}'.format(func))

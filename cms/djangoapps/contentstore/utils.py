@@ -9,23 +9,24 @@ import copy
 import logging
 import re
 from xmodule.modulestore.draft import DIRECT_ONLY_CATEGORIES
+from django.utils.translation import ugettext as _
 
 log = logging.getLogger(__name__)
 
 # In order to instantiate an open ended tab automatically, need to have this data
-OPEN_ENDED_PANEL = {"name": "Open Ended Panel", "type": "open_ended"}
-NOTES_PANEL = {"name": "My Notes", "type": "notes"}
+OPEN_ENDED_PANEL = {"name": _("Open Ended Panel"), "type": "open_ended"}
+NOTES_PANEL = {"name": _("My Notes"), "type": "notes"}
 EXTRA_TAB_PANELS = dict([(p['type'], p) for p in [OPEN_ENDED_PANEL, NOTES_PANEL]])
 
 
-def get_modulestore(location):
+def get_modulestore(category_or_location):
     """
     Returns the correct modulestore to use for modifying the specified location
     """
-    if not isinstance(location, Location):
-        location = Location(location)
+    if isinstance(category_or_location, Location):
+        category_or_location = category_or_location.category
 
-    if location.category in DIRECT_ONLY_CATEGORIES:
+    if category_or_location in DIRECT_ONLY_CATEGORIES:
         return modulestore('direct')
     else:
         return modulestore()
@@ -185,38 +186,6 @@ def update_item(location, value):
         get_modulestore(location).delete_item(location)
     else:
         get_modulestore(location).update_item(location, value)
-
-
-def get_url_reverse(course_page_name, course_module):
-    """
-    Returns the course URL link to the specified location. This value is suitable to use as an href link.
-
-    course_page_name should correspond to an attribute in CoursePageNames (for example, 'ManageUsers'
-    or 'SettingsDetails'), or else it will simply be returned. This method passes back unknown values of
-    course_page_names so that it can also be used for absolute (known) URLs.
-
-    course_module is used to obtain the location, org, course, and name properties for a course, if
-    course_page_name corresponds to an attribute in CoursePageNames.
-    """
-    url_name = getattr(CoursePageNames, course_page_name, None)
-    ctx_loc = course_module.location
-
-    if CoursePageNames.ManageUsers == url_name:
-        return reverse(url_name, kwargs={"location": ctx_loc})
-    elif url_name in [CoursePageNames.SettingsDetails, CoursePageNames.SettingsGrading,
-                      CoursePageNames.CourseOutline, CoursePageNames.Checklists]:
-        return reverse(url_name, kwargs={'org': ctx_loc.org, 'course': ctx_loc.course, 'name': ctx_loc.name})
-    else:
-        return course_page_name
-
-
-class CoursePageNames:
-    """ Constants for pages that are recognized by get_url_reverse method. """
-    ManageUsers = "manage_users"
-    SettingsDetails = "settings_details"
-    SettingsGrading = "settings_grading"
-    CourseOutline = "course_index"
-    Checklists = "checklists"
 
 
 def add_extra_panel_tab(tab_type, course):
