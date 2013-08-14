@@ -13,7 +13,6 @@
   <script type="text/javascript" src="/static/js/table_sort.js"></script>
 </%block>
 
-<<<<<<< HEAD
 <%block name="css_extra">
   <link rel="stylesheet" type="text/css" href="/static/css/admin_dashboard.css"/>
   <link rel="stylesheet" type="text/css" href="/static/css/vendor/bootstrap.min.css"/>
@@ -28,7 +27,7 @@
 
 <section class="container">
   <div class="edx_summary">
-    <h1>edX-wide Summary</h1>
+    <h1>${_("{platform_name}-wide Summary").format(platform_name=settings.PLATFORM_NAME)}</h1>
     <br/>
     <div class="row">
       % for pair in results["scalars"]:
@@ -38,16 +37,6 @@
           <h2>${pair[0]}</h2>
         </div>
       </div>
-=======
-    <div class="edx_summary">
-      <h2>${_("{platform_name}-wide Summary").format(platform_name=settings.PLATFORM_NAME)}</h2>
-      <table style="margin-left:auto;margin-right:auto;width:50%">
-      % for key in results["scalars"]:
-        <tr>
-          <td>${key}</td>
-          <td>${results["scalars"][key]}</td>
-        </tr>
->>>>>>> master
       % endfor
     </div>
   </div>
