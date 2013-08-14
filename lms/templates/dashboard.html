@@ -117,6 +117,22 @@
           </form>
         </li>
         % endif
+        
+        % if user.is_staff:
+        <li>
+          <span class="title">
+            ${_('Masquerade as student')}
+            <form action="masq/mask/" method="POST" data-remote="true">
+              <!-- <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }" /> -->
+              <p><label for="id_mask_user">Username:</label> <input id="id_mask_user" type="text" name="mask_user" maxlength="75" /></p>
+              <p><input type="Submit" value="Submit"></p>
+            </form>
+          </span>
+          <span class="title">
+            <a href="masq/unmask/">${_('Unmasquerade')}</a>          
+          </span>
+        </li>
+        % endif
 
       </ul>
     </section>

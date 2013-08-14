@@ -452,7 +452,7 @@ if settings.DEBUG:
 # masquerade
 if settings.DJANGO_MASQUERADE:
     urlpatterns += (
-        url(r'^masq', include('masquerade.urls')),
+        url(r'^masq/', include('masquerade.urls')),
     )
 
 
