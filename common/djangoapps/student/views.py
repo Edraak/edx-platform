@@ -292,15 +292,17 @@ def dashboard(request):
     except ExternalAuthMap.DoesNotExist:
         pass
 
-    context = {'courses': courses,
-               'message': message,
-               'external_auth_map': external_auth_map,
-               'staff_access': staff_access,
-               'errored_courses': errored_courses,
-               'show_courseware_links_for': show_courseware_links_for,
-               'cert_statuses': cert_statuses,
-               'exam_registrations': exam_registrations,
-               }
+    context = {
+        'courses': courses,
+           'message': message,
+           'external_auth_map': external_auth_map,
+           'staff_access': staff_access,
+           'errored_courses': errored_courses,
+           'show_courseware_links_for': show_courseware_links_for,
+           'cert_statuses': cert_statuses,
+           'exam_registrations': exam_registrations,
+           'student': request.user
+    }
 
     return render_to_response('dashboard.html', context)
 

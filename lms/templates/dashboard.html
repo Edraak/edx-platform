@@ -12,6 +12,8 @@
 
 <%block name="title"><title>${_("Dashboard")}</title></%block>
 
+<% student = request.user %>
+
 <%block name="js_extra">
   <script type="text/javascript">
   (function() {
@@ -118,22 +120,26 @@
         </li>
         % endif
         
-        % if user.is_staff:
-        <li>
+        % if not student.is_masked:
+        <li id="masq_off">
           <span class="title">
             ${_('Masquerade as student')}
-            <form action="masq/mask/" method="POST" data-remote="true">
-              <!-- <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }" /> -->
-              <p><label for="id_mask_user">Username:</label> <input id="id_mask_user" type="text" name="mask_user" maxlength="75" /></p>
-              <p><input type="Submit" value="Submit"></p>
+            <form action="masq/mask/" method="POST" data-remote="true" onsubmit="$('#masq_off').hide(); $('#masq_on').show()">
+              <p><input id="id_mask_user" type="text" name="mask_user" maxlength="75" placeholder="${_('Enter username')}" /></p>
+              <p id="mask_student"><input type="Submit" value="Submit"></p>
             </form>
           </span>
-          <span class="title">
-            <a href="masq/unmask/">${_('Unmasquerade')}</a>          
-          </span>
+        </li>
+        <li id="masq_on" style="display: none">
+          ${_("Please refresh your page to begin masquerading")}
         </li>
         % endif
-
+        % if student.is_masked:
+        <li>
+          <p>${_("masquerading as \"{masked_student}\"").format(masked_student=student.username)}</p>
+          <p><a href="masq/unmask/">${_('Unmask')}</a></p>
+        </li>
+        % endif
       </ul>
     </section>
 

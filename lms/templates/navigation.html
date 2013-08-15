@@ -66,7 +66,11 @@ site_status_msg = get_site_status_msg(course_id)
       <li class="primary">
         <a href="${reverse('dashboard')}" class="user-link">
           <span class="avatar"></span>
-          <span class="sr">${_("Dashboard for:")} </span> ${user.username}
+          <% student=request.user %>
+          % if student.is_masked:
+            <script>$(".user-link").css("color", "green")</script>
+          % endif
+          <span class="sr">${_("Dashboard for:")} </span> ${student.username}
         </a>
       </li>
       <li class="primary">
