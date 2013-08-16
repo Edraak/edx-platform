@@ -1128,7 +1128,7 @@ class CapaDescriptor(CapaFields, RawDescriptor):
     """
 
     module_class = CapaModule
-
+    needs_storage_interface = True
     has_score = True
     template_dir_name = 'problem'
     mako_template = "widgets/problem-edit.html"
