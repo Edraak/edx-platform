@@ -200,9 +200,9 @@ AWS_STORAGE_BUCKET_NAME = AUTH_TOKENS.get('AWS_STORAGE_BUCKET_NAME','edxuploads'
 EXTERNAL_STORAGE = {
     'class_name': 'storages.backends.s3boto.S3BotoStorage',
     'options': {
-        'access_key': AUTH_TOKENS["AWS_ACCESS_KEY_ID"],
-        'secret_key': AUTH_TOKENS["AWS_SECRET_ACCESS_KEY"],
-        'bucket_name': AUTH_TOKENS["AWS_STORAGE_BUCKET_NAME"],
+        'access_key': AWS_ACCESS_KEY_ID,
+        'secret_key': AWS_SECRET_ACCESS_KEY,
+        'bucket_name': AWS_STORAGE_BUCKET_NAME,
     }
 }
 
