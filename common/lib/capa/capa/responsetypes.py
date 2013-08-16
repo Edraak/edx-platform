@@ -428,23 +428,24 @@ class LoncapaResponse(object):
             storage_key_to_url[filename] = self.system.storage_interface.url(filename)
         return storage_key_to_url
 
-    def submit_to_queue(self, body):
+    def submit_to_queue(self, body, qtime):
         """
         Submits body to a queue.  Xqueues expect body to be valid json,
         but this function doesn't actually care.
         The target xqueue is determined by self.queue_name, which should
         be specified prior to calling this method.
 
-        Returns a tuple (error, message)
+        Returns a dict:
+            'response' -> tuple (error, message)
+            'queuekey' -> queuekey
         """
         qinterface = self.system.xqueue['interface']
-        qtime = datetime.strftime(datetime.now(UTC), xqueue_interface.dateformat)
 
         anonymous_student_id = self.system.anonymous_student_id
 
         # Generate header
         queuekey = xqueue_interface.make_hashkey(
-            str(self.system.seed) + qtime + anonymous_student_id + self.answer_id
+            str(self.system.seed) + qtime + anonymous_student_id + self.answer_ids[0]
         )
         callback_url = self.system.xqueue['construct_callback']()
         xheader = xqueue_interface.make_xheader(
@@ -452,7 +453,8 @@ class LoncapaResponse(object):
             lms_key=queuekey,
             queue_name=self.queue_name
         )
-        return qinterface.send_to_queue(header=xheader, body=contents)
+        return {'response': qinterface.send_to_queue(header=xheader, body=body),
+                'queuekey': queuekey}
 
 
 
@@ -979,9 +981,39 @@ class NewExternalResponse(LoncapaResponse):
     server for checking.
 
     POSTs to the xqueue have the following keys:
-    - 'student' is some hashed id representing the student.
-    - 'answers' is a dictionary mapping input field name to answers.
+    - 'student_info' contains hashed id and submission time.
+    - 'answers' is a dictionary mapping input field name to a dict wih either
+      'files', a list of urls of files that the student submitted; or 'student_response',
+      the text of the student's response.
+
+    Example POST:
+    {
+        'student_info': {
+            'anonymous_student_id': 'blah',
+            'submission_time': a_time,
+        },
+        'answers': {
+            'part_1': {
+                'student_response': 'my answer',
+            },
+            'part_2': {
+                'student_response': '',
+                'files': ['http://my.file.location/my/file'],
+            },
+        },
+    }
+
     Specify the name of your input fields with <textline name="my_name />
+
+    Grader reply is expected to take the form
+    {
+        'input_name': {
+            'correct': True/False
+            'score': score,
+            'msg': 'A message'
+        },
+        'another_input': { ... }
+    }
     """
     response_tag = 'externalresponse2'
     allowed_inputfields = ['textline', 'textbox', 'crystallography',
@@ -998,7 +1030,7 @@ class NewExternalResponse(LoncapaResponse):
             default_queuename = self.system.xqueue['default_queuename']
         else:
             default_queuename = None
-        self.queue_name = xml.get('queuename', default_queuename)
+        self.queue_name = self.xml.get('queuename', default_queuename)
         self.answer = self.xml.get('answer')
 
     def get_score(self, student_answers):
@@ -1009,9 +1041,113 @@ class NewExternalResponse(LoncapaResponse):
                      msg='Error checking problem: no external queueing server is configured.')
             return cmap
 
-        for answer_id in self.answer_ids:
+        cmap = CorrectMap()
+        contents = {}
+        qtime = datetime.strftime(datetime.now(UTC), xqueue_interface.dateformat)
+        student_info = {
+            'anonymous_student_id': self.system.anonymous_student_id,
+            'submission_time': qtime,
+        }
+        contents.update({'student_info': json.dumps(student_info)})
+        answers = {}
+
+        # Get resposne from each part of this problem.
+        for inputfield in self.inputfields:
+            answer_id = inputfield.get('id')
             submission = student_answers[answer_id]
-            contents = {}
+            if is_list_of_files(submission):
+                storage_key_to_url = self.upload_to_storage(submission)
+                this_answer = {'student_response': '',
+                               'files': storage_key_to_url.values()}
+            else:
+                this_answer = {'student_response': submission}
+            name = inputfield.get('name')
+            if name is None:
+                # The instructor forgot to specify a naem for this input field.
+                # For this problem type, every input field must have a name.
+                log.error('Input field for new ExternalResponse missing name attribute!')
+                cmap = CorrectMap()
+                cmap.set(self.answer_id, queuestate=None,
+                         msg='Error checking problem: can\'t find name for input type.')
+                return cmap
+            answers[name] = this_answer
+        # Load up the dictionary we're submitting to xqueue, and go.
+        contents['answers'] = answers
+        result = self.submit_to_queue(json.dumps(contents), qtime)
+        (error, msg) = result['response']
+
+        queuestate = {'key': result['queuekey'],
+                      'time': qtime, }
+
+        if error:
+            cmap.set(answer_id, queuestate=None,
+                     msg='Unable to deliver your submission to grader. (Reason: %s.)'
+                         ' Please try again later.' % msg)
+        else:
+            # Queueing mechanism flags:
+            #   1) Backend: Non-null CorrectMap['queuestate'] indicates that
+            #      the problem has been queued
+            #   2) Frontend: correctness='incomplete' eventually trickles down
+            #      through inputtypes.textbox and .filesubmission to inform the
+            #      browser to poll the LMS
+            cmap.set(answer_id, queuestate=queuestate,
+                     correctness='incomplete', msg=msg)
+
+        return cmap
+
+    def update_score(self, score_msg, old_cmap, queuekey):
+        """
+        Process replies from the grader.
+        `score_msg` is the json-dumped response from the grader.
+        """
+        if not self._validate_grader_reply(score_msg):
+            old_cmap.set(self.answer_ids[0], msg='Error in grader.  Please contact course staff.')
+            return old_cmap
+        reply = json.loads(score_msg)
+
+        # Loop through all inputs, and see if any of them were graded.
+        for inputfield in self.inputfields:
+            name = inputfield.get('name')
+            if (name is None) or (name not in reply):
+                # Nope.  Not graded.
+                continue
+            old_cmap.set(
+                inputfield.get('id'),
+                npoints=reply[name]['score'],
+                correctness=reply[name]['correct'],
+                msg=reply[name]['msg'],
+                queuestate=None,
+            )
+        return old_cmap
+
+    def _validate_grader_reply(self, score_msg):
+        """
+        Make sure that the grader reply is usable.
+        """
+        try:
+            reply = json.loads(score_msg)
+        except (TypeError, ValueError):
+            log.error("External grader message should be a JSON-serialized dict."
+                      " Received score_msg = %s" % score_msg)
+            return False
+        if not isinstance(reply, dict):
+            log.error("External grader message should be a JSON-serialized dict."
+                      " Received reply = %s" % reply)
+            return False
+        # OK.  Now, every value in the dictionary must itself be a dictionary, with
+        # the keys (at minimum) 'correct', 'score', and 'msg'.
+        for input_reply in reply.values():
+            for field in ['correct', 'score', 'msg']:
+                if field not in input_reply:
+                    log.error('Grader reply missing fields.  Reply was %s' % score_msg)
+                    return False
+        return True
+
+    def get_answers(self):
+        out = {}
+        for inputfield in self.inputfields:
+            out[inputfield.get('id')] = inputfield.get('answer')
+        return out
 
 
 class CustomResponse(LoncapaResponse):
@@ -1475,17 +1611,16 @@ class CodeResponse(LoncapaResponse):
 
         # Generate body
         if is_list_of_files(submission):
-            # TODO: Get S3 pointer from the Queue
             self.context.update({'submission': ''})
         else:
             self.context.update({'submission': submission})
 
         contents = self.payload.copy()
-
+        qtime = datetime.strftime(datetime.now(UTC), xqueue_interface.dateformat)
         # Metadata related to the student submission revealed to the external
         # grader
         student_info = {
-            'anonymous_student_id': anonymous_student_id,
+            'anonymous_student_id': self.system.anonymous_student_id,
             'submission_time': qtime,
         }
         contents.update({'student_info': json.dumps(student_info)})
@@ -1497,10 +1632,11 @@ class CodeResponse(LoncapaResponse):
                              'files': storage_key_to_url})
         else:
             contents.update({'student_response': submission})
-        (error, msg) = self.submit_to_queue(json.dumps(contents))
+        result = self.submit_to_queue(json.dumps(contents), qtime)
+        (error, msg) = result['response']
 
         # State associated with the queueing request
-        queuestate = {'key': queuekey,
+        queuestate = {'key': result['queuekey'],
                       'time': qtime, }
 
         cmap = CorrectMap()
@@ -2529,6 +2665,7 @@ __all__ = [CodeResponse,
            CustomResponse,
            SchematicResponse,
            ExternalResponse,
+           NewExternalResponse,
            ImageResponse,
            OptionResponse,
            SymbolicResponse,
