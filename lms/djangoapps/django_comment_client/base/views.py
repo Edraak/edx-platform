@@ -25,12 +25,11 @@ from course_groups.cohorts import get_cohort_id, is_commentable_cohorted
 
 from django_comment_client.utils import JsonResponse, JsonError, extract, get_courseware_context
 
-from django_comment_client.permissions import check_permissions_by_view, cached_has_permission
+from django_comment_client.permissions import check_permissions_by_view, cached_has_permission, is_enrolled
 from django_comment_common.models import Role
 from courseware.access import has_access
 
 log = logging.getLogger(__name__)
-
 
 def permitted(fn):
     @functools.wraps(fn)
@@ -422,7 +421,9 @@ def pin_thread(request, course_id, thread_id):
     thread.pin(user, thread_id)
     return JsonResponse(utils.safe_content(thread.to_dict()))
 
-
+@require_POST
+@login_required
+@permitted
 def un_pin_thread(request, course_id, thread_id):
     """
     given a course id and thread id, remove pin from this thread
