@@ -11,12 +11,7 @@ def is_enrolled(user, course_id):
     # a user will be determined to be enrolled if the user
     # has any active role with the course
 
-    answer = False
-    roles = user.roles.filter(course_id=course_id).count
-    for role in user.roles.filter(course_id=course_id):
-        if role.is_active:
-            answer = True
-    return answer
+    return user.roles.filter(course_id=course_id,is_active=True).count > 0
 
 def cached_has_permission(user, permission, course_id=None):
     """
