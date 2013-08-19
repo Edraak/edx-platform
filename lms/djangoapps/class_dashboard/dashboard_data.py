@@ -142,7 +142,7 @@ def get_d3_problem_grade_distribution(course_id):
     prob_grade_distrib = get_problem_grade_distribution(course_id)
 
     # Get info on where each problem is
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
     dict_id_to_display_names = {}
     cPosition = 0
     cSection = 0
@@ -216,7 +216,7 @@ def get_d3_problem_attempt_distribution(course_id, max_attempts=10):
     # Create an array of dicts. The ith element in the array maps to a section. Inside that is:
     #   - display_name - display name for the section
     #   - data - data for the attempt distribution of problems in this section for d3_stacked_bar_graph
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
     c_section = 0
     for section in course.get_children():
         c_section += 1
@@ -272,7 +272,7 @@ def get_d3_sequential_open_distribution(course_id):
 
     d3_data = []
 
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
     for section in course.get_children():
         curr_section = {}
         curr_section['display_name'] = own_metadata(section)['display_name']
@@ -317,7 +317,7 @@ def get_d3_problem_grade_distribution_by_section(course_id):
     prob_grade_distrib = get_problem_grade_distribution(course_id)
     d3_data = []
 
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
     c_section = 0
     for section in course.get_children():
         c_section += 1
@@ -386,7 +386,7 @@ def get_d3_section_grade_distribution(course_id, section):
         `tooltip` - (Optional) Text to display on mouse hover
     """
 
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
 
     problem_set = []
     problem_info = {}
@@ -446,7 +446,7 @@ def get_section_display_name(course_id):
     The ith string in the array is the display name of the ith section in the course.
     """
 
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
 
     section_display_name = [""] * len(course.get_children())
     i = 0
@@ -464,7 +464,7 @@ def get_array_section_has_problem(course_id):
     The ith value in the array is true if the ith section in the course contains problems and false otherwise.
     """
 
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
 
     b_section_has_problem = [False] * len(course.get_children())
     i = 0
