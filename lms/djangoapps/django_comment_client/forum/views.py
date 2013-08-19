@@ -32,6 +32,7 @@ def get_threads(request, course_id, discussion_id=None, per_page=THREADS_PER_PAG
     cc.utils.CommentClientUnknownError if something goes wrong.
     """
     cc_user = cc.User.from_django_user(request.user)
+    
     if is_enrolled(cc_user,course_id):
 
         default_query_params = {
@@ -103,7 +104,7 @@ def get_threads(request, course_id, discussion_id=None, per_page=THREADS_PER_PAG
 
         return threads, query_params
     else:
-        raise Http403
+        raise Http404
 
 
 @login_required
@@ -111,11 +112,11 @@ def inline_discussion(request, course_id, discussion_id):
     """
     Renders JSON for DiscussionModules
     """
-    course = get_course_with_access(request.user, course_id, 'load')
+    cc_user = cc.User.from_django_user(request.user)
+    course = get_course_with_access(cc_user, course_id, 'load')
 
     try:
         threads, query_params = get_threads(request, course_id, discussion_id, per_page=INLINE_THREADS_PER_PAGE)
-        cc_user = cc.User.from_django_user(request.user)
         user_info = cc_user.to_dict()
     except (cc.utils.CommentClientError, cc.utils.CommentClientUnknownError):
         # TODO (vshnayder): since none of this code seems to be aware of the fact that
@@ -331,7 +332,7 @@ def single_thread(request, course_id, discussion_id, thread_id):
             }
             return render_to_response('discussion/single_thread.html', context)
     else:
-        raise Http403
+        raise Http404
 
 
 @login_required

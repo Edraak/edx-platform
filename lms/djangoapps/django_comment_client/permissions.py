@@ -1,6 +1,10 @@
 import logging
 from util.cache import cache
 from django.core import cache
+from courseware.access import has_access
+from courseware.courses import get_course_with_access
+from student.models import CourseEnrollment
+from django.contrib.auth.models import User
 cache = cache.get_cache('default')
 
 
@@ -11,7 +15,15 @@ def is_enrolled(user, course_id):
     # a user will be determined to be enrolled if the user
     # has any active role with the course
 
-    return user.roles.filter(course_id=course_id,is_active=True).count > 0
+    #return user.roles.filter(course_id=course_id,is_active=True).count > 0
+    lookup_user = User.objects.prefetch_related("groups").get(id=user.id)
+
+    course = get_course_with_access(lookup_user, course_id, 'see_exists')
+    
+    staff_access = has_access(lookup_user, course, 'staff')
+    registered = CourseEnrollment.is_enrolled(lookup_user, course.id)
+    
+    return registered or staff_access
 
 def cached_has_permission(user, permission, course_id=None):
     """
