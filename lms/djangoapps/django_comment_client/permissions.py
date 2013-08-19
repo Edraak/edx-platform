@@ -15,7 +15,6 @@ def is_enrolled(user, course_id):
     # a user will be determined to be enrolled if the user
     # has any active role with the course
 
-    #return user.roles.filter(course_id=course_id,is_active=True).count > 0
     lookup_user = User.objects.prefetch_related("groups").get(id=user.id)
 
     course = get_course_with_access(lookup_user, course_id, 'see_exists')
