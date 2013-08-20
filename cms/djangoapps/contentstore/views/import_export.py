@@ -6,6 +6,7 @@ import os
 import tarfile
 import shutil
 import re
+from contextlib import contextmanager 
 from tempfile import mkdtemp
 from path import path
 
@@ -33,7 +34,8 @@ from .access import get_location_and_verify_access
 from util.json_request import JsonResponse
 
 
-__all__ = ['import_course', 'generate_export_course', 'export_course']
+__all__ = ['import_course', 'generate_export_course', 'export_course',
+        'import_status']
 
 log = logging.getLogger(__name__)
 
@@ -128,76 +130,81 @@ def import_course(request, org, course, name):
             # 'Lock' with status info.
             lock_filepath = data_root / (filename + ".lock")
 
-            with open(lock_filepath, 'w+') as lf:
-                lf.write("Extracting")
+            with wfile(lock_filepath):
 
-            tar_file = tarfile.open(temp_filepath)
-            tar_file.extractall(course_dir + '/')
+                # Write stage of import process to lock_file
+                #   1: extracting
+                #   2: verifying
+                #   3: importing
+                with open(lock_filepath, 'w+') as lf:
+                    lf.write("1")
 
-            with open(lock_filepath, 'w+') as lf:
-                lf.write("Verifying")
+                tar_file = tarfile.open(temp_filepath)
+                tar_file.extractall(course_dir + '/')
 
-            # find the 'course.xml' file
-            dirpath = None
+                with open(lock_filepath, 'w+') as lf:
+                    lf.write("2")
 
-            def get_all_files(directory):
-                """
-                For each file in the directory, yield a 2-tuple of (file-name,
-                directory-path) 
-                """
-                for dirpath, _dirnames, filenames in os.walk(directory):
-                    for filename in filenames:
-                        yield (filename, dirpath)
+                # find the 'course.xml' file
+                dirpath = None
 
-            def get_dir_for_fname(directory, filename):
-                """
-                Returns the dirpath for the first file found in the directory
-                with the given name.  If there is no file in the directory with
-                the specified name, return None.
-                """
-                for fname, dirpath in get_all_files(directory):
-                    if fname == filename:
-                        return dirpath
-                return None
+                def get_all_files(directory):
+                    """
+                    For each file in the directory, yield a 2-tuple of (file-name,
+                    directory-path) 
+                    """
+                    for dirpath, _dirnames, filenames in os.walk(directory):
+                        for filename in filenames:
+                            yield (filename, dirpath)
 
-            fname = "course.xml"
+                def get_dir_for_fname(directory, filename):
+                    """
+                    Returns the dirpath for the first file found in the directory
+                    with the given name.  If there is no file in the directory with
+                    the specified name, return None.
+                    """
+                    for fname, dirpath in get_all_files(directory):
+                        if fname == filename:
+                            return dirpath
+                    return None
 
-            dirpath = get_dir_for_fname(course_dir, fname)
+                fname = "course.xml"
 
-            if not dirpath:
-                return JsonResponse(
-                    {'ErrMsg': 'Could not find the course.xml file in the package.'},
-                    status=415
+                dirpath = get_dir_for_fname(course_dir, fname)
+
+                if not dirpath:
+                    return JsonResponse(
+                        {'ErrMsg': 'Could not find the course.xml file in the package.'},
+                        status=415
+                    )
+
+                logging.debug('found course.xml at {0}'.format(dirpath))
+
+                if dirpath != course_dir:
+                    for fname in os.listdir(dirpath):
+                        shutil.move(dirpath / fname, course_dir)
+
+                _module_store, course_items = import_from_xml(
+                    modulestore('direct'),
+                    settings.GITHUB_REPO_ROOT,
+                    [course_subdir],
+                    load_error_modules=False,
+                    static_content_store=contentstore(),
+                    target_location_namespace=location,
+                    draft_store=modulestore()
                 )
 
-            logging.debug('found course.xml at {0}'.format(dirpath))
+                # we can blow this away when we're done importing.
+                shutil.rmtree(course_dir)
 
-            if dirpath != course_dir:
-                for fname in os.listdir(dirpath):
-                    shutil.move(dirpath / fname, course_dir)
+                logging.debug('new course at {0}'.format(course_items[0].location))
 
-            _module_store, course_items = import_from_xml(
-                modulestore('direct'),
-                settings.GITHUB_REPO_ROOT,
-                [course_subdir],
-                load_error_modules=False,
-                static_content_store=contentstore(),
-                target_location_namespace=location,
-                draft_store=modulestore()
-            )
+                with open(lock_filepath, 'w') as lf:
+                    lf.write("3")
 
-            # we can blow this away when we're done importing.
-            shutil.rmtree(course_dir)
+                create_all_course_groups(request.user, course_items[0].location)
+                logging.debug('created all course groups at {0}'.format(course_items[0].location))
 
-            logging.debug('new course at {0}'.format(course_items[0].location))
-
-            with open(lock_filepath, 'w') as lf:
-                lf.write("Updating course")
-
-            create_all_course_groups(request.user, course_items[0].location)
-            logging.debug('created all course groups at {0}'.format(course_items[0].location))
-
-            os.remove(lock_filepath)
 
             return JsonResponse({'Status': 'OK'})
     else:
@@ -211,6 +218,23 @@ def import_course(request, org, course, name):
                 'name': location.name,
             })
         })
+
+@ensure_csrf_cookie
+@login_required
+def import_status(request, filename):
+    data_root = path(settings.GITHUB_REPO_ROOT)
+    lock_filepath = data_root / (filename + ".lock")
+
+    if !os.path.isfile(lock_filepath):
+        return JsonResponse({"Stage": 0})
+
+    with open(lock_filepath) as f:
+        try:
+            r = int(f.read())
+        except ValueError:    # Reading just before creation or after deletion
+            r = 0
+
+    return JsonResponse({"Stage": r})
 
 
 @ensure_csrf_cookie
@@ -306,3 +330,16 @@ def export_course(request, org, course, name):
         'context_course': course_module,
         'successful_import_redirect_url': ''
     })
+
+@contextmanager
+def wfile(filename):
+    """
+    With-context that creates a file on entry and deletes it on exit.
+    """
+    try:
+        with open(filename, "w+") as f:
+            f.write("")
+        yield filename
+    finally:
+        os.remove(filename)
+
