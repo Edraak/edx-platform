@@ -15,11 +15,14 @@ describe("Formula Equation Preview", function () {
         var $fixture = this.$fixture = $('\
 <section class="problems-wrapper" data-url="THE_URL">\
   <section class="formulaequationinput">\
-    <input type="text" id="input_THE_ID" data-input-id="THE_ID"\
-        value="prefilled_value"/>\
-    <div id="input_THE_ID_preview" class="equation">\
-      \[\]\
-      <img class="loading" style="visibility:hidden"/>\
+    <div class="INITIAL_STATUS" id="status_THE_ID">\
+      <input type="text" id="input_THE_ID" data-input-id="THE_ID"\
+          value="PREFILLED_VALUE"/>\
+      <p class="status">INITIAL_STATUS</p>\
+      <div id="input_THE_ID_preview" class="equation">\
+        \[\]\
+        <img class="loading" style="visibility:hidden"/>\
+      </div>\
     </div>\
   </section>\
 </section>');
@@ -96,7 +99,7 @@ describe("Formula Equation Preview", function () {
                 "THE_URL",
                 "THE_ID",
                 "preview_formcalc",
-                {formula: "prefilled_value",
+                {formula: "PREFILLED_VALUE",
                  request_start: jasmine.any(Number)},
                 jasmine.any(Function)
             ]);
@@ -217,7 +220,7 @@ describe("Formula Equation Preview", function () {
                 expect($("img.loading").css('visibility')).toEqual('hidden');
 
                 // We should look in the preview div for the MathJax.
-                var previewDiv = $("div")[0];
+                var previewDiv = $("#input_THE_ID_preview")[0];
                 expect(MathJax.Hub.getAllJax).toHaveBeenCalledWith(previewDiv);
 
                 // Refresh the MathJax.
@@ -242,7 +245,7 @@ describe("Formula Equation Preview", function () {
 
                 // Cannot find MathJax.
                 MathJax.Hub.getAllJax.andReturn([]);
-                spyOn(console, 'error');
+                spyOn(console, 'warn');
 
                 callback({
                     preview: 'THE_FORMULA',
@@ -250,10 +253,10 @@ describe("Formula Equation Preview", function () {
                 });
 
                 // Tests.
-                expect(console.error).toHaveBeenCalled();
+                expect(console.warn).toHaveBeenCalled();
 
                 // We should look in the preview div for the MathJax.
-                var previewElement = $("div")[0];
+                var previewElement = $("#input_THE_ID_preview")[0];
                 expect(previewElement.firstChild.data).toEqual("\\[THE_FORMULA\\]");
 
                 // Refresh the MathJax.
@@ -392,6 +395,36 @@ describe("Formula Equation Preview", function () {
                    expect(MathJax.Hub.Queue).not.toHaveBeenCalled();
                })
            });
+    });
+
+    it('should become "unanswered" on input', function () {
+        var $divstatus = $('#status_THE_ID');
+        var $pstatus = $divstatus.find('p.status');
+
+        formulaEquationPreview.enable();
+        waitsFor(function () {
+            return Problem.inputAjax.wasCalled;
+        }, "AJAX never called initially", 1000);
+
+        runs(function () {
+            expect($divstatus.hasClass('INITIAL_STATUS')).toBeTruthy();
+            expect($divstatus.hasClass('unanswered')).toBeFalsy();
+            expect($pstatus.text()).toEqual('INITIAL_STATUS');
+
+            Problem.inputAjax.reset();
+            $("#input_THE_ID").val("different").trigger('input');
+        });
+
+        waitsFor(function () {
+            return Problem.inputAjax.wasCalled;
+        }, "AJAX never called on input", 1000);
+
+        runs(function () {
+            // Note that the `.toBeX()` have switched from above.
+            expect($divstatus.hasClass('INITIAL_STATUS')).toBeFalsy();
+            expect($divstatus.hasClass('unanswered')).toBeTruthy();
+            expect($pstatus.text()).toEqual('unanswered');
+        });
     });
 
     afterEach(function () {
