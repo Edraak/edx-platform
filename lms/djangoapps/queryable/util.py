@@ -11,7 +11,7 @@ def get_assignment_to_problem_map(course_id):
     is how they are numbered in a student's progress page.
     """
 
-    course = modulestore().get_item(CourseDescriptor.id_to_location(course_id), depth=4)
+    course = modulestore().get_instance(course_id, CourseDescriptor.id_to_location(course_id), depth=4)
 
     assignment_problems_map = {}
     for section in course.get_children():
