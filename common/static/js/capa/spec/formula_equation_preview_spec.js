@@ -65,10 +65,10 @@ describe("Formula Equation Preview", function () {
         MathJax.Hub.Queue = jasmine.createSpy('MathJax.Hub.Queue');
     });
 
-    it('(the test) should be able to swap out the behavior of $', function () {
+    it('(the test) is able to swap out the behavior of $', function () {
         // This was a pain to write, make sure it doesn't get screwed up.
 
-        // Find the DOM element using DOM methods.
+        // Find the element using DOM methods.
         var legitInput = this.$fixture[0].getElementsByTagName("input")[0];
 
         // Use the (modified) jQuery.
@@ -120,7 +120,7 @@ describe("Formula Equation Preview", function () {
             });
         });
 
-        it("shouldn't be requested for empty input", function () {
+        it("isn't requested for empty input", function () {
             Problem.inputAjax.reset();
 
             // When we make an input of '',
@@ -139,7 +139,7 @@ describe("Formula Equation Preview", function () {
             });
         });
 
-        it('should limit the number of requests per second', function () {
+        it('limits the number of requests per second', function () {
             var minDelay = formulaEquationPreview.minDelay;
             var end = Date.now() + minDelay * 1.1;
             var step = 10;  // ms
@@ -174,7 +174,7 @@ describe("Formula Equation Preview", function () {
     });
 
     describe("Visible results (icon and mathjax)", function () {
-        it('should display a loading icon when requests are open', function () {
+        it('displays a loading icon when requests are open', function () {
             var $img = $("img.loading");
             expect($img.css('visibility')).toEqual('hidden');
             formulaEquationPreview.enable();
@@ -202,7 +202,7 @@ describe("Formula Equation Preview", function () {
             });
         });
 
-        it('should update MathJax and loading icon on callback', function () {
+        it('updates MathJax and loading icon on callback', function () {
             formulaEquationPreview.enable();
             waitsFor(function () {
                 return Problem.inputAjax.wasCalled;
@@ -266,7 +266,7 @@ describe("Formula Equation Preview", function () {
             });
         });
 
-        it('should display errors from the server well', function () {
+        it('displays errors from the server well', function () {
             var $img = $("img.loading");
             formulaEquationPreview.enable();
             waitsFor(function () {
@@ -332,7 +332,7 @@ describe("Formula Equation Preview", function () {
             });
         });
 
-        it('should update requests sequentially', function () {
+        it('updates requests sequentially', function () {
             var $img = $("img.loading");
 
             expect($img.css('visibility')).toEqual('visible');
@@ -352,7 +352,7 @@ describe("Formula Equation Preview", function () {
             expect($img.css('visibility')).toEqual('hidden')
         });
 
-        it("shouldn't display outdated information", function () {
+        it("doesn't display outdated information", function () {
             var $img = $("img.loading");
 
             expect($img.css('visibility')).toEqual('visible');
@@ -371,7 +371,7 @@ describe("Formula Equation Preview", function () {
             expect($img.css('visibility')).toEqual('hidden')
         });
 
-        it("shouldn't show an error if the responses are close together",
+        it("doesn't show an error if the responses are close together",
            function () {
                this.callbacks[0]({
                    error: 'OOPSIE',
@@ -397,7 +397,7 @@ describe("Formula Equation Preview", function () {
            });
     });
 
-    it('should become "unanswered" on input', function () {
+    it('becomes "unanswered" on input', function () {
         var $divstatus = $('#status_THE_ID');
         var $pstatus = $divstatus.find('p.status');
 
