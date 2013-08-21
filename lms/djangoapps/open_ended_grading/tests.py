@@ -29,7 +29,7 @@ from django.test.utils import override_settings
 from xmodule.tests import test_util_open_ended
 
 from courseware.tests import factories
-from courseware.tests.modulestore_config import TEST_DATA_XML_MODULESTORE
+from courseware.tests.modulestore_config import TEST_DATA_MONGO_MODULESTORE, TEST_DATA_XML_MODULESTORE
 from courseware.tests.helpers import LoginEnrollmentTestCase, check_for_get_code, check_for_post_code
 
 
@@ -170,7 +170,7 @@ class TestPeerGradingService(LoginEnrollmentTestCase):
             render_template=render_to_string,
             replace_urls=None,
             xblock_model_data={},
-            s3_interface=test_util_open_ended.S3_INTERFACE,
+            storage_interface=test_util_open_ended.STORAGE_INTERFACE,
             open_ended_grading_interface=test_util_open_ended.OPEN_ENDED_GRADING_INTERFACE
         )
         self.descriptor = peer_grading_module.PeerGradingDescriptor(self.system, model_data)

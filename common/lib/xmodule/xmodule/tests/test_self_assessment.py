@@ -46,7 +46,7 @@ class SelfAssessmentTest(unittest.TestCase):
             'display_name': "Name",
             'accept_file_upload': False,
             'close_date': None,
-            'storage_interface': test_util_open_ended.storage_INTERFACE,
+            'storage_interface': test_util_open_ended.STORAGE_INTERFACE,
             'open_ended_grading_interface': test_util_open_ended.OPEN_ENDED_GRADING_INTERFACE,
             'skip_basic_checks': False,
             'control': {

@@ -11,7 +11,7 @@ OPEN_ENDED_GRADING_INTERFACE = {
     'grading_controller': 'grading_controller'
 }
 
-storage_INTERFACE = {
+STORAGE_INTERFACE = {
     'aws_access_key': "",
     'aws_secret_key': "",
     "aws_bucket_name": "",
