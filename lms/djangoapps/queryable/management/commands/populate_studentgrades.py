@@ -21,8 +21,7 @@ from courseware import grades
 from courseware.courses import get_course_by_id
 from courseware.models import StudentModule
 
-from queryable.models import Log
-from queryable.models import CourseGrade, AssignmentTypeGrade, AssignmentGrade
+from queryable.models import Log, CourseGrade, AssignmentTypeGrade, AssignmentGrade
 
 from queryable.util import get_assignment_to_problem_map
 from queryable.util import approx_equal
