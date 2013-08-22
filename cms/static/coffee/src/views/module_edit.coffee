@@ -12,6 +12,7 @@ class CMS.Views.ModuleEdit extends Backbone.View
     "click .component-actions .delete-button": 'onDelete'
     "click .mode a": 'clickModeButton'
     "click .test-summary .remove-test": 'removeTest' 
+    "click .problem-tester .run-button": 'runTests'
 
   initialize: ->
     @onDelete = @options.onDelete
@@ -177,3 +178,7 @@ class CMS.Views.ModuleEdit extends Backbone.View
     event.preventDefault()
     console.log($(event.currentTarget).attr('id_to_delete'))
     $(event.currentTarget.parentElement).remove()
+
+  runTests: (event) ->
+    event.preventDefault()
+    console.log($(event.currentTarget).attr('location'))

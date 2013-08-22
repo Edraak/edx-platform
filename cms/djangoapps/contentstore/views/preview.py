@@ -83,10 +83,13 @@ def preview_component(request, location):
 
     edit_html = component.runtime.render(component, None, 'studio_view').content
 
-    if hasattr(component, 'tests'):
-        from content_testing.views import testing_summary
-        test_html = render_to_string('content_testing/component_test.html', {'testing_summary': testing_summary(request, component)})
-        edit_html += test_html
+    try:
+        if hasattr(component, 'tests'):
+            from content_testing.views import testing_summary
+            test_html = render_to_string('content_testing/component_test.html', {'testing_summary': testing_summary(request, component)})
+            edit_html += test_html
+    except:
+        pass
 
     return render_to_response('component.html', {
         'preview': get_preview_html(component, 0, request),

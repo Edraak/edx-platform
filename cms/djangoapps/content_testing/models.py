@@ -7,6 +7,10 @@ from contentstore.views.preview import load_preview_module
 from lxml import etree
 from copy import deepcopy
 from difflib import SequenceMatcher
+
+# dear god why do I need to do this?
+from xmodule.modulestore.mongo.draft import as_draft
+
 # pylint: disable=E1101
 
 
@@ -197,10 +201,16 @@ class ContentTest(object):
         construct a new preview capa module
         """
         # create a preview of the capa_module()
-        if descriptor is None:
-            descriptor = modulestore().get_item(Location(location))
+        # for some reasone, it sometimes comes out as draft, and other times not.
+        # this royally messes things up. Why???
+        # location = as_draft(location)
 
-        preview_module = load_preview_module(0, descriptor)
+        # if descriptor is None:
+        descriptor = modulestore().get_item(Location(location))
+
+        preview_module = load_preview_module(str(0), descriptor)
+        # if preview_module.location.revision is None:
+        #     import nose; nose.tools.set_trace()
 
         return preview_module
 

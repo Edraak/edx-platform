@@ -179,6 +179,7 @@ def testing_summary(request, descriptor):
     """
     Render the testing summary for this descriptor
     """
+
     tests = instantiate_tests(descriptor)
     # sort tests by should_be value.
     # The dictionary contains a key for every available `should_be`, and tests are just
