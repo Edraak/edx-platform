@@ -3,9 +3,8 @@ Views for using the atuomated content testing feature.  These views should be co
 a mockup for using the models
 """
 
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, Http404
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore import Location
 from content_testing.models import ContentTest
 
 #csrf utilities because mako :_ (
@@ -15,12 +14,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from contentstore.views.access import has_access
 
-from mitxmako.shortcuts import render_to_response, render_to_string
+from mitxmako.shortcuts import render_to_string
 from lxml import etree
 from copy import deepcopy
 
 # supported response types
 RESPONSE_TYPES = ['customresponse']
+
 
 def dict_slice(data, string):
     """
@@ -165,7 +165,7 @@ def instantiate_tests(descriptor):
     """
 
     test_dicts = descriptor.tests
-
+    import nose; nose.tools.set_trace()
     # instantiate preview module (so each test doesn't need to indevidually)
     module = ContentTest.construct_preview_module(descriptor.location, descriptor)
     tests = [ContentTest(**dict(test_dict, module=module)) for test_dict in test_dicts]
@@ -178,7 +178,6 @@ def testing_summary(request, descriptor):
     Render the testing summary for this descriptor
     """
     tests = instantiate_tests(descriptor)
-
     # sort tests by should_be value.
     # The dictionary contains a key for every available `should_be`, and tests are just
     # appended to the value of that key.

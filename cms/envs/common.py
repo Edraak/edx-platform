@@ -57,7 +57,7 @@ MITX_FEATURES = {
     'ENABLE_CREATOR_GROUP': False,
 
     # disable content testing which is in development
-    'CONTENT_TESTING': False,
+    'CONTENT_TESTING': True,
 }
 ENABLE_JASMINE = False
 

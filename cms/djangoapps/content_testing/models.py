@@ -118,7 +118,7 @@ def closeness(model, responder):
 
     # almost all the xml will be the same since they have the same structure anyway.
     # Thus, we look at just the attributes that are meaningful
-    model_xml = model.xml
+    model_xml = etree.XML(model.xml_string)
     resp_xml = responder.xml
 
     model_string = condense_dict(condense_attributes(model_xml))
@@ -158,6 +158,7 @@ class ContentTest(object):
         verdict=NONE,
         message=NONE,
         override_state=None,
+        responses=None,
         module=None,
         id=0
     ):
@@ -182,11 +183,11 @@ class ContentTest(object):
         self.id = id
 
         # list of children
-        self.responses = []
+        # the None case is handled in self._create_children()
+        self.responses = responses
 
         # used to detect edits
         self._old_resp_dict = self.response_dict
-
         self._create_children()
         self.rematch_if_necessary()
 
@@ -242,6 +243,7 @@ class ContentTest(object):
             'verdict': self.verdict,
             'message': self.message,
             'override_state': self.override_state,
+            'responses': [resp_test.todict() for resp_test in self.responses],
             'id': self.id
         }
 
@@ -423,31 +425,40 @@ class ContentTest(object):
         """
         create child responses and input entries
         """
-        # create a preview capa problem
-        problem_capa = self.capa_problem()
 
-        # go through responder objects
-        for responder in problem_capa.responders.itervalues():
-            self._create_child(responder, self.response_dict)
+        # the first time loaded, we make the responses from
+        # the capa moudle
+        if self.responses is None:
+            self.responses = []
+            # create a preview capa problem
+            problem_capa = self.capa_problem()
 
-        # if the dictionary was incomplete, we remake it so we
-        # have all the blank entries.
-        self._remake_dict_from_children()
+            # go through responder objects
+            for responder in problem_capa.responders.itervalues():
+                self._create_child(responder, self.response_dict)
+
+            # if the dictionary was incomplete, we remake it so we
+            # have all the blank entries.
+            self._remake_dict_from_children()
+
+        # else, we just instantiate from the saved versions
+        else:
+            self.responses = [ResponseTest(**dict(resp_test_dict, content_test=self, response_dict=self.response_dict)) for resp_test_dict in self.responses]
 
     def _create_child(self, responder, response_dict=dict()):
         """
         from a responder object, create the associated child response model
         """
 
-        self.responses.append(Response(self, responder.id, responder.xml, response_dict))
+        self.responses.append(ResponseTest(self, responder.id, etree.tostring(responder.xml), response_dict))
 
 
-class Response(object):
+class ResponseTest(object):
     """
     Object that corresponds to the <_____response> fields
     """
 
-    def __init__(self, content_test, string_id, xml, response_dict={}):
+    def __init__(self, content_test, string_id, xml_string, response_dict={}, inputs=None):
         """
         To instantiate the response sub-object of a contentTest, we use the following
         - content_test  -- parent object
@@ -457,17 +468,19 @@ class Response(object):
 
         self.content_test = content_test
         self.string_id = string_id
-        self.xml = xml
+        self.xml_string = xml_string
+        self.inputs = inputs
 
         # we store hashes of various properties about the xml for faster future processing
-        self.structure_hash = hash_xml_structure(self.xml)
-        self.xml_hash = hash_xml(self.xml)
+        self.structure_hash = hash_xml_structure(etree.XML(self.xml_string))
+        self.xml_hash = hash_xml(etree.XML(self.xml_string))
 
         # store the inputs keyd by their order in this response
-        self.inputs = dict()
-        for entry in self.capa_response.inputfields:
-            answer = response_dict.get(entry.attrib['id'], '')
-            self.inputs[entry.attrib['answer_id']] = {'id': entry.attrib['id'], 'answer': answer}
+        if self.inputs is None:
+            self.inputs = dict()
+            for entry in self.capa_response.inputfields:
+                answer = response_dict.get(entry.attrib['id'], '')
+                self.inputs[entry.attrib['answer_id']] = {'id': entry.attrib['id'], 'answer': answer}
 
     def rematch(self, responder):
         """
@@ -553,3 +566,14 @@ class Response(object):
                 passes = passes and (grade_dict[entry['id']]['correctness'].lower() == should_be.lower())
 
         return passes
+
+    def todict(self):
+        """
+        Serializes object to dictionary
+        """
+
+        return {
+            "string_id": self.string_id,
+            "xml_string": self.xml_string,
+            "inputs": self.inputs,
+        }

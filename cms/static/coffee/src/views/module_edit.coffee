@@ -128,7 +128,7 @@ class CMS.Views.ModuleEdit extends Backbone.View
   selectMode: (mode) =>
     dataEditor = @$el.find('.wrapper-comp-editor')
     settingsEditor = @$el.find('.wrapper-comp-settings')
-    testEditor = @$el.find('.wrapper-comp-testor')
+    testEditor = @$el.find('.wrapper-comp-tester')
     editorModeButton =  @$el.find('#editor-mode').find("a")
     settingsModeButton = @$el.find('#settings-mode').find("a")
     testModeButton = @$el.find('#test-mode').find("a")

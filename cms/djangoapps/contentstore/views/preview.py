@@ -5,7 +5,7 @@ from functools import partial
 from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from mitxmako.shortcuts import render_to_response
+from mitxmako.shortcuts import render_to_response, render_to_string
 
 from xmodule_modifiers import replace_static_urls, wrap_xmodule, save_module  # pylint: disable=F0401
 from xmodule.error_module import ErrorDescriptor
@@ -81,9 +81,16 @@ def preview_component(request, location):
         'xmodule_edit.html'
     )
 
+    edit_html = component.runtime.render(component, None, 'studio_view').content
+
+    if hasattr(component, 'tests'):
+        from content_testing.views import testing_summary
+        test_html = render_to_string('content_testing/component_test.html', {'testing_summary': testing_summary(request, component)})
+        edit_html += test_html
+
     return render_to_response('component.html', {
         'preview': get_preview_html(component, 0, request),
-        'editor': component.runtime.render(component, None, 'studio_view').content,
+        'editor': edit_html,
     })
 
 

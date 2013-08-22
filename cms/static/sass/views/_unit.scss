@@ -560,6 +560,15 @@ body.course.unit {
   }
 }
 
+// tests for custom response
+.wrapper-comp-tester {
+  display: none;
+
+  &.is-active {
+    display: block;
+  }
+}
+
 // Settings Wrapper
 .wrapper-comp-settings {
   display: none;

@@ -10,6 +10,7 @@ from xmodule.modulestore.django import modulestore
 from content_testing.models import ContentTest, hash_xml, hash_xml_structure, condense_attributes, remove_xml_wrapper, condense_dict
 from capa.tests.response_xml_factory import CustomResponseXMLFactory
 from lxml import etree
+from mock import patch
 
 
 # disable sillly pylint violations
@@ -358,15 +359,30 @@ class BlackBoxTestCase(ContentTestTestCase):
         # assert that the verdict is now self.VERDICT_FAIL
         self.assertEqual(self.VERDICT_FAIL, test_model.verdict)
 
-    def test_todict(self):
+    def test_todict_idempotent(self):
         """
         tests that we get the same object after instantiating from dict
         """
-
+        self.maxDiff = None
         test_dict = self.pass_correct.todict()
         new_test = ContentTest(**test_dict)
 
         self.assertEqual(new_test.todict(), self.pass_correct.todict())
+
+    @patch('content_testing.models.ContentTest.capa_problem')
+    @patch('content_testing.models.ContentTest.rematch_if_necessary')
+    def test_instantiate_from_todict(self, capa_problem, rematch_if_necessary):
+        """
+        test that other than the structure matching (which always will
+        require fetching the capa somehow), no capa is used for instantiation
+        from saved dict. This test should fail if .capa_problem() is ever
+        called, not result in error.
+        """
+        test_dict = self.pass_correct.todict()
+        new_test = ContentTest(**test_dict)
+
+        assert not (new_test.capa_problem.called)
+
 
     def test_partial_dict(self):
         """
@@ -416,9 +432,17 @@ class RematchingTestCase(ContentTestTestCase):
 
         # update the problem
         modulestore().update_item(self.problem.location, new_xml_string)
+
+        # this gets rid of the _draft nonsense, which makes hard-coded dicts easier.
         modulestore().publish(self.problem.location, 0)
 
         # force ContentTest to refetch module
+        # If we just set .module=None, then we force the ContentTest object
+        # to refetch, and thus effectively test the rematching capabilities.
+        # Hoerver, this only tests for when the COntentTest isn't being reloaded
+        # from the database, which would be most of the time.  Thus, we test with
+        # both.
+        self.test_model2 = ContentTest(**self.test_model.todict())
         self.test_model.module = None
 
     def test_matches(self):
@@ -455,7 +479,8 @@ class RematchingTestCase(ContentTestTestCase):
         self.update_problem_xml(self.new_xml)
 
         self.test_model.rematch_if_necessary()
-        self.assertEqual(new_dict, self.test_model.response_dict)
+        # self.assertEqual(new_dict, self.test_model.response_dict)
+        self.assertEqual(new_dict, self.test_model2.response_dict)
 
     def test_append(self):
         """
@@ -479,6 +504,7 @@ class RematchingTestCase(ContentTestTestCase):
         self.update_problem_xml(new_xml_string)
         self.test_model.rematch_if_necessary()
         self.assertEqual(two_responses_dict, self.test_model.response_dict)
+        self.assertEqual(two_responses_dict, self.test_model2.response_dict)
 
     def test_insert(self):
         """
@@ -616,6 +642,33 @@ class RematchingTestCase(ContentTestTestCase):
         self.update_problem_xml(new_xml_string)
         self.test_model.rematch_if_necessary()
         self.assertEqual(two_responses_dict, self.test_model.response_dict)
+
+    def test_change_ids(self):
+        """
+        While getting rid of the _draft nonsense made it easier to write
+        the tests, we still need to make sure that that doesn't break things
+        """
+
+        # store the old dict
+        old_dict = self.pass_correct.response_dict
+
+        # update the problem with same xml that it already has
+        # This should make all the id's contain _draft
+        xml = self.problem.data
+        modulestore().update_item(self.problem.location, xml)
+
+        new_model = ContentTest(**self.pass_correct.todict())
+        new_model.run()
+
+        # assert that the values haven't changed
+        self.assertItemsEqual(old_dict.values(), new_model.response_dict.values())
+
+        # assert that the dicts themselves are different, since if they are the
+        # same, than this test is not testing what it means to.
+        self.assertNotEqual(old_dict, new_model.response_dict)
+
+        # assert that it still passes
+        self.assertEqual(self.VERDICT_PASS, new_model.verdict)
 
 
 class HelperFunctionsTestCase(TestCase):
