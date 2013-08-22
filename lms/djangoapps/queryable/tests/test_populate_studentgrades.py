@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from student.tests.factories import UserFactory as StudentUserFactory
 from courseware.tests.factories import StudentModuleFactory
 
 from queryable.models import CourseGrade, AssignmentTypeGrade, AssignmentGrade
@@ -222,3 +223,80 @@ class TestPopulateStudentGradesStudentDidProblems(TestCase):
 
         problem_set = ['cat_1_problem_2']
         self.assertFalse(populate_studentgrades.student_did_problems(self.student_problems, problem_set))
+
+
+class TestPopulateStudentGradesStoreAssignmentGradeIfNeed(TestCase):
+    """
+    Tests the helper fuction store_assignment_grade_if_need in the populate_studentgrades custom command
+    """
+
+    def setUp(self):
+        self.student = StudentUserFactory()
+        self.course_id = 'test/test/test'
+        self.label = 'HW 01'
+        self.percent = 1.0
+        self.assignment_grade = AssignmentGrade(
+            user=self.student,
+            course_id=self.course_id,
+            label=self.label,
+            percent=self.percent,
+        )
+        self.assignment_grade.save()
+
+
+    def test_new_assignment_grade_store(self):
+        """
+        Test the function both stores the new assignment grade and returns True meaning that it had
+        """
+
+        self.assertEqual(len(AssignmentGrade.objects.filter(course_id__exact=self.course_id)),1)
+        return_value = populate_studentgrades.store_assignment_grade_if_need(
+            self.student, self.course_id, 'Foo 01', 1.0
+        )
+        
+        self.assertTrue(return_value)
+        self.assertEqual(len(AssignmentGrade.objects.filter(course_id__exact=self.course_id)),2)
+
+
+    def test_difference_percent_store(self):
+        """
+        Test updates the percent value when it is different
+        """
+
+        new_percent = self.percent-0.1
+        return_value = populate_studentgrades.store_assignment_grade_if_need(
+            self.student, self.course_id, self.label, new_percent
+        )
+        
+        self.assertTrue(return_value)
+
+        assignment_grades = AssignmentGrade.objects.filter(
+            course_id__exact=self.course_id,
+            user=self.student,
+            label=self.label,
+        )
+        self.assertEqual(len(assignment_grades),1)
+        self.assertEqual(assignment_grades[0].percent, new_percent)
+
+
+    def test_same_percent_no_store(self):
+        """
+        Test does not touch row if the row exists and the precent is not different
+        """
+        updated_time = self.assignment_grade.updated
+
+        return_value = populate_studentgrades.store_assignment_grade_if_need(
+            self.student, self.course_id, self.label, self.percent
+        )
+
+        self.assertFalse(return_value)
+
+        assignment_grades = AssignmentGrade.objects.filter(
+            course_id__exact=self.course_id,
+            user=self.student,
+            label=self.label,
+        )
+        self.assertEqual(len(assignment_grades),1)
+        self.assertEqual(assignment_grades[0].percent, self.percent)
+        self.assertEqual(assignment_grades[0].updated, updated_time)
+
