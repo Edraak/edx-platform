@@ -19,15 +19,15 @@ def get_assignment_to_problem_map(course_id):
             subsection_metadata = own_metadata(subsection)
             if ('graded' in subsection_metadata) and subsection_metadata['graded']:
                 category = subsection_metadata['format']
+                if category not in assignment_problems_map:
+                    assignment_problems_map[category] = []
+                    
                 problems = []
                 for unit in subsection.get_children():
                     for child in unit.get_children():
                         if child.location.category == 'problem':
                             problems.append(child.location.url())
                 
-                if category not in assignment_problems_map:
-                    assignment_problems_map[category] = []
-                    
                 assignment_problems_map[category].append(problems)
 
     return assignment_problems_map

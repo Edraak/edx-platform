@@ -72,7 +72,8 @@ class TestUtilGetAssignemntToProblemMap(TestCase):
 
         subsection = ItemFactory.create(
             parent_location=section.location.url(),
-            category="sequential")
+            category="sequential",
+        )
         subsection_metadata = own_metadata(subsection)
         subsection_metadata['graded'] = True
         subsection_metadata['format'] = "Homework"
@@ -80,14 +81,17 @@ class TestUtilGetAssignemntToProblemMap(TestCase):
 
         unit = ItemFactory.create(
             parent_location=subsection.location.url(),
-            category="vertical")
+            category="vertical",
+        )
 
         problem1 = ItemFactory.create(
             parent_location=unit.location.url(),
-            category="problem")
+            category="problem",
+        )
         problem2 = ItemFactory.create(
             parent_location=unit.location.url(),
-            category="problem")
+            category="problem",
+        )
 
         problems_map = util.get_assignment_to_problem_map(self.course.id)
 
