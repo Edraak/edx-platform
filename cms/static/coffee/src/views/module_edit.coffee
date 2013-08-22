@@ -13,6 +13,7 @@ class CMS.Views.ModuleEdit extends Backbone.View
     "click .mode a": 'clickModeButton'
     "click .test-summary .remove-test": 'removeTest' 
     "click .problem-tester .run-button": 'runTests'
+    "click .test-form .test-form-submit": 'createTest'
 
   initialize: ->
     @onDelete = @options.onDelete
@@ -174,20 +175,52 @@ class CMS.Views.ModuleEdit extends Backbone.View
     @$el.find('.wrapper-comp-settings').addClass('is-active')
     @$el.find('#settings-mode').find("a").addClass('is-set')
 
+  refetchTests: (loc) =>
+    console.log(@module)
+    $.ajax '/test_problem/',
+      data: {location: loc},
+      success: (resp_data) =>
+        @$el.find('.problem-tester').html(resp_data['html'])
+
+
   removeTest: (event) ->
     event.preventDefault()
     console.log($(event.currentTarget).attr('id_to_delete'))
     $(event.currentTarget.parentElement).remove()
-    $.delete "/test_problem/", {
+    loc = $(event.currentTarget).attr('location')
+    id = $(event.currentTarget).attr('id_to_delete')
+    $.ajax "/test_problem/?location="+loc+'&id_to_delete='+id,
+        type: 'DELETE',
+        data: {
         location: $(event.currentTarget).attr('location')
         id_to_delete: $(event.currentTarget).attr('id_to_delete')
         }
 
-  runTests: (event) ->
+  runTests: (event) =>
     event.preventDefault()
     console.log($(event.currentTarget).attr('location'))
-    $.post "/test_problem/", {
-        location: $(event.currentTarget).attr('location')
+    loc = $(event.currentTarget).attr('location')
+    $.ajax "/test_problem/",
+        async: false 
+        type: 'POST'
+        data: {
+        location: loc
         run: 'You betcha!'
         }
-        
+    
+    @refetchTests(loc)
+    
+  createTest: (event) ->
+    event.preventDefault()
+    data = $(event.currentTarget.parentElement).serializeArray()
+    for element in data
+      console.log(element)
+      if element['name'] == 'location'
+        location = element['value']
+        console.log(element['value'])
+    $.ajax "/test_problem/",
+      async: false
+      type: 'POST'
+      data: $(event.currentTarget.parentElement).serialize(),
+
+    @refetchTests(location)

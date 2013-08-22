@@ -17,6 +17,7 @@ from contentstore.views.access import has_access
 from mitxmako.shortcuts import render_to_string
 from lxml import etree
 from copy import deepcopy
+import json
 
 # supported response types
 RESPONSE_TYPES = ['customresponse']
@@ -72,7 +73,7 @@ def problem_test(request):
 
     if request.method == 'GET':
         html = testing_summary(request, descriptor)
-        return HttpResponse('{"html": '+html+'}')
+        return HttpResponse(json.dumps({'html': html}))
 
     elif request.method == "POST":
         post = request.POST
