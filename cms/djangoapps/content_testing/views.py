@@ -71,7 +71,6 @@ def problem_test(request):
     descriptor = modulestore().get_item(location)
 
     if request.method == 'GET':
-
         html = testing_summary(request, descriptor)
         return HttpResponse('{"html": '+html+'}')
 
@@ -146,11 +145,14 @@ def add_contenttest_to_descriptor(descriptor, test_dict):
     # give it an ID one more than the previous one, if there are
     # previou tests
     if tests:
-        new_id = tests[0]['id']+1
+        new_id = tests[-1]['id']+1
     else:
         new_id = 0
 
     test_dict['id'] = new_id
+
+    # we need to instantiate before saving so rematching will work
+    test_dict = ContentTest(**test_dict).todict()
 
     # add it to the descriptor
     tests.append(test_dict)
@@ -165,7 +167,7 @@ def instantiate_tests(descriptor):
     """
 
     test_dicts = descriptor.tests
-    import nose; nose.tools.set_trace()
+
     # instantiate preview module (so each test doesn't need to indevidually)
     module = ContentTest.construct_preview_module(descriptor.location, descriptor)
     tests = [ContentTest(**dict(test_dict, module=module)) for test_dict in test_dicts]

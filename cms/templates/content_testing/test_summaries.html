@@ -1,9 +1,10 @@
 <ul class="test-summaries">
 % for should_be in summaries:
+${should_be}
   <li class="test-summary" id="${should_be}">
     ${summaries[should_be]}
   </li>
 % endfor
 </ul>
 
-<a href="#"  value="Run Tests">Run Tests</a>
+<a href="#"  value="Run Tests" class="run-button">Run Tests</a>

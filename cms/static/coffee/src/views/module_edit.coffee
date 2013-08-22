@@ -11,6 +11,7 @@ class CMS.Views.ModuleEdit extends Backbone.View
     "click .component-actions .edit-button": 'clickEditButton'
     "click .component-actions .delete-button": 'onDelete'
     "click .mode a": 'clickModeButton'
+    "click .test-summary .remove-test": 'removeTest' 
 
   initialize: ->
     @onDelete = @options.onDelete
@@ -171,3 +172,8 @@ class CMS.Views.ModuleEdit extends Backbone.View
     editorModeButtonParent.removeClass('active-mode')
     @$el.find('.wrapper-comp-settings').addClass('is-active')
     @$el.find('#settings-mode').find("a").addClass('is-set')
+
+  removeTest: (event) ->
+    event.preventDefault()
+    console.log($(event.currentTarget).attr('id_to_delete'))
+    $(event.currentTarget.parentElement).remove()
