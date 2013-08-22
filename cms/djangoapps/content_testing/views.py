@@ -300,7 +300,8 @@ def response_summary(response_test, msg):
         context = {
             'msg': msg,
             'answers': answers,
-            'id': response_test.content_test.id
+            'id': response_test.content_test.id,
+            'location': response_test.content_test.location
         }
 
         return etree.XML(render_to_string('content_testing/response_summary.html', context))

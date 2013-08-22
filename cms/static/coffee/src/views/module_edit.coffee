@@ -178,7 +178,16 @@ class CMS.Views.ModuleEdit extends Backbone.View
     event.preventDefault()
     console.log($(event.currentTarget).attr('id_to_delete'))
     $(event.currentTarget.parentElement).remove()
+    $.delete "/test_problem/", {
+        location: $(event.currentTarget).attr('location')
+        id_to_delete: $(event.currentTarget).attr('id_to_delete')
+        }
 
   runTests: (event) ->
     event.preventDefault()
     console.log($(event.currentTarget).attr('location'))
+    $.post "/test_problem/", {
+        location: $(event.currentTarget).attr('location')
+        run: 'You betcha!'
+        }
+        
