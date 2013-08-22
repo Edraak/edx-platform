@@ -260,6 +260,13 @@ if SEGMENT_IO_LMS_KEY:
 ########################## USER API ########################
 EDX_API_KEY = None
 
+########################## QUERYABLE TABLES ########################
+INSTALLED_APPS += ('queryable',)
+
+########################## CLASS DASHBOARD ########################
+INSTALLED_APPS += ('class_dashboard',)
+MITX_FEATURES['CLASS_DASHBOARD'] = True
+
 #####################################################################
 # Lastly, see if the developer has any local overrides.
 try:
@@ -268,9 +275,3 @@ except ImportError:
     pass
 
 
-########################## QUERYABLE TABLES ########################
-INSTALLED_APPS += ('queryable',)
-
-########################## CLASS DASHBOARD ########################
-INSTALLED_APPS += ('class_dashboard',)
-MITX_FEATURES['CLASS_DASHBOARD'] = True
