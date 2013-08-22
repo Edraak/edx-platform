@@ -204,3 +204,6 @@ PASSWORD_HASHERS = (
 
 import openid.oidutil
 openid.oidutil.log = lambda message, level=0: None
+
+### QUERYABLE APP ###
+INSTALLED_APPS += ('queryable',)

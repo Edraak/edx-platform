@@ -26,6 +26,12 @@ from queryable.models import Log, CourseGrade, AssignmentTypeGrade, AssignmentGr
 from queryable.util import get_assignment_to_problem_map
 from queryable.util import approx_equal
 
+
+################## Helper Functions ##################
+def update_course_grade(course_grade, gradeset):
+    return (not approx_equal(course_grade.percent, gradeset['percent'])) or (course_grade.grade != gradeset['grade'])
+
+
 class Command(BaseCommand):
     help = "Populates the queryable.StudentGrades table.\n"
     help += "Usage: populate_studentgrades course_id\n"
@@ -121,9 +127,10 @@ class Command(BaseCommand):
 
             # Get or create the overall grade for this student, save if needed
             course_grade, created = CourseGrade.objects.get_or_create(user=student, course_id=course_id)
-            
-            if created or not approx_equal(course_grade.percent, gradeset['percent']) or \
-                    (course_grade.grade != gradeset['grade']):
+
+            # if created or not approx_equal(course_grade.percent, gradeset['percent']) or \
+            #         (course_grade.grade != gradeset['grade']):
+            if created or update_course_grade(course_grade, gradeset):
                 course_grade.percent = gradeset['percent']
                 course_grade.grade = gradeset['grade']
                 course_grade.save()

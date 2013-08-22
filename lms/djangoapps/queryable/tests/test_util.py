@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from mock import Mock, patch
-
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.inheritance import own_metadata
@@ -10,14 +8,15 @@ from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
 
 from queryable import util
 
-class TestUtil(TestCase):
+
+class TestUtilApproxEqual(TestCase):
     """
-    Check the various utility functions.
+    Check the approx_equal function
     """
 
-    def test_approx_equal(self):
+    def test_default_tolerance(self):
         """
-        Check that function testing for approximate equality is working.
+        Check that function with default tolerance
         """
         self.assertTrue(util.approx_equal(1.00001,1.0))
         self.assertTrue(util.approx_equal(1.0,1.00001))
@@ -25,11 +24,24 @@ class TestUtil(TestCase):
         self.assertFalse(util.approx_equal(1.0,2.0))
         self.assertFalse(util.approx_equal(1.0,1.0002))
 
+
+    def test_smaller_default_tolerance(self):
+        """
+        Set tolerance smaller than default and check if still correct
+        """
+        
         self.assertTrue(util.approx_equal(1.0,1.0,1))
         self.assertTrue(util.approx_equal(1.0,1.000001,0.000001))
 
+
+    def test_bigger_default_tolerance(self):
+        """
+        Set tolerance bigger than default and check if still correct
+        """
+
         self.assertFalse(util.approx_equal(1.0,2.0,0.75))
         self.assertFalse(util.approx_equal(2.0,1.0,0.75))
+
 
 @override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
 class TestUtilGetAssignemntToProblemMap(TestCase):
