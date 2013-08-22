@@ -282,6 +282,7 @@ class Command(BaseCommand):
         c_updated_students = 0
         for student in students:
             updated = False
+            student_problems = None
 
             # Create dummy request and set its user and session
             request = DummyRequest()
@@ -291,18 +292,7 @@ class Command(BaseCommand):
             # Call grade to get the gradeset
             gradeset = grades.grade(student, request, course, keep_raw_scores=False)
 
-            # Get or create the overall grade for this student, save if needed
-            course_grade, created = CourseGrade.objects.get_or_create(user=student, course_id=course_id)
-
-            # if created or not approx_equal(course_grade.percent, gradeset['percent']) or \
-            #         (course_grade.grade != gradeset['grade']):
-            if created or update_course_grade(course_grade, gradeset):
-                course_grade.percent = gradeset['percent']
-                course_grade.grade = gradeset['grade']
-                course_grade.save()
-                updated = True
-
-            student_problems = None
+            updated = store_course_grade_if_need(student, course_id, gradeset)
 
             # Iterate through the section_breakdown
             for section in gradeset['section_breakdown']:
