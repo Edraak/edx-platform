@@ -29,9 +29,91 @@ from queryable.util import approx_equal
 
 ################## Helper Functions ##################
 def update_course_grade(course_grade, gradeset):
+    """
+    Returns true if the course grade needs to be updated.
+    """
     return (not approx_equal(course_grade.percent, gradeset['percent'])) or (course_grade.grade != gradeset['grade'])
 
 
+def get_assignment_index(assignment):
+    """
+    Returns the assignment's index, -1 if an index can't be found.
+
+    `assignment` is a string formatted like this "HW 02" and this function returns 2 in this case.
+
+    The string is the 'label' for each section in the 'section_breakdown' of the dictionary returned by the grades.grade
+    function.
+    """
+
+    m = re.search('.* (\d+)', assignment)
+    index = -1
+    if m:
+        index = int(m.group(1))-1
+
+    return index
+
+
+def assignment_exists_and_has_problems(assignment_problems_map, category, index):
+    """
+    Returns True if the assignment for the category and index exists and has problems
+
+    `assignment_problems_map` a dictionary returned by get_assignment_to_problem_map(course_id)
+
+    `category` string specifying the category or assignment type for this assignment
+
+    `index` zero-based indexing into the array of assignments for that category
+    """
+
+    if index < 0:
+        return False
+
+    if category not in assignment_problems_map:
+        return False
+
+    if index >= len(assignment_problems_map[category]):
+        return False
+
+    return len(assignment_problems_map[category][index]) > 0
+
+
+def get_student_problems(course_id, student):
+    """
+    Returns an array of problem ids that the student has answered for this course.
+
+    `course_id` the course ID for the course interested in
+
+    `student` the student want to get his/her problems
+
+    Queries the database to get the problems the student has submitted an answer to for the course specified.
+    """
+
+    query = StudentModule.objects.filter(
+        course_id__exact=course_id,
+        student=student,
+        grade__isnull=False,
+        module_type__exact='problem',
+    ).values('module_state_key').distinct()
+    
+    student_problems = []
+    for problem in query:
+        student_problems.append(problem['module_state_key'])
+
+    return student_problems
+
+
+def student_did_problems(student_problems, problem_set):
+    """
+    Returns true if `student_problems` and `problem_set` share problems.
+
+    `student_problems` array of problem ids the student has done
+
+    `problem_set` array of problem ids
+    """
+
+    return (set(student_problems) & set(problem_set))
+
+
+################## Actual Command ##################
 class Command(BaseCommand):
     help = "Populates the queryable.StudentGrades table.\n"
     help += "Usage: populate_studentgrades course_id\n"
@@ -160,35 +242,25 @@ class Command(BaseCommand):
                     # Check for all three possibilities, only store for #3
                     if section['percent'] == 0:
                         # Find which assignment this is for this type/category
-                        m = re.search('.* (\d+)', section['label'])
-                        index = -1
-                        if m:
-                            index = int(m.group(1))-1
-                        else:
+                        index = get_assignment_index(section['label'])
+                        if index < 0:
                             print "WARNING: Can't find index for the following section, skipping"
                             print section
-                            store = False # If there is no number, better to just not store it
-
-                        # Check to see if the assignment hasn't been created yet or has no problems (#1 & #2)
-                        if (index < 0) or (index >= len(assignment_problems_map[section['category']])) or \
-                                (len(assignment_problems_map[section['category']][index]) == 0):
-                            store = False
+                            store = False # If there is no number, better to just not store this assignment
                         else:
-
-                            # Get problems student has done, only do this database call if needed
-                            if student_problems == None:
-                                query = StudentModule.objects.filter(course_id__exact=course_id,
-                                                                     grade__isnull=False,
-                                                                     module_type__exact="problem",
-                                                                     student=student
-                                                                     ).values('module_state_key').distinct()
-
-                                student_problems = []
-                                for problem in query:
-                                    student_problems.append(problem['module_state_key'])
-
-                            if (not (set(assignment_problems_map[section['category']][index]) & set(student_problems))):
+                            if not assignment_exists_and_has_problems(assignment_problems_map, section['category'], index):
                                 store = False
+                            else:
+                                # Get problems student has done, only do this database call if needed
+                                if student_problems == None:
+                                    student_problems = get_student_problems(course_id, student)
+                                    
+                                    curr_assignment_problems = assignment_problems_map[section['category']][index]
+                                    
+                                if (not student_did_problems(student_problems, curr_assignment_problems)):
+                                    store = False
+
+
 
                     if store:
                         assign_grade, created = AssignmentGrade.objects.get_or_create(user=student,
