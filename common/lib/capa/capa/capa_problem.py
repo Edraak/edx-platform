@@ -322,7 +322,6 @@ class LoncapaProblem(object):
         """
         # old CorrectMap
         oldcmap = self.correct_map
-
         # start new with empty CorrectMap
         newcmap = CorrectMap()
 
@@ -385,7 +384,12 @@ class LoncapaProblem(object):
         '''
         Main method called externally to get the HTML to be rendered for this capa Problem.
         '''
-        html = contextualize_text(etree.tostring(self._extract_html(self.tree)), self.context)
+        tree = self._extract_html(self.tree)
+        html = contextualize_text(etree.tostring(tree), self.context)
+        # Detect whether we are waiting on any external responses.
+        if any(fielddata['correctness'] == 'incomplete' for fielddata in self.correct_map.get_dict().itervalues()):
+            html += '''<span class="processing"><span class="sr">Status: </span>
+                    Queued<span style="display:none;" class="xqueue">1</span></span>'''
         return html
 
     def handle_input_ajax(self, data):
@@ -629,7 +633,6 @@ class LoncapaProblem(object):
 
         tree.text = problemtree.text
         tree.tail = problemtree.tail
-
         return tree
 
     def _preprocess_problem(self, tree):  # private

@@ -221,7 +221,6 @@ class LoncapaResponse(object):
         # Add a <div> for the message at the end of the response
         if response_msg:
             tree.append(self._render_response_msg_html(response_msg))
-
         return tree
 
     def evaluate_answers(self, student_answers, old_cmap):
@@ -1091,7 +1090,7 @@ class NewExternalResponse(LoncapaResponse):
             #      through inputtypes.textbox and .filesubmission to inform the
             #      browser to poll the LMS
             cmap.set(answer_id, queuestate=queuestate,
-                     correctness='incomplete', msg=msg)
+                     correctness='incomplete')
 
         return cmap
 
@@ -1113,7 +1112,7 @@ class NewExternalResponse(LoncapaResponse):
                 continue
             old_cmap.set(
                 inputfield.get('id'),
-                npoints=reply[name]['score'],
+                npoints=int(reply[name]['score']),
                 correctness=reply[name]['correct'],
                 msg=reply[name]['msg'],
                 queuestate=None,

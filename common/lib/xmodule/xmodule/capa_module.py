@@ -498,7 +498,6 @@ class CapaModule(CapaFields, XModule):
 
         try:
             html = self.lcp.get_html()
-
         # If we cannot construct the problem HTML,
         # then generate an error message instead.
         except Exception as err:
@@ -542,7 +541,6 @@ class CapaModule(CapaFields, XModule):
 
         if self.system.replace_jump_to_id_urls:
             html = self.system.replace_jump_to_id_urls(html)
-
         return html
 
     def handle_ajax(self, dispatch, data):
