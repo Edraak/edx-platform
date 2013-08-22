@@ -113,6 +113,61 @@ def student_did_problems(student_problems, problem_set):
     return (set(student_problems) & set(problem_set))
 
 
+def store_course_grade_if_need(student, course_id, gradeset):
+    """
+    Stores the course grade for the student and course if needed, returns True if it was stored
+
+    `student` is a User object representing the student
+
+    `course_id` the course's ID
+
+    `gradeset` the values returned by grades.grade
+
+    The course grade is stored if it has never been stored before (i.e. this is a new row in the database) or
+    update_course_grade is true.
+    """
+
+    course_grade, created = CourseGrade.objects.get_or_create(user=student, course_id=course_id)
+
+    if created or update_course_grade(course_grade, gradeset):
+        course_grade.percent = gradeset['percent']
+        course_grade.grade = gradeset['grade']
+        course_grade.save()
+        return True
+
+    return False
+
+
+def store_assignment_type_grade_if_need(student, course_id, category, percent):
+    """
+    Stores the assignment type grade for the student and course if needed, returns True if it was stored
+
+    `student` is a User object representing the student
+
+    `course_id` the course's ID
+
+    `category` the category for the assignment type, found in the return value of the grades.grade function
+
+    `percent` the percent grade the student received for this assignment
+
+    The assignment type grade is stored if it has never been stored before (i.e. this is a new row in the database) or
+    if the percent value is different than what is currently in the database.
+    """
+
+    assign_type_grade, created = AssignmentTypeGrade.objects.get_or_create(
+        user=student,
+        course_id=course_id,
+        category=category,
+    )
+
+    if created or not approx_equal(assign_type_grade.percent, percent):
+        assign_type_grade.percent = percent
+        assign_type_grade.save()
+        return True
+
+    return False
+
+
 def store_assignment_grade_if_need(student, course_id, label, percent):
     """
     Stores the assignment grade for the student and course if needed, returns True if it was stored
@@ -251,25 +306,23 @@ class Command(BaseCommand):
 
             # Iterate through the section_breakdown
             for section in gradeset['section_breakdown']:
-                # If the dict has 'prominent' True this is at the assignment type level, store it if need
+                # If the dict has 'prominent' and it's True this is at the assignment type level, store it if need
                 if ('prominent' in section) and section['prominent']:
-                    assign_type_grade, created = AssignmentTypeGrade.objects.get_or_create(user=student,
-                                                                                           course_id=course_id,
-                                                                                           category=section['category'])
-                    if created or not approx_equal(assign_type_grade.percent, section['percent']):
-                        assign_type_grade.percent = section['percent']
-                        assign_type_grade.save()
-                        updated = True
+                    updated = store_assignment_type_grade_if_need(
+                        student, course_id, section['category'], section['percent']
+                    )
 
                 else: #If no 'prominent' or it's False this is at the assignment level
                     store = False
 
                     # If the percent is 0, there are three possibilities:
                     # 1. There are no problems for that assignment yet -> skip section
-                    # 2. The student hasn't submitted an answer to any of the problems for that assignment -> skip section
+                    # 2. The student hasn't submitted an answer to any problem for that assignment -> skip section
                     # 3. The student has submitted answers and got zero -> record
                     # Only store for #3
-                    if section['percent'] == 0:
+                    if section['percent'] > 0:
+                        store = True
+                    else:
                         # Find which assignment this is for this type/category
                         index = get_assignment_index(section['label'])
                         if index < 0:
@@ -286,8 +339,6 @@ class Command(BaseCommand):
                                     
                                 if student_did_problems(student_problems, curr_assignment_problems):
                                     store = True
-
-
 
                     if store:
                         updated = store_assignment_grade_if_need(
