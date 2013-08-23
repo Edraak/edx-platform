@@ -351,6 +351,9 @@ def get_d3_section_grade_distribution(course_id, section):
     distribution for those problems. Finally returns an object formated the way the d3_stacked_bar_graph.js expects its
     data object to be in.
 
+    If this is requested multiple times quickly for the same course, it is better to call
+    get_d3_problem_grade_distribution and pick out the sections of interest.
+
     Returns an array of dicts with the following keys (taken from d3_stacked_bar_graph.js's documentation)
       'xValue' - Corresponding value for the x-axis
       'stackData' - Array of objects with key, value pairs that represent a bar:
