@@ -172,12 +172,18 @@ def forum_form_discussion(request, course_id):
     course = get_course_with_access(request.user, course_id, 'load_forum')
     category_map = utils.get_discussion_category_map(course)
 
+    #TEMPORARY TO HAND OVER TO MARCO FOR DESIGN
+    return render_to_response('discussion/maintenance.html', {})
+    
     try:
         unsafethreads, query_params = get_threads(request, course_id)   # This might process a search query
         threads = [utils.safe_content(thread) for thread in unsafethreads]
     except cc.utils.CommentClientMaintenanceError:
         log.warning("Forum is in maintenance mode")
         return render_to_response('discussion/maintenance.html', {})
+    except cc.utils.CommentClientTimeoutError:
+        log.warning("Forum has timed out")
+        return render_to_response('discussion/timeout.html', {})
     except (cc.utils.CommentClientError, cc.utils.CommentClientUnknownError) as err:
         log.error("Error loading forum discussion threads: %s", str(err))
         raise Http404
