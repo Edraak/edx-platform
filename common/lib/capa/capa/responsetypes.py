@@ -1047,7 +1047,7 @@ class NewExternalResponse(LoncapaResponse):
             'anonymous_student_id': self.system.anonymous_student_id,
             'submission_time': qtime,
         }
-        contents.update({'student_info': json.dumps(student_info)})
+        contents.update({'student_info': student_info})
         answers = {}
 
         # Get resposne from each part of this problem.

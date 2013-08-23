@@ -668,6 +668,41 @@ class StringResponseTest(ResponseTest):
         self.assertEqual(hint, self._get_random_number_result(problem.seed))
 
 
+class NewExternalResponseTest(ResponseTest):
+    from capa.tests.response_xml_factory import NewExternalResponseXMLFactory
+    xml_factory_class = NewExternalResponseXMLFactory
+
+    def setUp(self):
+        super(NewExternalResponseTest, self).setUp()
+        self.problem = self.build_problem(
+            input_names=['blank1', 'blank2'],
+            queuename='my_queue'
+        )
+
+    def test_submit(self):
+        """
+        Test submitting an answer to this responsetype.
+        """
+        # For some reason, the id's of the blanks are always 1_2_1 and 1_2_2.
+        self.problem.grade_answers({
+            '1_2_1': 'an_answer',
+            '1_2_2': 'another_answer',
+        })
+        # Get the last call to send_to_queue.  Get the kwargs of the last call.
+        kwargs = self.problem.system.xqueue['interface'].send_to_queue.call_args_list[-1][1]
+        body = json.loads(kwargs['body'])
+        self.assertEquals(body['student_info']['anonymous_student_id'], 'student')
+        expected_answers = {
+            'blank1': {
+                'student_response': 'an_answer'
+            },
+            'blank2': {
+                'student_response': 'another_answer'
+            }
+        }
+        self.assertEquals(body['answers'], expected_answers)
+
+
 class CodeResponseTest(ResponseTest):
     from capa.tests.response_xml_factory import CodeResponseXMLFactory
     xml_factory_class = CodeResponseXMLFactory

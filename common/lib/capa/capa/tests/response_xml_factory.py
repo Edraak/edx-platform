@@ -303,6 +303,35 @@ class SchematicResponseXMLFactory(ResponseXMLFactory):
         return etree.Element("schematic")
 
 
+class NewExternalResponseXMLFactory(ResponseXMLFactory):
+    """
+    Factory for <externalresponse2> XML elements.
+    """
+    def create_response_element(self, **kwargs):
+        """
+        Makes the <externalresponse queuename="blah"> xml element.
+        Mandatory kwarg:
+        'input_names' - A list of strings, each representing the name of an input.
+
+        Optional kwarg:
+        'queuename' - The name of the queue that this response talks to.
+            You should specify this yourself if you plan to use it - don't count
+            on the default queuename.
+        """
+        queuename = kwargs.get('queuename', 'test_queue')
+        response_element = etree.Element('externalresponse2', queuename=queuename)
+        for input_name in kwargs['input_names']:
+            inputfield = etree.Element('filesubmission', name=input_name)
+            response_element.append(inputfield)
+        return response_element
+
+    def create_input_element(self, **kwargs):
+        """
+        create_response_element takes care of input arguments, so this returns None.
+        """
+        return None
+
+
 class CodeResponseXMLFactory(ResponseXMLFactory):
     """ Factory for creating <coderesponse> XML trees """
 
