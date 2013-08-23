@@ -1102,6 +1102,7 @@ class NewExternalResponse(LoncapaResponse):
         if not self._validate_grader_reply(score_msg):
             old_cmap.set(self.answer_ids[0], msg='Error in grader.  Please contact course staff.')
             return old_cmap
+
         reply = json.loads(score_msg)
 
         # Loop through all inputs, and see if any of them were graded.

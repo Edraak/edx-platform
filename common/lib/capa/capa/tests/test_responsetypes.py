@@ -678,16 +678,20 @@ class NewExternalResponseTest(ResponseTest):
             input_names=['blank1', 'blank2'],
             queuename='my_queue'
         )
-
-    def test_submit(self):
-        """
-        Test submitting an answer to this responsetype.
-        """
+        # Apparently, other tests monkey-patch this return value to something else.
+        # Bring it back to the original value.
+        self.problem.system.xqueue['interface'].send_to_queue.return_value = (0, 'Success!')
         # For some reason, the id's of the blanks are always 1_2_1 and 1_2_2.
         self.problem.grade_answers({
             '1_2_1': 'an_answer',
             '1_2_2': 'another_answer',
         })
+
+    def test_submit(self):
+        """
+        Test submitting an answer to this responsetype.
+        Also make sure the problem knows that it is queued.
+        """
         # Get the last call to send_to_queue.  Get the kwargs of the last call.
         kwargs = self.problem.system.xqueue['interface'].send_to_queue.call_args_list[-1][1]
         body = json.loads(kwargs['body'])
@@ -701,6 +705,67 @@ class NewExternalResponseTest(ResponseTest):
             }
         }
         self.assertEquals(body['answers'], expected_answers)
+        self.assertTrue(self.problem.is_queued())
+
+    def test_response_arrival(self):
+        """
+        Tests what happens when the external grader responds.
+        """
+        score_msg = {
+            'blank1': {
+                'correct': 'correct',
+                'score': 50,
+                'msg': 'Nice job!'
+            },
+            'blank2': {
+                'correct': 'incorrect',
+                'score': 2,
+                'msg': 'Try again.'
+            }
+        }
+        score_msg = json.dumps(score_msg)
+        self.problem.update_score(score_msg, 'fake queuekey')
+        self.assertFalse(self.problem.is_queued())
+        expected_correct_map = {
+            '1_2_2': {
+                'hint': '', 
+                'hintmode': None, 
+                'correctness': u'incorrect', 
+                'msg': u'Try again.', 
+                'npoints': 2, 
+                'queuestate': None
+            }, 
+            '1_2_1': {
+                'hint': '', 
+                'hintmode': None, 
+                'correctness': u'correct', 
+                'msg': u'Nice job!', 
+                'npoints': 50, 
+                'queuestate': None
+            }
+        }
+        self.assertEquals(self.problem.correct_map.get_dict(), expected_correct_map)
+        self.assertFalse(self.problem.is_queued())
+
+    def test_bad_response(self):
+        """
+        Make sure that we can gracefully handle bad responses from the server.
+        """
+        bad_score_msgs = [
+            {
+                'blank1': {
+                    'correct': 'correct'
+                },
+                'blank2': {
+                    'score': 5
+                }
+            },
+            'blah blah.',
+        ]
+        for msg in bad_score_msgs:
+            msg = json.dumps(msg)
+            self.problem.update_score(msg, 'fake queuekey')
+            self.assertTrue(self.problem.is_queued())
 
 
 class CodeResponseTest(ResponseTest):
