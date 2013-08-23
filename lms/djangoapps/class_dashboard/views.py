@@ -20,7 +20,6 @@ def all_problem_attempt_distribution(request, course_id):
 
     Returns the format in dashboard_data.get_d3_problem_attempt_distribution
     """
-
     json = {}
 
     # Only instructor for this particular course can request this information
@@ -42,8 +41,6 @@ def all_sequential_open_distribution(request, course_id):
 
     Returns the format in dashboard_data.get_d3_sequential_open_distribution
     """
-
-
     json = {}
 
     # Only instructor for this particular course can request this information
@@ -65,7 +62,6 @@ def all_problem_grade_distribution(request, course_id):
 
     Returns the format in dashboard_data.get_d3_problem_grade_distribution
     """
-
     json = {}
 
     # Only instructor for this particular course can request this information
@@ -92,7 +88,6 @@ def section_problem_grade_distribution(request, course_id, section):
     If this is requested multiple times quickly for the same course, it is better to call all_problem_grade_distribution
     and pick out the sections of interest.
     """
-
     json = {}
 
     # Only instructor for this particular course can request this information
