@@ -16,40 +16,27 @@ from queryable.models import Log, StudentModuleExpand
 class TestPopulateStudentModuleExpand(TestCase):
 
     def setUp(self):
+        self.command = 'populate_studentmoduleexpand'
         self.script_id = "studentmoduleexpand"
         self.course_id = 'test/test/test'
 
-    def test_show_help(self):
+
+    def test_missing_input(self):
         """
-        If given incorrect input returns help text
+        Fails safely when not given enough input
         """
-
-        output = StringIO()
-        management.call_command('populate_studentmoduleexpand', stdout=output)
-        self.assertTrue("Usage" in output.getvalue())
-
-        out = BytesIO()
-
-        output.flush()
-        print "output:",output.getvalue()
-
-
-        management.call_command('populate_studentmoduleexpand', stdout=out)
-        out.seek(0)
-        out_str = ""
-        for line in out.readlines():
-            out_str += line
-
-        print "out_str", out_str
-
-        self.assertTrue("Usage" in out_str)
+        try:
+            management.call_command(self.command)
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
 
 
     def test_just_logs_if_empty_course(self):
         """
-        Does nothing if the course has nothing
+        If the course has nothing in it, just logs the run in the log table
         """
-        management.call_command('populate_studentmoduleexpand', self.course_id)
+        management.call_command(self.command, self.course_id)
 
         self.assertEqual(len(Log.objects.filter(script_id__exact=self.script_id, course_id__exact=self.course_id)), 1)
         self.assertEqual(len(StudentModuleExpand.objects.filter(course_id__exact=self.course_id)), 0)
@@ -69,7 +56,7 @@ class TestPopulateStudentModuleExpand(TestCase):
             grade=1,
             max_grade=1,
             state=json.dumps({'attempts':1}),
-            )
+        )
         
         # Create the log entry
         log = Log(script_id=self.script_id, course_id=self.course_id, created=datetime.now(UTC))
@@ -80,10 +67,11 @@ class TestPopulateStudentModuleExpand(TestCase):
             course_id=self.course_id,
             module_state_key=sm.module_state_key,
             student_module=sm,
-            attempts=0)
+            attempts=0,
+        )
 
         # Call command with the -f flag
-        management.call_command('populate_studentmoduleexpand', self.course_id, force=True)
+        management.call_command(self.command, self.course_id, force=True)
 
         # Check to see if new rows have been added
         self.assertEqual(len(Log.objects.filter(script_id__exact=self.script_id, course_id__exact=self.course_id)), 2)
@@ -102,7 +90,7 @@ class TestPopulateStudentModuleExpand(TestCase):
             grade=1,
             max_grade=1,
             state=json.dumps({'attempts':1}),
-            )
+        )
         
         # Create the log entry
         log = Log(script_id=self.script_id, course_id=self.course_id, created=datetime.now(UTC))
@@ -115,10 +103,10 @@ class TestPopulateStudentModuleExpand(TestCase):
             grade=1,
             max_grade=1,
             state=json.dumps({'attempts':1}),
-            )
+        )
         
         # Call command
-        management.call_command('populate_studentmoduleexpand', self.course_id)
+        management.call_command(self.command, self.course_id)
 
         # Check to see if new row has been added to log
         self.assertEqual(len(Log.objects.filter(script_id__exact=self.script_id, course_id__exact=self.course_id)), 2)
@@ -143,7 +131,7 @@ class TestPopulateStudentModuleExpand(TestCase):
             module_state_key=1,
             grade=1,
             max_grade=1,
-            )
+        )
         # Create a StudentModuleExpand
         sme1 = StudentModuleExpand(
             course_id=self.course_id,
@@ -151,7 +139,7 @@ class TestPopulateStudentModuleExpand(TestCase):
             module_state_key=sm1.module_state_key,
             student=sm1.student,
             attempts=0,
-            )
+        )
         sme1.save()
 
         # Touch the StudentModule row so it has a later modified time
@@ -166,7 +154,7 @@ class TestPopulateStudentModuleExpand(TestCase):
             grade=1,
             max_grade=1,
             state=json.dumps({'attempts':2}),
-            )
+        )
         # Create a StudentModuleExpand that has the same attempts value
         sme2 = StudentModuleExpand(
             course_id=self.course_id,
@@ -174,25 +162,25 @@ class TestPopulateStudentModuleExpand(TestCase):
             module_state_key=sm2.module_state_key,
             student=sm2.student,
             attempts=2,
-            )
+        )
         sme2.save()
 
         self.assertEqual(len(StudentModuleExpand.objects.filter(course_id__exact=self.course_id)), 2)
 
         # Call command
-        management.call_command('populate_studentmoduleexpand', self.course_id)
+        management.call_command(self.command, self.course_id)
 
         self.assertEqual(len(StudentModuleExpand.objects.filter(
                     course_id__exact=self.course_id, module_state_key__exact=sme1.module_state_key
-                    )), 1)
+                )), 1)
         self.assertEqual(len(StudentModuleExpand.objects.filter(
                     course_id__exact=self.course_id, module_state_key__exact=sme2.module_state_key
-                    )), 1)
+                )), 1)
 
         self.assertEqual(StudentModuleExpand.objects.filter(
                 course_id__exact=self.course_id, module_state_key__exact=sme1.module_state_key
-                )[0].attempts, 1)
+            )[0].attempts, 1)
         self.assertEqual(StudentModuleExpand.objects.filter(
                 course_id__exact=self.course_id, module_state_key__exact=sme2.module_state_key
-                )[0].attempts, 2)
+            )[0].attempts, 2)
 

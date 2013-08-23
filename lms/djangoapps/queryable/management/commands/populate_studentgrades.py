@@ -22,9 +22,7 @@ from courseware.courses import get_course_by_id
 from courseware.models import StudentModule
 
 from queryable.models import Log, CourseGrade, AssignmentTypeGrade, AssignmentGrade
-
-from queryable.util import get_assignment_to_problem_map
-from queryable.util import approx_equal
+from queryable import util
 
 
 ################## Helper Functions ##################
@@ -32,7 +30,7 @@ def update_course_grade(course_grade, gradeset):
     """
     Returns true if the course grade needs to be updated.
     """
-    return (not approx_equal(course_grade.percent, gradeset['percent'])) or (course_grade.grade != gradeset['grade'])
+    return (not util.approx_equal(course_grade.percent, gradeset['percent'])) or (course_grade.grade != gradeset['grade'])
 
 
 def get_assignment_index(assignment):
@@ -160,7 +158,7 @@ def store_assignment_type_grade_if_need(student, course_id, category, percent):
         category=category,
     )
 
-    if created or not approx_equal(assign_type_grade.percent, percent):
+    if created or not util.approx_equal(assign_type_grade.percent, percent):
         assign_type_grade.percent = percent
         assign_type_grade.save()
         return True
@@ -190,7 +188,7 @@ def store_assignment_grade_if_need(student, course_id, label, percent):
         label=label,
     )
 
-    if created or not approx_equal(assign_grade.percent, percent):
+    if created or not util.approx_equal(assign_grade.percent, percent):
         assign_grade.percent = percent
         assign_grade.save()
         return True
@@ -222,7 +220,7 @@ class Command(BaseCommand):
             print self.help
             return
 
-        assignment_problems_map = get_assignment_to_problem_map(course_id)
+        assignment_problems_map = util.get_assignment_to_problem_map(course_id)
 
         print "--------------------------------------------------------------------------------"
         print "Populating queryable.StudentGrades table for course {0}".format(course_id)

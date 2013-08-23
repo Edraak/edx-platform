@@ -1,11 +1,21 @@
-from django.test import TestCase
+import json
+from datetime import datetime
+from pytz import UTC
 from mock import Mock, patch
 
-from student.tests.factories import UserFactory as StudentUserFactory
-from courseware.tests.factories import StudentModuleFactory
+from django.test import TestCase
+from django.test.utils import override_settings
+from django.core.management import call_command
 
-from queryable.models import CourseGrade, AssignmentTypeGrade, AssignmentGrade
+from courseware import grades
+from courseware.tests.factories import StudentModuleFactory
+from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
+from student.tests.factories import UserFactory as StudentUserFactory
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+
+from queryable.models import Log, CourseGrade, AssignmentTypeGrade, AssignmentGrade
 from queryable.management.commands import populate_studentgrades
+
 
 class TestPopulateStudentGradesUpdateCourseGrade(TestCase):
     """
@@ -458,4 +468,267 @@ class TestPopulateStudentGradesStoreAssignmentGradeIfNeed(TestCase):
         self.assertEqual(len(assignment_grades),1)
         self.assertEqual(assignment_grades[0].percent, self.percent)
         self.assertEqual(assignment_grades[0].updated, updated_time)
+
+
+@override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
+class TestPopulateStudentGradesCommand(TestCase):
+
+    def create_studentmodule(self):
+        """
+        Creates a StudentModule. This can't be in setUp because some functions can't have one in the database.
+        """
+        sm = StudentModuleFactory(
+            course_id=self.course.id,
+            module_type='problem',
+            grade=1,
+            max_grade=1,
+            state=json.dumps({'attempts':1}),
+        )
+
+
+    def create_log_entry(self):
+        """
+        Adds a queryable log entry to the database
+        """
+        log = Log(script_id=self.script_id, course_id=self.course.id, created=datetime.now(UTC))
+        log.save()
+
+
+    def setUp(self):
+        self.command = 'populate_studentgrades'
+        self.script_id = 'studentgrades'
+        self.course = CourseFactory.create()
+        self.category = 'Homework'
+        self.gradeset = {
+            'percent' : 1.0,
+            'grade' : 'A',
+            'section_breakdown' : [
+                {'category':self.category, 'label':'HW Avg', 'percent':1.0, 'prominent':True},
+                {'category':self.category, 'label':'HW 01', 'percent':1.0},
+            ],
+        }
+        # Make sure these are correct with the above gradeset
+        self.assignment_type_index = 0
+        self.assignment_index = 1
+
+
+    def test_missing_input(self):
+        """
+        Fails safely when not given enough input
+        """
+        try:
+            call_command(self.command)
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+
+    def test_just_logs_if_empty_course(self):
+        """
+        If the course has nothing in it, just logs the run in the log table.
+        """
+
+        call_command(self.command, self.course.id)
+
+        self.assertEqual(len(Log.objects.filter(script_id__exact=self.script_id, course_id__exact=self.course.id)), 1)
+        self.assertEqual(len(CourseGrade.objects.filter(course_id__exact=self.course.id)), 0)
+        self.assertEqual(len(AssignmentTypeGrade.objects.filter(course_id__exact=self.course.id)), 0)
+        self.assertEqual(len(AssignmentGrade.objects.filter(course_id__exact=self.course.id)), 0)
+
+
+    @patch('courseware.grades.grade')
+    def test_force_update(self, mock_grade):
+        """
+        Even if there is a log entry for incremental update, force a full update
+
+        This may be done because something happened in the last update.
+        """
+        mock_grade.return_value = self.gradeset
+
+        # Create a StudentModule that is before the log entry
+        sm = StudentModuleFactory(
+            course_id=self.course.id,
+            module_type='problem',
+            grade=1,
+            max_grade=1,
+            state=json.dumps({'attempts':1}),
+        )
+
+        self.create_log_entry()
+
+        call_command(self.command, self.course.id, force=True)
+
+        self.assertEqual(len(Log.objects.filter(script_id__exact=self.script_id, course_id__exact=self.course.id)), 2)
+        self.assertEqual(len(CourseGrade.objects.filter(user=sm.student, course_id__exact=self.course.id)), 1)
+        self.assertEqual(len(AssignmentTypeGrade.objects.filter(
+                    user=sm.student, course_id__exact=self.course.id, category=self.category
+                )), 1)
+        self.assertEqual(len(AssignmentGrade.objects.filter(
+                    user=sm.student,
+                    course_id__exact=self.course.id,
+                    label=self.gradeset['section_breakdown'][self.assignment_index]['label'],
+                )), 1)
+
+        
+    @patch('courseware.grades.grade')
+    def test_incremental_update_if_log_exists(self, mock_grade):
+        """
+        Make sure it uses the log entry if it exists and we aren't forcing a full update
+        """
+        mock_grade.return_value = self.gradeset
+
+        # Create a StudentModule that is before the log entry
+        sm = StudentModuleFactory(
+            course_id=self.course.id,
+            module_type='problem',
+            grade=1,
+            max_grade=1,
+            state=json.dumps({'attempts':1}),
+        )
+        sm.student.last_name = "Student1"
+        sm.student.save()
+
+        self.create_log_entry()
+
+        # Create a StudentModule that is after the log entry, different name
+        sm = StudentModuleFactory(
+            course_id=self.course.id,
+            module_type='problem',
+            grade=1,
+            max_grade=1,
+            state=json.dumps({'attempts':1}),
+        )
+        sm.student.last_name = "Student2"
+        sm.student.save()
+
+        call_command(self.command, self.course.id)
+
+        self.assertEqual(mock_grade.call_count, 1)
+
+
+    @patch('queryable.management.commands.populate_studentgrades.store_course_grade_if_need')
+    @patch('courseware.grades.grade')
+    def test_store_course_grade(self, mock_grade, mock_method):
+        """
+        Calls store_course_grade_if_need for all students
+        """
+        mock_grade.return_value = self.gradeset
+
+        self.create_studentmodule()
+        
+        call_command(self.command, self.course.id)
+        
+        self.assertEqual(mock_method.call_count, 1)
+
+
+    @patch('queryable.management.commands.populate_studentgrades.store_assignment_type_grade_if_need')
+    @patch('courseware.grades.grade')
+    def test_store_assignment_type_grade(self, mock_grade, mock_method):
+        """
+        Calls store_assignment_type_grade_if_need when such a section exists
+        """
+        mock_grade.return_value = self.gradeset
+
+        self.create_studentmodule()
+        
+        call_command(self.command, self.course.id)
+        
+        self.assertEqual(mock_method.call_count, 1)
+
+
+
+    @patch('queryable.management.commands.populate_studentgrades.store_assignment_grade_if_need')
+    @patch('courseware.grades.grade')
+    def test_store_assignment_grade_percent_not_zero(self, mock_grade, mock_method):
+        """
+        Calls store_assignment_grade_if_need when the percent for that assignment is not zero
+        """
+        mock_grade.return_value = self.gradeset
+
+        self.create_studentmodule()
+        
+        call_command(self.command, self.course.id)
+        
+        self.assertEqual(mock_method.call_count, 1)
+
+
+
+    @patch('queryable.management.commands.populate_studentgrades.get_assignment_index')
+    @patch('queryable.management.commands.populate_studentgrades.store_assignment_grade_if_need')
+    @patch('courseware.grades.grade')
+    def test_assignment_grade_percent_zero_bad_index(self, mock_grade, mock_method, mock_assign_index):
+        """
+        Does not call store_assignment_grade_if_need when the percent is zero because get_assignment_index returns a
+        negative number.
+        """
+        self.gradeset['section_breakdown'][self.assignment_index]['percent'] = 0.0
+        mock_grade.return_value = self.gradeset
+
+        mock_assign_index.return_value = -1
+
+        self.create_studentmodule()
+        
+        call_command(self.command, self.course.id)
+        
+        self.assertEqual(mock_grade.call_count, 1)
+        self.assertEqual(mock_method.call_count, 0)
+
+
+    @patch('queryable.management.commands.populate_studentgrades.get_student_problems')
+    @patch('queryable.management.commands.populate_studentgrades.assignment_exists_and_has_problems')
+    @patch('queryable.util.get_assignment_to_problem_map')
+    @patch('queryable.management.commands.populate_studentgrades.store_assignment_grade_if_need')
+    @patch('courseware.grades.grade')
+    def test_assignment_grade_percent_zero_no_student_problems(self, mock_grade, mock_method, mock_assign_problem_map,\
+                                                                   mock_assign_exists, mock_student_problems):
+        """
+        Does not call store_assignment_grade_if_need when the percent is zero because the student did not submit
+        answers to any problems in that assignment.
+        """
+        self.gradeset['section_breakdown'][self.assignment_index]['percent'] = 0.0
+        mock_grade.return_value = self.gradeset
+
+        mock_assign_problem_map.return_value = {
+            self.gradeset['section_breakdown'][self.assignment_index]['category'] : [[]]
+        }
+
+        mock_assign_exists.return_value = True
+
+        mock_student_problems.return_value = []
+
+        self.create_studentmodule()
+        
+        call_command(self.command, self.course.id)
+        
+        self.assertEqual(mock_method.call_count, 0)
+
+
+    @patch('queryable.management.commands.populate_studentgrades.get_student_problems')
+    @patch('queryable.management.commands.populate_studentgrades.assignment_exists_and_has_problems')
+    @patch('queryable.util.get_assignment_to_problem_map')
+    @patch('queryable.management.commands.populate_studentgrades.store_assignment_grade_if_need')
+    @patch('courseware.grades.grade')
+    def test_assignment_grade_percent_zero_has_student_problems(self, mock_grade, mock_method, mock_assign_problem_map,\
+                                                                   mock_assign_exists, mock_student_problems):
+        """
+        Calls store_assignment_grade_if_need when the percent is zero because the student did submit answers to
+        problems in that assignment.
+        """
+        self.gradeset['section_breakdown'][self.assignment_index]['percent'] = 0.0
+        mock_grade.return_value = self.gradeset
+
+        mock_assign_problem_map.return_value = {
+            self.gradeset['section_breakdown'][self.assignment_index]['category'] : [['problem_1']]
+        }
+
+        mock_assign_exists.return_value = True
+
+        mock_student_problems.return_value = ['problem_1']
+
+        self.create_studentmodule()
+        
+        call_command(self.command, self.course.id)
+        
+        self.assertEqual(mock_method.call_count, 1)
+
 
