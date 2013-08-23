@@ -52,7 +52,7 @@ def all_problem_grade_distribution(request, course_id):
 
     # Only instructor for this particular course can request this information
     if has_instructor_access_for_class(request.user, course_id):
-        json = dashboard_data.get_d3_problem_grade_distribution_by_section(course_id)
+        json = dashboard_data.get_d3_problem_grade_distribution(course_id)
     else:
         json = {'error':"Access Denied: User does not have access to this course's data"}
 
