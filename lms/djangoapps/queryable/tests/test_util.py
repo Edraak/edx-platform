@@ -44,7 +44,7 @@ class TestUtilApproxEqual(TestCase):
 
 
 @override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
-class TestUtilGetAssignemntToProblemMap(TestCase):
+class TestUtilGetAssignmentToProblemMap(TestCase):
     """
     Tests the get_assignemnt_to_problem_map
     """
