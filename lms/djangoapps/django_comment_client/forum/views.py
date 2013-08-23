@@ -173,8 +173,8 @@ def forum_form_discussion(request, course_id):
     category_map = utils.get_discussion_category_map(course)
 
     #TEMPORARY TO HAND OVER TO MARCO FOR DESIGN
-    return render_to_response('discussion/maintenance.html', {})
-    
+    return render_to_response('discussion/timeout.html', {})
+
     try:
         unsafethreads, query_params = get_threads(request, course_id)   # This might process a search query
         threads = [utils.safe_content(thread) for thread in unsafethreads]
