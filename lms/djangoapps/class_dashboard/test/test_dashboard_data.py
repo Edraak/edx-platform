@@ -52,3 +52,45 @@ class TestGetD3ProblemGradeDistribution(TestCase):
       - handles when max_grade for a problem is zero
       - test xValue/label has correct values for the problems location
     """
+
+
+class TestGetD3ProblemAttemptDistribution(TestCase):
+    """
+    Tests needed:
+      - simple test, make sure output correct
+      - test color label correct with max_attempts value
+      - test xValue/label has correct values for the problems location
+    """
+
+
+class TestGetD3SequentialOpenDistribution(TestCase):
+    """
+    Tests needed:
+      - simple test, make sure output correct
+      - test xValue/label has correct value for the subsection location
+    """
+
+
+class TestGetD3SectionGradeDistribution(TestCase):
+    """
+    Tests needed:
+      - simple test, make sure output correct
+      - queries with the right problems from get_problem_set_grade_distribution
+      - test does the right section
+      - handles case where problem is in the section, but there is no data for it (because students done it)
+    """
+
+
+class TestGetSectionDisplayName(TestCase):
+    """
+    Tests needed:
+      - simple test, make sure output correct
+    """
+
+
+class TestGetArraySectionHasProblem(TestCase):
+    """
+    Tests needed:
+      - simple test, make sure output correct
+      - test that it stops searching a section once it knows the section has a problem
+    """
