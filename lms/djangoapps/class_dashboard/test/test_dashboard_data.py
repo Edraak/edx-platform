@@ -11,7 +11,7 @@ class TestGetProblemGradeDistribution(TestCase):
       - simple test, make sure output correct
       - test when a problem has two max_grade's, should just take the larger value
     """
-    
+
 
 class TestGetProblemAttemptDistrib(TestCase):
     """
