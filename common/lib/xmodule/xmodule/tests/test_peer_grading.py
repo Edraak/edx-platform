@@ -1,7 +1,13 @@
 import unittest
+import json
+from mock import Mock, MagicMock, ANY, patch
+
 from xmodule.modulestore import Location
 from .import get_test_system
-from test_util_open_ended import MockQueryDict, DummyModulestore
+from test_util_open_ended import MockQueryDict, DummyModulestore, MODULESTORE
+from xmodule.peer_grading_module import PeerGradingModule, PeerGradingDescriptor
+
+from django.conf import settings
 
 import logging
 
@@ -136,6 +142,7 @@ class PeerGradingModuleTest(unittest.TestCase, DummyModulestore):
         """
         self.peer_grading.get_instance_state()
 
+
 class PeerGradingModuleScoredTest(unittest.TestCase, DummyModulestore):
     """
     Test peer grading xmodule at the unit level.  More detailed tests are difficult, as the module relies on an
@@ -155,3 +162,57 @@ class PeerGradingModuleScoredTest(unittest.TestCase, DummyModulestore):
     def test_metadata_load(self):
         peer_grading = self.get_module_from_location(self.problem_location, COURSE)
         self.assertEqual(peer_grading.closed(), False)
+
+
+class PeerGradingModuleDetailedTest(unittest.TestCase, DummyModulestore):
+    definition = """
+                    <peergrading/>
+                    """
+    descriptor = Mock(data=definition)
+    location = Location(["i4x", "edX", "open_ended", "peergrading",
+                         "PeerGradingSample"])
+
+
+    def setUp(self):
+        self.test_system = get_test_system()
+        self.test_system.open_ended_grading_interface = None
+        self.peer_grading = PeerGradingModule(
+            self.test_system,
+            self.descriptor,
+            model_data={
+                'data': self.definition,
+                'weight': '1',
+                'location': self.location
+            }
+        )
+
+    def test_handle_ajax(self):
+        success_json = self.peer_grading.handle_ajax('get_next_submission', {'location': 'blah'})
+        self.assertEqual(json.loads(success_json)['success'], True)
+
+class PeerGradingModuleFlowTest(unittest.TestCase, DummyModulestore):
+    """
+    Test the student flow in the combined open ended xmodule
+    """
+    problem_location = Location(["i4x", "edX", "open_ended", "peergrading", "PeerGradingScored"])
+
+    def setUp(self):
+        self.test_system = get_test_system()
+        self.test_system.open_ended_grading_interface = None
+        self.setup_modulestore(COURSE)
+
+    def test_get_score(self):
+        """
+        See if we can load the module and save an answer
+        @return:
+        """
+        #Load the module
+        settings.MODULESTORE = MODULESTORE
+        module = self.get_module_from_location(self.problem_location, COURSE)
+
+        #Try saving an answer
+        html = module.peer_grading()
+        self.assertTrue(isinstance(html, basestring))
+
+        score = module.get_score()
+        self.assertEqual(score['score'], None)
