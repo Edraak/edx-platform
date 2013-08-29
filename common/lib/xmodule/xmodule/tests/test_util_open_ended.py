@@ -1,6 +1,7 @@
+from .import get_test_system
 from xmodule.modulestore import Location
 from xmodule.modulestore.xml import XMLModuleStore
-from xmodule.tests import DATA_DIR, get_test_system
+from xmodule.tests.test_export import DATA_DIR
 
 OPEN_ENDED_GRADING_INTERFACE = {
     'url': 'blah/',
@@ -17,6 +18,15 @@ S3_INTERFACE = {
     "aws_bucket_name": "",
 }
 
+MODULESTORE = {
+    'default': {
+        'ENGINE': 'xmodule.modulestore.xml.XMLModuleStore',
+        'OPTIONS': {
+            'data_dir': DATA_DIR,
+            'default_class': 'xmodule.hidden_module.HiddenDescriptor',
+            }
+    }
+}
 
 class MockQueryDict(dict):
     """
@@ -41,7 +51,7 @@ class DummyModulestore(object):
     def setup_modulestore(self, name):
         self.modulestore = XMLModuleStore(DATA_DIR, course_dirs=[name])
 
-    def get_course(self, _):
+    def get_course(self, name):
         """Get a test course by directory name.  If there's more than one, error."""
         courses = self.modulestore.get_courses()
         return courses[0]
