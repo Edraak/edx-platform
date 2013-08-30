@@ -1,5 +1,5 @@
 (function() {
-  xdescribe('VideoPlayer', function() {
+  describe('VideoPlayer', function() {
     var state, videoPlayer, player, videoControl, videoCaption, videoProgressSlider, videoSpeedControl, videoVolumeControl, oldOTBD;
 
     function initialize(fixture) {
@@ -78,6 +78,8 @@
 
       it('create Youtube player', function() {
         var oldYT = window.YT;
+
+        jasmine.stubRequests();
 
         window.YT = {
             Player: function () { },

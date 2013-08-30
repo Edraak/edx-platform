@@ -24,9 +24,6 @@ from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname
 from xmodule.modulestore import Location
-from xmodule.modulestore.mongo import MongoModuleStore
-from xmodule.modulestore.django import modulestore
-from xmodule.contentstore.content import StaticContent
 from xblock.core import Scope, String, Boolean, Float, List, Integer
 
 import datetime
@@ -104,14 +101,14 @@ class VideoFields(object):
         default=[]
     )
     track = String(
-        help="The external URL to download the subtitle track. This appears as a link beneath the video.",
+        help="The external URL to download the timed transcript track. This appears as a link beneath the video.",
         display_name="Download Track",
         scope=Scope.settings,
         default=""
     )
     sub = String(
-        help="The name of the subtitle track (for non-Youtube videos).",
-        display_name="HTML5 Subtitles",
+        help="The name of the timed transcript track (for non-Youtube videos).",
+        display_name="HTML5 Timed Transcript",
         scope=Scope.settings,
         default=""
     )
@@ -161,12 +158,7 @@ class VideoModule(VideoFields, XModule):
         return json.dumps({'position': self.position})
 
     def get_html(self):
-        if isinstance(modulestore(), MongoModuleStore):
-            caption_asset_path = StaticContent.get_base_url_path_for_course_assets(self.location) + '/subs_'
-        else:
-            # VS[compat]
-            # cdodge: filesystem static content support.
-            caption_asset_path = "/static/subs/"
+        caption_asset_path = "/static/subs/"
 
         get_ext = lambda filename: filename.rpartition('.')[-1]
         sources = {get_ext(src): src for src in self.html5_sources}
@@ -240,7 +232,7 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         video = cls(system, model_data)
         return video
 
-    def export_to_xml(self, resource_fs):
+    def definition_to_xml(self, resource_fs):
         """
         Returns an xml string representing this module.
         """
@@ -266,7 +258,7 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             if key in fields and fields[key].default == getattr(self, key):
                 continue
             if value:
-                xml.set(key, str(value))
+                xml.set(key, unicode(value))
 
         for source in self.html5_sources:
             ele = etree.Element('source')
@@ -277,7 +269,7 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             ele = etree.Element('track')
             ele.set('src', self.track)
             xml.append(ele)
-        return etree.tostring(xml, pretty_print=True)
+        return xml
 
     @staticmethod
     def _parse_youtube(data):
@@ -293,11 +285,14 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             pieces = video.split(':')
             try:
                 speed = '%.2f' % float(pieces[0])  # normalize speed
-                youtube_id = pieces[1]
+
+                # Handle the fact that youtube IDs got double-quoted for a period of time.
+                # Note: we pass in "VideoFields.youtube_id_1_0" so we deserialize as a String--
+                # it doesn't matter what the actual speed is for the purposes of deserializing.
+                youtube_id = VideoDescriptor._deserialize(VideoFields.youtube_id_1_0.name, pieces[1])
                 ret[speed] = youtube_id
             except (ValueError, IndexError):
                 log.warning('Invalid YouTube ID: %s' % video)
-
         return ret
 
     @staticmethod
@@ -310,7 +305,6 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         model_data = {}
 
         conversions = {
-            'show_captions': json.loads,
             'start_time': VideoDescriptor._parse_time,
             'end_time': VideoDescriptor._parse_time
         }
@@ -349,9 +343,20 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
                 #  Convert XML attrs into Python values.
                 if attr in conversions:
                     value = conversions[attr](value)
+                else:
+                # We export values with json.dumps (well, except for Strings, but
+                # for about a month we did it for Strings also).
+                    value = VideoDescriptor._deserialize(attr, value)
                 model_data[attr] = value
 
         return model_data
+
+    @classmethod
+    def _deserialize(cls, attr, value):
+        """
+        Handles deserializing values that may have been encoded with json.dumps.
+        """
+        return cls.get_map_for_field(attr).from_xml(value)
 
     @staticmethod
     def _parse_time(str_time):

@@ -1,3 +1,6 @@
+"""
+Student Views
+"""
 import datetime
 import feedparser
 import json
@@ -27,6 +30,7 @@ from django_future.csrf import ensure_csrf_cookie
 from django.utils.http import cookie_date
 from django.utils.http import base36_to_int
 from django.utils.translation import ugettext as _
+from django.views.decorators.http import require_POST
 
 from ratelimitbackend.exceptions import RateLimitException
 
@@ -54,6 +58,10 @@ from courseware.access import has_access
 
 from external_auth.models import ExternalAuthMap
 
+from bulk_email.models import Optout
+
+import track.views
+
 from statsd import statsd
 from pytz import UTC
 
@@ -64,8 +72,7 @@ Article = namedtuple('Article', 'title url author image deck publication publish
 
 
 def csrf_token(context):
-    ''' A csrf token that can be included in a form.
-    '''
+    """A csrf token that can be included in a form."""
     csrf_token = context.get('csrf_token', '')
     if csrf_token == 'NOTPROVIDED':
         return ''
@@ -78,12 +85,12 @@ def csrf_token(context):
 # This means that it should always return the same thing for anon
 # users. (in particular, no switching based on query params allowed)
 def index(request, extra_context={}, user=None):
-    '''
+    """
     Render the edX main page.
 
     extra_context is used to allow immediate display of certain modal windows, eg signup,
     as used by external_auth.
-    '''
+    """
 
     # The course selection work is done in courseware.courses.
     domain = settings.MITX_FEATURES.get('FORCE_UNIVERSITY_DOMAIN')  # normally False
@@ -95,6 +102,7 @@ def index(request, extra_context={}, user=None):
     courses = sort_by_announcement(courses)
 
     context = {'courses': courses}
+
     context.update(extra_context)
     return render_to_response('index.html', context)
 
@@ -254,18 +262,19 @@ def register_user(request, extra_context=None):
 @ensure_csrf_cookie
 def dashboard(request):
     user = request.user
-    enrollments = CourseEnrollment.objects.filter(user=user)
 
     # Build our courses list for the user, but ignore any courses that no longer
     # exist (because the course IDs have changed). Still, we don't delete those
     # enrollments, because it could have been a data push snafu.
     courses = []
-    for enrollment in enrollments:
+    for enrollment in CourseEnrollment.enrollments_for_user(user):
         try:
             courses.append(course_from_id(enrollment.course_id))
         except ItemNotFoundError:
             log.error("User {0} enrolled in non-existent course {1}"
                       .format(user.username, enrollment.course_id))
+
+    course_optouts = Optout.objects.filter(user=user).values_list('course_id', flat=True)
 
     message = ""
     if not user.is_active:
@@ -294,6 +303,7 @@ def dashboard(request):
         pass
 
     context = {'courses': courses,
+               'course_optouts': course_optouts,
                'message': message,
                'external_auth_map': external_auth_map,
                'staff_access': staff_access,
@@ -377,18 +387,13 @@ def change_enrollment(request):
                                "course:{0}".format(course_num),
                                "run:{0}".format(run)])
 
-        try:
-            enroll_in_course(user, course.id)
-        except IntegrityError:
-            # If we've already created this enrollment in a separate transaction,
-            # then just continue
-            pass
+        CourseEnrollment.enroll(user, course.id)
+
         return HttpResponse()
 
     elif action == "unenroll":
         try:
-            enrollment = CourseEnrollment.objects.get(user=user, course_id=course_id)
-            enrollment.delete()
+            CourseEnrollment.unenroll(user, course_id)
 
             org, course_num, run = course_id.split("/")
             statsd.increment("common.student.unenrollment",
@@ -402,34 +407,14 @@ def change_enrollment(request):
     else:
         return HttpResponseBadRequest(_("Enrollment action is invalid"))
 
-
-def enroll_in_course(user, course_id):
-    """
-    Helper method to enroll a user in a particular class.
-
-    It is expected that this method is called from a method which has already
-    verified the user authentication and access.
-    """
-    CourseEnrollment.objects.get_or_create(user=user, course_id=course_id)
-
-
-def is_enrolled_in_course(user, course_id):
-    """
-    Helper method that returns whether or not the user is enrolled in a particular course.
-    """
-    return CourseEnrollment.objects.filter(user=user, course_id=course_id).count() > 0
-
-
 @ensure_csrf_cookie
 def accounts_login(request, error=""):
-
     return render_to_response('login.html', {'error': error})
-
 
 # Need different levels of logging
 @ensure_csrf_cookie
 def login_user(request, error=""):
-    ''' AJAX request to log in the user. '''
+    """AJAX request to log in the user."""
     if 'email' not in request.POST or 'password' not in request.POST:
         return HttpResponse(json.dumps({'success': False,
                                         'value': _('There was an error receiving your login information. Please email us.')}))  # TODO: User error message
@@ -512,11 +497,11 @@ def login_user(request, error=""):
 
 @ensure_csrf_cookie
 def logout_user(request):
-    '''
+    """
     HTTP request to log out the user. Redirects to marketing page.
     Deletes both the CSRF and sessionid cookies so the marketing
     site can determine the logged in state of the user
-    '''
+    """
     # We do not log here, because we have a handler registered
     # to perform logging on successful logouts.
     logout(request)
@@ -530,8 +515,7 @@ def logout_user(request):
 @login_required
 @ensure_csrf_cookie
 def change_setting(request):
-    ''' JSON call to change a profile setting: Right now, location
-    '''
+    """JSON call to change a profile setting: Right now, location"""
     # TODO (vshnayder): location is no longer used
     up = UserProfile.objects.get(user=request.user)  # request.user.profile_cache
     if 'location' in request.POST:
@@ -599,10 +583,10 @@ def _do_create_account(post_vars):
 
 @ensure_csrf_cookie
 def create_account(request, post_override=None):
-    '''
+    """
     JSON call to create new edX account.
     Used by form in signup_modal.html, which is included into navigation.html
-    '''
+    """
     js = {'success': False}
 
     post_vars = post_override if post_override else request.POST
@@ -836,10 +820,10 @@ def begin_exam_registration(request, course_id):
 
 @ensure_csrf_cookie
 def create_exam_registration(request, post_override=None):
-    '''
+    """
     JSON call to create a test center exam registration.
     Called by form in test_center_register.html
-    '''
+    """
     post_vars = post_override if post_override else request.POST
 
     # first determine if we need to create a new TestCenterUser, or if we are making any update
@@ -992,8 +976,7 @@ def auto_auth(request):
 
 @ensure_csrf_cookie
 def activate_account(request, key):
-    ''' When link in activation e-mail is clicked
-    '''
+    """When link in activation e-mail is clicked"""
     r = Registration.objects.filter(activation_key=key)
     if len(r) == 1:
         user_logged_in = request.user.is_authenticated()
@@ -1008,19 +991,27 @@ def activate_account(request, key):
             ceas = CourseEnrollmentAllowed.objects.filter(email=student[0].email)
             for cea in ceas:
                 if cea.auto_enroll:
-                    course_id = cea.course_id
-                    _enrollment, _created = CourseEnrollment.objects.get_or_create(user_id=student[0].id, course_id=course_id)
+                    CourseEnrollment.enroll(student[0], cea.course_id)
 
-        resp = render_to_response("registration/activation_complete.html", {'user_logged_in': user_logged_in, 'already_active': already_active})
+        resp = render_to_response(
+            "registration/activation_complete.html",
+            {
+                'user_logged_in': user_logged_in,
+                'already_active': already_active
+            }
+        )
         return resp
     if len(r) == 0:
-        return render_to_response("registration/activation_invalid.html", {'csrf': csrf(request)['csrf_token']})
+        return render_to_response(
+            "registration/activation_invalid.html",
+            {'csrf': csrf(request)['csrf_token']}
+        )
     return HttpResponse(_("Unknown error. Please e-mail us to let us know how it happened."))
 
 
 @ensure_csrf_cookie
 def password_reset(request):
-    ''' Attempts to send a password reset e-mail. '''
+    """ Attempts to send a password reset e-mail. """
     if request.method != "POST":
         raise Http404
 
@@ -1042,9 +1033,9 @@ def password_reset_confirm_wrapper(
     uidb36=None,
     token=None,
 ):
-    ''' A wrapper around django.contrib.auth.views.password_reset_confirm.
+    """ A wrapper around django.contrib.auth.views.password_reset_confirm.
         Needed because we want to set the user as active at this step.
-    '''
+    """
     # cribbed from django.contrib.auth.views.password_reset_confirm
     try:
         uid_int = base36_to_int(uidb36)
@@ -1086,8 +1077,8 @@ def reactivation_email_for_user(user):
 
 @ensure_csrf_cookie
 def change_email_request(request):
-    ''' AJAX call from the profile page. User wants a new e-mail.
-    '''
+    """ AJAX call from the profile page. User wants a new e-mail.
+    """
     ## Make sure it checks for existing e-mail conflicts
     if not request.user.is_authenticated:
         raise Http404
@@ -1142,9 +1133,9 @@ def change_email_request(request):
 @ensure_csrf_cookie
 @transaction.commit_manually
 def confirm_email_change(request, key):
-    ''' User requested a new e-mail. This is called when the activation
+    """ User requested a new e-mail. This is called when the activation
     link is clicked. We confirm with the old e-mail, and update
-    '''
+    """
     try:
         try:
             pec = PendingEmailChange.objects.get(activation_key=key)
@@ -1201,7 +1192,7 @@ def confirm_email_change(request, key):
 
 @ensure_csrf_cookie
 def change_name_request(request):
-    ''' Log a request for a new name. '''
+    """ Log a request for a new name. """
     if not request.user.is_authenticated:
         raise Http404
 
@@ -1225,7 +1216,7 @@ def change_name_request(request):
 
 @ensure_csrf_cookie
 def pending_name_changes(request):
-    ''' Web page which allows staff to approve or reject name changes. '''
+    """ Web page which allows staff to approve or reject name changes. """
     if not request.user.is_staff:
         raise Http404
 
@@ -1241,7 +1232,7 @@ def pending_name_changes(request):
 
 @ensure_csrf_cookie
 def reject_name_change(request):
-    ''' JSON: Name change process. Course staff clicks 'reject' on a given name change '''
+    """ JSON: Name change process. Course staff clicks 'reject' on a given name change """
     if not request.user.is_staff:
         raise Http404
 
@@ -1279,13 +1270,36 @@ def accept_name_change_by_id(id):
 
 @ensure_csrf_cookie
 def accept_name_change(request):
-    ''' JSON: Name change process. Course staff clicks 'accept' on a given name change
+    """ JSON: Name change process. Course staff clicks 'accept' on a given name change
 
     We used this during the prototype but now we simply record name changes instead
     of manually approving them. Still keeping this around in case we want to go
     back to this approval method.
-    '''
+    """
     if not request.user.is_staff:
         raise Http404
 
     return accept_name_change_by_id(int(request.POST['id']))
+
+
+@require_POST
+@login_required
+@ensure_csrf_cookie
+def change_email_settings(request):
+    """Modify logged-in user's setting for receiving emails from a course."""
+    user = request.user
+
+    course_id = request.POST.get("course_id")
+    receive_emails = request.POST.get("receive_emails")
+    if receive_emails:
+        optout_object = Optout.objects.filter(user=user, course_id=course_id)
+        if optout_object:
+            optout_object.delete()
+        log.info(u"User {0} ({1}) opted in to receive emails from course {2}".format(user.username, user.email, course_id))
+        track.views.server_track(request, "change-email-settings", {"receive_emails": "yes", "course": course_id}, page='dashboard')
+    else:
+        Optout.objects.get_or_create(user=user, course_id=course_id)
+        log.info(u"User {0} ({1}) opted out of receiving emails from course {2}".format(user.username, user.email, course_id))
+        track.views.server_track(request, "change-email-settings", {"receive_emails": "no", "course": course_id}, page='dashboard')
+
+    return HttpResponse(json.dumps({'success': True}))

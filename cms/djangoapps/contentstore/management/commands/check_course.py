@@ -3,8 +3,6 @@ from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.xml_importer import check_module_metadata_editability
 from xmodule.course_module import CourseDescriptor
 
-from request_cache.middleware import RequestCache
-
 
 class Command(BaseCommand):
     help = '''Enumerates through the course and find common errors'''
@@ -17,9 +15,6 @@ class Command(BaseCommand):
 
         loc = CourseDescriptor.id_to_location(loc_str)
         store = modulestore()
-
-        # setup a request cache so we don't throttle the DB with all the metadata inheritance requests
-        store.request_cache = RequestCache.get_request_cache()
 
         course = store.get_item(loc, depth=3)
 

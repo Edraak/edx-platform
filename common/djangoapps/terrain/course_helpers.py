@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from student.models import CourseEnrollment
-from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.django import editable_modulestore
 from xmodule.contentstore.django import contentstore
 from urllib import quote_plus
 
@@ -54,17 +54,15 @@ def register_by_course_id(course_id, is_staff=False):
     if is_staff:
         u.is_staff = True
         u.save()
-    CourseEnrollment.objects.get_or_create(user=u, course_id=course_id)
+    CourseEnrollment.enroll(u, course_id)
 
 
 @world.absorb
 def clear_courses():
     # Flush and initialize the module store
-    # It needs the templates because it creates new records
-    # by cloning from the template.
     # Note that if your test module gets in some weird state
     # (though it shouldn't), do this manually
     # from the bash shell to drop it:
     # $ mongo test_xmodule --eval "db.dropDatabase()"
-    modulestore().collection.drop()
+    editable_modulestore().collection.drop()
     contentstore().fs_files.drop()

@@ -14,11 +14,9 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.utils.importlib import import_module
 
 from xmodule.modulestore.tests.factories import CourseFactory
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase, mixed_store_config
 from xmodule.modulestore.inheritance import own_metadata
-from xmodule.modulestore.django import modulestore
-
-from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
+from xmodule.modulestore.django import editable_modulestore
 
 from external_auth.models import ExternalAuthMap
 from external_auth.views import shib_login, course_specific_login, course_specific_register
@@ -26,6 +24,8 @@ from external_auth.views import shib_login, course_specific_login, course_specif
 from student.views import create_account, change_enrollment
 from student.models import UserProfile, Registration, CourseEnrollment
 from student.tests.factories import UserFactory
+
+TEST_DATA_MIXED_MODULESTORE = mixed_store_config(settings.COMMON_TEST_DATA_ROOT, {})
 
 # Shib is supposed to provide 'REMOTE_USER', 'givenName', 'sn', 'mail', 'Shib-Identity-Provider'
 # attributes via request.META.  We can count on 'Shib-Identity-Provider', and 'REMOTE_USER' being present
@@ -64,7 +64,7 @@ def gen_all_identities():
                 yield _build_identity_dict(mail, given_name, surname)
 
 
-@override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE, SESSION_ENGINE='django.contrib.sessions.backends.cache')
+@override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE, SESSION_ENGINE='django.contrib.sessions.backends.cache')
 class ShibSPTest(ModuleStoreTestCase):
     """
     Tests for the Shibboleth SP, which communicates via request.META
@@ -73,7 +73,7 @@ class ShibSPTest(ModuleStoreTestCase):
     request_factory = RequestFactory()
 
     def setUp(self):
-        self.store = modulestore()
+        self.store = editable_modulestore()
 
     @unittest.skipUnless(settings.MITX_FEATURES.get('AUTH_USE_SHIB'), True)
     def test_exception_shib_login(self):
@@ -431,12 +431,12 @@ class ShibSPTest(ModuleStoreTestCase):
                 # If course is not limited or student has correct shib extauth then enrollment should be allowed
                 if course is open_enroll_course or student is shib_student:
                     self.assertEqual(response.status_code, 200)
-                    self.assertEqual(CourseEnrollment.objects.filter(user=student, course_id=course.id).count(), 1)
+                    self.assertTrue(CourseEnrollment.is_enrolled(student, course.id))
                     # Clean up
-                    CourseEnrollment.objects.filter(user=student, course_id=course.id).delete()
+                    CourseEnrollment.unenroll(student, course.id)
                 else:
                     self.assertEqual(response.status_code, 400)
-                    self.assertEqual(CourseEnrollment.objects.filter(user=student, course_id=course.id).count(), 0)
+                    self.assertFalse(CourseEnrollment.is_enrolled(student, course.id))
 
     @unittest.skipUnless(settings.MITX_FEATURES.get('AUTH_USE_SHIB'), True)
     def test_shib_login_enrollment(self):
@@ -462,7 +462,7 @@ class ShibSPTest(ModuleStoreTestCase):
 
         # use django test client for sessions and url processing
         # no enrollment before trying
-        self.assertEqual(CourseEnrollment.objects.filter(user=student, course_id=course.id).count(), 0)
+        self.assertFalse(CourseEnrollment.is_enrolled(student, course.id))
         self.client.logout()
         request_kwargs = {'path': '/shib-login/',
                           'data': {'enrollment_action': 'enroll', 'course_id': course.id},
@@ -474,4 +474,4 @@ class ShibSPTest(ModuleStoreTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['location'], 'http://testserver/')
         # now there is enrollment
-        self.assertEqual(CourseEnrollment.objects.filter(user=student, course_id=course.id).count(), 1)
+        self.assertTrue(CourseEnrollment.is_enrolled(student, course.id))

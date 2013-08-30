@@ -53,6 +53,7 @@ South==0.7.6
 sympy==0.7.1
 xmltodict==0.4.1
 django-ratelimit-backend==0.6
+django-model-utils==1.4.0
 
 # Used for debugging
 ipython==0.13.1
@@ -84,9 +85,9 @@ rednose==0.3
 selenium==2.34.0
 splinter==0.5.4
 django_nose==1.1
-django-jasmine==0.3.2
 django_debug_toolbar
 django-debug-toolbar-mongo
 nose-ignore-docstring
+nose-exclude
 
 git+https://github.com/mfogel/django-settings-context-processor.git
