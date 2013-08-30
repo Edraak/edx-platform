@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 from operator import itemgetter
 
 from django.http import Http404, HttpResponse
-from django.db import connections
+from django.db import connection
 from django.conf import settings
 from mitxmako.shortcuts import render_to_response
 
@@ -46,8 +46,7 @@ def SQL_query_to_list(cursor, query_string):
     raw_result=dictfetchall(cursor)
     return raw_result
 
-@prefer_alternate_db('replica')
-def enrollment_history_map(request, days=7, alternate_db=None):
+def enrollment_history_map(request, days=7):
     """
     Returns a json object mapping each course_id to the number
     of enrollments in that course in the last `days`
@@ -56,7 +55,7 @@ def enrollment_history_map(request, days=7, alternate_db=None):
     if not request.user.is_staff:
         raise Http404
 
-    cursor = connections[alternate_db].cursor() 
+    cursor = connection.cursor() 
     
     # current time as a string
     start_of_interval = time.strftime("%Y-%m-%d %H:%M:%S", (datetime.now() - timedelta(days, 0)).timetuple())
@@ -100,8 +99,7 @@ def tojstime(sqldate):
     jsts = (pydt - datetime(1970, 1, 1)).total_seconds()*1000
     return jsts
 
-@prefer_alternate_db('replica')
-def enrollment_history_timeseries(request, alternate_db=None):
+def enrollment_history_timeseries(request):
     """
     Return a json object representing enrollment history for edX as a whole.
     Format:
@@ -127,7 +125,7 @@ def enrollment_history_timeseries(request, alternate_db=None):
     if not request.user.is_staff:
         raise Http404
     
-    cursor = connections[alternate_db].cursor()
+    cursor = connection.cursor()
     today = calendar.timegm(datetime.now().timetuple()) * 1000
     yesterday = today - 86400000
     day_before_yesterday = today - 86400000*2
@@ -162,10 +160,9 @@ def enrollment_history_timeseries(request, alternate_db=None):
     }
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
-@prefer_alternate_db('replica')
-def get_course_summary_table(alternate_db=None):
+def get_course_summary_table():
     # establish a direct connections to the database (for executing raw SQL)
-    cursor = connections[alternate_db].cursor()
+    cursor = connection.cursor()
     enrollment_query = """
         select course_id as Course, count(user_id) as Students 
         from student_courseenrollment
@@ -204,8 +201,7 @@ def get_course_summary_table(alternate_db=None):
 
     return headers + org_course_run_information
 
-@prefer_alternate_db('replica')
-def dashboard(request, alternate_db=None):
+def dashboard(request):
     """
     Shows Enrollment and Certification KPIs to edX Staff
     """
@@ -217,9 +213,9 @@ def dashboard(request, alternate_db=None):
     results = {"scalars":[],"tables":{}}
 
     # Calculate heads up numbers
-    results["scalars"].append(("Enrollments", CourseEnrollment.objects.using(alternate_db).count()))
-    results["scalars"].append(("Users", User.objects.using(alternate_db).filter().count()))
-    results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.using(alternate_db).filter(status="downloadable").count() + settings.MITX_FEATURES.get('LEGACY_CERT_COUNT', 0)))
+    results["scalars"].append(("Enrollments", CourseEnrollment.objects.count()))
+    results["scalars"].append(("Users", User.objects.filter().count()))
+    results["scalars"].append(("Certificates Issued", GeneratedCertificate.objects.filter(status="downloadable").count() + settings.MITX_FEATURES.get('LEGACY_CERT_COUNT', 0)))
  
     # a summary list of lists (table) that shows enrollment and certificate information
     results["tables"]["Course Statistics"] = get_course_summary_table()
