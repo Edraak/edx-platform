@@ -42,8 +42,6 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 # Enable Berkeley forums
 MITX_FEATURES['ENABLE_DISCUSSION_SERVICE'] = True
-# Let admin_dashboard know about certificates issued to 6.002x's first run
-MITX_FEATURES['LEGACY_CERT_COUNT'] = 7157
 
 # IMPORTANT: With this enabled, the server must always be behind a proxy that
 # strips the header HTTP_X_FORWARDED_PROTO from client requests. Otherwise,
