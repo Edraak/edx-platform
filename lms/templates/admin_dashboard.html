@@ -25,7 +25,7 @@
   </div>
   <div class="row">
     <div class="notes span12">
-      <p>Note: This chart is not suitable for days with no enrollments.   Enrollment Count reflects all records available in the database including any which are no longer active.</p>
+      <p>Note: Around Aug 20, edX.org changed the way it counts enrollments.  If you unenrolled from a class before that date, your enrollment record was deleted.  After Aug 20, unenrollments become marked "inactive" rather than be deleted.  This chart reflects all enrollments for which we have a record including inactive ones.  Therefore, enrollments preceeding the 20th are lower than they would be if counted with this new methodology.</p>
     </div>
   </div>
 </section>
@@ -36,7 +36,7 @@
     <br/>
     <div class="row">
       % for pair in results["scalars"]:
-      <div class="span4">
+      <div class="span3">
         <div class="heads_up_value">
           <p>${pair[1]}</p>
           <h2>${pair[0]}</h2>
@@ -46,7 +46,7 @@
     </div>
     <div class="row">
       <div class="notes span12">
-        <p>Notes: Certificates Count does not include the first run of 6.002x. Enrollment Count does not include the first run of 6.002x.  Enrollment Count reflects all records available in the database including any which are no longer active.</p>
+        <p>Notes: "Enrollments" reflects all records available in the database.  Any unenrollment before Aug 20, 2012 (for edx.org) deleted the record from the database and is therefore not reflected.  Any unenrollment after that date <strong>is still counted</strong> as an enrollment.  "Active Enrollments" reflects the number of students currently registered for any course past or present except 6.002x.  Users reflects every user including those from 6.002x's first run.  "Certificates Issued" does <strong>not</strong> include the 7,157 certificates issued for the first run of 6.002x.</p>
       </div>
     </div>
   </div>
