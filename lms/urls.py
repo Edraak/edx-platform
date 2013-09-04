@@ -19,6 +19,9 @@ urlpatterns = ('',  # nopep8
     url(r'^register$', 'student.views.register_user', name="register_user"),
 
     url(r'^admin_dashboard$', 'dashboard.views.dashboard'),
+    # Data views
+    url(r'^data/enrollment_history/map$', 'dashboard.views.enrollment_history_map'),
+    url(r'^data/enrollment_history/timeseries$', 'dashboard.views.enrollment_history_timeseries'),
 
     url(r'^change_email$', 'student.views.change_email_request', name="change_email"),
     url(r'^email_confirm/(?P<key>[^/]*)$', 'student.views.confirm_email_change'),
