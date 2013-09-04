@@ -83,19 +83,62 @@ def enrollment_history_map(request, days=7):
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
-def tojstime(sqldate):
-    pydt = None
+def platform_enrollments_each_day():
+    """
+    Returns a complete list of dates between the first enrollment
+    recorded in the database and the last one with a corresponding
+    value reflecting the number of enrollments on that day which
+    might be 0.
+    """
+    cursor = connection.cursor()
+    
+    # get all sparse daily enrollment counts, ignore the headers
+    daily_enrollments = SQL_query_to_list(cursor, """select date(created), count(*) 
+                                           from student_courseenrollment 
+                                           group by date(created)
+                                           order by date(created) asc;""")[1:]  
+    if len(daily_enrollments) == 0:
+        # if no enrollments at all
+        return []
+    else:
+        enrollment_lookup = {}
+        for pair in daily_enrollments:
+            enrollment_lookup[pydt(pair[0])] = pair[1]
 
-    # depending on which db backend the django orm uses, we get different
-    # types back on this query
+        first_date = min(enrollment_lookup.keys())
+        last_date = max(enrollment_lookup.keys())
+
+        for day in (first_date + timedelta(d) for d in range((last_date - first_date).days)):
+            if day not in enrollment_lookup:
+                enrollment_lookup[day] = 0
+
+        # dump that lookup table back to a list with dates represented as ms since epoch
+        all_enrollment_days = [(tojstime(d), enrollment_lookup[d]) for d in sorted(enrollment_lookup.keys())]
+
+        return all_enrollment_days
+
+    enrollments_each_day = [[tojstime(entry[0]), entry[1]] for entry in daily_enrollments]
+    
+def pydt(sqldate):
+    """
+    Returns the date in question as a python datetime
+
+    Used because different db backends return different types
+    """
     if isinstance(sqldate, unicode):
         # SQLite returns unicode
         pydt = datetime.strptime(sqldate, "%Y-%m-%d")
     elif isinstance(sqldate, date):
         # MySQL returns datetime.date 
         pydt = datetime(sqldate.year, sqldate.month, sqldate.day)
-    
-    jsts = (pydt - datetime(1970, 1, 1)).total_seconds()*1000
+    else:
+        raise ValueError("Unknown datatype returned from django backend" + str(type(sqldate)))
+    return pydt
+
+def tojstime(some_date):
+    # first translate date (which could be unicode timestamp) to python datetime
+    some_date = pydt(some_date)
+    jsts = (some_date - datetime(1970, 1, 1)).total_seconds()*1000
     return jsts
 
 def enrollment_history_timeseries(request):
@@ -129,14 +172,8 @@ def enrollment_history_timeseries(request):
     yesterday = today - 86400000
     day_before_yesterday = today - 86400000*2
     
-    # get all daily enrollment counts, ignore the headers
-    daily_enrollments = SQL_query_to_list(cursor, """select date(created), count(*) 
-                                           from student_courseenrollment 
-                                           group by date(created)
-                                           order by date(created) asc;""")[1:]  
-                                             
-    enrollments_each_day = [[tojstime(entry[0]), entry[1]] for entry in daily_enrollments]
-    
+    enrollments_each_day = platform_enrollments_each_day()
+
     # get all daily signup counts, ignore the headers
     daily_signups = SQL_query_to_list(cursor, """select date(date_joined), count(*) 
                                            from auth_user 
