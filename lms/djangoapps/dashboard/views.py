@@ -1,3 +1,11 @@
+"""
+Administrator Dashboard views and helper functions
+
+Contains one HTML view and two data views which return json
+to logged in staff users.  These two data views are loaded from
+the HTML view (ajax).
+"""
+
 import json
 import calendar
 import time
@@ -6,17 +14,17 @@ from operator import itemgetter
 
 from django.http import Http404, HttpResponse
 from django.db import connection
-from django.conf import settings
 from mitxmako.shortcuts import render_to_response
 
 from django.contrib.auth.models import User
-from student.models import CourseEnrollment, CourseEnrollmentAllowed
+from student.models import CourseEnrollment
 from certificates.models import GeneratedCertificate
 
 
 def parse_course_id(course_id):
     """
     Return the org, course, and run given a course_id slug
+    
     >>> org, course, run = parse_course_id("MITx/6.002x/2012_Spring")
     >>> org
     MITx
@@ -45,10 +53,10 @@ def dictfetchall(cursor):
     return table
 
 
-def SQL_query_to_list(cursor, query_string):
+def sql_result(cursor, query_string):
     """
     Executes a raw query and returns the result as a list
-    where each element is a row of the result
+    where each element is a row of the result.
     """
     cursor.execute(query_string)
     raw_result = dictfetchall(cursor)
@@ -69,7 +77,7 @@ def enrollment_history_map(request, days=7):
     start_of_interval = time.strftime("%Y-%m-%d %H:%M:%S", (datetime.now() - timedelta(days, 0)).timetuple())
 
     # get a list of lists [[course_id, enrollments in last 7 days ]]
-    recent_enrollments = SQL_query_to_list(cursor, """select course_id, count(*)
+    recent_enrollments = sql_result(cursor, """select course_id, count(*)
                                            from student_courseenrollment
                                            where '{week_ago}' < created
                                            group by course_id
@@ -107,7 +115,7 @@ def all_daily_values(sparse_daily_values):
     else:
         dt_val_lookup = {}
         for pair in sparse_daily_values:
-            dt_val_lookup[pydt(pair[0])] = pair[1]
+            dt_val_lookup[as_pydt(pair[0])] = pair[1]
 
         first_date = min(dt_val_lookup.keys())
         last_date = max(dt_val_lookup.keys())
@@ -122,7 +130,7 @@ def all_daily_values(sparse_daily_values):
         return all_enrollment_days
 
 
-def pydt(sqldate):
+def as_pydt(sqldate):
     """
     Returns the date in question as a python datetime
 
@@ -146,7 +154,7 @@ def tojstime(some_date):
     """
     # make sure the date is a pyhton datetime even if it's not what
     # we got from the database
-    some_date = pydt(some_date)
+    some_date = as_pydt(some_date)
     jsts = (some_date - datetime(1970, 1, 1)).total_seconds() * 1000
     return jsts
 
@@ -183,14 +191,14 @@ def enrollment_history_timeseries(request):
     day_before_yesterday = today - 86400000 * 2
 
     # get all sparse daily enrollment counts, ignore the headers
-    daily_enrollments = SQL_query_to_list(cursor, """select date(created), count(*)
+    daily_enrollments = sql_result(cursor, """select date(created), count(*)
                                            from student_courseenrollment
                                            group by date(created)
                                            order by date(created) asc;""")[1:]
     enrollments_each_day = all_daily_values(daily_enrollments)
 
     # get sparse daily signup counts, ignore the headers
-    daily_signups = SQL_query_to_list(cursor, """select date(date_joined), count(*)
+    daily_signups = sql_result(cursor, """select date(date_joined), count(*)
                                            from auth_user
                                            group by date(date_joined)
                                            order by date(date_joined) asc;""")[1:]
@@ -213,7 +221,7 @@ def enrollment_history_timeseries(request):
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
 
-def get_course_summary_table():
+def course_summary_table():
     """
     Return a list of lists representing a table of course information.
 
@@ -241,31 +249,32 @@ def get_course_summary_table():
         group by course_id
         order by Certificates desc;
         """
-    course_id_enrollments = SQL_query_to_list(cursor, enrollment_query)
-    course_id_enrollments_map = {row[0]: row[1] for row in course_id_enrollments[1:]}
-    course_id_active_enrollments = SQL_query_to_list(cursor, active_enrollment_query)
-    course_id_active_enrollments_map = {row[0]: row[1] for row in course_id_active_enrollments[1:]}
-    course_id_certificates = SQL_query_to_list(cursor, certificate_query)
-    course_id_certificates_map = {row[0]: row[1] for row in course_id_certificates[1:]}
+    
+    enrollments = sql_result(cursor, enrollment_query)
+    enrollments_map = {row[0]: row[1] for row in enrollments[1:]}
+    active_enrollments = sql_result(cursor, active_enrollment_query)
+    active_enrollments_map = {row[0]: row[1] for row in active_enrollments[1:]}
+    certificates = sql_result(cursor, certificate_query)
+    certificates_map = {row[0]: row[1] for row in certificates[1:]}
 
     # New Headers
     headers = [["School", "Course", "Run", "Known Enrollees", "Active Enrollees", "Certificates", "% Certified"]]
     org_course_run_information = []
     # Updated Rows
-    for course_id in set(course_id_certificates_map.keys()) | set(course_id_enrollments_map.keys()):
+    for course_id in set(certificates_map.keys()) | set(enrollments_map.keys()):
         org, course, run = parse_course_id(course_id)
         new_row = [
             org,
             course,
             run,
-            course_id_enrollments_map.get(course_id, "-"),
-            course_id_active_enrollments_map.get(course_id, "-"),
-            course_id_certificates_map.get(course_id, "-")
+            enrollments_map.get(course_id, "-"),
+            active_enrollments_map.get(course_id, "-"),
+            certificates_map.get(course_id, "-")
         ]
-        if course_id in course_id_certificates_map:
+        if course_id in certificates_map:
             # if we certified people calc % of known who were certified
             new_row.append("{0:.2f}".format(
-                100.0 * course_id_certificates_map[course_id] / course_id_enrollments_map[course_id])
+                100.0 * certificates_map[course_id] / enrollments_map[course_id])
             )
         else:
             new_row.append("-")
@@ -298,7 +307,7 @@ def dashboard(request):
     )
 
     # a summary list of lists (table) that shows enrollment and certificate information
-    results["tables"]["Course Statistics"] = get_course_summary_table()
+    results["tables"]["Course Statistics"] = course_summary_table()
 
     context = {
         "results": results
