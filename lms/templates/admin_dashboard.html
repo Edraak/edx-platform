@@ -46,7 +46,7 @@
     </div>
     <div class="row">
       <div class="notes span12">
-        <p>Notes: "Enrollments" reflects all records available in the database.  Any unenrollment before Aug 20, 2012 (for edx.org) deleted the record from the database and is therefore not reflected.  Any unenrollment after that date <strong>is still counted</strong> as an enrollment.  "Active Enrollments" reflects the number of students currently registered for any course past or present except 6.002x.  Users reflects every user including those from 6.002x's first run.  "Certificates Issued" does <strong>not</strong> include the 7,157 certificates issued for the first run of 6.002x.</p>
+        <p>Notes: "Known Enrollments" reflects all records available in the database.  Any unenrollment before Aug 20, 2012 (for edx.org) deleted the record from the database and is therefore not reflected.  Any unenrollment after that date <strong>is still counted</strong> as an enrollment.  "Active Enrollments" reflects the number of students currently registered for any course past or present except 6.002x.  Users reflects every user including those from 6.002x's first run.  "Certificates Issued" does <strong>not</strong> include the 7,157 certificates issued for the first run of 6.002x.</p>
       </div>
     </div>
   </div>
@@ -79,7 +79,8 @@
   % endfor
   <div class="row">
     <div class="notes span12">
-      <p>Note: Enrollment Count reflects all records available in the database including any which are no longer active.</p>
+      <p>Note: Known enrollees includes all students for whom we still have an enrollment record.  Active enrollees includes only students who are currently enrolled in the class.  %Certified is equal to Certificates/Known Enrollees.    
+      </p>
     </div>
   </div>
 </section>
