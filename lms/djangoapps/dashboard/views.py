@@ -83,41 +83,33 @@ def enrollment_history_map(request, days=7):
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
-def platform_enrollments_each_day():
+def all_daily_values(sparse_daily_values):
     """
-    Returns a complete list of dates between the first enrollment
-    recorded in the database and the last one with a corresponding
-    value reflecting the number of enrollments on that day which
-    might be 0.
+    Accepts a list of (date, value) pairs.
+
+    Returns a complete list of pairs between the first and last date
+    in that list with a value (that value being 0 if it doesn't exist in
+    the sparse list argument)
     """
-    cursor = connection.cursor()
-    
-    # get all sparse daily enrollment counts, ignore the headers
-    daily_enrollments = SQL_query_to_list(cursor, """select date(created), count(*) 
-                                           from student_courseenrollment 
-                                           group by date(created)
-                                           order by date(created) asc;""")[1:]  
-    if len(daily_enrollments) == 0:
+    if len(sparse_daily_values) == 0:
         # if no enrollments at all
         return []
     else:
-        enrollment_lookup = {}
-        for pair in daily_enrollments:
-            enrollment_lookup[pydt(pair[0])] = pair[1]
+        dt_val_lookup = {}
+        for pair in sparse_daily_values:
+            dt_val_lookup[pydt(pair[0])] = pair[1]
 
-        first_date = min(enrollment_lookup.keys())
-        last_date = max(enrollment_lookup.keys())
+        first_date = min(dt_val_lookup.keys())
+        last_date = max(dt_val_lookup.keys())
 
         for day in (first_date + timedelta(d) for d in range((last_date - first_date).days)):
-            if day not in enrollment_lookup:
-                enrollment_lookup[day] = 0
+            if day not in dt_val_lookup:
+                dt_val_lookup[day] = 0
 
         # dump that lookup table back to a list with dates represented as ms since epoch
-        all_enrollment_days = [(tojstime(d), enrollment_lookup[d]) for d in sorted(enrollment_lookup.keys())]
+        all_enrollment_days = [(tojstime(d), dt_val_lookup[d]) for d in sorted(dt_val_lookup.keys())]
 
         return all_enrollment_days
-
-    enrollments_each_day = [[tojstime(entry[0]), entry[1]] for entry in daily_enrollments]
     
 def pydt(sqldate):
     """
@@ -172,14 +164,20 @@ def enrollment_history_timeseries(request):
     yesterday = today - 86400000
     day_before_yesterday = today - 86400000*2
     
-    enrollments_each_day = platform_enrollments_each_day()
+    # get all sparse daily enrollment counts, ignore the headers
+    daily_enrollments = SQL_query_to_list(cursor, """select date(created), count(*) 
+                                           from student_courseenrollment 
+                                           group by date(created)
+                                           order by date(created) asc;""")[1:]  
+    enrollments_each_day = all_daily_values(daily_enrollments)
 
-    # get all daily signup counts, ignore the headers
+    # get sparse daily signup counts, ignore the headers
     daily_signups = SQL_query_to_list(cursor, """select date(date_joined), count(*) 
                                            from auth_user 
                                            group by date(date_joined)
                                            order by date(date_joined) asc;""")[1:]    
-    signups_each_day = [[tojstime(entry[0]), entry[1]] for entry in daily_signups]
+    signups_each_day = all_daily_values(daily_signups)
+
    
     data = {
         "type": "timeseries",
@@ -205,6 +203,12 @@ def get_course_summary_table():
         from student_courseenrollment
         group by course_id
         order by students desc;"""
+    active_enrollment_query = """
+        select course_id as Course, count(user_id) as Students 
+        from student_courseenrollment
+        where is_active
+        group by course_id
+        order by students desc;"""
     certificate_query = """
         select course_id as Course, count(user_id) as Certificates 
         from certificates_generatedcertificate
@@ -214,20 +218,26 @@ def get_course_summary_table():
         """
     course_id_enrollments = SQL_query_to_list(cursor, enrollment_query)
     course_id_enrollments_map = {row[0]:row[1] for row in course_id_enrollments[1:]}
+    course_id_active_enrollments = SQL_query_to_list(cursor, active_enrollment_query)
+    course_id_active_enrollments_map = {row[0]:row[1] for row in course_id_active_enrollments[1:]}
     course_id_certificates = SQL_query_to_list(cursor, certificate_query)
     course_id_certificates_map = {row[0]:row[1] for row in course_id_certificates[1:]}
 
     # New Headers
-    headers = [["School", "Course", "Run", "Current Enrollees", "Certificates", "% Certified"]]
+    headers = [["School", "Course", "Run", "Known Enrollees", "Active Enrollees", "Certificates", "% Certified"]]
     org_course_run_information = []
     # Updated Rows
     for course_id in set(course_id_certificates_map.keys()) | set(course_id_enrollments_map.keys()):
         org, course, run = parse_course_id(course_id)
         new_row = [org, course, run, \
             course_id_enrollments_map.get(course_id, "-"), \
+            course_id_active_enrollments_map.get(course_id, "-"), \
             course_id_certificates_map.get(course_id, "-")]
-        if new_row[-1] is not "-":
-            new_row.append("{0:.2f}".format(100.0*new_row[-1]/new_row[-2]))
+        if course_id in course_id_certificates_map:
+            # if we certified people calc % of known who were certified
+            new_row.append("{0:.2f}".format(
+                100.0*course_id_certificates_map[course_id]/course_id_enrollments_map[course_id])
+            )
         else:
             new_row.append("-")
         org_course_run_information.append(new_row) 
@@ -250,7 +260,7 @@ def dashboard(request):
     results = {"scalars":[],"tables":{}}
 
     # Calculate heads up numbers
-    results["scalars"].append(("Enrollments", CourseEnrollment.objects.count()))
+    results["scalars"].append(("Known Enrollments", CourseEnrollment.objects.count()))
     results["scalars"].append(("Active Enrollments", CourseEnrollment.objects.filter(is_active=True).count()))
     results["scalars"].append(("Users", User.objects.filter().count()))
     results["scalars"].append(
