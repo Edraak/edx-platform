@@ -3,43 +3,94 @@
 
 <%inherit file="main.html" />
 
-<section class="container about">
+<%block name="headextra">
+  <script type="text/javascript" src="/static/js/vendor/flot/jquery.flot.js"></script>
+  <script type="text/javascript" src="/static/js/vendor/flot/jquery.flot.time.js"></script>
+</%block>
 
-  <section class="basic_stats">
+<%block name="js_extra">
+  <script type="text/javascript" src="/static/js/admin_dashboard.js"></script>
+  <script type="text/javascript" src="/static/js/table_sort.js"></script>
+</%block>
 
-    <div class="edx_summary">
-      <h2>${_("{platform_name}-wide Summary").format(platform_name=settings.PLATFORM_NAME)}</h2>
-      <table style="margin-left:auto;margin-right:auto;width:50%">
-      % for key in results["scalars"]:
-        <tr>
-          <td>${key}</td>
-          <td>${results["scalars"][key]}</td>
-        </tr>
-      % endfor
-      </table>
+<%block name="css_extra">
+  <link rel="stylesheet" type="text/css" href="/static/css/admin_dashboard.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/vendor/bootstrap.min.css"/>
+</%block>
+<br/>
+
+<section class="container">
+  <h1>Daily Enrollment Rates</h1>
+  <div id="daily_enrollments"> 
+  </div>
+  <div class="row">
+    <div class="notes span12">
+      <p>Note: This chart is not suitable for days with no enrollments.   Enrollment Count reflects all records available in the database including any which are no longer active.</p>
     </div>
-
-    % for table in results["tables"]:
-    <br/>
-    <div class="table_display">
-      <h2>${table}</h2>
-      <table style="margin-left:auto;margin-right:auto;width:50%">
-        <tr>
-          % for column in results["tables"][table][0]:
-          <td><b>${column}</b></td>
-          % endfor
-        </tr>
-        % for row in results["tables"][table][1:]:
-        <tr>
-          % for column in row:
-          <td>${column}</td>
-          % endfor
-        </tr>
-        % endfor
-      </table>
-
-    </div>
-    % endfor
-  </section>
+  </div>
 </section>
 
+<section class="container">
+  <div class="edx_summary">
+    <h1>${_("{platform_name}-wide Summary").format(platform_name=settings.PLATFORM_NAME)}</h1>
+    <br/>
+    <div class="row">
+      % for pair in results["scalars"]:
+      <div class="span4">
+        <div class="heads_up_value">
+          <p>${pair[1]}</p>
+          <h2>${pair[0]}</h2>
+        </div>
+      </div>
+      % endfor
+    </div>
+    <div class="row">
+      <div class="notes span12">
+        <p>Notes: Certificates Count does not include the first run of 6.002x. Enrollment Count does not include the first run of 6.002x.  Enrollment Count reflects all records available in the database including any which are no longer active.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  % for table in results["tables"]:
+  <br/>
+  <div class="table_display">
+    <h1>${table}</h1>
+    <br/>
+    <table class="table sortable table-hover">
+      <thead>
+        <tr>
+          % for column in results["tables"][table][0]:
+          <th><b>${column}</b></th>
+          % endfor
+        </tr>
+      </thead>
+      % for row in results["tables"][table][1:]:
+      <tr>
+        % for column in row:
+        <td>${column}</td>
+        % endfor
+      </tr>
+      % endfor
+    </table>
+
+  </div>
+  % endfor
+  <div class="row">
+    <div class="notes span12">
+      <p>Note: Enrollment Count reflects all records available in the database including any which are no longer active.</p>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <h1>Course Enrollments (Last 7 Days)</h1>
+  <div id="weekly_course_enrollments"> 
+  </div>
+  <div class="row">
+    <div class="notes span12">
+      <p>Note: Does not include courses with less than 10 enrollments in last 7 days.</p>
+    </div>
+  </div>
+</section>
