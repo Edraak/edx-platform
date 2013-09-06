@@ -37,8 +37,9 @@ def perform_request(method, url, data_or_params=None, *args, **kwargs):
             if method in ['post', 'put', 'patch']:
                 response = requests.request(method, url, data=data_or_params, timeout=5)
             else:
-                response = requests.request(method, url, params=data_or_params, timeout=5)
+                response = requests.request(method, url, params=data_or_params, timeout=1)
     except requests.exceptions.Timeout as err:
+        print "\n\n\n\n\n**************************TIMEOUT"
         raise CommentClientTimeoutError(str(err))
 
     except Exception as err:
