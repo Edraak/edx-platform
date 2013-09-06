@@ -249,7 +249,7 @@ def course_summary_table():
         group by course_id
         order by Certificates desc;
         """
-    
+
     enrollments = sql_result(cursor, enrollment_query)
     enrollments_map = {row[0]: row[1] for row in enrollments[1:]}
     active_enrollments = sql_result(cursor, active_enrollment_query)
