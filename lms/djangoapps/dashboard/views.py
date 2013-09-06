@@ -24,7 +24,7 @@ from certificates.models import GeneratedCertificate
 def parse_course_id(course_id):
     """
     Return the org, course, and run given a course_id slug
-    
+
     >>> org, course, run = parse_course_id("MITx/6.002x/2012_Spring")
     >>> org
     MITx
