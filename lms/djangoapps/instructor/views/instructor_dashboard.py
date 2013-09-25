@@ -136,6 +136,7 @@ def _section_data_download(course_id):
         'get_grading_config_url': reverse('get_grading_config', kwargs={'course_id': course_id}),
         'get_students_features_url': reverse('get_students_features', kwargs={'course_id': course_id}),
         'get_anon_ids_url': reverse('get_anon_ids', kwargs={'course_id': course_id}),
+        'get_student_grades_url': reverse('get_student_grades', kwargs={'course_id': course_id}),
     }
     return section_data
 

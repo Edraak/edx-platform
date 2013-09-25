@@ -15,9 +15,10 @@ class DataDownload
     @$display_text           = @$display.find '.data-display-text'
     @$display_table          = @$display.find '.data-display-table'
     @$request_response_error = @$display.find '.request-response-error'
-    @$list_studs_btn = @$section.find("input[name='list-profiles']'")
-    @$list_anon_btn = @$section.find("input[name='list-anon-ids']'")
-    @$grade_config_btn = @$section.find("input[name='dump-gradeconf']'")
+    @$list_studs_btn = @$section.find("input[name='list-profiles']")
+    @$list_anon_btn = @$section.find("input[name='list-anon-ids']")
+    @$grade_config_btn = @$section.find("input[name='dump-gradeconf']")
+    @$grade_data_btn = @$section.find("input[name='download-grades']")
 
     # attach click handlers
 
@@ -25,6 +26,43 @@ class DataDownload
     @$list_anon_btn.click (e) =>
       url = @$list_anon_btn.data 'endpoint'
       location.href = url
+
+    # this handler binds to both the download
+    # and the csv button
+    @$grade_data_btn.click (e) =>
+      url = @$grade_data_btn.data 'endpoint'
+      # handle csv special case
+      if $(e.target).data 'csv'
+        # redirect the document to the csv file.
+        url += '/csv'
+        location.href = url
+      else
+        @clear_display()
+        @$display_table.text 'Loading...'
+
+        # fetch grades list
+        $.ajax
+          dataType: 'json'
+          url: url
+          error: std_ajax_err =>
+            @clear_display()
+            @$request_response_error.text "Error getting student grades"
+          success: (data) =>
+            @clear_display()
+
+            # display on a SlickGrid
+            options =
+              enableCellNavigation: true
+              enableColumnReorder: false
+              forceFitColumns: true
+
+            columns = ({id: feature, field: feature, name: feature} for feature in data.header)
+            grid_data = data.grades
+
+            $table_placeholder = $ '<div/>', class: 'slickgrid'
+            @$display_table.append $table_placeholder
+            grid = new Slick.Grid($table_placeholder, grid_data, columns, options)
+            # grid.autosizeColumns()
 
     # this handler binds to both the download
     # and the csv button

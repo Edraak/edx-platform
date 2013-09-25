@@ -34,4 +34,11 @@ urlpatterns = patterns('',  # nopep8
         'instructor.views.api.update_forum_role_membership', name="update_forum_role_membership"),
     url(r'^proxy_legacy_analytics$',
         'instructor.views.api.proxy_legacy_analytics', name="proxy_legacy_analytics"),
+
+    url(r'^get_student_grades(?P<csv>/csv)?$',
+        'instructor.views.api.get_student_grades', name="get_student_grades"),
+    # url(r'^get_raw_student_grades(?P<csv>/csv)$',
+    #     'instructor.views.api.get_raw_student_grades', name="get_raw_student_grades"),
+    # url(r'^get_answer_distribution$',
+    #     'instructor.views.api.get_answer_distribution', name="get_answer_distribution"),
 )

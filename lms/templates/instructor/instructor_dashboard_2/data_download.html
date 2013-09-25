@@ -5,12 +5,19 @@
 <input type="button" name="list-profiles" value="CSV" data-csv="true" class="csv" data-endpoint="${ section_data['get_students_features_url'] }" >
 <br>
 ## <input type="button" name="list-grades" value="Student grades">
+<input type="button" name="download-grades" value="List student grades" data-endpoint="${ section_data['get_student_grades_url'] }">
+<input type="button" name="download-grades" value="CSV" data-csv="true" class="csv" data-endpoint="${ section_data['get_student_grades_url'] }">
+<br>
+
+
 ## <input type="button" name="list-profiles" value="CSV" data-csv="true" class="csv">
 ## <br>
 ## <input type="button" name="list-answer-distributions" value="Answer distributions (x students got y points)">
 ## <br>
 <input type="button" name="dump-gradeconf" value="${_("Grading Configuration")}" data-endpoint="${ section_data['get_grading_config_url'] }">
+<br>
 <input type="button" name="list-anon-ids" value="${_("Get Student Anonymized IDs CSV")}" data-csv="true" class="csv" data-endpoint="${ section_data['get_anon_ids_url'] }">
+
 
 
 <div class="data-display">

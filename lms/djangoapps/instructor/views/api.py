@@ -33,6 +33,7 @@ import instructor_task.api
 from instructor_task.api_helper import AlreadyRunningError
 import instructor.enrollment as enrollment
 from instructor.enrollment import enroll_email, unenroll_email
+from instructor.offline_gradecalc import student_grades
 from instructor.views.tools import strip_if_string, get_student_from_identifier
 import instructor.access as access
 import analytics.basic
@@ -857,3 +858,104 @@ def _msk_from_problem_urlname(course_id, urlname):
     (org, course_name, __) = course_id.split("/")
     module_state_key = "i4x://" + org + "/" + course_name + "/" + urlname
     return module_state_key
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def get_student_grades(request, course_id, csv=False):
+    """
+    Respond with json which contains a summary of all enrolled students profile information.
+
+    Responds with JSON
+        {"students": [{-student-info-}, ...]}
+
+    TO DO accept requests for different attribute sets.
+    """
+    raw = False
+    datatable = _get_student_grade_summary_data(request, course_id, get_raw_scores=raw)
+    header = datatable['header']
+    datarows = datatable['data']
+
+    def extract_grade(header, datarow):
+        grade_dict = {}
+        for index, heading in enumerate(header):
+            grade_dict.update({heading: datarow[index]})
+        return grade_dict
+
+    if not csv:
+        response_payload = {
+            'course_id': course_id,
+            'header': header,
+            'grades': [extract_grade(header, datarow) for datarow in datarows],
+        }
+        return JsonResponse(response_payload)
+    else:
+        header, datarows = datatable['header'], datatable['data']
+        return analytics.csvs.create_csv_response("enrolled_profiles.csv", header, datarows)
+
+
+def _get_student_grade_summary_data(request, course_id, get_grades=True, get_raw_scores=False, use_offline=False):
+    '''
+    Ported over from legacy.py. Eventually should refactor and put in
+    the analytics app.
+
+    Return data arrays with student identity and grades for specified course.
+
+    course = CourseDescriptor
+    course_id = course ID
+
+    Note: both are passed in, only because instructor_dashboard already has them already.
+
+    returns datatable = dict(header=header, data=data)
+    where
+
+    header = list of strings labeling the data fields
+    data = list (one per student) of lists of data corresponding to the fields
+
+    If get_raw_scores=True, then instead of grade summaries, the raw grades for all graded modules are returned.
+
+    '''
+
+    course = get_course_by_id(course_id)
+
+    enrolled_students = User.objects.filter(
+        courseenrollment__course_id=course_id,
+        courseenrollment__is_active=1,
+    ).prefetch_related("groups").order_by('username')
+
+    header = ['ID', 'Username', 'Full Name', 'edX email', 'External email']
+    assignments = []
+    if get_grades and enrolled_students.count() > 0:
+        # just to construct the header
+        gradeset = student_grades(enrolled_students[0], request, course, keep_raw_scores=get_raw_scores, use_offline=use_offline)
+        # log.debug('student {0} gradeset {1}'.format(enrolled_students[0], gradeset))
+        if get_raw_scores:
+            assignments += [score.section for score in gradeset['raw_scores']]
+        else:
+            assignments += [x['label'] for x in gradeset['section_breakdown']]
+    header += assignments
+
+    datatable = {'header': header, 'assignments': assignments, 'students': enrolled_students}
+    data = []
+
+    for student in enrolled_students:
+        datarow = [student.id, student.username, student.profile.name, student.email]
+        try:
+            datarow.append(student.externalauthmap.external_email)
+        except:  # ExternalAuthMap.DoesNotExist
+            datarow.append('')
+
+        if get_grades:
+            gradeset = student_grades(student, request, course, keep_raw_scores=get_raw_scores, use_offline=use_offline)
+            log.debug('student={0}, gradeset={1}'.format(student, gradeset))
+            if get_raw_scores:
+                # TODO (ichuang) encode Score as dict instead of as list, so score[0] -> score['earned']
+                sgrades = [(getattr(score, 'earned', '') or score[0]) for score in gradeset['raw_scores']]
+            else:
+                sgrades = [x['percent'] for x in gradeset['section_breakdown']]
+            datarow += sgrades
+            student.grades = sgrades    # store in student object
+
+        data.append(datarow)
+    datatable['data'] = data
+    return datatable
