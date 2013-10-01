@@ -61,11 +61,14 @@ def parse_time_from_float_to_str(s):
     if not s:
         return "00:00:00"
     else:
+        # TODO: also, look into what happens when the seconds gets large, I get things like '2 days, 7:33:20'
         return str(datetime.timedelta(seconds=s))
 
 
 class StringThatWasFloat(String):
-
+    """
+    Field is for migration only
+    """
     def from_json(self, value):
         if isinstance(value, float):
             return parse_time_from_float_to_str(value)
