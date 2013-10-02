@@ -99,6 +99,8 @@ class Timedelta(Field):
         """
         if time_str is None:
             return None
+        if isinstance(time_str, float):
+            return str(datetime.timedelta(seconds=time_str))
         parts = TIMEDELTA_REGEX.match(time_str)
         if not parts:
             return

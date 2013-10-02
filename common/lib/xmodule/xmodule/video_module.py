@@ -26,7 +26,9 @@ from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
 from xmodule.modulestore import Location
+from xmodule.fields import Timedelta
 from xblock.fields import Scope, String, Boolean, Float, List, Integer, ScopeIds
+
 
 from xblock.field_data import DictFieldData
 
@@ -36,44 +38,18 @@ from xblock.runtime import DbModel
 log = logging.getLogger(__name__)
 
 
-def parse_time_from_str_to_float(str_time):
-    """
-    Converts s in '12:34:45' format to seconds.
-
-    If s is None, returns 0"""
-    if not str_time:
-        return 0
-    else:
-        obj_time = time.strptime(str_time, '%H:%M:%S')
-        return datetime.timedelta(
-            hours=obj_time.tm_hour,
-            minutes=obj_time.tm_min,
-            seconds=obj_time.tm_sec
-        ).total_seconds()
+def from_old_to_TD(str_time):
+    """from '00:00:00' to tD"""
+    obj_time = time.strptime(str_time, '%H:%M:%S')
+    return datetime.timedelta(
+        hours=obj_time.tm_hour,
+        minutes=obj_time.tm_min,
+        seconds=obj_time.tm_sec
+    )
 
 
-def parse_time_from_float_to_str(s):
-    """
-    Converts s from seconds to  '12:34:45' format.
-
-    If s is None, returns "00:00:00"
-    """
-    if not s:
-        return "00:00:00"
-    else:
-        # TODO: also, look into what happens when the seconds gets large, I get things like '2 days, 7:33:20'
-        return str(datetime.timedelta(seconds=s))
-
-
-class StringThatWasFloat(String):
-    """
-    Field is for migration only
-    """
-    def from_json(self, value):
-        if isinstance(value, float):
-            return parse_time_from_float_to_str(value)
-        else:
-            return super(StringThatWasFloat, self).from_json(value)
+def from_TD_to_old(s):
+    return str(s)
 
 
 class VideoFields(object):
@@ -118,19 +94,19 @@ class VideoFields(object):
         help="The Youtube ID for the 1.5x speed video.",
         display_name="Youtube ID for 1.5x speed",
         scope=Scope.settings,
-        default=""
+        default=
     )
-    start_time = StringThatWasFloat(
+    start_time = Timedelta(
         help="Start time for the video.",
         display_name="Start Time",
         scope=Scope.settings,
-        default="00:00:00"
+        default=datetime.timedelta(seconds=0)
     )
-    end_time = StringThatWasFloat(
+    end_time = Timedeta(
         help="End time for the video.",
         display_name="End Time",
         scope=Scope.settings,
-        default="00:00:00"
+        default=datetime.timedelta(seconds=0)
     )
     source = String(
         help="The external URL to download the video. This appears as a link beneath the video.",
@@ -226,8 +202,8 @@ class VideoModule(VideoFields, XModule):
             'data_dir': getattr(self, 'data_dir', None),
             'caption_asset_path': caption_asset_path,
             'show_captions': json.dumps(self.show_captions),
-            'start': parse_time_from_str_to_float(self.start_time),
-            'end': parse_time_from_str_to_float(self.end_time),
+            'start': self.start_time.total_seconds(),
+            'end': self.end_time.total_seconds(),
             'autoplay': settings.MITX_FEATURES.get('AUTOPLAY_VIDEOS', False),
             # TODO: Later on the value 1500 should be taken from some global
             # configuration setting field.
