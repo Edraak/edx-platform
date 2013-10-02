@@ -377,22 +377,33 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
     @classmethod
     def _parse_time(cls, str_time):
         """
-        Converts str_time in '12:34:45' format to timedelta.
+        This function converts serialized time from one format to another.
 
-        If str_time is None, returns timedelta for 0 seconds"""
+        It is only for migration issues. Time is video duration, so we assume it is less that 23:59:59
+
+        Converts str_time in '12:34:45' or float format to serialized Timedelta.
+
+        If str_time is None, returns '0 seconds'
+        """
         if not str_time:
-            return datetime.timedelta(seconds=0)
+            return '0 seconds'
         else:
             try:
                 obj_time = time.strptime(str_time, '%H:%M:%S')
-                return datetime.timedelta(
+                return "{hours} hours {minutes} minutes {seconds} seconds".format(
                     hours=obj_time.tm_hour,
                     minutes=obj_time.tm_min,
                     seconds=obj_time.tm_sec
                 )
             except ValueError:
                 # We've seen serialized versions of float (old version) in this field
-                return datetime.timedelta(seconds=float(str_time))
+                return "{} seconds".format(int(float(str_time)))
+
+    def editable_metadata_fields(self):
+        metadata_fields = super(VideoDescriptor, self).editable_metadata_fields()
+        # for field in metadata_fields:
+            # if
+        return metadata_fields
 
 
 def _create_youtube_string(module):

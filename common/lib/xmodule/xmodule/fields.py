@@ -98,9 +98,9 @@ class Timedelta(Field):
         Returns a datetime.timedelta parsed from the string
         """
         if time_str is None:
-            return None
+            return datetime.timedelta(seconds=0)
         if isinstance(time_str, float):
-            return str(datetime.timedelta(seconds=time_str))
+            return datetime.timedelta(seconds=time_str)
         parts = TIMEDELTA_REGEX.match(time_str)
         if not parts:
             return
