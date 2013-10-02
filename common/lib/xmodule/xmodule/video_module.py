@@ -80,7 +80,7 @@ class VideoFields(object):
         help="The Youtube ID for the 1.5x speed video.",
         display_name="Youtube ID for 1.5x speed",
         scope=Scope.settings,
-        default=
+        default=""
     )
     start_time = Timedelta(
         help="Start time for the video.",
@@ -88,7 +88,7 @@ class VideoFields(object):
         scope=Scope.settings,
         default=datetime.timedelta(seconds=0)
     )
-    end_time = Timedeta(
+    end_time = Timedelta(
         help="End time for the video.",
         display_name="End Time",
         scope=Scope.settings,
