@@ -38,20 +38,6 @@ from xblock.runtime import DbModel
 log = logging.getLogger(__name__)
 
 
-def from_old_to_TD(str_time):
-    """from '00:00:00' to tD"""
-    obj_time = time.strptime(str_time, '%H:%M:%S')
-    return datetime.timedelta(
-        hours=obj_time.tm_hour,
-        minutes=obj_time.tm_min,
-        seconds=obj_time.tm_sec
-    )
-
-
-def from_TD_to_old(s):
-    return str(s)
-
-
 class VideoFields(object):
     """Fields for `VideoModule` and `VideoDescriptor`."""
     display_name = String(
