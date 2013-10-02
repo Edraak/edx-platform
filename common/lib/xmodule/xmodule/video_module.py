@@ -272,9 +272,8 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             'display_name': self.display_name,
             'show_captions': json.dumps(self.show_captions),
 
-            # should be HH:MM:SS
-            'start_time': str(self.start_time),
-            'end_time': str(self.end_time),
+            'start_time': str(self.start_time),  # should be HH:MM:SS
+            'end_time': str(self.end_time),  # should be HH:MM:SS
             'sub': self.sub,
         }
         for key, value in attrs.items():
