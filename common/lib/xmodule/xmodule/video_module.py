@@ -285,8 +285,10 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         attrs = {
             'display_name': self.display_name,
             'show_captions': json.dumps(self.show_captions),
-            'start_time': self.start_time,
-            'end_time': self.end_time,
+
+            # should be HH:MM:SS
+            'start_time': str(self.start_time),
+            'end_time': str(self.end_time),
             'sub': self.sub,
         }
         for key, value in attrs.items():
@@ -341,8 +343,8 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         field_data = {}
 
         conversions = {
-            # 'start_time': cls._parse_time,
-            # 'end_time': cls._parse_time
+            'start_time': cls._parse_time,
+            'end_time': cls._parse_time
         }
 
         # Convert between key names for certain attributes --
@@ -389,10 +391,12 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
 
     @classmethod
     def _parse_time(cls, str_time):
-        """Converts s in '12:34:45' format to seconds. If s is
-        None, returns empty string"""
+        """
+        Converts str_time in '12:34:45' format to timedelta.
+
+        If str_time is None, returns timedelta for 0 seconds"""
         if not str_time:
-            return ''
+            return datetime.timedelta(seconds=0)
         else:
             try:
                 obj_time = time.strptime(str_time, '%H:%M:%S')
@@ -400,10 +404,10 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
                     hours=obj_time.tm_hour,
                     minutes=obj_time.tm_min,
                     seconds=obj_time.tm_sec
-                ).total_seconds()
+                )
             except ValueError:
-                # We've seen serialized versions of float in this field
-                return float(str_time)
+                # We've seen serialized versions of float (old version) in this field
+                return datetime.timedelta(seconds=float(str_time))
 
 
 def _create_youtube_string(module):
