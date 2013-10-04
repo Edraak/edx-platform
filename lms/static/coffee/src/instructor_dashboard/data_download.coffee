@@ -6,6 +6,46 @@
 plantTimeout = -> window.InstructorDashboard.util.plantTimeout.apply this, arguments
 std_ajax_err = -> window.InstructorDashboard.util.std_ajax_err.apply this, arguments
 
+get_table_button = (button, error_message) =>
+  button.click (e) =>
+  url = button.data 'endpoint'
+
+  # handle case of raw grades
+  if $(e.target).data 'raw'
+    url += '/raw'
+
+  # handle csv special case
+  if $(e.target).data 'csv'
+    # redirect the document to the csv file.
+    url += '/csv'
+    location.href = url
+  else
+    @clear_display()
+    @$display_table.text 'Loading...'
+
+    # fetch grades list
+    $.ajax
+      dataType: 'json'
+      url: url
+      error: std_ajax_err =>
+        @clear_display()
+        @$request_response_error.text error_message
+      success: (data) =>
+        @clear_display()
+
+        # display on a SlickGrid
+        options =
+          enableCellNavigation: true
+          enableColumnReorder: false
+          forceFitColumns: true
+
+        columns = ({id: feature, field: feature, name: feature} for feature in data.header)
+        grid_data = data.grades
+
+        $table_placeholder = $ '<div/>', class: 'slickgrid'
+        @$display_table.append $table_placeholder
+        grid = new Slick.Grid($table_placeholder, grid_data, columns, options)
+        # grid.autosizeColumns()
 
 # Data Download Section
 class DataDownload
@@ -26,6 +66,7 @@ class DataDownload
     @$list_anon_btn.click (e) =>
       url = @$list_anon_btn.data 'endpoint'
       location.href = url
+
 
     # this handler binds to both the download
     # and the csv button
