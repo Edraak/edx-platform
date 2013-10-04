@@ -37,8 +37,7 @@ urlpatterns = patterns('',  # nopep8
 
     url(r'^get_student_grades(?P<raw>/raw)?(?P<csv>/csv)?$',
         'instructor.views.api.get_student_grades', name="get_student_grades"),
-    # url(r'^get_raw_student_grades(?P<csv>/csv)$',
-    #     'instructor.views.api.get_raw_student_grades', name="get_raw_student_grades"),
-    # url(r'^get_answer_distribution$',
-    #     'instructor.views.api.get_answer_distribution', name="get_answer_distribution"),
+
+    url(r'^get_distribution$',
+        'instructor.views.api.get_distribution', name="get_distribution"),
 )

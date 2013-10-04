@@ -360,7 +360,7 @@ def get_students_features(request, course_id, csv=False):  # pylint: disable=W06
     if not csv:
         response_payload = {
             'course_id': course_id,
-            'students': student_data,
+            'student_data': student_data,
             'students_count': len(student_data),
             'queried_features': query_features,
             'available_features': available_features,
@@ -886,8 +886,8 @@ def get_student_grades(request, course_id, csv=False, raw=False):
     if not csv:
         response_payload = {
             'course_id': course_id,
-            'header': header,
-            'grades': [extract_grade(header, datarow) for datarow in datarows],
+            'queried_features': header,
+            'student_data': [extract_grade(header, datarow) for datarow in datarows],
         }
         return JsonResponse(response_payload)
     else:
