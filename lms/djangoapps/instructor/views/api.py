@@ -862,7 +862,7 @@ def _msk_from_problem_urlname(course_id, urlname):
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_level('staff')
-def get_student_grades(request, course_id, csv=False):
+def get_student_grades(request, course_id, csv=False, raw=False):
     """
     Respond with json which contains a summary of all enrolled students profile information.
 
@@ -871,15 +871,16 @@ def get_student_grades(request, course_id, csv=False):
 
     TO DO accept requests for different attribute sets.
     """
-    raw = False
     datatable = _get_student_grade_summary_data(request, course_id, get_raw_scores=raw)
     header = datatable['header']
     datarows = datatable['data']
 
     def extract_grade(header, datarow):
         grade_dict = {}
-        for index, heading in enumerate(header):
-            grade_dict.update({heading: datarow[index]})
+        # iterate over datarows in case there isn't student input
+        # for some problems
+        for index, datum in enumerate(datarow):
+            grade_dict.update({header[index]: datum})
         return grade_dict
 
     if not csv:

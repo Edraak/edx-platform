@@ -35,7 +35,7 @@ urlpatterns = patterns('',  # nopep8
     url(r'^proxy_legacy_analytics$',
         'instructor.views.api.proxy_legacy_analytics', name="proxy_legacy_analytics"),
 
-    url(r'^get_student_grades(?P<csv>/csv)?$',
+    url(r'^get_student_grades(?P<raw>/raw)?(?P<csv>/csv)?$',
         'instructor.views.api.get_student_grades', name="get_student_grades"),
     # url(r'^get_raw_student_grades(?P<csv>/csv)$',
     #     'instructor.views.api.get_raw_student_grades', name="get_raw_student_grades"),

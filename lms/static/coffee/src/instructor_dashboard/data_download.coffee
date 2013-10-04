@@ -31,6 +31,11 @@ class DataDownload
     # and the csv button
     @$grade_data_btn.click (e) =>
       url = @$grade_data_btn.data 'endpoint'
+
+      # handle case of raw grades
+      if $(e.target).data 'raw'
+        url += '/raw'
+
       # handle csv special case
       if $(e.target).data 'csv'
         # redirect the document to the csv file.
