@@ -154,7 +154,8 @@ def import_course(request, org, course, name):
                     return JsonResponse(
                         {
                             'ErrMsg': 'Unsafe tar file. Aborting import.',
-                            'SuspiciousFileOperationMsg': exc.args[0]
+                            'SuspiciousFileOperationMsg': exc.args[0],
+                            'Stage': 1
                         },
                         status=400
                     )
