@@ -239,19 +239,42 @@ class XModuleStudentStateDjangoBackend(object):
     def __init__(self):
         pass
 
+    def _django_model_to_state_obj(self, model_record):
+        return XModuleStudentState(
+            model_record.course_id,
+            model_record.student.id,
+            model_record.module_state_key,
+            module_type=model_record.module_type,
+            state=model_record.state,
+            grade=model_record.grade,
+            max_grade=model_record.max_grade
+        )
+
+    def get(self, course_id, user_id, module_state_key):
+        try:
+            record = StudentModule.objects.get(
+                course_id=course_id,
+                student=user_id,
+                module_state_key=module_state_key
+            )
+            return self._django_model_to_state_obj(record)
+        except StudentModule.DoesNotExist:
+            searched_for = (
+                "(course_id={}, user_id={}, module_state_Key={}"
+                .format(course_id, user_id, module_state_key)
+            )
+            raise KeyError(
+                "Could not find XModuleStudentState for {} using {!r}"
+                .format(searched_for, self)
+            )
+
     def get_for_course_user(self, course_id, user_id, module_state_keys):
         records = StudentModule.objects.filter(
             course_id=course_id,
             student=user_id,
             module_state_key__in=module_state_keys
         )
-        return [
-            XModuleStudentState(
-                r.course_id, r.student.id, r.module_state_key,
-                module_type=r.module_type, state=r.state, grade=r.grade, max_grade=r.max_grade
-            )
-            for r in records
-        ]
+        return [self._django_model_to_state_obj(record) for record in records]
 
     def save(self, state_obj):
         record, created = StudentModule.objects.get_or_create(
@@ -291,7 +314,8 @@ class XModuleStudentState(object):
 
     @classmethod
     def get(cls, course_id, user_id, module_state_key):
-        pass
+        backend = XModuleStudentState.backend_for_course(course_id)
+        return backend.get(course_id, user_id, module_state_key)
 
     def save(self):
         backend = XModuleStudentState.backend_for_course(self.course_id)

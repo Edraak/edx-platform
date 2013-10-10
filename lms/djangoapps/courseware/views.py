@@ -24,7 +24,7 @@ import courseware.tabs as tabs
 from courseware.masquerade import setup_masquerade
 from courseware.model_data import FieldDataCache
 from .module_render import toc_for_course, get_module_for_descriptor, get_module
-from courseware.models import StudentModule, StudentModuleHistory
+from courseware.models import StudentModuleHistory, XModuleStudentState
 from course_modes.models import CourseMode
 
 from django_comment_client.utils import get_discussion_title
@@ -752,7 +752,6 @@ def submission_history(request, course_id, student_username, location):
     Right now this only works for problems because that's all
     StudentModuleHistory records.
     """
-
     course = get_course_with_access(request.user, course_id, 'load')
     staff_access = has_access(request.user, course, 'staff')
 
@@ -763,12 +762,10 @@ def submission_history(request, course_id, student_username, location):
 
     try:
         student = User.objects.get(username=student_username)
-        student_module = StudentModule.objects.get(course_id=course_id,
-                                                   module_state_key=location,
-                                                   student_id=student.id)
+        student_module = XModuleStudentState.get(course.id, student.id, location)
     except User.DoesNotExist:
         return HttpResponse(escape("User {0} does not exist.".format(student_username)))
-    except StudentModule.DoesNotExist:
+    except KeyError:
         return HttpResponse(escape("{0} has never accessed problem {1}".format(student_username, location)))
 
     history_entries = StudentModuleHistory.objects.filter(
