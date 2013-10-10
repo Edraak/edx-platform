@@ -101,6 +101,13 @@
         ${('<a href="%s">' + _('Download timed transcript') + '</a>') % track}
     </li>
 % endif
+<br/>
+<div class="notestaken" name="notestaken" style="display:none;">
+</div>
+<div class="notetaker" name="notetaker">
+    <textarea rows="6" cols="70" style="height:100px;"></textarea>
+    <input type="submit" value="Note" name="takenote"/>
+</div>
 </ul>
 </div>
 
