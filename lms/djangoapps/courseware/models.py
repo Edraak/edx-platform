@@ -236,13 +236,35 @@ class OfflineComputedGradeLog(models.Model):
 
 class XModuleStudentStateDjangoBackend(object):
 
-    @classmethod
-    def get_for_course_user(cls, course_id, user_id, module_ids):
-        return StudentModule.objects.filter(
+    def __init__(self):
+        pass
+
+    def get_for_course_user(self, course_id, user_id, module_state_keys):
+        records = StudentModule.objects.filter(
             course_id=course_id,
             student=user_id,
-            module_state_key__in=module_ids
+            module_state_key__in=module_state_keys
         )
+        return [
+            XModuleStudentState(
+                r.course_id, r.student.id, r.module_state_key,
+                module_type=r.module_type, state=r.state, grade=r.grade, max_grade=r.max_grade
+            )
+            for r in records
+        ]
+
+    def save(self, state_obj):
+        record, created = StudentModule.objects.get_or_create(
+            course_id=state_obj.course_id,
+            student=state_obj.user_id,
+            module_state_key=state_obj.module_state_key
+        )
+        record.module_type = state_obj.module_type
+        record.state = state_obj.state
+        record.grade = state_obj.grade
+        record.max_grade = state_obj.max_grade
+
+        record.save()
 
 class XModuleStudentState(object):
     """
@@ -251,32 +273,39 @@ class XModuleStudentState(object):
     over StudentModule, which is a Django-ORM specific backend. Unlike the
     XModule*Field classes above, this object stores multiple fields in one
     entry.
-
-
     """
     @classmethod
-    def get_for_course_user(cls, course_id, user_id, module_ids):
+    def backend_for_course(cls, course_id):
+        return XModuleStudentStateDjangoBackend()
+
+    @classmethod
+    def get_for_course_user(cls, course_id, user_id, module_state_keys):
         """
-        `module_ids` is an iterable of module_ids that we want to retrieve.
+        `module_state_keys` is an iterable of module_state_keys that we want to
+        retrieve.
         """
-        return XModuleStudentStateDjangoBackend.get_for_course_user(
-            course_id, user_id, module_ids
+        backend = cls.backend_for_course(course_id)
+        return backend.get_for_course_user(
+            course_id, user_id, module_state_keys
         )
 
     @classmethod
-    def get(cls, course_id, user_id, module_id):
+    def get(cls, course_id, user_id, module_state_key):
         pass
 
-    @classmethod
-    def set(cls, state_objs):
-        pass
+    def save(self):
+        backend = XModuleStudentState.backend_for_course(self.course_id)
+        backend.save(self)
 
-    def __init__(self, course_id, user_id, module_id,
+    def __init__(self, course_id, user_id, module_state_key,
                  module_type='problem', state=None, grade=None, max_grade=None):
         self.course_id = course_id
         self.user_id = user_id
+        self.module_state_key = module_state_key
         self.module_type = module_type
         self.state = state
         self.grade = grade
         self.max_grade = max_grade
+
+
 
