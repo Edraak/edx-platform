@@ -139,7 +139,7 @@ class FieldDataCache(object):
         Queries the database for all of the fields in the specified scope
         """
         if scope == Scope.user_state:
-            return XModuleStudentState.get_for_course(
+            return XModuleStudentState.get_for_course_user(
                 self.course_id,
                 self.user.pk,
                 [descriptor.location.url() for descriptor in self.descriptors]

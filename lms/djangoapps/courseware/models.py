@@ -233,6 +233,17 @@ class OfflineComputedGradeLog(models.Model):
     def __unicode__(self):
         return "[OCGLog] %s: %s" % (self.course_id, self.created)
 
+
+class XModuleStudentStateDjangoBackend(object):
+
+    @classmethod
+    def get_for_course_user(cls, course_id, user_id, module_ids):
+        return StudentModule.objects.filter(
+            course_id=course_id,
+            student=user_id,
+            module_state_key__in=module_ids
+        )
+
 class XModuleStudentState(object):
     """
     Represents the state of a given XBlock usage for a given user
@@ -240,20 +251,32 @@ class XModuleStudentState(object):
     over StudentModule, which is a Django-ORM specific backend. Unlike the
     XModule*Field classes above, this object stores multiple fields in one
     entry.
+
+
     """
     @classmethod
-    def get_for_course(cls, course_id, user_id, module_ids):
+    def get_for_course_user(cls, course_id, user_id, module_ids):
         """
         `module_ids` is an iterable of module_ids that we want to retrieve.
         """
-        return StudentModule.objects.filter(
-            course_id=course_id,
-            student=user_id,
-            module_state_key__in=module_ids
+        return XModuleStudentStateDjangoBackend.get_for_course_user(
+            course_id, user_id, module_ids
         )
-#            'module_state_key__in',
-#            (descriptor.location.url() for descriptor in self.descriptors),
-#            course_id=course_id,
-#            student=user_id,
-#        )
-#
+
+    @classmethod
+    def get(cls, course_id, user_id, module_id):
+        pass
+
+    @classmethod
+    def set(cls, state_objs):
+        pass
+
+    def __init__(self, course_id, user_id, module_id,
+                 module_type='problem', state=None, grade=None, max_grade=None):
+        self.course_id = course_id
+        self.user_id = user_id
+        self.module_type = module_type
+        self.state = state
+        self.grade = grade
+        self.max_grade = max_grade
+
