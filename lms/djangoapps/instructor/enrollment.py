@@ -7,7 +7,7 @@ Does not include any access control, be sure to check access before calling.
 import json
 from django.contrib.auth.models import User
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
-from courseware.models import StudentModule
+from courseware.models import XModuleStudentState
 
 
 class EmailEnrollmentState(object):
@@ -117,9 +117,9 @@ def reset_student_attempts(course_id, student, module_state_key, delete_module=F
 
     Throws ValueError if `problem_state` is invalid JSON.
     """
-    module_to_reset = StudentModule.objects.get(student_id=student.id,
-                                                course_id=course_id,
-                                                module_state_key=module_state_key)
+    module_to_reset = XModuleStudentState.get(course_id=course_id,
+                                              user_id=student.id,
+                                              module_state_key=module_state_key)
 
     if delete_module:
         module_to_reset.delete()

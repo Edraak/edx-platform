@@ -289,6 +289,78 @@ class XModuleStudentStateDjangoBackend(object):
 
         record.save()
 
+    def delete(self, state_obj):
+        record = StudentModule.objects.get(
+            course_id=state_obj.course_id,
+            student_id=state_obj.user_id,
+            module_state_key=state_obj.module_state_key
+        )
+        record.delete()
+
+class XModuleStudentStateMongoBackend(object):
+
+    def __init__(self):
+        pass
+
+    def _django_model_to_state_obj(self, model_record):
+        return XModuleStudentState(
+            model_record.course_id,
+            model_record.student.id,
+            model_record.module_state_key,
+            module_type=model_record.module_type,
+            state=model_record.state,
+            grade=model_record.grade,
+            max_grade=model_record.max_grade
+        )
+
+    def get(self, course_id, user_id, module_state_key):
+        try:
+            record = StudentModule.objects.get(
+                course_id=course_id,
+                student=user_id,
+                module_state_key=module_state_key
+            )
+            return self._django_model_to_state_obj(record)
+        except StudentModule.DoesNotExist:
+            searched_for = (
+                "(course_id={}, user_id={}, module_state_Key={}"
+                .format(course_id, user_id, module_state_key)
+            )
+            raise KeyError(
+                "Could not find XModuleStudentState for {} using {!r}"
+                .format(searched_for, self)
+            )
+
+    def get_for_course_user(self, course_id, user_id, module_state_keys):
+        records = StudentModule.objects.filter(
+            course_id=course_id,
+            student=user_id,
+            module_state_key__in=module_state_keys
+        )
+        return [self._django_model_to_state_obj(record) for record in records]
+
+    def save(self, state_obj):
+        record, created = StudentModule.objects.get_or_create(
+            course_id=state_obj.course_id,
+            student=state_obj.user_id,
+            module_state_key=state_obj.module_state_key
+        )
+        record.module_type = state_obj.module_type
+        record.state = state_obj.state
+        record.grade = state_obj.grade
+        record.max_grade = state_obj.max_grade
+
+        record.save()
+
+    def delete(self, state_obj):
+        record = StudentModule.objects.get(
+            course_id=state_obj.course_id,
+            student_id=state_obj.user_id,
+            module_state_key=state_obj.module_state_key
+        )
+        record.delete()
+
+
 class XModuleStudentState(object):
     """
     Represents the state of a given XBlock usage for a given user
@@ -317,9 +389,11 @@ class XModuleStudentState(object):
         backend = XModuleStudentState.backend_for_course(course_id)
         return backend.get(course_id, user_id, module_state_key)
 
+    def delete(self):
+        XModuleStudentState.backend_for_course(self.course_id).delete(self)
+
     def save(self):
-        backend = XModuleStudentState.backend_for_course(self.course_id)
-        backend.save(self)
+        XModuleStudentState.backend_for_course(self.course_id).save(self)
 
     def __init__(self, course_id, user_id, module_state_key,
                  module_type='problem', state=None, grade=None, max_grade=None):

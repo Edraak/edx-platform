@@ -24,7 +24,7 @@ import courseware.tabs as tabs
 from courseware.masquerade import setup_masquerade
 from courseware.model_data import FieldDataCache
 from .module_render import toc_for_course, get_module_for_descriptor, get_module
-from courseware.models import StudentModuleHistory, XModuleStudentState
+from courseware.models import StudentModule, StudentModuleHistory, XModuleStudentState
 from course_modes.models import CourseMode
 
 from django_comment_client.utils import get_discussion_title
