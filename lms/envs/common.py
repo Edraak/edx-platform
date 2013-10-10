@@ -899,6 +899,9 @@ INSTALLED_APPS = (
 
     # Student Identity Verification
     'verify_student',
+
+    # HACKATHON
+    'videonotes',
 )
 
 ######################### MARKETING SITE ###############################
