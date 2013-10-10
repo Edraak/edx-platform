@@ -128,7 +128,7 @@ def get_module(user, request, location, field_data_cache, course_id,
                static_asset_path=''):
     """
     Get an instance of the xmodule class identified by location,
-    setting the state based on an existing StudentModule, or creating one if none
+    setting the state based on an existing XModuleStudentState, or creating one if none
     exists.
 
     Arguments:
@@ -439,7 +439,7 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
 
 def find_target_student_module(request, user_id, course_id, mod_id):
     """
-    Retrieve target StudentModule
+    Retrieve target XModuleStudentState
     """
     user = User.objects.get(id=user_id)
     field_data_cache = FieldDataCache.cache_for_descriptor_descendents(

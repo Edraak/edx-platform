@@ -14,7 +14,7 @@ from .module_render import get_module, get_module_for_descriptor
 from xmodule import graders
 from xmodule.capa_module import CapaModule
 from xmodule.graders import Score
-from .models import StudentModule
+from .models import XModuleStudentState
 
 log = logging.getLogger("mitx.courseware")
 
@@ -61,9 +61,11 @@ def yield_problems(request, course, student):
     grading_context = course.grading_context
 
     descriptor_locations = (descriptor.location.url() for descriptor in grading_context['all_descriptors'])
-    existing_student_modules = set(StudentModule.objects.filter(
-        module_state_key__in=descriptor_locations
-    ).values_list('module_state_key', flat=True))
+
+    existing_student_modules = set(
+        student_state.module_state_key for student_state in
+        XModuleStudentState.get_for_course_user(course.id, student.id, descriptor_locations)
+    )
 
     sections_to_list = []
     for _, sections in grading_context['graded_sections'].iteritems():
