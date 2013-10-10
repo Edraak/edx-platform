@@ -45,7 +45,7 @@ from .component import (
 
 from django_comment_common.utils import seed_permissions_roles
 
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, do_stats_update
 
 from xmodule.html_module import AboutDescriptor
 __all__ = ['course_index', 'create_new_course', 'course_info',
@@ -187,6 +187,10 @@ def create_new_course(request):
     # auto-enroll the course creator in the course so that "View Live" will
     # work.
     CourseEnrollment.enroll(request.user, new_course.location.course_id)
+
+    # Hackathon5 work
+    num_courses = len(modulestore('direct').get_courses())
+    do_stats_update('num_courses', 'num_courses', num_courses)
 
     return JsonResponse({'id': new_course.location.url()})
 

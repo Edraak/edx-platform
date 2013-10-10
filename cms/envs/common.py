@@ -62,9 +62,15 @@ MITX_FEATURES = {
     # If set to True, new Studio users won't be able to author courses unless
     # edX has explicitly added them to the course creator group.
     'ENABLE_CREATOR_GROUP': False,
+
+    # Hackathon
+    'ENABLE_USAGE_STATS_SHARING': True
 }
 ENABLE_JASMINE = False
 
+USAGE_STATS_BASE_URL = 'http://localhost:8080/v1/stats/'
+USAGE_STATS_INSTANCE_KEY = 'foo'
+USAGE_STATS_API_KEY = 'test'
 
 ############################# SET PATH INFORMATION #############################
 PROJECT_ROOT = path(__file__).abspath().dirname().dirname()  # /mitx/cms
