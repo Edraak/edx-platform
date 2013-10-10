@@ -230,7 +230,7 @@ def import_course(request, org, course, name):
             except Exception as exception:   # pylint: disable=W0703
                 return JsonResponse(
                     {
-                        'ErrMsg': str(exception) + traceback.format_exc(),
+                        'ErrMsg': str(exception),
                         'Stage': session_status[key]
                     },
                     status=400

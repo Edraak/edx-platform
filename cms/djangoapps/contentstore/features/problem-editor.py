@@ -6,6 +6,7 @@ import json
 from lettuce import world, step
 from nose.tools import assert_equal, assert_true  # pylint: disable=E0611
 from common import type_in_codemirror, open_new_course
+from course_import import import_file, go_to_import
 
 
 DISPLAY_NAME = "Display Name"
@@ -206,12 +207,12 @@ def i_have_empty_course(step):
 
 @step(u'I go to the import page')
 def i_go_to_import(_step):
-    world.go_to_import()
+    go_to_import()
 
 
 @step(u'I import the file "([^"]*)"$')
 def i_import_the_file(_step, filename):
-    world.import_file(filename)
+    import_file(filename)
 
 
 @step(u'I click on the link "([^"]*)"$')
@@ -233,7 +234,7 @@ def i_go_to_unit(_step, unit):
 @step(u'I see a message that says "([^"]*)"$')
 def i_can_see_message(_step, msg):
     msg = json.dumps(msg)     # escape quotes
-    world.browser.is_text_present(msg)
+    world.css_has_text("h2.title", msg)
 
 
 @step(u'I can edit the problem$')
