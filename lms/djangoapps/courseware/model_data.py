@@ -7,6 +7,7 @@ from collections import defaultdict
 from itertools import chain
 from .models import (
     StudentModule,
+    XModuleStudentState,
     XModuleUserStateSummaryField,
     XModuleStudentPrefsField,
     XModuleStudentInfoField
@@ -138,12 +139,10 @@ class FieldDataCache(object):
         Queries the database for all of the fields in the specified scope
         """
         if scope == Scope.user_state:
-            return self._chunked_query(
-                StudentModule,
-                'module_state_key__in',
-                (descriptor.location.url() for descriptor in self.descriptors),
-                course_id=self.course_id,
-                student=self.user.pk,
+            return XModuleStudentState.get_for_course(
+                self.course_id,
+                self.user.pk,
+                [descriptor.location.url() for descriptor in self.descriptors]
             )
         elif scope == Scope.user_state_summary:
             return self._chunked_query(

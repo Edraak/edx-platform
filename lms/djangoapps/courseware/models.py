@@ -232,3 +232,28 @@ class OfflineComputedGradeLog(models.Model):
 
     def __unicode__(self):
         return "[OCGLog] %s: %s" % (self.course_id, self.created)
+
+class XModuleStudentState(object):
+    """
+    Represents the state of a given XBlock usage for a given user
+    (Scope.user_state in XBlock-speak). Meant to act as an abstraction layer
+    over StudentModule, which is a Django-ORM specific backend. Unlike the
+    XModule*Field classes above, this object stores multiple fields in one
+    entry.
+    """
+    @classmethod
+    def get_for_course(cls, course_id, user_id, module_ids):
+        """
+        `module_ids` is an iterable of module_ids that we want to retrieve.
+        """
+        return StudentModule.objects.filter(
+            course_id=course_id,
+            student=user_id,
+            module_state_key__in=module_ids
+        )
+#            'module_state_key__in',
+#            (descriptor.location.url() for descriptor in self.descriptors),
+#            course_id=course_id,
+#            student=user_id,
+#        )
+#
