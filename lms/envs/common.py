@@ -186,7 +186,14 @@ MITX_FEATURES = {
     # Disable instructor dash buttons for downloading course data
     # when enrollment exceeds this number
     'MAX_ENROLLMENT_INSTR_BUTTONS': 200,
+
+    # Hackathon5
+    'ENABLE_USAGE_STATS_SHARING': True
 }
+
+USAGE_STATS_BASE_URL = 'http://localhost:8080/v1/stats/'
+USAGE_STATS_INSTANCE_KEY = 'foo'
+USAGE_STATS_API_KEY = 'test'
 
 # Used for A/B testing
 DEFAULT_GROUPS = []

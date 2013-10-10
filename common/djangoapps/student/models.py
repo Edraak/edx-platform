@@ -16,7 +16,7 @@ import hashlib
 import json
 import logging
 import uuid
-
+import requests
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -1029,6 +1029,7 @@ def update_user_information(sender, instance, created, **kwargs):
         log.error(unicode(e))
         log.error("update user info to discussion failed for user with id: " + str(instance.id))
 
+
 # Define login and logout handlers here in the models file, instead of the views file,
 # so that they are more likely to be loaded when a Studio user brings up the Studio admin
 # page to login.  These are currently the only signals available, so we need to continue
@@ -1045,3 +1046,27 @@ def log_successful_login(sender, request, user, **kwargs):
 def log_successful_logout(sender, request, user, **kwargs):
     """Handler to log when logouts have occurred successfully."""
     AUDIT_LOG.info(u"Logout - {0}".format(request.user))
+
+"""
+Hackathon5 additions. Broadcast the user count to a centralized server
+"""
+def do_stats_update(method_name, stat_name, value):
+    if settings.MITX_FEATURES.get('ENABLE_USAGE_STATS_SHARING', False):
+        endpoint = settings.USAGE_STATS_BASE_URL
+        instance_key = settings.USAGE_STATS_INSTANCE_KEY
+        api_key = settings.USAGE_STATS_API_KEY
+
+        url = endpoint + method_name + '?api_key=' + api_key
+        r = requests.post(url, data={'key': instance_key, stat_name: value})
+
+@receiver(post_save, sender=User)
+def update_num_users(sender, instance, created, **kwargs):
+    if created:
+        num_users = User.objects.count()
+        do_stats_update('num_users', 'num_users', num_users)   
+
+@receiver(post_save, sender=CourseEnrollment)
+def update_num_enrollments(sender, instance, created, **kwargs):
+    if created:
+        num_enrollments = CourseEnrollment.objects.count()
+        do_stats_update('num_enrollments', 'num_enrollments', num_enrollments)
