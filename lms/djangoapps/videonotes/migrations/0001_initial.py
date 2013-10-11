@@ -14,9 +14,7 @@ class Migration(SchemaMigration):
             ('note_text', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('timestamp', self.gf('django.db.models.fields.IntegerField')()),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('course_id', self.gf('django.db.models.fields.CharField')(max_length=127)),
-            ('location', self.gf('django.db.models.fields.CharField')(max_length=127)),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 10, 11, 0, 0))),
+            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
         db.send_create_signal('videonotes', ['VideoNote'])
 
@@ -65,10 +63,8 @@ class Migration(SchemaMigration):
         },
         'videonotes.videonote': {
             'Meta': {'ordering': "['timestamp']", 'object_name': 'VideoNote'},
-            'course_id': ('django.db.models.fields.CharField', [], {'max_length': '127'}),
-            'created_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 10, 11, 0, 0)'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'location': ('django.db.models.fields.CharField', [], {'max_length': '127'}),
             'note_text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'timestamp': ('django.db.models.fields.IntegerField', [], {}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})

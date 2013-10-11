@@ -12,7 +12,6 @@ class TakeNote
     # @$note_text = $("body").find("input[name='notetaker']")
     @$note_time = $("body").find("input[name='currenttime']")
     @$takenote_btn = $("body").find("input[name='takenote']")
-    @$noteform = $("body").find("#noteform")
     # @$player = $("div.video").data('state-obj').videoPlayer.player
     # TODO make this a real number
     #time_taken = "12"
@@ -31,16 +30,20 @@ class TakeNote
       $("#my_awesome_notes").append("<li>" + link_node + "</li>")
       $("#my_awesome_notes li").last().click (e) ->
         player.seekTo(currenttime) 
+      noteform = $("#noteform")
 
-      url = @$noteform.data 'endpoint'
+
+      url = noteform.data 'endpoint'
+      send_data =
+          "note_text": note_text.val()
+          "timestamp": parseInt(currenttime)
 
       $.ajax
         url: url
-        data =
-          "note_text": note_text.val()
-          "timestamp": parseInt(currenttime)
-        success (data) =>
-          alert 'yayyyyy'
+        type: 'POST'
+        data: send_data
+        success: (data) =>
+          adam_and_julia = "rule"
 
 
       

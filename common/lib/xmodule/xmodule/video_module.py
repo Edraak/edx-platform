@@ -33,8 +33,6 @@ from xblock.field_data import DictFieldData
 from xmodule.modulestore.inheritance import InheritanceKeyValueStore
 from xblock.runtime import DbModel
 
-from videonotes.models import VideoNote
-
 log = logging.getLogger(__name__)
 
 
@@ -172,6 +170,8 @@ class VideoModule(VideoFields, XModule):
         else:
             yt_test_url = 'https://gdata.youtube.com/feeds/api/videos/'
 
+        from videonotes.models import VideoNote
+        
         return self.system.render_template('video.html', {
             'youtube_streams': _create_youtube_string(self),
             'id': self.location.html_id(),

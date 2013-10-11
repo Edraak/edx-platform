@@ -8,8 +8,8 @@ class VideoNote(models.Model):
 	note_text = models.TextField(blank=True)
 	timestamp = models.IntegerField()
 	user = models.ForeignKey(User)
-	course_id = models.CharField(max_length=127)
-	location = models.CharField(max_length=127)
+	# course_id = models.CharField(max_length=127)
+	# location = models.CharField(max_length=127)
 	created_at = models.DateTimeField(auto_now=True)
 
 	class Meta:

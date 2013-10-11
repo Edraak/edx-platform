@@ -109,9 +109,9 @@
     <ul id="my_awesome_notes">
         % for videonote in videonotes:
         <li>
-            <a href='javascript:void(0)'> ${videonote.note_text}  (${videonote.timestamp})</a>
+            <a href='javascript:void(0)' onclick="$('div.video').data('state-obj').videoPlayer.player.seekTo(${videonote.timestamp})"> ${videonote.note_text}  (${videonote.timestamp})</a>
         </li>
-        % endif
+        % endfor
         
     </ul>
 </div>
