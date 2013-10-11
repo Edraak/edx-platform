@@ -4,24 +4,50 @@ TakeNote
 Allows users to annotate videos
 ###
 
+
 class TakeNote
   constructor: () ->
     # gather elements
-    @$notes_taken = $("body").find("div[name='notestaken']'")
-    @$note_text = $("body").find("textarea[name='notetaker']'")
-    @$takenote = $("body").find("input[name='takenote']'")
+    @$notes_taken = $("body").find("div[name='notestaken']")
+    # @$note_text = $("body").find("input[name='notetaker']")
+    @$note_time = $("body").find("input[name='currenttime']")
+    @$takenote_btn = $("body").find("input[name='takenote']")
+    # @$player = $("div.video").data('state-obj').videoPlayer.player
     # TODO make this a real number
     #time_taken = "12"
     # attach click handlers
 
-    @$takenote.click =>
-      alert = "hello"
+    @$takenote_btn.click (e) ->
+      player = $("div.video").data('state-obj').videoPlayer.player
+      $("input[name='currenttime']").val($("div.video").data('state-obj').videoPlayer.player.getCurrentTime())
+      note_text = $("input[name='notetaker']")
+      # alert "hello"
       # todo: insert call for retrieving time from page
       # sendtime = ??? presenttime - 5s
-      @$notes_taken.prepend(@$note_text.val() + " -- " + @$time_taken + "<br/>")
+      # @$notes_taken.prepend(@$note_text.val() + " -- " + @$time_taken + "<br/>")
+      currenttime = $("input[name='currenttime']").val()
+      link_node = "<a href='javascript:void(0)'>" + note_text.val() + " (" + parseInt(currenttime) + ")</a>"
+      $("#my_awesome_notes").append("<li>" + link_node + "</li>")
+      $("#my_awesome_notes li").last().click (e) ->
+        player.seekTo(currenttime)
 
-      record_note =
-        text: @$note_text.val()
+
+      
+
+
+
+
+
+      # form = $("body").find("form[name='noteform']")
+      # alert form.serialize()
+      # $.ajax({
+      #   type: "POST"
+      #   url: form.attr('action')
+      #   data: form.serialize()
+      #   success: (response) ->
+      #     alert('yay')
+      #   })
+
         #time: time_taken
       #endbringback
 
@@ -37,8 +63,3 @@ class TakeNote
         #  TODO "Error saving notes
 
 $(document).ready () -> new TakeNote 
-
-@$stuff = @$("body").find("input[name='takenote']'")
-@$stuff.click =>
-  alert "gah"
-alert "huh"

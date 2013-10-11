@@ -102,12 +102,18 @@
     </li>
 % endif
 <br/>
-<div class="notestaken" name="notestaken" style="display:none;">
+<div class="notestaken" name="notestaken">
+    <ul id="my_awesome_notes">
+        
+    </ul>
 </div>
-<div class="notetaker" name="notetaker">
-    <textarea rows="6" cols="70" style="height:100px;"></textarea>
-    <input type="submit" value="Note" name="takenote"/>
-</div>
+
+<div id="noteform">
+    <input name="notetaker" id="note" style="width: 45em; height:2em;">
+    <input type="hidden" name="currenttime" value="0">
+    <input type="submit" value="Note" name="takenote" id="submit_note">
+</form>
+
 </ul>
 </div>
 
