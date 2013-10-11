@@ -1048,7 +1048,8 @@ def log_successful_logout(sender, request, user, **kwargs):
     AUDIT_LOG.info(u"Logout - {0}".format(request.user))
 
 """
-Hackathon5 additions. Broadcast the user count to a centralized server
+Hackathon5 additions. Broadcast the user count to a centralized server. This should be moved to a different
+file
 """
 def do_stats_update(method_name, stat_name, value):
     if settings.MITX_FEATURES.get('ENABLE_USAGE_STATS_SHARING', False):
@@ -1057,7 +1058,12 @@ def do_stats_update(method_name, stat_name, value):
         api_key = settings.USAGE_STATS_API_KEY
 
         url = endpoint + method_name + '?api_key=' + api_key
-        r = requests.post(url, data={'key': instance_key, stat_name: value})
+        try:
+            # don't block long waiting for a response
+            r = requests.post(url, data={'key': instance_key, stat_name: value}, timeout=0.5)
+        except:
+            # fire-and-forget, either we get the stat refresh or not
+            pass
 
 @receiver(post_save, sender=User)
 def update_num_users(sender, instance, created, **kwargs):
