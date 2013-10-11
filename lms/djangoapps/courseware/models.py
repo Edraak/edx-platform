@@ -17,7 +17,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import pymongo
+import pymongo.collection
+import pymongo.connection
 
 
 class StudentModule(models.Model):
@@ -316,28 +317,37 @@ class XModuleStudentStateMongoBackend(object):
 
     def __init__(self, host, db,
                  port=27017, collection="studentstate", user=None, password=None):
-        conn = pymongo.Connection(host=host, port=port, tz_aware=True)
-        self.collection = conn[db][collection]
+        conn = pymongo.connection.Connection(host=host, port=port, tz_aware=True)
+        database = conn[db]
+        self.collection = pymongo.collection.Collection(database, collection)
 
         # Authenticate if credentials provided
         if user is not None and password is not None:
-            self._db.authenticate(user, password)
+            database.authenticate(user, password)
 
         self.collection.ensure_index(
-            ["course_id", "student_id", "module_state_key"],
+            [("course_id", 1), ("user_id", 1), ("module_state_key", 1)],
             unique=True
         )
 
+    def _mongo_model_to_state_obj(self, model_record):
+        return XModuleStudentState(
+            model_record['course_id'],
+            model_record['user_id'],
+            model_record['module_state_key'],
+            module_type=model_record['module_type'],
+            state=model_record['state'],
+            grade=model_record['grade'],
+            max_grade=model_record['max_grade']
+        )
 
     def get(self, course_id, user_id, module_state_key):
-        try:
-            record = StudentModule.objects.using(self.dbname).get(
-                course_id=course_id,
-                student=user_id,
-                module_state_key=module_state_key
-            )
-            return self._django_model_to_state_obj(record)
-        except StudentModule.DoesNotExist:
+        record = self.collection.find_one({
+            "course_id" : course_id,
+            "user_id" : user_id,
+            "module_state_key" : module_state_key
+        })
+        if record is None:
             searched_for = (
                 "(course_id={}, user_id={}, module_state_Key={}"
                 .format(course_id, user_id, module_state_key)
@@ -346,39 +356,60 @@ class XModuleStudentStateMongoBackend(object):
                 "Could not find XModuleStudentState for {} using {!r}"
                 .format(searched_for, self)
             )
+        return self._mongo_model_to_state_obj(record)
 
     def get_for_course_user(self, course_id, user_id, module_state_keys):
-        records = StudentModule.objects.using(self.dbname).filter(
-            course_id=course_id,
-            student=user_id,
-            module_state_key__in=module_state_keys
-        )
-        return [self._django_model_to_state_obj(record) for record in records]
+        records = self.collection.find({
+            "course_id" : course_id,
+            "user_id" : user_id,
+            "module_state_key" : {
+                "$in" : module_state_keys
+            }
+        })
+        return [self._mongo_model_to_state_obj(record) for record in records]
 
     def get_or_create(self, course_id, user_id, module_state_key, defaults):
-        pass
+        """This probably isn't very idiomatic."""
+        try:
+            state_obj = self.get(course_id, user_id, module_state_key)
+        except KeyError:
+            state_obj = XModuleStudentState(
+                course_id=course_id,
+                user_id=user_id,
+                module_state_key=module_state_key
+            )
+        for key, val in defaults.items():
+            setattr(state_obj, key, val)
+        state_obj.save()
+        return state_obj
 
     def save(self, state_obj):
-        record, created = StudentModule.objects.using(self.dbname).get_or_create(
-            course_id=state_obj.course_id,
-            student=state_obj.user_id,
-            module_state_key=state_obj.module_state_key
+        self.collection.find_and_modify(
+            query={
+                "course_id" : state_obj.course_id,
+                "user_id" : state_obj.user_id,
+                "module_state_key" : state_obj.module_state_key,
+            },
+            update={
+                "course_id" : state_obj.course_id,
+                "user_id" : state_obj.user_id,
+                "module_state_key" : state_obj.module_state_key,
+                "module_type" : state_obj.module_type,
+                "state" : state_obj.state,
+                "grade" : state_obj.grade,
+                "max_grade" : state_obj.max_grade
+            },
+            upsert=True
         )
-        record.module_type = state_obj.module_type
-        record.state = state_obj.state
-        record.grade = state_obj.grade
-        record.max_grade = state_obj.max_grade
-
-        record.save()
 
     def delete(self, state_obj):
-        record = StudentModule.objects.using(self.dbname).get(
-            course_id=state_obj.course_id,
-            student_id=state_obj.user_id,
-            module_state_key=state_obj.module_state_key
+        self.collection.remove(
+            {
+                "course_id" : state_obj.course_id,
+                "user_id" : state_obj.user_id,
+                "module_state_key" : state_obj.module_state_key,
+            },
         )
-        record.delete()
-
 
 
 class XModuleStudentState(object):
