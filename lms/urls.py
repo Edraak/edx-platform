@@ -60,6 +60,8 @@ urlpatterns = ('',  # nopep8
     url(r'^user_api/', include('user_api.urls')),
 
     url(r'^', include('waffle.urls')),
+
+    url(r'^add_note$', 'videonotes.views.add_note', name="add_note")
 )
 
 # if settings.MITX_FEATURES.get("MULTIPLE_ENROLLMENT_ROLES"):

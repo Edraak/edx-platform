@@ -1,4 +1,5 @@
 <%! from django.utils.translation import ugettext as _ %>
+<%! from django.core.urlresolvers import reverse %>
 
 % if display_name is not UNDEFINED and display_name is not None:
     <h2>${display_name}</h2>
@@ -102,15 +103,23 @@
     </li>
 % endif
 <br/>
+
+<a href="${reverse('add_note')}"></a>
 <div class="notestaken" name="notestaken">
     <ul id="my_awesome_notes">
+        % for videonote in videonotes:
+        <li>
+            <a href='javascript:void(0)'> ${videonote.note_text}  (${videonote.timestamp})</a>
+        </li>
+        % endif
         
     </ul>
 </div>
 
-<div id="noteform">
+<div id="noteform" data-endpoint="${reverse('add_note')}">
     <input name="notetaker" id="note" style="width: 45em; height:2em;">
     <input type="hidden" name="currenttime" value="0">
+    <input type="hidden" name="user" value="${request.user}">
     <input type="submit" value="Note" name="takenote" id="submit_note">
 </form>
 

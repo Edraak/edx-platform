@@ -33,6 +33,8 @@ from xblock.field_data import DictFieldData
 from xmodule.modulestore.inheritance import InheritanceKeyValueStore
 from xblock.runtime import DbModel
 
+from videonotes.models import VideoNote
+
 log = logging.getLogger(__name__)
 
 
@@ -188,7 +190,9 @@ class VideoModule(VideoFields, XModule):
             # TODO: Later on the value 1500 should be taken from some global
             # configuration setting field.
             'yt_test_timeout': 1500,
-            'yt_test_url': yt_test_url
+            'yt_test_url': yt_test_url,
+            # GIANT HACK TO FIX LATER; NEED TO FILTER BY USER
+            'videonotes': VideoNote.objects.all(),
         })
 
 
