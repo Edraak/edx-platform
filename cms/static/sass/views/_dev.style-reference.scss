@@ -1,0 +1,311 @@
+// studio - views - documentation - style reference
+// ====================
+
+.view-style-reference {
+
+
+  .branding {
+    width: 20%;
+    margin-right: 2%;
+  }
+
+  .content-primary,
+  .content-supplementary {
+    @include box-sizing(border-box);
+    float: left;
+  }
+
+  .content-primary {
+    width: flex-grid(9, 12);
+    margin-right: flex-gutter();
+  }
+
+  .content-supplementary {
+    width: flex-grid(3, 12);
+  }
+
+    .demo-block {
+      margin-bottom: ($baseline*3);
+
+      .title {
+        @extend %t-title3;
+      }
+
+      .title-sub {
+        @extend %t-title5;
+        font-weight: 600;
+        margin: ($baseline) 0 ($baseline/2) 0;
+        color: $gray-d1;
+      }
+
+      .title + .title-sub {
+        margin-top: 0;
+      }
+
+    }
+
+
+  .fonts {
+
+    .t-title1 {@extend %t-title1;}
+    .t-title2 {@extend %t-title2;}
+    .t-title3 {@extend %t-title3;}
+    .t-title4 {@extend %t-title4;}
+    .t-title5 {@extend %t-title5;}
+    .t-title6 {@extend %t-title6;}
+    .t-title7 {@extend %t-title7;}
+    .t-title8 {@extend %t-title8;}
+    .t-title9 {@extend %t-title9;}
+
+    .t-copy-base {@extend %t-copy-base;}
+    .t-copy-lead1 {@extend %t-copy-lead1;}
+    .t-copy-lead2 {@extend %t-copy-lead2}
+    .t-copy-sub1 {@extend %t-copy-sub1;}
+    .t-copy-sub2 {@extend %t-copy-sub2;}
+
+    .t-action1 {@extend %t-action1;}
+    .t-action2 {@extend %t-action2;}
+    .t-action3 {@extend %t-action3;}
+    .t-action4 {@extend %t-action4;}
+
+    .t-code {@extend %t-code;}
+
+    .t-icon1 {@extend %t-icon1;}
+    .t-icon2 {@extend %t-icon2;}
+    .t-icon3 {@extend %t-icon3;}
+    .t-icon4 {@extend %t-icon4;}
+    .t-icon5 {@extend %t-icon5;}
+    .t-icon6 {@extend %t-icon6;}
+    .t-icon7 {@extend %t-icon7;}
+    .t-icon8 {@extend %t-icon8;}
+    .t-icon9 {@extend %t-icon9;}
+
+  }
+
+
+
+  .colors {
+
+    .color {
+      margin-bottom: ($baseline*2);
+      border-bottom: 1px solid $gray-l4;
+      padding-bottom: ($baseline*2);
+    }
+
+    .color-block {
+      display: inline-block;
+      width: ($baseline*5);
+      text-align: center;
+    }
+
+    .color-ref {
+      height: ($baseline*2);
+      width: ($baseline*2);
+      display: inline-block;
+      margin: ($baseline/2) auto;
+      border-radius: ($baseline/10);
+    }
+
+    .color-name {
+      display: block;
+    }
+
+   .black {background-color: $black;}
+   .black-t0 {background-color: $black-t0;}
+   .black-t1 {background-color: $black-t1;}
+   .black-t2 {background-color: $black-t2;}
+   .black-t3 {background-color: $black-t3;}
+
+   .white {background-color: $white;}
+   .white-t0 {background-color: $white-t0;}
+   .white-t1 {background-color: $white-t1;}
+   .white-t2 {background-color: $white-t2;}
+   .white-t3 {background-color: $white-t3;}
+
+   .gray {background-color: $gray;}
+   .gray-l1 {background-color: $gray-l1;}
+   .gray-l2 {background-color: $gray-l2;}
+   .gray-l3 {background-color: $gray-l3;}
+   .gray-l4 {background-color: $gray-l4;}
+   .gray-l5 {background-color: $gray-l5;}
+   .gray-l6 {background-color: $gray-l6;}
+   .gray-d1 {background-color: $gray-d1;}
+   .gray-d2 {background-color: $gray-d2;}
+   .gray-d3 {background-color: $gray-d3;}
+   .gray-d4 {background-color: $gray-d4;}
+
+   .blue {background-color: $blue;}
+   .blue-l1 {background-color: $blue-l1;}
+   .blue-l2 {background-color: $blue-l2;}
+   .blue-l3 {background-color: $blue-l3;}
+   .blue-l4 {background-color: $blue-l4;}
+   .blue-l5 {background-color: $blue-l5;}
+   .blue-d1 {background-color: $blue-d1;}
+   .blue-d2 {background-color: $blue-d2;}
+   .blue-d3 {background-color: $blue-d3;}
+   .blue-d4 {background-color: $blue-d4;}
+   .blue-s1 {background-color: $blue-s1;}
+   .blue-s2 {background-color: $blue-s2;}
+   .blue-s3 {background-color: $blue-s3;}
+   .blue-u1 {background-color: $blue-u1;}
+   .blue-u2 {background-color: $blue-u2;}
+   .blue-u3 {background-color: $blue-u3;}
+   .blue-t0 {background-color: $blue-t0;}
+   .blue-t1 {background-color: $blue-t1;}
+   .blue-t2 {background-color: $blue-t2;}
+   .blue-t3 {background-color: $blue-t3;}
+
+   .pink {background-color: $pink;}
+   .pink-l1 {background-color: $pink-l1;}
+   .pink-l2 {background-color: $pink-l2;}
+   .pink-l3 {background-color: $pink-l3;}
+   .pink-l4 {background-color: $pink-l4;}
+   .pink-l5 {background-color: $pink-l5;}
+   .pink-d1 {background-color: $pink-d1;}
+   .pink-d2 {background-color: $pink-d2;}
+   .pink-d3 {background-color: $pink-d3;}
+   .pink-d4 {background-color: $pink-d4;}
+   .pink-s1 {background-color: $pink-s1;}
+   .pink-s2 {background-color: $pink-s2;}
+   .pink-s3 {background-color: $pink-s3;}
+   .pink-u1 {background-color: $pink-u1;}
+   .pink-u2 {background-color: $pink-u2;}
+   .pink-u3 {background-color: $pink-u3;}
+
+   .red {background-color: $red;}
+   .red-l1 {background-color: $red-l1;}
+   .red-l2 {background-color: $red-l2;}
+   .red-l3 {background-color: $red-l3;}
+   .red-l4 {background-color: $red-l4;}
+   .red-l5 {background-color: $red-l5;}
+   .red-d1 {background-color: $red-d1;}
+   .red-d2 {background-color: $red-d2;}
+   .red-d3 {background-color: $red-d3;}
+   .red-d4 {background-color: $red-d4;}
+   .red-s1 {background-color: $red-s1;}
+   .red-s2 {background-color: $red-s2;}
+   .red-s3 {background-color: $red-s3;}
+   .red-u1 {background-color: $red-u1;}
+   .red-u2 {background-color: $red-u2;}
+   .red-u3 {background-color: $red-u3;}
+
+   .green {background-color: $green;}
+   .green-l1 {background-color: $green-l1;}
+   .green-l2 {background-color: $green-l2;}
+   .green-l3 {background-color: $green-l3;}
+   .green-l4 {background-color: $green-l4;}
+   .green-l5 {background-color: $green-l5;}
+   .green-d1 {background-color: $green-d1;}
+   .green-d2 {background-color: $green-d2;}
+   .green-d3 {background-color: $green-d3;}
+   .green-d4 {background-color: $green-d4;}
+   .green-s1 {background-color: $green-s1;}
+   .green-s2 {background-color: $green-s2;}
+   .green-s3 {background-color: $green-s3;}
+   .green-u1 {background-color: $green-u1;}
+   .green-u2 {background-color: $green-u2;}
+   .green-u3 {background-color: $green-u3;}
+
+   .yellow {background-color: $yellow;}
+   .yellow-l1 {background-color: $yellow-l1;}
+   .yellow-l2 {background-color: $yellow-l2;}
+   .yellow-l3 {background-color: $yellow-l3;}
+   .yellow-l4 {background-color: $yellow-l4;}
+   .yellow-l5 {background-color: $yellow-l5;}
+   .yellow-d1 {background-color: $yellow-d1;}
+   .yellow-d2 {background-color: $yellow-d2;}
+   .yellow-d3 {background-color: $yellow-d3;}
+   .yellow-d4 {background-color: $yellow-d4;}
+   .yellow-s1 {background-color: $yellow-s1;}
+   .yellow-s2 {background-color: $yellow-s2;}
+   .yellow-s3 {background-color: $yellow-s3;}
+   .yellow-u1 {background-color: $yellow-u1;}
+   .yellow-u2 {background-color: $yellow-u2;}
+   .yellow-u3 {background-color: $yellow-u3;}
+
+   .orange {background-color: $orange;}
+   .orange-l1 {background-color: $orange-l1;}
+   .orange-l2 {background-color: $orange-l2;}
+   .orange-l3 {background-color: $orange-l3;}
+   .orange-l4 {background-color: $orange-l4;}
+   .orange-l5 {background-color: $orange-l5;}
+   .orange-d1 {background-color: $orange-d1;}
+   .orange-d2 {background-color: $orange-d2;}
+   .orange-d3 {background-color: $orange-d3;}
+   .orange-d4 {background-color: $orange-d4;}
+   .orange-s1 {background-color: $orange-s1;}
+   .orange-s2 {background-color: $orange-s2;}
+   .orange-s3 {background-color: $orange-s3;}
+   .orange-u1 {background-color: $orange-u1;}
+   .orange-u2 {background-color: $orange-u2;}
+   .orange-u3 {background-color: $orange-u3;}
+
+   .shadow {background-color: $shadow;}
+   .shadow-l1 {background-color: $shadow-l1;}
+   .shadow-l2 {background-color: $shadow-l2;}
+   .shadow-d1 {background-color: $shadow-d1;}
+   .shadow-d2 {background-color: $shadow-d2;}
+
+  }
+
+  .elements {
+
+    .btn-group {
+      margin-bottom: $baseline;
+
+      .title {
+        @extend %t-title6;
+        font-weight: 600;
+        color: $gray-l1;
+      }
+    }
+
+    .btn {
+      margin: ($baseline/2) $baseline;
+      padding: ($baseline/2) $baseline;
+      display: inline-block;
+    }
+
+    .btn-primary-gray {@extend %btn-primary-gray;}
+    .btn-primary-blue {@extend %btn-primary-blue;}
+    .btn-primary-green {@extend %btn-primary-green;}
+    .btn-primary {@extend %ui-btn-primary;}
+
+    .btn-secondary-gray {@extend %btn-secondary-gray;}
+    .btn-secondary-blue {@extend %btn-secondary-blue;}
+    .btn-secondary-green {@extend %btn-secondary-green;}
+    .btn-secondary {@extend %ui-btn-secondary;}
+
+    .btn-flat-outline {@extend %ui-btn-flat-outline;}
+    .btn-dd {@extend %ui-btn-dd;}
+
+    .window {
+        @extend %ui-window;
+        margin: $baseline;
+        padding: ($baseline*3);
+        text-align: center;
+    }
+
+    .well {
+        @extend %ui-well;
+        margin: $baseline;
+        padding: ($baseline*3);
+        text-align: center;
+    }
+
+    .wrapper-sock-example {
+      height: 100px;
+
+        .wrapper-sock {
+          position: absolute;
+          left: 0;
+        }
+
+    }
+
+  }
+
+
+
+
+}

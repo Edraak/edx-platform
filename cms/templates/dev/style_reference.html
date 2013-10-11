@@ -2,7 +2,21 @@
 <%inherit file="../base.html" />
 
 <%block name="title">${_("Style Reference")}</%block>
-<%block name="bodyclass">view-style-reference</%block>
+<%block name="bodyclass">view-style-reference docs</%block>
+
+<%block name="jsextra">
+<script type="text/javascript">
+
+define(["jquery"]), function($) {
+  var $btndd = $(".btn-dd");
+
+  $btndd.click(function(e) {
+    $(this).toggleClass('is-selected');
+  });
+});
+</script>
+</%block>
+
 
 <%block name="content">
 
@@ -12,15 +26,6 @@
         <small class="subtitle">${_("Documentation")}</small>
         <span class="sr">&gt; </span>${_("Style Reference")}
       </h1>
-
-      <nav class="nav-actions">
-        <h3 class="sr">${_("Page Actions")}</h3>
-        <ul>
-          <li class="nav-item">
-            <a href="#" class="button new-button"><i class="icon-plus"></i> ${_("New Textbook")}</a>
-          </li>
-        </ul>
-      </nav>
     </header>
   </div>
 
@@ -28,22 +33,334 @@
     <section class="content">
       <article class="content-primary" role="main">
 
-        <h3>Fonts</h3>
+        <div class="fonts demo-block">
+        <h3 class="title">Fonts</h3>
 
-        <h3>Colors</h3>
+          <h4 class="title-sub">Title styles</h4>
 
-        <h3>Elements</h3>
+            <h5 class="t-title1">This is t-title1</h5>
+            <h5 class="t-title2">This is t-title2</h5>
+            <h5 class="t-title3">This is t-title3</h5>
+            <h5 class="t-title4">This is t-title4</h5>
+            <h5 class="t-title5">This is t-title5</h5>
+            <h5 class="t-title6">This is t-title6</h5>
+            <h5 class="t-title7">This is t-title7</h5>
+            <h5 class="t-title8">This is t-title8</h5>
+            <h5 class="t-title9">This is t-title9</h5>
+
+          <h4 class="title-sub">Copy styles</h4>
+
+            <h5 class="t-copy-base">This is an example of t-copy-base</h5>
+            <h5 class="t-copy-lead1">This is an example of t-copy-lead1</h5>
+            <h5 class="t-copy-lead2">This is an example of t-copy-lead2</h5>
+            <h5 class="t-copy-sub1">This is an example of t-copy-sub1</h5>
+            <h5 class="t-copy-sub2">This is an example of t-copy-sub2</h5>
+
+
+          <h4 class="title-sub">Action styles</h4>
+            <h5 class="t-action1">t-action1</h5>
+            <h5 class="t-action2">t-action2</h5>
+            <h5 class="t-action3">t-action3</h5>
+            <h5 class="t-action4">t-action4</h5>
+
+
+          <h4 class="title-sub">Miscellaneous styles</h4>
+
+            <h5 class="t-code">This is an example of t-code which is used for code</h5>
+
+            <h5 class="t-icon1"><i class="icon-ok"></i> t-icon1</h5>
+            <h5 class="t-icon2"><i class="icon-ok"></i> t-icon2</h5>
+            <h5 class="t-icon3"><i class="icon-ok"></i> t-icon3</h5>
+            <h5 class="t-icon4"><i class="icon-ok"></i> t-icon4</h5>
+            <h5 class="t-icon5"><i class="icon-ok"></i> t-icon5</h5>
+            <h5 class="t-icon6"><i class="icon-ok"></i> t-icon6</h5>
+            <h5 class="t-icon7"><i class="icon-ok"></i> t-icon7</h5>
+            <h5 class="t-icon8"><i class="icon-ok"></i> t-icon8</h5>
+            <h5 class="t-icon9"><i class="icon-ok"></i> t-icon9</h5>
+
+        </div>
+
+
+        <div class="colors demo-block">
+          <h3 class="title">Colors</h3>
+          <div class="color">
+            <h4 class="title-sub">Black</h4>
+            <div class="color-block"><span class="black color-ref"></span><span class="color-name">black</span></div>
+            <div class="color-block"><span class="black-t0 color-ref"></span><span class="color-name">black-t0</span></div>
+            <div class="color-block"><span class="black-t1 color-ref"></span><span class="color-name">black-t1</span></div>
+            <div class="color-block"><span class="black-t2 color-ref"></span><span class="color-name">black-t2</span></div>
+            <div class="color-block"><span class="black-t3 color-ref"></span><span class="color-name">black-t3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">White</h4>
+            <div class="color-block"><span class="white color-ref"></span><span class="color-name">white</span></div>
+            <div class="color-block"><span class="white-t0 color-ref"></span><span class="color-name">white-t0</span></div>
+            <div class="color-block"><span class="white-t1 color-ref"></span><span class="color-name">white-t1</span></div>
+            <div class="color-block"><span class="white-t2 color-ref"></span><span class="color-name">white-t2</span></div>
+            <div class="color-block"><span class="white-t3 color-ref"></span><span class="color-name">white-t3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Gray</h4>
+            <div class="color-block"><span class="gray color-ref"></span><span class="color-name">gray</span></div>
+            <div class="color-block"><span class="gray-l1 color-ref"></span><span class="color-name">gray-l1</span></div>
+            <div class="color-block"><span class="gray-l2 color-ref"></span><span class="color-name">gray-l2</span></div>
+            <div class="color-block"><span class="gray-l3 color-ref"></span><span class="color-name">gray-l3</span></div>
+            <div class="color-block"><span class="gray-l4 color-ref"></span><span class="color-name">gray-l4</span></div>
+            <div class="color-block"><span class="gray-l5 color-ref"></span><span class="color-name">gray-l5</span></div>
+            <div class="color-block"><span class="gray-l6 color-ref"></span><span class="color-name">gray-l6</span></div>
+            <div class="color-block"><span class="gray-d1 color-ref"></span><span class="color-name">gray-d1</span></div>
+            <div class="color-block"><span class="gray-d2 color-ref"></span><span class="color-name">gray-d2</span></div>
+            <div class="color-block"><span class="gray-d3 color-ref"></span><span class="color-name">gray-d3</span></div>
+            <div class="color-block"><span class="gray-d4 color-ref"></span><span class="color-name">gray-d4</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Blue</h4>
+            <div class="color-block"><span class="blue color-ref"></span><span class="color-name">blue</span></div>
+            <div class="color-block"><span class="blue-l1 color-ref"></span><span class="color-name">blue-l1</span></div>
+            <div class="color-block"><span class="blue-l2 color-ref"></span><span class="color-name">blue-l2</span></div>
+            <div class="color-block"><span class="blue-l3 color-ref"></span><span class="color-name">blue-l3</span></div>
+            <div class="color-block"><span class="blue-l4 color-ref"></span><span class="color-name">blue-l4</span></div>
+            <div class="color-block"><span class="blue-l5 color-ref"></span><span class="color-name">blue-l5</span></div>
+            <div class="color-block"><span class="blue-d1 color-ref"></span><span class="color-name">blue-d1</span></div>
+            <div class="color-block"><span class="blue-d2 color-ref"></span><span class="color-name">blue-d2</span></div>
+            <div class="color-block"><span class="blue-d3 color-ref"></span><span class="color-name">blue-d3</span></div>
+            <div class="color-block"><span class="blue-d4 color-ref"></span><span class="color-name">blue-d4</span></div>
+            <div class="color-block"><span class="blue-s1 color-ref"></span><span class="color-name">blue-s1</span></div>
+            <div class="color-block"><span class="blue-s2 color-ref"></span><span class="color-name">blue-s2</span></div>
+            <div class="color-block"><span class="blue-s3 color-ref"></span><span class="color-name">blue-s3</span></div>
+            <div class="color-block"><span class="blue-u1 color-ref"></span><span class="color-name">blue-u1</span></div>
+            <div class="color-block"><span class="blue-u2 color-ref"></span><span class="color-name">blue-u2</span></div>
+            <div class="color-block"><span class="blue-u3 color-ref"></span><span class="color-name">blue-u3</span></div>
+            <div class="color-block"><span class="blue-t0 color-ref"></span><span class="color-name">blue-t0</span></div>
+            <div class="color-block"><span class="blue-t1 color-ref"></span><span class="color-name">blue-t1</span></div>
+            <div class="color-block"><span class="blue-t2 color-ref"></span><span class="color-name">blue-t2</span></div>
+            <div class="color-block"><span class="blue-t3 color-ref"></span><span class="color-name">blue-t3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Pink</h4>
+            <div class="color-block"><span class="pink color-ref"></span><span class="color-name">pink</span></div>
+            <div class="color-block"><span class="pink-l1 color-ref"></span><span class="color-name">pink-l1</span></div>
+            <div class="color-block"><span class="pink-l2 color-ref"></span><span class="color-name">pink-l2</span></div>
+            <div class="color-block"><span class="pink-l3 color-ref"></span><span class="color-name">pink-l3</span></div>
+            <div class="color-block"><span class="pink-l4 color-ref"></span><span class="color-name">pink-l4</span></div>
+            <div class="color-block"><span class="pink-l5 color-ref"></span><span class="color-name">pink-l5</span></div>
+            <div class="color-block"><span class="pink-d1 color-ref"></span><span class="color-name">pink-d1</span></div>
+            <div class="color-block"><span class="pink-d2 color-ref"></span><span class="color-name">pink-d2</span></div>
+            <div class="color-block"><span class="pink-d3 color-ref"></span><span class="color-name">pink-d3</span></div>
+            <div class="color-block"><span class="pink-d4 color-ref"></span><span class="color-name">pink-d4</span></div>
+            <div class="color-block"><span class="pink-s1 color-ref"></span><span class="color-name">pink-s1</span></div>
+            <div class="color-block"><span class="pink-s2 color-ref"></span><span class="color-name">pink-s2</span></div>
+            <div class="color-block"><span class="pink-s3 color-ref"></span><span class="color-name">pink-s3</span></div>
+            <div class="color-block"><span class="pink-u1 color-ref"></span><span class="color-name">pink-u1</span></div>
+            <div class="color-block"><span class="pink-u2 color-ref"></span><span class="color-name">pink-u2</span></div>
+            <div class="color-block"><span class="pink-u3 color-ref"></span><span class="color-name">pink-u3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Red</h4>
+            <div class="color-block"><span class="red color-ref"></span><span class="color-name">red</span></div>
+            <div class="color-block"><span class="red-l1 color-ref"></span><span class="color-name">red-l1</span></div>
+            <div class="color-block"><span class="red-l2 color-ref"></span><span class="color-name">red-l2</span></div>
+            <div class="color-block"><span class="red-l3 color-ref"></span><span class="color-name">red-l3</span></div>
+            <div class="color-block"><span class="red-l4 color-ref"></span><span class="color-name">red-l4</span></div>
+            <div class="color-block"><span class="red-l5 color-ref"></span><span class="color-name">red-l5</span></div>
+            <div class="color-block"><span class="red-d1 color-ref"></span><span class="color-name">red-d1</span></div>
+            <div class="color-block"><span class="red-d2 color-ref"></span><span class="color-name">red-d2</span></div>
+            <div class="color-block"><span class="red-d3 color-ref"></span><span class="color-name">red-d3</span></div>
+            <div class="color-block"><span class="red-d4 color-ref"></span><span class="color-name">red-d4</span></div>
+            <div class="color-block"><span class="red-s1 color-ref"></span><span class="color-name">red-s1</span></div>
+            <div class="color-block"><span class="red-s2 color-ref"></span><span class="color-name">red-s2</span></div>
+            <div class="color-block"><span class="red-s3 color-ref"></span><span class="color-name">red-s3</span></div>
+            <div class="color-block"><span class="red-u1 color-ref"></span><span class="color-name">red-u1</span></div>
+            <div class="color-block"><span class="red-u2 color-ref"></span><span class="color-name">red-u2</span></div>
+            <div class="color-block"><span class="red-u3 color-ref"></span><span class="color-name">red-u3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Green</h4>
+            <div class="color-block"><span class="green color-ref"></span><span class="color-name">green</span></div>
+            <div class="color-block"><span class="green-l1 color-ref"></span><span class="color-name">green-l1</span></div>
+            <div class="color-block"><span class="green-l2 color-ref"></span><span class="color-name">green-l2</span></div>
+            <div class="color-block"><span class="green-l3 color-ref"></span><span class="color-name">green-l3</span></div>
+            <div class="color-block"><span class="green-l4 color-ref"></span><span class="color-name">green-l4</span></div>
+            <div class="color-block"><span class="green-l5 color-ref"></span><span class="color-name">green-l5</span></div>
+            <div class="color-block"><span class="green-d1 color-ref"></span><span class="color-name">green-d1</span></div>
+            <div class="color-block"><span class="green-d2 color-ref"></span><span class="color-name">green-d2</span></div>
+            <div class="color-block"><span class="green-d3 color-ref"></span><span class="color-name">green-d3</span></div>
+            <div class="color-block"><span class="green-d4 color-ref"></span><span class="color-name">green-d4</span></div>
+            <div class="color-block"><span class="green-s1 color-ref"></span><span class="color-name">green-s1</span></div>
+            <div class="color-block"><span class="green-s2 color-ref"></span><span class="color-name">green-s2</span></div>
+            <div class="color-block"><span class="green-s3 color-ref"></span><span class="color-name">green-s3</span></div>
+            <div class="color-block"><span class="green-u1 color-ref"></span><span class="color-name">green-u1</span></div>
+            <div class="color-block"><span class="green-u2 color-ref"></span><span class="color-name">green-u2</span></div>
+            <div class="color-block"><span class="green-u3 color-ref"></span><span class="color-name">green-u3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Yellow</h4>
+            <div class="color-block"><span class="yellow color-ref"></span><span class="color-name">yellow</span></div>
+            <div class="color-block"><span class="yellow-l1 color-ref"></span><span class="color-name">yellow-l1</span></div>
+            <div class="color-block"><span class="yellow-l2 color-ref"></span><span class="color-name">yellow-l2</span></div>
+            <div class="color-block"><span class="yellow-l3 color-ref"></span><span class="color-name">yellow-l3</span></div>
+            <div class="color-block"><span class="yellow-l4 color-ref"></span><span class="color-name">yellow-l4</span></div>
+            <div class="color-block"><span class="yellow-l5 color-ref"></span><span class="color-name">yellow-l5</span></div>
+            <div class="color-block"><span class="yellow-d1 color-ref"></span><span class="color-name">yellow-d1</span></div>
+            <div class="color-block"><span class="yellow-d2 color-ref"></span><span class="color-name">yellow-d2</span></div>
+            <div class="color-block"><span class="yellow-d3 color-ref"></span><span class="color-name">yellow-d3</span></div>
+            <div class="color-block"><span class="yellow-d4 color-ref"></span><span class="color-name">yellow-d4</span></div>
+            <div class="color-block"><span class="yellow-s1 color-ref"></span><span class="color-name">yellow-s1</span></div>
+            <div class="color-block"><span class="yellow-s2 color-ref"></span><span class="color-name">yellow-s2</span></div>
+            <div class="color-block"><span class="yellow-s3 color-ref"></span><span class="color-name">yellow-s3</span></div>
+            <div class="color-block"><span class="yellow-u1 color-ref"></span><span class="color-name">yellow-u1</span></div>
+            <div class="color-block"><span class="yellow-u2 color-ref"></span><span class="color-name">yellow-u2</span></div>
+            <div class="color-block"><span class="yellow-u3 color-ref"></span><span class="color-name">yellow-u3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Orange</h4>
+            <div class="color-block"><span class="orange color-ref"></span><span class="color-name">orange</span></div>
+            <div class="color-block"><span class="orange-l1 color-ref"></span><span class="color-name">orange-l1</span></div>
+            <div class="color-block"><span class="orange-l2 color-ref"></span><span class="color-name">orange-l2</span></div>
+            <div class="color-block"><span class="orange-l3 color-ref"></span><span class="color-name">orange-l3</span></div>
+            <div class="color-block"><span class="orange-l4 color-ref"></span><span class="color-name">orange-l4</span></div>
+            <div class="color-block"><span class="orange-l5 color-ref"></span><span class="color-name">orange-l5</span></div>
+            <div class="color-block"><span class="orange-d1 color-ref"></span><span class="color-name">orange-d1</span></div>
+            <div class="color-block"><span class="orange-d2 color-ref"></span><span class="color-name">orange-d2</span></div>
+            <div class="color-block"><span class="orange-d3 color-ref"></span><span class="color-name">orange-d3</span></div>
+            <div class="color-block"><span class="orange-d4 color-ref"></span><span class="color-name">orange-d4</span></div>
+            <div class="color-block"><span class="orange-s1 color-ref"></span><span class="color-name">orange-s1</span></div>
+            <div class="color-block"><span class="orange-s2 color-ref"></span><span class="color-name">orange-s2</span></div>
+            <div class="color-block"><span class="orange-s3 color-ref"></span><span class="color-name">orange-s3</span></div>
+            <div class="color-block"><span class="orange-u1 color-ref"></span><span class="color-name">orange-u1</span></div>
+            <div class="color-block"><span class="orange-u2 color-ref"></span><span class="color-name">orange-u2</span></div>
+            <div class="color-block"><span class="orange-u3 color-ref"></span><span class="color-name">orange-u3</span></div>
+          </div>
+
+          <div class="color">
+            <h4 class="title-sub">Shadow</h4>
+            <div class="color-block"><span class="shadow color-ref"></span><span class="color-name">shadow</span></div>
+            <div class="color-block"><span class="shadow-l1 color-ref"></span><span class="color-name">shadow-l1</span></div>
+            <div class="color-block"><span class="shadow-l2 color-ref"></span><span class="color-name">shadow-l2</span></div>
+            <div class="color-block"><span class="shadow-d1 color-ref"></span><span class="color-name">shadow-d1</span></div>
+            <div class="color-block"><span class="shadow-d2 color-ref"></span><span class="color-name">shadow-d2</span></div>
+          </div>
+
+        </div>
+
+
+        <div class="elements demo-block">
+          <h3 class="title">Elements</h3>
+
+          <h3 class="title-sub">Buttons</h3>
+
+          <div class="btn-group">
+            <h4 class="title">Primary Buttons</h4>
+            <div class="btn btn-primary">ui-btn-primary</div>
+            <div class="btn btn-primary-gray">btn-primary-gray</div>
+            <div class="btn btn-primary-blue">btn-primary-blue</div>
+            <div class="btn btn-primary-green">btn-primary-green</div>
+          </div>
+
+
+          <div class="btn-group">
+            <h4 class="title">Secondary Buttons</h4>
+            <div class="btn btn-secondary">ui-btn-secondary</div>
+            <div class="btn btn-secondary-gray">btn-secondary-gray</div>
+            <div class="btn btn-secondary-blue">btn-secondary-blue</div>
+            <div class="btn btn-secondary-green">btn-secondary-green</div>
+          </div>
+
+
+          <div class="btn-group">
+            <h4 class="title">Other Buttons</h4>
+            <div class="btn btn-flat-outline">ui-btn-flat-outline</div>
+            <div class="btn btn-dd">ui-btn-dd <i class="icon-caret-down ui-toggle-dd"></i></div>
+          </div>
+
+
+          <h3 class="title-sub">UI: Interface Elements</h3>
+
+            <div class="window">This is a window (ui-window)</div>
+            <div class="well">This is a well (ui-well)</div>
+
+            <div class="wrapper-sock-example">
+              <div class="wrapper-sock">
+                <ul class="list-actions list-cta">
+                <li class="action-item">
+                <a class="cta cta-show-sock" href="#sock">
+                <i class="icon-question-sign"></i>
+                <span class="copy">Show sock</span>
+                </a>
+                </li>
+                </ul>
+
+                <div class="wrapper-inner">
+                  <div class="sock">
+                    <p>This is a sock (wrapper-sock)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <h3 class="title-sub">Notifications</h3>
+
+          <h3 class="title-sub">Modals</h3>
+
+          <h3 class="title-sub">Animations</h3>
+        </div>
+
+        <div class="elements demo-block">
+          <h3 class="title">Forms</h3>
+
+          <form class="create-something">
+            <h3 class="title">Create New Content</h3>
+
+
+            <fieldset>
+
+              <ol class="list-input">
+                 <li class="field">
+                   <label for="input1">This is a regular label</label>
+                   <input id="input1" type="text" placeholder="input field" size="35" />
+                 </li>
+                 <li class="field is-not-editable">
+                   <label for="input1">This is a regular label</label>
+                   <input id="input1" type="text" placeholder="un-editable input field" size="35" />
+                 </li>
+                 <li class="field required">
+                   <label for="input2">This is a required label</label>
+                   <input id="input2" class="field is-not-editable" type="text" placeholder="input field" size="35" />
+                   <span class="tip tip-stacked">This is an explanatory tip</span>
+                 </li>
+                 <li class="field error">
+                   <label for="input2">This is a label with an error</label>
+                   <input id="input2" class="field is-not-editable" type="text" placeholder="input field" size="35" />
+                 </li>
+               </ol>
+            </fieldset>
+
+            <div class="actions">
+              <button class="action action-primary" type="submit">Primary Action</button>
+              <button class="action action-secondary">Secondary Action</button>
+            </div>
+
+           </form>
+          </div>
 
 
       </article>
       <aside class="content-supplementary" role="complimentary">
         <div class="bit">
-          <h3 class="title-3">${_("Why should I break my text into chapters?")}</h3>
-          <p>${_("It's best practice to break your course's textbook into multiple chapters to reduce loading times for students. Breaking up textbooks into chapters can also help students more easily find topic-based information.")}</p>
+          <h3 class="title-3">${_("What is this page for?")}</h3>
+          <p>${_("This page documents the available sass variables and ui elements that are available within Studio.")}</p>
         </div>
         <div class="bit">
-          <h3 class="title-3">${_("What if my book isn't divided into chapters?")}</h3>
-          <p>${_("If you haven't broken your text into chapters, you can upload the entire text as a single chapter and enter a name of your choice in the Chapter Name field.")}</p>
+          <h3 class="title-3">${_("What if a style is missing?")}</h3>
+          <p>${_("If you are a designer, please add it to the page. If you are a developer, tell a designer to fix it.")}</p>
         </div>
       </aside>
     </section>
