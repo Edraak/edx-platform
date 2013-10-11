@@ -1,0 +1,52 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="../base.html" />
+
+<%block name="title">${_("Style Reference")}</%block>
+<%block name="bodyclass">view-style-reference</%block>
+
+<%block name="content">
+
+  <div class="wrapper-mast wrapper">
+    <header class="mast has-actions has-subtitle">
+      <h1 class="page-header">
+        <small class="subtitle">${_("Documentation")}</small>
+        <span class="sr">&gt; </span>${_("Style Reference")}
+      </h1>
+
+      <nav class="nav-actions">
+        <h3 class="sr">${_("Page Actions")}</h3>
+        <ul>
+          <li class="nav-item">
+            <a href="#" class="button new-button"><i class="icon-plus"></i> ${_("New Textbook")}</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  </div>
+
+  <div class="wrapper-content wrapper">
+    <section class="content">
+      <article class="content-primary" role="main">
+
+        <h3>Fonts</h3>
+
+        <h3>Colors</h3>
+
+        <h3>Elements</h3>
+
+
+      </article>
+      <aside class="content-supplementary" role="complimentary">
+        <div class="bit">
+          <h3 class="title-3">${_("Why should I break my text into chapters?")}</h3>
+          <p>${_("It's best practice to break your course's textbook into multiple chapters to reduce loading times for students. Breaking up textbooks into chapters can also help students more easily find topic-based information.")}</p>
+        </div>
+        <div class="bit">
+          <h3 class="title-3">${_("What if my book isn't divided into chapters?")}</h3>
+          <p>${_("If you haven't broken your text into chapters, you can upload the entire text as a single chapter and enter a name of your choice in the Chapter Name field.")}</p>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+</%block>

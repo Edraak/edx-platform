@@ -10,3 +10,7 @@ from mitxmako.shortcuts import render_to_response
 def dev_mode(request):
     "Sample static view"
     return render_to_response("dev/dev_mode.html")
+
+def style_reference(request):
+    "Sample static view"
+    return render_to_response("dev/style_reference.html")
