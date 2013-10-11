@@ -961,3 +961,10 @@ if MITX_FEATURES.get('AUTH_USE_CAS'):
     )
     INSTALLED_APPS += ('django_cas',)
     MIDDLEWARE_CLASSES += ('django_cas.middleware.CASMiddleware',)
+
+################### Alternate State Storage ###################
+STUDENT_STATE_STORAGE_ENGINES = {
+}
+
+STUDENT_STATE_STORAGE_FOR_COURSE = {
+}

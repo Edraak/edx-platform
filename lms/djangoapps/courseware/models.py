@@ -12,10 +12,12 @@ file and check it in at the same time as your model changes. To do that,
 ASSUMPTIONS: modules have unique IDs, even across different module_types
 
 """
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import pymongo
 
 
 class StudentModule(models.Model):
@@ -37,11 +39,12 @@ class StudentModule(models.Model):
     # for many instances of the module.
     # Filename for homeworks, etc.
     module_state_key = models.CharField(max_length=255, db_index=True, db_column='module_id')
-    student = models.ForeignKey(User, db_index=True)
+    # student = models.ForeignKey(User, db_index=True)
+    student_id = models.IntegerField(db_index=True)
     course_id = models.CharField(max_length=255, db_index=True)
 
     class Meta:
-        unique_together = (('student', 'module_state_key', 'course_id'),)
+        unique_together = (('student_id', 'module_state_key', 'course_id'),)
 
     ## Internal state of the object
     state = models.TextField(null=True, blank=True)
@@ -236,13 +239,16 @@ class OfflineComputedGradeLog(models.Model):
 
 class XModuleStudentStateDjangoBackend(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, dbname="default"):
+        self.dbname = dbname
+
+    def __repr__(self):
+        return u"XModuleStudentStateDjangoBackend({})".format(self.dbname)
 
     def _django_model_to_state_obj(self, model_record):
         return XModuleStudentState(
             model_record.course_id,
-            model_record.student.id,
+            model_record.student_id,
             model_record.module_state_key,
             module_type=model_record.module_type,
             state=model_record.state,
@@ -252,9 +258,9 @@ class XModuleStudentStateDjangoBackend(object):
 
     def get(self, course_id, user_id, module_state_key):
         try:
-            record = StudentModule.objects.get(
+            record = StudentModule.objects.using(self.dbname).get(
                 course_id=course_id,
-                student=user_id,
+                student_id=user_id,
                 module_state_key=module_state_key
             )
             return self._django_model_to_state_obj(record)
@@ -268,18 +274,27 @@ class XModuleStudentStateDjangoBackend(object):
                 .format(searched_for, self)
             )
 
-    def get_for_course_user(self, course_id, user_id, module_state_keys):
-        records = StudentModule.objects.filter(
+    def get_or_create(self, course_id, user_id, module_state_key, defaults):
+        record, created = StudentModule.objects.using(self.dbname).get_or_create(
             course_id=course_id,
-            student=user_id,
+            student_id=user_id,
+            module_state_key=module_state_key,
+            defaults=defaults
+        )
+        return self._django_model_to_state_obj(record)
+
+    def get_for_course_user(self, course_id, user_id, module_state_keys):
+        records = StudentModule.objects.using(self.dbname).filter(
+            course_id=course_id,
+            student_id=user_id,
             module_state_key__in=module_state_keys
         )
         return [self._django_model_to_state_obj(record) for record in records]
 
     def save(self, state_obj):
-        record, created = StudentModule.objects.get_or_create(
+        record, created = StudentModule.objects.using(self.dbname).get_or_create(
             course_id=state_obj.course_id,
-            student=state_obj.user_id,
+            student_id=state_obj.user_id,
             module_state_key=state_obj.module_state_key
         )
         record.module_type = state_obj.module_type
@@ -290,7 +305,7 @@ class XModuleStudentStateDjangoBackend(object):
         record.save()
 
     def delete(self, state_obj):
-        record = StudentModule.objects.get(
+        record = StudentModule.objects.using(self.dbname).get(
             course_id=state_obj.course_id,
             student_id=state_obj.user_id,
             module_state_key=state_obj.module_state_key
@@ -299,23 +314,24 @@ class XModuleStudentStateDjangoBackend(object):
 
 class XModuleStudentStateMongoBackend(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, host, db,
+                 port=27017, collection="studentstate", user=None, password=None):
+        conn = pymongo.Connection(host=host, port=port, tz_aware=True)
+        self.collection = conn[db][collection]
 
-    def _django_model_to_state_obj(self, model_record):
-        return XModuleStudentState(
-            model_record.course_id,
-            model_record.student.id,
-            model_record.module_state_key,
-            module_type=model_record.module_type,
-            state=model_record.state,
-            grade=model_record.grade,
-            max_grade=model_record.max_grade
+        # Authenticate if credentials provided
+        if user is not None and password is not None:
+            self._db.authenticate(user, password)
+
+        self.collection.ensure_index(
+            ["course_id", "student_id", "module_state_key"],
+            unique=True
         )
+
 
     def get(self, course_id, user_id, module_state_key):
         try:
-            record = StudentModule.objects.get(
+            record = StudentModule.objects.using(self.dbname).get(
                 course_id=course_id,
                 student=user_id,
                 module_state_key=module_state_key
@@ -332,15 +348,18 @@ class XModuleStudentStateMongoBackend(object):
             )
 
     def get_for_course_user(self, course_id, user_id, module_state_keys):
-        records = StudentModule.objects.filter(
+        records = StudentModule.objects.using(self.dbname).filter(
             course_id=course_id,
             student=user_id,
             module_state_key__in=module_state_keys
         )
         return [self._django_model_to_state_obj(record) for record in records]
 
+    def get_or_create(self, course_id, user_id, module_state_key, defaults):
+        pass
+
     def save(self, state_obj):
-        record, created = StudentModule.objects.get_or_create(
+        record, created = StudentModule.objects.using(self.dbname).get_or_create(
             course_id=state_obj.course_id,
             student=state_obj.user_id,
             module_state_key=state_obj.module_state_key
@@ -353,12 +372,13 @@ class XModuleStudentStateMongoBackend(object):
         record.save()
 
     def delete(self, state_obj):
-        record = StudentModule.objects.get(
+        record = StudentModule.objects.using(self.dbname).get(
             course_id=state_obj.course_id,
             student_id=state_obj.user_id,
             module_state_key=state_obj.module_state_key
         )
         record.delete()
+
 
 
 class XModuleStudentState(object):
@@ -371,6 +391,25 @@ class XModuleStudentState(object):
     """
     @classmethod
     def backend_for_course(cls, course_id):
+        # If we haven't defined any alternate storage engines, just use the
+        # default Django Backend.
+        if not settings.STUDENT_STATE_STORAGE_ENGINES:
+            return XModuleStudentStateDjangoBackend()
+
+        # Now let's try to look up where this course should store its data
+        storage_name = settings.STUDENT_STATE_STORAGE_FOR_COURSE.get(course_id, "default")
+        engine = settings.STUDENT_STATE_STORAGE_ENGINES[storage_name]
+
+        # Ok, this should actually be a part of the backends
+        if engine["type"] == "sql":
+            return XModuleStudentStateDjangoBackend(engine["db"])
+        elif engine["type"] == "mongo":
+            return XModuleStudentStateMongoBackend(
+                host=engine["host"],
+                db=engine["db"],
+                collection=engine["collection"]
+            )
+
         return XModuleStudentStateDjangoBackend()
 
     @classmethod
@@ -388,6 +427,11 @@ class XModuleStudentState(object):
     def get(cls, course_id, user_id, module_state_key):
         backend = XModuleStudentState.backend_for_course(course_id)
         return backend.get(course_id, user_id, module_state_key)
+
+    @classmethod
+    def get_or_create(cls, course_id, user_id, module_state_key, defaults=None):
+        backend = XModuleStudentState.backend_for_course(course_id)
+        return backend.get_or_create(course_id, user_id, module_state_key, defaults)
 
     def delete(self):
         XModuleStudentState.backend_for_course(self.course_id).delete(self)

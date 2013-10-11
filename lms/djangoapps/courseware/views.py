@@ -183,7 +183,7 @@ def check_for_active_timelimit_module(request, course_id, course):
     context = {}
 
     # TODO (cpennington): Once we can query the course structure, replace this with such a query
-    timelimit_student_modules = StudentModule.objects.filter(student=request.user, course_id=course_id, module_type='timelimit')
+    timelimit_student_modules = StudentModule.objects.filter(student_id=request.user.id, course_id=course_id, module_type='timelimit')
     if timelimit_student_modules:
         for timelimit_student_module in timelimit_student_modules:
             # get the corresponding section_descriptor for the given StudentModel entry:

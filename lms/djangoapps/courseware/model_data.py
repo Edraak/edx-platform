@@ -226,14 +226,14 @@ class FieldDataCache(object):
             return field_object
 
         if key.scope == Scope.user_state:
-            field_object, _ = StudentModule.objects.get_or_create(
+            field_object = XModuleStudentState.get_or_create(
                 course_id=self.course_id,
-                student=self.user,
+                user_id=self.user.id,
                 module_state_key=key.block_scope_id.url(),
                 defaults={
                     'state': json.dumps({}),
                     'module_type': key.block_scope_id.category,
-                },
+                }
             )
         elif key.scope == Scope.user_state_summary:
             field_object, _ = XModuleUserStateSummaryField.objects.get_or_create(

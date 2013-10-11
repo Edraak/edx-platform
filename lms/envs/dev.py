@@ -277,6 +277,40 @@ EDX_API_KEY = None
 ####################### Shoppingcart ###########################
 MITX_FEATURES['ENABLE_SHOPPING_CART'] = True
 
+
+######################## MongoDB State Storage ###############################
+STUDENT_STATE_STORAGE_ENGINES = {
+    "mongo0" : {
+        "type" : "mongo",
+        "host" : "localhost",
+        "db" : "xmodule",
+        "collection" : "studentstate",
+    },
+    "sql_shard0" : {
+        "type" : "sql",
+        "db" : "shard0",
+    },
+    "default" : {
+        "type" : "sql",
+        "db" : "default"
+    }
+}
+
+DATABASES['shard0'] = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': ENV_ROOT / "db" / "shard0.db",
+}
+
+
+# This should be replaced with per-course configuration settings stored in the
+# DB... and if I had remembered that was still missing, I'd have done that for
+# my hackathon project instead.
+STUDENT_STATE_STORAGE_FOR_COURSE = {
+    "Hackathon/MySQL0/HK5" : "sql_shard0",
+    "Hackathon/MONGO0/HK5" : "mongo0",
+
+}
+
 #####################################################################
 # Lastly, see if the developer has any local overrides.
 try:
