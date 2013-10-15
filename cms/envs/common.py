@@ -69,6 +69,7 @@ MITX_FEATURES = {
 ENABLE_JASMINE = False
 
 USAGE_STATS_BASE_URL = 'http://localhost:8080/v1/stats/'
+OPENEDX_NETWORK_CATALOG_BASE_URL = 'http://localhost:8080/v1/catalog/'
 USAGE_STATS_INSTANCE_KEY = 'foo'
 USAGE_STATS_API_KEY = 'test'
 

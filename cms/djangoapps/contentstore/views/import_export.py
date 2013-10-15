@@ -35,8 +35,11 @@ from .access import get_location_and_verify_access
 from util.json_request import JsonResponse
 from extract_tar import safetar_extractall
 
+from ..utils import get_lms_link_for_about_page, course_image_url
 
-__all__ = ['import_course', 'import_status', 'generate_export_course', 'export_course']
+
+
+__all__ = ['import_course', 'import_status', 'generate_export_course', 'export_course', 'announce_course', 'do_course_announcement']
 
 log = logging.getLogger(__name__)
 
@@ -365,4 +368,71 @@ def export_course(request, org, course, name):
     return render_to_response('export.html', {
         'context_course': course_module,
         'successful_import_redirect_url': ''
+    })
+
+
+@ensure_csrf_cookie
+@login_required
+def announce_course(request, org, course, name):
+    """
+    This method serves up the 'Export Course' page
+    """
+    location = get_location_and_verify_access(request, org, course, name)
+
+    course_module = modulestore().get_item(location)
+
+    return render_to_response('announce.html', {
+        'context_course': course_module,
+        'successful_import_redirect_url': '',
+        'completed': False
+    })
+
+
+def import_non_local(name, custom_name=None):
+    import imp, sys
+
+    custom_name = custom_name or name
+
+    f, pathname, desc = imp.find_module(name, sys.path[1:])
+
+    module = imp.load_module(custom_name, f, pathname, desc)
+
+    return module
+
+@ensure_csrf_cookie
+@login_required
+def do_course_announcement(request, org, course, name):
+    location = get_location_and_verify_access(request, org, course, name)
+
+    course_module = modulestore().get_item(location)
+
+    endpoint = settings.OPENEDX_NETWORK_CATALOG_BASE_URL
+    instance_key = settings.USAGE_STATS_INSTANCE_KEY
+    api_key = settings.USAGE_STATS_API_KEY
+
+    url = endpoint + 'add_to_catalog?api_key=' + api_key
+
+    requests = import_non_local('requests')
+
+    # don't block long waiting for a response
+    r = requests.post(url, 
+        data={
+            'course_id': course_module.location.course_id,
+            'instance_key': instance_key,
+            'about_page_url': get_lms_link_for_about_page(course_module.location),
+            'display_name': course_module.display_name,
+            'display_org': course_module.display_number_with_default,
+            'display_coursenum': course_module.display_org_with_default,
+            'display_courserun': '',
+            'course_image_url': course_image_url(course_module),
+            'short_description': '',
+            'start_date': course_module.start,
+        },
+        timeout=0.5
+    )
+
+    return render_to_response('announce.html', {
+        'context_course': course_module,
+        'successful_import_redirect_url': '',
+        'completed': True
     })
