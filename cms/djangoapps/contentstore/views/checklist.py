@@ -8,62 +8,64 @@ from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django_future.csrf import ensure_csrf_cookie
 from mitxmako.shortcuts import render_to_response
+from django.http import HttpResponseNotFound
+from django.core.exceptions import PermissionDenied
+from xmodule.modulestore.django import loc_mapper
 
 from xmodule.modulestore.inheritance import own_metadata
 
+
 from ..utils import get_modulestore
-from .access import get_location_and_verify_access
+from .access import has_access
 from xmodule.course_module import CourseDescriptor
+from xmodule.modulestore.locator import BlockUsageLocator
 
-__all__ = ['get_checklists', 'update_checklist']
-
-
-@ensure_csrf_cookie
-@login_required
-def get_checklists(request, org, course, name):
-    """
-    Send models, views, and html for displaying the course checklists.
-
-    org, course, name: Attributes of the Location for the item to edit
-    """
-    location = get_location_and_verify_access(request, org, course, name)
-
-    modulestore = get_modulestore(location)
-    course_module = modulestore.get_item(location)
-
-    # If course was created before checklists were introduced, copy them over
-    # from the template.
-    if not course_module.checklists:
-        course_module.checklists = CourseDescriptor.checklists.default
-        course_module.save()
-        modulestore.update_metadata(location, own_metadata(course_module))
-
-    expanded_checklists = expand_all_action_urls(course_module)
-    return render_to_response('checklists.html',
-                              {
-                                  'context_course': course_module,
-                                  'checklists': expanded_checklists
-                              })
-
+__all__ = ['checklists_handler']
 
 @require_http_methods(("GET", "POST", "PUT"))
-@ensure_csrf_cookie
 @login_required
-def update_checklist(request, org, course, name, checklist_index=None):
+@ensure_csrf_cookie
+def checklists_handler(request, course_url, checklist_index=None):
     """
-    restful CRUD operations on course checklists. The payload is a json rep of
-    the modified checklist. For PUT or POST requests, the index of the
-    checklist being modified must be included; the returned payload will
-    be just that one checklist. For GET requests, the returned payload
-    is a json representation of the list of all checklists.
+    The restful handler for checklists.
 
-    org, course, name: Attributes of the Location for the item to edit
+    GET
+        html: return html page for all checklists
+        json: return json representing all checklists. checklist_index is not supported for GET at this time.
+    POST or PUT
+        json: updates the checked state for items within a particular checklist. checklist_index is required.
     """
-    location = get_location_and_verify_access(request, org, course, name)
-    modulestore = get_modulestore(location)
-    course_module = modulestore.get_item(location)
+    location = BlockUsageLocator(course_url)
+    if not has_access(request.user, location):
+        raise PermissionDenied()
 
-    if request.method in ("POST", "PUT"):
+    #   Create an annotation to do this conversion?
+    old_location = loc_mapper().translate_locator_to_location(location)
+
+    modulestore = get_modulestore(old_location)
+    course_module = modulestore.get_item(old_location)
+
+    json_request = 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json')
+    if request.method == 'GET':
+        # If course was created before checklists were introduced, copy them over
+        # from the template.
+        if not course_module.checklists:
+            course_module.checklists = CourseDescriptor.checklists.default
+            course_module.save()
+            modulestore.update_metadata(old_location, own_metadata(course_module))
+
+        expanded_checklists = expand_all_action_urls(course_module)
+        if json_request:
+            return JsonResponse(expanded_checklists)
+        else:
+            handler_url = reverse('contentstore.views.checklists_handler', kwargs={'course_url': course_url})
+            return render_to_response('checklists.html',
+                                      {
+                                          'handler_url': handler_url,
+                                          'checklists': expanded_checklists
+                                      })
+    elif json_request:
+        # Can now assume POST or PUT because GET handled above.
         if checklist_index is not None and 0 <= int(checklist_index) < len(course_module.checklists):
             index = int(checklist_index)
             persisted_checklist = course_module.checklists[index]
@@ -73,24 +75,21 @@ def update_checklist(request, org, course, name, checklist_index=None):
             # include the expanded action URLs (which are non-portable).
             for item_index, item in enumerate(modified_checklist.get('items')):
                 persisted_checklist['items'][item_index]['is_checked'] = item['is_checked']
-            # seeming noop which triggers kvs to record that the metadata is
+                # seeming noop which triggers kvs to record that the metadata is
             # not default
             course_module.checklists = course_module.checklists
             course_module.save()
-            modulestore.update_metadata(location, own_metadata(course_module))
+            modulestore.update_metadata(old_location, own_metadata(course_module))
             expanded_checklist = expand_checklist_action_url(course_module, persisted_checklist)
             return JsonResponse(expanded_checklist)
         else:
             return HttpResponseBadRequest(
                 ( "Could not save checklist state because the checklist index "
-                "was out of range or unspecified."),
+                  "was out of range or unspecified."),
                 content_type="text/plain"
             )
-    elif request.method == 'GET':
-        # In the JavaScript view initialize method, we do a fetch to get all
-        # the checklists.
-        expanded_checklists = expand_all_action_urls(course_module)
-        return JsonResponse(expanded_checklists)
+    else:
+        return HttpResponseNotFound()
 
 
 def expand_all_action_urls(course_module):
@@ -117,8 +116,7 @@ def expand_checklist_action_url(course_module, checklist):
         "ManageUsers": "manage_users",
         "SettingsDetails": "settings_details",
         "SettingsGrading": "settings_grading",
-        "CourseOutline": "course_index",
-        "Checklists": "checklists",
+        "CourseOutline": "course_index"
     }
     for item in expanded_checklist.get('items'):
         action_url = item.get('action_url')

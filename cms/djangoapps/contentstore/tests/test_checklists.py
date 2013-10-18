@@ -4,6 +4,8 @@ from contentstore.views.checklist import expand_checklist_action_url
 from xmodule.modulestore.inheritance import own_metadata
 from xmodule.modulestore.tests.factories import CourseFactory
 from django.core.urlresolvers import reverse
+from xmodule.modulestore.django import loc_mapper
+
 import json
 from .utils import CourseTestCase
 
@@ -14,6 +16,8 @@ class ChecklistTestCase(CourseTestCase):
         """ Creates the test course. """
         super(ChecklistTestCase, self).setUp()
         self.course = CourseFactory.create(org='mitX', number='333', display_name='Checklists Course')
+        self.location = loc_mapper().translate_location(self.course.location.course_id, self.course.location, False, True)
+        self.html_handler_url = reverse('contentstore.views.checklists_handler', kwargs={'course_url': self.location})
 
     def get_persisted_checklists(self):
         """ Returns the checklists as persisted in the modulestore. """
@@ -35,13 +39,8 @@ class ChecklistTestCase(CourseTestCase):
             self.assertEqual(pers['action_external'], req['action_external'])
 
     def test_get_checklists(self):
-        """ Tests the get checklists method. """
-        checklists_url = reverse("checklists", kwargs={
-            'org': self.course.location.org,
-            'course': self.course.location.course,
-            'name': self.course.location.name,
-        })
-        response = self.client.get(checklists_url)
+        """ Tests the get checklists method and URL expansion. """
+        response = self.client.get(self.html_handler_url)
         self.assertContains(response, "Getting Started With Studio")
         # Verify expansion of action URL happened.
         self.assertContains(response, '/mitX/333/team/Checklists_Course')
@@ -58,17 +57,19 @@ class ChecklistTestCase(CourseTestCase):
         modulestore = get_modulestore(self.course.location)
         modulestore.update_metadata(self.course.location, own_metadata(self.course))
         self.assertEqual(self.get_persisted_checklists(), None)
-        response = self.client.get(checklists_url)
+        response = self.client.get(self.html_handler_url)
         self.assertEqual(payload, response.content)
+
+    def test_get_checklists_html(self):
+        """ Tests getting the HTML template for the checklists page). """
+        response = self.client.get(self.html_handler_url, HTTP_ACCEPT='text/html')
+        self.assertContains(response, "Getting Started With Studio")
+        # The HTML generated will define the handler URL (for use by the Backbone model).
+        self.assertContains(response, self.html_handler_url)
 
     def test_update_checklists_no_index(self):
         """ No checklist index, should return all of them. """
-        update_url = reverse('checklists_updates', kwargs={
-            'org': self.course.location.org,
-            'course': self.course.location.course,
-            'name': self.course.location.name})
-
-        returned_checklists = json.loads(self.client.get(update_url).content)
+        returned_checklists = json.loads(self.client.get(self.html_handler_url).content)
         # Verify that persisted checklists do not have expanded action URLs.
         # compare_checklists will verify that returned_checklists DO have expanded action URLs.
         pers = self.get_persisted_checklists()
@@ -78,10 +79,7 @@ class ChecklistTestCase(CourseTestCase):
 
     def test_update_checklists_index_ignored_on_get(self):
         """ Checklist index ignored on get. """
-        update_url = reverse('checklists_updates', kwargs={'org': self.course.location.org,
-                                                           'course': self.course.location.course,
-                                                           'name': self.course.location.name,
-                                                           'checklist_index': 1})
+        update_url = reverse('contentstore.views.checklists_handler', kwargs={'course_url': self.location, 'checklist_index': 1})
 
         returned_checklists = json.loads(self.client.get(update_url).content)
         for pay, resp in zip(self.get_persisted_checklists(), returned_checklists):
@@ -89,27 +87,19 @@ class ChecklistTestCase(CourseTestCase):
 
     def test_update_checklists_post_no_index(self):
         """ No checklist index, will error on post. """
-        update_url = reverse('checklists_updates', kwargs={'org': self.course.location.org,
-                                                           'course': self.course.location.course,
-                                                           'name': self.course.location.name})
-        response = self.client.post(update_url)
+        response = self.client.post(self.html_handler_url)
         self.assertContains(response, 'Could not save checklist', status_code=400)
 
     def test_update_checklists_index_out_of_range(self):
         """ Checklist index out of range, will error on post. """
-        update_url = reverse('checklists_updates', kwargs={'org': self.course.location.org,
-                                                           'course': self.course.location.course,
-                                                           'name': self.course.location.name,
-                                                           'checklist_index': 100})
+        update_url = reverse('contentstore.views.checklists_handler', kwargs={'course_url': self.location, 'checklist_index': 100})
+
         response = self.client.post(update_url)
         self.assertContains(response, 'Could not save checklist', status_code=400)
 
     def test_update_checklists_index(self):
         """ Check that an update of a particular checklist works. """
-        update_url = reverse('checklists_updates', kwargs={'org': self.course.location.org,
-                                                           'course': self.course.location.course,
-                                                           'name': self.course.location.name,
-                                                           'checklist_index': 1})
+        update_url = reverse('contentstore.views.checklists_handler', kwargs={'course_url': self.location, 'checklist_index': 1})
 
         payload = self.course.checklists[1]
         self.assertFalse(get_first_item(payload).get('is_checked'))
@@ -127,10 +117,7 @@ class ChecklistTestCase(CourseTestCase):
 
     def test_update_checklists_delete_unsupported(self):
         """ Delete operation is not supported. """
-        update_url = reverse('checklists_updates', kwargs={'org': self.course.location.org,
-                                                           'course': self.course.location.course,
-                                                           'name': self.course.location.name,
-                                                           'checklist_index': 100})
+        update_url = reverse('contentstore.views.checklists_handler', kwargs={'course_url': self.location, 'checklist_index': 100})
         response = self.client.delete(update_url)
         self.assertEqual(response.status_code, 405)
 
