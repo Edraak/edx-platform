@@ -24,6 +24,7 @@ section.course-index {
       border-radius: 0;
       margin: 0;
       overflow: visible;
+      font-size: 16px;
 
       &:first-child {
         border: none;
@@ -47,6 +48,7 @@ section.course-index {
           border-radius: 0;
           box-shadow: none;
           padding-left: 19px;
+          color: $link-color;
         }
 
         &.ui-state-active {

@@ -109,8 +109,8 @@
     }
 
     .modal-form-error {
-      background: $error-red;
-      border: 1px solid rgb(202, 17, 17);
+      background: tint($red,90%);
+      border: 1px solid rgb(143, 14, 14);
       color: rgb(143, 14, 14);
       display: none;
       margin-bottom: 20px;
