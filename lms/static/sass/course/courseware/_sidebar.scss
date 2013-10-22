@@ -29,7 +29,7 @@ section.course-index {
         border: none;
       }
 
-      &:hover {
+      &:hover, &:focus {
         color: #666;
       }
 
@@ -53,7 +53,7 @@ section.course-index {
           @extend .active;
           border-bottom: none;
 
-          &:hover {
+          &:hover, &:focus {
             background: none;
           }
         }
@@ -88,7 +88,7 @@ section.course-index {
         box-shadow: 0 1px 0 #fff inset;
       }
 
-      &:hover {
+      &:hover, &:focus {
         background-color: #fff
       }
     }
@@ -134,7 +134,7 @@ section.course-index {
             }
           }
 
-          &:hover {
+          &:hover, &:focus {
             background: rgba(0, 0, 0, .1);
 
             > a p {
