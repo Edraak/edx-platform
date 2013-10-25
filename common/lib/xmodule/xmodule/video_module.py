@@ -264,8 +264,8 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         attrs = {
             'display_name': self.display_name,
             'show_captions': json.dumps(self.show_captions),
-            'start_time': datetime.timedelta(seconds=self.start_time),
-            'end_time': datetime.timedelta(seconds=self.end_time),
+            'start_time': datetime.timedelta(seconds=self.start_time if self.start_time else 0),
+            'end_time': datetime.timedelta(seconds=self.end_time if self.end_time else 0),
             'sub': self.sub,
         }
         for key, value in attrs.items():
