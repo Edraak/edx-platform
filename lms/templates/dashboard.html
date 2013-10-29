@@ -269,8 +269,12 @@
 
               <%
               cert_status = cert_statuses.get(course.id)
+              if not course.has_ended() and cert_status.get('status', None) == 'notpassing':
+                  cert_display = False
+              else:
+                  cert_display = cert_status
               %>
-              % if course.has_ended() and cert_status:
+              % if cert_display:
                   <%
                   if cert_status['status'] == 'generating':
                       status_css_class = 'course-status-certrendering'

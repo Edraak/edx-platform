@@ -23,11 +23,10 @@ from django.core.urlresolvers import reverse
 from django.core.validators import validate_email, validate_slug, ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError, transaction
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
-                         HttpResponseNotAllowed, Http404)
+from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, Http404)
 from django.shortcuts import redirect
 from django_future.csrf import ensure_csrf_cookie
-from django.utils.http import cookie_date, base36_to_int, urlencode
+from django.utils.http import cookie_date, base36_to_int
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 
@@ -177,7 +176,7 @@ def cert_info(user, course):
     'survey_url': url, only if show_survey_button is True
     'grade': if status is not 'processing'
     """
-    if not course.has_ended():
+    if not course.may_certify():
         return {}
 
     return _cert_info(user, course, certificate_status_for_student(user, course.id))
@@ -282,38 +281,43 @@ def register_user(request, extra_context=None):
 @ensure_csrf_cookie
 def dashboard(request):
     user = request.user
-
-    # Build our courses list for the user, but ignore any courses that no longer
-    # exist (because the course IDs have changed). Still, we don't delete those
-    # enrollments, because it could have been a data push snafu.
     courses = []
-    for enrollment in CourseEnrollment.enrollments_for_user(user):
-        try:
-            courses.append((course_from_id(enrollment.course_id), enrollment))
-        except ItemNotFoundError:
-            log.error("User {0} enrolled in non-existent course {1}"
-                      .format(user.username, enrollment.course_id))
-
-    course_optouts = Optout.objects.filter(user=user).values_list('course_id', flat=True)
-
     message = ""
-    if not user.is_active:
-        message = render_to_string('registration/activate_account_notice.html', {'email': user.email})
-
-    # Global staff can see what courses errored on their dashboard
     staff_access = False
     errored_courses = {}
-    if has_access(user, 'global', 'staff'):
-        # Show any courses that errored on load
-        staff_access = True
-        errored_courses = modulestore().get_errored_courses()
+    course_optouts = []
+    show_courseware_links_for = set([])
+    cert_statuses = {}
+    exam_registrations = {}
 
-    show_courseware_links_for = frozenset(course.id for course, _enrollment in courses
-                                          if has_access(request.user, course, 'load'))
+    if user.is_active:
+        # Build our courses list for the user, but ignore any courses that no longer
+        # exist (because the course IDs have changed). Still, we don't delete those
+        # enrollments, because it could have been a data push snafu.
+        for enrollment in CourseEnrollment.enrollments_for_user(user):
+            try:
+                courses.append((course_from_id(enrollment.course_id), enrollment))
+            except ItemNotFoundError:
+                log.error("User {0} enrolled in non-existent course {1}"
+                          .format(user.username, enrollment.course_id))
 
-    cert_statuses = {course.id: cert_info(request.user, course) for course, _enrollment in courses}
+        course_optouts = Optout.objects.filter(user=user).values_list('course_id', flat=True)
 
-    exam_registrations = {course.id: exam_registration_info(request.user, course) for course, _enrollment in courses}
+        # Global staff can see what courses errored on their dashboard
+        if has_access(user, 'global', 'staff'):
+            # Show any courses that errored on load
+            staff_access = True
+            errored_courses = modulestore().get_errored_courses()
+
+        show_courseware_links_for = frozenset(course.id for course, _enrollment in courses
+                                              if has_access(request.user, course, 'load'))
+
+        cert_statuses = {course.id: cert_info(request.user, course) for course, _enrollment in courses}
+
+        exam_registrations = {course.id: exam_registration_info(request.user, course) for course, _enrollment in courses}
+
+    else:
+        message = render_to_string('registration/activate_account_notice.html', {'email': user.email})
 
     # get info w.r.t ExternalAuthMap
     external_auth_map = None
@@ -323,15 +327,15 @@ def dashboard(request):
         pass
 
     context = {'courses': courses,
-               'course_optouts': course_optouts,
                'message': message,
-               'external_auth_map': external_auth_map,
                'staff_access': staff_access,
                'errored_courses': errored_courses,
+               'course_optouts': course_optouts,
                'show_courseware_links_for': show_courseware_links_for,
                'cert_statuses': cert_statuses,
                'exam_registrations': exam_registrations,
-               }
+               'external_auth_map': external_auth_map,
+              }
 
     return render_to_response('dashboard.html', context)
 
