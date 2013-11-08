@@ -15,7 +15,7 @@ class UserStandingMiddleware(object):
     def process_request(self, request):
         user = request.user
         try:
-            user_account = UserStanding.objects.get(user=user.id)
+            user_account = UserStanding.objects.get(user=user)
             # because user is a unique field in UserStanding, there will either be
             # one or zero user_accounts associated with a UserStanding
         except UserStanding.DoesNotExist:
