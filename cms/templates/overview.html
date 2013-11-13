@@ -161,6 +161,10 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
 
               <div class="item-details" data-locator="${section_locator}">
                 <h3 class="section-name" data-name="${section.display_name_with_default | h}"></h3>
+                <span class="field">
+                  <label for="share_link" class="section-share" style="padding-right:10px">${_("Share this content")}</label>
+                  <input type="text" id="share_link" value="Copy Me!" placeholder="http://edx.org" readonly/>
+                </span>
                 <div class="section-published-date">
                   <%
                     if section.start is not None:
