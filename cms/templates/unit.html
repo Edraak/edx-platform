@@ -177,6 +177,10 @@ require(["domReady!", "jquery", "coffee/src/models/module", "coffee/src/views/un
                 <span class="label">${_("Unit Identifier:")}</span>
                 <input type="text" class="url value" value="${unit.location.name}" disabled />
               </p>
+              <div class="field">
+                <label for="share_link">${_("Share this content")}</label>
+                <input type="text" id="share_link" value="Copy Me!" placeholder="http://edx.org" readonly/>
+              </div>            
             </div>
             <ol>
               <li>
