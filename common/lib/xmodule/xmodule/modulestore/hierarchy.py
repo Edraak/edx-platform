@@ -10,7 +10,7 @@ class HierarchicalModuleStore(ModuleStoreWriteBase):
 
     def __init__(self, hierarchy):
         """
-        hierarchy should be an ordered dict that maps human-readable strings to modulestore instances
+        Hierarchy should be an ordered dict that maps human-readable strings to modulestore instances
         """
         self.hierarchy = hierarchy
 
@@ -28,6 +28,9 @@ class HierarchicalModuleStore(ModuleStoreWriteBase):
             return None
         return wrapper
 
-    @hierarchywrapper
-    def get_item(self, location, depth=0):
-        return None
+    def __getattribute__(self, name):
+        attr = super(ModuleStoreWriteBase, self).__getattribute__(name)
+        if callable(attr):
+            return hierarchywrapper(attr)
+        else:
+            return attr
