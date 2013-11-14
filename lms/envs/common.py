@@ -192,6 +192,8 @@ MITX_FEATURES = {
     # Disable instructor dash buttons for downloading course data
     # when enrollment exceeds this number
     'MAX_ENROLLMENT_INSTR_BUTTONS': 200,
+
+    'ENABLE_S3_GRADE_DOWNLOADS' : True,
 }
 
 # Used for A/B testing

@@ -32,6 +32,7 @@ from student.models import unique_id_for_user
 import instructor_task.api
 from instructor_task.api_helper import AlreadyRunningError
 from instructor_task.views import get_task_completion_info
+from instructor_task.models import GradesStore
 import instructor.enrollment as enrollment
 from instructor.enrollment import enroll_email, unenroll_email
 from instructor.views.tools import strip_if_string, get_student_from_identifier
@@ -738,6 +739,25 @@ def list_instructor_tasks(request, course_id):
         'tasks': map(extract_task_features, tasks),
     }
     return JsonResponse(response_payload)
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def list_grade_downloads(request, course_id):
+    """
+    List grade CSV files that are available for download for this course.
+    """
+    grades_store = GradesStore.from_config()
+
+    response_payload = {
+        'downloads' : [
+            dict(name=name, url=url, link='<a href="{}">{}</a>'.format(url, name))
+            for name, url in grades_store.links_for(course_id)
+        ]
+    }
+    return JsonResponse(response_payload)
+
 
 
 @ensure_csrf_cookie
