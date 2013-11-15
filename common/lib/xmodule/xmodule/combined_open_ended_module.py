@@ -13,11 +13,13 @@ import textwrap
 
 log = logging.getLogger("mitx.courseware")
 
-V1_SETTINGS_ATTRIBUTES = ["display_name", "max_attempts", "graded", "accept_file_upload",
-                          "skip_spelling_checks", "due", "graceperiod", "weight"]
+V1_SETTINGS_ATTRIBUTES = [
+    "display_name", "max_attempts", "graded", "accept_file_upload",
+    "skip_spelling_checks", "due", "graceperiod", "weight", "extended_due"]
 
-V1_STUDENT_ATTRIBUTES = ["current_task_number", "task_states", "state",
-                         "student_attempts", "ready_to_reset"]
+V1_STUDENT_ATTRIBUTES = [
+    "current_task_number", "task_states", "state",
+    "student_attempts", "ready_to_reset"]
 
 V1_ATTRIBUTES = V1_SETTINGS_ATTRIBUTES + V1_STUDENT_ATTRIBUTES
 
@@ -228,6 +230,13 @@ class CombinedOpenEndedFields(object):
         help="Date that this problem is due by",
         default=None,
         scope=Scope.settings
+    )
+    extended_due = Date(
+        help="Date that this problem is due by for a particular student. This "
+             "may differ from the global due date if an instructor has granted "
+             "an extension to the student.",
+        default=None,
+        scope=Scope.user_state,
     )
     graceperiod = String(
         help="Amount of time after the due date that submissions will be accepted",
