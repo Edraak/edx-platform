@@ -68,6 +68,7 @@ urlpatterns = patterns('',  # nopep8
 
     url(r'^xmodule/', include('pipeline_js.urls')),
     url(r'^heartbeat$', include('heartbeat.urls')),
+    url(r'^api/', include('edxapi.urls')),
 )
 
 # User creation and updating views
