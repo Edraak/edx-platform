@@ -1,7 +1,5 @@
-from xmodule.modulestore import Location
 from xmodule.modulestore.django import modulestore, loc_mapper
 from xmodule.modulestore.locator import CourseLocator
-from xmodule.modulestore.mongo.draft import as_draft
 from util.json_request import JsonResponse
 
 
@@ -25,15 +23,14 @@ def should_map_courses(course):
 
 
 def serialize_course(course):
-    loc = course.location
+    m = loc_mapper()
+    published_locator = m.translate_location(course.location.course_id, course.location, True)
+    draft_locator = m.translate_location(course.location.course_id, course.location, False)
     return {
-        "id": loc.url(),
-        "organization": loc.org,
-        "number": loc.course,
-        "run": loc.name,
+        "id": published_locator.course_id,
         "branches": {
-            "published": loc.url(),
-            "draft": as_draft(loc).url(),
+            "published": unicode(published_locator),
+            "draft": unicode(draft_locator),
         }
     }
 
@@ -44,6 +41,19 @@ def list_indexes(request):
 
 
 def detail_index(request, index_id):
-    loc = Location(index_id)
-    course = modulestore().get_course(loc.course_id)
+    locator = CourseLocator(course_id=index_id)
+    location = loc_mapper().translate_locator_to_location(
+        locator, get_course=True,
+    )
+    if not location:
+        # maybe it just isn't mapped to a locator?
+        map_all_courses()
+        location = loc_mapper().translate_locator_to_location(
+            locator, get_course=True,
+        )
+    if not location:
+        # doesn't exist
+        return JsonResponse(status=404)
+
+    course = modulestore().get_item(location)
     return JsonResponse(serialize_course(course))
