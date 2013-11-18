@@ -852,6 +852,16 @@ def send_email(request, course_id):
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_level('staff')
+@require_post_params(send_to="sending to whom", subject="subject line", message="message text")
+def calculate_grades_csv(request, course_id):
+    """"""
+    # instructor_task.api.submit_calculate_grades_csv(request, course_id)
+    return JsonResponse({"status" : "Creating Grades Downloads"})
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
 @require_query_params(
     email="the target users email",
     rolename="the forum role",

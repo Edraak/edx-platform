@@ -21,12 +21,14 @@
   <div class="request-response-error"></div>
 
 %if settings.MITX_FEATURES.get('ENABLE_S3_GRADE_DOWNLOADS'):
-  <div class="grade-downloads-table" data-endpoint="${ section_data['list_grade_downloads_url'] }" />
-
-  Button to created updated CSV with latest grades:
-  <input type="button" name="create-grades-csv" value="Create Grades CSV">
+  <div>
+    <h2> ${_("Grades")}</h2>
+    <input type="button" name="calculate-grades-csv" value="${_('Calculate Grades')}"/>
+    <br/>
+    <p>${_("Available grades downloads:")}</p>
+    <div class="grade-downloads-table" data-endpoint="${ section_data['list_grade_downloads_url'] }" ></div>
+  </div>
 %endif
-
 
 %if settings.MITX_FEATURES.get('ENABLE_INSTRUCTOR_BACKGROUND_TASKS'):
   <div class="running-tasks-container action-type-container">
@@ -34,9 +36,7 @@
     <h2> ${_("Pending Instructor Tasks")} </h2>
     <p>${_("The status for any active tasks appears in a table below.")} </p>
     <br />
-
     <div class="running-tasks-table" data-endpoint="${ section_data['list_instructor_tasks_url'] }"></div>
   </div>
-
 %endif
 </div>

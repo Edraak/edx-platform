@@ -22,7 +22,6 @@ class DataDownload
     @$display_table          = @$display.find '.data-display-table'
     @$request_response_error = @$display.find '.request-response-error'
 
-    @$create_grades_csv_btn = @$section.find("input[name='create-grades-csv']'")
     @$list_studs_btn = @$section.find("input[name='list-profiles']'")
     @$list_anon_btn = @$section.find("input[name='list-anon-ids']'")
     @$grade_config_btn = @$section.find("input[name='dump-gradeconf']'")
@@ -107,6 +106,7 @@ class GradeDownloads
   ### Grade Downloads -- links expire quickly, so we refresh every 5 mins ####
   constructor: (@$section) ->
     @$grade_downloads_table = @$section.find ".grade-downloads-table"
+    @$calculate_grades_csv_btn = @$section.find("input[name='calculate-grades-csv']'")
 
     POLL_INTERVAL = 1000 * 60 * 5 # 5 minutes in ms
     @downloads_poller = new window.InstructorDashboard.util.IntervalManager(
