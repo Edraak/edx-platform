@@ -109,6 +109,7 @@ class GradeDownloads
     @$calculate_grades_csv_btn = @$section.find("input[name='calculate-grades-csv']'")
 
     @$display                = @$section.find '.data-display'
+    @$display_text           = @$display.find '.data-display-text'
     @$request_response_error = @$display.find '.request-response-error'
 
     POLL_INTERVAL = 1000 * 60 * 5 # 5 minutes in ms

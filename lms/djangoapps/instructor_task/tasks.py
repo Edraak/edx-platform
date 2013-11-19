@@ -134,7 +134,8 @@ def send_bulk_course_email(entry_id, _xmodule_instance_args):
 @task(base=BaseInstructorTask, routing_key=settings.GRADES_DOWNLOAD_ROUTING_KEY)  # pylint: disable=E1102
 def calculate_grades_csv(entry_id, xmodule_instance_args):
     """
-    Grade a course
+    Grade a course and push the results to an S3 bucket for download.
     """
+    action_name = ugettext_noop('graded')
     task_fn = partial(push_grades_to_s3, xmodule_instance_args)
-    return run_main_task(entry_id, task_fn, 'graded')
+    return run_main_task(entry_id, task_fn, action_name)
