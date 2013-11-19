@@ -23,7 +23,7 @@
 %if settings.MITX_FEATURES.get('ENABLE_S3_GRADE_DOWNLOADS'):
   <div>
     <h2> ${_("Grades")}</h2>
-    <input type="button" name="calculate-grades-csv" value="${_('Calculate Grades')}"/>
+    <input type="button" name="calculate-grades-csv" value="${_('Calculate Grades')}" data-endpoint="${ section_data['calculate_grades_csv_url'] }"/>
     <br/>
     <p>${_("Available grades downloads:")}</p>
     <div class="grade-downloads-table" data-endpoint="${ section_data['list_grade_downloads_url'] }" ></div>

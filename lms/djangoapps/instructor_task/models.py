@@ -12,7 +12,10 @@ file and check it in at the same time as your model changes. To do that,
 ASSUMPTIONS: modules have unique IDs, even across different module_types
 
 """
+from cStringIO import StringIO
+from gzip import GzipFile
 from uuid import uuid4
+import csv
 import json
 import hashlib
 import os

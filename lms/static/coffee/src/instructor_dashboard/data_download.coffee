@@ -108,10 +108,23 @@ class GradeDownloads
     @$grade_downloads_table = @$section.find ".grade-downloads-table"
     @$calculate_grades_csv_btn = @$section.find("input[name='calculate-grades-csv']'")
 
+    @$display                = @$section.find '.data-display'
+    @$request_response_error = @$display.find '.request-response-error'
+
     POLL_INTERVAL = 1000 * 60 * 5 # 5 minutes in ms
     @downloads_poller = new window.InstructorDashboard.util.IntervalManager(
       POLL_INTERVAL, => @reload_grade_downloads()
     )
+
+    @$calculate_grades_csv_btn.click (e) =>
+      url = @$calculate_grades_csv_btn.data 'endpoint'
+      $.ajax
+        dataType: 'json'
+        url: url
+        error: std_ajax_err =>
+          @$request_response_error.text "Error generating grades."
+        success: (data) =>
+          @$display_text.html data['status']
 
   reload_grade_downloads: ->
     endpoint = @$grade_downloads_table.data 'endpoint'

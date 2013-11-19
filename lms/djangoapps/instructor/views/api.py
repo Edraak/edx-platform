@@ -759,6 +759,21 @@ def list_grade_downloads(request, course_id):
     return JsonResponse(response_payload)
 
 
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def calculate_grades_csv(request, course_id):
+    """
+    AlreadyRunningError is raised if the course's grades are already being updated.
+    """
+    try:
+        task = instructor_task.api.submit_calculate_grades_csv(request, course_id)
+        return JsonResponse({"status" : "Grade calculation started"})
+    except AlreadyRunningError:
+        return JsonResponse({
+            "status" : "Grade calculation already running"
+        })
+
 
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
@@ -847,16 +862,6 @@ def send_email(request, course_id):
 
     response_payload = {'course_id': course_id}
     return JsonResponse(response_payload)
-
-
-@ensure_csrf_cookie
-@cache_control(no_cache=True, no_store=True, must_revalidate=True)
-@require_level('staff')
-@require_post_params(send_to="sending to whom", subject="subject line", message="message text")
-def calculate_grades_csv(request, course_id):
-    """"""
-    # instructor_task.api.submit_calculate_grades_csv(request, course_id)
-    return JsonResponse({"status" : "Creating Grades Downloads"})
 
 
 @ensure_csrf_cookie

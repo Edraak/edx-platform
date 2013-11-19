@@ -1,20 +1,24 @@
 # Compute grades using real division, with no integer truncation
 from __future__ import division
-
+from collections import defaultdict
 import random
 import logging
 
-from collections import defaultdict
+from dogapi import dog_stats_api
+
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.handlers.base import BaseHandler
+from django.test.client import RequestFactory
 
+from courseware import courses
 from courseware.model_data import FieldDataCache, DjangoKeyValueStore
 from xblock.fields import Scope
-from .module_render import get_module, get_module_for_descriptor
 from xmodule import graders
 from xmodule.capa_module import CapaModule
 from xmodule.graders import Score
 from .models import StudentModule
+from .module_render import get_module, get_module_for_descriptor
 
 log = logging.getLogger("mitx.courseware")
 
@@ -411,3 +415,58 @@ def get_score(course_id, user, problem_descriptor, module_creator, field_data_ca
         total = weight
 
     return (correct, total)
+
+def iterate_grades_for(course_id, students):
+    """Given a course_id and an iterable of students (User), yield a tuple of:
+
+    (student, gradeset, err_msg) for every student enrolled in the course.
+
+    If an error occured, gradeset will be an empty dict and err_msg will be an
+    exception message. If there was no error, err_msg is an empty string.
+
+    The gradeset is a dictionary with the following fields:
+
+    - grade : A final letter grade.
+    - percent : The final percent for the class (rounded up).
+    - section_breakdown : A breakdown of each section that makes
+        up the grade. (For display)
+    - grade_breakdown : A breakdown of the major components that
+        make up the final grade. (For display)
+    - raw_scores contains scores for every graded module
+    """
+    class RequestMock(RequestFactory):
+        def request(self, **request):
+            "Construct a generic request object."
+            request = RequestFactory.request(self, **request)
+            handler = BaseHandler()
+            handler.load_middleware()
+            for middleware_method in handler._request_middleware:
+                if middleware_method(request):
+                    raise Exception("Couldn't create request mock object - "
+                                    "request middleware returned a response")
+            return request
+
+    course = courses.get_course_by_id(course_id)
+
+    # We make a fake request because grading code expects to be able to look at
+    # the request. We have to attach the correct user to the request before
+    # grading that student.
+    request = RequestMock().get('/')
+
+    for student in students:
+        with dog_stats_api.timer('lms.grades.iterate_grades_for', tags=['action:{}'.format(course_id)]):
+            try:
+                request.user = student
+                gradeset = grade(student, request, course)
+                yield student, gradeset, ""
+            except Exception as exc:
+                # Keep marching on even if this student couldn't be graded for
+                # some reason.
+                log.exception(
+                    'Cannot grade student %s (%s) in course %s because of exception: %s',
+                    student.username,
+                    student.id,
+                    course_id,
+                    exc.message
+                )
+                yield student, {}, exc.message
