@@ -744,7 +744,7 @@ def list_instructor_tasks(request, course_id):
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_level('staff')
-def list_grade_downloads(request, course_id):
+def list_grade_downloads(_request, course_id):
     """
     List grade CSV files that are available for download for this course.
     """
@@ -767,7 +767,7 @@ def calculate_grades_csv(request, course_id):
     AlreadyRunningError is raised if the course's grades are already being updated.
     """
     try:
-        task = instructor_task.api.submit_calculate_grades_csv(request, course_id)
+        instructor_task.api.submit_calculate_grades_csv(request, course_id)
         return JsonResponse({"status" : "Grade calculation started"})
     except AlreadyRunningError:
         return JsonResponse({

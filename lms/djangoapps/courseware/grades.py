@@ -434,24 +434,12 @@ def iterate_grades_for(course_id, students):
         make up the final grade. (For display)
     - raw_scores contains scores for every graded module
     """
-    class RequestMock(RequestFactory):
-        def request(self, **request):
-            "Construct a generic request object."
-            request = RequestFactory.request(self, **request)
-            handler = BaseHandler()
-            handler.load_middleware()
-            for middleware_method in handler._request_middleware:
-                if middleware_method(request):
-                    raise Exception("Couldn't create request mock object - "
-                                    "request middleware returned a response")
-            return request
-
     course = courses.get_course_by_id(course_id)
 
     # We make a fake request because grading code expects to be able to look at
     # the request. We have to attach the correct user to the request before
     # grading that student.
-    request = RequestMock().get('/')
+    request = RequestFactory().get('/')
 
     for student in students:
         with dog_stats_api.timer('lms.grades.iterate_grades_for', tags=['action:{}'.format(course_id)]):
