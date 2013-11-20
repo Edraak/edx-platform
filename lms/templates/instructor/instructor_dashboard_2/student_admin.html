@@ -5,7 +5,6 @@
   <h2>${_("Student-specific grade inspection")}</h2>
   <div class="request-response-error"></div>
   <p>
-    <!-- Doesn't work for username but this MUST work -->
   ${_("Specify the {platform_name} email address or username of a student here:").format(platform_name=settings.PLATFORM_NAME)}
   <input type="text" name="student-select-progress" placeholder="${_("Student Email or Username")}">
   </p>
@@ -26,7 +25,6 @@
   <h2>${_("Student-specific grade adjustment")}</h2>
   <div class="request-response-error"></div>
   <p>
-    <!-- Doesn't work for username but this MUST work -->
   ${_("Specify the {platform_name} email address or username of a student here:").format(platform_name=settings.PLATFORM_NAME)}
   <input type="text" name="student-select-grade" placeholder="${_("Student Email or Username")}">
   </p>

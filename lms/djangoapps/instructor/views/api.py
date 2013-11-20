@@ -768,7 +768,7 @@ def calculate_grades_csv(request, course_id):
     """
     try:
         task = instructor_task.api.submit_calculate_grades_csv(request, course_id)
-        return JsonResponse({"status" : "Grade calculation started"})
+        return JsonResponse({"status": "Grade calculation started"})
     except AlreadyRunningError:
         return JsonResponse({
             "status" : "Grade calculation already running"
