@@ -27,6 +27,7 @@ domReady(function() {
 
     $('.unit .item-actions .delete-button').bind('click', deleteUnit);
     $('.new-unit-item').bind('click', createNewUnit);
+    $('#shared-submit').bind('click', addSharedUnit);
 
     // lean/simple modal
     $('a[rel*=modal]').leanModal({
@@ -238,6 +239,28 @@ function createNewUnit(e) {
     function(data) {
         // redirect to the edit page
         window.location = "/edit/" + data['id'];
+    });
+}
+
+function addSharedUnit(e){
+    e.preventDefault();
+    var parent = $('.new-unit-item').eq(0).data('parent');
+    var category = $('.new-unit-item').eq(0).data('category');
+
+    analytics.track('Added a Shared Unit', {
+        'course': course_location_analytics,
+        'parent_locator': parent
+    });
+
+    $.postJSON(ModuleUtils.getUpdateUrl(), {
+        'parent_locator': parent,
+        'category': category,
+        'shared_id': $('#unit-id').eq(0).val()
+    },
+
+    function(data) {
+        // reloads  the current page to show that changes have taken place.
+        location.reload();
     });
 }
 

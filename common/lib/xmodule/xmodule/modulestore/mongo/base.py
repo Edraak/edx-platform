@@ -578,6 +578,15 @@ class MongoModuleStore(ModuleStoreWriteBase):
         module = self._load_items([item], depth)[0]
         return module
 
+    def get_unique_item_tree(self, name):
+        """
+        Returns an XModuleDescriptor for the item at the context-independent name
+
+        Returns all descendents to ensure full copying
+        """
+        item = self.collection.find_one({"_id.name": name})
+        return self._load_items([item], None)
+
     def get_instance(self, course_id, location, depth=0):
         """
         TODO (vshnayder): implement policy tracking in mongo.

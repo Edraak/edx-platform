@@ -24,6 +24,7 @@ from .helpers import _xmodule_recurse
 from xmodule.x_module import XModuleDescriptor
 from django.views.decorators.http import require_http_methods
 from xmodule.modulestore.locator import BlockUsageLocator
+from xmodule.modulestore import Location
 from student.models import CourseEnrollment
 from django.http import HttpResponseBadRequest
 from xblock.fields import Scope
@@ -93,6 +94,8 @@ def xblock_handler(request, tag=None, course_id=None, branch=None, version_guid=
                 nullout=request.json.get('nullout')
             )
     elif request.method in ('PUT', 'POST'):
+        if request.json.get('shared_id', False):
+            return _copy_item(request)
         return _create_item(request)
     else:
         return HttpResponseBadRequest(
@@ -226,6 +229,87 @@ def _create_item(request):
     locator = loc_mapper().translate_location(course_location.course_id, dest_location, False, True)
     return JsonResponse({'id': dest_location.url(), "locator": unicode(locator)})
 
+
+@login_required
+@expect_json
+def _copy_item(request):
+    """
+    Copies the referenced item into the parent location
+    """
+    parent_locator = BlockUsageLocator(request.json['parent_locator'])
+    parent_location = loc_mapper().translate_locator_to_location(parent_locator)
+    category = request.json['category']
+
+    parent = get_modulestore(category).get_item(parent_location)
+    dest_location = parent_location.replace(category=category, name=uuid4().hex, revision=None)
+
+    item = get_modulestore(category).get_unique_item_tree(request.json['shared_id'])[0]
+
+    metadata = item.runtime.module_data.values()[0]['metadata']
+
+    get_modulestore(category).create_and_save_xmodule(
+        dest_location,
+        definition_data=None,
+        metadata=metadata,
+        system=parent.system
+    )
+
+    if category not in DETACHED_CATEGORIES:
+        get_modulestore(parent.location).update_children(parent_location, parent.children + [dest_location.url()])
+
+    definition = item.runtime.module_data.values()[0]['definition']
+    new_item = get_modulestore(category).get_item(dest_location)
+    child_mapping = _generate_child_locations(parent_location, definition, category)
+    log.debug(child_mapping)
+    log.debug(definition['children'])
+    definition['children'] = [child_mapping[child] for child in definition['children']]
+    get_modulestore(new_item.location).update_children(dest_location, new_item.children + definition['children'])
+
+    for old, new in child_mapping.items():
+        _copy_to_location(
+            dest_location,
+            new,
+            old,
+            parent.system
+        )
+
+    course_location = loc_mapper().translate_locator_to_location(parent_locator, get_course=True)
+    locator = loc_mapper().translate_location(course_location.course_id, dest_location, False, True)
+    return JsonResponse({'id': dest_location.url(), "locator": unicode(locator)})
+
+
+def _generate_child_locations(parent_location, definition, category):
+    """
+    Given a parent location, generates a mapping of old locations to new ones for all its children
+    """
+    mapping = {}
+    parent = get_modulestore(category).get_item(parent_location)
+    log.error(parent)
+    log.error(parent.children)
+    log.error('#'*250)
+    for child in definition['children']:
+        child_category = child.split('/')[-2]
+        new_location = parent_location.replace(category=child_category, name=uuid4().hex, revision=None)
+        mapping[child] = new_location
+    return mapping
+
+def _copy_to_location(parent_location, destination, old_location, system):
+    """
+    Copies the xmodule at the old location to the provided destination
+    """
+    log.debug(destination, old_location)
+    category = old_location.split('/')[-2]
+    old_item = get_modulestore(category).get_item(Location(old_location))
+    get_modulestore(category).create_and_save_xmodule(
+        destination,
+        definition_data=old_item.runtime.module_data.values()[0]['definition'],
+        metadata=old_item.runtime.module_data.values()[0]['metadata'],
+        system=system
+    )
+    # get_modulestore(destination).update_item(
+    #     destination,
+    #     old_item.runtime.module_data.values()[0]['definition']
+    # )
 
 def _delete_item_at_location(item_location, delete_children=False, delete_all_versions=False):
     """
