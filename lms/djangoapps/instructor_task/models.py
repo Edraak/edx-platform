@@ -198,12 +198,9 @@ class GradesStore(object):
     """
     @classmethod
     def from_config(cls):
-        """Return one of the GradesStore subclasses depending on django
-        configuration.
-
-        TODO: Give details of what's expected in config.
-        TODO?: Move this somewhere else...? Where? In courseware/grades? Maybe
-               kill the superclass altogether and just make a module level method?
+        """
+        Return one of the GradesStore subclasses depending on django
+        configuration. Look at subclasses for expected configuration.
         """
         storage_type = settings.GRADES_DOWNLOAD.get("STORAGE_TYPE")
         if storage_type.lower() == "s3":
@@ -214,6 +211,7 @@ class GradesStore(object):
 
 class S3GradesStore(GradesStore):
     """
+
     """
     def __init__(self, bucket_name, root_path):
         self.root_path = root_path

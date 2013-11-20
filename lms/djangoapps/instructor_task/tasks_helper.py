@@ -480,8 +480,7 @@ def push_grades_to_s3(_xmodule_instance_args, _entry_id, course_id, _task_input,
     """
     # Get start time for task:
     start_time = datetime.now(UTC)
-
-    STATUS_INTERVAL = 100
+    status_interval = 100
 
     # The pre-fetching of groups is done to make auth checks not require an
     # additional DB lookup (this kills the Progress page in particular).
@@ -489,7 +488,10 @@ def push_grades_to_s3(_xmodule_instance_args, _entry_id, course_id, _task_input,
     # enrolled_students is too large to fit comfortably in memory, and subsequent
     # course grading requests lead to memory fragmentation.  So we will err here on the
     # side of smaller memory allocations at the cost of additional lookups.
-    enrolled_students = User.objects.filter(courseenrollment__course_id=course_id)
+    enrolled_students = User.objects.filter(
+        courseenrollment__course_id=course_id,
+        courseenrollment__is_active=True
+    )
 
     # perform the main loop
     num_attempted = 0
@@ -520,7 +522,7 @@ def push_grades_to_s3(_xmodule_instance_args, _entry_id, course_id, _task_input,
     err_rows = [["id", "username", "error_msg"]]
     for student, gradeset, err_msg in iterate_grades_for(course_id, enrolled_students):
         # Periodically update task status (this is a db write)
-        if num_attempted % STATUS_INTERVAL == 0:
+        if num_attempted % status_interval == 0:
             update_task_progress()
         num_attempted += 1
 
