@@ -212,6 +212,9 @@ if settings.COURSEWARE_ENABLED:
             'student.views.change_enrollment', name="change_enrollment"),
         url(r'^change_email_settings$', 'student.views.change_email_settings', name="change_email_settings"),
 
+        url(r'^course_sneakpeek/(?P<course_id>[^/]+/[^/]+/[^/]+)/$',
+            'student.views.setup_sneakpeek', name="course_sneakpeek"),
+
         #About the course
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/about$',
             'courseware.views.course_about', name="about_course"),

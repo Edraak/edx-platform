@@ -4,6 +4,7 @@
 <%!
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from student.models import UserProfile
 
 # App that handles subdomain specific branding
 import branding
@@ -55,7 +56,7 @@ site_status_msg = get_site_status_msg(course_id)
       <h2><span class="provider">${course.display_org_with_default | h}:</span> ${course.display_number_with_default | h} ${course.display_name_with_default}</h2>
     % endif
 
-    % if user.is_authenticated():
+    % if UserProfile.has_registered(user):
 
     <ol class="left nav-global authenticated">
       <%block name="navigation_global_links_authenticated">
@@ -119,6 +120,7 @@ site_status_msg = get_site_status_msg(course_id)
           % endif
       % endif
     </ol>
+
 
     <ol class="right nav-courseware">
     <li class="nav-courseware-01">

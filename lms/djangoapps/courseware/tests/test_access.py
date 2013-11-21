@@ -63,6 +63,7 @@ class AccessTestCase(TestCase):
         # TODO: override DISABLE_START_DATES and test the start date branch of the method
         u = Mock()
         d = Mock()
+        d.category = 'course'
         d.start = datetime.datetime.now(pytz.utc) - datetime.timedelta(days=1)  # make sure the start time is in the past
 
         # Always returns true because DISABLE_START_DATES is set in test.py
