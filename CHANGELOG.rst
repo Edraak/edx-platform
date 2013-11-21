@@ -5,6 +5,10 @@ These are notable changes in edx-platform.  This is a rolling list of changes,
 in roughly chronological order, most recent first.  Add your entries at or near
 the top.  Include a label indicating the component affected.
 
+LMS: Beta-tester status is now set on a per-course-run basis, rather than being valid
+  across all runs with the same course name. Old group membership will still work
+  across runs, but new beta-testers will only be added to a single course run.
+
 LMS: Add a user-visible alert modal when a forums AJAX request fails.
 
 Blades: Add template for checkboxes response to studio. BLD-193.
