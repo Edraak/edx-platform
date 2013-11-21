@@ -58,6 +58,7 @@ from collections import namedtuple
 
 from courseware.courses import get_courses, sort_by_announcement
 from courseware.access import has_access
+from courseware.models import CoursePreference
 
 from external_auth.models import ExternalAuthMap
 import external_auth.views
@@ -238,7 +239,7 @@ def signin_user(request):
     """
     This view will display the non-modal login form
     """
-    if request.user.is_authenticated():
+    if UserProfile.has_registered(request.user):
         return redirect(reverse('dashboard'))
 
     context = {
@@ -253,7 +254,7 @@ def register_user(request, extra_context=None):
     """
     This view will display the non-modal registration form
     """
-    if request.user.is_authenticated():
+    if UserProfile.has_registered(request.user):
         return redirect(reverse('dashboard'))
 
     context = {
@@ -296,8 +297,11 @@ def complete_course_mode_info(course_id, enrollment):
 def dashboard(request):
     user = request.user
 
-    # Build our (course, enorllment) list for the user, but ignore any courses that no 
-    # longer exist (because the course IDs have changed). Still, we don't delete those
+    if not UserProfile.has_registered(user):
+        logout(request)
+        return redirect(reverse('dashboard'))
+    # Build our courses list for the user, but ignore any courses that no longer
+    # exist (because the course IDs have changed). Still, we don't delete those
     # enrollments, because it could have been a data push snafu.
     course_enrollment_pairs = []
     for enrollment in CourseEnrollment.enrollments_for_user(user):
@@ -367,6 +371,36 @@ def dashboard(request):
     return render_to_response('dashboard.html', context)
 
 
+def _create_and_login_nonregistered_user(request):
+    new_student = UserProfile.create_nonregistered_user()
+    new_student.backend = settings.AUTHENTICATION_BACKENDS[0]
+    login(request, new_student)
+    request.session.set_expiry(604800)  # set session to very long to reduce number of nonreg users created
+
+
+@require_POST
+def setup_sneakpeek(request, course_id):
+    if not CoursePreference.course_allows_nonregistered_access(course_id):
+        return HttpResponseForbidden("Cannot access the course")
+    if not request.user.is_authenticated():
+        # if there's no user, create a nonregistered user
+        _create_and_login_nonregistered_user(request)
+    elif UserProfile.has_registered(request.user):
+        # registered users can't sneakpeek, so log them out and create a new nonregistered user
+        logout(request)
+        _create_and_login_nonregistered_user(request)
+
+    can_enroll, error_msg = _check_can_enroll_in_course(request.user,
+                                                        course_id,
+                                                        access_type='within_enrollment_period')
+    if not can_enroll:
+        log.error(error_msg)
+        return HttpResponseBadRequest(error_msg)
+
+    CourseEnrollment.enroll(request.user, course_id)
+    return HttpResponse("OK. Allowed sneakpeek")
+
+
 def try_change_enrollment(request):
     """
     This method calls change_enrollment if the necessary POST
@@ -417,21 +451,16 @@ def change_enrollment(request):
     if course_id is None:
         return HttpResponseBadRequest(_("Course id not specified"))
 
-    if not user.is_authenticated():
+    if not UserProfile.has_registered(user):
         return HttpResponseForbidden()
 
     if action == "enroll":
         # Make sure the course exists
         # We don't do this check on unenroll, or a bad course id can't be unenrolled from
-        try:
-            course = course_from_id(course_id)
-        except ItemNotFoundError:
-            log.warning("User {0} tried to enroll in non-existent course {1}"
-                        .format(user.username, course_id))
-            return HttpResponseBadRequest(_("Course id is invalid"))
+        can_enroll, error_msg = _check_can_enroll_in_course(user, course_id)
 
-        if not has_access(user, course, 'enroll'):
-            return HttpResponseBadRequest(_("Enrollment is closed"))
+        if not can_enroll:
+            return HttpResponseBadRequest(error_msg)
 
         # If this course is available in multiple modes, redirect them to a page
         # where they can choose which mode they want.
@@ -451,7 +480,7 @@ def change_enrollment(request):
                   "run:{0}".format(run)]
         )
 
-        CourseEnrollment.enroll(user, course.id, mode=current_mode.slug)
+        CourseEnrollment.enroll(user, course_id, mode=current_mode.slug)
 
         return HttpResponse()
 
@@ -482,6 +511,24 @@ def change_enrollment(request):
         return HttpResponse()
     else:
         return HttpResponseBadRequest(_("Enrollment action is invalid"))
+
+
+def _check_can_enroll_in_course(user, course_id, access_type="enroll"):
+    """
+    Refactored check for user being able to enroll in course
+    Returns (bool, error_message), where error message is only applicable if bool == False
+    """
+    try:
+        course = course_from_id(course_id)
+    except ItemNotFoundError:
+        log.warning("User {0} tried to enroll in non-existent course {1}"
+                    .format(user.username, course_id))
+        return False, _("Course id is invalid")
+
+    if not has_access(user, course, access_type):
+        return False, _("Enrollment is closed")
+
+    return True, ""
 
 
 def _parse_course_id_from_string(input_str):
@@ -577,6 +624,7 @@ def login_user(request, error=""):
         try:
             # We do not log here, because we have a handler registered
             # to perform logging on successful logins.
+            logout(request)
             login(request, user)
             if request.POST.get('remember') == 'true':
                 request.session.set_expiry(604800)
@@ -913,6 +961,7 @@ def create_account(request, post_override=None):
     # logged in until they close the browser. They can't log in again until they click
     # the activation link from the email.
     login_user = authenticate(username=post_vars['username'], password=post_vars['password'])
+    logout(request)
     login(request, login_user)
     request.session.set_expiry(0)
 

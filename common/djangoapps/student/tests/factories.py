@@ -106,6 +106,15 @@ class UserFactory(DjangoModelFactory):
             self.groups.add(GroupFactory.simple_generate(create, name=group_name))
 
 
+class NonRegisteredUserFactory(UserFactory):
+    # only difference from UserFactory is the profile has nonregistered bit set
+    @classmethod
+    def _after_postgeneration(cls, obj, create, results=None):
+        if create:
+            obj.profile.nonregistered = True
+            obj.profile.save()
+
+
 class AnonymousUserFactory(Factory):
     FACTORY_FOR = AnonymousUser
 

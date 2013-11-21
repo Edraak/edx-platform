@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import redirect
 from mitxmako.shortcuts import render_to_response, render_to_string
 from django_future.csrf import ensure_csrf_cookie
@@ -23,12 +23,13 @@ from courseware.courses import (get_courses, get_course_with_access,
                                 get_courses_by_university, sort_by_announcement)
 import courseware.tabs as tabs
 from courseware.masquerade import setup_masquerade
+from courseware.models import CoursePreference
 from courseware.model_data import FieldDataCache
 from .module_render import toc_for_course, get_module_for_descriptor, get_module
 from courseware.models import StudentModule, StudentModuleHistory
 from course_modes.models import CourseMode
 
-from student.models import UserTestGroup, CourseEnrollment
+from student.models import UserTestGroup, CourseEnrollment, UserProfile
 from util.cache import cache, cache_if_anonymous
 from xblock.fragment import Fragment
 from xmodule.modulestore import Location
@@ -597,7 +598,8 @@ def course_about(request, course_id):
         raise Http404
 
     course = get_course_with_access(request.user, course_id, 'see_exists')
-    registered = registered_for_course(course, request.user)
+    regularly_registered = (registered_for_course(course, request.user) and
+                            UserProfile.has_registered(request.user))
 
     if has_access(request.user, course, 'load'):
         course_target = reverse('info', args=[course.id])
@@ -622,9 +624,20 @@ def course_about(request, course_id):
         reg_then_add_to_cart_link = "{reg_url}?course_id={course_id}&enrollment_action=add_to_cart".format(
             reg_url=reverse('register_user'), course_id=course.id)
 
+    # only allow course sneak peek if
+    # 1) within enrollment period
+    # 2) course specifies it's okay
+    # 3) request.user is not a registered user.
+    sneakpeek_allowed = (has_access(request.user, course, 'within_enrollment_period') and
+                         CoursePreference.course_allows_nonregistered_access(course_id) and
+                         not UserProfile.has_registered(request.user))
+
+    print(sneakpeek_allowed)
+
     return render_to_response('courseware/course_about.html',
                               {'course': course,
-                               'registered': registered,
+                               'regularly_registered': regularly_registered,
+                               'sneakpeek_allowed': sneakpeek_allowed,
                                'course_target': course_target,
                                'registration_price': registration_price,
                                'in_cart': in_cart,
@@ -673,7 +686,6 @@ def mktg_course_about(request, course_id):
         }
     )
 
-
 @login_required
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @transaction.commit_manually
@@ -694,6 +706,9 @@ def _progress(request, course_id, student_id):
 
     Course staff are allowed to see the progress of students in their class.
     """
+    if not UserProfile.has_registered(request.user):
+        raise Http404
+
     course = get_course_with_access(request.user, course_id, 'load', depth=None)
     staff_access = has_access(request.user, course, 'staff')
 
