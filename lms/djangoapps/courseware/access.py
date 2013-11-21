@@ -13,7 +13,7 @@ from xmodule.error_module import ErrorDescriptor
 from xmodule.modulestore import Location
 from xmodule.x_module import XModule, XModuleDescriptor
 
-from student.models import CourseEnrollmentAllowed
+from student.models import CourseEnrollmentAllowed, UserProfile
 from external_auth.models import ExternalAuthMap
 from courseware.masquerade import is_masquerading_as_student
 from django.utils.timezone import UTC
@@ -134,10 +134,12 @@ def _has_access_course_desc(user, course, action):
         """
         Can this user access the forums in this course?
         """
-        return (can_load() and \
-            (CourseEnrollment.is_enrolled(user, course.id) or \
-                _has_staff_access_to_descriptor(user, course)
-            ))
+        return (
+            can_load() and
+            UserProfile.has_registered(user) and
+            (CourseEnrollment.is_enrolled(user, course.id) or
+             _has_staff_access_to_descriptor(user, course))
+        )
 
     def can_enroll():
         """
@@ -247,6 +249,47 @@ def _has_access_error_desc(user, descriptor, action, course_context):
     return _dispatch(checkers, action, user, descriptor)
 
 
+NONREGISTERED_CATEGORY_WHITELIST = [
+    "about",
+    "chapter",
+    "course",
+    "course_info",
+    "problem",
+    "sequential",
+    "vertical",
+    "videoalpha",
+#    "combinedopenended",
+#    "discussion",
+    "html",
+#    "peergrading",
+    "static_tab",
+    "video",
+#    "annotatable",
+    "book",
+    "conditional",
+#    "crowdsource_hinter",
+    "custom_tag_template",
+#    "discuss",
+#    "error",
+    "hidden",
+    "image",
+    "problemset",
+    "randomize",
+    "raw",
+    "section",
+    "slides",
+    "timelimit",
+    "videodev",
+    "videosequence",
+    "word_cloud",
+    "wrapper",
+]
+
+
+def _can_load_descriptor_nonregistered(descriptor):
+    return descriptor.category in NONREGISTERED_CATEGORY_WHITELIST
+
+
 def _has_access_descriptor(user, descriptor, action, course_context=None):
     """
     Check if user has access to this descriptor.
@@ -266,6 +309,10 @@ def _has_access_descriptor(user, descriptor, action, course_context=None):
         students to see modules.  If not, views should check the course, so we
         don't have to hit the enrollments table on every module load.
         """
+        # nonregistered users shouldn't be able to access certain descriptor types
+        if not UserProfile.has_registered(user):
+            return _can_load_descriptor_nonregistered(descriptor)
+
         # If start dates are off, can always load
         if settings.MITX_FEATURES['DISABLE_START_DATES'] and not is_masquerading_as_student(user):
             debug("Allow: DISABLE_START_DATES")

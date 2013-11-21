@@ -139,7 +139,7 @@
             }
           }
 
-          span.register, span.add-to-cart {
+          span.register, span.add-to-cart, span.sneakpeek {
             background: $button-archive-color;
             border: 1px solid darken($button-archive-color, 50%);
             @include box-sizing(border-box);

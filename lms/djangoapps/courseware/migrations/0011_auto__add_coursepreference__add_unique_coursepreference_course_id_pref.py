@@ -8,34 +8,26 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing unique constraint on 'XModuleSettingsField', fields ['usage_id', 'field_name']
-        db.delete_unique('courseware_xmodulesettingsfield', ['usage_id', 'field_name'])
+        # Adding model 'CoursePreference'
+        db.create_table('courseware_coursepreference', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('course_id', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
+            ('pref_key', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('pref_value', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
+        ))
+        db.send_create_signal('courseware', ['CoursePreference'])
 
-        # Deleting model 'XModuleSettingsField'
-        db.delete_table('courseware_xmodulesettingsfield')
-
-        # Move all content currently stored as Scope.content to Scope.user_state_summary
-        db.rename_table('courseware_xmodulecontentfield', 'courseware_xmoduleuserstatesummaryfield')
-        db.rename_column('courseware_xmoduleuserstatesummaryfield', 'definition_id', 'usage_id')
+        # Adding unique constraint on 'CoursePreference', fields ['course_id', 'pref_key']
+        db.create_unique('courseware_coursepreference', ['course_id', 'pref_key'])
 
 
     def backwards(self, orm):
-        # Adding model 'XModuleSettingsField'
-        db.create_table('courseware_xmodulesettingsfield', (
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True, db_index=True)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True, db_index=True)),
-            ('value', self.gf('django.db.models.fields.TextField')(default='null')),
-            ('field_name', self.gf('django.db.models.fields.CharField')(max_length=64, db_index=True)),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('usage_id', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
-        ))
-        db.send_create_signal('courseware', ['XModuleSettingsField'])
+        # Removing unique constraint on 'CoursePreference', fields ['course_id', 'pref_key']
+        db.delete_unique('courseware_coursepreference', ['course_id', 'pref_key'])
 
-        # Adding unique constraint on 'XModuleSettingsField', fields ['usage_id', 'field_name']
-        db.create_unique('courseware_xmodulesettingsfield', ['usage_id', 'field_name'])
+        # Deleting model 'CoursePreference'
+        db.delete_table('courseware_coursepreference')
 
-        db.rename_table('courseware_xmoduleuserstatesummaryfield', 'courseware_xmodulecontentfield')
-        db.rename_column('courseware_xmodulecontentfield', 'usage_id', 'definition_id')
 
     models = {
         'auth.group': {
@@ -73,6 +65,13 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'courseware.coursepreference': {
+            'Meta': {'unique_together': "(('course_id', 'pref_key'),)", 'object_name': 'CoursePreference'},
+            'course_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'pref_key': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'pref_value': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'})
         },
         'courseware.offlinecomputedgrade': {
             'Meta': {'unique_together': "(('user', 'course_id'),)", 'object_name': 'OfflineComputedGrade'},
@@ -137,10 +136,10 @@ class Migration(SchemaMigration):
         'courseware.xmoduleuserstatesummaryfield': {
             'Meta': {'unique_together': "(('usage_id', 'field_name'),)", 'object_name': 'XModuleUserStateSummaryField'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
-            'usage_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
             'field_name': ('django.db.models.fields.CharField', [], {'max_length': '64', 'db_index': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'usage_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
             'value': ('django.db.models.fields.TextField', [], {'default': "'null'"})
         }
     }
