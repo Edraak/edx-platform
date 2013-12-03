@@ -30,6 +30,7 @@ Feature: LMS.LTI component
   Scenario: LTI component in LMS is correctly rendered in new page
   Given the course has correct LTI credentials
   And the course has an LTI component with correct fields
+  And I click on "Open in new window" button
   Then I view the LTI and it is rendered in new page
 
   #5
@@ -54,5 +55,3 @@ Feature: LMS.LTI component
   And I click on the "Gradebook" tab
   And I see in the gradebook table that "HW" is "50"
   And I see in the gradebook table that "Total" is "5"
-
-

@@ -13,13 +13,13 @@ from student.models import CourseEnrollment
 @step('I view the LTI and error is shown$')
 def lti_is_not_rendered(_step):
     # error is shown
-    assert world.is_css_present('.error_message')
+    assert world.is_css_present('.error_message', wait_time=None)
 
     # iframe is not presented
-    assert not world.is_css_present('iframe')
+    assert not world.is_css_present('iframe', wait_time=None)
 
     # link is not presented
-    assert not world.is_css_present('.link_lti_new_window')
+    assert not world.is_css_present('.link_lti_new_window', wait_time=None)
 
 
 def check_lti_iframe_content(text):
@@ -28,7 +28,6 @@ def check_lti_iframe_content(text):
     iframe_name = 'ltiLaunchFrame-' + location
     with world.browser.get_iframe(iframe_name) as iframe:
         # iframe does not contain functions from terrain/ui_helpers.py
-        assert iframe.is_element_present_by_css('.result', wait_time=5)
         assert (text == world.retry_on_exception(
             lambda: iframe.find_by_css('.result')[0].text,
             max_attempts=5
@@ -38,18 +37,17 @@ def check_lti_iframe_content(text):
 @step('I view the LTI and it is rendered in (.*)$')
 def lti_is_rendered(_step, rendered_in):
     if rendered_in.strip() == 'iframe':
-        assert world.is_css_present('iframe')
-        assert not world.is_css_present('.link_lti_new_window')
-        assert not world.is_css_present('.error_message')
+        assert world.is_css_present('iframe', wait_time=None)
+        assert not world.is_css_present('.link_lti_new_window', wait_time=None)
+        assert not world.is_css_present('.error_message', wait_time=None)
 
         # iframe is visible
-        assert world.css_visible('iframe')
         check_lti_iframe_content("This is LTI tool. Success.")
 
     elif rendered_in.strip() == 'new page':
-        assert not world.is_css_present('iframe')
-        assert world.is_css_present('.link_lti_new_window')
-        assert not world.is_css_present('.error_message')
+        assert not world.is_css_present('iframe', wait_time=None)
+        assert world.is_css_present('.link_lti_new_window', wait_time=None)
+        assert not world.is_css_present('.error_message', wait_time=None)
         check_lti_popup()
     else:  # incorrent rendered_in parameter
         assert False
@@ -57,9 +55,9 @@ def lti_is_rendered(_step, rendered_in):
 
 @step('I view the LTI but incorrect_signature warning is rendered$')
 def incorrect_lti_is_rendered(_step):
-    assert world.is_css_present('iframe')
-    assert not world.is_css_present('.link_lti_new_window')
-    assert not world.is_css_present('.error_message')
+    assert world.is_css_present('iframe', wait_time=None)
+    assert not world.is_css_present('.link_lti_new_window', wait_time=None)
+    assert not world.is_css_present('.error_message', wait_time=None)
     #inside iframe test content is presented
     check_lti_iframe_content("Wrong LTI signature")
 
@@ -205,28 +203,34 @@ def i_am_registered_for_the_course(course, metadata):
     world.add_to_course_staff('robot', world.scenario_dict['COURSE'].number)
     world.log_in(username='robot', password='test')
 
-
-def check_lti_popup():
-    parent_window = world.browser.current_window # Save the parent window
+@step('I click on "Open in new window" button$')
+def click_new_window_button(_step):
     world.css_find('.link_lti_new_window').first.click()
+    world.wait_for_ajax_complete()
 
-    assert len(world.browser.windows) != 1
+def check_lti_popup(msg=u'This is LTI tool. Success.', path=u'correct_lti_endpoint'):
+    # Save the parent window
+    parent_window = world.browser.current_window
+
+    assert len(world.browser.windows) != 1, "New popup window is not opened."
 
     for window in world.browser.windows:
-        world.browser.switch_to_window(window) # Switch to a different window (the pop-up)
+        # Switch to a different window (the pop-up)
+        world.browser.switch_to_window(window)
         # Check if this is the one we want by comparing the url
         url = world.browser.url
         basename = os.path.basename(url)
         pathname = os.path.splitext(basename)[0]
 
-        if pathname == u'correct_lti_endpoint':
+        if pathname == path:
             break
 
-    result = world.css_find('.result').first.text
-    assert result == u'This is LTI tool. Success.'
+    assert world.browser.is_text_present(unicode(msg))
 
-    world.browser.driver.close() # Close the pop-up window
-    world.browser.switch_to_window(parent_window) # Switch to the main window again
+    # Close the pop-up window
+    world.browser.driver.close()
+    # Switch to the main window again
+    world.browser.switch_to_window(parent_window)
 
 
 @step('I see text "([^"]*)"$')
