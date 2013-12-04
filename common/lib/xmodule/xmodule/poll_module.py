@@ -19,7 +19,7 @@ from xmodule.x_module import XModule
 from xmodule.stringify import stringify_children
 from xmodule.xml_module import XmlDescriptor
 from xmodule.editing_module import MetadataOnlyEditingDescriptor
-from xblock.core import Scope, String, Dict, Boolean, List
+from xblock.fields import Scope, String, Dict, Boolean, List
 
 log = logging.getLogger(__name__)
 
