@@ -474,7 +474,8 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
 
 
         real_user = self.system.get_real_user(urllib.unquote(sourcedId.split(':')[-1]))
-        if not real_user:  # if real_user is None (anonymous_id not found in database), we can't store grades
+        # if real_user is None (anonymous_id not found in database), we can't store grades
+        if not real_user:
             failure_values['imsx_messageIdentifier'] = escape(imsx_messageIdentifier)
             return Response(response_xml_template.format(**failure_values), content_type="application/xml")
 
