@@ -44,7 +44,7 @@ class StaticContent(object):
                          Location.clean_keeping_underscores(name), revision])
 
     def get_id(self):
-        return StaticContent.get_id_from_location(self.location)
+        return self.location.dict()
 
     def get_url_path(self):
         return StaticContent.get_url_path_from_location(self.location)
@@ -56,7 +56,7 @@ class StaticContent(object):
     @staticmethod
     def get_url_path_from_location(location):
         if location is not None:
-            return u"/{tag}/{org}/{course}/{category}/{name}".format(**location.dict())
+            return u"/{locn.tag}/{locn.org}/{locn.course}/{locn.category}/{locn.name}".format(locn=location)
         else:
             return None
 
@@ -87,7 +87,7 @@ class StaticContent(object):
         the actual /c4x/... path which the client needs to reference static content
         """
         if location is not None:
-            return "/static/{name}".format(**location.dict())
+            return "/static/{name}".format(name=location.name)
         else:
             return None
 
@@ -97,22 +97,12 @@ class StaticContent(object):
             return "/c4x/{org}/{course}/asset".format(**loc.dict())
 
     @staticmethod
-    def get_id_from_location(location):
-        return {'tag': location.tag, 'org': location.org, 'course': location.course,
-                'category': location.category, 'name': location.name,
-                'revision': location.revision}
-
-    @staticmethod
     def get_location_from_path(path):
         # remove leading / character if it is there one
         if path.startswith('/'):
             path = path[1:]
 
         return Location(path.split('/'))
-
-    @staticmethod
-    def get_id_from_path(path):
-        return get_id_from_location(get_location_from_path(path))
 
     @staticmethod
     def convert_legacy_static_url(path, course_namespace):
