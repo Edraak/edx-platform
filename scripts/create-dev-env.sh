@@ -266,7 +266,7 @@ case `uname -s` in
 
                     read dummy
                 fi
-                sudo apt-get install -yq git ;;
+                sudo apt-get install -yq git ruby-bundler rubygems ;;
             squeeze|lisa|katya|oneiric|natty|raring)
                 if [[ ! $noninteractive ]]; then
                     warning "
@@ -277,7 +277,7 @@ case `uname -s` in
                               Press return to continue or control-C to abort"
                     read dummy
                 fi
-                sudo apt-get install -yq git
+                sudo apt-get install -yq git ruby-bundler rubygems
                 ;;
 
             *)
@@ -313,6 +313,10 @@ EO
             output "Installing git"
             brew install git
         }
+        command -v bundler &>/dev/null || {
+            output "Installing bundler"
+            sudo gem install bundler
+        }
 
         ;;
     *)
@@ -336,38 +340,8 @@ else
     exit 1
 fi
 
-# Install system-level dependencies
-if [[ ! -d $RBENV_ROOT ]]; then
-    output "Installing rbenv"
-    git clone https://github.com/sstephenson/rbenv.git $RBENV_ROOT
-fi
-if [[ ! -d $RBENV_ROOT/plugins/ruby-build ]]; then
-    output "Installing ruby-build"
-    git clone https://github.com/sstephenson/ruby-build.git $RBENV_ROOT/plugins/ruby-build
-fi
-shelltype=$(basename $SHELL)
-if ! hash rbenv 2>/dev/null; then
-    output "Adding rbenv to \$PATH in ~/.${shelltype}rc"
-    echo "export PATH=\"$RBENV_ROOT/bin:\$PATH\"" >> $HOME/.${shelltype}rc
-    echo 'eval "$(rbenv init -)"' >> $HOME/.${shelltype}rc
-    export PATH="$RBENV_ROOT/bin:$PATH"
-    eval "$(rbenv init -)"
-fi
-
-if [[ ! -d $RBENV_ROOT/versions/$RUBY_VER ]]; then
-    output "Installing Ruby $RUBY_VER"
-    rbenv install $RUBY_VER
-    rbenv global $RUBY_VER
-fi
-
-if ! hash bundle 2>/dev/null; then
-    output "Installing gem bundler"
-    gem install bundler
-fi
-rbenv rehash
-
 output "Installing ruby packages"
-bundle install --gemfile $BASE/edx-platform/Gemfile
+sudo bundle install --gemfile $BASE/edx-platform/Gemfile
 
 # Install Python virtualenv
 output "Installing python virtualenv"
