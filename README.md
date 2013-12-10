@@ -222,7 +222,7 @@ called `dev`, here's an example of how the directory hierarchy should look:
 
 Language Runtimes
 -----------------
-You'll need to be sure that you have Python 2.7, Ruby 1.9.3, and NodeJS
+You'll need to be sure that you have Python 2.7, Ruby (latest stable), and NodeJS
 (latest stable) installed on your system. Some of these you can install
 using your system's package manager: [homebrew](http://mxcl.github.io/homebrew/)
 for Mac, [apt](http://wiki.debian.org/Apt) for Debian-based systems
