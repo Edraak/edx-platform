@@ -56,6 +56,10 @@ urlpatterns = ('',  # nopep8
     url(r'^password_reset_done/$', django.contrib.auth.views.password_reset_done,
         name='auth_password_reset_done'),
 
+    # Export data using the MyData standard
+    url(r'^student/mydata_export', 'student.views.mydata_export',
+        name='mydata_export'),
+
     url(r'^heartbeat$', include('heartbeat.urls')),
 
     url(r'^user_api/', include('user_api.urls')),

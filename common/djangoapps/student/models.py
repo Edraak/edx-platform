@@ -615,7 +615,6 @@ class CourseEnrollmentAllowed(models.Model):
     def __unicode__(self):
         return "[CourseEnrollmentAllowed] %s: %s (%s)" % (self.email, self.course_id, self.created)
 
-# cache_relation(User.profile)
 
 #### Helper methods for use from python manage.py shell and other classes.
 

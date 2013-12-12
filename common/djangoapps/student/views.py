@@ -1360,3 +1360,31 @@ def change_email_settings(request):
         track.views.server_track(request, "change-email-settings", {"receive_emails": "no", "course": course_id}, page='dashboard')
 
     return HttpResponse(json.dumps({'success': True}))
+
+
+@login_required
+def mydata_export(request):
+    user = request.user
+
+    export_dict = {
+        "id": user.username,
+        "name": user.profile.name,
+    }
+
+    # add optional fields
+    optional_profile_fields = [
+        "language",
+        "location",
+        "year_of_birth",
+        "gender",
+        "level_of_education",
+        "mailing_address",
+        "goals",
+    ]
+    for field in optional_profile_fields:
+        if getattr(user.profile, field):
+            export_dict[field] = getattr(user.profile, field)
+
+    enrollments = CourseEnrollment.enrollments_for_user(user)
+
+    return JsonResponse(export_dict)
