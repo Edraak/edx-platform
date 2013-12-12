@@ -75,7 +75,7 @@ class XQueueCertInterface(object):
         self.whitelist = CertificateWhitelist.objects.all()
         self.restricted = UserProfile.objects.filter(allow_certificate=False)
 
-    def regen_cert(self, student, course_id, course=None):
+    def regen_cert(self, student, course_id, course=None, forced_grade=None, template_file=None):
         """(Re-)Make certificate for a particular student in a particular course
 
         Arguments:
@@ -102,7 +102,7 @@ class XQueueCertInterface(object):
         except GeneratedCertificate.DoesNotExist:
             pass
 
-        return self.add_cert(student, course_id, course)
+        return self.add_cert(student, course_id, course, forced_grade, template_file)
 
     def del_cert(self, student, course_id):
 
@@ -121,21 +121,24 @@ class XQueueCertInterface(object):
 
         raise NotImplementedError
 
-    def add_cert(self, student, course_id, course=None):
+    def add_cert(self, student, course_id, course=None, forced_grade=None, template_file=None):
         """
+        Request a new certificate for a student.
 
         Arguments:
-          student - User.object
+          student   - User.object
           course_id - courseenrollment.course_id (string)
+          forced_grade - a string indicating a grade parameter to pass with
+                         the certificate request. If this is given, grading
+                         will be skipped.
 
-        Request a new certificate for a student.
         Will change the certificate status to 'generating'.
 
         Certificate must be in the 'unavailable', 'error',
         'deleted' or 'generating' state.
 
         If a student has a passing grade or is in the whitelist
-        table for the course a request will made for a new cert.
+        table for the course a request will be made for a new cert.
 
         If a student has allow_certificate set to False in the
         userprofile table the status will change to 'restricted'
@@ -144,7 +147,6 @@ class XQueueCertInterface(object):
         will change to status.notpassing
 
         Returns the student's status
-
         """
 
         VALID_STATUSES = [status.generating,
@@ -171,9 +173,10 @@ class XQueueCertInterface(object):
             self.request.user = student
             self.request.session = {}
 
+            is_whitelisted = self.whitelist.filter(user=student, course_id=course_id, whitelist=True).exists()
             grade = grades.grade(student, self.request, course)
-            is_whitelisted = self.whitelist.filter(
-                user=student, course_id=course_id, whitelist=True).exists()
+            if forced_grade:
+                grade['grade'] = forced_grade
 
             if is_whitelisted or grade['grade'] is not None:
 
@@ -200,6 +203,8 @@ class XQueueCertInterface(object):
                         'name': profile.name,
                         'grade': grade['grade'],
                     }
+                    if template_file:
+                        contents['template_pdf'] = template_file
                     cert.status = status.generating
                     cert.save()
                     self._send_to_xqueue(contents, key)
