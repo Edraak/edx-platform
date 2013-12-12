@@ -69,6 +69,7 @@ import track.views
 from dogapi import dog_stats_api
 from pytz import UTC
 from lxml import etree
+from lxml.etree import Element, SubElement
 
 from util.json_request import JsonResponse
 
@@ -1417,27 +1418,45 @@ def mydata_export(request):
     user = request.user
 
     # XML formatting
-    root = etree.Element("CollegeTranscript")
-    transmission_data_el = etree.SubElement(root, "TransmissionData")
-    etree.SubElement(
+    root = Element("CollegeTranscript")
+    transmission_data_el = SubElement(root, "TransmissionData")
+    SubElement(
         transmission_data_el,
         "CreatedDateTime"
     ).text = datetime.datetime.now().isoformat()
-    etree.SubElement(transmission_data_el, "DocumentTypeCode").text = "RequestedRecord"
-    transmission_type_el = etree.SubElement(
+    SubElement(transmission_data_el, "DocumentTypeCode").text = "RequestedRecord"
+    transmission_type_el = SubElement(
         transmission_data_el,
         "TransmissionType"
     )
     transmission_type_el.text = "Original"
-    student_el = etree.SubElement(transmission_data_el, "DocumentTypeCode")
-    person_el = etree.SubElement(student_el, "Person")
+    student_el = SubElement(transmission_data_el, "DocumentTypeCode")
+    person_el = SubElement(student_el, "Person")
 
     if user.profile.year_of_birth:
-        birth_el = etree.SubElement(person_el, "Birth")
-        birthdate_el = etree.SubElement(birth_el, "BirthDate")
+        birth_el = SubElement(person_el, "Birth")
+        birthdate_el = SubElement(birth_el, "BirthDate")
         birthdate_el.text = unicode(user.profile.year_of_birth)
 
-    etree.SubElement(person_el, "Name").text = user.profile.name
+    SubElement(person_el, "Name").text = user.profile.name
+
+    if user.profile.level_of_education:
+        education_level_el = SubElement(person_el, "EducationLevel")
+        education_level_el.text = user.profile.get_level_of_education_display()
+
+    SubElement(person_el, "UniqueId").text = user.username
+
+    contacts_el = SubElement(person_el, "Contacts")
+    email_el = SubElement(contacts_el, "Email")
+    SubElement(email_el, "EmailAddress").text = user.email
+
+    if user.profile.mailing_address:
+        address_el = SubElement(contacts_el, "Address")
+        address_el = user.profile.mailing_address
+
+    if user.profile.gender:
+        SubElement(person_el, "Gender").text = user.profile.get_gender_display()
+
 
     return HttpResponse(etree.tostring(root), content_type="text/xml")
 
@@ -1447,10 +1466,10 @@ def mydata_export(request):
 
 
 
-#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
-#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
-#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
-#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
+#    SubElement(transmission_data_el, "DocumentTypeCode")
+#    SubElement(transmission_data_el, "DocumentTypeCode")
+#    SubElement(transmission_data_el, "DocumentTypeCode")
+#    SubElement(transmission_data_el, "DocumentTypeCode")
 #    xml_txt = """
 #        <?xml version="1.0" encoding="UTF-8"?>
 #        <ColTrn:CollegeTranscript xmlns:ColTrn="urn:org:pesc:message:CollegeTranscript:v1.2.0"
