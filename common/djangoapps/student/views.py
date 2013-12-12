@@ -1416,7 +1416,7 @@ def mydata_export_json(request):
 @login_required
 def mydata_export(request):
     user = request.user
-    # enrollments = CourseEnrollment.enrollments_for_
+    enrollments = CourseEnrollment.enrollments_for_user(user)
 
     # XML formatting
     root = Element("CollegeTranscript")
@@ -1466,6 +1466,24 @@ def mydata_export(request):
     academic_record_el = SubElement(student_el, "AcademicRecord")
     academic_summary_el = SubElement(academic_record_el, "AcademicSummary")
     academic_summary_el.text = "MOOC"
+
+    for enrollment in enrollments:
+        try:
+            course = course_from_id(enrollment.course_id)
+        except ItemNotFoundError:
+            continue
+
+        academic_session_el = SubElement(academic_record_el, "AcademicSession")
+        course_el = SubElement(academic_session_el, "Course")
+        original_course_id_el = SubElement(course_el, "OriginalCourseId")
+        original_course_id_el.text = enrollment.course_id
+
+        course_title_el = SubElement(course_el, "CourseTitle")
+        course_title_el.text = course.display_name_with_default
+
+        enrollment_mode_el = SubElement(course_el, "EnrollmentMode")
+        enrollment_mode_el.text = enrollment.mode
+
 
     return HttpResponse(etree.tostring(root), content_type="text/xml")
 
