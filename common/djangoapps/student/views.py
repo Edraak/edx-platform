@@ -1416,6 +1416,7 @@ def mydata_export_json(request):
 @login_required
 def mydata_export(request):
     user = request.user
+    # enrollments = CourseEnrollment.enrollments_for_
 
     # XML formatting
     root = Element("CollegeTranscript")
@@ -1457,6 +1458,14 @@ def mydata_export(request):
     if user.profile.gender:
         SubElement(person_el, "Gender").text = user.profile.get_gender_display()
 
+    deceased_el = SubElement(person_el, "Deceased")
+    deceased_indicator_el = SubElement(deceased_el, "DeceasedIndicator")
+    deceased_indicator_el.text = "false"
+
+    # Academic Record
+    academic_record_el = SubElement(student_el, "AcademicRecord")
+    academic_summary_el = SubElement(academic_record_el, "AcademicSummary")
+    academic_summary_el.text = "MOOC"
 
     return HttpResponse(etree.tostring(root), content_type="text/xml")
 
