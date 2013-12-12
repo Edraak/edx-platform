@@ -68,6 +68,7 @@ import track.views
 
 from dogapi import dog_stats_api
 from pytz import UTC
+from lxml import etree
 
 from util.json_request import JsonResponse
 
@@ -1363,7 +1364,7 @@ def change_email_settings(request):
 
 
 @login_required
-def mydata_export(request):
+def mydata_export_json(request):
     user = request.user
 
     export_dict = {
@@ -1385,6 +1386,135 @@ def mydata_export(request):
         if getattr(user.profile, field):
             export_dict[field] = getattr(user.profile, field)
 
+    courses_info = []
     enrollments = CourseEnrollment.enrollments_for_user(user)
+    for enrollment in enrollments:
+        try:
+            course = course_from_id(enrollment.course_id)
+        except ItemNotFoundError:
+            continue
+
+        course_info = {
+            "id": enrollment.course_id,
+            "title": course.display_name_with_default
+        }
+
+        # Dates
+        date_format = "%Y-%M-%d %H:%m:%S"
+        if course.start:
+            course_info["start"] = course.start.strftime(date_format)
+        if course.end:
+            course_info["end"] = course.end.strftime(date_format)
+
+        courses_info.append(course_info)
+
+    export_dict["courses"] = courses_info
 
     return JsonResponse(export_dict)
+
+@login_required
+def mydata_export(request):
+    user = request.user
+
+    # XML formatting
+    root = etree.Element("CollegeTranscript")
+    transmission_data_el = etree.SubElement(root, "TransmissionData")
+    etree.SubElement(
+        transmission_data_el,
+        "CreatedDateTime"
+    ).text = datetime.datetime.now().isoformat()
+    etree.SubElement(transmission_data_el, "DocumentTypeCode").text = "RequestedRecord"
+    transmission_type_el = etree.SubElement(
+        transmission_data_el,
+        "TransmissionType"
+    )
+    transmission_type_el.text = "Original"
+    student_el = etree.SubElement(transmission_data_el, "DocumentTypeCode")
+    person_el = etree.SubElement(student_el, "Person")
+
+    if user.profile.year_of_birth:
+        birth_el = etree.SubElement(person_el, "Birth")
+        birthdate_el = etree.SubElement(birth_el, "BirthDate")
+        birthdate_el.text = unicode(user.profile.year_of_birth)
+
+    etree.SubElement(person_el, "Name").text = user.profile.name
+
+    return HttpResponse(etree.tostring(root), content_type="text/xml")
+
+
+
+
+
+
+
+#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
+#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
+#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
+#    etree.SubElement(transmission_data_el, "DocumentTypeCode")
+#    xml_txt = """
+#        <?xml version="1.0" encoding="UTF-8"?>
+#        <ColTrn:CollegeTranscript xmlns:ColTrn="urn:org:pesc:message:CollegeTranscript:v1.2.0"
+#        xmlns:AcRec="urn:org:pesc:sector:AcademicRecord:v1.5.0"
+#        xmlns:core="urn:org:pesc:core:CoreMain:v1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+#        xsi:schemaLocation="urn:org:pesc:message:CollegeTranscript:v1.2.0
+#        CollegeTranscript_v1.2.0.xsd">
+#              <TransmissionData>
+#                   <CreatedDateTime>$created_date_time</CreatedDateTime>
+#                   <DocumentTypeCode>RequestedRecord</DocumentTypeCode>
+#                   <TransmissionType>Original</TransmissionType>
+#                    <Student>
+#                        <Person>
+#                            <Birth>
+#                              <BirthDate>{birthdate}</BirthDate>
+#                            </Birth>
+#                            <Name>$name</Name>
+#                            <EducationLevel>$education_level</EducationLevel>
+#                            <UniqueId>$username</UniqueId>
+#                            <Contacts>
+#                              <Address>
+#                                $address
+#                              </Address>
+#                              <Email>
+#                                <EmailAddress>$email</EmailAddress>
+#                              </Email>
+#                            </Contacts>
+#                            <Gender>
+#                              <GenderCode>$gender</GenderCode>
+#                            </Gender>
+#                        </Person>
+#                        <AcademicRecord>
+#                          <AcademicSummary>
+#                            <AcademicSummaryLevel>MOOC</AcademicSummaryLevel>
+#                             <CoursesEnrolled>10</CoursesEnrolled>
+#                             <CoursesCompleted>5</CoursesCompleted>
+#                          </AcademicSummary>
+#                          <AcademicSession>
+#                            <AcademicSessionDetail>
+#                              <Run>3</Run>
+#                              <SessionStartDate>2013-01-01</SessionStartDate>
+#                              <SessionEndDate>2013-03-01</SessionEndDate>
+#                            </AcademicSessionDetail>
+#                            <School>
+#                              <OrganizationName>MITx</OrganizationName>
+#                            </School>
+#                            <Course>
+#                              <CourseAcademicGrade>A</CourseAcademicGrade>
+#                              <OriginalCourseID>SPAN 105</OriginalCourseID>
+#                              <CourseTitle>BEGINNING SPANISH 1</CourseTitle>
+#                              <CourseDescription>Bacon ipsum dolor sit amet filet mignon shankle sausage tenderloin cow shank andouille. Frankfurter flank salami venison cow. Fatback beef cow ham hock sausage pork. Chicken capicola hamburger sausage biltong. Tri-tip t-bone turkey jowl bacon shoulder doner fatback swine short ribs. Beef shank ground round beef ribs, venison turkey cow jowl brisket fatback meatball tri-tip.</CourseDescription>
+#                              <EnrollmentMode>Honors</EnrollmentMode>
+#                              <Status>Passed</Status>
+#                              <Certificate>
+#                                <UniqueUrl> http://edx.org/sdfasd/asdfasdfsda/asdfsddf </UniqueUrl>
+#                                <DateIssued>2013-02-12</DateIssued>
+#                                <CertificateId>23423423</CertificateId>
+#                                <DownloadUrl>http://asdfasdfsadfsad/asdfasd/asdfasdf</DownloadUrl>
+#                                <DistinctionName>None</DistinctionName>
+#                              </Certificate>
+#                            </Course>
+#                          </AcademicSession>
+#                        </AcademicRecord>
+#                    </Student>
+#                </Student>
+#        </ColTrn:CollegeTranscript>
+#    """
