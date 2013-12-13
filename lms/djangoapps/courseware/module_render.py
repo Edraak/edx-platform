@@ -21,7 +21,7 @@ from courseware.access import has_access
 from courseware.masquerade import setup_masquerade
 from courseware.model_data import FieldDataCache, DjangoKeyValueStore
 from lms.lib.xblock.field_data import LmsFieldData
-from lms.lib.xblock.runtime import LmsModuleSystem, handler_prefix, unquote_slashes
+from lms.lib.xblock.runtime import LmsModuleSystem, unquote_slashes
 from edxmako.shortcuts import render_to_string
 from psychometrics.psychoanalyze import make_psychometrics_data_update_handler
 from student.models import anonymous_id_for_user, user_by_anonymous_id
@@ -334,7 +334,7 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
     # Wrap the output display in a single div to allow for the XModule
     # javascript to be bound correctly
     if wrap_xmodule_display is True:
-        block_wrappers.append(partial(wrap_xblock, partial(handler_prefix, course_id)))
+        block_wrappers.append(partial(wrap_xblock, 'LmsRuntime', extra_data={'course-id': course_id}))
 
     # TODO (cpennington): When modules are shared between courses, the static
     # prefix is going to have to be specific to the module, not the directory
@@ -373,7 +373,8 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
     # while giving selected modules a per-course anonymized id.
     # As we have the time to manually test more modules, we can add to the list
     # of modules that get the per-course anonymized id.
-    if issubclass(getattr(descriptor, 'module_class', None), LTIModule):
+    module_class = getattr(descriptor, 'module_class', None)
+    if module_class is None or issubclass(module_class, LTIModule):
         anonymous_student_id = anonymous_id_for_user(user, course_id)
     else:
         anonymous_student_id = anonymous_id_for_user(user, '')
