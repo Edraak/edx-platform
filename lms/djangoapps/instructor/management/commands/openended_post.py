@@ -71,13 +71,10 @@ class Command(BaseCommand):
                     course_id=course_id,
                     module_state_key=descriptor.id
                 )
-                # print student_module
 
             except StudentModule.DoesNotExist:
                 student_module = None
 
-            # TODO: find the submission from relevant student states
-            # (say a list of their ids)
             if student_module is not None:
                 submission = get_submission_from_state(student_module.state)
 
