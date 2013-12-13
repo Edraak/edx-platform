@@ -45,6 +45,7 @@ class Command(BaseCommand):
 
         request = DummyRequest()
         course = get_course_by_id(course_id)
+
         descriptor = get_descriptor(course, location)
         if descriptor is None:
             print "Location not found in course"
@@ -61,6 +62,8 @@ class Command(BaseCommand):
         for student in affected_students:
             request.user = student
             request.session = {}
+            module = create_module(descriptor, course, student, request)
+
 
             try:
                 student_module = StudentModule.objects.get(
@@ -71,14 +74,12 @@ class Command(BaseCommand):
                 # print student_module
 
             except StudentModule.DoesNotExist:
-                # student_module = None
-                # do nothing
-                pass
+                student_module = None
 
             # TODO: find the submission from relevant student states
             # (say a list of their ids)
+            if student_module is not None:
+                submission = get_submission_from_state(student_module.state)
 
-            submission = get_submission_from_state(student_module.state)
-
-            module.send_to_grader(submission, student_module.system)
+                module.send_to_grader(submission, module.system)
 
