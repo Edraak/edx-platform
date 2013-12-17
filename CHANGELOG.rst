@@ -57,6 +57,13 @@ LMS: Add error recovery when a user loads more threads in the forum sidebar.
 
 LMS: Add a user-visible alert modal when a forums AJAX request fails.
 
+Studio: Added feature to allow instructors to specify wait time between attempts
+of the same quiz. In a problem's settings, instructors can specify how many
+seconds student's are locked out of submitting another attempt of the same quiz.
+The timer starts as soon as they submit an attempt for grading. Note that this
+does not prevent a student from starting to work on another quiz attempt. It only
+prevents the students from submitting a bunch of attempts in rapid succession.
+
 Blades: Add template for checkboxes response to studio. BLD-193.
 
 Blades: Video player:
@@ -121,13 +128,6 @@ this element, provide a <targetedfeedback> for each feedback. Within <targetedfe
 you can specify your text explanation. Both the <targetedfeedback> and <choice> should have
 the same explanation-id attribute.
 
-Studio: Added feature to allow instructors to specify wait time between attempts
-of the same quiz. In a problem's settings, instructors can specify how many
-seconds student's are locked out of submitting another attempt of the same quiz.
-The timer starts as soon as they submit an attempt for grading. Note that this
-does not prevent a student from starting to work on another quiz attempt. It only
-prevents the students from submitting a bunch of attempts in rapid succession.
-
 LMS: The wiki markup cheatsheet dialog is now accessible to screen readers.
 (LMS-1303)
 
@@ -136,18 +136,6 @@ Common: Add skip links for accessibility to CMS and LMS. (LMS-1311)
 Studio: Change course overview page, checklists, assets, import, export, and course staff
 management page URLs to a RESTful interface. Also removed "\listing", which
 duplicated "\index".
-
-Studio: Support answer pools for multiple choice question choices, so authors can provide
-multiple incorrect and correct choices for a question and have 1 correct choice and n-1
-incorrect choices randomly selected and shuffled before being presented to the student.
-In XML: <multiplechoiceresponse answer-pool="4"> enables an answer pool of 4 choices: 3
-correct choices and 1 incorrect choice. To provide multiple solution expanations, wrap
-all solution elements within a <solutionset>, and make sure to add an attribute called
-"explanation-id" to both the <solution> tag and its corresponding <choice> tag, and be
-sure that the value for this "explanation-id" attribute is the same for both. Note that
-this feature is only supported in the advanced XML problem editor, not the regular one.
-Also note that if you want your question to have a different set of answers for different
-attempts, be sure in the problem settings in Studio to set "Randomization" to "Always"
 
 LMS: Fixed accessibility bug where users could not tab through wiki (LMS-1307)
 
@@ -165,6 +153,18 @@ in the set contentstore.views.item.DETACHED_CATEGORIES nor 'course'.
 
 Studio: Bug fix for text loss in Course Updates when the text exists
 before the first tag.
+
+Studio: Support answer pools for multiple choice question choices, so authors can provide
+multiple incorrect and correct choices for a question and have 1 correct choice and n-1
+incorrect choices randomly selected and shuffled before being presented to the student.
+In XML: <multiplechoiceresponse answer-pool="4"> enables an answer pool of 4 choices: 3
+correct choices and 1 incorrect choice. To provide multiple solution expanations, wrap
+all solution elements within a <solutionset>, and make sure to add an attribute called
+"explanation-id" to both the <solution> tag and its corresponding <choice> tag, and be
+sure that the value for this "explanation-id" attribute is the same for both. Note that
+this feature is only supported in the advanced XML problem editor, not the regular one.
+Also note that if you want your question to have a different set of answers for different
+attempts, be sure in the problem settings in Studio to set "Randomization" to "Always"
 
 Common: expect_json decorator now puts the parsed json payload into a json attr
 on the request instead of overwriting the POST attr

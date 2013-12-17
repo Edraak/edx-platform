@@ -22,8 +22,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="4">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -65,8 +65,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="4">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -150,8 +150,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="0">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="0">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -192,8 +192,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="2.3">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="2.3">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -234,8 +234,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="5">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="5">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -277,8 +277,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="4">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -306,8 +306,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             </solutionset>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="3">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="3">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -362,8 +362,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="3">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="3">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -391,8 +391,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             </solutionset>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="4">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -466,8 +466,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             </solution>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="4">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true" explanation-id="solution1">correct-1</choice>
@@ -522,8 +522,8 @@ class CapaAnswerPoolTest(unittest.TestCase):
             <problem>
 
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse answer-pool="4">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
                 <choice correct="false">wrong-1</choice>
                 <choice correct="false">wrong-2</choice>
                 <choice correct="true">correct-1</choice>

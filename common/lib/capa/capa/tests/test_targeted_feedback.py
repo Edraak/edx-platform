@@ -84,8 +84,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -147,8 +147,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -212,8 +212,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -278,8 +278,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="alwaysShowCorrectChoiceExplanation">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="alwaysShowCorrectChoiceExplanation">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -345,8 +345,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -412,8 +412,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="alwaysShowCorrectChoiceExplanation">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="alwaysShowCorrectChoiceExplanation">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -489,8 +489,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="alwaysShowCorrectChoiceExplanation">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="alwaysShowCorrectChoiceExplanation">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>
@@ -550,8 +550,8 @@ class CapaTargetedFeedbackTest(unittest.TestCase):
         xml_str = textwrap.dedent("""
             <problem>
             <p>What is the correct answer?</p>
-            <multiplechoiceresponse targeted-feedback="">
-              <choicegroup type="MultipleChoice">
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" targeted-feedback="">
                 <choice correct="false" explanation-id="feedback1">wrong-1</choice>
                 <choice correct="false" explanation-id="feedback2">wrong-2</choice>
                 <choice correct="true" explanation-id="feedbackC">correct-1</choice>

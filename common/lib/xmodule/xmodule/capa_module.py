@@ -952,8 +952,8 @@ class CapaModule(CapaFields, XModule):
 
         # Wait time between resets
         if self.last_submission_time is not None and self.submission_wait_seconds != 0:
-            if (current_time - self.last_submission_time).total_seconds() < self.submission_wait_seconds:
-                seconds_left = int(self.submission_wait_seconds - (current_time - self.last_submission_time).total_seconds())
+            seconds_left = int(self.submission_wait_seconds - (current_time - self.last_submission_time).total_seconds())
+            if seconds_left > 0:
                 msg = u'You must wait at least {w} between submissions. {s} remaining.'.format(
                     w=self.pretty_print_seconds(self.submission_wait_seconds), s=self.pretty_print_seconds(seconds_left))
                 return {'success': msg, 'html': ''}  # Prompts a modal dialog in ajax callback
