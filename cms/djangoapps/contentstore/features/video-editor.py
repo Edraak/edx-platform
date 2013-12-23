@@ -39,9 +39,9 @@ def correct_video_settings(_step):
         ['Video URL', 'http://youtu.be/OEoXaMPEzfM, , ', False],
 
         # advanced
+        ['Allow to Download Video', 'False', False],
         ['Display Name', 'Video', False],
         ['Download Transcript', '', False],
-        ['Download Video', '', False],
         ['End Time', '00:00:00', False],
         ['HTML5 Transcript', '', False],
         ['Show Transcript', 'True', False],

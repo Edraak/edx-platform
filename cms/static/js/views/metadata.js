@@ -94,6 +94,16 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
 
         templateName: "metadata-string-entry",
 
+        render: function () {
+            AbstractEditor.prototype.render.apply(this);
+
+            if (this.model.get('non_editable')) {
+                this.$el.find('#' + this.uniqueId)
+                    .prop('disabled', true)
+                    .addClass('is-disabled');
+            }
+        },
+
         getValueFromEditor : function () {
             return this.$el.find('#' + this.uniqueId).val();
         },

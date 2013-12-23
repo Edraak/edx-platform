@@ -48,6 +48,7 @@ class BaseTestXmodule(ModuleStoreTestCase):
     # Data from YAML common/lib/xmodule/xmodule/templates/NAME/default.yaml
     CATEGORY = "vertical"
     DATA = ''
+    METADATA = {}
     MODEL_DATA = {'data': '<some_module></some_module>'}
 
     def new_module_runtime(self):
@@ -97,12 +98,18 @@ class BaseTestXmodule(ModuleStoreTestCase):
         for user in self.users:
             CourseEnrollmentFactory.create(user=user, course_id=self.course.id)
 
-        self.item_descriptor = ItemFactory.create(
-            parent_location=section.location,
-            category=self.CATEGORY,
-            data=self.DATA
-        )
-
+        if self.METADATA:
+            self.item_descriptor = ItemFactory.create(
+                parent_location=section.location,
+                category=self.CATEGORY,
+                metadata=self.METADATA,
+            )
+        else:
+            self.item_descriptor = ItemFactory.create(
+                parent_location=section.location,
+                category=self.CATEGORY,
+                data=self.DATA,
+            )
         self.runtime = self.new_descriptor_runtime()
 
         field_data = {}
