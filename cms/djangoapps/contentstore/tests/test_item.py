@@ -2,13 +2,25 @@
 
 import json
 import datetime
+import ddt
+
+from mock import Mock, patch
 from pytz import UTC
+from webob import Response
+
+from django.http import Http404
+from django.test import TestCase
+from django.test.client import RequestFactory
+
+from contentstore.views.component import component_handler
 
 from contentstore.tests.utils import CourseTestCase
+from student.tests.factories import UserFactory
 from xmodule.capa_module import CapaDescriptor
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.django import loc_mapper
 from xmodule.modulestore.locator import BlockUsageLocator
+from xmodule.modulestore.exceptions import ItemNotFoundError
 
 
 class ItemTest(CourseTestCase):
@@ -22,15 +34,15 @@ class ItemTest(CourseTestCase):
 
     def get_old_id(self, locator):
         """
-        Converts new locator to old id format.
+        Converts new locator to old id format (forcing to non-draft).
         """
-        return loc_mapper().translate_locator_to_location(BlockUsageLocator(locator))
+        return loc_mapper().translate_locator_to_location(BlockUsageLocator(locator)).replace(revision=None)
 
     def get_item_from_modulestore(self, locator, draft=False):
         """
         Get the item referenced by the locator from the modulestore
         """
-        store = modulestore('draft') if draft else modulestore()
+        store = modulestore('draft') if draft else modulestore('direct')
         return store.get_item(self.get_old_id(locator))
 
     def response_locator(self, response):
@@ -197,7 +209,10 @@ class TestEditItem(ItemTest):
         self.assertEqual(sequential.due, datetime.datetime(2010, 11, 22, 4, 0, tzinfo=UTC))
         self.assertEqual(sequential.start, datetime.datetime(2010, 9, 12, 14, 0, tzinfo=UTC))
 
-    def test_children(self):
+    def test_delete_child(self):
+        """
+        Test deleting a child.
+        """
         # Create 2 children of main course.
         resp_1 = self.create_xblock(display_name='child 1', category='chapter')
         resp_2 = self.create_xblock(display_name='child 2', category='chapter')
@@ -219,3 +234,184 @@ class TestEditItem(ItemTest):
         course = self.get_item_from_modulestore(self.unicode_locator)
         self.assertNotIn(self.get_old_id(chapter1_locator).url(), course.children)
         self.assertIn(self.get_old_id(chapter2_locator).url(), course.children)
+
+    def test_reorder_children(self):
+        """
+        Test reordering children that can be in the draft store.
+        """
+        # Create 2 child units and re-order them. There was a bug about @draft getting added
+        # to the IDs.
+        unit_1_resp = self.create_xblock(parent_locator=self.seq_locator, category='vertical')
+        unit_2_resp = self.create_xblock(parent_locator=self.seq_locator, category='vertical')
+        unit1_locator = self.response_locator(unit_1_resp)
+        unit2_locator = self.response_locator(unit_2_resp)
+
+        # The sequential already has a child defined in the setUp (a problem).
+        # Children must be on the sequential to reproduce the original bug,
+        # as it is important that the parent (sequential) NOT be in the draft store.
+        children = self.get_item_from_modulestore(self.seq_locator).children
+        self.assertEqual(self.get_old_id(unit1_locator).url(), children[1])
+        self.assertEqual(self.get_old_id(unit2_locator).url(), children[2])
+
+        resp = self.client.ajax_post(
+            self.seq_update_url,
+            data={'children': [self.problem_locator, unit2_locator, unit1_locator]}
+        )
+        self.assertEqual(resp.status_code, 200)
+
+        children = self.get_item_from_modulestore(self.seq_locator).children
+        self.assertEqual(self.get_old_id(self.problem_locator).url(), children[0])
+        self.assertEqual(self.get_old_id(unit1_locator).url(), children[2])
+        self.assertEqual(self.get_old_id(unit2_locator).url(), children[1])
+
+    def test_make_public(self):
+        """ Test making a private problem public (publishing it). """
+        # When the problem is first created, it is only in draft (because of its category).
+        with self.assertRaises(ItemNotFoundError):
+            self.get_item_from_modulestore(self.problem_locator, False)
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'make_public'}
+        )
+        self.assertIsNotNone(self.get_item_from_modulestore(self.problem_locator, False))
+
+    def test_make_private(self):
+        """ Test making a public problem private (un-publishing it). """
+        # Make problem public.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'make_public'}
+        )
+        self.assertIsNotNone(self.get_item_from_modulestore(self.problem_locator, False))
+        # Now make it private
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'make_private'}
+        )
+        with self.assertRaises(ItemNotFoundError):
+            self.get_item_from_modulestore(self.problem_locator, False)
+
+    def test_make_draft(self):
+        """ Test creating a draft version of a public problem. """
+        # Make problem public.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'make_public'}
+        )
+        self.assertIsNotNone(self.get_item_from_modulestore(self.problem_locator, False))
+        # Now make it draft, which means both versions will exist.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'create_draft'}
+        )
+        # Update the draft version and check that published is different.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'metadata': {'due': '2077-10-10T04:00Z'}}
+        )
+        published = self.get_item_from_modulestore(self.problem_locator, False)
+        self.assertIsNone(published.due)
+        draft = self.get_item_from_modulestore(self.problem_locator, True)
+        self.assertEqual(draft.due, datetime.datetime(2077, 10, 10, 4, 0, tzinfo=UTC))
+
+    def test_make_public_with_update(self):
+        """ Update a problem and make it public at the same time. """
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={
+                'metadata': {'due': '2077-10-10T04:00Z'},
+                'publish': 'make_public'
+            }
+        )
+        published = self.get_item_from_modulestore(self.problem_locator, False)
+        self.assertEqual(published.due, datetime.datetime(2077, 10, 10, 4, 0, tzinfo=UTC))
+
+    def test_make_private_with_update(self):
+        """ Make a problem private and update it at the same time. """
+        # Make problem public.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'make_public'}
+        )
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={
+                'metadata': {'due': '2077-10-10T04:00Z'},
+                'publish': 'make_private'
+            }
+        )
+        with self.assertRaises(ItemNotFoundError):
+            self.get_item_from_modulestore(self.problem_locator, False)
+        draft = self.get_item_from_modulestore(self.problem_locator, True)
+        self.assertEqual(draft.due, datetime.datetime(2077, 10, 10, 4, 0, tzinfo=UTC))
+
+    def test_create_draft_with_update(self):
+        """ Create a draft and update it at the same time. """
+        # Make problem public.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={'publish': 'make_public'}
+        )
+        self.assertIsNotNone(self.get_item_from_modulestore(self.problem_locator, False))
+        # Now make it draft, which means both versions will exist.
+        self.client.ajax_post(
+            self.problem_update_url,
+            data={
+                'metadata': {'due': '2077-10-10T04:00Z'},
+                'publish': 'create_draft'
+            }
+        )
+        published = self.get_item_from_modulestore(self.problem_locator, False)
+        self.assertIsNone(published.due)
+        draft = self.get_item_from_modulestore(self.problem_locator, True)
+        self.assertEqual(draft.due, datetime.datetime(2077, 10, 10, 4, 0, tzinfo=UTC))
+
+
+@ddt.ddt
+class TestComponentHandler(TestCase):
+    def setUp(self):
+        self.request_factory = RequestFactory()
+
+        patcher = patch('contentstore.views.component.modulestore')
+        self.modulestore = patcher.start()
+        self.addCleanup(patcher.stop)
+
+        self.descriptor = self.modulestore.return_value.get_item.return_value
+
+        self.usage_id = 'dummy_usage_id'
+
+        self.user = UserFactory()
+
+        self.request = self.request_factory.get('/dummy-url')
+        self.request.user = self.user
+
+    def test_invalid_handler(self):
+        self.descriptor.handle.side_effect = Http404
+
+        with self.assertRaises(Http404):
+            component_handler(self.request, self.usage_id, 'invalid_handler')
+
+    @ddt.data('GET', 'POST', 'PUT', 'DELETE')
+    def test_request_method(self, method):
+
+        def check_handler(handler, request, suffix):
+            self.assertEquals(request.method, method)
+            return Response()
+
+        self.descriptor.handle = check_handler
+
+        # Have to use the right method to create the request to get the HTTP method that we want
+        req_factory_method = getattr(self.request_factory, method.lower())
+        request = req_factory_method('/dummy-url')
+        request.user = self.user
+
+        component_handler(request, self.usage_id, 'dummy_handler')
+
+    @ddt.data(200, 404, 500)
+    def test_response_code(self, status_code):
+        def create_response(handler, request, suffix):
+            return Response(status_code=status_code)
+
+        self.descriptor.handle = create_response
+
+        self.assertEquals(component_handler(self.request, self.usage_id, 'dummy_handler').status_code, status_code)

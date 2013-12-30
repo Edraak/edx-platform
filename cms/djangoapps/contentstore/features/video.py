@@ -8,7 +8,8 @@ from selenium.webdriver.common.keys import Keys
 VIDEO_BUTTONS = {
     'CC': '.hide-subtitles',
     'volume': '.volume',
-    'Play': '.video_control.play',
+    'play': '.video_control.play',
+    'pause': '.video_control.pause',
 }
 
 SELECTORS = {
@@ -33,7 +34,7 @@ def i_created_a_video_component(step):
 
     world.wait_for_present('.is-initialized')
     world.wait(DELAY)
-    assert not world.css_visible(SELECTORS['spinner'])
+    world.wait_for_invisible(SELECTORS['spinner'])
 
 
 @step('I have created a Video component with subtitles$')
@@ -58,8 +59,7 @@ def i_created_a_video_with_subs_with_name(_step, sub_id):
     world.disable_jquery_animations()
 
     world.wait_for_present('.is-initialized')
-    world.wait(DELAY)
-    assert not world.css_visible(SELECTORS['spinner'])
+    world.wait_for_invisible(SELECTORS['spinner'])
 
 
 @step('I have uploaded subtitles "([^"]*)"$')
@@ -180,20 +180,14 @@ def click_on_the_caption(_step, index):
 @step('I see caption line with data-index "([^"]*)" has class "([^"]*)"$')
 def caption_line_has_class(_step, index, className):
     SELECTOR = ".subtitles > li[data-index='{index}']".format(index=int(index.strip()))
-    world.css_has_class(SELECTOR, className.strip())
+    assert world.css_has_class(SELECTOR, className.strip())
 
 
-@step('I see a range on slider with styles "left" set to (.+) px and "width" set to (.+) px$')
-def see_a_range_slider_with_proper_range(_step, left, width):
-    left = int(left.strip())
-    width = int(width.strip())
+@step('I see a range on slider$')
+def see_a_range_slider_with_proper_range(_step):
+    world.wait_for_visible(VIDEO_BUTTONS['pause'])
 
-    world.wait_for_visible(".slider-range")
-    world.wait(4)
-    slider_range = world.browser.driver.find_element_by_css_selector(".slider-range")
-
-    assert int(round(float(slider_range.value_of_css_property("left")[:-2]))) == left
-    assert int(round(float(slider_range.value_of_css_property("width")[:-2]))) == width
+    assert world.css_visible(".slider-range")
 
 
 @step('I click video button "([^"]*)"$')

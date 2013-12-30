@@ -128,6 +128,8 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ('send_email', {'send_to': 'staff', 'subject': 'test', 'message': 'asdf'}),
             ('list_instructor_tasks', {}),
             ('list_background_email_tasks', {}),
+            ('list_grade_downloads', {}),
+            ('calculate_grades_csv', {}),
         ]
         # Endpoints that only Instructors can access
         self.instructor_level_endpoints = [
@@ -745,6 +747,19 @@ class TestInstructorAPILevelsAccess(ModuleStoreTestCase, LoginEnrollmentTestCase
         res_json = json.loads(response.content)
         self.assertEqual(res_json, expected)
 
+class MockCourseDataService(object):
+    """
+    Mock a course data service.
+    """
+    def __init__(self, success):
+        self.success = success
+
+    def get_course_data(self, _course_id):
+        """
+        Mock the response from ORA when getting course data.
+        """
+        return {'success': self.success, 'file_url': "www.test.com"}
+
 
 @override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
 class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCase):
@@ -790,6 +805,62 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         self.assertTrue(body.startswith('"User ID","Anonymized user ID"\n"2","42"\n'))
         self.assertTrue(body.endswith('"7","42"\n'))
 
+    @patch('instructor.views.api.CourseDataService', Mock(return_value=MockCourseDataService(success=True)))
+    def test_get_oe_data_success(self):
+        """
+        Test that we can get open ended data dump links properly.
+        """
+        url = reverse('get_open_ended_data', kwargs={'course_id': self.course.id})
+        response = self.client.get(url)
+        content = json.loads(response.content)
+        self.assertIn('success', content)
+        self.assertTrue(content['success'])
+        self.assertIn('file_url', content)
+
+    def test_list_grade_downloads(self):
+        url = reverse('list_grade_downloads', kwargs={'course_id': self.course.id})
+        with patch('instructor_task.models.LocalFSGradesStore.links_for') as mock_links_for:
+            mock_links_for.return_value = [
+                ('mock_file_name_1', 'https://1.mock.url'),
+                ('mock_file_name_2', 'https://2.mock.url'),
+            ]
+            response = self.client.get(url, {})
+
+        expected_response = {
+            "downloads": [
+                {
+                    "url": "https://1.mock.url",
+                    "link": "<a href=\"https://1.mock.url\">mock_file_name_1</a>",
+                    "name": "mock_file_name_1"
+                },
+                {
+                    "url": "https://2.mock.url",
+                    "link": "<a href=\"https://2.mock.url\">mock_file_name_2</a>",
+                    "name": "mock_file_name_2"
+                }
+            ]
+        }
+        res_json = json.loads(response.content)
+        self.assertEqual(res_json, expected_response)
+
+    def test_calculate_grades_csv_success(self):
+        url = reverse('calculate_grades_csv', kwargs={'course_id': self.course.id})
+
+        with patch('instructor_task.api.submit_calculate_grades_csv') as mock_cal_grades:
+            mock_cal_grades.return_value = True
+            response = self.client.get(url, {})
+        success_status = "Your grade report is being generated! You can view the status of the generation task in the 'Pending Instructor Tasks' section."
+        self.assertIn(success_status, response.content)
+
+    def test_calculate_grades_csv_already_running(self):
+        url = reverse('calculate_grades_csv', kwargs={'course_id': self.course.id})
+
+        with patch('instructor_task.api.submit_calculate_grades_csv') as mock_cal_grades:
+            mock_cal_grades.side_effect = AlreadyRunningError()
+            response = self.client.get(url, {})
+        already_running_status = "A grade report generation task is already in progress. Check the 'Pending Instructor Tasks' table for the status of the task. When completed, the report will be available for download in the table below."
+        self.assertIn(already_running_status, response.content)
+
     def test_get_students_features_csv(self):
         """
         Test that some minimum of information is formatted
@@ -802,7 +873,7 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
     def test_get_distribution_no_feature(self):
         """
         Test that get_distribution lists available features
-        when supplied no feature quparameter.
+        when supplied no feature parameter.
         """
         url = reverse('get_distribution', kwargs={'course_id': self.course.id})
         response = self.client.get(url)

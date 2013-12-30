@@ -81,13 +81,13 @@ class VideoFields(object):
         default=""
     )
     start_time = RelativeTime(  # datetime.timedelta object
-        help="Start time for the video (HH:MM:SS).",
+        help="Start time for the video (HH:MM:SS). Max value is 23:59:59.",
         display_name="Start Time",
         scope=Scope.settings,
         default=datetime.timedelta(seconds=0)
     )
     end_time = RelativeTime(  # datetime.timedelta object
-        help="End time for the video (HH:MM:SS).",
+        help="End time for the video (HH:MM:SS). Max value is 23:59:59.",
         display_name="End Time",
         scope=Scope.settings,
         default=datetime.timedelta(seconds=0)
@@ -167,12 +167,6 @@ class VideoModule(VideoFields, XModule):
         sources = {get_ext(src): src for src in self.html5_sources}
         sources['main'] = self.source
 
-        # for testing Youtube timeout in acceptance tests
-        if getattr(settings, 'VIDEO_PORT', None):
-            yt_test_url = "http://127.0.0.1:" + str(settings.VIDEO_PORT) + '/test_youtube/'
-        else:
-            yt_test_url = 'https://gdata.youtube.com/feeds/api/videos/'
-
         return self.system.render_template('video.html', {
             'youtube_streams': _create_youtube_string(self),
             'id': self.location.html_id(),
@@ -187,11 +181,11 @@ class VideoModule(VideoFields, XModule):
             'show_captions': json.dumps(self.show_captions),
             'start': self.start_time.total_seconds(),
             'end': self.end_time.total_seconds(),
-            'autoplay': settings.MITX_FEATURES.get('AUTOPLAY_VIDEOS', False),
+            'autoplay': settings.FEATURES.get('AUTOPLAY_VIDEOS', False),
             # TODO: Later on the value 1500 should be taken from some global
             # configuration setting field.
             'yt_test_timeout': 1500,
-            'yt_test_url': yt_test_url
+            'yt_test_url': settings.YOUTUBE_TEST_URL
         })
 
 

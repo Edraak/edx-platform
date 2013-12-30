@@ -53,6 +53,8 @@ Feature: CMS.Video Component
     Then Captions become "invisible"
 
   # 8
+  # Disabled 11/26 due to flakiness in master.
+  # Enabled back on 11/29.
   Scenario: Open captions never become invisible
     Given I have created a Video component with subtitles
     And Make sure captions are open
@@ -63,6 +65,8 @@ Feature: CMS.Video Component
     Then Captions are "visible"
 
   # 9
+  # Disabled 11/26 due to flakiness in master.
+  # Enabled back on 11/29.
   Scenario: Closed captions are invisible when mouse doesn't hover on CC button
     Given I have created a Video component with subtitles
     And Make sure captions are closed
@@ -71,6 +75,8 @@ Feature: CMS.Video Component
     Then Captions are "invisible"
 
   # 10
+  # Disabled 11/26 due to flakiness in master.
+  # Enabled back on 11/29.
   Scenario: When enter key is pressed on a caption shows an outline around it
     Given I have created a Video component with subtitles
     And Make sure captions are opened
@@ -79,19 +85,13 @@ Feature: CMS.Video Component
     And I see caption line with data-index "0" has class "focused"
 
   # 11
-  # Disabled until we come up with a more solid test, as this one is brittle.
-  # Scenario: When start end end times are specified, a range on slider is shown
-  #   Given I have created a Video component
-  #   And Make sure captions are closed
-  #   And I edit the component
-  #   And I open tab "Advanced"
-  #   And I set value "12" to the field "Start Time"
-  #   And I set value "24" to the field "End Time"
-  #   And I save changes
-  #   And I click video button "Play"
-
-    # The below line is a bit flaky. Numbers 73 and 73 were determined rather
-    # accidentally. They might change in the future as Video player gets CSS
-    # updates. If this test starts failing, 99.9% cause of failure is the line
-    # below.
-    # Then I see a range on slider with styles "left" set to 73 px and "width" set to 73 px
+  Scenario: When start end end times are specified, a range on slider is shown
+    Given I have created a Video component
+    And Make sure captions are closed
+    And I edit the component
+    And I open tab "Advanced"
+    And I set value "00:00:12" to the field "Start Time"
+    And I set value "00:00:24" to the field "End Time"
+    And I save changes
+    And I click video button "play"
+    Then I see a range on slider

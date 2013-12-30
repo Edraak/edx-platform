@@ -32,6 +32,7 @@ from student.models import unique_id_for_user
 import instructor_task.api
 from instructor_task.api_helper import AlreadyRunningError
 from instructor_task.views import get_task_completion_info
+from instructor_task.models import GradesStore
 import instructor.enrollment as enrollment
 from instructor.enrollment import enroll_email, unenroll_email, get_email_params
 from instructor.views.tools import strip_if_string, get_student_from_identifier
@@ -42,6 +43,8 @@ import analytics.csvs
 import csv
 
 from bulk_email.models import CourseEmail
+
+from open_ended_grading.utils import CourseDataService, GradingServiceError
 
 log = logging.getLogger(__name__)
 
@@ -455,6 +458,25 @@ def get_anon_ids(request, course_id):  # pylint: disable=W0613
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_level('staff')
+def get_open_ended_data(_request, course_id):
+    """
+    Respond with a json dictionary containing a success boolean and a file_url
+    where a csv file of open ended data can be downloaded if success is True.
+    """
+
+    service = CourseDataService(settings.OPEN_ENDED_GRADING_INTERFACE)
+
+    try:
+        response = service.get_course_data(course_id)
+    except GradingServiceError:
+        response = {'success': False}
+
+    return JsonResponse(response)
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
 def get_distribution(request, course_id):
     """
     Respond with json of the distribution of students over selected features which have choices.
@@ -748,6 +770,42 @@ def list_instructor_tasks(request, course_id):
         'tasks': map(extract_task_features, tasks),
     }
     return JsonResponse(response_payload)
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def list_grade_downloads(_request, course_id):
+    """
+    List grade CSV files that are available for download for this course.
+    """
+    grades_store = GradesStore.from_config()
+
+    response_payload = {
+        'downloads': [
+            dict(name=name, url=url, link='<a href="{}">{}</a>'.format(url, name))
+            for name, url in grades_store.links_for(course_id)
+        ]
+    }
+    return JsonResponse(response_payload)
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def calculate_grades_csv(request, course_id):
+    """
+    AlreadyRunningError is raised if the course's grades are already being updated.
+    """
+    try:
+        instructor_task.api.submit_calculate_grades_csv(request, course_id)
+        success_status = _("Your grade report is being generated! You can view the status of the generation task in the 'Pending Instructor Tasks' section.")
+        return JsonResponse({"status": success_status})
+    except AlreadyRunningError:
+        already_running_status = _("A grade report generation task is already in progress. Check the 'Pending Instructor Tasks' table for the status of the task. When completed, the report will be available for download in the table below.")
+        return JsonResponse({
+            "status": already_running_status
+        })
 
 
 @ensure_csrf_cookie
