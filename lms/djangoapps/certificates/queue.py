@@ -169,6 +169,8 @@ class XQueueCertInterface(object):
             if course is None:
                 course = courses.get_course_by_id(course_id)
             profile = UserProfile.objects.get(user=student)
+            profile_name = profile.name
+            profile_title = title
 
             # Needed
             self.request.user = student
@@ -204,7 +206,7 @@ class XQueueCertInterface(object):
             cert.user = student
             cert.grade = grade['percent']
             cert.course_id = course_id
-            cert.name = profile.name
+            cert.name = profile_name
 
             if is_whitelisted or grade['grade'] is not None:
 
@@ -221,12 +223,13 @@ class XQueueCertInterface(object):
                     key = make_hashkey(random.random())
                     cert.key = key
                     contents = {
-                        'action': 'create',
-                        'username': student.username,
-                        'course_id': course_id,
-                        'name': profile.name,
-                        'grade': grade['grade'],
+                        'action':       'create',
+                        'username':     student.username,
+                        'course_id':    course_id,
+                        'name':         profile_name,
+                        'grade':        grade['grade'],
                         'template_pdf': template_pdf,
+                        'designation':  profile_title,
                     }
                     if template_file:
                         contents['template_pdf'] = template_file
@@ -235,8 +238,8 @@ class XQueueCertInterface(object):
                     cert.save()
                     self._send_to_xqueue(contents, key)
             else:
-                new_status = status.notpassing
-                cert.status = new_status
+                cert_status = status.notpassing
+                cert.status = cert_status
                 cert.save()
 
         return new_status
