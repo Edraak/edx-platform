@@ -53,7 +53,7 @@ class Command(BaseCommand):
         accounts = LinkedIn.objects.filter(has_linkedin_account=True)
         for account in accounts:
             user = account.user
-            if whitelist is not None and user.email not in whitelist:
+            if whitelist and user.email not in whitelist:
                 # Whitelist only certain addresses for testing purposes
                 continue
             emailed = json.loads(account.emailed_courses)
@@ -61,6 +61,7 @@ class Command(BaseCommand):
             certificates = certificates.filter(status='downloadable')
             certificates = [cert for cert in certificates
                             if cert.course_id not in emailed]
+
             if not certificates:
                 continue
             if grandfather:
