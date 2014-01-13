@@ -118,6 +118,18 @@ class MailusersTests(TestCase):
         self.assertEqual(
             mail.outbox[1].to, ['Barney Rubble <barney@bedrock.gov>'])
 
+    def test_mail_users_grandfather_mock(self):
+        """
+        test that we aren't sending anything when in mock_run mode
+        """
+        fut = mailusers.Command().handle
+        fut(grandfather=True, mock_run=True)
+        self.assertEqual(
+            json.loads(self.fred.linkedin.emailed_courses), [])
+        self.assertEqual(
+            json.loads(self.barney.linkedin.emailed_courses), [])
+        self.assertEqual(len(mail.outbox), 0)
+
     def test_mail_users_only_new_courses(self):
         """
         Test emailing users, making sure they are only emailed about new

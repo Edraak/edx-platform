@@ -74,7 +74,8 @@ class Command(BaseCommand):
                 continue
             if grandfather:
                 self.send_grandfather_email(user, certificates, mock_run)
-                emailed.extend([cert.course_id for cert in certificates])
+                if not mock_run:
+                    emailed.extend([cert.course_id for cert in certificates])
             else:
                 for certificate in certificates:
                     self.send_triggered_email(user, certificate)
