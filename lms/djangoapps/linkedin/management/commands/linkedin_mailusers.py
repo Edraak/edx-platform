@@ -20,7 +20,6 @@ from certificates.models import GeneratedCertificate
 from courseware.courses import get_course_by_id, course_image_url
 
 from ...models import LinkedIn
-from . import LinkedInAPI
 
 
 class Command(BaseCommand):
@@ -47,10 +46,9 @@ class Command(BaseCommand):
 
     def __init__(self):
         super(Command, self).__init__()
-        self.api = LinkedInAPI(self)
 
     def handle(self, *args, **options):
-        whitelist = self.api.config.get('EMAIL_WHITELIST')
+        whitelist = settings.LINKEDIN_API['EMAIL_WHITELIST']
         grandfather = options.get('grandfather', False)
         accounts = LinkedIn.objects.filter(has_linkedin_account=True)
         for account in accounts:
@@ -90,7 +88,7 @@ class Command(BaseCommand):
         query = [
             ('pfCertificationName', certificate.name),
             ('pfAuthorityName', settings.PLATFORM_NAME),
-            ('pfAuthorityId', self.api.config['COMPANY_ID']),
+            ('pfAuthorityId', settings.LINKEDIN_API['COMPANY_ID']),
             ('pfCertificationUrl', certificate.download_url),
             ('pfLicenseNo', certificate.course_id),
             ('pfCertStartDate', course.start.strftime('%Y%m')),
