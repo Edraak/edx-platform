@@ -7,7 +7,7 @@ import json
 import urllib
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 from django.template import Context
 from django.template.loader import get_template
@@ -163,4 +163,6 @@ class Command(BaseCommand):
         """
         fromaddr = settings.DEFAULT_FROM_EMAIL
         toaddr = '%s <%s>' % (user.profile.name, user.email)
-        send_mail(subject, body, fromaddr, (toaddr,))
+        msg = EmailMessage(subject, body, fromaddr, (toaddr,))
+        msg.content_subtype = "html"
+        msg.send()
