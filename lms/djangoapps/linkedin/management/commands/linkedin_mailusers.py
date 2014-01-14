@@ -92,7 +92,7 @@ class Command(BaseCommand):
         tracking_code = '-'.join([
             'eml',
             'prof',  # the 'product'--no idea what that's supposed to mean
-            course.org,  # Partner's name
+            'edX',  # Partner's name
             course.number,  # Certificate's name
             'gf' if grandfather else 'T'])
         query = [
@@ -133,7 +133,7 @@ class Command(BaseCommand):
                 'course_title': course_title,
                 'course_image_url': course_img_url,
                 'course_end_date': course_end_date,
-                'linkedin_add_url': self.certificate_url(cert),
+                'linkedin_add_url': self.certificate_url(cert, True),
             })
 
         context = {'courses_list': courses_list, 'num_courses': len(courses_list)}
