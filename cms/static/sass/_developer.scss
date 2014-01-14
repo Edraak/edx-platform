@@ -8,3 +8,46 @@
 // }
 
 // --------------------
+
+// Views: Move Component Model on Unit page
+
+body.course.feature-edit-dialog .wrapper-dialog .dialog form.move-component-dialog .form-content {
+  padding-bottom: 1em !important;
+  padding-top: 1em !important;
+  padding-left: 1em !important;
+  padding-right: 1em !important;
+  overflow-y: auto;
+}
+
+.move-component-dialog ol li {
+  margin-left: 1em;
+}
+
+.move-component-dialog ol li.section-list {
+  margin-left: 0em;
+}
+
+body.course.feature-edit-dialog .move-component-dialog .wrapper-dialog .dialog {
+  width: 700px !important;
+  height: 500px;
+}
+
+.move-component-dialog .section-list-item-label {
+  margin-top: 2px;
+  font-size: 19px;
+}
+
+.move-component-dialog .subsection-list-item-label {
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.move-component-dialog .unit-list-item-label {
+  font-size: 13px;
+  background-color: #f2f2f2;
+  margin-top: 2px;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 1em;
+  padding-right: 1em;
+}

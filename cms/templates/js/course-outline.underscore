@@ -1,0 +1,6 @@
+<div class="form-content">
+    <div class="course-overview">
+        <article class="courseware-overview" data-locator="<%= url %>">
+        </article>
+    </div>
+</div>

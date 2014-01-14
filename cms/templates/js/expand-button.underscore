@@ -1,0 +1,4 @@
+<a href="#" data-tooltip="<%= gettext("Expand/collapse this section") %>" class="action expand-collapse collapse">
+    <i class="icon-caret-down ui-toggle-expansion"></i>
+    <span class="sr"><%= gettext("Expand/collapse this section") %></span>
+</a>

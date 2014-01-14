@@ -1,0 +1,25 @@
+<div
+ class="wrapper wrapper-dialog wrapper-dialog-edit-sectionrelease edit-section-publish-settings wrapper-dialog-move-component"
+ aria-describedby="dialog-move-component-description"
+ aria-labelledby="dialog-move-component-title"
+ aria-hidden=""
+ role="dialog">
+    <div class="dialog confirm">
+        <form class="move-component-dialog" action="#">
+            <h2 class="title dialog-edit-sectionrelease-title"><%= gettext("Component 1: Move") %></h2>
+            <div id="move-outline"></div>
+            <p class="message"><%= gettext("You can change the location of this component within this course by selecting another valid unit page. Valid unit pages have either active drafts or have not yet been published.") %></p>
+            <div class="actions">
+                <h3 class="sr"><%= gettext("Form Actions") %></h3>
+                <ul>
+                <li class="action-item">
+                    <a href="#" class="button action-primary action-move"><%= gettext("Move") %></a>
+                </li>
+                <li class="action-item">
+                    <a href="#" class="button action-secondary action-cancel"><%= gettext("Cancel") %></a>
+                </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</div>

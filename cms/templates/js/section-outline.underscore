@@ -1,0 +1,90 @@
+<section class="courseware-section is-collapsible" data-parent="<%= parent_url %>" data-locator="<%= url %>">
+    <header class="section">
+        <a href="#" data-tooltip="<%= gettext("Expand/collapse this section") %>" class="action expand-collapse collapse"><i class="icon-caret-down ui-toggle-expansion"></i><span class="sr"><%= gettext("Expand/collapse this section") %></span></a>
+
+        <div class="item-details" data-locator="<%= url %>">
+            <h3 class="section-name" data-name="<%= display_name %>"><span data-tooltip="<%= gettext("Edit this section's name") %>" class="section-name-span"><%= display_name %></span></h3>
+        </div>
+    </header>
+    <div class="subsection-list">
+        <ol class="sortable-subsection-list">
+            <li class="courseware-subsection id-holder is-draggable is-collapsible" data-parent="AndyA.AA101.2014/branch/draft/block/chapterba4" data-locator="AndyA.AA101.2014/branch/draft/block/sequentiald7d">
+                <span class="draggable-drop-indicator draggable-drop-indicator-before"><i class="icon-caret-right"></i></span>
+
+
+                <div class="section-item">
+                    <div class="details">
+                        <a href="#" data-tooltip="Expand/collapse this subsection" class="action expand-collapse collapse"><i class="icon-caret-down ui-toggle-expansion"></i><span class="sr">Expand/collapse this subsection</span></a>
+                        <a href="/subsection/AndyA.AA101.2014/branch/draft/block/sequentiald7d">
+                            <span class="subsection-name"><span class="subsection-name-value">Lesson 1</span></span>
+                        </a>
+                    </div>
+                </div>
+
+                <ol class="sortable-unit-list">
+
+                    <li class="courseware-unit unit is-draggable" data-locator="AndyA.AA101.2014/branch/draft/block/vertical01f" data-parent="AndyA.AA101.2014/branch/draft/block/sequentiald7d">
+
+                        <span class="draggable-drop-indicator draggable-drop-indicator-before"><i class="icon-caret-right"></i></span>
+
+                        <div class="section-item ">
+                            <a href="/unit/AndyA.AA101.2014/branch/draft/block/vertical01f" class="public-item">
+                                <span class="unit-name">My Unit</span>
+                            </a>
+                        </div>
+
+                        <span class="draggable-drop-indicator draggable-drop-indicator-after"><i class="icon-caret-right"></i></span>
+
+                    </li>
+
+                    <li class="courseware-unit unit is-draggable" data-locator="AndyA.AA101.2014/branch/draft/block/verticalded" data-parent="AndyA.AA101.2014/branch/draft/block/sequentiald7d">
+
+                        <span class="draggable-drop-indicator draggable-drop-indicator-before"><i class="icon-caret-right"></i></span>
+
+
+
+                        <div class="section-item ">
+                            <a href="/unit/AndyA.AA101.2014/branch/draft/block/verticalded" class="private-item">
+                                <span class="unit-name">My Second Unit</span>
+                            </a>
+                        </div>
+
+                        <span class="draggable-drop-indicator draggable-drop-indicator-after"><i class="icon-caret-right"></i></span>
+
+                    </li>
+
+                    <li class="courseware-unit unit is-draggable" data-locator="AndyA.AA101.2014/branch/draft/block/vertical5a2" data-parent="AndyA.AA101.2014/branch/draft/block/sequentiald7d">
+
+                        <span class="draggable-drop-indicator draggable-drop-indicator-before"><i class="icon-caret-right"></i></span>
+
+                        <div class="section-item ">
+                            <a href="/unit/AndyA.AA101.2014/branch/draft/block/vertical5a2" class="private-item">
+                                <span class="unit-name">Test Unit</span>
+                            </a>
+                        </div>
+
+                        <span class="draggable-drop-indicator draggable-drop-indicator-after"><i class="icon-caret-right"></i></span>
+
+                    </li>
+                </ol>
+            </li>
+
+            <li class="courseware-subsection collapsed id-holder is-draggable is-collapsible " data-parent="AndyA.AA101.2014/branch/draft/block/chapterba4" data-locator="AndyA.AA101.2014/branch/draft/block/sequentialb98">
+
+                <span class="draggable-drop-indicator draggable-drop-indicator-before"><i class="icon-caret-right"></i></span>
+
+
+                <div class="section-item">
+                    <div class="details">
+                        <a href="#" data-tooltip="Expand/collapse this subsection" class="action expand-collapse expand"><i class="icon-caret-down ui-toggle-expansion"></i><span class="sr">Expand/collapse this subsection</span></a>
+                        <a href="/subsection/AndyA.AA101.2014/branch/draft/block/sequentialb98">
+                            <span class="subsection-name"><span class="subsection-name-value">New Subsection</span></span>
+                        </a>
+                    </div>
+
+                </div>
+
+            </li>
+        </ol>
+    </div>
+</section>

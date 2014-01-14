@@ -279,6 +279,9 @@ def unit_handler(request, tag=None, package_id=None, branch=None, version_guid=N
             subsection=containing_subsection.location.name,
             index=index
         )
+        course_loc = loc_mapper().translate_location(
+            course.location.course_id, course.location, published=False, add_entry_if_missing=True
+        )
 
         return render_to_response('unit.html', {
             'context_course': course,
@@ -300,6 +303,7 @@ def unit_handler(request, tag=None, package_id=None, branch=None, version_guid=N
                 get_default_time_display(item.published_date)
                 if item.published_date is not None else None
             ),
+            'course_outline_url': course_loc.url_reverse('course/', ''),
         })
     else:
         return HttpResponseBadRequest("Only supports html requests")

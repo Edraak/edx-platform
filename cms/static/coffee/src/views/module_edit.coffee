@@ -12,10 +12,12 @@ define ["backbone", "jquery", "underscore", "gettext", "xblock/runtime.v1",
       "click .component-editor .save-button": 'clickSaveButton'
       "click .component-actions .edit-button": 'clickEditButton'
       "click .component-actions .delete-button": 'onDelete'
+      "click .component-actions .move-button": 'onMove'
       "click .mode a": 'clickModeButton'
 
     initialize: ->
       @onDelete = @options.onDelete
+      @onMove = @options.onMove
       @render()
 
     $component_editor: => @$el.find('.component-editor')

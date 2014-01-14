@@ -690,7 +690,8 @@ hr.divide {
 
 .edit-button.standard,
 .delete-button.standard,
-.duplicate-button.standard {
+.duplicate-button.standard,
+.move-button.standard {
   @extend %t-action4;
   @include white-button;
   float: left;
@@ -700,7 +701,8 @@ hr.divide {
 
   .edit-icon,
   .delete-icon,
-  .duplicate-icon{
+  .duplicate-icon,
+  .move-icon {
     margin-right: 4px;
   }
 }
