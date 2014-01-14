@@ -96,7 +96,7 @@ class Command(BaseCommand):
             course.number,  # Certificate's name
             'gf' if grandfather else 'T'])
         query = [
-            ('pfCertificationName', certificate.name),
+            ('pfCertificationName', course.display_name_with_default),
             ('pfAuthorityName', settings.PLATFORM_NAME),
             ('pfAuthorityId', settings.LINKEDIN_API['COMPANY_ID']),
             ('pfCertificationUrl', certificate.download_url),
