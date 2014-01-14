@@ -116,7 +116,11 @@ class MailusersTests(TestCase):
         self.assertEqual(
             mail.outbox[0].to, ['Fred Flintstone <fred@bedrock.gov>'])
         self.assertEqual(
+            mail.outbox[0].subject, 'Fred Flintstone, Add your Achievements to your LinkedIn Profile')
+        self.assertEqual(
             mail.outbox[1].to, ['Barney Rubble <barney@bedrock.gov>'])
+        self.assertEqual(
+            mail.outbox[1].subject, 'Barney Rubble, Add your Achievements to your LinkedIn Profile')
 
     def test_mail_users_grandfather_mock(self):
         """

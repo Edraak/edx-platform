@@ -138,7 +138,7 @@ class Command(BaseCommand):
 
         context = {'courses_list': courses_list, 'num_courses': len(courses_list)}
         body = render_to_string('linkedin/linkedin_email.html', context)
-        subject = 'Congratulations! Put your certificates on LinkedIn'
+        subject = '{}, Add your Achievements to your LinkedIn Profile'.format(user.profile.name)
         if not mock_run:
             self.send_email(user, subject, body)
 
