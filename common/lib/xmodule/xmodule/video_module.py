@@ -419,7 +419,11 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
 
         return field_data
 
-    def update_field(self, field_name, value=''):
+    def update_field(self, field_name, value):
+        '''
+        Saves xblock with new updated field value.
+        Using `self` instead of `item` doesn't work in tests.
+        '''
         try:
             store = self.system.modulestore
             item = store.get_item(self.location)
@@ -438,6 +442,15 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
 
     @property
     def editable_metadata_fields(self):
+        '''
+        `source` is deprecated field.
+        a) If `source` exists and `source` not is `html5_sources`: show `source`
+            field on front-end as not-editable but clearable. Dropdown is a new
+            field `download_video` and it has value True.
+        b) If `source` is cleared it is not shown anymore.
+        c) If `source` exists and `source` in `html5_sources`, do not show `source`
+            field. `download_video` field has value True.
+        '''
         editable_fields = super(VideoDescriptor, self).editable_metadata_fields
 
         source = editable_fields['source']
@@ -451,15 +464,15 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             if source['value'] in html5_sources['value']:
                 editable_fields.pop('source')
                 # Delete source field value.
-                self.update_field('source')
-                self.update_field('download_video', value=True)
+                self.update_field('source', '')
+                self.update_field('download_video', True)
                 download_video['value'] = True
                 # Needs to display clear button on frontend
                 download_video['explicitly_set'] = True
             # Otherwise, `source` field value will be used.
             else:
                 if not download_video['explicitly_set']:
-                    self.update_field('download_video', value=True)
+                    self.update_field('download_video', True)
                     download_video['value'] = True
                     # Needs to display clear button on frontend
                     download_video['explicitly_set'] = True

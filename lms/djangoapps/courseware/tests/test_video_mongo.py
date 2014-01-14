@@ -10,29 +10,8 @@ from xmodule.video_module import _create_youtube_string
 
 class TestVideo(BaseTestXmodule):
     """Integration tests: web client + mongo."""
-
     CATEGORY = "video"
     DATA = SOURCE_XML
-
-    def init_module(self, data=None, model_data=None, metadata=None):
-        DATA = str(self.DATA)
-        if data:
-            self.DATA = data
-
-        MODEL_DATA = dict(self.MODEL_DATA)
-        if model_data:
-            self.MODEL_DATA.update(model_data)
-
-        METADATA = dict(self.METADATA)
-        if metadata:
-            self.METADATA.update(metadata)
-
-        super(TestVideo, self).setUp()
-
-        self.DATA = DATA
-        self.MODEL_DATA = MODEL_DATA
-        self.METADATA = METADATA
-
 
     def test_handle_ajax_dispatch(self):
         responses = {
@@ -50,19 +29,34 @@ class TestVideo(BaseTestXmodule):
                 ]).pop(),
             404)
 
-    def test_update_field(self):
-        expected_fields = self.item_descriptor.editable_metadata_fields
-        # KeyError
-        self.item_descriptor.update_field('source')
-        self.assertDictEqual(
-            self.item_descriptor.editable_metadata_fields,
-            expected_fields
-        )
+class TestVideoWithPostponeInitalization(BaseTestXmodule):
+    """
+    Class that uses postpone module initialization.
+    """
+    CATEGORY = "video"
+    DATA = SOURCE_XML
+    METADATA = {}
+
+    def setUp(self):
+        self.old_data = self.DATA
+        self.old_metadata = self.METADATA
+
+    def tearDown(self):
+        self.DATA = self.old_data
+        self.METADATA = self.old_metadata
+
+    def init_module(self, data=None, metadata=None):
+        if data:
+            self.DATA = data
+        if metadata:
+            self.METADATA.update(metadata)
+
+        super(TestVideoWithPostponeInitalization, self).setUp()
 
 
 class TestVideoYouTube(TestVideo):
     def test_video_constructor(self):
-        """Make sure that all parameters extracted correclty from xml"""
+        """Make sure that all parameters extracted correctly from xml"""
         context = self.item_module.render('student_view').content
 
         sources = {
@@ -96,7 +90,6 @@ class TestVideoYouTube(TestVideo):
 
 class TestVideoNonYouTube(TestVideo):
     """Integration tests: web client + mongo."""
-
     DATA = """
         <video show_captions="true"
         display_name="A Name"
@@ -146,6 +139,31 @@ class TestVideoNonYouTube(TestVideo):
             self.item_module.xmodule_runtime.render_template('video.html', expected_context)
         )
 
+
+class TestUpdateFieldMethod(TestVideo):
+    '''
+    Make sure that `update_field` works correctly.
+    '''
+    def test_update_field(self):
+        store = self.item_module.system.modulestore
+        expected = u'test_name'
+        self.item_module.update_field('display_name', expected)
+
+        item = store.get_item(self.item_module.location)
+        self.assertEqual(
+            self.item_module.fields['display_name'].read_json(item),
+            expected
+        )
+
+    @patch('logging.Logger.debug')
+    def test_update_field_on_exception(self, mocked_debug):
+        self.item_descriptor.update_field('nonexistent', 'test value')
+        self.assertTrue(mocked_debug.called)
+
+class TestGetHtmlMethod(TestVideoWithPostponeInitalization):
+    '''
+    Make sure that `get_html` works correctly.
+    '''
     def test_get_html_source(self):
         SOURCE_XML = """
             <video show_captions="true"
@@ -245,9 +263,9 @@ class TestVideoNonYouTube(TestVideo):
             )
 
 
-class VideoBackwardsCompatibilityTestCase(TestVideo):
+class TestVideoEditableMetadataFields(TestVideoWithPostponeInitalization):
     """
-    Make sure that Backwards Compatibility works correctly.
+    Make sure that `editable_metadata_fields` property returns correct value.
     """
     def test_source_not_in_html5sources(self):
         field_data = {
@@ -322,6 +340,7 @@ class VideoBackwardsCompatibilityTestCase(TestVideo):
             },
         }
 
+        self.init_module()
         self.item_descriptor.editable_metadata_fields
 
         fields = self.item_descriptor.editable_metadata_fields
