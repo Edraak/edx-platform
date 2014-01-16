@@ -419,27 +419,6 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
 
         return field_data
 
-    def update_field(self, field_name, value):
-        '''
-        Saves xblock with new updated field value.
-        Using `self` instead of `item` doesn't work in tests.
-        '''
-        try:
-            store = self.system.modulestore
-            item = store.get_item(self.location)
-            field = self.fields[field_name]
-            # update existing metadata
-            field.write_to(item, value)
-        except Exception as err:
-            log.debug(u"Unable to save item.\nERROR:\n{0}".format(str(err)))
-            return
-
-        # Save the data that we've just changed to the underlying
-        # MongoKeyValueStore before we update the mongo datastore.
-        item.save()
-        # commit to datastore
-        store.update_metadata(self.location, own_metadata(item))
-
     @property
     def editable_metadata_fields(self):
         '''
@@ -459,23 +438,18 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
 
         if source['value']:
             # If `source` field value exist in the `html5_sources` field values,
-            # then delete `source` field value and use value from `html5_sources`
-            # field.
+            # then delete `source` field value and use value from `html5_sources` field.
             if source['value'] in html5_sources['value']:
                 editable_fields.pop('source')
-                # Delete source field value.
-                self.update_field('source', '')
-                self.update_field('download_video', True)
+                self.source = ''  # Delete source field value.
+                self.download_video = True
                 download_video['value'] = True
-                # Needs to display clear button on frontend
-                download_video['explicitly_set'] = True
-            # Otherwise, `source` field value will be used.
-            else:
+                download_video['explicitly_set'] = True  # Needs to display clear button on frontend
+            else:  # Otherwise, `source` field value will be used.
                 if not download_video['explicitly_set']:
-                    self.update_field('download_video', True)
+                    self.download_video = True
                     download_video['value'] = True
-                    # Needs to display clear button on frontend
-                    download_video['explicitly_set'] = True
+                    download_video['explicitly_set'] = True  # Needs to display clear button on frontend
 
             source['non_editable'] = True
         else:
