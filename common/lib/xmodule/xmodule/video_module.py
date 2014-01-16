@@ -170,13 +170,9 @@ class VideoModule(VideoFields, XModule):
         get_ext = lambda filename: filename.rpartition('.')[-1]
         sources = {get_ext(src): src for src in self.html5_sources}
 
-        metadata_fields = self.descriptor.editable_metadata_fields
-        download_video = metadata_fields['download_video']
-        source = metadata_fields.get('source', None)
-
-        if download_video['value']:
-            if source and source['value']:
-                sources['main'] = source['value']
+        if self.download_video:
+            if self.source:
+                sources['main'] = self.source
             elif self.html5_sources:
                 sources['main'] = self.html5_sources[0]
 
@@ -226,6 +222,34 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             field_data = self._parse_video_xml(self.data)
             self._field_data.set_many(self, field_data)
             del self.data
+
+        # `source` is deprecated field.
+        # a) If `source` exists and `source` not is `html5_sources`: show `source`
+        #     field on front-end as not-editable but clearable. Dropdown is a new
+        #     field `download_video` and it has value True.
+        # b) If `source` is cleared it is not shown anymore.
+        # c) If `source` exists and `source` in `html5_sources`, do not show `source`
+        #     field. `download_video` field has value True.
+        self.source_editable = True
+        if self.source:
+            # If `source` field value exist in the `html5_sources` field values,
+            # then delete `source` field value and use value from `html5_sources` field.
+            if self.source in self.html5_sources['value']:
+                self.source_editable = False
+                self.source = ''  # Delete source field value.
+                self.download_video = True
+            else:  # Otherwise, `source` field value will be used.
+                self.download_video = True
+        else:
+            self.source_editable = False
+
+    @property
+    def editable_metadata_fields(self):
+        editable_fields = super(VideoDescriptor, self).editable_metadata_fields
+        if not self.source_editable:
+            editable_fields.pop('source')
+        return editable_fields
+
 
     @classmethod
     def from_xml(cls, xml_data, system, org=None, course=None):
@@ -418,44 +442,6 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
                 field_data[attr] = value
 
         return field_data
-
-    @property
-    def editable_metadata_fields(self):
-        '''
-        `source` is deprecated field.
-        a) If `source` exists and `source` not is `html5_sources`: show `source`
-            field on front-end as not-editable but clearable. Dropdown is a new
-            field `download_video` and it has value True.
-        b) If `source` is cleared it is not shown anymore.
-        c) If `source` exists and `source` in `html5_sources`, do not show `source`
-            field. `download_video` field has value True.
-        '''
-        editable_fields = super(VideoDescriptor, self).editable_metadata_fields
-
-        source = editable_fields['source']
-        download_video = editable_fields['download_video']
-        html5_sources = editable_fields['html5_sources']
-
-        if source['value']:
-            # If `source` field value exist in the `html5_sources` field values,
-            # then delete `source` field value and use value from `html5_sources` field.
-            if source['value'] in html5_sources['value']:
-                editable_fields.pop('source')
-                self.source = ''  # Delete source field value.
-                self.download_video = True
-                download_video['value'] = True
-                download_video['explicitly_set'] = True  # Needs to display clear button on frontend
-            else:  # Otherwise, `source` field value will be used.
-                if not download_video['explicitly_set']:
-                    self.download_video = True
-                    download_video['value'] = True
-                    download_video['explicitly_set'] = True  # Needs to display clear button on frontend
-
-            source['non_editable'] = True
-        else:
-            editable_fields.pop('source')
-
-        return editable_fields
 
 def _create_youtube_string(module):
     """
