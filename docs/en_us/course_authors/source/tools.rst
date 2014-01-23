@@ -12,6 +12,7 @@ Overview of Tools in Studio
 In addition to text, images, and different types of problems, Studio allows you
 to add customized learning tools such as word clouds to your course.
 
+- :ref:`IFrames`: You may be able to use an IFrame to embed an external web page inside an HTML component.
 - :ref:`LTI Component`: LTI components allow you to add an external learning application
   or textbook to Studio.
 - :ref:`Word Cloud`: Word clouds arrange text that students enter - for example, in
@@ -19,6 +20,27 @@ to add customized learning tools such as word clouds to your course.
 - :ref:`Zooming image`: Zooming images allow you to enlarge sections of an image so
   that students can see the section in detail.
 
+.. _Iframes:
+
+*******
+IFrames
+*******
+
+If you want to embed an external web page inside an HTML component, you may be able to use an inline frame (IFrame). 
+
+(NEED EXAMPLE)
+
+Using this method has drawbacks, however, and you should use it with caution. Because the content inside an IFrame belongs to an external company, you don't have control over it. The owner of the web page may change or remove the page without warning, or problems may occur on the page. If this happens, no content will appear inside the IFrame, or the content . Addtionally, some companies don't allow their web pages to be embedded in IFrames. 
+
+If you do use an IFrame, keep the following in mind.
+
+* Some browsers, including Chrome and Firefox, have security policies that do not allow you to embed an IFrame that begins with **http** if your website URL begins with **https**. Because all edX and edX Edge URLs begin with **https**, you can only use URLs that begin with **https** inside an IFrame. 
+
+  If you want to include a URL that begins with **http**, you can create a link to the content that you want and make the link open in a new window. To do this, use the following code.
+
+  ``<a href="http://URL_of_tool" target=_blank>Name of Tool</a>``
+
+* You should always test units that contain IFrames before you release your content to students.
 
 .. _LTI Component:
 
