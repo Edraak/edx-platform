@@ -43,9 +43,8 @@ class TestMigration(unittest.TestCase):
 
     def setUp(self):
         super(TestMigration, self).setUp()
-        noop_cache = mock.Mock(spec=['get', 'set_many'])
-        noop_cache.configure_mock(**{'get.return_value': None})
-        # pylint: disable=W0142
+        noop_cache = mock.Mock()
+        noop_cache.get.return_value = None
         self.loc_mapper = LocMapperStore(noop_cache, **self.db_config)
         self.old_mongo = MongoModuleStore(self.db_config, **self.modulestore_options)
         self.draft_mongo = DraftModuleStore(self.db_config, **self.modulestore_options)
@@ -272,7 +271,8 @@ class TestMigration(unittest.TestCase):
                 self.compare_dags(presplit, pre_child, split_child, published)
 
     def test_migrator(self):
-        self.migrator.migrate_mongo_course(self.course_location, random.getrandbits(32))
+        user = mock.Mock(id=1)
+        self.migrator.migrate_mongo_course(self.course_location, user)
         # now compare the migrated to the original course
         self.compare_courses(self.old_mongo, True)
         self.compare_courses(self.draft_mongo, False)
