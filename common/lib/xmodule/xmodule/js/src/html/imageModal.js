@@ -22,6 +22,14 @@ $(function() {
       $(this).replaceWith(imageModalHTML);
     }
   });
+  var draggie = [];
+  $('.imageModal-imgWrapper img').each(function(index) {
+    draggie[index] = new Draggabilly( this, {
+      containment: true
+    });
+    draggie[index].disable();
+    $(this).attr("id", "draggie-" + index);
+  });
 
 
   // Opening and closing image modal on clicks
@@ -32,6 +40,7 @@ $(function() {
     $('html').css({overflow: 'hidden'});
   });
   
+  // variable to detect when modal is being "hovered".
   var imageModalImageHover = false;
   $(".imageModal-content img, .imageModal-content .imageModal-zoom").hover(function() {
     imageModalImageHover = true;
@@ -39,17 +48,21 @@ $(function() {
     imageModalImageHover = false;
   });
   
+  // Click outside of modal to close it.
   $(".imageModal").click(function() {
     if (!imageModalImageHover){
       $(this).hide();
-      $('.imageModal-content .imageModal-imgWrapper img', this).removeClass("draggable").removeClass('zoomed').draggable( 'destroy' );
+      var currentDraggie = $('.imageModal-content .imageModal-imgWrapper img', this).removeClass('zoomed').attr('id').split('-');
+      draggie[currentDraggie[1]].disable();
       $('html').css({overflow: 'auto'});
     }
   });
+  
+  // Click close icon to close modal.
   $(".imageModal-content i.icon-remove").click(function() {
     $(this).closest(".imageModal").hide();
-    // Remove draggable from 
-    $(this).siblings('img').removeClass("draggable").removeClass('zoomed').draggable( 'destroy' );
+    var currentDraggie = $(this).siblings('.imageModal-imgWrapper').children('img').removeClass('zoomed').attr('id').split('-');
+    draggie[currentDraggie[1]].disable();
     $('html').css({overflow: 'auto'});
   });
 
@@ -61,6 +74,7 @@ $(function() {
     var mask = $(this).closest(".imageModal-content");
     
     var img = $(this).closest(".imageModal").find("img");
+    var currentDraggie = img.attr('id').split('-');
     
     if ($(this).hasClass('icon-zoom-in')) {
       img.addClass('zoomed');
@@ -76,14 +90,11 @@ $(function() {
       img.parent().css({left: -imgContainerOffsetLeft, top: -imgContainerOffsetTop, width: imgContainerWidth, height: imgContainerHeight});
       img.css({top: imgContainerOffsetTop / 2, left: imgContainerOffsetLeft / 2});
       
-      if (img.hasClass('draggable')) {
-        img.draggable( 'enable' );
-      } else {
-        img.addClass("draggable").draggable({ containment: 'parent' });
-      }
+      draggie[currentDraggie[1]].enable();
       
     } else if ($(this).hasClass('icon-zoom-out')) {
-      img.draggable('disable').css({top: 0, left: 0, }).removeClass('zoomed');
+      img.css({top: 0, left: 0, }).removeClass('zoomed');
+      draggie[currentDraggie[1]].disable();
       img.parent().css({left: 0, top: 0, width: 'auto', height: 'auto'});
     }
   });
