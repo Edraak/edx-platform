@@ -15,6 +15,7 @@ import logging
 
 from django.db import DatabaseError
 from django.contrib.auth.models import User
+from django.core.cache import get_cache
 
 from xblock.runtime import KeyValueStore
 from xblock.exceptions import KeyValueMultiSaveError, InvalidScopeError
@@ -294,6 +295,7 @@ class DjangoKeyValueStore(KeyValueStore):
         self._field_data_cache = field_data_cache
 
     def get(self, key):
+        print(tuple(key))
         if key.scope not in self._allowed_scopes:
             raise InvalidScopeError(key)
 
@@ -384,3 +386,82 @@ class DjangoKeyValueStore(KeyValueStore):
             return key.field_name in json.loads(field_object.state)
         else:
             return True
+
+
+class DjangoCacheKVSWrapper(object):
+    """
+    A compatibility wrapper, because FieldDataCache returns django model objects, which implement .save()
+    save(), grade, and max_grade are some properties of FieldDataCache values that are directly accessed.
+    This is at the same "layer" as the django model, which wraps the xblock KVS.
+    """
+    def __init__(self, value, cache_name, key):
+        self._cache_name = cache_name
+        self._key = key
+        self.value = value
+
+    # This save is outside of the semantics of xblock.Field, so it's actually only used to save
+    # the analog of django model fields outside of those that support the xblock (such as score and max_score)
+    def save(self):
+        print("save")
+        cache = get_cache(self._cache_name)
+        cache.set(self._key, self)
+
+    def __unicode__(self):
+        return u"CACHE {}::{}:{}".format(self._cache_name, self._key, self.value)
+
+
+class DjangoCacheKeyValueStore(KeyValueStore):
+    # whack the support for .save(), .score and .max_score in here instead.
+    # add it on .set
+    def __init__(self, cache_name='anon_kvs'):
+        self._cache_name = cache_name
+        self._cache = get_cache(cache_name)
+
+    def get(self, key):
+        print("get")
+        return self._cache.get(str(key)).value
+
+    def set(self, key, value):
+        print("SET: {} : {}".format(key, value))
+        self._cache.set(str(key), DjangoCacheKVSWrapper(value, self._cache_name, str(key)))
+
+#    def set_many(self, update_dict):
+#        new_keys = [str(key) for key in update_dict.keys()]
+#        new_vals = [DjangoCacheKVSWrapper(value, self._cache_name, key)
+#                    for (key, value) in update_dict.iteritems()]
+#        new_update_dict = dict(zip(new_keys, new_vals))
+#        print(new_update_dict)
+#        self._cache.set_many(new_update_dict)
+
+    def delete(self, key):
+        self._cache.delete(str(key))
+
+    def has(self, key):
+        return self._cache.get(str(key)) is not None
+
+
+class DjangoCacheKVSFieldDataCache(object):
+    """
+    A field_data_cache that's designed to work with DjangoCacheKeyValueStore.
+    Note this is simply another interface into the django cache and doesn't actually sits in front of
+    DjangoCacheKeyValueStore
+    This is necessary because other courseware functions directly use FieldDataCache and not the KVS,
+    for some reason.
+    AFAICT, the "public" methods of FieldDataCache are find() and find_or_create()
+    """
+    def __init__(self, cache_name='anon_kvs'):
+        self._cache_name = cache_name
+        self._cache = get_cache(cache_name)
+
+    def find(self, key):
+        return self._cache.get(str(key))
+
+    def find_or_create(self, key):
+        print("find_or_create")
+        val_obj = self._cache.get(str(key))
+        if val_obj is None:
+            new_val = DjangoCacheKVSWrapper({}, self._cache_name, str(key))
+            self._cache.set(str(key), new_val)
+            return new_val
+        else:
+            return val_obj

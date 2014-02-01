@@ -24,7 +24,7 @@ from courseware.courses import (get_courses, get_course_with_access,
                                 get_courses_by_university, sort_by_announcement)
 import courseware.tabs as tabs
 from courseware.masquerade import setup_masquerade
-from courseware.model_data import FieldDataCache
+from courseware.model_data import FieldDataCache, DjangoCacheKVSFieldDataCache
 from .module_render import toc_for_course, get_module_for_descriptor, get_module
 from courseware.models import StudentModule, StudentModuleHistory
 from course_modes.models import CourseMode
@@ -246,8 +246,9 @@ def index(request, course_id, chapter=None, section=None,
     masq = setup_masquerade(request, staff_access)
 
     try:
-        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
-            course.id, user, course, depth=2)
+#        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+#            course.id, user, course, depth=2)
+        field_data_cache = DjangoCacheKVSFieldDataCache()
 
         course_module = get_module_for_descriptor(user, request, course, field_data_cache, course.id)
         if course_module is None:

@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from capa.xqueue_interface import XQueueInterface
 from courseware.access import has_access, get_user_role
 from courseware.masquerade import setup_masquerade
-from courseware.model_data import FieldDataCache, DjangoKeyValueStore
+from courseware.model_data import FieldDataCache, DjangoKeyValueStore, DjangoCacheKeyValueStore, DjangoCacheKVSFieldDataCache
 from lms.lib.xblock.field_data import LmsFieldData
 from lms.lib.xblock.runtime import LmsModuleSystem, handler_prefix, unquote_slashes
 from edxmako.shortcuts import render_to_string
@@ -224,7 +224,8 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
         if not has_access(user, descriptor, 'load', course_id):
             return None
 
-    student_data = KvsFieldData(DjangoKeyValueStore(field_data_cache))
+#    student_data = KvsFieldData(DjangoKeyValueStore(field_data_cache))
+    student_data = KvsFieldData(DjangoCacheKeyValueStore())
     descriptor._field_data = LmsFieldData(descriptor._field_data, student_data)
 
 

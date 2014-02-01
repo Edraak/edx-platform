@@ -75,7 +75,6 @@ CACHES = {
         'VERSION': 4,
         'KEY_FUNCTION': 'util.memcache.safe_key',
     },
-
     'mongo_metadata_inheritance': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': '/var/tmp/mongo_metadata_inheritance',
@@ -86,6 +85,12 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'edx_location_mem_cache',
     },
+    'anon_kvs': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/anon_kvs',
+        'KEY_FUNCTION': 'util.memcache.safe_key',
+        'TIMEOUT': 86400,
+    }
 }
 
 
