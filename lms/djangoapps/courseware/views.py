@@ -247,9 +247,9 @@ def index(request, course_id, chapter=None, section=None,
     masq = setup_masquerade(request, staff_access)
 
     try:
-#        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
-#            course.id, user, course, depth=2)
-        field_data_cache = DjangoCacheKVSFieldDataCache()
+        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+            course.id, user, course, depth=2)
+#        field_data_cache = DjangoCacheKVSFieldDataCache()
 
         course_module = get_module_for_descriptor(user, request, course, field_data_cache, course.id)
         if course_module is None:

@@ -224,8 +224,8 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
         if not has_access(user, descriptor, 'load', course_id):
             return None
 
-#    student_data = KvsFieldData(DjangoKeyValueStore(field_data_cache))
-    student_data = KvsFieldData(DjangoCacheKeyValueStore())
+    student_data = KvsFieldData(DjangoKeyValueStore(field_data_cache))
+#    student_data = KvsFieldData(DjangoCacheKeyValueStore())
     descriptor._field_data = LmsFieldData(descriptor._field_data, student_data)
 
 

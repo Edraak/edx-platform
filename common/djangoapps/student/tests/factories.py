@@ -106,7 +106,7 @@ class NonRegisteredUserFactory(UserFactory):
             obj.profile.save()
 
 
-class AnonymousUserFactory(Factory):
+class AnonymousUserFactory(factory.Factory):
     FACTORY_FOR = AnonymousUser
 
 
