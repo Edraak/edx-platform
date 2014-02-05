@@ -519,9 +519,9 @@ def setup_sneakpeek(request, course_id):
         logout(request)
         _create_and_login_nonregistered_user(request)
 
-    can_enroll, error_msg = _check_can_enroll_in_course(request.user,
-                                                        course_id,
-                                                        access_type='within_enrollment_period')
+    can_enroll, error_msg, course = _check_can_enroll_in_course(request.user,
+                                                                course_id,
+                                                                access_type='within_enrollment_period')
     if not can_enroll:
         log.error(error_msg)
         return HttpResponseBadRequest(error_msg)
@@ -586,7 +586,7 @@ def change_enrollment(request):
     if action == "enroll":
         # Make sure the course exists
         # We don't do this check on unenroll, or a bad course id can't be unenrolled from
-        can_enroll, error_msg = _check_can_enroll_in_course(user, course_id)
+        can_enroll, error_msg, course = _check_can_enroll_in_course(user, course_id)
 
         if not can_enroll:
             return HttpResponseBadRequest(error_msg)
@@ -658,12 +658,12 @@ def _check_can_enroll_in_course(user, course_id, access_type="enroll"):
     except ItemNotFoundError:
         log.warning("User {0} tried to enroll in non-existent course {1}"
                     .format(user.username, course_id))
-        return False, _("Course id is invalid")
+        return False, _("Course id is invalid"), None
 
     if not has_access(user, course, access_type):
-        return False, _("Enrollment is closed")
+        return False, _("Enrollment is closed"), course
 
-    return True, ""
+    return True, "", course
 
 
 def _parse_course_id_from_string(input_str):
