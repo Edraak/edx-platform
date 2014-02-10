@@ -10,7 +10,6 @@ in-browser HTML5 video method (when in HTML5 mode).
 in XML.
 """
 
-import os
 import json
 import logging
 from operator import itemgetter
@@ -366,7 +365,7 @@ class VideoModule(VideoFields, XModule):
                 try:
                     asset(self.location, self.sub, 'en')
                 except NotFoundError:
-                    passs
+                    pass
                 else:
                     available_translations = ['en']
             for lang in self.transcripts:
@@ -510,6 +509,9 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
                 editable_fields['source']['non_editable'] = True
             else:
                 editable_fields.pop('source')
+
+        editable_fields['transcripts']['languages'] = [i[0] for i in settings.ALL_LANGUAGES]
+        editable_fields['transcripts']['type'] = 'VideoDict'
 
         return editable_fields
 

@@ -477,5 +477,89 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
         }
     });
 
+    Metadata.VideoDict = AbstractEditor.extend({
+
+        events : {
+            "click .setting-clear" : "clear",
+            "keypress .setting-input" : "showClearButton",
+            "change select" : "updateModel",
+            "input input" : "enableAdd",
+            "click .create-setting" : "addEntry",
+            "click .remove-setting" : "removeEntry"
+        },
+
+        templateName: "metadata-dict-entry",
+
+        getValueFromEditor: function () {
+            var dict = {};
+
+            _.each(this.$el.find('select'), function(select, index) {
+                var key = $(select).find(":selected").val(),
+                    value = 'test';
+
+                // Keys should be unique, so if our keys are duplicated and
+                // second key is empty or key and value are empty just do
+                // nothing. Otherwise, it'll be overwritten by the new value.
+                if (value === '') {
+                    if (key === '' || key in dict) {
+                        return false;
+                    }
+                }
+
+                dict[key] = value;
+            });
+
+            return dict;
+        },
+
+        setValueInEditor: function (value) {
+            var list = this.$el.find('ol'),
+            frag = document.createDocumentFragment(),
+            select = document.createElement('select'),
+            languages = _.without(_.clone(this.model.get('languages')), value);
+
+            select.options.add(new Option());
+            _.each(languages, function(value, key) {
+                var option = new Option();
+
+                option.value = key;
+                option.text = value;
+
+                select.options.add(option);
+            });
+
+            list.after([select]);
+        },
+
+        addEntry: function(event) {
+            event.preventDefault();
+            // We don't call updateModel here since it's bound to the
+            // change event
+            var dict = $.extend(true, {}, this.model.get('value')) || {};
+            dict[''] = '';
+            this.setValueInEditor(dict);
+            this.$el.find('.create-setting').addClass('is-disabled');
+        },
+
+        removeEntry: function(event) {
+            event.preventDefault();
+            var entry = $(event.currentTarget).siblings('.input-key').val();
+            this.setValueInEditor(_.omit(this.model.get('value'), entry));
+            this.updateModel();
+            this.$el.find('.create-setting').removeClass('is-disabled');
+        },
+
+        enableAdd: function() {
+            this.$el.find('.create-setting').removeClass('is-disabled');
+        },
+
+        clear: function() {
+            AbstractEditor.prototype.clear.apply(this, arguments);
+            if (_.isNull(this.model.getValue())) {
+                this.$el.find('.create-setting').removeClass('is-disabled');
+            }
+        }
+    });
+
     return Metadata;
 });
