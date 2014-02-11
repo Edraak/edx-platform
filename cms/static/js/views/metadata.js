@@ -516,14 +516,26 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
             var list = this.$el.find('ol'),
             frag = document.createDocumentFragment(),
             select = document.createElement('select'),
-            languages = _.without(_.clone(this.model.get('languages')), value);
+            languages = this.model.get('languages').filter(function (lang) {
+                return _.isUndefined(value[lang.code]);
+            }, this);
+
+            // languages.sort(function (a, b) {
+            //     if (a.label > b.label)
+            //       return 1;
+            //     if (a.label < b.label)
+            //       return -1;
+
+            //     return 0;
+            // })
+            // languages = _.omit(this.model.get('languages'), _.keys(value));
 
             select.options.add(new Option());
-            _.each(languages, function(value, key) {
+            _.each(languages, function(lang, index) {
                 var option = new Option();
 
-                option.value = key;
-                option.text = value;
+                option.value = lang.code;
+                option.text = lang.label;
 
                 select.options.add(option);
             });
