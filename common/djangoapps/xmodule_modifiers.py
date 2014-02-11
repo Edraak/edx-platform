@@ -15,6 +15,7 @@ from xblock.fragment import Fragment
 from xmodule.seq_module import SequenceModule
 from xmodule.vertical_module import VerticalModule
 from xmodule.x_module import shim_xmodule_js, XModuleDescriptor, XModule
+from xmodule.modulestore.django import loc_mapper
 
 log = logging.getLogger(__name__)
 
@@ -152,7 +153,12 @@ def add_histogram(user, block, view, frag, context):  # pylint: disable=unused-a
     Does nothing if module is a SequenceModule or a VerticalModule.
     """
     # TODO: make this more general, eg use an XModule attribute instead
-    if isinstance(block, (SequenceModule, VerticalModule)):
+    if isinstance(block, VerticalModule):
+        locator = loc_mapper().translate_location(block.course_id, block.location, False, True)
+        edit_link = "//" + settings.CMS_BASE + locator.url_reverse('unit', '')
+        return wrap_fragment(frag, u"<h2><a href='{}'>Edit in studio</a></h2>{}".format(edit_link, frag.content))
+
+    if isinstance(block, SequenceModule):
         return frag
 
     block_id = block.id
@@ -178,7 +184,7 @@ def add_histogram(user, block, view, frag, context):  # pylint: disable=unused-a
         # Need to define all the variables that are about to be used
         giturl = ""
         data_dir = ""
-
+    print(dir(block.runtime))
     source_file = block.source_file  # source used to generate the problem XML, eg latex or word
 
     # useful to indicate to staff if problem has been released or not
