@@ -1137,6 +1137,10 @@ REGISTRATION_OPTIONAL_FIELDS = set([
     'goals',
 ])
 
+########################## CERTIFICATE NAME ########################
+CERT_NAME_SHORT = "Certificate"
+CERT_NAME_LONG = "Certificate of Achievement"
+
 ###################### Grade Downloads ######################
 GRADES_DOWNLOAD_ROUTING_KEY = HIGH_MEM_QUEUE
 
