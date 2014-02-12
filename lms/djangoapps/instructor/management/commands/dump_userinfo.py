@@ -35,10 +35,6 @@ class Command(BaseCommand):
                     dest='outfile',
                     default=False,
                     help='The file path to which to write the output.'),
-        make_option('-v', '--verbose',
-                    dest='verbose',
-                    default=False,
-                    help='If set, produce much noisier output'),
     )
 
 
@@ -47,7 +43,7 @@ class Command(BaseCommand):
         course_id = options['course']
         do_all_courses = options['all']
         outfile_name = options['outfile']
-        verbose = options['verbose']
+        verbose = options['verbosity']
 
         if do_all_courses:
             raise CommandError('--all is not currently implemented; please use --course')
