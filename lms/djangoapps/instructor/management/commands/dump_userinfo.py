@@ -121,10 +121,10 @@ class Command(BaseCommand):
             cme_profile = CmeUserProfile.objects.get(user=student)
             usr_profile = UserProfile.objects.get(user=student)
             for field, label in FIELDS:
-                fieldvalue = cme_profile.getattr(field, '')
+                fieldvalue = getattr(cme_profile, field, '')
                 if not fieldvalue:
-                    fieldvalue = usr_profile.getattr(field, '')
-                student_dict[field] = cme_profile.getattr(field, '')
+                    fieldvalue = getattr(usr_profile, field, '')
+                student_dict[field] = fieldvalue
 
                 print student_dict
 
