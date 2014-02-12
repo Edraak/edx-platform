@@ -13,7 +13,6 @@ from django.contrib.auth.models import User
 from pytz import UTC
 
 from cme_registration.models import CmeUserProfile
-from courseware.courses import get_course_by_id
 from student.models import UserProfile
 
 
@@ -89,7 +88,6 @@ class Command(BaseCommand):
             outfile = tempfile.NamedTemporaryFile(suffix='.csv', delete=False)
             outfile_name = outfile.name
 
-        course = get_course_by_id(course_id)
         sys.stdout.write("Fetching enrolled students for {course}...".format(course=course_id))
         enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username')
         sys.stdout.write(" done.\n")
@@ -118,15 +116,18 @@ class Command(BaseCommand):
                 else:
                     sys.stdout.write('.')
 
-            cme_profile = CmeUserProfile.objects.get(user=student)
             usr_profile = UserProfile.objects.get(user=student)
+            cme_profiles = CmeUserProfile.objects.filter(user=student)
             for field, label in FIELDS:
-                fieldvalue = getattr(cme_profile, field, '')
+                fieldvalue = None
+                if cme_profiles:
+                    fieldvalue = getattr(cme_profiles[0], field, '')
                 if not fieldvalue:
                     fieldvalue = getattr(usr_profile, field, '')
                 student_dict[field] = fieldvalue
 
-                print student_dict
+            # DEBUG output, replace with csvwriter 
+            outfile.write("\n{d}\n".format(student_dict))
 
 #            import pdb; pdb.set_trace()
 #
