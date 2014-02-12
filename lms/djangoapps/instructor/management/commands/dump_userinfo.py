@@ -12,9 +12,40 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from pytz import UTC
 
+from cme_registration.models import CmeUserProfile
 from courseware.courses import get_course_by_id
+from student.models import UserProfile
 
-from instructor.views.legacy import get_student_grade_summary_data
+
+FIELDS = [('first_name', "First Name"),
+          ('middle_initial', "Middle Initial"),
+          ('last_name', "Last Name"),
+          ('email', "Email Address"),
+          ('birth_date', "Birth Date"),
+          ('professional_designation', "Professional Designation"),
+          ('license_number', "Professional License Number"),
+          ('license_countr', "Professional License Country"),
+          ('license_state', "Professional License State"),
+          ('physician_status', "Physician Status"),
+          ('patient_population', "Patient Population"),
+          ('specialty', 'Specialty'),
+          ('sub_specialty', "Sub Specialty"),
+          ('affiliation', "Stanford Medicine Affiliation"),
+          ('sub_affiliation', "Stanford Sub Affiliation"),
+          ('stanford_department', "Stanford Department"),
+          ('sunet_id', "SUNet ID"),
+          ('other_affiliation', "Other Affiliation"),
+          # FIXME: Job Title or Position
+          ('address_1', 'Address 1'),
+          ('address_2', 'Address 2'),
+          ('city', 'City'),
+          ('state', 'State'),
+          ('county_province', 'County/Province'),
+          ('country', 'Country'),
+          # FIXME: Phone Number
+          ('gender', 'Gender'),
+          # FIXME: Marketing Opt-In
+         ]
 
 
 class Command(BaseCommand):
@@ -60,7 +91,7 @@ class Command(BaseCommand):
 
         course = get_course_by_id(course_id)
         sys.stdout.write("Fetching enrolled students for {course}...".format(course=course_id))
-        enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username').values()
+        enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username')
         sys.stdout.write(" done.\n")
 
         count = 0
@@ -72,6 +103,8 @@ class Command(BaseCommand):
         sys.stdout.write("Processing users")
 
         for student in enrolled_students:
+
+            student_dict = {} 
 
             count += 1
             if count % intervals == 0:
@@ -85,21 +118,30 @@ class Command(BaseCommand):
                 else:
                     sys.stdout.write('.')
 
-            print student
-            import pdb; pdb.set_trace()
+            cme_profile = CmeUserProfile.objects.get(user=student)
+            usr_profile = UserProfile.objects.get(user=student)
+            for field, label in FIELDS:
+                fieldvalue = cme_profile.getattr(field, '')
+                if not fieldvalue:
+                    fieldvalue = usr_profile.getattr(field, '')
+                student_dict[field] = cme_profile.getattr(field, '')
 
+                print student_dict
 
-        print "-----------------------------------------------------------------------------"
-        print "Dumping grades from %s to file %s (get_raw_scores=%s)" % (course.id, fn, get_raw_scores)
-        datatable = get_student_grade_summary_data(request, course, course.id, get_raw_scores=get_raw_scores)
-
-        fp = open(fn, 'w')
-
-        writer = csv.writer(fp, dialect='excel', quotechar='"', quoting=csv.QUOTE_ALL)
-        writer.writerow(datatable['header'])
-        for datarow in datatable['data']:
-            encoded_row = [unicode(s).encode('utf-8') for s in datarow]
-            writer.writerow(encoded_row)
+#            import pdb; pdb.set_trace()
+#
+#
+#        print "-----------------------------------------------------------------------------"
+#        print "Dumping grades from %s to file %s (get_raw_scores=%s)" % (course.id, fn, get_raw_scores)
+#        datatable = get_student_grade_summary_data(request, course, course.id, get_raw_scores=get_raw_scores)
+#
+#        fp = open(fn, 'w')
+#
+#        writer = csv.writer(fp, dialect='excel', quotechar='"', quoting=csv.QUOTE_ALL)
+#        writer.writerow(datatable['header'])
+#        for datarow in datatable['data']:
+#            encoded_row = [unicode(s).encode('utf-8') for s in datarow]
+#            writer.writerow(encoded_row)
 
 
         outfile.close()
