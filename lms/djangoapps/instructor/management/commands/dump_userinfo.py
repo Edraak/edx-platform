@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     metavar='COURSE_ID',
                     dest='course',
                     default=False,
-                    help='The course id (e.g., MIT/6-002x/circuits-and-electronics) to select from. Mutually exclusive with "--all"'),
+                    help='The course id (e.g., CME/001/2013-2015) to select from. Mutually exclusive with "--all"'),
         make_option('-a', '--all',
                     dest='all',
                     default=False,
@@ -43,7 +43,7 @@ class Command(BaseCommand):
         course_id = options['course']
         do_all_courses = options['all']
         outfile_name = options['outfile']
-        verbose = options['verbosity']
+        verbose = int(options['verbosity']) > 1
 
         if do_all_courses:
             raise CommandError('--all is not currently implemented; please use --course')
@@ -60,7 +60,7 @@ class Command(BaseCommand):
 
         course = get_course_by_id(course_id)
         sys.stdout.write("Fetching enrolled students for {course}...".format(course=course_id))
-        enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username')
+        enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username').values()
         sys.stdout.write(" done.\n")
 
         count = 0
@@ -80,12 +80,13 @@ class Command(BaseCommand):
                     timeleft = diff * (total - count) / intervals
                     hours, remainder = divmod(timeleft.seconds, 3600)
                     minutes, seconds = divmod(remainder, 60)
-                    sys.stdout.write("\n{count}/{total} completed ~{hours:02}:{minutes:02} remaining\n".format(count, total, hours, minutes))
+                    sys.stdout.write("\n{count}/{total} completed ~{hours:02}:{minutes:02} remaining\n".format(count=count, total=total, hours=hours, minutes=minutes))
                     start = datetime.now(UTC)
                 else:
                     sys.stdout.write('.')
 
-        import ipdb; ipdb.set_trace()
+            print student
+            import pdb; pdb.set_trace()
 
 
         print "-----------------------------------------------------------------------------"
