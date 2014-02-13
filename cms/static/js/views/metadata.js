@@ -494,8 +494,8 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
             var dict = {};
 
             _.each(this.$el.find('select'), function(select, index) {
-                var key = $(select).find(":selected").val(),
-                    value = 'test';
+                var key = $(select).val(), //find(":selected").val(),
+                    value = Math.round();
 
                 // Keys should be unique, so if our keys are duplicated and
                 // second key is empty or key and value are empty just do
@@ -515,23 +515,14 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
         setValueInEditor: function (value) {
             var list = this.$el.find('ol'),
             frag = document.createDocumentFragment(),
-            select = document.createElement('select'),
-            languages = this.model.get('languages').filter(function (lang) {
-                return _.isUndefined(value[lang.code]);
-            }, this);
+            select = document.createElement('select');
+            // languages = this.model.get('languages').filter(function (lang) {
+            //     return _.isUndefined(value[lang.code]);
+            // }, this);
 
-            // languages.sort(function (a, b) {
-            //     if (a.label > b.label)
-            //       return 1;
-            //     if (a.label < b.label)
-            //       return -1;
-
-            //     return 0;
-            // })
-            // languages = _.omit(this.model.get('languages'), _.keys(value));
-
+            // Generate dropdown with currently available languages.
             select.options.add(new Option());
-            _.each(languages, function(lang, index) {
+            _.each(this.model.get('languages'), function(lang, index) {
                 var option = new Option();
 
                 option.value = lang.code;
@@ -540,7 +531,18 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
                 select.options.add(option);
             });
 
-            list.after([select]);
+            _.each(value, function(val, key) {
+                var template = _.template(
+                    '<li class="list-settings-item">' +
+                        '<input type="hidden" class="input" value="<%= value %>">' +
+                        '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
+                    '</li>'
+                ),
+                html = $(template({'value': val})).prepend($(select).clone().val(key));
+                frag.appendChild(html[0]);
+            });
+
+            list.html([frag]);
         },
 
         addEntry: function(event) {
