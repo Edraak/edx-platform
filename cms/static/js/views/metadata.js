@@ -481,21 +481,49 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
 
         events : {
             "click .setting-clear" : "clear",
-            "keypress .setting-input" : "showClearButton",
-            "change select" : "updateModel",
-            "input input" : "enableAdd",
             "click .create-setting" : "addEntry",
             "click .remove-setting" : "removeEntry"
         },
 
         templateName: "metadata-dict-entry",
 
+        initialize: function () {
+            var self = this;
+
+            AbstractEditor.prototype.initialize.apply(this, arguments);
+            this.$el.on('change', 'select', function () {
+                self.showClearButton();
+                self.enableAdd();
+                self.updateModel();
+            });
+        },
+
+        getSelect: function () {
+            var select = [];
+
+            return function () {
+                if (select.length) return select;
+
+                select = document.createElement('select');
+                select.options.add(new Option());
+                _.each(this.model.get('languages'), function(lang, index) {
+                    var option = new Option();
+
+                    option.value = lang.code;
+                    option.text = lang.label;
+                    select.options.add(option);
+                });
+
+                return $(select);
+            };
+        }(),
+
         getValueFromEditor: function () {
             var dict = {};
 
-            _.each(this.$el.find('select'), function(select, index) {
-                var key = $(select).val(), //find(":selected").val(),
-                    value = Math.round();
+            _.each(this.$el.find('.list-settings-item'), function(element, index) {
+                var key = $(element).find('select').val(),
+                    value = Math.random() || $(element).find('.input').val();
 
                 // Keys should be unique, so if our keys are duplicated and
                 // second key is empty or key and value are empty just do
@@ -513,23 +541,9 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
         },
 
         setValueInEditor: function (value) {
-            var list = this.$el.find('ol'),
-            frag = document.createDocumentFragment(),
-            select = document.createElement('select');
-            // languages = this.model.get('languages').filter(function (lang) {
-            //     return _.isUndefined(value[lang.code]);
-            // }, this);
-
-            // Generate dropdown with currently available languages.
-            select.options.add(new Option());
-            _.each(this.model.get('languages'), function(lang, index) {
-                var option = new Option();
-
-                option.value = lang.code;
-                option.text = lang.label;
-
-                select.options.add(option);
-            });
+            var self = this,
+                list = this.$el.find('ol'),
+                frag = document.createDocumentFragment();
 
             _.each(value, function(val, key) {
                 var template = _.template(
@@ -538,7 +552,9 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
                         '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
                     '</li>'
                 ),
-                html = $(template({'value': val})).prepend($(select).clone().val(key));
+                select = self.getSelect().clone(),
+                html = $(template({'value': val})).prepend(select.val(key));
+
                 frag.appendChild(html[0]);
             });
 
@@ -557,7 +573,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
 
         removeEntry: function(event) {
             event.preventDefault();
-            var entry = $(event.currentTarget).siblings('.input-key').val();
+            var entry = $(event.currentTarget).siblings('select').val();
             this.setValueInEditor(_.omit(this.model.get('value'), entry));
             this.updateModel();
             this.$el.find('.create-setting').removeClass('is-disabled');
