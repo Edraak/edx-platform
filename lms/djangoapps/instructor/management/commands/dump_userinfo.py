@@ -101,6 +101,13 @@ class Command(BaseCommand):
             outfile = tempfile.NamedTemporaryFile(suffix='.csv', delete=False)
             outfile_name = outfile.name
 
+        csv_fieldnames = [x[1] for x in PROFILE_FIELDS]
+        csv_fieldnames += ['System ID', 'Date Registered', 'Fee Charged', 'Payment Type', 'Amount Paid',
+                           'Reference Number', 'Reference', 'Paid By', 'Dietary Restrictions',
+                           'Marketing Source', 'Credits Issued', 'Credit Date', 'Certif']
+        csvwriter = csv.DictWriter(outfile, fieldnames=csv_fieldnames, delimiter='\t', quoting=csv.QUOTE_ALL)
+        csvwriter.writeheader()
+
         sys.stdout.write("Fetching enrolled students for {course}...".format(course=course_id))
         enrolled_students = User.objects.filter(courseenrollment__course_id=course_id).prefetch_related("groups").order_by('username')
         sys.stdout.write(" done.\n")
@@ -110,8 +117,9 @@ class Command(BaseCommand):
         start = datetime.now(UTC)
         intervals = int(0.10 * total)
         if intervals > 100 and verbose:
-            intervals = 100
+            intervals = 101
         sys.stdout.write("Processing users")
+        header = []
 
         for student in enrolled_students:
 
@@ -139,8 +147,10 @@ class Command(BaseCommand):
             cert_info = GeneratedCertificate.objects.filter(user=student, course_id=course_id)
 
             # Learner Profile Data
+            if cme_profiles:
+                cme_profile = cme_profiles[0]
             for field, label in PROFILE_FIELDS:
-                fieldvalue = getattr(cme_profiles[0], field, '') or getattr(usr_profile, field, '')
+                fieldvalue = getattr(cme_profile, field, '') or getattr(usr_profile, field, '')
                 student_dict[label] = fieldvalue
 
             # Learner Registration Data
@@ -162,13 +172,15 @@ class Command(BaseCommand):
             # Learner Credit Data
             if cert_info:
                 cert_info = cert_info[0]
+            cert_status = getattr(cert_info, 'status', '')
             student_dict['Credit Date'] = getattr(cert_info, 'created_date', '')
-            student_dict['Certif'] = (cert_info.status == 'downloadable')
-            if cert_info.status == 'downloadable' or cert_info.status == 'generating':
+            student_dict['Certif'] = (cert_status == 'downloadable')
+            if cert_status in ('downloadable', 'generating'):
                 student_dict['Credits Issued'] = 30.0  # FIXME: should retrieve from course def.
 
             # DEBUG output, replace with csvwriter 
-            outfile.write("\n{d}\n".format(student_dict))
+            #outfile.write("\n{d}\n".format(d=student_dict))
+            csvwriter.writerow(student_dict)
 
 #            import pdb; pdb.set_trace()
 #
