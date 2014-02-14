@@ -134,8 +134,8 @@ class Command(BaseCommand):
 
             usr_profile = UserProfile.objects.get(user=student)
             cme_profiles = CmeUserProfile.objects.filter(user=student)
-            registration = PaidCourseRegistration.objects.get(user=student, status='purchased', course_id=course_id)
-            registration_order = registration.order
+            registration = PaidCourseRegistration.objects.filter(user=student, status='purchased', course_id=course_id)
+            registration_order = None
             cert_info = GeneratedCertificate.objects.filter(user=student, course_id=course_id)
 
             # Learner Profile Data
@@ -144,25 +144,28 @@ class Command(BaseCommand):
                 student_dict[label] = fieldvalue
 
             # Learner Registration Data
-            student_dict['Date Registered'] = registration_order.purchase_time
+            if registration:
+                registration = registration[0]
+                registration_order = registration.order
+            student_dict['Date Registered'] = getattr(registration_order, 'purchase_time', '')
             student_dict['System ID'] = '' # FIXME what is this?
             student_dict['Reference'] = '' # FIXME what is this?
-            student_dict['Fee Charged'] = registration.line_cost # FIXME how are these different?
-            student_dict['Amount Paid'] = registration.line_cost # FIXME how are these different?
-            student_dict['Payment Type'] = registration_order.bill_to_cardtype
-            student_dict['Reference Number'] = registration_order.bill_to_ccnum
-            student_dict['Paid By'] = ' '.join((registration_order.bill_to_first, 
-                                                registration_order.bill_to_last))
             student_dict['Dietary Restrictions'] = '' # Untracked
             student_dict['Marketing Source'] = '' # Untracked
-    
+            student_dict['Fee Charged'] = getattr(registration, 'line_cost', '') # FIXME how are these different?
+            student_dict['Amount Paid'] = getattr(registration, 'line_cost', '') # FIXME how are these different?
+            student_dict['Payment Type'] = getattr(registration_order, 'bill_to_cardtype', '')
+            student_dict['Reference Number'] = getattr(registration_order, 'bill_to_ccnum', '')
+            student_dict['Paid By'] = ' '.join((getattr(registration_order, 'bill_to_first', ''), 
+                                                getattr(registration_order, 'bill_to_last', '')))
+
             # Learner Credit Data
             if cert_info:
                 cert_info = cert_info[0]
-                student_dict['Credit Date'] = cert_info.created_date
-                student_dict['Certif'] = (cert_info.status == 'downloadable')
-                if cert_info.status == 'downloadable' or cert_info.status == 'generating':
-                    student_dict['Credits Issued'] = 30.0  # FIXME: should retrieve from course def.
+            student_dict['Credit Date'] = getattr(cert_info, 'created_date', '')
+            student_dict['Certif'] = (cert_info.status == 'downloadable')
+            if cert_info.status == 'downloadable' or cert_info.status == 'generating':
+                student_dict['Credits Issued'] = 30.0  # FIXME: should retrieve from course def.
 
             # DEBUG output, replace with csvwriter 
             outfile.write("\n{d}\n".format(student_dict))
