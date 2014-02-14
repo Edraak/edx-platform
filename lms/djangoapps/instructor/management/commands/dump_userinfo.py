@@ -12,39 +12,52 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from pytz import UTC
 
+from certificates.models import GeneratedCertificate
 from cme_registration.models import CmeUserProfile
+from shoppingcart.models import PaidCourseRegistration
 from student.models import UserProfile
 
 
-FIELDS = [('first_name', "First Name"),
-          ('middle_initial', "Middle Initial"),
-          ('last_name', "Last Name"),
-          ('email', "Email Address"),
-          ('birth_date', "Birth Date"),
-          ('professional_designation', "Professional Designation"),
-          ('license_number', "Professional License Number"),
-          ('license_countr', "Professional License Country"),
-          ('license_state', "Professional License State"),
-          ('physician_status', "Physician Status"),
-          ('patient_population', "Patient Population"),
-          ('specialty', 'Specialty'),
-          ('sub_specialty', "Sub Specialty"),
-          ('affiliation', "Stanford Medicine Affiliation"),
-          ('sub_affiliation', "Stanford Sub Affiliation"),
-          ('stanford_department', "Stanford Department"),
-          ('sunet_id', "SUNet ID"),
-          ('other_affiliation', "Other Affiliation"),
-          # FIXME: Job Title or Position
-          ('address_1', 'Address 1'),
-          ('address_2', 'Address 2'),
-          ('city', 'City'),
-          ('state', 'State'),
-          ('county_province', 'County/Province'),
-          ('country', 'Country'),
-          # FIXME: Phone Number
-          ('gender', 'Gender'),
-          # FIXME: Marketing Opt-In
-         ]
+PROFILE_FIELDS = [('first_name', "First Name"),
+                  ('middle_initial', "Middle Initial"),
+                  ('last_name', "Last Name"),
+                  ('email', "Email Address"),
+                  ('birth_date', "Birth Date"),
+                  ('professional_designation', "Professional Designation"),
+                  ('license_number', "Professional License Number"),
+                  ('license_countr', "Professional License Country"),
+                  ('license_state', "Professional License State"),
+                  ('physician_status', "Physician Status"),
+                  ('patient_population', "Patient Population"),
+                  ('specialty', 'Specialty'),
+                  ('sub_specialty', "Sub Specialty"),
+                  ('affiliation', "Stanford Medicine Affiliation"),
+                  ('sub_affiliation', "Stanford Sub Affiliation"),
+                  ('stanford_department', "Stanford Department"),
+                  ('sunet_id', "SUNet ID"),
+                  ('other_affiliation', "Other Affiliation"),
+                  ('job_title_position_untracked', 'Job Title or Position'), # Untracked
+                  ('address_1', 'Address 1'),
+                  ('address_2', 'Address 2'),
+                  ('city', 'City'),
+                  ('state', 'State'),
+                  ('county_province', 'County/Province'),
+                  ('country', 'Country'),
+                  ('phone_number_untracked', 'Phone Number'), # Untracked
+                  ('gender', 'Gender'),
+                  # FIXME: Marketing Opt-In
+                 ]
+
+REGISTER_FIELDS = [('fulfillment_time', 'Date Registered'),
+                   ('line_cost', 'Fee Charged'),
+                   ('order.bill_to_cardtype', 'Payment Type'),
+                   ('', 'Amount Paid'), # FIXME: how different from fee charged?
+                   ('order.bill_to_ccnum', 'Reference Number'),
+                   ('', 'Reference'), # FIXME: account or PO number, what is this?
+                   ('order.bill_to_first, order.bill_to_last', 'Paid By'), # FIXME: complicated type
+                   ('dietary_restrictions_untracked', 'Dietary Restrictions'), # Untracked
+                   ('marketing_source_untracked', 'Marketing Source'), # Untracked
+                  ]
 
 
 class Command(BaseCommand):
@@ -102,7 +115,10 @@ class Command(BaseCommand):
 
         for student in enrolled_students:
 
-            student_dict = {} 
+            student_dict = {'Credits Issued': 0.0,
+                            'Credit Date': None,
+                            'Certif': False
+                           } 
 
             count += 1
             if count % intervals == 0:
@@ -118,25 +134,40 @@ class Command(BaseCommand):
 
             usr_profile = UserProfile.objects.get(user=student)
             cme_profiles = CmeUserProfile.objects.filter(user=student)
-            for field, label in FIELDS:
-                fieldvalue = None
-                if cme_profiles:
-                    fieldvalue = getattr(cme_profiles[0], field, '')
-                if not fieldvalue:
-                    fieldvalue = getattr(usr_profile, field, '')
-                student_dict[field] = fieldvalue
+            registration = PaidCourseRegistration.objects.get(user=student, status='purchased', course_id=course_id)
+            registration_order = registration.order
+            cert_info = GeneratedCertificate.objects.filter(user=student, course_id=course_id)
+
+            # Learner Profile Data
+            for field, label in PROFILE_FIELDS:
+                fieldvalue = getattr(cme_profiles[0], field, '') or getattr(usr_profile, field, '')
+                student_dict[label] = fieldvalue
+
+            # Learner Registration Data
+            student_dict['Date Registered'] = registration_order.purchase_time
+            student_dict['System ID'] = '' # FIXME what is this?
+            student_dict['Reference'] = '' # FIXME what is this?
+            student_dict['Fee Charged'] = registration.line_cost # FIXME how are these different?
+            student_dict['Amount Paid'] = registration.line_cost # FIXME how are these different?
+            student_dict['Payment Type'] = registration_order.bill_to_cardtype
+            student_dict['Reference Number'] = registration_order.bill_to_ccnum
+            student_dict['Paid By'] = ' '.join((registration_order.bill_to_first, 
+                                                registration_order.bill_to_last))
+            student_dict['Dietary Restrictions'] = '' # Untracked
+            student_dict['Marketing Source'] = '' # Untracked
+    
+            # Learner Credit Data
+            if cert_info:
+                cert_info = cert_info[0]
+                student_dict['Credit Date'] = cert_info.created_date
+                student_dict['Certif'] = (cert_info.status == 'downloadable')
+                if cert_info.status == 'downloadable' or cert_info.status == 'generating':
+                    student_dict['Credits Issued'] = 30.0  # FIXME: should retrieve from course def.
 
             # DEBUG output, replace with csvwriter 
             outfile.write("\n{d}\n".format(student_dict))
 
 #            import pdb; pdb.set_trace()
-#
-#
-#        print "-----------------------------------------------------------------------------"
-#        print "Dumping grades from %s to file %s (get_raw_scores=%s)" % (course.id, fn, get_raw_scores)
-#        datatable = get_student_grade_summary_data(request, course, course.id, get_raw_scores=get_raw_scores)
-#
-#        fp = open(fn, 'w')
 #
 #        writer = csv.writer(fp, dialect='excel', quotechar='"', quoting=csv.QUOTE_ALL)
 #        writer.writerow(datatable['header'])
