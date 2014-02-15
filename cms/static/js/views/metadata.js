@@ -498,23 +498,26 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
             });
         },
 
-        getSelect: function () {
-            var select = [];
+        getDropdown: function () {
+            var dropdown;
 
             return function () {
-                if (select.length) return select;
+                if (dropdown) {
+                    return $(dropdown).clone();
+                }
 
-                select = document.createElement('select');
-                select.options.add(new Option());
+                dropdown = document.createElement('select');
+                dropdown.options.add(new Option());
                 _.each(this.model.get('languages'), function(lang, index) {
                     var option = new Option();
 
+                    option.setAttribute('name', lang.code);
                     option.value = lang.code;
                     option.text = lang.label;
-                    select.options.add(option);
+                    dropdown.options.add(option);
                 });
 
-                return $(select);
+                return $(dropdown).clone();
             };
         }(),
 
@@ -543,7 +546,16 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
         setValueInEditor: function (value) {
             var self = this,
                 list = this.$el.find('ol'),
-                frag = document.createDocumentFragment();
+                frag = document.createDocumentFragment(),
+                dropdown = self.getDropdown();
+
+            _.each(value, function(val, key) {
+                var option = dropdown[0].options.namedItem(key);
+
+                if (option) {
+                    option.disabled = true;
+                }
+            });
 
             _.each(value, function(val, key) {
                 var template = _.template(
@@ -552,8 +564,8 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
                         '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
                     '</li>'
                 ),
-                select = self.getSelect().clone(),
-                html = $(template({'value': val})).prepend(select.val(key));
+                html = $(template({'value': val}))
+                            .prepend(dropdown.clone().val(key));
 
                 frag.appendChild(html[0]);
             });
