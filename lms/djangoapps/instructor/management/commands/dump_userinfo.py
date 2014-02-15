@@ -45,20 +45,8 @@ PROFILE_FIELDS = [('first_name', "First Name"),
                   ('country', 'Country'),
                   ('phone_number_untracked', 'Phone Number'), # Untracked
                   ('gender', 'Gender'),
-                  # FIXME: Marketing Opt-In
+                  ('marketing_opt_in_fixme', 'Marketing Opt-In'), # FIXME: where do we get this?
                  ]
-
-REGISTER_FIELDS = [('fulfillment_time', 'Date Registered'),
-                   ('line_cost', 'Fee Charged'),
-                   ('order.bill_to_cardtype', 'Payment Type'),
-                   ('', 'Amount Paid'), # FIXME: how different from fee charged?
-                   ('order.bill_to_ccnum', 'Reference Number'),
-                   ('', 'Reference'), # FIXME: account or PO number, what is this?
-                   ('order.bill_to_first, order.bill_to_last', 'Paid By'), # FIXME: complicated type
-                   ('dietary_restrictions_untracked', 'Dietary Restrictions'), # Untracked
-                   ('marketing_source_untracked', 'Marketing Source'), # Untracked
-                  ]
-
 
 class Command(BaseCommand):
     help = """Export data required by Stanford SCCME Tracker Project to .csv file."""
@@ -102,9 +90,9 @@ class Command(BaseCommand):
             outfile_name = outfile.name
 
         csv_fieldnames = [x[1] for x in PROFILE_FIELDS]
-        csv_fieldnames += ['System ID', 'Date Registered', 'Fee Charged', 'Payment Type', 'Amount Paid',
-                           'Reference Number', 'Reference', 'Paid By', 'Dietary Restrictions',
-                           'Marketing Source', 'Credits Issued', 'Credit Date', 'Certif']
+        csv_fieldnames.extend(['System ID', 'Date Registered', 'Fee Charged', 'Payment Type', 'Amount Paid',
+                               'Reference Number', 'Reference', 'Paid By', 'Dietary Restrictions',
+                               'Marketing Source', 'Credits Issued', 'Credit Date', 'Certif'])
         csvwriter = csv.DictWriter(outfile, fieldnames=csv_fieldnames, delimiter='\t', quoting=csv.QUOTE_ALL)
         csvwriter.writeheader()
 
@@ -119,7 +107,6 @@ class Command(BaseCommand):
         if intervals > 100 and verbose:
             intervals = 101
         sys.stdout.write("Processing users")
-        header = []
 
         for student in enrolled_students:
 
@@ -149,6 +136,7 @@ class Command(BaseCommand):
             # Learner Profile Data
             if cme_profiles:
                 cme_profile = cme_profiles[0]
+
             for field, label in PROFILE_FIELDS:
                 fieldvalue = getattr(cme_profile, field, '') or getattr(usr_profile, field, '')
                 student_dict[label] = fieldvalue
