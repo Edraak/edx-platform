@@ -499,11 +499,24 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
         },
 
         getDropdown: function () {
-            var dropdown;
+            var dropdown,
+                filter = function (element, values) {
+                    var dropdown = $(element).clone();
 
-            return function () {
+                    _.each(values, function(value, key) {
+                        var option = dropdown[0].options.namedItem(key);
+
+                        if (option) {
+                            option.disabled = true;
+                        }
+                    });
+
+                    return dropdown;
+                };
+
+            return function (values) {
                 if (dropdown) {
-                    return $(dropdown).clone();
+                    return filter(dropdown, values);
                 }
 
                 dropdown = document.createElement('select');
@@ -517,7 +530,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
                     dropdown.options.add(option);
                 });
 
-                return $(dropdown).clone();
+                return filter(dropdown, values);
             };
         }(),
 
@@ -543,28 +556,20 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
             return dict;
         },
 
-        setValueInEditor: function (value) {
+        setValueInEditor: function (values) {
             var self = this,
                 list = this.$el.find('ol'),
                 frag = document.createDocumentFragment(),
-                dropdown = self.getDropdown();
+                dropdown = self.getDropdown(values);
 
-            _.each(value, function(val, key) {
-                var option = dropdown[0].options.namedItem(key);
-
-                if (option) {
-                    option.disabled = true;
-                }
-            });
-
-            _.each(value, function(val, key) {
+            _.each(values, function(value, key) {
                 var template = _.template(
                     '<li class="list-settings-item">' +
                         '<input type="hidden" class="input" value="<%= value %>">' +
                         '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
                     '</li>'
                 ),
-                html = $(template({'value': val}))
+                html = $(template({'value': value}))
                             .prepend(dropdown.clone().val(key));
 
                 frag.appendChild(html[0]);
