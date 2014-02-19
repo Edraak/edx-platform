@@ -126,7 +126,7 @@ def xblock_handler(request, tag=None, package_id=None, branch=None, version_guid
                     log.debug("Unable to render studio_view for %r", component, exc_info=True)
                     editor_fragment = Fragment(render_to_string('html_error.html', {'message': str(exc)}))
 
-                store.save_xmodule(component)
+                store.update_item(component)
 
                 preview_fragment = get_preview_fragment(request, component)
 
@@ -449,8 +449,8 @@ def orphan_handler(request, tag=None, package_id=None, branch=None, version_guid
     if request.method == 'DELETE':
         if request.user.is_staff:
             items = modulestore().get_orphans(old_location, 'draft')
-            for item in items:
-                modulestore('draft').delete_item(item, delete_all_versions=True)
+            for itemloc in items:
+                modulestore('draft').delete_item(itemloc, delete_all_versions=True)
             return JsonResponse({'deleted': items})
         else:
             raise PermissionDenied()
