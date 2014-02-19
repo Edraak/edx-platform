@@ -8,8 +8,7 @@ from xmodule.capa_module import CapaDescriptor
 from xmodule.modulestore.locator import CourseLocator, BlockUsageLocator, LocalId
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from xmodule.html_module import HtmlDescriptor
-from xmodule.modulestore import inheritance
-from xmodule.x_module import prefer_xmodules
+from xmodule.modulestore import inheritance, prefer_xmodules
 from xblock.core import XBlock
 
 

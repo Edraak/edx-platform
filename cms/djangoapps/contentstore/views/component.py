@@ -21,7 +21,7 @@ from xblock.exceptions import NoSuchHandlerError
 from xblock.fields import Scope
 from xblock.plugin import PluginMissingError
 from xblock.runtime import Mixologist
-from xmodule.x_module import prefer_xmodules
+from xmodule.modulestore import prefer_xmodules
 
 from lms.lib.xblock.runtime import unquote_slashes
 
@@ -352,6 +352,6 @@ def component_handler(request, usage_id, handler, suffix=''):
         log.info("XBlock %s attempted to access missing handler %r", descriptor, handler, exc_info=True)
         raise Http404
 
-    modulestore().save_xmodule(descriptor)
+    modulestore().update_item(descriptor)
 
     return webob_to_django_response(resp)
