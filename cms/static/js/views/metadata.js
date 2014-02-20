@@ -1,9 +1,10 @@
 define(
     [
         "js/views/baseview", "underscore", "js/models/metadata", "js/views/abstract_editor",
-        "js/views/transcripts/metadata_videolist"
+        "js/views/transcripts/metadata_videolist",
+        "js/views/feedback_prompt", "js/views/feedback_notification"
     ],
-function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
+function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, NotificationView) {
     var Metadata = {};
 
     Metadata.Editor = BaseView.extend({
@@ -588,12 +589,63 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList) {
             this.$el.find('.create-setting').addClass('is-disabled');
         },
 
-        removeEntry: function(event) {
-            event.preventDefault();
-            var entry = $(event.currentTarget).siblings('select').val();
+        removeFormEditor: function(entry) {
             this.setValueInEditor(_.omit(this.model.get('value'), entry));
             this.updateModel();
             this.$el.find('.create-setting').removeClass('is-disabled');
+        },
+
+        removeEntry: function (event) {
+            if (event && event.preventDefault) {
+                event.preventDefault();
+            }
+
+            var self = this,
+                target = $(event.currentTarget),
+                entry = target.siblings('select').val(),
+                value = target.siblings('input').val();
+
+            // If language is chosen, delete translation for current language
+            if (entry && value) {
+                new PromptView.Warning({
+                    title: gettext('Delete this translation?'),
+                    message: gettext('Deleting this translation is permanent and cannot be undone.'),
+                    actions: {
+                        primary: {
+                            text: gettext('Yes, delete this translation'),
+                            click: function (view) {
+                                view.hide();
+
+                                notification = new NotificationView.Mini({
+                                    title: gettext('Deleting&hellip;'),
+                                });
+
+                                notification.show();
+
+                                $.ajax({
+                                    url: self.model.get('urlRoot') + '/' + entry,
+                                    type: 'DELETE',
+                                    dataType: 'json',
+                                    success: function (view) {
+                                        // remove field from view.
+                                        self.removeFormEditor(entry);
+                                        notification.hide();
+                                    }
+                                });
+                            }
+                        },
+                        secondary: {
+                            text: gettext('Cancel'),
+                            click: function (view) {
+                                view.hide();
+                            }
+                        }
+                    }
+                }).show();
+            } else {
+                // If language isn't chosen, just remove this field from view.
+                self.removeFormEditor(entry);
+            }
         },
 
         enableAdd: function() {
