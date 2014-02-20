@@ -2,7 +2,6 @@
 // ====================
 
 // right to left mixins and variables
-// thanks to https://gist.github.com/Integralist/7269907
 @function flip($value_ltr, $value_rtl) {
   @if $rtl { @return $value_rtl; }
   @else { @return $value_ltr; }
@@ -12,7 +11,6 @@ $padding-left:    padding-left;
 $padding-right:   padding-right;
 $margin-left:     margin-left;
 $margin-right:    margin-right;
-$border-left:     border-left;
 $border-right:    border-right;
 $left:            left;
 $right:           right;
@@ -22,7 +20,6 @@ $right:           right;
   $padding-right: padding-left;
   $margin-left:   margin-right;
   $margin-right:  margin-left;
-  $border-left:   border-right;
   $border-right:  border-left;
   $left:          right;
   $right:         left;
