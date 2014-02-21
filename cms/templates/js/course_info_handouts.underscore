@@ -11,7 +11,7 @@
 <form class="edit-handouts-form" style="display: block;">
   <div class="message message-status error" name="handout_html_error" id="handout_error"><%=gettext("There is invalid code in your content. Please check to make sure it is valid HTML.")%></div>
   <div class="row">
-    <textarea class="handouts-content-editor text-editor"></textarea>
+    <textarea id="handouts" class="handouts-content-editor text-editor mceEditor"></textarea>
   </div>
   <div class="row">
     <a href="#" class="save-button">Save</a>
