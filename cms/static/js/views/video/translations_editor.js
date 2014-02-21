@@ -1,9 +1,11 @@
 define(
     [
-        "underscore", "js/views/abstract_editor", "js/views/feedback_prompt",
+        "jquery", "underscore",
+        "js/views/abstract_editor", "js/views/feedback_prompt",
         "js/views/feedback_notification", "js/models/uploads", "js/views/uploads"
+
     ],
-function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog) {
+function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog) {
 
     var Translations = AbstractEditor.extend({
         events : {
@@ -17,14 +19,12 @@ function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog)
         templateItemName: "metadata-translations-item",
 
         initialize: function () {
-            AbstractEditor.prototype.initialize.apply(this, arguments);
-
             var self = this,
-                templateItemName = _.result(this, 'templateItemName'),
-                tpl = document.getElementById(templateItemName).text;
+                templateName = _.result(this, 'templateItemName'),
+                tpl = document.getElementById(templateName).text;
 
             if(!tpl) {
-                console.error("Couldn't load template for item: " + templateItemName);
+                console.error("Couldn't load template for item: " + templateName);
             }
 
             this.templateItem = _.template(tpl);
@@ -34,6 +34,8 @@ function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog)
                 self.enableAdd();
                 self.updateModel();
             });
+
+            AbstractEditor.prototype.initialize.apply(this, arguments);
         },
 
         getDropdown: function () {
@@ -102,8 +104,9 @@ function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog)
 
             _.each(values, function(value, key) {
                 var html = $(self.templateItem({
+                        'lang': key,
                         'value': value,
-                        'url': self.model.get('urlRoot') + '/' + key,
+                        'url': self.model.get('urlRoot') + '/' + key
                     })).prepend(dropdown.clone().val(key))[0];
 
                 frag.appendChild(html);
@@ -131,17 +134,17 @@ function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog)
         uploadEntry: function (event) {
             var self = this,
                 target = $(event.currentTarget),
-                entry = target.siblings('select').val(),
+                lang = target.data('lang'),
                 model = new FileUpload({
                   fileFormats: ['srt']
                 }),
                 view = new UploadDialog({
                     model: model,
-                    url: self.model.get('urlRoot') + '/' + entry,
+                    url: self.model.get('urlRoot') + '/' + lang,
                     onSuccess: function (response) {
                         var dict = $.extend(true, {}, self.model.get('value'));
 
-                        dict[entry] = response['videoId'];
+                        dict[lang] = response['videoId'];
                         self.model.setValue(dict);
                     }
                 });
@@ -156,8 +159,8 @@ function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog)
 
             var self = this,
                 target = $(event.currentTarget),
-                lang = target.siblings('select').val(),
-                filename = target.siblings('.input').val();
+                lang = target.data('lang'),
+                filename = target.data('value');
 
             // If language is chosen, delete translation for current language
             if (lang && filename) {
@@ -207,9 +210,55 @@ function(AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog)
         },
 
         clear: function() {
-            AbstractEditor.prototype.clear.apply(this, arguments);
-            if (_.isNull(this.model.getValue())) {
-                this.$el.find('.create-setting').removeClass('is-disabled');
+            var self = this,
+                currentLanguages = _.keys(self.model.get('value')),
+                defaultValue = _.keys(self.model.get('default_value')),
+                languages = _.difference(currentLanguages, defaultValue);
+
+            // FIXME: Values should also be checked
+            if (languages.length){
+                new PromptView.Warning({
+                    title: gettext('Delete translations?'),
+                    message: gettext('Deleting these translations are permanent and cannot be undone.'),
+                    actions: {
+                        primary: {
+                            text: gettext('Yes, delete these translations'),
+                            click: function (view) {
+                                view.hide();
+
+                                notification = new NotificationView.Mini({
+                                    title: gettext('Deleting&hellip;'),
+                                });
+
+                                notification.show();
+
+                                $.ajax({
+                                    url: self.model.get('urlRoot') + '/',
+                                    type: 'DELETE',
+                                    dataType: 'json',
+                                    success: function (view) {
+                                        notification.hide();
+                                        AbstractEditor.prototype.clear.apply(self, arguments);
+                                        if (_.isNull(self.model.getValue())) {
+                                            self.$el.find('.create-setting').removeClass('is-disabled');
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        secondary: {
+                            text: gettext('Cancel'),
+                            click: function (view) {
+                                view.hide();
+                            }
+                        }
+                    }
+                }).show();
+            } else {
+                AbstractEditor.prototype.clear.apply(self, arguments);
+                if (_.isNull(self.model.getValue())) {
+                    this.$el.find('.create-setting').removeClass('is-disabled');
+                }
             }
         }
     });

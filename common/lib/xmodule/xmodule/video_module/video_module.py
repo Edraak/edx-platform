@@ -288,8 +288,8 @@ class VideoModule(VideoFields, XModule):
             'yt_test_url': settings.YOUTUBE_TEST_URL,
             'transcript_language': transcript_language,
             'transcript_languages': json.dumps(transcript_languages),
-            'transcript_translation_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation',
-            'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/available_translations',
+            'transcript_translation_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation/',
+            'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/available_translations/',
         })
 
     def get_transcript(self):
@@ -327,8 +327,17 @@ class VideoModule(VideoFields, XModule):
         if dispatch.startswith('translation/'):
             if request.method == 'DELETE':
                 try:
-                    # TODO: Implement logic for removing
                     lang = request.params.get('language') or dispatch.split('/').pop()
+                    if lang:
+                        # TODO: Implement logic for single removing
+                        # When we click `Remove` button
+                        pass
+                    else:
+                        # TODO: Implement logic for multiple removing
+                        # When we click `Revert` button
+                        # Remove ALL translations
+                        pass
+
                     return Response(status=204)
                 except:
                     return Response("Failed to delete", status=400)
@@ -336,6 +345,7 @@ class VideoModule(VideoFields, XModule):
             if request.method == 'POST':
                 try:
                     # TODO: Implement logic for uploading
+                    # When we click `Upload` button
                     f = request.POST['file']
                     return Response(json.dumps({'videoId': f.filename}), status=201)
                 except:
@@ -363,6 +373,7 @@ class VideoModule(VideoFields, XModule):
 
                     # TODO: Should be refactored, but, for now, it returns response
                     # with 200 status code
+                    # When we click `Download` button
                     response = Response(
                         'test content',
                         headerlist=[

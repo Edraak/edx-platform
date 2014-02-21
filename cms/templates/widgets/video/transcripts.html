@@ -19,6 +19,11 @@ import json
         <%static:include path="js/video/transcripts/messages/${template_name}.underscore" />
     </script>
 % endfor
+% for template_name in ["metadata-translations-entry", "metadata-translations-item"]:
+    <script id="${template_name}" type="text/template">
+        <%static:include path="js/video/${template_name}.underscore" />
+    </script>
+% endfor
 
 <div class="wrapper-comp-settings basic_metadata_edit" data-metadata='${json.dumps(transcripts_basic_tab_metadata) | h}'></div>
 

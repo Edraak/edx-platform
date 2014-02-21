@@ -5,7 +5,7 @@ define(
         "js/views/metadata"
     ],
 function($, Backbone, _, AbstractEditor, Utils, MessageManager, MetadataView) {
-    VideoList = AbstractEditor.extend({
+    var VideoList = AbstractEditor.extend({
         // Time that we wait since the last time user typed.
         inputDelay: 300,
 
