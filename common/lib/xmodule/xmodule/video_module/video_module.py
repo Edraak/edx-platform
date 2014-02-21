@@ -324,13 +324,22 @@ class VideoModule(VideoFields, XModule):
         `translation`: returns jsoned translation text.
         `available_translations`: returns list of languages, for which SRT files exist. For 'en' check if SJSON exists.
         """
-        if dispatch == 'translation':
+        if dispatch.startswith('translation/'):
             if request.method == 'DELETE':
                 try:
                     # TODO: Implement logic of removing
+                    lang = dispatch.split('/').pop() or request.params['language']
                     return Response(status=204)
                 except:
                     return Response("Failed to delete", status=400)
+
+            if request.method == 'POST':
+                try:
+                    # TODO: Implement logic of uploading
+                    f = request.params['file']
+                    return Response(json.dumps({'videoId': f.filename}), status=201)
+                except:
+                    return Response("Failed to upload", status=400)
 
 
             if 'language' not in request.GET or 'videoId' not in request.GET:
@@ -523,8 +532,8 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         languages.sort(key=lambda l: l['label'])
 
         editable_fields['transcripts']['languages'] = languages
-        editable_fields['transcripts']['type'] = 'VideoDict'
-        # @TODO: fix link
+        editable_fields['transcripts']['type'] = 'VideoTranslations'
+        # @TODO: fix the link
         editable_fields['transcripts']['urlRoot'] = '/preview' + self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation'
 
         return editable_fields

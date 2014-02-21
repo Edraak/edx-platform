@@ -20,6 +20,10 @@ import json
     </script>
 % endfor
 
+<script type="text/template" id="upload-dialog-tpl">
+    <%static:include path="js/upload-dialog.underscore" />
+</script>
+
 <div class="wrapper-comp-settings basic_metadata_edit" data-metadata='${json.dumps(transcripts_basic_tab_metadata) | h}'></div>
 
 <script type="text/javascript">

@@ -2,9 +2,9 @@ define(
     [
         "js/views/baseview", "underscore", "js/models/metadata", "js/views/abstract_editor",
         "js/views/transcripts/metadata_videolist",
-        "js/views/feedback_prompt", "js/views/feedback_notification"
+        "js/views/feedback_prompt", "js/views/feedback_notification", "js/models/uploads", "js/views/uploads"
     ],
-function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, NotificationView) {
+function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, NotificationView, FileUpload, UploadDialog) {
     var Metadata = {};
 
     Metadata.Editor = BaseView.extend({
@@ -83,6 +83,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
     });
 
     Metadata.VideoList = VideoList;
+    // Metadata.VideoTranslations = VideoTranslations;
 
     Metadata.String = AbstractEditor.extend({
 
@@ -478,12 +479,12 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
         }
     });
 
-    Metadata.VideoDict = AbstractEditor.extend({
-
+    Metadata.VideoTranslations = AbstractEditor.extend({
         events : {
             "click .setting-clear" : "clear",
             "click .create-setting" : "addEntry",
-            "click .remove-setting" : "removeEntry"
+            "click .remove-setting" : "removeEntry",
+            "click .upload-setting" : "uploadEntry"
         },
 
         templateName: "metadata-dict-entry",
@@ -491,12 +492,13 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
         initialize: function () {
             var self = this;
 
-            AbstractEditor.prototype.initialize.apply(this, arguments);
             this.$el.on('change', 'select', function () {
                 self.showClearButton();
                 self.enableAdd();
                 self.updateModel();
             });
+
+            AbstractEditor.prototype.initialize.apply(this, arguments);
         },
 
         getDropdown: function () {
@@ -536,11 +538,12 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
         }(),
 
         getValueFromEditor: function () {
-            var dict = {};
+            var dict = {},
+                items = this.$el.find('ol').find('.list-settings-item');
 
-            _.each(this.$el.find('.list-settings-item'), function(element, index) {
+            _.each(items, function(element, index) {
                 var key = $(element).find('select').val(),
-                    value = Math.random() || $(element).find('.input').val();
+                    value = $(element).find('.input').val();
 
                 // Keys should be unique, so if our keys are duplicated and
                 // second key is empty or key and value are empty just do
@@ -559,7 +562,6 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
 
         setValueInEditor: function (values) {
             var self = this,
-                list = this.$el.find('ol'),
                 frag = document.createDocumentFragment(),
                 dropdown = self.getDropdown(values);
 
@@ -568,6 +570,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
                     '<li class="list-settings-item">' +
                         '<input type="hidden" class="input" value="<%= value %>">' +
                         '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
+                        '<a href="#" class="upload-action upload-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Upload</span></a>' +
                     '</li>'
                 ),
                 html = $(template({'value': value}))
@@ -576,23 +579,44 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
                 frag.appendChild(html[0]);
             });
 
-            list.html([frag]);
+            this.$el.find('ol').html([frag]);
         },
 
         addEntry: function(event) {
             event.preventDefault();
             // We don't call updateModel here since it's bound to the
             // change event
-            var dict = $.extend(true, {}, this.model.get('value')) || {};
+            var dict = $.extend(true, {}, this.model.get('value'));
             dict[''] = '';
             this.setValueInEditor(dict);
             this.$el.find('.create-setting').addClass('is-disabled');
         },
 
-        removeFormEditor: function(entry) {
+        removeFromEditor: function(entry) {
             this.setValueInEditor(_.omit(this.model.get('value'), entry));
             this.updateModel();
             this.$el.find('.create-setting').removeClass('is-disabled');
+        },
+
+        uploadEntry: function (event) {
+            var self = this,
+                target = $(event.currentTarget),
+                entry = target.siblings('select').val(),
+                model = new FileUpload({
+                  fileFormats: ['srt']
+                }),
+                view = new UploadDialog({
+                    model: model,
+                    url: self.model.get('urlRoot') + '/' + entry,
+                    onSuccess: function (response) {
+                        var dict = $.extend(true, {}, self.model.get('value'));
+
+                        dict[entry] = response['videoId'];
+                        self.model.setValue(dict);
+                    }
+                });
+
+            $('.wrapper-view').after(view.show().el);
         },
 
         removeEntry: function (event) {
@@ -602,11 +626,11 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
 
             var self = this,
                 target = $(event.currentTarget),
-                entry = target.siblings('select').val(),
-                value = target.siblings('input').val();
+                lang = target.siblings('select').val(),
+                filename = target.siblings('.input').val();
 
             // If language is chosen, delete translation for current language
-            if (entry && value) {
+            if (lang && filename) {
                 new PromptView.Warning({
                     title: gettext('Delete this translation?'),
                     message: gettext('Deleting this translation is permanent and cannot be undone.'),
@@ -623,12 +647,12 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
                                 notification.show();
 
                                 $.ajax({
-                                    url: self.model.get('urlRoot') + '/' + entry,
+                                    url: self.model.get('urlRoot') + '/' + lang,
                                     type: 'DELETE',
                                     dataType: 'json',
                                     success: function (view) {
                                         // remove field from view.
-                                        self.removeFormEditor(entry);
+                                        self.removeFromEditor(lang);
                                         notification.hide();
                                     }
                                 });
@@ -644,7 +668,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
                 }).show();
             } else {
                 // If language isn't chosen, just remove this field from view.
-                self.removeFormEditor(entry);
+                self.removeFromEditor(lang);
             }
         },
 
