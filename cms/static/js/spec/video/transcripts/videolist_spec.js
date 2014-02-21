@@ -1,7 +1,7 @@
 define(
     [
         "jquery", "underscore",
-        "js/views/transcripts/utils", "js/views/transcripts/metadata_videolist",
+        "js/views/video/transcripts/utils", "js/video/views/transcripts/metadata_videolist",
         "js/views/metadata", "js/models/metadata", "js/views/abstract_editor",
         "sinon", "xmodule", "jasmine-jquery"
     ],

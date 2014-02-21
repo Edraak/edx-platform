@@ -1,7 +1,7 @@
 define(
     [
         "jquery", "underscore",
-        "js/views/transcripts/utils", "js/views/transcripts/file_uploader",
+        "js/views/video/transcripts/utils", "js/views/video/transcripts/file_uploader",
         "xmodule", "jquery.form", "jasmine-jquery"
     ],
 function ($, _, Utils, FileUploader) {

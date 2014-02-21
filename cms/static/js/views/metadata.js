@@ -1,10 +1,10 @@
 define(
     [
         "js/views/baseview", "underscore", "js/models/metadata", "js/views/abstract_editor",
-        "js/views/transcripts/metadata_videolist",
-        "js/views/feedback_prompt", "js/views/feedback_notification", "js/models/uploads", "js/views/uploads"
+        "js/views/video/transcripts/metadata_videolist",
+        "js/views/video/translations_editor"
     ],
-function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, NotificationView, FileUpload, UploadDialog) {
+function(BaseView, _, MetadataModel, AbstractEditor, VideoList, VideoTranslations) {
     var Metadata = {};
 
     Metadata.Editor = BaseView.extend({
@@ -83,7 +83,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
     });
 
     Metadata.VideoList = VideoList;
-    // Metadata.VideoTranslations = VideoTranslations;
+    Metadata.VideoTranslations = VideoTranslations;
 
     Metadata.String = AbstractEditor.extend({
 
@@ -567,14 +567,17 @@ function(BaseView, _, MetadataModel, AbstractEditor, VideoList, PromptView, Noti
 
             _.each(values, function(value, key) {
                 var template = _.template(
-                    '<li class="list-settings-item">' +
-                        '<input type="hidden" class="input" value="<%= value %>">' +
-                        '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
-                        '<a href="#" class="upload-action upload-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Upload</span></a>' +
-                    '</li>'
-                ),
-                html = $(template({'value': value}))
-                            .prepend(dropdown.clone().val(key));
+                        '<li class="list-settings-item">' +
+                            '<input type="hidden" class="input" value="<%= value %>">' +
+                            '<a href="#" class="upload-action upload-setting" data-value="<%= value %>">Upload</a>' +
+                            '<a href="<%= url %>" class="download-action download-setting" target="_blank">Download</a>' +
+                            '<a href="#" class="remove-action remove-setting" data-value="<%= value %>"><i class="icon-remove-sign"></i><span class="sr">Remove</span></a>' +
+                        '</li>'
+                    ),
+                    html = $(template({
+                        'value': value,
+                        'url': self.model.get('urlRoot') + '/' + key,
+                    })).prepend(dropdown.clone().val(key));
 
                 frag.appendChild(html[0]);
             });

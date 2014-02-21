@@ -1,7 +1,7 @@
 define(
     [
         "jquery", "backbone", "underscore", "js/views/abstract_editor",
-        "js/views/transcripts/utils", "js/views/transcripts/message_manager",
+        "js/views/video/transcripts/utils", "js/views/video/transcripts/message_manager",
         "js/views/metadata"
     ],
 function($, Backbone, _, AbstractEditor, Utils, MessageManager, MetadataView) {
