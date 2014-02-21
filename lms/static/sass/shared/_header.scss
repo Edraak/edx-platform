@@ -26,27 +26,13 @@ header.global {
     }
   }
 
-  .left {
-    float: flip(left, right);
-  }
-
-  .guest {
-    float: flip(right, left);
-  }
-
-  > li {
-    display: inline-block;
-    margin-right: 20px;
-    position: relative;
-    vertical-align: middle;
-
-    &:last-child {
-      margin-right: 0px;
+  ol {
+    &.left {
+      float: flip(left, right);
     }
 
-    a {
-      letter-spacing: 1px;
-      vertical-align: middle;
+    &.guest {
+      float: flip(left, right);
     }
   }
 
@@ -103,9 +89,9 @@ header.global {
     }
   }
 
-  .user {
-    float: flip(right,left);
-    margin-top: 4px;
+    &.user {
+      float: flip(right,left);
+      margin-top: 4px;
 
     > .primary {
       display: block;
@@ -193,20 +179,33 @@ header.global {
         display: block;
         height: 0px;
         position: absolute;
-        @include transform(rotate(-45deg));
-        #{$right}: 12px;
-        top: -6px;
-        width: 0px;
-      }
+        #{$right}: 0px;
+        top: 34px;
+        width: 170px;
+        z-index: 3;
 
       li {
         display: block;
         border-top: 1px dotted $border-color-2;
         box-shadow: inset 0 1px 0 0 rgba(255,255,255, 0.05);
 
-        &:first-child {
-          border: none;
-          box-shadow: none;
+        &::before {
+          background: transparent;
+          border: {
+            top: 6px solid $border-color-4;
+            right: 6px solid $border-color-4;
+            bottom: 6px solid transparent;
+            left: 6px solid transparent;
+          }
+          box-shadow: 1px 0 0 0 $border-color-3, 0 -1px 0 0 $border-color-3;
+          content: "";
+          display: block;
+          height: 0px;
+          position: absolute;
+          @include transform(rotate(-45deg));
+          #{$right}: 12px;
+          top: -6px;
+          width: 0px;
         }
 
         > a {
