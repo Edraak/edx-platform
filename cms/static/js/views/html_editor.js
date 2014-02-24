@@ -40,7 +40,10 @@ define(["js/views/baseview", "jquery.tinymce", "js/views/feedback_notification",
         
         onEdit: function(event) {
             var self = this;
+            this.render();
             this.$editor.val(this.$preview.html());
+
+            
             this.$form.show();
 
             HtmlEditorHelper.editWithTinyMCE(
