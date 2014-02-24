@@ -21,9 +21,9 @@ define(["js/views/baseview", "jquery.tinymce", "js/views/feedback_notification",
         },
         
         render: function () {
-        	HtmlEditorHelper.changeContentToPreview(
-                this.model, 'data', this.options['base_asset_url']);
-
+//        	HtmlEditorHelper.changeContentToPreview(
+//                this.model, 'data', this.options['base_asset_url']);
+//
             this.$el.html(
                 $(this.template({
                     model: this.model
