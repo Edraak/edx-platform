@@ -12,6 +12,8 @@ August, 2014
 
    * - Date
      - Change
+   * - 08/26/14
+     - Added documentation for :ref:`Creating Content Experiments`
    * - 08/20/14
      - Added :ref:`Browsers` to the :ref:`Getting Started Index` section
    * - 08/18/14
