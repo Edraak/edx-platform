@@ -53,7 +53,9 @@ var FileUpload = Backbone.Model.extend({
     // Return strings for the valid file types and extensions this
     // uploader accepts, formatted as natural language
     formatValidTypes: function() {
-        if(this.attributes.mimeTypes.length === 1) {
+        var attrs = this.attributes;
+
+        if(attrs.mimeTypes.concat(attrs.fileFormats).length === 1) {
             return {
                 fileTypes: this.fileTypes()[0],
                 fileExtensions: '.' + this.fileTypes()[0].toLowerCase()
