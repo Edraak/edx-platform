@@ -7,10 +7,10 @@ define(
 function ($, _, Utils, FileUploader) {
     describe('Transcripts.FileUploader', function () {
         var videoListEntryTemplate = readFixtures(
-                'transcripts/metadata-videolist-entry.underscore'
+                'video/transcripts/metadata-videolist-entry.underscore'
             ),
             fileUploadTemplate = readFixtures(
-                'transcripts/file-upload.underscore'
+                'video/transcripts/file-upload.underscore'
             ),
             view;
 

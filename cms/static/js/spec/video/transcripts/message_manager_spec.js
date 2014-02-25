@@ -9,10 +9,10 @@ function ($, _, Utils, MessageManager, FileUploader, sinon) {
 
     describe('Transcripts.MessageManager', function () {
         var videoListEntryTemplate = readFixtures(
-                'transcripts/metadata-videolist-entry.underscore'
+                'video/transcripts/metadata-videolist-entry.underscore'
             ),
             foundTemplate = readFixtures(
-                'transcripts/messages/transcripts-found.underscore'
+                'video/transcripts/messages/transcripts-found.underscore'
             ),
             handlers = {
                 importHandler: ['replace', 'Error: Import failed.'],

@@ -6,13 +6,13 @@ define(
 
     ],
 function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog) {
-
+    "use strict";
     var Translations = AbstractEditor.extend({
         events : {
             "click .setting-clear" : "clear",
             "click .create-setting" : "addEntry",
-            "click .remove-setting" : "removeEntry",
-            "click .upload-setting" : "uploadEntry"
+            "click .remove-setting" : "remove",
+            "click .upload-setting" : "upload"
         },
 
         templateName: "metadata-translations-entry",
@@ -131,7 +131,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             this.$el.find('.create-setting').removeClass('is-disabled');
         },
 
-        uploadEntry: function (event) {
+        upload: function (event) {
             var self = this,
                 target = $(event.currentTarget),
                 lang = target.data('lang'),
@@ -142,6 +142,8 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                     model: model,
                     url: self.model.get('urlRoot') + '/' + lang,
                     onSuccess: function (response) {
+                        if (!response['videoId']) { return; }
+
                         var dict = $.extend(true, {}, self.model.get('value'));
 
                         dict[lang] = response['videoId'];
@@ -152,7 +154,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             $('.wrapper-view').after(view.show().el);
         },
 
-        removeEntry: function (event) {
+        remove: function (event) {
             if (event && event.preventDefault) {
                 event.preventDefault();
             }
@@ -162,7 +164,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                 lang = target.data('lang'),
                 filename = target.data('value');
 
-            // If language is chosen, delete translation for current language
+            // If file was uploaded, send an ajax request to remove the translation.
             if (lang && filename) {
                 new PromptView.Warning({
                     title: gettext('Delete this translation?'),
@@ -173,17 +175,15 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                             click: function (view) {
                                 view.hide();
 
-                                notification = new NotificationView.Mini({
+                                var notification = new NotificationView.Mini({
                                     title: gettext('Deleting&hellip;'),
-                                });
-
-                                notification.show();
+                                }).show();
 
                                 $.ajax({
                                     url: self.model.get('urlRoot') + '/' + lang,
                                     type: 'DELETE',
                                     dataType: 'json',
-                                    success: function (view) {
+                                    success: function (response) {
                                         // remove field from view.
                                         self.removeFromEditor(lang);
                                         notification.hide();
@@ -200,8 +200,8 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                     }
                 }).show();
             } else {
-                // If language isn't chosen, just remove this field from view.
-                self.removeFromEditor(lang);
+                // If file isn't uploaded, just remove this field from view.
+                this.removeFromEditor(lang);
             }
         },
 
@@ -209,14 +209,22 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             this.$el.find('.create-setting').removeClass('is-disabled');
         },
 
+        revertModel: function () {
+            AbstractEditor.prototype.clear.apply(this, arguments);
+            if (_.isNull(this.model.getValue())) {
+                this.$el.find('.create-setting').removeClass('is-disabled');
+            }
+        },
+
         clear: function() {
             var self = this,
-                currentLanguages = _.keys(self.model.get('value')),
-                defaultValue = _.keys(self.model.get('default_value')),
-                languages = _.difference(currentLanguages, defaultValue);
+                values = _.values(self.model.get('value')),
+                defaultValues = _.values(self.model.get('default_value')),
+                difference = _.difference(values, defaultValues);
 
-            // FIXME: Values should also be checked
-            if (languages.length){
+            // If we have a `difference`, it means, that some files were uploaded
+            // and we send an ajax request to remove them on backend.
+            if (difference.length){
                 new PromptView.Warning({
                     title: gettext('Delete translations?'),
                     message: gettext('Deleting these translations are permanent and cannot be undone.'),
@@ -226,22 +234,17 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                             click: function (view) {
                                 view.hide();
 
-                                notification = new NotificationView.Mini({
+                                var notification = new NotificationView.Mini({
                                     title: gettext('Deleting&hellip;'),
-                                });
-
-                                notification.show();
+                                }).show();
 
                                 $.ajax({
                                     url: self.model.get('urlRoot') + '/',
                                     type: 'DELETE',
                                     dataType: 'json',
-                                    success: function (view) {
+                                    success: function (response) {
+                                        self.revertModel();
                                         notification.hide();
-                                        AbstractEditor.prototype.clear.apply(self, arguments);
-                                        if (_.isNull(self.model.getValue())) {
-                                            self.$el.find('.create-setting').removeClass('is-disabled');
-                                        }
                                     }
                                 });
                             }
@@ -255,10 +258,8 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                     }
                 }).show();
             } else {
-                AbstractEditor.prototype.clear.apply(self, arguments);
-                if (_.isNull(self.model.getValue())) {
-                    this.$el.find('.create-setting').removeClass('is-disabled');
-                }
+                // If files aren't uploaded, just revert the model and update view.
+                this.revertModel();
             }
         }
     });
