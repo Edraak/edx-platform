@@ -161,10 +161,7 @@ function ($, _, create_sinon, Squire) {
                 return self.uploadSpies.constructor;
             });
 
-            // Without these mocks tests in other files fails.
-            injector.mock('jquery', function() { return $; });
-            injector.mock('underscore', function() { return _; });
-            injector.mock('jasmine-jquery', null);
+            injector.mock('jquery.ajaxQueue', null);
 
             runs(function() {
                 injector.require(["js/models/metadata", "js/views/metadata"],

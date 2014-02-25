@@ -218,7 +218,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
 
         clear: function() {
             var self = this,
-                values = _.values(self.model.get('value')),
+                values = _.values(self.getValueFromEditor()).filter(_.identity),
                 defaultValues = _.values(self.model.get('default_value')),
                 difference = _.difference(values, defaultValues);
 

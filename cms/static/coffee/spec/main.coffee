@@ -207,8 +207,6 @@ define([
     "js/spec/video/transcripts/videolist_spec", "js/spec/video/transcripts/message_manager_spec",
     "js/spec/video/transcripts/file_uploader_spec",
 
-    "js/spec/video/translations_editor_spec",
-
     "js/spec/models/explicit_url_spec"
 
     "js/spec/utils/handle_iframe_binding_spec",
