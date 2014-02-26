@@ -136,7 +136,8 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                 target = $(event.currentTarget),
                 lang = target.data('lang'),
                 model = new FileUpload({
-                  fileFormats: ['srt']
+                    title: gettext('Upload translation.'),
+                    fileFormats: ['srt']
                 }),
                 view = new UploadDialog({
                     model: model,
