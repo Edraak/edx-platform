@@ -161,13 +161,13 @@ function ($, _, create_sinon, Squire) {
                 return self.uploadSpies.constructor;
             });
 
-            injector.mock('jquery.ajaxQueue', null);
-
             runs(function() {
-                injector.require(["js/models/metadata", "js/views/metadata"],
-                function(MetadataModel, MetadataView) {
+                injector.require([
+                    "js/models/metadata", "js/views/video/translations_editor"
+                ],
+                function(MetadataModel, Translations) {
                     var model = new MetadataModel($.extend(true, {}, modelStub));
-                    self.view = new MetadataView.VideoTranslations({model: model});
+                    self.view = new Translations({model: model});
                 });
             });
 
