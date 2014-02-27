@@ -37,7 +37,13 @@ from .transcripts_utils import (
     get_or_create_sjson,
     TranscriptException,
     generate_sjson_for_all_speeds,
-    youtube_speed_dict
+    youtube_speed_dict,
+    manage_video_subtitles_save,
+    generate_subs_from_source,
+    generate_subs_from_source,
+    TranscriptsGenerationException,
+    save_subs_to_store,
+    asset_location,
 )
 
 from .video_utils import create_youtube_string
@@ -153,7 +159,7 @@ class VideoFields(object):
     transcript_language = String(
         help="Preferred language for transcript",
         display_name="Preferred language for transcript",
-        scope=Scope.preferences,
+        scope=Scope.settings,
         default="en"
     )
     speed = Float(
@@ -344,10 +350,24 @@ class VideoModule(VideoFields, XModule):
 
             if request.method == 'POST':
                 try:
-                    # TODO: Implement logic for uploading
-                    # When we click `Upload` button
-                    f = request.POST['file']
-                    return Response(json.dumps({'videoId': f.filename}), status=201)
+
+                    subtitle = request.POST['file']
+
+                    # Get the language of subtitle.
+                    language = request.path[-2:]
+
+                    from xmodule.contentstore.content import StaticContent
+                    from xmodule.contentstore.django import contentstore
+
+                    mime_type = 'text/plain'
+                    upload_filename = '{}_subs_{}'.format(language, subtitle.filename)
+                    content_location = asset_location(self.location, upload_filename)
+                    content = StaticContent(content_location, upload_filename, mime_type, subtitle.file.read())
+                    contentstore().save(content)
+
+                    response = {'videoId': upload_filename, 'status': 'Success'}
+
+                    return Response(json.dumps(response), status=201)
                 except:
                     return Response("Failed to upload", status=400)
 
