@@ -330,25 +330,14 @@ class VideoModule(VideoFields, XModule):
         `translation`: returns jsoned translation text.
         `available_translations`: returns list of languages, for which SRT files exist. For 'en' check if SJSON exists.
         """
+
         if dispatch.startswith('translation/'):
+
             if request.method == 'DELETE':
-                try:
-                    lang = request.params.get('language') or dispatch.split('/').pop()
-                    if lang:
-                        # TODO: Implement logic for single removing
-                        # When we click `Remove` button
-                        pass
-                    else:
-                        # TODO: Implement logic for multiple removing
-                        # When we click `Revert` button
-                        # Remove ALL translations
-                        pass
-
                     return Response(status=204)
-                except:
-                    return Response("Failed to delete", status=400)
 
-            if request.method == 'POST':
+
+            elif request.method == 'POST':
                 try:
 
                     subtitle = request.POST['file']
@@ -370,7 +359,7 @@ class VideoModule(VideoFields, XModule):
                 except:
                     return Response("Failed to upload", status=400)
 
-            if request.method == 'GET':
+            elif request.method == 'GET':
 
                 lang = request.GET.get('language') or dispatch.split('/').pop()
 
@@ -419,46 +408,10 @@ class VideoModule(VideoFields, XModule):
                 else:
                     response = Response(transcript)
                     response.content_type = 'application/json'
-        '''
-        elif dispatch == 'download':
-            try:
-                subs = self.get_transcript()
-            except (NotFoundError, ValueError, KeyError):
-                log.debug("Video@download exception")
-                return Response(status=404)
-            else:
-                response = Response(
-                    subs,
-                    headerlist=[
-                        ('Content-Disposition', 'attachment; filename="{0}.srt"'.format(self.transcript_language)),
-                    ]
-                )
-                response.content_type = "application/x-subrip"
-
-        elif dispatch == 'available_translations':
-            available_translations = []
-            if self.sub:  # check if sjson exists for 'en'.
-                try:
-                    asset(self.location, self.sub, 'en')
-                except NotFoundError:
-                    pass
-                else:
-                    available_translations = ['en']
-            for lang in self.transcripts:
-                try:
-                   asset(self.location, None, None, self.transcripts[lang])
-                except NotFoundError:
-                    continue
-                available_translations.append(lang)
-            if available_translations:
-                response = Response(json.dumps(available_translations))
-                response.content_type = 'application/json'
-            else:
-                response = Response(status=404)
-        else:  # unknown dispatch
+        else:
+            # Unknown dispatch.
             log.debug("Dispatch is not allowed")
             response = Response(status=404)
-        '''
         return response
 
     def translation(self, subs_id):
@@ -592,7 +545,10 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         editable_fields['transcripts']['languages'] = languages
         editable_fields['transcripts']['type'] = 'VideoTranslations'
         # @TODO: fix the link
-        editable_fields['transcripts']['urlRoot'] = '/preview' + self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation'
+        try:
+            editable_fields['transcripts']['urlRoot'] = '/preview' + self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation'
+        except NotImplementedError:
+            pass
 
         return editable_fields
 
