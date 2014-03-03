@@ -323,30 +323,62 @@ class VideoModule(VideoFields, XModule):
             'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/available_translations',
         })
 
-    def get_transcript(self, format='srt'):
+    def get_transcript(self, transcript_format='srt'):
         """
-        Returns transcript in *.srt format.
+        Returns transcript in *.srt format and sub_id.
+
+        sub_id is self.sub or srt filename w/o extension.
 
         Raises:
             - NotFoundError if cannot find transcript file in storage.
             - ValueError if transcript file is empty or incorrect JSON.
             - KeyError if transcript file has incorrect format.
+
+        If language is 'en' self.sub should be correct subtitles name.
+        If language is 'en', but If self.sub is not defined, this means that we should search for video name in order to get proper subs (old style courses)
+        If language is not 'en', just give back proper srt file content.
         """
         lang = self.transcript_language
-        subs_id = self.sub if lang == 'en' else self.youtube_id_1_0
-        data = asset(self.location, subs_id, lang).data
-        if format == 'txt':
-            text = json.loads(data)['text']
-            str_subs = HTMLParser().unescape("\n".join(text))
-            mime_type = 'text/plain'
+
+        if lang == 'en':
+
+            if self.sub:
+                sub_id = self.sub
+            elif self.youtube_id_1_0:  # old courses
+                sub_id = self.youtube_id_1_0
+            elif self.html5_sources:
+                sub_id = sef.html5_sources[0]  # old courses
+            else:
+                log.debug("No subtitles for 'en' language")
+                raise ValueError
+
+            data = asset(self.location, sub_id, lang).data
+            sub_filename = '{}.{}'.format(sub_id, transcript_format)
+
+            if transcript_format == 'txt':
+                text = json.loads(data)['text']
+                srt_subs = HTMLParser().unescape("\n".join(text))
+            else:
+                srt_subs = generate_srt_from_sjson(json.loads(data), speed=1.0)
         else:
-            str_subs = generate_srt_from_sjson(json.loads(data), speed=1.0)
-            mime_type = 'application/x-subrip'
-        if not str_subs:
-            log.debug('generate_srt_from_sjson produces no subtitles')
+
+            data = asset(self.location, None, None, self.transcripts[lang]).data
+            sub_filename = '{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
+
+            if transcript_format == 'txt':
+                text = SubRipFile.from_string(data.decode('utf8'))
+                srt_subs = HTMLParser().unescape("\n".join(text))
+            else:
+                srt_subs = generate_srt_from_sjson(json.loads(data), speed=1.0)
+
+        if not srt_subs:
+            log.debug('no subtitles produced in get_transcript')
             raise ValueError
 
-        return str_subs, format, mime_type
+        mime_type = 'text/plain' if transcript_format == 'txt' else 'application/x-subrip'
+
+        return srt_subs, sub_filename, mime_type
+
 
     @XBlock.handler
     def transcript(self, request, dispatch):
@@ -384,7 +416,7 @@ class VideoModule(VideoFields, XModule):
 
         elif dispatch == 'download':
             try:
-                subs, format, mime_type = self.get_transcript(format=self.transcript_download_format)
+                subs, sub_filename, mime_type = self.get_transcript(format=self.transcript_download_format)
             except (NotFoundError, ValueError, KeyError):
                 log.debug("Video@download exception")
                 response = Response(status=404)
@@ -392,10 +424,7 @@ class VideoModule(VideoFields, XModule):
                 response = Response(
                     subs,
                     headerlist=[
-                        ('Content-Disposition', 'attachment; filename="{filename}.{format}"'.format(
-                            filename=self.transcript_language,
-                            format=format,
-                        )),
+                        ('Content-Disposition', 'attachment; filename="{filename}"'.format(sub_filename)),
                     ]
                 )
                 response.content_type = mime_type
@@ -486,8 +515,6 @@ class VideoModule(VideoFields, XModule):
                 return asset(self.location, self.sub).data
             else:
                 return get_or_create_sjson(self)
-
-
 
 
 class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor):
