@@ -438,7 +438,6 @@ def select_language(_step, code):
 def click_button(_step, button):
     world.css_click(VIDEO_BUTTONS[button])
 
-
 @step('I see video starts playing from "([^"]*)" position$')
 def start_playing_video_from_n_seconds(_step, position):
     world.wait_for(

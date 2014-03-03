@@ -12,7 +12,7 @@
 
 // ====================
 
-// Video Alpha
+// Video
 .xmodule_VideoModule {
 
   // display mode
@@ -20,7 +20,7 @@
 
     // full screen
     .video-controls .add-fullscreen {
-      display: none !important; // nasty, but needed to override the bad specificity of the xmodule css selectors
+        display: none !important; // nasty, but needed to override the bad specificity of the xmodule css selectors
     }
 
     .video-tracks {
@@ -218,6 +218,118 @@
                 background: $blue;
                 color: #fff;
                 line-height: 28px;
+            }
+        }
+    }
+
+    .wrapper-comp-settings {
+        // TYPE: VideoTranslations
+        .list-input.settings-list{
+            .metadata-video-translations {
+                * {
+                  @include box-sizing(border-box);
+                }
+
+                // label
+                .setting-label {
+                    vertical-align: top;
+                    margin-top: ($baseline*.75);
+                }
+
+                // inputs and labels
+                .wrapper-translations-settings {
+                    width: 55%;
+                    display: inline-block;
+                    min-width: 240px;
+
+                    // enumerated fields
+                    .list-settings {
+                        margin: ($baseline/2) 0 0;
+
+                        .list-settings-item {
+                            margin-bottom: ($baseline/2);
+
+                            select {
+                                width: 88%;
+                            }
+
+                            .list-settings-buttons {
+                                width: 88%;
+                                padding: ($baseline/2) 0;
+                                border-bottom: 1px solid #eee;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                            }
+                        }
+
+                        // inputs
+                        .input {
+                            width: 43%;
+                            margin-right: ($baseline/4);
+                            vertical-align: middle;
+                            display: inline-block;
+
+                            &.input-value {
+                               margin-right: ($baseline/2);
+                            }
+                        }
+                    }
+                }
+
+                .setting-clear.action {
+                    vertical-align: top;
+                    margin: ($baseline*.5) 0 0 0;
+                }
+
+                .create-setting {
+                    @extend %ui-btn-flat-outline;
+                    @extend %t-action3;
+                    display: block;
+                    width: 88%;
+                    padding: ($baseline/2);
+                    font-weight: 600;
+
+                    *[class^="icon-"] {
+                        margin-right: ($baseline/4);
+                    }
+                }
+
+                .upload-setting{
+                    @extend %ui-btn-flat-outline;
+                    @extend %t-action3;
+                    display: inline-block;
+                    padding: ($baseline/2);
+                    font-weight: 600;
+                    width: 49%;
+                    margin-right: 2%;
+                }
+
+                .download-setting {
+                    @extend %ui-btn-non;
+                    @extend %t-action4;
+                    display: inline-block;
+                    padding: ($baseline/2);
+                    font-weight: 600;
+                    width: 49%;
+                    text-align: center;
+                    color: $blue;
+
+                    &:hover {
+                        background-color: $blue;
+                    }
+                }
+
+                .remove-setting {
+                    @include transition(color 0.25s ease-in-out);
+                    @include font-size(20);
+                    display: inline-block;
+                    background: transparent;
+                    color: $blue-l3;
+
+                    &:hover {
+                        color: $blue;
+                    }
+                }
             }
         }
     }
