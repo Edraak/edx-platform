@@ -3,6 +3,7 @@ from fs.errors import ResourceNotFoundError
 import logging
 import os
 import sys
+import re
 from lxml import etree
 from path import path
 
@@ -38,6 +39,25 @@ class HtmlFields(object):
     )
 
 
+def clean_html(html):
+    """
+    Strips out inline javascript event handlers from html.
+    Any attribute starting with `on` (case insensitive)
+    will be removed from the dom because we want to prevent
+    the possibility of running arbitrary/unsafe javascript.
+    """
+    # TODO: strip <script> tags, too?
+    if re.search(r'[\s]on[\w]+[\s]?=', html, re.I):
+        parsed = etree.fromstring(html)
+        for elt in parsed.iter():
+            for k in elt.keys():
+                if k.lower().startswith('on'):
+                    del elt.attrib[k]
+        return etree.tounicode(parsed)
+    else:
+        return html
+
+
 class HtmlModule(HtmlFields, XModule):
     js = {
         'coffee': [
@@ -54,9 +74,10 @@ class HtmlModule(HtmlFields, XModule):
     css = {'scss': [resource_string(__name__, 'css/html/display.scss')]}
 
     def get_html(self):
+        data = clean_html(self.data)
         if self.system.anonymous_student_id:
-            return self.data.replace("%%USER_ID%%", self.system.anonymous_student_id)
-        return self.data
+            return data.replace("%%USER_ID%%", self.system.anonymous_student_id)
+        return data
 
 
 class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):
