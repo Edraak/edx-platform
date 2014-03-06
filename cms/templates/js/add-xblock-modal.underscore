@@ -1,0 +1,27 @@
+<div
+ class="wrapper wrapper-dialog wrapper-dialog-edit-sectionrelease edit-section-publish-settings wrapper-dialog-add-xblock"
+ aria-describedby="dialog-add-xblock-description"
+ aria-labelledby="dialog-add-xblock-title"
+ aria-hidden=""
+ role="dialog">
+    <div class="dialog confirm">
+        <form class="add-xblock-modal" action="#">
+            <h2 class="title dialog-edit-sectionrelease-title"><%= gettext("Add Component") %></h2>
+            <p class="message"><%= gettext("Choose a component to add:") %></p>
+            <div class="form-content">
+                <div class="xblock-list"></div>
+            </div>
+            <div class="actions">
+                <h3 class="sr"><%= gettext("Form Actions") %></h3>
+                <ul>
+                <li class="action-item">
+                    <a href="#" class="button action-primary action-add"><%= gettext("Add") %></a>
+                </li>
+                <li class="action-item">
+                    <a href="#" class="button action-secondary action-cancel"><%= gettext("Cancel") %></a>
+                </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</div>

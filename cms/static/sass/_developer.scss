@@ -8,3 +8,71 @@
 // }
 
 // --------------------
+
+// Views: Add XBlock Modal
+
+body.course.feature-add-xblock-modal .wrapper-dialog .dialog form.add-xblock-modal .form-content {
+  padding-bottom: 1em !important;
+  padding-top: 1em !important;
+  padding-left: 1em !important;
+  padding-right: 1em !important;
+  height: 400px;
+  overflow-y: auto;
+}
+
+.add-xblock-modal ol li {
+  margin-left: 1em;
+}
+
+.add-xblock-modal ol li.section-list {
+  margin-left: 0em;
+}
+
+body.course.feature-add-xblock-modal .add-xblock-modal .wrapper-dialog .dialog {
+  width: 65%;
+}
+
+.card {
+  transition: background-color 0.3s ease;
+  background-color: #fff;
+  margin: 10px;
+  padding: 20px;
+  width: 300px;
+  display: inline-block;
+  vertical-align: top;
+  border: 2px solid #fff;
+}
+
+.card:hover, .card.selected {
+  background-color: #E5F5FC;
+}
+
+.card.is-selected {
+  background-color: #E5F5FC;
+  border: 2px solid #80BFF4;
+}
+
+.card .preview {
+  width: 40%;
+  float: left;
+  margin: 0 20px 15px 0;
+  border: 1px solid #ddd;
+  padding: 3px;
+  background-color: #fff;
+}
+
+.card .title {
+  font-size: 16px;
+  margin: 0 0 .5em 0;
+}
+
+.card .summary {
+  transition: color 0.3s ease;
+  font-size: 13px;
+  color: #999;
+  margin: 0 0 .5em 0;
+}
+
+.card:hover .summary {
+  color: #000;
+}

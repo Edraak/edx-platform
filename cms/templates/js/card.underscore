@@ -1,0 +1,5 @@
+<div class="card" data-id="<%= id %>">
+    <img class="preview" src="<%= preview %>" />
+    <h3 class="title"><%= title %></h3>
+    <p class="summary"><%= summary %></p>
+</div>

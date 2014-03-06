@@ -7,19 +7,21 @@ from xmodule.modulestore.django import loc_mapper
 <%namespace name='static' file='static_content.html'/>
 <%namespace name="units" file="widgets/units.html" />
 <%block name="title">${_("Individual Unit")}</%block>
-<%block name="bodyclass">is-signedin course unit view-unit</%block>
+<%block name="bodyclass">is-signedin course unit view-unit feature-edit-dialog feature-add-xblock-modal</%block>
 
 <%block name="jsextra">
   <script type='text/javascript'>
 require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit", "jquery.ui",
+        "js/views/add_xblock_modal",
         "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
-    function(doc, $, ModuleModel, UnitEditView, ui) {
+    function(doc, $, ModuleModel, UnitEditView, ui, AddXBlockModal, XBlockTypeCollection, XBlockType) {
+  var editView;
   window.unit_location_analytics = '${unit_locator}';
 
   // tabs
   $('.tab-group').tabs();
 
-  new UnitEditView({
+  editView = new UnitEditView({
     el: $('.main-wrapper'),
     view: 'unit',
     model: new ModuleModel({
@@ -32,6 +34,14 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
       $emptyEditor = $(this).find('.empty');
       $(this).prepend($emptyEditor);
   });
+
+  $('.add-xblock').click(function() {
+    var modal, collection;
+    modal = new AddXBlockModal({el: $('.add-xblock-modal')});
+    modal.editView = editView;
+    modal.render();
+    modal.show();
+  });
 });
   </script>
   
@@ -39,8 +49,20 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
     <%static:include path="js/imageModal.underscore" />
   </script>
 
+
 </%block>
+
+<%block name="header_extras">
+% for template_name in ["add-xblock-modal", "card"]:
+<script type="text/template" id="${template_name}-tpl">
+    <%static:include path="js/${template_name}.underscore" />
+</script>
+% endfor
+</%block>
+
 <%block name="content">
+  <div class="add-xblock-modal"></div>
+
   <div class="main-wrapper edit-state-${unit_state}" data-locator="${unit_locator}">
     <div class="inner-wrapper">
       <div class="alert editing-draft-alert">
@@ -63,7 +85,7 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
                 <h5>${_("Add New Component")}</h5>
                 <ul class="new-component-type">
                   <li>
-                      <a href="#" class="multiple-templates" data-type="xblock">
+                      <a href="#" class="add-xblock">
                         <span class="large-template-icon large-advanced-icon"></span>
                         <span class="name">xblock</span>
                       </a>
@@ -220,7 +242,4 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
       </div>
     </div>
   </div>
-  
-  
-
 </%block>
