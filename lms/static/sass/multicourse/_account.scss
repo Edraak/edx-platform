@@ -512,6 +512,11 @@
 // =====
 
 // login
+
+header.global  .nav-courseware .cta-login:focus {
+  box-shadow: 0 0 10px #333;
+}
+
 .view-login {
 
   header.global  .nav-courseware .cta-login {

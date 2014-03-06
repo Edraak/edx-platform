@@ -586,6 +586,10 @@ div.problem {
       height: ($baseline*2);
       vertical-align: middle;
       font-weight: 600;
+      
+      &:focus {
+        box-shadow: 0 0 10px #333;
+      }
     }
 
     .save {

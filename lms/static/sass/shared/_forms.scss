@@ -58,4 +58,8 @@ button,.button {
     opacity: 0.5;
     cursor: not-allowed;
   }
+  
+  &:focus {
+    box-shadow: 0 0 10px #333;
+  }
 }

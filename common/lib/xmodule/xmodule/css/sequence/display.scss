@@ -282,6 +282,7 @@ nav.sequence-nav {
 
           &:focus {
             outline: 0;
+            box-shadow: 0 0 15px #333;
           }
 
           &:hover {
@@ -302,6 +303,7 @@ nav.sequence-nav {
         a {
           background-image: url('../images/sequence-nav/previous-icon.png');
           background-position: center 15px;
+          border-radius: 20px 0 0 20px;
         }
       }
 
@@ -313,6 +315,7 @@ nav.sequence-nav {
           margin-left: 30px;
           background-image: url('../images/sequence-nav/next-icon.png');
           background-position: center 15px;
+          border-radius: 0 20px 20px 0;
         }
       }
     }
@@ -367,6 +370,7 @@ nav.sequence-bottom {
 
           &:focus {
             outline: 0;
+            box-shadow: 0 0 15px #333;
           }
         }
       }
@@ -377,6 +381,7 @@ nav.sequence-bottom {
         a {
           background-image: url('../images/sequence-nav/previous-icon.png');
           background-position: center 15px;
+          border-radius: 20px 0 0 20px;
         }
       }
 
@@ -387,6 +392,7 @@ nav.sequence-bottom {
         a {
           background-image: url('../images/sequence-nav/next-icon.png');
           background-position: center 15px;
+          border-radius: 0 20px 20px 0;
         }
       }
     }
