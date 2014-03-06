@@ -442,7 +442,8 @@ XBLOCK_SELECT_FUNCTION = only_xmodules
 # Use the following lines to allow any xblock in the LMS,
 # either by uncommenting them here, or adding them to your private.py
 # from xmodule.modulestore import prefer_xmodules
-# XBLOCK_SELECT_FUNCTION = prefer_xmodules
+from xmodule.x_module import prefer_xmodules
+XBLOCK_SELECT_FUNCTION = prefer_xmodules
 
 #################### Python sandbox ############################################
 
