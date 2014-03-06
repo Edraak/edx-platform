@@ -6,11 +6,16 @@
   <h2>${_("Data Download")}</h2>
   <div class="request-response-error msg msg-error copy" id="data-request-response-error"></div>
 
-  <p>${_("The following button displays a list of all students enrolled in this course, along with profile information such as email address and username. The data can also be downloaded as a CSV file.")}</p>
+  <p>${_("The following button generates a CSV file of all students enrolled in this course, along with profile information such as email address and username.")}</p>
 
-  <p><input type="button" name="list-profiles" value="${_("List enrolled students' profile information")}" data-endpoint="${ section_data['get_students_features_url'] }">
-  <input type="button" name="list-profiles" value="${_("Download profile information as a CSV")}" data-csv="true"></p>
-  <div class="data-display-table" id="data-student-profiles-table"></div>
+  <input type="button" name="list-profiles" value="${_("Download profile information as a CSV")}" data-csv="true">
+
+  % if not disable_buttons:
+    <p>${_("For smaller courses, the data can also be listed directly on this page")}</p>
+    <input type="button" name="list-profiles" value="${_("List enrolled students' profile information")}" data-endpoint="${ section_data['get_students_features_url'] }">
+    <div class="data-display-table" id="data-student-profiles-table"></div>
+  %endif
+  
 
   <br>
   <p>${_("Displays the grading configuration for the course. The grading configuration is the breakdown of graded subsections of the course (such as exams and problem sets), and can be changed on the 'Grading' page (under 'Settings') in Studio.")}</p>
