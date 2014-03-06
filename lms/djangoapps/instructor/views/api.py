@@ -283,7 +283,7 @@ def students_update_enrollment(request, course_id):
 @require_level('instructor')
 @common_exceptions_400
 @require_query_params(
-    email="user email",
+    username_or_email="user username or email",
     rolename="'instructor', 'staff', or 'beta'",
     action="'allow' or 'revoke'"
 )
@@ -295,7 +295,7 @@ def modify_access(request, course_id):
     NOTE: instructors cannot remove their own instructor access.
 
     Query parameters:
-    email is the target users email
+    username_or_email is the target user's username or email
     rolename is one of ['instructor', 'staff', 'beta']
     action is one of ['allow', 'revoke']
     """
@@ -303,7 +303,7 @@ def modify_access(request, course_id):
         request.user, course_id, 'instructor', depth=None
     )
 
-    email = strip_if_string(request.GET.get('email'))
+    username_or_email = strip_if_string(request.GET.get('username_or_email'))
     rolename = request.GET.get('rolename')
     action = request.GET.get('action')
 
@@ -312,7 +312,10 @@ def modify_access(request, course_id):
             "unknown rolename '{}'".format(rolename)
         )
 
-    user = User.objects.get(email=email)
+    if '@' in username_or_email:
+        user = User.objects.get(email=username_or_email)
+    else:
+        user = User.objects.get(username=username_or_email)
 
     # disallow instructors from removing their own instructor access.
     if rolename == 'instructor' and user == request.user and action != 'allow':
@@ -328,7 +331,7 @@ def modify_access(request, course_id):
         return HttpResponseBadRequest("unrecognized action '{}'".format(action))
 
     response_payload = {
-        'email': email,
+        'username_or_email': username_or_email,
         'rolename': rolename,
         'action': action,
         'success': 'yes',

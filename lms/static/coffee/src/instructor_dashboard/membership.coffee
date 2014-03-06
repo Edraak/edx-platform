@@ -70,7 +70,7 @@ class AuthListWidget extends MemberListWidget
       title: $container.data 'display-name'
       info: $container.data 'info-text'
       labels: ["username", "email", "revoke access"]
-      add_placeholder: "Enter email"
+      add_placeholder: gettext "Enter username or email"
       add_btn_label: $container.data 'add-button-label'
       add_handler: (input) => @add_handler input
 
@@ -98,7 +98,7 @@ class AuthListWidget extends MemberListWidget
         @clear_input()
         @reload_list()
     else
-      @show_errors "Enter an email."
+      @show_errors gettext "Please enter a username or email."
 
   # reload the list of members
   reload_list: ->
@@ -140,22 +140,22 @@ class AuthListWidget extends MemberListWidget
       url: @list_endpoint
       data: rolename: @rolename
       success: (data) => cb? null, data[@rolename]
-      error: std_ajax_err => cb? "Error fetching list for role '#{@rolename}'"
+      error: std_ajax_err => cb? gettext("Error fetching list for role ") + "'#{@rolename}'"
 
   # send ajax request to modify access
   # (add or remove them from the list)
   # `action` can be 'allow' or 'revoke'
   # `cb` is called with cb(error, data)
-  modify_member_access: (email, action, cb) ->
+  modify_member_access: (username_or_email, action, cb) ->
     $.ajax
       dataType: 'json'
       url: @modify_endpoint
       data:
-        email: email
+        username_or_email: username_or_email
         rolename: @rolename
         action: action
       success: (data) => cb? null, data
-      error: std_ajax_err => cb? "Error changing user's permissions."
+      error: std_ajax_err => cb? gettext "Error changing user's permissions."
 
 
 # Wrapper for the batch enrollment subsection.
@@ -187,7 +187,7 @@ class BatchEnrollment
         url: $(event.target).data 'endpoint'
         data: send_data
         success: (data) => @display_response data
-        error: std_ajax_err => @fail_with_error "Error enrolling/unenrolling students."
+        error: std_ajax_err => @fail_with_error gettext "Error enrolling/unenrolling students."
 
 
   fail_with_error: (msg) ->
@@ -434,7 +434,7 @@ class AuthList
         rolename: @rolename
         action: action
       success: (data) -> cb?(data)
-      error: std_ajax_err => @$request_response_error.text "Error changing user's permissions."
+      error: std_ajax_err => @$request_response_error.text gettext "Error changing user's permissions."
 
 
 # Membership Section
