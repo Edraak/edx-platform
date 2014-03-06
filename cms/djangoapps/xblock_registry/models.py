@@ -20,7 +20,8 @@ class XBlockInfo(models.Model):
         (DISABLED, _(u'disabled'))
         )
 
-    name = models.CharField(max_length=24, blank=False, primary_key=True, help_text=_("Name of the xblock"))
+    name = models.CharField(max_length=128, blank=False, primary_key=True, help_text=_("Name of the xblock"))
+    display_name = models.CharField(max_length=128, blank=True, help_text=_("Display name of the xblock"))
     state = models.CharField(max_length=24, blank=False, choices=STATES, default=DISABLED,
                              help_text=_("State of the xblock in Studio"))
     screenshot = models.URLField(

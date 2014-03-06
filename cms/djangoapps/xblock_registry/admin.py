@@ -27,6 +27,11 @@ def refresh_registered_xblocks(modeladmin, request, queryset):
 
 refresh_registered_xblocks.short_description = "Refresh registered xblocks"
 
+def disable_selected_xblocks(modeladmin, request, queryset):
+    queryset.update(state=XBlockInfo.DISABLED)
+
+disable_selected_xblocks.short_description = "Disable selected xblocks"
+
 def enable_selected_xblocks(modeladmin, request, queryset):
     queryset.update(state=XBlockInfo.APPROVED)
 
@@ -38,19 +43,19 @@ class XBlockInfoAdmin(admin.ModelAdmin):
     """
 
     # Fields to display on the overview page.
-    list_display = ['name', 'state', 'screenshot', 'summary']
+    list_display = ['name', 'state', 'screenshot', 'display_name', 'summary']
     readonly_fields = ['name']
     # Controls the order on the edit form (without this, read-only fields appear at the end).
     fieldsets = (
         (None, {
-            'fields': ['name', 'state', 'screenshot', 'summary']
+            'fields': ['name', 'state', 'screenshot', 'display_name', 'summary']
         }),
         )
     # Fields that filtering support
     list_filter = ['state']
     # Fields that search supports.
-    search_fields = ['name', 'state', 'summary', 'screenshot']
-    actions = [enable_selected_xblocks, refresh_registered_xblocks]
+    search_fields = ['name', 'state', 'summary', 'screenshot', 'display_name']
+    actions = [enable_selected_xblocks, disable_selected_xblocks, refresh_registered_xblocks]
 
     def has_add_permission(self, request):
         return False
@@ -59,7 +64,9 @@ class XBlockInfoAdmin(admin.ModelAdmin):
         user = request.user
         if user.is_staff:
             # I had a lot of trouble getting delete permissions to work.
-            # I would hope this would not be necessary.
+            # It turns out that you have to delete a single entry,
+            # and then the bulk delete starts working. So I think
+            # the following code can be deleted.
             if not user.has_perm('xblock_registry.delete_xblockinfo'):
                 permission = Permission.objects.get(codename='delete_xblockinfo')
                 user.user_permissions.add(permission)

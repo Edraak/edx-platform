@@ -87,6 +87,7 @@ def xblock_info_handler(request, tag=None, package_id=None, branch=None, version
             ((xblock_info.state == XBlockInfo.EXPERIMENTAL) and xblock_info.name in course_advanced_keys):
              registered_xblocks.append(
                  {'name': xblock_info.name,
+                  'display_name': xblock_info.display_name,
                   'screenshot': xblock_info.screenshot,
                   'summary': xblock_info.summary
                  }
