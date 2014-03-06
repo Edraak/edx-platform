@@ -17,6 +17,8 @@ import os
 from path import path
 from warnings import filterwarnings
 
+MAKO_MODULE_DIR = REPO_ROOT / "mako"
+
 os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8000-9000'
 
 # can't test start dates with this True, but on the other hand,
