@@ -164,44 +164,27 @@ class AuthListWidget extends MemberListWidget
 class BatchEnrollment
   constructor: (@$container) ->
     # gather elements
-    @$emails_input           = @$container.find("textarea[name='student-emails']'")
-    @$btn_enroll             = @$container.find("input[name='enroll']'")
-    @$btn_unenroll           = @$container.find("input[name='unenroll']'")
+    @$emails_input = @$container.find("textarea[name='student-emails']'")
+    @$enrollment_button      = @$container.find(".enrollment-button")
     @$checkbox_autoenroll    = @$container.find("input[name='auto-enroll']'")
     @$checkbox_emailstudents = @$container.find("input[name='email-students']'")
+    @$checkbox_beta_tester   = @$container.find("input[name='beta-tester']'")
     @$task_response          = @$container.find(".request-response")
     @$request_response_error = @$container.find(".request-response-error")
 
-    # attach click handlers
-
-    @$btn_enroll.click =>
-      emailStudents = @$checkbox_emailstudents.is(':checked')
-
+    # attach click handler for enrollment buttons
+    @$enrollment_button.click =>
+      emailStudents: @$checkbox_emailstudents.is(':checked')
       send_data =
-        action: 'enroll'
+        action: $(event.target).attr('name') # 'enroll' or 'unenroll'
         emails: @$emails_input.val()
         auto_enroll: @$checkbox_autoenroll.is(':checked')
         email_students: emailStudents
+        beta_tester: @$checkbox_beta_tester.is(':checked')
 
       $.ajax
         dataType: 'json'
-        url: @$btn_enroll.data 'endpoint'
-        data: send_data
-        success: (data) => @display_response data
-        error: std_ajax_err => @fail_with_error "Error enrolling/unenrolling students."
-
-    @$btn_unenroll.click =>
-      emailStudents = @$checkbox_emailstudents.is(':checked')
-
-      send_data =
-        action: 'unenroll'
-        emails: @$emails_input.val()
-        auto_enroll: @$checkbox_autoenroll.is(':checked')
-        email_students: emailStudents
-
-      $.ajax
-        dataType: 'json'
-        url: @$btn_unenroll.data 'endpoint'
+        url: $(event.target).data 'endpoint'
         data: send_data
         success: (data) => @display_response data
         error: std_ajax_err => @fail_with_error "Error enrolling/unenrolling students."
@@ -356,8 +339,8 @@ class AuthList
     @$display_table          = @$container.find('.auth-list-table')
     @$request_response_error = @$container.find('.request-response-error')
     @$add_section            = @$container.find('.auth-list-add')
-    @$allow_field             = @$add_section.find("input[name='email']")
-    @$allow_button            = @$add_section.find("input[name='allow']")
+    @$allow_field            = @$add_section.find("input[name='email']")
+    @$allow_button           = @$add_section.find("input[name='allow']")
 
     # attach click handler
     @$allow_button.click =>

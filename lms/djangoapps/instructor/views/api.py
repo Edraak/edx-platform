@@ -230,23 +230,26 @@ def students_update_enrollment(request, course_id):
         ]
     }
     """
+    truthy_list = ['true', 'True', True]
 
     action = request.GET.get('action')
     emails_raw = request.GET.get('emails')
     emails = _split_input_list(emails_raw)
-    auto_enroll = request.GET.get('auto_enroll') in ['true', 'True', True]
-    email_students = request.GET.get('email_students') in ['true', 'True', True]
+    auto_enroll = request.GET.get('auto_enroll') in truthy_list
+    email_students = request.GET.get('email_students') in truthy_list
+    # import pudb; pudb.set_trace()
+    beta_tester = request.GET.get('beta_tester') in truthy_list
 
     email_params = {}
+    course = get_course_by_id(course_id)
     if email_students:
-        course = get_course_by_id(course_id)
         email_params = get_email_params(course, auto_enroll)
 
     results = []
     for email in emails:
         try:
             if action == 'enroll':
-                before, after = enroll_email(course_id, email, auto_enroll, email_students, email_params)
+                before, after = enroll_email(course_id, course, email, auto_enroll, email_students, email_params, beta_tester)
             elif action == 'unenroll':
                 before, after = unenroll_email(course_id, email, email_students, email_params)
             else:

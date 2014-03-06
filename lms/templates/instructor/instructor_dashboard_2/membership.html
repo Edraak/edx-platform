@@ -39,7 +39,7 @@
         ${_("If auto enroll is left <em>unchecked</em>, students who have not yet registered for edX will not be enrolled, but will be allowed to enroll.")}
     </p>
   </div>
-  
+
   <div>
     <input type="checkbox" name="email-students" value="Notify-students-by-email">
     <label for="email-students">${_("Notify students by email")}</label>
@@ -48,10 +48,19 @@
       </p>
     </div>
   </div>
-  
+
   <div>
-    <input type="button" name="enroll" value="${_("Enroll")}" data-endpoint="${ section_data['enroll_button_url'] }" >
-    <input type="button" name="unenroll" value="${_("Unenroll")}" data-endpoint="${ section_data['unenroll_button_url'] }" >
+    <input type="checkbox" name="beta-tester" value="Add-as-beta-tester">
+    <label for="email-students">${_("Add students as beta testers")}</label>
+    <div class="email-students-hint">
+      <p> ${_("If this button is <em>checked</em>, then students will be both enrolled and added as beta testers. If they are already enrolled, then they will just be added as beta testers. Note that, if students have not yet registered, then they will not be added as beta testers when they do register.")}
+      </p>
+    </div>
+  </div>
+
+  <div>
+    <input type="button" name="enroll" class="enrollment-button" value="${_("Enroll")}" data-endpoint="${ section_data['enroll_button_url'] }" >
+    <input type="button" name="unenroll" class="enrollment-button" value="${_("Unenroll")}" data-endpoint="${ section_data['unenroll_button_url'] }" >
   </div>
 
   <div class="request-response"></div>

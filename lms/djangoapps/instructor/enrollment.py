@@ -11,8 +11,10 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
+from student.roles import CourseBetaTesterRole
 from courseware.models import StudentModule
 from edxmako.shortcuts import render_to_string
+from instructor.access import allow_access
 
 from microsite_configuration import microsite
 
@@ -32,7 +34,7 @@ class EmailEnrollmentState(object):
             exists_ce = False
             full_name = None
         ceas = CourseEnrollmentAllowed.objects.filter(course_id=course_id, email=email).all()
-        exists_allowed = len(ceas) > 0
+        exists_allowed = ceas.exists()
         state_auto_enroll = exists_allowed and ceas[0].auto_enroll
 
         self.user = exists_user
@@ -67,7 +69,15 @@ class EmailEnrollmentState(object):
         }
 
 
-def enroll_email(course_id, student_email, auto_enroll=False, email_students=False, email_params=None):
+def enroll_email(
+    course_id,
+    course,
+    student_email,
+    auto_enroll=False,
+    email_students=False,
+    email_params=None,
+    beta_tester=False,
+):
     """
     Enroll a student by email.
 
@@ -86,6 +96,9 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
 
     if previous_state.user:
         CourseEnrollment.enroll_by_email(student_email, course_id)
+        if beta_tester:
+            user = User.objects.get(email=student_email)
+            allow_access(course, user, 'beta')
         if email_students:
             email_params['message'] = 'enrolled_enroll'
             email_params['email_address'] = student_email
@@ -105,7 +118,14 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
     return previous_state, after_state
 
 
-def unenroll_email(course_id, student_email, email_students=False, email_params=None):
+def unenroll_email(
+    course_id,
+    course,
+    student_email,
+    email_students=False,
+    email_params=None,
+    beta_tester=False
+):
     """
     Unenroll a student by email.
 
@@ -121,6 +141,9 @@ def unenroll_email(course_id, student_email, email_students=False, email_params=
 
     if previous_state.enrollment:
         CourseEnrollment.unenroll_by_email(student_email, course_id)
+        if beta_tester:
+            user = User.objects.get(email=student_email)
+            allow_access(course, user, 'beta')
         if email_students:
             email_params['message'] = 'enrolled_unenroll'
             email_params['email_address'] = student_email
