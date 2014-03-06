@@ -26,7 +26,7 @@ define(["jquery", "underscore", "underscore.string", "gettext", "js/views/basevi
                     summary: "This is a simple XBlock used for testing."
                 }));
                 collection.add(new XBlockType({
-                    id: 'acid-parent',
+                    id: 'acid_parent',
                     display_name: 'Acid Parent XBlock',
                     screen_shot: 'http://vikparuchuri.github.io/boston-python-ml/assets/img/multiple_choice_problem.png',
                     summary: "This is a simple XBlock that can test parenting."
