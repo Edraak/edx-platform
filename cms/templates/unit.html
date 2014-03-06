@@ -62,6 +62,12 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
               <div class="new-component">
                 <h5>${_("Add New Component")}</h5>
                 <ul class="new-component-type">
+                  <li>
+                      <a href="#" class="multiple-templates" data-type="xblock">
+                        <span class="large-template-icon large-advanced-icon"></span>
+                        <span class="name">xblock</span>
+                      </a>
+                  </li>
                   % for type, templates in sorted(component_templates.items()):
                   <li>
                   % if type == 'advanced' or len(templates) > 1:
