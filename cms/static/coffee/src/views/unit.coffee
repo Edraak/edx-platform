@@ -127,6 +127,17 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
       )
       @closeNewComponent(event)
 
+    addNewComponent: (event, data) =>
+      success_callback = =>
+        @$newComponentItem.before(editor.$el)
+      editor = @createComponent(
+        event, data,
+        gettext('Adding&hellip;'),
+        "Creating new component",
+        success_callback
+      )
+      @closeNewComponent(event)
+
     duplicateComponent: (event) =>
       $component = $(event.currentTarget).parents('.component')
       source_locator = $component.data('locator')

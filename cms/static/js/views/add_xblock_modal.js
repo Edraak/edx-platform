@@ -1,7 +1,8 @@
-define(["jquery", "underscore", "underscore.string", "js/views/baseview",
+define(["jquery", "underscore", "underscore.string", "gettext", "js/views/baseview",
     "coffee/src/views/module_edit", "js/models/module_info",
     "js/collections/xblock_type", "js/models/xblock_type", "js/views/xblock_type_list"],
-    function($, _, str, BaseView, ModuleEditView, ModuleModel, XBlockTypeCollection, XBlockType, XBlockTypeListView) {
+    function($, _, str, gettext, BaseView, ModuleEditView, ModuleModel,
+             XBlockTypeCollection, XBlockType, XBlockTypeListView) {
         var AddXBlockDialog = BaseView.extend({
             events : {
                 "click .action-add": "add",
@@ -69,7 +70,7 @@ define(["jquery", "underscore", "underscore.string", "js/views/baseview",
                     xblockName = card.data('id'),
                     editView = this.editView,
                     callback;
-//                editView.createComponent(event, )
+                editView.addNewComponent(event, { category: xblockName });
                 this.hide();
             }
         });
