@@ -23,6 +23,7 @@ from xblock.exceptions import NoSuchHandlerError
 from xblock.fields import Scope
 from xblock.plugin import PluginMissingError
 from xblock.runtime import Mixologist
+from xblock_registry.models import XBlockInfo
 
 from lms.lib.xblock.runtime import unquote_slashes
 
@@ -31,6 +32,8 @@ from contentstore.views.helpers import get_parent_xblock
 
 from models.settings.course_grading import CourseGradingModel
 
+from util.json_request import expect_json, JsonResponse
+
 from .access import has_course_access
 
 __all__ = ['OPEN_ENDED_COMPONENT_TYPES',
@@ -38,7 +41,8 @@ __all__ = ['OPEN_ENDED_COMPONENT_TYPES',
            'subsection_handler',
            'unit_handler',
            'container_handler',
-           'component_handler'
+           'component_handler',
+           'xblock_info_handler'
            ]
 
 log = logging.getLogger(__name__)
@@ -64,6 +68,30 @@ else:
 
 ADVANCED_COMPONENT_CATEGORY = 'advanced'
 ADVANCED_COMPONENT_POLICY_KEY = 'advanced_modules'
+
+
+@require_GET
+@login_required
+@expect_json
+def xblock_info_handler(request, tag=None, package_id=None, branch=None, version_guid=None, block=None):
+     locator = BlockUsageLocator(package_id=package_id, branch=branch, version_guid=version_guid, block_id=block)
+     try:
+         _, course, item, _ = _get_item_in_course(request, locator)
+     except ItemNotFoundError:
+         return HttpResponseBadRequest()
+
+     course_advanced_keys = course.advanced_modules
+     registered_xblocks = []
+     for xblock_info in XBlockInfo.objects.all():
+         if (xblock_info.state == XBlockInfo.APPROVED) or \
+            ((xblock_info.state == XBlockInfo.EXPERIMENTAL) and xblock_info.name in course_advanced_keys):
+             registered_xblocks.append(
+                 {'name': xblock_info.name,
+                  'screenshot': xblock_info.screenshot,
+                  'summary': xblock_info.summary
+                 }
+             )
+     return JsonResponse(registered_xblocks)
 
 
 @require_GET

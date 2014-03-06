@@ -452,6 +452,7 @@ INSTALLED_APPS = (
     # For CMS
     'contentstore',
     'course_creators',
+    'xblock_registry',
     'student',  # misleading name due to sharing with lms
     'course_groups',  # not used in cms (yet), but tests run
 
