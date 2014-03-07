@@ -15,7 +15,8 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
         "js/views/add_xblock_modal",
         "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
     function(doc, $, ModuleModel, UnitEditView, ui, AddXBlockModal, XBlockTypeCollection, XBlockType) {
-  var editView;
+  var editView,
+      xblockTypeInfoUrl = "${xblock_type_info_url}";
   window.unit_location_analytics = '${unit_locator}';
 
   // tabs
@@ -39,8 +40,12 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
     var modal, collection;
     modal = new AddXBlockModal({el: $('.add-xblock-modal')});
     modal.editView = editView;
-    modal.render();
-    modal.show();
+    modal.loadXBlockTypeInfo(xblockTypeInfoUrl, {
+        success: function() {
+          modal.render();
+          modal.show();
+        }
+    });
   });
 });
   </script>

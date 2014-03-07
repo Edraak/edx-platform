@@ -18,32 +18,13 @@ define(["jquery", "underscore", "underscore.string", "gettext", "js/views/basevi
             initialize: function() {
                 var collection;
                 this.template = _.template($("#add-xblock-modal-tpl").text());
-                collection = new XBlockTypeCollection();
-                collection.add(new XBlockType({
-                    id: 'acid',
-                    display_name: 'Acid XBlock',
-                    screen_shot: 'http://vikparuchuri.github.io/boston-python-ml/assets/img/multiple_choice_problem.png',
-                    summary: "This is a simple XBlock used for testing."
-                }));
-                collection.add(new XBlockType({
-                    id: 'acid_parent',
-                    display_name: 'Acid Parent XBlock',
-                    screen_shot: 'http://vikparuchuri.github.io/boston-python-ml/assets/img/multiple_choice_problem.png',
-                    summary: "This is a simple XBlock that can test parenting."
-                }));
-                collection.add(new XBlockType({
-                    id: 'conditional',
-                    display_name: 'Conditional',
-                    screen_shot: 'http://vikparuchuri.github.io/boston-python-ml/assets/img/multiple_choice_problem.png',
-                    summary: "This provides a conditional rendering of its children."
-                }));
-                collection.add(new XBlockType({
-                    id: 'another',
-                    display_name: 'Yet Another XBlock',
-                    screen_shot: 'http://vikparuchuri.github.io/boston-python-ml/assets/img/multiple_choice_problem.png',
-                    summary: "This is yet another xblock that does something or other."
-                }));
+            },
+
+            loadXBlockTypeInfo: function(xblockTypeInfoURL, options) {
+                var collection = new XBlockTypeCollection();
+                collection.url = xblockTypeInfoURL;
                 this.collection = collection;
+                collection.fetch(options);
             },
 
             render: function() {

@@ -316,6 +316,7 @@ def unit_handler(request, tag=None, package_id=None, branch=None, version_guid=N
                 get_default_time_display(item.published_date)
                 if item.published_date is not None else None
             ),
+            'xblock_type_info_url': locator.url_reverse('xblock_info/')
         })
     else:
         return HttpResponseBadRequest("Only supports html requests")

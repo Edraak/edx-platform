@@ -8,12 +8,22 @@ define(["js/views/baseview", "underscore"],
 
             render: function() {
                 var type = this.model,
-                    html;
+                    html,
+                    name = type.get('name'),
+                    title = type.get('display_name'),
+                    summary = type.get('summary'),
+                    preview = type.get('screenshot');
+                if (!title) {
+                    title = name.replace(/_/g, ' ');
+                }
+                if (!preview) {
+                    preview = 'http://vikparuchuri.github.io/boston-python-ml/assets/img/multiple_choice_problem.png';
+                }
                 html = this.template({
-                    id: type.get('id'),
-                    title: type.get('display_name'),
-                    summary: type.get('summary'),
-                    preview: type.get('screen_shot')
+                    id: name,
+                    title: title,
+                    summary: summary,
+                    preview: preview
                 });
                 this.setElement(html);
                 return this;
