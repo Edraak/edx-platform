@@ -1,6 +1,8 @@
 """
 Instructor Views
 """
+## NOTE: This is the code for the legacy instructor dashboard
+## We are no longer supporting this file or accepting changes into it.
 import csv
 import json
 import logging
@@ -913,8 +915,7 @@ def instructor_dashboard(request, course_id):
         'metrics_results': metrics_results,
     }
 
-    if settings.FEATURES.get('ENABLE_INSTRUCTOR_BETA_DASHBOARD'):
-        context['beta_dashboard_url'] = reverse('instructor_dashboard_2', kwargs={'course_id': course_id})
+    context['beta_dashboard_url'] = reverse('instructor_dashboard', kwargs={'course_id': course_id})
 
     return render_to_response('courseware/instructor_dashboard.html', context)
 
