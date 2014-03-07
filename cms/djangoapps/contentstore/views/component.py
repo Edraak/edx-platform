@@ -106,8 +106,11 @@ def _get_problem_bank_components():
     components = []
     for unit in units:
         for component in unit.get_children():
+            locator = loc_mapper().translate_location(
+                course_id, component.location, False, True
+            )
             components.append({
-                'location': unicode(component.location),
+                'locator': unicode(locator),
                 'display_name': component.display_name,
             })
     return components

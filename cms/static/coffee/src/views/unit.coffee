@@ -143,8 +143,13 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
     duplicateComponent: (event) =>
       $component = $(event.currentTarget).parents('.component')
       source_locator = $component.data('locator')
+      @duplicateLocator(event, $component, source_locator)
+
+    duplicateLocator: (event, component, source_locator) =>
       success_callback = ->
-        $component.after(editor.$el)
+        if (!component)
+          component = $(event.currentTarget)
+        component.after(editor.$el)
         $('html, body').animate({
           scrollTop: editor.$el.offset().top
         }, 500)

@@ -71,11 +71,18 @@ define(["jquery", "underscore", "underscore.string", "gettext", "js/views/basevi
                 var listView = this.listView,
                     card = listView.selectedCard,
                     editView = this.editView,
-                    xblockName;
+                    xblockName,
+                    locator,
+                    lastComponent;
                 event.preventDefault();
                 if (card) {
-                    xblockName = card.data('id');
-                    editView.addNewComponent(event, { category: xblockName });
+                    locator = card.data('locator');
+                    if (locator) {
+                        editView.duplicateComponent(event, null, locator);
+                    } else {
+                        xblockName = card.data('id');
+                        editView.addNewComponent(event, { category: xblockName });
+                    }
                     this.hide();
                     listView.clearSelection();
                     listView.$el.scrollTop();
