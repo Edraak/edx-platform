@@ -107,6 +107,8 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
           course: course_location_analytics
           unit_id: unit_location_analytics
           type: editor.$el.data('locator')
+        # Scroll to the bottom of the page so that the new unit can be seen
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
 
       editor.createItem(
         @$el.data('locator'),

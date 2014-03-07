@@ -6,7 +6,7 @@ define(["jquery", "underscore", "underscore.string", "gettext", "js/views/basevi
         var AddXBlockDialog = BaseView.extend({
             events : {
                 "click .action-add": "add",
-                "click .action-cancel": "hide"
+                "click .action-cancel": "cancel"
             },
 
             options: $.extend({}, BaseView.prototype.options, {
@@ -28,12 +28,33 @@ define(["jquery", "underscore", "underscore.string", "gettext", "js/views/basevi
             },
 
             render: function() {
-                var listView;
                 this.$el.html(this.template());
-                listView = new XBlockTypeListView({el: this.$('.xblock-list'), collection: this.collection});
+            },
+
+            renderXBlockTypes: function() {
+                var listView = new XBlockTypeListView({el: this.$('.xblock-list'), collection: this.collection});
                 listView.render();
                 this.listView = listView;
                 return this;
+            },
+
+            showXBlockTypes: function(xblockTypeInfoUrl) {
+                var self = this;
+                if (!this.listView) {
+                    this.loadXBlockTypeInfo(xblockTypeInfoUrl, {
+                        success: function() {
+                            self.renderXBlockTypes();
+                            self.show();
+                        }
+                    });
+                } else {
+                    this.show();
+                }
+            },
+
+            cancel: function(event) {
+                event.preventDefault();
+                this.hide();
             },
 
             show: function() {
@@ -47,12 +68,19 @@ define(["jquery", "underscore", "underscore.string", "gettext", "js/views/basevi
             },
 
             add: function(event) {
-                var card = this.listView.selectedCard,
-                    xblockName = card.data('id'),
+                var listView = this.listView,
+                    card = listView.selectedCard,
                     editView = this.editView,
-                    callback;
-                editView.addNewComponent(event, { category: xblockName });
-                this.hide();
+                    xblockName;
+                event.preventDefault();
+                if (card) {
+                    xblockName = card.data('id');
+                    editView.addNewComponent(event, { category: xblockName });
+                    this.hide();
+                    listView.clearSelection();
+                    listView.$el.scrollTop();
+                }
+                return false;
             }
         });
 

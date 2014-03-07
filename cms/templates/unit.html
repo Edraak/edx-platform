@@ -16,6 +16,7 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
         "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
     function(doc, $, ModuleModel, UnitEditView, ui, AddXBlockModal, XBlockTypeCollection, XBlockType) {
   var editView,
+      addXBlockModal,
       xblockTypeInfoUrl = "${xblock_type_info_url}";
   window.unit_location_analytics = '${unit_locator}';
 
@@ -36,16 +37,15 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
       $(this).prepend($emptyEditor);
   });
 
-  $('.add-xblock').click(function() {
-    var modal, collection;
-    modal = new AddXBlockModal({el: $('.add-xblock-modal')});
-    modal.editView = editView;
-    modal.loadXBlockTypeInfo(xblockTypeInfoUrl, {
-        success: function() {
-          modal.render();
-          modal.show();
-        }
-    });
+  addXBlockModal = new AddXBlockModal({el: $('.add-xblock-modal')});
+  addXBlockModal.editView = editView;
+  addXBlockModal.render();
+  $('.add-new-component').click(function(event) {
+    var collection,
+        button = event.target;
+    event.preventDefault();
+
+    addXBlockModal.showXBlockTypes(xblockTypeInfoUrl);
   });
 });
   </script>
@@ -86,31 +86,6 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
             <li class="component" data-locator="${locator}"/>
             % endfor
             <li class="new-component-item adding">
-              <div class="new-component">
-                <h5>${_("Add New Component")}</h5>
-                <ul class="new-component-type">
-                  <li>
-                      <a href="#" class="add-xblock">
-                        <span class="large-template-icon large-advanced-icon"></span>
-                        <span class="name">xblock</span>
-                      </a>
-                  </li>
-                  % for type, templates in sorted(component_templates.items()):
-                  <li>
-                  % if type == 'advanced' or len(templates) > 1:
-                    <a href="#" class="multiple-templates" data-type="${type}">
-                  % else:
-                    % for __, category, __, __ in templates:
-                    <a href="#" class="single-template" data-type="${type}" data-category="${category}">
-                    % endfor
-                  % endif
-                      <span class="large-template-icon large-${type}-icon"></span>
-                      <span class="name">${type}</span>
-                    </a>
-                  </li>
-                  % endfor
-                </ul>
-              </div>
                 % for type, templates in sorted(component_templates.items()):
                   % if len(templates) > 1 or type == 'advanced':
                 <div class="new-component-templates new-component-${type}">
@@ -170,6 +145,11 @@ require(["domReady!", "jquery", "js/models/module_info", "coffee/src/views/unit"
                 </div>
                 % endif
                 % endfor
+            </li>
+            <li class="add-new-component">
+              <a href="#" class="add-new-component-button">
+                <i class="icon-plus"></i> New Component
+              </a>
             </li>
           </ol>
         </article>

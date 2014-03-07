@@ -22,14 +22,21 @@ define(["jquery", "underscore", "js/views/baseview", "js/views/xblock_type"],
                 this.tableBody.append(view.render().el);
             },
 
-            selectCard: function(event) {
-                var card = this.$(event.target).closest('.card'),
-                    oldCard = this.selectedCard;
+            clearSelection: function() {
+                var oldCard = this.selectedCard;
                 if (oldCard) {
                     oldCard.toggleClass('is-selected');
+                    this.selectedCard = null;
                 }
+            },
+
+            selectCard: function(event) {
+                var card = this.$(event.target).closest('.card');
+                event.preventDefault();
+                this.clearSelection();
                 card.toggleClass('is-selected');
                 this.selectedCard = card;
+                return false;
             }
         });
 

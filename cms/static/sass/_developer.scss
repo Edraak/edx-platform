@@ -32,6 +32,25 @@ body.course.feature-add-xblock-modal .add-xblock-modal .wrapper-dialog .dialog {
   width: 65%;
 }
 
+body.course.unit li.new-component-item {
+  display: none;
+}
+
+.add-new-component-button {
+  @extend %ui-btn-flat-outline;
+  @extend %t-action4;
+  padding: ($baseline/2);
+  font-weight: bold;
+  display: block;
+  border: 1px solid #cbcbcb;
+  color: #cbcbcb;
+
+  &:hover {
+    box-shadow: none;
+    background-image: none;
+  }
+}
+
 .card {
   transition: background-color 0.3s ease;
   background-color: #fff;
