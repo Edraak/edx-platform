@@ -44,21 +44,21 @@ class XBlockInfoAdmin(admin.ModelAdmin):
 
     # Fields to display on the overview page.
     list_display = ['name', 'state', 'screenshot', 'display_name', 'summary']
-    readonly_fields = ['name']
+    # readonly_fields = ['name']
     # Controls the order on the edit form (without this, read-only fields appear at the end).
     fieldsets = (
         (None, {
-            'fields': ['name', 'state', 'screenshot', 'display_name', 'summary']
+            'fields': ['name', 'repo', 'commit', 'state', 'package_name', 'screenshot', 'display_name', 'summary']
         }),
         )
     # Fields that filtering support
     list_filter = ['state']
     # Fields that search supports.
-    search_fields = ['name', 'state', 'summary', 'screenshot', 'display_name']
+    search_fields = ['name', 'state', 'summary', 'screenshot', 'display_name', 'repo']
     actions = [enable_selected_xblocks, disable_selected_xblocks, refresh_registered_xblocks]
 
     def has_add_permission(self, request):
-        return False
+        return request.user.is_staff
 
     def has_delete_permission(self, request, obj=None):
         user = request.user
