@@ -131,7 +131,10 @@ function goto( mode)
   <section class="instructor-dashboard-content" id="instructor-dashboard-content">
     <h1>${_("Instructor Dashboard")}</h1>
 
-    # TODO put in a banner
+    <div class="alert legacy">
+      ${_("You are using the legacy instructor dashboard, which is no longer supported.")}
+      <a href="${ beta_dashboard_url }">${_("Return to the Standard Dashboard")}</a>
+    </div>
 
     <h2 class="navbar">[ <a href="#" onclick="goto('Grades');" class="${modeflag.get('Grades')}">Grades</a> |
           %if settings.FEATURES.get('ENABLE_PSYCHOMETRICS'):
