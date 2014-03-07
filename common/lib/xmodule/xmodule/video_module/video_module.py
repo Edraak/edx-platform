@@ -322,29 +322,31 @@ class VideoModule(VideoFields, XModule):
         """
         Entry point for transcript handlers.
 
-        Request GET should contains 2-char language code for `download`
+        Request GET should contains: 2-char language code for `download`
         and additionally `videoId` for `translation`.
 
-        Dispatches:
-        `download`: returns SRT file.
-        `translation`: returns jsoned translation text.
-        `available_translations`: returns list of languages, for which SRT files exist. For 'en' check if SJSON exists.
+        HTTP methods:
+            `delete`:  clear field, but not remove loaded transcript asset.
+            `post`: upload srt file. Think about generation of proper sjson files. Renames srt file.
+            `get`:
+                Dispatches:
+                    `download`: returns SRT file.
+                    `translation`: returns jsoned translation text.
+                    `available_translations`: returns list of languages, for which SRT files exist. For 'en' check if SJSON exists.
+
         """
 
         if dispatch.startswith('translation/'):
 
-            if request.method == 'DELETE':
-                    return Response(status=204)
-
+            if request.method == 'DELETE':   # Nothing to do:  we clear field on front-end.
+                return Response(status=204)  # no content
 
             elif request.method == 'POST':
                 try:
-
                     subtitle = request.POST['file']
-
                     # Get the language of subtitle.
                     language = request.path[-2:]
-
+                    # TODO fix as Alex did previously
                     from xmodule.contentstore.content import StaticContent
                     from xmodule.contentstore.django import contentstore
                     mime_type = 'text/plain'
@@ -352,9 +354,7 @@ class VideoModule(VideoFields, XModule):
                     content_location = asset_location(self.location, upload_filename)
                     content = StaticContent(content_location, upload_filename, mime_type, subtitle.file.read())
                     contentstore().save(content)
-
                     response = {'videoId': upload_filename, 'status': 'Success'}
-
                     return Response(json.dumps(response), status=201)
                 except:
                     return Response("Failed to upload", status=400)
