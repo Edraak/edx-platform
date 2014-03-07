@@ -13,6 +13,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError
 from edxmako.shortcuts import render_to_response
 
 from util.date_utils import get_default_time_display
+from xmodule.modulestore import Location
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.django import loc_mapper
 from xmodule.modulestore.locator import BlockUsageLocator
@@ -81,18 +82,35 @@ def xblock_info_handler(request, tag=None, package_id=None, branch=None, version
          return HttpResponseBadRequest()
 
      course_advanced_keys = course.advanced_modules
-     registered_xblocks = []
+     components = []
      for xblock_info in XBlockInfo.objects.all():
          if (xblock_info.state == XBlockInfo.APPROVED) or \
             ((xblock_info.state == XBlockInfo.EXPERIMENTAL) and xblock_info.name in course_advanced_keys):
-             registered_xblocks.append(
+             components.append(
                  {'name': xblock_info.name,
                   'display_name': xblock_info.display_name,
                   'screenshot': xblock_info.screenshot,
                   'summary': xblock_info.summary
                  }
              )
-     return JsonResponse(registered_xblocks)
+     for component in _get_problem_bank_components():
+         components.append(component)
+     components.sort(key=lambda component: component['display_name'])
+     return JsonResponse(components)
+
+
+def _get_problem_bank_components():
+    course_id = 'AndyA/1/AACL'
+    location = Location('i4x', 'AndyA', '1', 'vertical', None)
+    units = modulestore().get_items(location, course_id=course_id)
+    components = []
+    for unit in units:
+        for component in unit.get_children():
+            components.append({
+                'location': unicode(component.location),
+                'display_name': component.display_name,
+            })
+    return components
 
 
 @require_GET
