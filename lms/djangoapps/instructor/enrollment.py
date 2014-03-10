@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
 from courseware.models import StudentModule
 from edxmako.shortcuts import render_to_string
+from xmodule.modulestore.keys import CourseKey
 
 from microsite_configuration import microsite
 
@@ -23,6 +24,7 @@ SHIBBOLETH_DOMAIN_PREFIX = 'shib:'
 class EmailEnrollmentState(object):
     """ Store the complete enrollment state of an email in a class """
     def __init__(self, course_id, email):
+        course_id = course_id
         exists_user = User.objects.filter(email=email).exists()
         if exists_user:
             user = User.objects.get(email=email)
@@ -81,7 +83,6 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
     returns two EmailEnrollmentState's
         representing state before and after the action.
     """
-
     previous_state = EmailEnrollmentState(course_id, student_email)
 
     if previous_state.user:
@@ -116,7 +117,6 @@ def unenroll_email(course_id, student_email, email_students=False, email_params=
     returns two EmailEnrollmentState's
         representing state before and after the action.
     """
-
     previous_state = EmailEnrollmentState(course_id, student_email)
 
     if previous_state.enrollment:
@@ -179,7 +179,7 @@ def reset_student_attempts(course_id, student, module_state_key, delete_module=F
     """
     module_to_reset = StudentModule.objects.get(student_id=student.id,
                                                 course_id=course_id,
-                                                module_state_key=module_state_key)
+                                                module_id=module_state_key)
 
     if delete_module:
         module_to_reset.delete()
@@ -203,7 +203,7 @@ def _reset_module_attempts(studentmodule):
     studentmodule.save()
 
 
-def get_email_params(course, auto_enroll):
+def get_email_params(request, course, auto_enroll):
     """
     Generate parameters used when parsing email templates.
 
@@ -212,7 +212,7 @@ def get_email_params(course, auto_enroll):
     """
 
     stripped_site_name = settings.SITE_NAME
-    registration_url = 'https://' + stripped_site_name + reverse('student.views.register_user')
+    registration_url = request.build_absolute_uri(reverse('student.views.register_user'))
     is_shib_course = uses_shib(course)
 
     # Composition of email
@@ -221,8 +221,8 @@ def get_email_params(course, auto_enroll):
         'registration_url': registration_url,
         'course': course,
         'auto_enroll': auto_enroll,
-        'course_url': 'https://' + stripped_site_name + '/courses/' + course.id,
-        'course_about_url': 'https://' + stripped_site_name + '/courses/' + course.id + '/about',
+        'course_url': request.build_absolute_uri(reverse('course_root', kwargs={'course_id': course.id.to_deprecated_string()})),
+        'course_about_url': request.build_absolute_uri(reverse('about_course', args=[course.id.to_deprecated_string()])),
         'is_shib_course': is_shib_course,
     }
     return email_params
