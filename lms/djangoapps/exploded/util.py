@@ -1,4 +1,5 @@
 import json
+import hashlib
 from datetime import datetime
 from pytz import utc
 from django.conf import settings
@@ -22,11 +23,13 @@ class LogModel(models.Model):
     Only use this model to write to sql tables, and not to create them!
     you should only call .save() on an instance after setting the _meta.table_name manually
     """
-    module_loc = models.CharField(max_length=255, db_index=True, db_column='module_loc')
-    module_id = models.IntegerField(max_length=31, db_index=True, db_column='module_id')
-    student_id = models.IntegerField(max_length=31, db_index=True, db_column='student_id')
-    mkey = models.CharField(max_length=255, db_index=True, db_column='mkey')
-    mvalue = models.TextField(db_column='mvalue', null=True)
+    module_loc = models.CharField(max_length=128, db_index=True, db_column='module_loc')
+    module_id = models.IntegerField(db_index=True, db_column='module_id')
+    module_guid = models.CharField(max_length=64, db_index=True, db_column='module_guid')
+    student_id = models.IntegerField(db_index=True, db_column='student_id')
+    mkey = models.CharField(max_length=128, db_index=True, db_column='mkey')
+    mtext = models.TextField(db_column='mtext', null=True)
+    mnumeric = models.FloatField(db_column='mnumeric', null=True)
     mtype = models.CharField(max_length=16, db_index=True, db_column='mtype')
     orig_created = models.DateTimeField(db_index=True, db_column='orig_created')
     orig_modified = models.DateTimeField(db_index=True, db_column='orig_modified')
@@ -38,6 +41,7 @@ class LogModel(models.Model):
 def _CREATE_INDEXES(table_name):
     DB.create_index(table_name, ['module_loc'])
     DB.create_index(table_name, ['module_id'])
+    DB.create_index(table_name, ['module_guid'])
     DB.create_index(table_name, ['student_id'])
     DB.create_index(table_name, ['mkey'])
     DB.create_index(table_name, ['mtype'])
@@ -69,17 +73,26 @@ def log_studentmodule(sender, instance, **kwargs):
     """
     This is the function that logs StudentModule instances
     """
+    nowstr = datetime.now(utc).isoformat("-")
+    obj_guid = hashlib.sha1(nowstr + unicode(instance.id)).hexdigest()
+
     def write_log_kv(key, value, mtype=u'flat'):
         """uses closure in this helper fn"""
         table_name = _get_table_name(instance.course_id, instance.module_type)
+        try:
+            numeric = float(value)
+        except:
+            numeric = None
         obj = LogModel(module_loc=instance.module_state_key,
                        module_id=instance.id,
+                       module_guid=obj_guid,
                        student_id=instance.student_id,
                        orig_created=instance.created,
                        orig_modified=instance.modified,
-                       mkey=key[0:254],
-                       mvalue=value,
-                       mtype=mtype,)
+                       mkey=key[0:128],
+                       mtext=value,
+                       mtype=mtype,
+                       mnumeric=numeric)
         obj._meta.db_table = table_name
         obj.save(using=DB_NAME)
 
