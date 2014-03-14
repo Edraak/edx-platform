@@ -64,7 +64,6 @@ define ["js/models/uploads"], (FileUpload) ->
 
           it "does not format with only one mime type", ->
             @model.set('mimeTypes', ['application/pdf'])
-            debugger
             formatted = @model.formatValidTypes()
             expect(formatted).toEqual(
               fileTypes: 'PDF',

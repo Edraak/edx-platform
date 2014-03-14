@@ -33,6 +33,19 @@ def _create_srt_file(content=None):
     srt_file.seek(0)
     return srt_file
 
+def _check_asset(location, asset_name):
+    """
+    Check that asset with asset_name exists in assets.
+    """
+    content_location = StaticContent.compute_location(
+        location.org, location.course, asset_name
+    )
+    try:
+        contentstore().find(content_location)
+    except NotFoundError:
+        return False
+    else:
+        return True
 
 def _clear_assets(location):
     """
@@ -167,31 +180,32 @@ class TestTranscriptAvailableTranslationsDispatch(TestVideo):
         _upload_sjson_file(good_sjson, self.item_descriptor.location)
         self.item.sub = _get_subs_id(good_sjson.name)
 
-        request = Request.blank('/translation')
+        request = Request.blank('/available_translations')
         response = self.item.transcript(request=request, dispatch='available_translations')
         self.assertEqual(json.loads(response.body), ['en'])
 
     def test_available_translation_non_en(self):
         _upload_file(self.non_en_file, self.item_descriptor.location, os.path.split(self.non_en_file.name)[1])
 
-        request = Request.blank('/translation')
+        request = Request.blank('/available_translations')
         response = self.item.transcript(request=request, dispatch='available_translations')
         self.assertEqual(json.loads(response.body), ['uk'])
 
     def test_multiple_available_translations(self):
         good_sjson = _create_file(json.dumps(self.subs))
-        
+
         # Upload english transcript.
         _upload_sjson_file(good_sjson, self.item_descriptor.location)
 
         # Upload non-english transcript.
         _upload_file(self.non_en_file, self.item_descriptor.location, os.path.split(self.non_en_file.name)[1])
-        
-        self.item.sub = _get_subs_id(good_sjson.name)  
 
-        request = Request.blank('/translation')
+        self.item.sub = _get_subs_id(good_sjson.name)
+
+        request = Request.blank('/available_translations')
         response = self.item.transcript(request=request, dispatch='available_translations')
         self.assertEqual(json.loads(response.body), ['en', 'uk'])
+
 
 class TestTranscriptDownloadDispatch(TestVideo):
     """
@@ -220,20 +234,14 @@ class TestTranscriptDownloadDispatch(TestVideo):
         self.item_descriptor.render('student_view')
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
 
-
-    def test_language_is_not_supported(self):
-        request = Request.blank('/download?language=ru')
-        response = self.item.transcript(request=request, dispatch='download')
-        self.assertEqual(response.status, '404 Not Found')
-
     def test_download_transcript_not_exist(self):
-        request = Request.blank('/download?language=en')
+        request = Request.blank('/download')
         response = self.item.transcript(request=request, dispatch='download')
         self.assertEqual(response.status, '404 Not Found')
 
     @patch('xmodule.video_module.VideoModule.get_transcript', return_value=('Subs!', 'test_filename.srt', 'application/x-subrip'))
     def test_download_srt_exist(self, __):
-        request = Request.blank('/download?language=en')
+        request = Request.blank('/download')
         response = self.item.transcript(request=request, dispatch='download')
         self.assertEqual(response.body, 'Subs!')
         self.assertEqual(response.headers['Content-Type'], 'application/x-subrip')
@@ -241,19 +249,19 @@ class TestTranscriptDownloadDispatch(TestVideo):
     @patch('xmodule.video_module.VideoModule.get_transcript', return_value=('Subs!', 'txt', 'text/plain'))
     def test_download_txt_exist(self, __):
         self.item.transcript_format = 'txt'
-        request = Request.blank('/download?language=en')
+        request = Request.blank('/download')
         response = self.item.transcript(request=request, dispatch='download')
         self.assertEqual(response.body, 'Subs!')
         self.assertEqual(response.headers['Content-Type'], 'text/plain')
 
     def test_download_en_no_sub(self):
-        request = Request.blank('/download?language=en')
+        request = Request.blank('/download')
         response = self.item.transcript(request=request, dispatch='download')
         self.assertEqual(response.status, '404 Not Found')
         with self.assertRaises(NotFoundError):
             self.item.get_transcript()
 
-class TestTranscriptTranslationDispatch(TestVideo):
+class TestTranscriptTranslationGETDispatch(TestVideo):
     """
     Test video handler that provide translation transcripts.
 
@@ -276,7 +284,7 @@ class TestTranscriptTranslationDispatch(TestVideo):
     }
 
     def setUp(self):
-        super(TestTranscriptTranslationDispatch, self).setUp()
+        super(TestTranscriptTranslationGETDispatch, self).setUp()
         self.item_descriptor.render('student_view')
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
 
@@ -287,13 +295,13 @@ class TestTranscriptTranslationDispatch(TestVideo):
         self.assertEqual(response.status, '400 Bad Request')
 
         # No videoId - HTML5 video with language that is not in available languages
-        request = Request.blank('/translation?language=ru')
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/ru')
+        response = self.item.transcript(request=request, dispatch='translation/ru')
         self.assertEqual(response.status, '404 Not Found')
 
         # Language is not in available languages
-        request = Request.blank('/translation?language=ru&videoId=12345')
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/ru?videoId=12345')
+        response = self.item.transcript(request=request, dispatch='translation/ru')
         self.assertEqual(response.status, '404 Not Found')
 
     def test_translaton_en_youtube_success(self):
@@ -303,8 +311,8 @@ class TestTranscriptTranslationDispatch(TestVideo):
         subs_id = _get_subs_id(good_sjson.name)
 
         self.item.sub = subs_id
-        request = Request.blank('/translation?language=en&videoId={}'.format(subs_id))
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/en?videoId={}'.format(subs_id))
+        response = self.item.transcript(request=request, dispatch='translation/en')
         self.assertDictEqual(json.loads(response.body), subs)
 
     def test_translation_non_en_youtube_success(self):
@@ -321,13 +329,13 @@ class TestTranscriptTranslationDispatch(TestVideo):
         # youtube 1_0 request, will generate for all speeds for existing ids
         self.item.youtube_id_1_0 = subs_id
         self.item.youtube_id_0_75 = '0_75'
-        request = Request.blank('/translation?language=uk&videoId={}'.format(subs_id))
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/uk?videoId={}'.format(subs_id))
+        response = self.item.transcript(request=request, dispatch='translation/uk')
         self.assertDictEqual(json.loads(response.body), subs)
 
         # 0_75 subs are exist
-        request = Request.blank('/translation?language=uk&videoId={}'.format('0_75'))
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/uk?videoId={}'.format('0_75'))
+        response = self.item.transcript(request=request, dispatch='translation/uk')
         calculated_0_75 = {
             u'end': [75],
             u'start': [9],
@@ -338,8 +346,8 @@ class TestTranscriptTranslationDispatch(TestVideo):
         self.assertDictEqual(json.loads(response.body), calculated_0_75)
         # 1_5 will be generated from 1_0
         self.item.youtube_id_1_5 = '1_5'
-        request = Request.blank('/translation?language=uk&videoId={}'.format('1_5'))
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/uk?videoId={}'.format('1_5'))
+        response = self.item.transcript(request=request, dispatch='translation/uk')
         calculated_1_5 = {
             u'end': [150],
             u'start': [18],
@@ -356,8 +364,8 @@ class TestTranscriptTranslationDispatch(TestVideo):
         subs_id = _get_subs_id(good_sjson.name)
 
         self.item.sub = subs_id
-        request = Request.blank('/translation?language=en')
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/en')
+        response = self.item.transcript(request=request, dispatch='translation/en')
         self.assertDictEqual(json.loads(response.body), subs)
 
     def test_translaton_non_en_html5_success(self):
@@ -373,10 +381,73 @@ class TestTranscriptTranslationDispatch(TestVideo):
 
         # manually clean youtube_id_1_0, as it has default value
         self.item.youtube_id_1_0 = ""
-        request = Request.blank('/translation?language=uk')
-        response = self.item.transcript(request=request, dispatch='translation')
+        request = Request.blank('/translation/uk')
+        response = self.item.transcript(request=request, dispatch='translation/uk')
         self.assertDictEqual(json.loads(response.body), subs)
 
+
+class TestTranscriptTranslationDELETEDispatch(TestVideo):
+    """
+    Test video handler that provide translation transcripts.
+
+    Tests for `translation` dispatch.
+    """
+
+    non_en_file1 = _create_srt_file()
+    non_en_file2 = _create_srt_file()
+    DATA = """
+        <video show_captions="true"
+        display_name="A Name"
+        >
+            <source src="example.mp4"/>
+            <source src="example.webm"/>
+            <transcript language="uk" src="{}"/>
+            <transcript language="de" src="{}"/>
+        </video>
+    """.format(
+        os.path.split(non_en_file1.name)[1],
+        os.path.split(non_en_file2.name)[1]
+    )
+
+    MODEL_DATA = {
+        'data': DATA
+    }
+
+    def setUp(self):
+        super(TestTranscriptTranslationDELETEDispatch, self).setUp()
+        self.item_descriptor.render('student_view')
+        self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
+        subs = {
+                    u'end': [100],
+                    u'start': [12],
+                    u'text': [
+                    u'\u041f\u0440\u0438\u0432\u0456\u0442, edX \u0432\u0456\u0442\u0430\u0454 \u0432\u0430\u0441.'
+                    ]
+                }
+        self.non_en_file1.seek(0)
+        self.non_en_file2.seek(0)
+        _upload_file(self.non_en_file1, self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1])
+        _upload_file(self.non_en_file2, self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1])
+
+    def test_with_language(self):
+        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
+        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
+        request = Request.blank('/translation/uk')
+        request.method = 'DELETE'
+        response = self.item.transcript(request=request, dispatch='translation/uk')
+        self.assertEqual(response.status, '204 No Content')
+        self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
+        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
+
+    def test_without_languages(self):
+        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
+        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
+        request = Request.blank('/translation')
+        request.method = 'DELETE'
+        response = self.item.transcript(request=request, dispatch='translation')
+        self.assertEqual(response.status, '204 No Content')
+        self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
+        self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
 
 class TestGetTranscript(TestVideo):
     """
@@ -534,7 +605,7 @@ class TestGetTranscript(TestVideo):
         self.assertEqual(text, expected_text)
         self.assertEqual(filename, os.path.split(self.non_en_file.name)[1])
         self.assertEqual(mime_type, 'application/x-subrip')
-        
+
     def test_value_error(self):
         good_sjson = _create_file(content='bad content')
 

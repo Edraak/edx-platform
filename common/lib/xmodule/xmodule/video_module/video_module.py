@@ -431,7 +431,6 @@ class VideoModule(VideoFields, XModule):
 
         if dispatch.startswith('translation'):
             language = dispatch.replace('translation', '').strip('/')
-
             if request.method == 'DELETE':  # We will clear field on front-end on save. So we remove files here:
                 if language:
                     Transcript.delete_asset(self.location, self.transcripts[language])
@@ -440,7 +439,6 @@ class VideoModule(VideoFields, XModule):
                         Transcript.delete_asset(self.location, self.transcripts[lang])
 
                 return Response(status=204)
-
             if not language:
                 log.info("Invalid /translation request: no language.")
                 return Response(status=400)
