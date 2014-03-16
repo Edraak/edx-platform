@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
-from exploded.daemon import run_daemon
+from exploded.daemon import StudentModuleHistoryDeDuper
 
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **kwargs):
-        import exploded.daemon; run_daemon()
+        deduper = StudentModuleHistoryDeDuper()
+        deduper.run_daemon()
