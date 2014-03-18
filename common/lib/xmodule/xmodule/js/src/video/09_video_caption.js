@@ -227,7 +227,9 @@ function () {
         var self = this,
             Caption = self.videoCaption,
             language = this.getCurrentLanguage(),
-            data;
+            data = {
+                format: 'sjson'
+            };
 
         if (Caption.loaded) {
             Caption.hideCaptions(false);
@@ -240,9 +242,7 @@ function () {
         }
 
         if (this.videoType === 'youtube') {
-            data = {
-                videoId: this.youtubeId()
-            };
+            data['videoId'] = this.youtubeId();
         }
 
         // Fetch the captions file. If no file was specified, or if an error

@@ -17,16 +17,22 @@ from .test_video_xml import SOURCE_XML
 from cache_toolbox.core import del_cached_content
 from xmodule.exceptions import NotFoundError
 
+from xmodule.video_module.transcripts_utils import (
+    TranscriptException,
+    TranscriptsGenerationException,
+)
+
+_SRT_content  = textwrap.dedent("""
+        0
+        00:00:00,12 --> 00:00:00,100
+        Привіт, edX вітає вас.
+    """)
 
 def _create_srt_file(content=None):
     """
     Create srt file in filesystem.
     """
-    content = content or textwrap.dedent("""
-        0
-        00:00:00,12 --> 00:00:00,100
-        Привіт, edX вітає вас.
-    """)
+    content = content or _SRT_content
     srt_file = tempfile.NamedTemporaryFile(suffix=".srt")
     srt_file.content_type = 'application/x-subrip'
     srt_file.write(content)
@@ -261,7 +267,7 @@ class TestTranscriptDownloadDispatch(TestVideo):
         with self.assertRaises(NotFoundError):
             self.item.get_transcript()
 
-class TestTranscriptTranslationGETDispatch(TestVideo):
+class TestTranscriptTranslationGetDispatch(TestVideo):
     """
     Test video handler that provide translation transcripts.
 
@@ -284,7 +290,7 @@ class TestTranscriptTranslationGETDispatch(TestVideo):
     }
 
     def setUp(self):
-        super(TestTranscriptTranslationGETDispatch, self).setUp()
+        super(TestTranscriptTranslationGetDispatch, self).setUp()
         self.item_descriptor.render('student_view')
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
 
@@ -386,7 +392,7 @@ class TestTranscriptTranslationGETDispatch(TestVideo):
         self.assertDictEqual(json.loads(response.body), subs)
 
 
-class TestTranscriptTranslationDELETEDispatch(TestVideo):
+class TestTranscriptTranslationDeleteDispatch(TestVideo):
     """
     Test video handler that provide translation transcripts.
 
@@ -414,7 +420,7 @@ class TestTranscriptTranslationDELETEDispatch(TestVideo):
     }
 
     def setUp(self):
-        super(TestTranscriptTranslationDELETEDispatch, self).setUp()
+        super(TestTranscriptTranslationDeleteDispatch, self).setUp()
         self.item_descriptor.render('student_view')
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
         subs = {
@@ -448,6 +454,67 @@ class TestTranscriptTranslationDELETEDispatch(TestVideo):
         self.assertEqual(response.status, '204 No Content')
         self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
         self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
+
+
+class TestTranscriptTranslationPostDispatch(TestVideo):
+    """
+    Test video handler that provide translation transcripts.
+
+    Tests for `translation` dispatch with HTTP POST.
+    """
+    DATA = """
+        <video show_captions="true"
+        display_name="A Name"
+        >
+            <source src="example.mp4"/>
+            <source src="example.webm"/>
+
+        </video>
+    """
+
+    MODEL_DATA = {
+        'data': DATA
+    }
+
+    def setUp(self):
+        super(TestTranscriptTranslationPostDispatch, self).setUp()
+        self.item_descriptor.render('student_view')
+        self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
+
+    def test_main(self):
+
+        # Check for exceptons:
+
+        # Language is passed, bad content or filename
+
+        # should be first, as other tests save transcrips to store.
+        request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content)})
+        with patch('xmodule.video_module.video_module.save_to_store'):
+            with self.assertRaises(TranscriptException):  # transcripts were not saved to store for some reason.
+                response = self.item.transcript(request=request, dispatch='translation/uk')
+
+        request = Request.blank('/translation/uk',  POST={'file': ('filename', 'content')})
+        with self.assertRaises(TranscriptsGenerationException):  # Not an srt filename
+            self.item.transcript(request=request, dispatch='translation/uk')
+
+        request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', 'content')})
+        with self.assertRaises(TranscriptsGenerationException):  # Content format is not srt.
+            response = self.item.transcript(request=request, dispatch='translation/uk')
+
+        request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content.decode('utf8').encode('cp1251'))})
+        with self.assertRaises(UnicodeDecodeError):  # Non-UTF8 file content encoding.
+            response = self.item.transcript(request=request, dispatch='translation/uk')
+
+        # No language.
+        request = Request.blank('/translation',  POST={'file': ('filename', _SRT_content)})
+        response = self.item.transcript(request=request, dispatch='translation')
+        self.assertEqual(response.status,  '400 Bad Request')
+
+        # Language, good filename and good content.
+        request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content)})
+        response = self.item.transcript(request=request, dispatch='translation/uk')
+        self.assertEqual(response.status, '201 Created')
+
 
 class TestGetTranscript(TestVideo):
     """

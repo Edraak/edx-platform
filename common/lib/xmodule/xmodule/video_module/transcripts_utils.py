@@ -468,6 +468,11 @@ class Transcript(object):
     """
     Container for transcript methods.
     """
+    mime_types = {
+        'srt': 'application/x-subrip',
+        'txt':  'text/plain',
+        'sjson': 'application/json',
+    }
 
     @staticmethod
     def convert(content, input_format, output_format):

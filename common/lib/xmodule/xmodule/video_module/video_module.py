@@ -376,9 +376,7 @@ class VideoModule(VideoFields, XModule):
             log.debug('no subtitles produced in get_transcript')
             raise ValueError
 
-        mime_type = 'text/plain' if transcript_format == 'txt' else 'application/x-subrip'
-
-        return content, filename, mime_type
+        return content, filename, Transcript.mime_types[transcript_format]
 
 
     @XBlock.handler
@@ -403,9 +401,11 @@ class VideoModule(VideoFields, XModule):
                     If language_id is set, remove transcripts file only for language_id, else remove all
                     transcript files which names are in self.transcripts.
                 `POST`:
-                    Upload srt file. Think about generation of proper sjson files. Renames srt file.
-                    For now, works only for self.transcripts, not for `en`.
-                    language_id shoudl be in url
+                    Upload srt file. Check possibility of generation of proper sjson files.
+                    Rename uploaded srt file according to transcript format.
+                    For now, it works only for self.transcripts, not for `en`.
+                    language_id should be in url
+                    Do not update self.transcripts, as fields are updated on save in Studio.
                 `GET:
                     Provide translation for requested language, SJSON format is sent back on success,
                     Proper language_id should be in url.
@@ -471,8 +471,11 @@ class VideoModule(VideoFields, XModule):
                     log.info(ex.message)
                     response = Response(status=404)
                 else:
+                    transcript_format = 'sjson' if not request.GET.get('format') else request.GET.get('format')
+                    if request.GET.get('format'):
+                        transcript = Transcript.convert(transcript, 'sjson', request.GET.get('format'))
                     response = Response(transcript, headerlist=[('Content-Language', language)])
-                    response.content_type = 'application/json'
+                    response.content_type = Transcript.mime_types[transcript_format]
 
         elif dispatch == 'download':
             try:
@@ -646,12 +649,10 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
     def editable_metadata_fields(self):
         editable_fields = super(VideoDescriptor, self).editable_metadata_fields
 
-        # TODO Anton - we need this code in __init__ ??
-        if hasattr(self, 'source_visible'):
-            if self.source_visible:
-                editable_fields['source']['non_editable'] = True
-            else:
-                editable_fields.pop('source')
+        if self.source_visible:
+            editable_fields['source']['non_editable'] = True
+        else:
+            editable_fields.pop('source')
 
         languages = [{'label': label, 'code': lang} for lang, label in settings.ALL_LANGUAGES if lang != u'en']
         languages.sort(key=lambda l: l['label'])
