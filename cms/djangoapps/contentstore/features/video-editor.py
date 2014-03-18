@@ -9,6 +9,7 @@ from terrain.steps import reload_the_page
 from django.conf import settings
 
 TEST_ROOT = settings.COMMON_TEST_DATA_ROOT
+LANGUAGES = {l[0]: l[1] for l in settings.ALL_LANGUAGES}
 
 TRANSLATION_BUTTONS = {
     'add': '.metadata-video-translations .create-action',
@@ -16,6 +17,10 @@ TRANSLATION_BUTTONS = {
     'download': '.metadata-video-translations .download-action',
     'remove': '.metadata-video-translations .remove-action',
     'clear': '.metadata-video-translations .setting-clear',
+}
+
+VIDEO_MENUS = {
+    'language': '.lang .menu',
 }
 
 
@@ -58,24 +63,49 @@ class ReuqestHandlerWithSessionId(object):
         return False
 
 
-def upload_file(filename):
+def attach_file(filename):
     path = os.path.join(TEST_ROOT, 'uploads/', filename)
     world.browser.attach_file('file', os.path.abspath(path))
+
+
+def upload_file(filename):
+    attach_file(filename)
     button_css = '.upload-dialog .action-upload'
     world.css_click(button_css)
+    world.css_has_text('#upload_confirm', 'Success!')
     world.is_css_not_present('.wrapper-dialog-assetupload', wait_time=30)
-
-
-def get_last_dropdown():
-    return world.browser.find_by_xpath('//label[text()="Transcript Translations"]/following-sibling::div/descendant::select[last()]').last
-
-
-def choose_option(dropdown, value):
-    dropdown.find_by_value(value)[0].check()
 
 
 def get_translations_container():
     return world.browser.find_by_xpath('//label[text()="Transcript Translations"]/following-sibling::div')
+
+
+def get_setting_container(lang_code):
+    try:
+        get_xpath = lambda value: './/descendant::a[@data-lang="{}" and contains(@class,"remove-setting")]/parent::*'.format(value)
+        return get_translations_container().find_by_xpath(get_xpath(lang_code)).first
+    except Exception:
+        return None
+
+
+def get_last_dropdown():
+    return get_translations_container().find_by_xpath('.//descendant::select[last()]').last
+
+
+def choose_option(dropdown, value):
+    dropdown.find_by_value(value)[0].click()
+
+
+def choose_new_lang(lang_code):
+    world.css_click(TRANSLATION_BUTTONS['add'])
+    choose_option(get_last_dropdown(), lang_code)
+    assert get_last_dropdown().value == lang_code, "Option with provided value is not available or was not selected"
+
+
+def open_menu(menu):
+    world.browser.execute_script("$('{selector}').parent().addClass('open')".format(
+        selector=VIDEO_MENUS[menu]
+    ))
 
 
 @step('I have set "transcript display" to (.*)$')
@@ -153,12 +183,9 @@ def upload_transcript(step):
         for i, item in enumerate(step.hashes):
             lang_code = item['lang_code']
             filename = item['filename']
-            world.css_click(TRANSLATION_BUTTONS['add'])
             index = initial_index + i
 
-            choose_option(get_last_dropdown(), lang_code)
-            assert get_last_dropdown().value == lang_code, "Option with provided value is not available or was not selected"
-
+            choose_new_lang(lang_code)
             world.wait_for_visible(TRANSLATION_BUTTONS['upload'], index=index)
             assert world.css_find(TRANSLATION_BUTTONS['upload']).last.text == "Upload"
             assert world.css_find(input_hidden).last.value == ""
@@ -173,8 +200,22 @@ def upload_transcript(step):
 @step('I try to upload transcript file "([^"]*)"$')
 def try_to_upload_transcript(step, filename):
     world.css_click(TRANSLATION_BUTTONS['upload'])
-    path = os.path.join(TEST_ROOT, 'uploads/', filename)
-    world.browser.attach_file('file', os.path.abspath(path))
+    attach_file(filename)
+
+
+@step('I upload transcript file "([^"]*)" for "([^"]*)" language code$')
+def upload_transcript_for_lang(step, filename, lang_code):
+    get_xpath = lambda value: './/div/a[contains(@class, "upload-action")]'.format(value)
+    container = get_setting_container(lang_code)
+
+    if not container:
+        # If translation isn't uploaded, prepare drop-down and try to find container again
+        choose_new_lang(lang_code)
+        container = get_setting_container(lang_code)
+
+    button = container.find_by_xpath(get_xpath(lang_code)).first
+    button.click()
+    upload_file(filename)
 
 
 @step('I see validation error "([^"]*)"$')
@@ -185,8 +226,10 @@ def varify_validation_error_message(step, error_message):
 @step('I can download transcript for "([^"]*)" language code, that contains text "([^"]*)"$')
 def i_can_download_transcript(_step, lang_code, text):
     MIME_TYPE = 'application/x-subrip'
-    get_xpath = lambda value: './/descendant::input[@type="hidden" and contains(@value,"{0}")]/following-sibling::div/a[contains(text(), "Download")]'.format(value)
-    button = get_translations_container().find_by_xpath(get_xpath(lang_code)).first
+    get_xpath = lambda value: './/div/a[contains(text(), "Download")]'.format(value)
+    container = get_setting_container(lang_code)
+    assert container
+    button = container.find_by_xpath(get_xpath(lang_code)).first
     url = button['href']
     request = ReuqestHandlerWithSessionId()
     assert request.get(url).is_success()
@@ -197,7 +240,9 @@ def i_can_download_transcript(_step, lang_code, text):
 @step('I remove translation for "([^"]*)" language code$')
 def i_can_remove_transcript(_step, lang_code):
     get_xpath = lambda value: './/descendant::a[@data-lang="{}" and contains(@class,"remove-setting")]'.format(value)
-    button = get_translations_container().find_by_xpath(get_xpath(lang_code)).first
+    container = get_setting_container(lang_code)
+    assert container
+    button = container.find_by_xpath(get_xpath(lang_code)).first
     button.click()
 
 
@@ -218,13 +263,28 @@ def confirm_prompt(_step):
     world.confirm_studio_prompt()
 
 
-@step('I choose "([^"]*)" language code$')
-def i_choose_lang_code(_step, lang_code):
+@step('I (cannot )?choose "([^"]*)" language code$')
+def i_choose_lang_code(_step, cannot, lang_code):
     choose_option(get_last_dropdown(), lang_code)
-    assert get_last_dropdown().value == lang_code, "Option with provided value is not available or was not selected"
+    if cannot:
+        assert get_last_dropdown().value != lang_code, "Option with provided value was selected, but shouldn't"
+    else:
+        assert get_last_dropdown().value == lang_code, "Option with provided value is not available or was not selected"
 
 
 @step('I click button "([^"]*)"$')
 def click_button(_step, button):
     world.css_click(TRANSLATION_BUTTONS[button.lower()])
 
+
+@step('video language menu has "([^"]*)" translations$')
+def i_see_correct_langs(_step, langs):
+    menu_name = 'language'
+    open_menu(menu_name)
+    items = world.css_find(VIDEO_MENUS[menu_name] + ' li')
+    translations = {t.strip() : LANGUAGES[t.strip()] for t in langs.split(',')}
+
+    assert len(translations) == len(items)
+    for lang_code, label in translations.items():
+        assert any([i.text == label for i in items])
+        assert any([i['data-lang-code'] == lang_code for i in items])

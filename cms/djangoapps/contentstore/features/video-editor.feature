@@ -39,62 +39,71 @@ Feature: CMS Video Component Editor
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
-    And I upload transcript files:
-      |lang_code|filename               |
-      |zh       |chinese_transcripts.srt|
+    And I upload transcript file "chinese_transcripts.srt" for "zh" language code
     And I save changes
     Then when I view the video it does show the captions
     And I see "好 各位同学" text in the captions
     And I edit the component
     And I open tab "Advanced"
     And I see translations for "zh"
-    And I upload transcript files:
-      |lang_code|filename             |
-      |uk       |test_transcripts.srt |
+    And I upload transcript file "uk_transcripts.srt" for "uk" language code
     And I save changes
     Then when I view the video it does show the captions
     And I see "好 各位同学" text in the captions
+    And video language menu has "uk, zh" translations
 
   # 6
+  Scenario: User can upload transcript file with > 1mb size
+    Given I have created a Video component
+    And I edit the component
+    And I open tab "Advanced"
+    And I upload transcript file "1mb_transcripts.srt" for "uk" language code
+    And I save changes
+    Then when I view the video it does show the captions
+    And I see "Привіт, edX вітає вас." text in the captions
+
+  # 7
   Scenario: Translations downloading works correctly w/ preliminary saving
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
     And I upload transcript files:
       |lang_code|filename               |
-      |uk       |test_transcripts.srt   |
+      |uk       |uk_transcripts.srt     |
       |zh       |chinese_transcripts.srt|
     And I save changes
     And I edit the component
     And I open tab "Advanced"
     And I see translations for "uk, zh"
+    And video language menu has "uk, zh" translations
     Then I can download transcript for "zh" language code, that contains text "好 各位同学"
-    And I can download transcript for "uk" language code, that contains text "Hi, welcome to Edx."
+    And I can download transcript for "uk" language code, that contains text "Привіт, edX вітає вас."
 
-  # 7
+  # 8
   Scenario: Translations downloading works correctly w/o preliminary saving
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
     And I upload transcript files:
       |lang_code|filename               |
-      |uk       |test_transcripts.srt   |
+      |uk       |uk_transcripts.srt     |
       |zh       |chinese_transcripts.srt|
     Then I can download transcript for "zh" language code, that contains text "好 各位同学"
-    And I can download transcript for "uk" language code, that contains text "Hi, welcome to Edx."
+    And I can download transcript for "uk" language code, that contains text "Привіт, edX вітає вас."
 
-  # 8
+  # 9
   Scenario: Translations removing works correctly w/ preliminary saving
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
     And I upload transcript files:
       |lang_code|filename               |
-      |uk       |test_transcripts.srt   |
+      |uk       |uk_transcripts.srt     |
       |zh       |chinese_transcripts.srt|
     And I save changes
     Then when I view the video it does show the captions
-    And I see "Hi, welcome to Edx." text in the captions
+    And I see "Привіт, edX вітає вас." text in the captions
+    And video language menu has "uk, zh" translations
     And I edit the component
     And I open tab "Advanced"
     And I see translations for "uk, zh"
@@ -111,32 +120,31 @@ Feature: CMS Video Component Editor
     And I save changes
     Then when I view the video it does not show the captions
 
-  # 9
+  # 10
   Scenario: Translations removing works correctly w/o preliminary saving
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
-    And I upload transcript files:
-      |lang_code|filename               |
-      |uk       |test_transcripts.srt   |
+    And I upload transcript file "uk_transcripts.srt" for "uk" language code
     And I see translations for "uk"
     Then I remove translation for "uk" language code
     And I confirm prompt
     And I save changes
     Then when I view the video it does not show the captions
 
-  # 10
+  # 11
   Scenario: Translations clearing works correctly w/ preliminary saving
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
     And I upload transcript files:
       |lang_code|filename               |
-      |uk       |test_transcripts.srt   |
+      |uk       |uk_transcripts.srt     |
       |zh       |chinese_transcripts.srt|
     And I save changes
     Then when I view the video it does show the captions
-    And I see "Hi, welcome to Edx." text in the captions
+    And I see "Привіт, edX вітає вас." text in the captions
+    And video language menu has "uk, zh" translations
     And I edit the component
     And I open tab "Advanced"
     And I see translations for "uk, zh"
@@ -145,21 +153,21 @@ Feature: CMS Video Component Editor
     And I save changes
     Then when I view the video it does not show the captions
 
-  # 11
+  # 12
   Scenario: Translations clearing works correctly w/o preliminary saving
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
     And I upload transcript files:
       |lang_code|filename               |
-      |uk       |test_transcripts.srt   |
+      |uk       |uk_transcripts.srt     |
       |zh       |chinese_transcripts.srt|
     And I click button "Clear"
     And I confirm prompt
     And I save changes
     Then when I view the video it does not show the captions
 
-  # 12
+  # 13
   Scenario: Translations can be removed w/o prompt, if transcript file is not uploaded
     Given I have created a Video component
     And I edit the component
@@ -169,7 +177,7 @@ Feature: CMS Video Component Editor
     And I remove translation for "zh" language code
     Then I do not see translations
 
-  # 13
+  # 14
   Scenario: Translations can be cleared w/o prompt, if transcript file is not uploaded
     Given I have created a Video component
     And I edit the component
@@ -179,12 +187,66 @@ Feature: CMS Video Component Editor
     And I click button "Clear"
     Then I do not see translations
 
-  # 14
+  # 15
   Scenario: User cannot upload translations in sjson format
     Given I have created a Video component
     And I edit the component
     And I open tab "Advanced"
     And I click button "Add"
     And I choose "uk" language code
-    And I try to upload transcript file "test_transcripts.sjson"
+    And I try to upload transcript file "uk_transcripts.sjson"
     Then I see validation error "Only SRT files can be uploaded. Please select a file ending in .srt to upload."
+
+  # 16
+  Scenario: User can easy replace the translation by another one w/ preliminary saving
+    Given I have created a Video component
+    And I edit the component
+    And I open tab "Advanced"
+    And I upload transcript file "chinese_transcripts.srt" for "zh" language code
+    And I save changes
+    Then when I view the video it does show the captions
+    And I see "好 各位同学" text in the captions
+    And I edit the component
+    And I open tab "Advanced"
+    And I see translations for "zh"
+    And I upload transcript file "uk_transcripts.srt" for "zh" language code
+    And I save changes
+    Then when I view the video it does show the captions
+    And I see "Привіт, edX вітає вас." text in the captions
+
+  # 17
+  Scenario: User can easy replace the translation by another one w/o preliminary saving
+    Given I have created a Video component
+    And I edit the component
+    And I open tab "Advanced"
+    And I upload transcript file "chinese_transcripts.srt" for "zh" language code
+    And I see translations for "zh"
+    And I upload transcript file "uk_transcripts.srt" for "zh" language code
+    And I save changes
+    Then when I view the video it does show the captions
+    And I see "Привіт, edX вітає вас." text in the captions
+
+  # 18
+  Scenario: Upload "zh" file "A" -> Remove "zh" -> Upload "zh" file "B"
+    Given I have created a Video component
+    And I edit the component
+    And I open tab "Advanced"
+    And I upload transcript file "chinese_transcripts.srt" for "zh" language code
+    And I see translations for "zh"
+    Then I remove translation for "zh" language code
+    And I confirm prompt
+    And I upload transcript file "uk_transcripts.srt" for "zh" language code
+    And I save changes
+    Then when I view the video it does show the captions
+    And I see "Привіт, edX вітає вас." text in the captions
+
+  # 19
+  Scenario: User cannot select the same language twice
+    Given I have created a Video component
+    And I edit the component
+    And I open tab "Advanced"
+    And I click button "Add"
+    And I choose "zh" language code
+    And I click button "Add"
+    Then I cannot choose "zh" language code
+
