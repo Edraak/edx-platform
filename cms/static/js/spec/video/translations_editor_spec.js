@@ -219,7 +219,7 @@ function ($, _, create_sinon, Squire) {
             expect(this.uploadSpies.show).toHaveBeenCalled();
 
             options = this.uploadSpies.constructor.mostRecentCall.args[0];
-            options.onSuccess({'videoId': 'zh.srt'});
+            options.onSuccess({'filename': 'zh.srt'});
 
             expect(this.view).verifyButtons(true, true, true);
 

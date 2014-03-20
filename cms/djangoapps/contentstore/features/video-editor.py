@@ -24,7 +24,7 @@ VIDEO_MENUS = {
 }
 
 
-class ReuqestHandlerWithSessionId(object):
+class RequestHandlerWithSessionId(object):
     def get(self, url):
         """
         Sends a request.
@@ -194,7 +194,7 @@ def upload_transcript(step):
             upload_file(filename)
             world.wait_for_visible(TRANSLATION_BUTTONS['download'], index=index)
             assert world.css_find(TRANSLATION_BUTTONS['upload']).last.text == "Replace"
-            assert world.css_find(input_hidden).last.value == "{}_subs_{}".format(lang_code, filename)
+            assert world.css_find(input_hidden).last.value == filename
 
 
 @step('I try to upload transcript file "([^"]*)"$')
@@ -219,7 +219,7 @@ def upload_transcript_for_lang(step, filename, lang_code):
 
 
 @step('I see validation error "([^"]*)"$')
-def varify_validation_error_message(step, error_message):
+def verify_validation_error_message(step, error_message):
     assert world.css_text('#upload_error') == error_message
 
 
@@ -231,7 +231,7 @@ def i_can_download_transcript(_step, lang_code, text):
     assert container
     button = container.find_by_xpath(get_xpath(lang_code)).first
     url = button['href']
-    request = ReuqestHandlerWithSessionId()
+    request = RequestHandlerWithSessionId()
     assert request.get(url).is_success()
     assert request.check_header('content-type', MIME_TYPE)
     assert (text.encode('utf-8') in request.content)

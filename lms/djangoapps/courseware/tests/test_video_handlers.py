@@ -392,11 +392,53 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
         self.assertDictEqual(json.loads(response.body), subs)
 
 
-class TestTranscriptTranslationDeleteDispatch(TestVideo):
+class TestStudioTranscriptTranslationGetDispatch(TestVideo):
     """
-    Test video handler that provide translation transcripts.
+    Test Studio video handler that provide translation transcripts.
 
-    Tests for `translation` dispatch.
+    Tests for `translation` dispatch GET HTTP method.
+    """
+    non_en_file = _create_srt_file()
+    DATA = """
+        <video show_captions="true"
+        display_name="A Name"
+        >
+            <source src="example.mp4"/>
+            <source src="example.webm"/>
+            <transcript language="uk" src="{}"/>
+        </video>
+    """.format(os.path.split(non_en_file.name)[1])
+
+    MODEL_DATA = {'data': DATA}
+
+    def test_translation_fails(self):
+        # No language
+        request = Request.blank('')
+        response = self.item_descriptor.studio_transcript(request=request, dispatch='translation')
+        self.assertEqual(response.status, '400 Bad Request')
+
+        # Requested language is not in self.transcripts.
+        request = Request.blank('')
+        with self.assertRaises(TranscriptException):
+            response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/de')
+
+        # Correct case:
+        _upload_file(self.non_en_file, self.item_descriptor.location, os.path.split(self.non_en_file.name)[1])
+        self.non_en_file.seek(0)
+        request = Request.blank('')
+        response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
+        self.assertEqual(response.body, self.non_en_file.read())
+        self.assertEqual(response.headers['Content-Type'], 'application/x-subrip')
+        self.assertEqual(
+            response.headers['Content-Disposition'],
+            'attachment; filename="{}"'.format(os.path.split(self.non_en_file.name)[1])
+        )
+
+class TestStudioTranscriptTranslationDeleteDispatch(TestVideo):
+    """
+    Test Studio video handler that provide translation transcripts.
+
+    Tests for `translation`dispatch DELETE HTTP method.
     """
 
     non_en_file1 = _create_srt_file()
@@ -420,8 +462,7 @@ class TestTranscriptTranslationDeleteDispatch(TestVideo):
     }
 
     def setUp(self):
-        super(TestTranscriptTranslationDeleteDispatch, self).setUp()
-        self.item_descriptor.render('student_view')
+        super(TestStudioTranscriptTranslationDeleteDispatch, self).setUp()
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
         subs = {
                     u'end': [100],
@@ -434,33 +475,31 @@ class TestTranscriptTranslationDeleteDispatch(TestVideo):
         self.non_en_file2.seek(0)
         _upload_file(self.non_en_file1, self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1])
         _upload_file(self.non_en_file2, self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1])
+        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
+        self.request = Request.blank('')
+        self.request.method = 'DELETE'
 
     def test_with_language(self):
         self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
         self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
-        request = Request.blank('/translation/uk')
-        request.method = 'DELETE'
-        response = self.item.transcript(request=request, dispatch='translation/uk')
+        response = self.item_descriptor.studio_transcript(request=self.request, dispatch='translation/uk')
         self.assertEqual(response.status, '204 No Content')
         self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
         self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
 
     def test_without_languages(self):
         self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
-        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
-        request = Request.blank('/translation')
-        request.method = 'DELETE'
-        response = self.item.transcript(request=request, dispatch='translation')
+        response = self.item_descriptor.studio_transcript(request=self.request, dispatch='translation')
         self.assertEqual(response.status, '204 No Content')
         self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
         self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
 
 
-class TestTranscriptTranslationPostDispatch(TestVideo):
+class TestStudioTranscriptTranslationPostDispatch(TestVideo):
     """
-    Test video handler that provide translation transcripts.
+    Test Studio video handler that provide translation transcripts.
 
-    Tests for `translation` dispatch with HTTP POST.
+    Tests for `translation` dispatch with HTTP POST method.
     """
     DATA = """
         <video show_captions="true"
@@ -476,12 +515,7 @@ class TestTranscriptTranslationPostDispatch(TestVideo):
         'data': DATA
     }
 
-    def setUp(self):
-        super(TestTranscriptTranslationPostDispatch, self).setUp()
-        self.item_descriptor.render('student_view')
-        self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
-
-    def test_main(self):
+    def test_studio_transcript_post(self):
 
         # Check for exceptons:
 
@@ -489,34 +523,34 @@ class TestTranscriptTranslationPostDispatch(TestVideo):
 
         # should be first, as other tests save transcrips to store.
         request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content)})
-        with patch('xmodule.video_module.video_module.save_to_store'):
+        with patch('xmodule.video_module.video_handlers.save_to_store'):
             with self.assertRaises(TranscriptException):  # transcripts were not saved to store for some reason.
-                response = self.item.transcript(request=request, dispatch='translation/uk')
+                response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk',  POST={'file': ('filename', 'content')})
         with self.assertRaises(TranscriptsGenerationException):  # Not an srt filename
-            self.item.transcript(request=request, dispatch='translation/uk')
+            self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', 'content')})
         with self.assertRaises(TranscriptsGenerationException):  # Content format is not srt.
-            response = self.item.transcript(request=request, dispatch='translation/uk')
+            response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content.decode('utf8').encode('cp1251'))})
         with self.assertRaises(UnicodeDecodeError):  # Non-UTF8 file content encoding.
-            response = self.item.transcript(request=request, dispatch='translation/uk')
+            response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
-        # No language.
+        # No language is passed.
         request = Request.blank('/translation',  POST={'file': ('filename', _SRT_content)})
-        response = self.item.transcript(request=request, dispatch='translation')
+        response = self.item_descriptor.studio_transcript(request=request, dispatch='translation')
         self.assertEqual(response.status,  '400 Bad Request')
 
         # Language, good filename and good content.
         request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content)})
-        response = self.item.transcript(request=request, dispatch='translation/uk')
+        response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
         self.assertEqual(response.status, '201 Created')
         self.assertDictEqual(json.loads(response.body), {'filename': u'filename.srt', 'status': 'Success'})
-        self.assertEqual(self.item.transcripts['uk'], u'filename.srt')
-        self.assertTrue(_check_asset(self.item.location, u'filename.srt'))
+        self.assertEqual(self.item_descriptor.transcripts['uk'], u'filename.srt')
+        self.assertTrue(_check_asset(self.item_descriptor.location, u'filename.srt'))
 
 
 class TestGetTranscript(TestVideo):

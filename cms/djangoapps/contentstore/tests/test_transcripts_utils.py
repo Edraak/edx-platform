@@ -1,5 +1,4 @@
 """ Tests for transcripts_utils. """
-import json
 import unittest
 from uuid import uuid4
 import copy

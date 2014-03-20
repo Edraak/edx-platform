@@ -341,6 +341,8 @@ def manage_video_subtitles_save(item, user, old_metadata=None, generate_translat
         a new version of the SRT file with same name).
     """
 
+    _ = item.runtime.service(item, "i18n").ugettext
+
     # 1.
     html5_ids = get_html5_ids(item.html5_sources)
     possible_video_id_list = [item.youtube_id_1_0] + html5_ids
@@ -427,7 +429,10 @@ def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
     try:
         srt_transcripts = contentstore().find(Transcript.asset_location(item.location, user_filename))
     except NotFoundError as ex:
-        raise TranscriptException("{}: Can't find uploaded transcripts: {}".format(ex.message, user_filename))
+        raise TranscriptException(_("{exception_message}: Can't find uploaded transcripts: {user_filename}").format(
+            exception_message=ex.message,
+            user_filename=user_filename
+        ))
 
     if not lang:
         lang = item.transcript_language
