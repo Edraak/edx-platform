@@ -382,100 +382,52 @@ class VideoModule(VideoFields, XModule):
     @XBlock.handler
     def transcript(self, request, dispatch):
         """
-        Entry point for transcript handlers.
+        Entry point for transcript handlers for student_view.
 
         Request GET may contain `videoId` for `translation` dispatch.
 
-        Dispatches.  We try to be RESTful here. URL names are:
+        Dispatches, (HTTP GET):
             /translation/[language_id]
             /download
             /available_translations/
 
         Explanations:
-
             `download`: returns SRT or TXT file.
             `translation`: depends on HTTP methods:
-                `DELETE`:
-                    clear field and remove loaded transcript asset for given language.
-                    For now, works only for self.transcripts, not for `en`.
-                    If language_id is set, remove transcripts file only for language_id, else remove all
-                    transcript files which names are in self.transcripts.
-                `POST`:
-                    Upload srt file. Check possibility of generation of proper sjson files.
-                    Rename uploaded srt file according to transcript format.
-                    For now, it works only for self.transcripts, not for `en`.
-                    language_id should be in url
-                    Do not update self.transcripts, as fields are updated on save in Studio.
-                `GET:
                     Provide translation for requested language, SJSON format is sent back on success,
                     Proper language_id should be in url.
             `available_translations`:
                     Returns list of languages, for which transcript files exist.
                     For 'en' check if SJSON exists. For non-`en` check if SRT file exists.
-
-        Exceptions:
-            /translation POST: as POST is only for Studio, we raise Errors right there.
-                Raises:
-                    NotFoundError:
-                        Video was deleted from contentstore, but request came later.
-                        Seems impossible to be raised. module_render.py catches NotFoundErrors from here.
-                    TypeError:
-                        Unjsonable filename or content.
-                    TranscriptsGenerationException, TranscriptException:
-                        no SRT extension or not parse-able by PySRT
-                    UnicodeDecodeError: non-UTF8 file content encoding.
-
-            /translation GET, /download, /available_translations:
-                Catch all its their exceptions as these handlers work in both LMS and CMS.
         """
-
         if dispatch.startswith('translation'):
-            language = dispatch.replace('translation', '').strip('/')
-            if request.method == 'DELETE':  # We will clear field on front-end on save. So we remove files here:
-                if language:
-                    Transcript.delete_asset(self.location, self.transcripts[language])
-                else:
-                    for lang in self.transcripts:
-                        Transcript.delete_asset(self.location, self.transcripts[lang])
 
-                return Response(status=204)
+            language = dispatch.replace('translation', '').strip('/')
+
             if not language:
                 log.info("Invalid /translation request: no language.")
                 return Response(status=400)
 
-            if request.method == 'POST':
-                subtitles = request.POST['file']
-                upload_filename = u'{}_subs_{}'.format(language, subtitles.filename)
-                save_to_store(subtitles.file.read(), upload_filename, 'text/plain', self.location)
-                generate_sjson_for_all_speeds(self, upload_filename, {}, language)
-                response = {'videoId': upload_filename, 'status': 'Success'}
-                return Response(json.dumps(response), status=201)
+            if language not in ['en'] + self.transcripts.keys():
+                log.info("Video: transcript facilities are not available for given language.")
+                return Response(status=404)
 
-            elif request.method == 'GET':
-
-                if language not in ['en'] + self.transcripts.keys():
-                    log.info("Video: transcript facilities are not available for given language.")
-                    return Response(status=404)
-
-                if language != self.transcript_language:
-                    self.transcript_language = language
-                try:
-                    transcript = self.translation(request.GET.get('videoId', None))
-                except (
-                        TranscriptException,
-                        NotFoundError,
-                        UnicodeDecodeError,
-                        TranscriptException,
-                        TranscriptsGenerationException
-                    ) as ex:
-                    log.info(ex.message)
-                    response = Response(status=404)
-                else:
-                    transcript_format = 'sjson' if not request.GET.get('format') else request.GET.get('format')
-                    if request.GET.get('format'):
-                        transcript = Transcript.convert(transcript, 'sjson', request.GET.get('format'))
-                    response = Response(transcript, headerlist=[('Content-Language', language)])
-                    response.content_type = Transcript.mime_types[transcript_format]
+            if language != self.transcript_language:
+                self.transcript_language = language
+            try:
+                transcript = self.translation(request.GET.get('videoId', None))
+            except (
+                    TranscriptException,
+                    NotFoundError,
+                    UnicodeDecodeError,
+                    TranscriptException,
+                    TranscriptsGenerationException
+                ) as ex:
+                log.info(ex.message)
+                response = Response(status=404)
+            else:
+                response = Response(transcript, headerlist=[('Content-Language', language)])
+                response.content_type = Transcript.mime_types['sjson']
 
         elif dispatch == 'download':
             try:
@@ -658,8 +610,150 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         languages.sort(key=lambda l: l['label'])
         editable_fields['transcripts']['languages'] = languages
         editable_fields['transcripts']['type'] = 'VideoTranslations'
-        editable_fields['transcripts']['urlRoot'] = '/preview' + self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation'
+        editable_fields['transcripts']['urlRoot'] = self.runtime.handler_url(self, 'test1').rstrip('/?') + '/translation'
         return editable_fields
+
+
+    @XBlock.handler
+    def test1(self, request, dispatch):
+        """
+        Entry point for transcript handlers.
+
+        Request GET may contain `videoId` for `translation` dispatch.
+
+        Dispatches.  We try to be RESTful here. URL names are:
+            /translation/[language_id]
+            /download
+            /available_translations/
+
+        Explanations:
+
+            `download`: returns SRT or TXT file.
+            `translation`: depends on HTTP methods:
+                `DELETE`:
+                    clear field and remove loaded transcript asset for given language.
+                    For now, works only for self.transcripts, not for `en`.
+                    If language_id is set, remove transcripts file only for language_id, else remove all
+                    transcript files which names are in self.transcripts.
+                `POST`:
+                    Upload srt file. Check possibility of generation of proper sjson files.
+                    Rename uploaded srt file according to transcript format.
+                    For now, it works only for self.transcripts, not for `en`.
+                    language_id should be in url
+                    Do not update self.transcripts, as fields are updated on save in Studio.
+                `GET:
+                    Provide translation for requested language, SJSON format is sent back on success,
+                    Proper language_id should be in url.
+            `available_translations`:
+                    Returns list of languages, for which transcript files exist.
+                    For 'en' check if SJSON exists. For non-`en` check if SRT file exists.
+
+        Exceptions:
+            /translation POST: as POST is only for Studio, we raise Errors right there.
+                Raises:
+                    NotFoundError:
+                        Video was deleted from contentstore, but request came later.
+                        Seems impossible to be raised. module_render.py catches NotFoundErrors from here.
+                    TypeError:
+                        Unjsonable filename or content.
+                    TranscriptsGenerationException, TranscriptException:
+                        no SRT extension or not parse-able by PySRT
+                    UnicodeDecodeError: non-UTF8 file content encoding.
+
+            /translation GET, /download, /available_translations:
+                Catch all its their exceptions as these handlers work in both LMS and CMS.
+        """
+
+        if dispatch.startswith('translation'):
+            language = dispatch.replace('translation', '').strip('/')
+            # if request.method == 'DELETE':  # We will clear field on front-end on save. So we remove files here:
+            #     if language:
+            #         Transcript.delete_asset(self.location, self.transcripts[language])
+            #     else:
+            #         for lang in self.transcripts:
+            #             Transcript.delete_asset(self.location, self.transcripts[lang])
+
+            #     return Response(status=204)
+            if not language:
+                log.info("Invalid /translation request: no language.")
+                return Response(status=400)
+            import ipdb; ipdb.set_trace()
+            if request.method == 'POST':
+                subtitles = request.POST['file']
+                save_to_store(subtitles.file.read(), unicode(subtitles.filename), 'text/plain', self.location)
+                generate_sjson_for_all_speeds(self, unicode(subtitles.filename), {}, language)
+                self.transcripts[language] = unicode(subtitles.filename)
+                response = {'filename': unicode(subtitles.filename), 'status': 'Success'}
+                return Response(json.dumps(response), status=201)
+
+            # elif request.method == 'GET':
+
+            #     if language not in ['en'] + self.transcripts.keys():
+            #         log.info("Video: transcript facilities are not available for given language.")
+            #         return Response(status=404)
+
+            #     if language != self.transcript_language:
+            #         self.transcript_language = language
+            #     try:
+            #         transcript = self.translation(request.GET.get('videoId', None))
+            #     except (
+            #             TranscriptException,
+            #             NotFoundError,
+            #             UnicodeDecodeError,
+            #             TranscriptException,
+            #             TranscriptsGenerationException
+            #         ) as ex:
+            #         log.info(ex.message)
+            #         response = Response(status=404)
+            #     else:
+            #         transcript_format = 'sjson' if not request.GET.get('format') else request.GET.get('format')
+            #         if request.GET.get('format'):
+            #             transcript = Transcript.convert(transcript, 'sjson', request.GET.get('format'))
+            #         response = Response(transcript, headerlist=[('Content-Language', language)])
+            #         response.content_type = Transcript.mime_types[transcript_format]
+
+        # elif dispatch == 'download':
+        #     try:
+        #         transcript_content, transcript_filename, transcript_mime_type = self.get_transcript(self.transcript_download_format)
+        #     except (NotFoundError, ValueError, KeyError, UnicodeDecodeError):
+        #         log.debug("Video@download exception")
+        #         return Response(status=404)
+        #     else:
+        #         response = Response(
+        #             transcript_content,
+        #             headerlist=[
+        #                 ('Content-Disposition', 'attachment; filename="{}"'.format(transcript_filename)),
+        #             ]
+        #         )
+        #         response.content_type = transcript_mime_type
+
+        # elif dispatch == 'available_translations':
+        #     available_translations = []
+        #     if self.sub:  # check if sjson exists for 'en'.
+        #         try:
+        #             Transcript.asset(self.location, self.sub, 'en')
+        #         except NotFoundError:
+        #             pass
+        #         else:
+        #             available_translations = ['en']
+        #     for lang in self.transcripts:
+        #         try:
+        #            Transcript.asset(self.location, None, None, self.transcripts[lang])
+        #         except NotFoundError:
+        #             continue
+        #         available_translations.append(lang)
+        #     if available_translations:
+        #         response = Response(json.dumps(available_translations))
+        #         response.content_type = 'application/json'
+        #     else:
+        #         response = Response(status=404)
+        else:  # unknown dispatch
+            log.debug("Dispatch is not allowed")
+            response = Response(status=404)
+
+        return response
+
+
 
     @classmethod
     def from_xml(cls, xml_data, system, id_generator):

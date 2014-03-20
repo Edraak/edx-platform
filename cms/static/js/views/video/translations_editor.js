@@ -143,11 +143,11 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                     model: model,
                     url: self.model.get('urlRoot') + '/' + lang,
                     onSuccess: function (response) {
-                        if (!response['videoId']) { return; }
+                        if (!response['filename']) { return; }
 
                         var dict = $.extend(true, {}, self.model.get('value'));
 
-                        dict[lang] = response['videoId'];
+                        dict[lang] = response['filename'];
                         self.model.setValue(dict);
                     }
                 });

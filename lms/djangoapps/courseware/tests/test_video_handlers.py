@@ -514,6 +514,9 @@ class TestTranscriptTranslationPostDispatch(TestVideo):
         request = Request.blank('/translation/uk',  POST={'file': ('filename.srt', _SRT_content)})
         response = self.item.transcript(request=request, dispatch='translation/uk')
         self.assertEqual(response.status, '201 Created')
+        self.assertDictEqual(json.loads(response.body), {'filename': u'filename.srt', 'status': 'Success'})
+        self.assertEqual(self.item.transcripts['uk'], u'filename.srt')
+        self.assertTrue(_check_asset(self.item.location, u'filename.srt'))
 
 
 class TestGetTranscript(TestVideo):
