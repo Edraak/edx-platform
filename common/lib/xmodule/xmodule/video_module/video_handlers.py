@@ -158,11 +158,11 @@ class VideoStudentViewHandlers(object):
                 raise ValueError
 
             data = Transcript.asset(self.location, transcript_name, lang).data
-            filename = '{}.{}'.format(transcript_name, transcript_format)
+            filename = u'{}.{}'.format(transcript_name, transcript_format)
             content = Transcript.convert(data, 'sjson', transcript_format)
         else:
             data = Transcript.asset(self.location, None, None, self.transcripts[lang]).data
-            filename = '{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
+            filename = u'{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
             content = Transcript.convert(data, 'srt', transcript_format)
 
         if not content:
@@ -231,7 +231,7 @@ class VideoStudentViewHandlers(object):
                 response = Response(
                     transcript_content,
                     headerlist=[
-                        ('Content-Disposition', 'attachment; filename="{}"'.format(transcript_filename)),
+                        ('Content-Disposition', 'attachment; filename="{}"'.format(transcript_filename.encode('utf8'))),
                     ]
                 )
                 response.content_type = transcript_mime_type
@@ -336,7 +336,7 @@ class VideoStudioViewHandlers(object):
 
                 content = Transcript.get_asset(self.location, self.transcripts[language]).data
                 response = Response(content, headerlist=[
-                    ('Content-Disposition', 'attachment; filename="{}"'.format(self.transcripts[language])),
+                    ('Content-Disposition', 'attachment; filename="{}"'.format(self.transcripts[language].encode('utf8'))),
                 ])
                 response.content_type = Transcript.mime_types['srt']
 

@@ -269,6 +269,13 @@ class TestTranscriptDownloadDispatch(TestVideo):
         with self.assertRaises(NotFoundError):
             self.item.get_transcript()
 
+    @patch('xmodule.video_module.VideoModule.get_transcript', return_value=('Subs!', u"塞.srt", 'application/x-subrip'))
+    def test_download_non_en_non_ascii_filename(self, __):
+        request = Request.blank('/download')
+        response = self.item.transcript(request=request, dispatch='download')
+        self.assertEqual(response.body, 'Subs!')
+        self.assertEqual(response.headers['Content-Type'], 'application/x-subrip')
+        self.assertEqual(response.headers['Content-Disposition'], 'attachment; filename="塞.srt"')
 
 class TestTranscriptTranslationGetDispatch(TestVideo):
     """
@@ -409,8 +416,9 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
             <source src="example.mp4"/>
             <source src="example.webm"/>
             <transcript language="uk" src="{}"/>
+            <transcript language="zh" src="{}"/>
         </video>
-    """.format(os.path.split(non_en_file.name)[1])
+    """.format(os.path.split(non_en_file.name)[1], u"塞.srt".encode('utf8'))
 
     MODEL_DATA = {'data': DATA}
 
@@ -436,6 +444,16 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
             response.headers['Content-Disposition'],
             'attachment; filename="{}"'.format(os.path.split(self.non_en_file.name)[1])
         )
+
+        # Non ascii file name download:
+        self.non_en_file.seek(0)
+        _upload_file(self.non_en_file, self.item_descriptor.location, u'塞.srt')
+        self.non_en_file.seek(0)
+        request = Request.blank('')
+        response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/zh')
+        self.assertEqual(response.body, self.non_en_file.read())
+        self.assertEqual(response.headers['Content-Type'], 'application/x-subrip')
+        self.assertEqual(response.headers['Content-Disposition'], 'attachment; filename="塞.srt"')
 
 
 class TestStudioTranscriptTranslationDeleteDispatch(TestVideo):
@@ -561,8 +579,9 @@ class TestGetTranscript(TestVideo):
             <source src="example.mp4"/>
             <source src="example.webm"/>
             <transcript language="uk" src="{}"/>
+            <transcript language="zh" src="{}"/>
         </video>
-    """.format(os.path.split(non_en_file.name)[1])
+    """.format(os.path.split(non_en_file.name)[1], u"塞.srt".encode('utf8'))
 
     MODEL_DATA = {
         'data': DATA
@@ -691,10 +710,10 @@ class TestGetTranscript(TestVideo):
         self.assertEqual(filename, self.item.youtube_id_1_0 + '.srt')
         self.assertEqual(mime_type, 'application/x-subrip')
 
-    def test_non_en(self):
-        self.item.transcript_language = 'uk'
+    def test_non_en_with_non_ascii_filename(self):
+        self.item.transcript_language = 'zh'
         self.non_en_file.seek(0)
-        _upload_file(self.non_en_file, self.item_descriptor.location, os.path.split(self.non_en_file.name)[1])
+        _upload_file(self.non_en_file, self.item_descriptor.location, u"塞.srt")
 
         text, filename, mime_type = self.item.get_transcript()
         expected_text = textwrap.dedent("""
@@ -703,7 +722,7 @@ class TestGetTranscript(TestVideo):
         Привіт, edX вітає вас.
         """)
         self.assertEqual(text, expected_text)
-        self.assertEqual(filename, os.path.split(self.non_en_file.name)[1])
+        self.assertEqual(filename, u"塞.srt")
         self.assertEqual(mime_type, 'application/x-subrip')
 
     def test_value_error(self):
