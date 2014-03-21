@@ -7,8 +7,8 @@ from exploded.util import log_studentmodulehistories
 
 SECONDS_TOLERANCE_FOR_EQ = 5
 BUFFER_SIZE = 100
-MAX_WRITTEN = 100000
-DB_BATCH = 20
+MAX_WRITTEN = 100000000
+DB_BATCH = 50
 
 
 class StudentModuleHistoryDeDuper(object):
@@ -20,31 +20,36 @@ class StudentModuleHistoryDeDuper(object):
                        if StudentModuleHistory.objects.all().exists()
                        else -1)
 
-    def run_daemon(self):
+    def run_daemon(self, course_id=None):
         starttime = datetime.now()
         while self.num_written < MAX_WRITTEN:
-            self.refill_buffer()
-            retv = self.process_buffer()
-            if retv:
-                last = retv
+            self.refill_buffer(course_id)
+            self.process_buffer()
         print(datetime.now() - starttime)
 
-    def refill_buffer(self):
+    def refill_buffer(self, course_id):
         num_to_fetch = BUFFER_SIZE - len(self.buffer)
+        #print("trying to fetch {} from {}".format(num_to_fetch, self.cur_pk))
         new_items = (StudentModuleHistory
                      .objects
                      .select_related('student_module')
                      .filter(id__gt=self.cur_pk)
-                     [:num_to_fetch])
+                     .order_by('id'))
+        if course_id:
+            new_items = new_items.filter(course_id=course_id)
+        new_items = new_items[:num_to_fetch]
         self.buffer.extend(new_items)
-        self.cur_pk = max([item.id for item in new_items])
+        #print("fetched")
+        self.cur_pk = max([item.id for item in new_items] + [self.cur_pk])
 
-    def process_buffer(self):
-        # only do work when our buffer is full (so we have stuff to compare against)
+    def process_buffer(self, wait_until_full=False):
         write_list = []
-        if len(self.buffer) < BUFFER_SIZE:
+        # only do work when our buffer is full (so we have stuff to compare against)
+        if wait_until_full and len(self.buffer) < BUFFER_SIZE:
             return None
         for _ in range(DB_BATCH):
+            if len(self.buffer) == 0:
+                continue
             head = self.buffer.popleft()
             #  scan the list manually, if dupe is found, discard and go on to the next element
             if StudentModuleHistoryDeDuper._scan_from_front(head, self.buffer):
@@ -57,7 +62,7 @@ class StudentModuleHistoryDeDuper(object):
             if self.num_written >= MAX_WRITTEN:
                 break
         log_studentmodulehistories(write_list)
-        return head.pk
+        return
 
     @staticmethod
     def _scan_from_front(needle, haystack_list):

@@ -33,6 +33,7 @@ class LogModelBase(models.Model):
     modulehistory_id = models.IntegerField(db_index=True, db_column='modulehistory_id')
     student_id = models.IntegerField(db_index=True, db_column='student_id')
     created = models.DateTimeField(db_index=True, db_column='created')
+    course_id = models.CharField(max_length=255, db_index=True, db_column='course_id')
 
 
 class LogModelJson(LogModelBase):
@@ -49,7 +50,7 @@ class LogModelJson(LogModelBase):
         table_name = _get_table_name(instance.student_module.course_id, instance.student_module.module_type)
 
         try:
-            state = json.loads(instance.state)
+            state = json_lib.loads(instance.state)
         except (TypeError, ValueError):
             state = {'exception': 'failed to load state'}
 
@@ -59,6 +60,7 @@ class LogModelJson(LogModelBase):
             modulehistory_id=instance.id,
             student_id=instance.student_module.student_id,
             created=instance.created,
+            course_id=instance.course_id,
             grade=instance.grade,
             max_grade=instance.max_grade,
             json=state,
@@ -215,29 +217,39 @@ class ProblemLogModelJson(LogModelBase):
         except (TypeError, ValueError):
             state = {'exception': 'failed to load state'}
 
+        extended_due = _try_parse_datetimestr(state.get('extended_due'))
+        time_started = _try_parse_datetimestr(state.get('time_started'))
+        last_submission_time = _try_parse_datetimestr(state.get('last_submission_time'))
+
         obj = cls(
             module_loc=instance.student_module.module_state_key,
             module_id=instance.student_module_id,
             modulehistory_id=instance.id,
             student_id=instance.student_module.student_id,
             created=instance.created,
+            course_id=instance.course_id,
             grade=instance.grade,
             max_grade=instance.max_grade,
             json=state,
             attempts=state.get('attempts'),
-            extended_due=dateutil.parser.parse(state['extended_due']) if 'extended_due' in state else None,
+            extended_due=extended_due,
             done=state.get('done'),
             seed=state.get('seed'),
-            time_started=dateutil.parser.parser(state['time_started']) if 'time_started' in state else None,
-            last_submission_time=(dateutil.parser.parser(state['last_submission_time'])
-                                  if 'last_submission_time' in state
-                                  else None),
+            time_started=time_started,
+            last_submission_time=last_submission_time,
         )
         obj._meta.db_table = table_name
         obj.save(using=DB_NAME)
         for (json_key, dbtable_suffix, subtype_model) in cls.sub_tables:
             for key, value in state.get(json_key, {}).iteritems():
                 subtype_model.write_log(value, key, instance.student_module.course_id, obj.id)
+
+
+def _try_parse_datetimestr(datetimestr):
+    try:
+        return dateutil.parser.parse(datetimestr)
+    except (AttributeError, ValueError, TypeError):
+        return None
 
 
 def create_indexes(table_name, fields):

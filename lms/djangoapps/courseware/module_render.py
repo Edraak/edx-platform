@@ -369,7 +369,7 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
 
     if settings.FEATURES.get('DISPLAY_DEBUG_INFO_TO_STAFF'):
         if has_access(user, descriptor, 'staff', course_id):
-            block_wrappers.append(partial(add_staff_debug_info, user))
+            block_wrappers.append(partial(add_staff_debug_info, user, course))
 
     # These modules store data using the anonymous_student_id as a key.
     # To prevent loss of data, we will continue to provide old modules with

@@ -100,7 +100,7 @@ class StudentModuleHistory(models.Model):
 
     student_module = models.ForeignKey(StudentModule, db_index=True)
     version = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-
+    course_id = models.CharField(max_length=255, db_index=True)
     # This should be populated from the modified field in StudentModule
     created = models.DateTimeField(db_index=True)
     state = models.TextField(null=True, blank=True)
@@ -112,6 +112,7 @@ class StudentModuleHistory(models.Model):
         if instance.module_type in StudentModuleHistory.HISTORY_SAVING_TYPES:
             history_entry = StudentModuleHistory(student_module=instance,
                                                  version=None,
+                                                 course_id=instance.course_id,
                                                  created=instance.modified,
                                                  state=instance.state,
                                                  grade=instance.grade,

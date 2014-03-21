@@ -1,9 +1,22 @@
 from django.core.management.base import BaseCommand, CommandError
+from optparse import make_option
+
 from exploded.daemon import StudentModuleHistoryDeDuper
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'explodes studentmodulehistory items into a schema and stores them in the exploded db'
 
-    def handle(self, *args, **kwargs):
+    option_list = BaseCommand.option_list + (make_option(
+        '-c',
+        '--course',
+        action='store',
+        dest='course_id',
+        default=None,
+        help='Limit the studentmodulehistory items processed to <COURSE_ID>'
+    ),)
+    def handle(self, *args, **options):
+        print(options)
+        if 'course_id' in options:
+            print(options['course_id'])
         deduper = StudentModuleHistoryDeDuper()
-        deduper.run_daemon()
+        deduper.run_daemon(options['course_id'])
