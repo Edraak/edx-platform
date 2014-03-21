@@ -297,7 +297,7 @@ class VideoStudioViewHandlers(object):
             /translation GET:
                 TranscriptException: requested language is not in self.transcripts.
         """
-        _ = item.runtime.service(item, "i18n").ugettext
+        _ = self.runtime.service(self, "i18n").ugettext
 
         if dispatch.startswith('translation'):
             language = dispatch.replace('translation', '').strip('/')

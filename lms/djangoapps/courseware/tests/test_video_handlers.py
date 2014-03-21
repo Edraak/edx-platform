@@ -463,7 +463,6 @@ class TestStudioTranscriptTranslationDeleteDispatch(TestVideo):
 
     def setUp(self):
         super(TestStudioTranscriptTranslationDeleteDispatch, self).setUp()
-        self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
         subs = {
                     u'end': [100],
                     u'start': [12],

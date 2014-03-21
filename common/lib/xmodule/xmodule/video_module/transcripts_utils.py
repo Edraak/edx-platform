@@ -410,14 +410,11 @@ def youtube_speed_dict(item):
 def subs_filename(subs_id, lang='en'):
     """
     Generate proper filename for storage.
-
-    # TODO add tests for unicode names.
     """
     if lang == 'en':
         return u'subs_{0}.srt.sjson'.format(subs_id)
     else:
         return u'{0}_subs_{1}.srt.sjson'.format(lang, subs_id)
-
 
 
 def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
@@ -429,6 +426,7 @@ def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
     try:
         srt_transcripts = contentstore().find(Transcript.asset_location(item.location, user_filename))
     except NotFoundError as ex:
+        _ = item.runtime.service(item, "i18n").ugettext
         raise TranscriptException(_("{exception_message}: Can't find uploaded transcripts: {user_filename}").format(
             exception_message=ex.message,
             user_filename=user_filename
