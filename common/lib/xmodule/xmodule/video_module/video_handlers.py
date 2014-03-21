@@ -28,12 +28,19 @@ from .transcripts_utils import (
 log = logging.getLogger(__name__)
 
 
+# Disable no-member warning:
+# pylint: disable=E1101
+
+
 class VideoStudentViewHandlers(object):
     """
     Handlers for video module instance.
     """
 
     def handle_ajax(self, dispatch, data):
+        """
+        Update values of xfields, that were changed by student.
+        """
         accepted_keys = [
             'speed', 'saved_video_position', 'transcript_language',
             'transcript_download_format', 'youtube_is_available'
@@ -41,7 +48,7 @@ class VideoStudentViewHandlers(object):
 
         conversions = {
             'speed': json.loads,
-            'saved_video_position': lambda v: RelativeTime.isotime_to_timedelta(v),
+            'saved_video_position': RelativeTime.isotime_to_timedelta,
             'youtube_is_available': json.loads,
         }
 
@@ -202,12 +209,12 @@ class VideoStudentViewHandlers(object):
             try:
                 transcript = self.translation(request.GET.get('videoId', None))
             except (
-                    TranscriptException,
-                    NotFoundError,
-                    UnicodeDecodeError,
-                    TranscriptException,
-                    TranscriptsGenerationException
-                ) as ex:
+                TranscriptException,
+                NotFoundError,
+                UnicodeDecodeError,
+                TranscriptException,
+                TranscriptsGenerationException
+            ) as ex:
                 log.info(ex.message)
                 response = Response(status=404)
             else:
@@ -240,7 +247,7 @@ class VideoStudentViewHandlers(object):
                     available_translations = ['en']
             for lang in self.transcripts:
                 try:
-                   Transcript.asset(self.location, None, None, self.transcripts[lang])
+                    Transcript.asset(self.location, None, None, self.transcripts[lang])
                 except NotFoundError:
                     continue
                 available_translations.append(lang)
@@ -254,6 +261,7 @@ class VideoStudentViewHandlers(object):
             response = Response(status=404)
 
         return response
+
 
 class VideoStudioViewHandlers(object):
     """
@@ -328,7 +336,7 @@ class VideoStudioViewHandlers(object):
 
                 content = Transcript.get_asset(self.location, self.transcripts[language]).data
                 response = Response(content, headerlist=[
-                        ('Content-Disposition', 'attachment; filename="{}"'.format(self.transcripts[language])),
+                    ('Content-Disposition', 'attachment; filename="{}"'.format(self.transcripts[language])),
                 ])
                 response.content_type = Transcript.mime_types['srt']
 

@@ -33,7 +33,7 @@ from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
 
 from .video_utils import create_youtube_string
-from .video_xfields import *
+from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
 
 from xmodule.modulestore.inheritance import InheritanceKeyValueStore
@@ -109,7 +109,7 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
                 track_url = self.track
                 transcript_download_format = None
             elif self.sub or self.transcripts:
-                track_url = self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/download'
+                track_url = self.runtime.handler_url(self, 'transcript', 'download').rstrip('/?')
 
         if not self.transcripts:
             transcript_language = u'en'
@@ -161,8 +161,8 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
             'transcript_download_formats_list': self.descriptor.fields['transcript_download_format'].values,
             'transcript_language': transcript_language,
             'transcript_languages': json.dumps(sorted_languages),
-            'transcript_translation_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation',
-            'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/available_translations',
+            'transcript_translation_url': self.runtime.handler_url(self, 'transcript', 'translation').rstrip('/?'),
+            'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript', 'available_translations').rstrip('/?'),
         })
 
 
@@ -246,7 +246,7 @@ class VideoDescriptor(VideoFields, VideoStudioViewHandlers, TabsEditingDescripto
         languages.sort(key=lambda l: l['label'])
         editable_fields['transcripts']['languages'] = languages
         editable_fields['transcripts']['type'] = 'VideoTranslations'
-        editable_fields['transcripts']['urlRoot'] = self.runtime.handler_url(self, 'studio_transcript').rstrip('/?') + '/translation'
+        editable_fields['transcripts']['urlRoot'] = self.runtime.handler_url(self, 'studio_transcript', 'translation').rstrip('/?')
         return editable_fields
 
     @classmethod

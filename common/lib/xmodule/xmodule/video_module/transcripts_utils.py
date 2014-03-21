@@ -88,7 +88,7 @@ def save_subs_to_store(subs, subs_id, item, language='en'):
     """
     filedata = json.dumps(subs, indent=2)
     filename = subs_filename(subs_id, language)
-    return save_to_store(filedata, filename,  'application/json', item.location)
+    return save_to_store(filedata, filename, 'application/json', item.location)
 
 def get_transcripts_from_youtube(youtube_id, settings, i18n):
     """
@@ -423,10 +423,11 @@ def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
 
     `item` is module object.
     """
+    _ = item.runtime.service(item, "i18n").ugettext
+
     try:
         srt_transcripts = contentstore().find(Transcript.asset_location(item.location, user_filename))
     except NotFoundError as ex:
-        _ = item.runtime.service(item, "i18n").ugettext
         raise TranscriptException(_("{exception_message}: Can't find uploaded transcripts: {user_filename}").format(
             exception_message=ex.message,
             user_filename=user_filename
@@ -473,7 +474,7 @@ class Transcript(object):
     """
     mime_types = {
         'srt': 'application/x-subrip',
-        'txt':  'text/plain',
+        'txt': 'text/plain',
         'sjson': 'application/json',
     }
 

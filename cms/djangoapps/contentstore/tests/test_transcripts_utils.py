@@ -552,6 +552,9 @@ class TestTranscript(unittest.TestCase):
 
 
 class TestSubsFilename(unittest.TestCase):
+    """
+    Tests for subs_filename funtion.
+    """
 
     def test_unicode(self):
         name = transcripts_utils.subs_filename(u"˙∆©ƒƒƒ")

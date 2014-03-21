@@ -282,7 +282,7 @@ def i_see_correct_langs(_step, langs):
     menu_name = 'language'
     open_menu(menu_name)
     items = world.css_find(VIDEO_MENUS[menu_name] + ' li')
-    translations = {t.strip() : LANGUAGES[t.strip()] for t in langs.split(',')}
+    translations = {t.strip(): LANGUAGES[t.strip()] for t in langs.split(',')}
 
     assert len(translations) == len(items)
     for lang_code, label in translations.items():

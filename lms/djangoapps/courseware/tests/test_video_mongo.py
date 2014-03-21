@@ -55,11 +55,11 @@ class TestVideoYouTube(TestVideo):
             'transcript_language': u'en',
             'transcript_languages': '{"en": "English", "uk": "Ukrainian"}',
             'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
-                self.item_descriptor, 'transcript'
-            ).rstrip('/?') + '/translation',
+                self.item_descriptor, 'transcript', 'translation'
+            ).rstrip('/?'),
             'transcript_available_translations_url': self.item_descriptor.xmodule_runtime.handler_url(
-                self.item_descriptor, 'transcript'
-            ).rstrip('/?') + '/available_translations',
+                self.item_descriptor, 'transcript', 'available_translations'
+            ).rstrip('/?'),
         }
 
         self.assertEqual(
@@ -121,11 +121,11 @@ class TestVideoNonYouTube(TestVideo):
             'transcript_language': u'en',
             'transcript_languages': '{"en": "English"}',
             'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
-                self.item_descriptor, 'transcript'
-            ).rstrip('/?') + '/translation',
+                self.item_descriptor, 'transcript', 'translation'
+            ).rstrip('/?'),
             'transcript_available_translations_url': self.item_descriptor.xmodule_runtime.handler_url(
-                self.item_descriptor, 'transcript'
-            ).rstrip('/?') + '/available_translations',
+                self.item_descriptor, 'transcript', 'available_translations'
+            ).rstrip('/?')
         }
 
         self.assertEqual(
@@ -232,8 +232,8 @@ class TestGetHtmlMethod(BaseTestXmodule):
 
             self.initialize_module(data=DATA)
             track_url = self.item_descriptor.xmodule_runtime.handler_url(
-                self.item_descriptor, 'transcript'
-            ).rstrip('/?') + '/download'
+                self.item_descriptor, 'transcript', 'download'
+            ).rstrip('/?')
 
             context = self.item_descriptor.render('student_view').content
 
@@ -242,11 +242,11 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 'transcript_languages': '{"en": "English"}' if not data['transcripts'] else '{"uk": "Ukrainian"}',
                 'transcript_language': u'en' if not data['transcripts'] or data.get('sub') else u'uk',
                 'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
-                    self.item_descriptor, 'transcript'
-                ).rstrip('/?') + '/translation',
+                    self.item_descriptor, 'transcript', 'translation'
+                ).rstrip('/?'),
                 'transcript_available_translations_url': self.item_descriptor.xmodule_runtime.handler_url(
-                    self.item_descriptor, 'transcript'
-                ).rstrip('/?') + '/available_translations',
+                    self.item_descriptor, 'transcript', 'available_translations'
+                ).rstrip('/?'),
                 'ajax_url': self.item_descriptor.xmodule_runtime.ajax_url + '/save_user_state',
                 'track': track_url if data['expected_track_url'] == u'a_sub_file.srt.sjson' else data['expected_track_url'],
                 'sub': data['sub'],
@@ -354,11 +354,11 @@ class TestGetHtmlMethod(BaseTestXmodule):
 
             expected_context.update({
                 'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
-                    self.item_descriptor, 'transcript'
-                ).rstrip('/?') + '/translation',
+                    self.item_descriptor, 'transcript', 'translation'
+                ).rstrip('/?'),
                 'transcript_available_translations_url': self.item_descriptor.xmodule_runtime.handler_url(
-                    self.item_descriptor, 'transcript'
-                ).rstrip('/?') + '/available_translations',
+                    self.item_descriptor, 'transcript', 'available_translations'
+                ).rstrip('/?'),
                 'ajax_url': self.item_descriptor.xmodule_runtime.ajax_url + '/save_user_state',
                 'sources': data['result'],
                 'id': self.item_descriptor.location.html_id(),
@@ -407,7 +407,6 @@ class TestVideoDescriptorInitialization(BaseTestXmodule):
         self.assertNotIn('source', fields)
         self.assertTrue(self.item_descriptor.download_video)
         self.assertFalse(self.item_descriptor.source_visible)
-
 
     def test_download_video_is_explicitly_set(self):
         with patch(
@@ -499,6 +498,9 @@ class TestVideoDescriptorInitialization(BaseTestXmodule):
 
 
 class VideoDescriptorTest(unittest.TestCase):
+    """
+    Tests for video descriptor that requires access to django settings.
+    """
 
     def setUp(self):
         system = get_test_descriptor_system()
