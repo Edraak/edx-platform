@@ -12,7 +12,8 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             "click .setting-clear" : "clear",
             "click .create-setting" : "addEntry",
             "click .remove-setting" : "remove",
-            "click .upload-setting" : "upload"
+            "click .upload-setting" : "upload",
+            "change select" : "onChangeHandler"
         },
 
         templateName: "metadata-translations-entry",
@@ -28,12 +29,6 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             }
 
             this.templateItem = _.template(tpl);
-
-            this.$el.on('change', 'select', function () {
-                self.showClearButton();
-                self.enableAdd();
-                self.updateModel();
-            });
 
             AbstractEditor.prototype.initialize.apply(this, arguments);
         },
@@ -262,6 +257,12 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                 // If files aren't uploaded, just revert the model and update view.
                 this.revertModel();
             }
+        },
+
+        onChangeHandler: function (event) {
+            this.showClearButton();
+            this.enableAdd();
+            this.updateModel();
         }
     });
 
