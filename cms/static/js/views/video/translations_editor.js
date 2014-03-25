@@ -1,17 +1,16 @@
 define(
     [
         "jquery", "underscore",
-        "js/views/abstract_editor", "js/views/feedback_prompt",
-        "js/views/feedback_notification", "js/models/uploads", "js/views/uploads"
+        "js/views/abstract_editor", "js/models/uploads", "js/views/uploads"
 
     ],
-function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadDialog) {
+function($, _, AbstractEditor, FileUpload, UploadDialog) {
     "use strict";
     var Translations = AbstractEditor.extend({
         events : {
             "click .setting-clear" : "clear",
             "click .create-setting" : "addEntry",
-            "click .remove-setting" : "remove",
+            "click .remove-setting" : "removeEntry",
             "click .upload-setting" : "upload",
             "change select" : "onChangeHandler"
         },
@@ -118,13 +117,18 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             this.$el.find('.create-setting').addClass('is-disabled');
         },
 
-        removeFromEditor: function(entry) {
+        removeEntry: function(event) {
+            event.preventDefault();
+
+            var entry = $(event.currentTarget).data('lang');
             this.setValueInEditor(_.omit(this.model.get('value'), entry));
             this.updateModel();
             this.$el.find('.create-setting').removeClass('is-disabled');
         },
 
         upload: function (event) {
+            event.preventDefault();
+
             var self = this,
                 target = $(event.currentTarget),
                 lang = target.data('lang'),
@@ -148,112 +152,14 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             $('.wrapper-view').after(view.show().el);
         },
 
-        remove: function (event) {
-            if (event && event.preventDefault) {
-                event.preventDefault();
-            }
-
-            var self = this,
-                target = $(event.currentTarget),
-                lang = target.data('lang'),
-                filename = target.data('value');
-
-            // If file was uploaded, send an ajax request to remove the translation.
-            if (lang && filename) {
-                new PromptView.Warning({
-                    title: gettext('Delete this translation?'),
-                    message: gettext('Deleting this translation is permanent and cannot be undone.'),
-                    actions: {
-                        primary: {
-                            text: gettext('Yes, delete this translation'),
-                            click: function (view) {
-                                view.hide();
-
-                                var notification = new NotificationView.Mini({
-                                    title: gettext('Deleting&hellip;'),
-                                }).show();
-
-                                $.ajax({
-                                    url: self.model.get('urlRoot') + '/' + lang,
-                                    type: 'DELETE',
-                                    dataType: 'json',
-                                    success: function (response) {
-                                        // remove field from view.
-                                        self.removeFromEditor(lang);
-                                        notification.hide();
-                                    }
-                                });
-                            }
-                        },
-                        secondary: {
-                            text: gettext('Cancel'),
-                            click: function (view) {
-                                view.hide();
-                            }
-                        }
-                    }
-                }).show();
-            } else {
-                // If file isn't uploaded, just remove this field from view.
-                this.removeFromEditor(lang);
-            }
-        },
-
         enableAdd: function() {
             this.$el.find('.create-setting').removeClass('is-disabled');
         },
 
-        revertModel: function () {
+        clear: function() {
             AbstractEditor.prototype.clear.apply(this, arguments);
             if (_.isNull(this.model.getValue())) {
                 this.$el.find('.create-setting').removeClass('is-disabled');
-            }
-        },
-
-        clear: function() {
-            var self = this,
-                values = _.values(self.getValueFromEditor()).filter(_.identity),
-                defaultValues = _.values(self.model.get('default_value')),
-                difference = _.difference(values, defaultValues);
-
-            // If we have a `difference`, it means, that some files were uploaded
-            // and we send an ajax request to remove them on backend.
-            if (difference.length){
-                new PromptView.Warning({
-                    title: gettext('Delete translations?'),
-                    message: gettext('Deleting these translations are permanent and cannot be undone.'),
-                    actions: {
-                        primary: {
-                            text: gettext('Yes, delete these translations'),
-                            click: function (view) {
-                                view.hide();
-
-                                var notification = new NotificationView.Mini({
-                                    title: gettext('Deleting&hellip;'),
-                                }).show();
-
-                                $.ajax({
-                                    url: self.model.get('urlRoot') + '/',
-                                    type: 'DELETE',
-                                    dataType: 'json',
-                                    success: function (response) {
-                                        self.revertModel();
-                                        notification.hide();
-                                    }
-                                });
-                            }
-                        },
-                        secondary: {
-                            text: gettext('Cancel'),
-                            click: function (view) {
-                                view.hide();
-                            }
-                        }
-                    }
-                }).show();
-            } else {
-                // If files aren't uploaded, just revert the model and update view.
-                this.revertModel();
             }
         },
 

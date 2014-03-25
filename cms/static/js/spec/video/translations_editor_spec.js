@@ -38,15 +38,6 @@ function ($, _, create_sinon, Squire) {
             },
             self, injector;
 
-        var getPromptOptions = function (promptSpies) {
-            return promptSpies.constructor.mostRecentCall.args[0];
-        };
-
-        var clickPrimaryButton = function (promptSpies) {
-            var options = getPromptOptions(promptSpies);
-            options.actions.primary.click(promptSpies);
-        };
-
         var setValue = function (view, value) {
             view.setValueInEditor(value);
             view.updateModel();
@@ -142,19 +133,9 @@ function ($, _, create_sinon, Squire) {
                 type: 'text/template'
             }).text(TranslationsItenTemplate));
 
-            this.promptSpies = createPromptSpy('Prompt.Warning');
-            this.deletingSpies = createPromptSpy('Notification.Mini');
             this.uploadSpies = createPromptSpy('UploadDialog');
 
             injector = new Squire();
-            injector.mock('js/views/feedback_prompt', {
-              'Warning': this.promptSpies.constructor
-            });
-
-            injector.mock('js/views/feedback_notification', {
-                'Mini': this.deletingSpies.constructor
-            });
-
             injector.mock('js/views/uploads', function () {
                 return self.uploadSpies.constructor;
             });
@@ -241,24 +222,7 @@ function ($, _, create_sinon, Squire) {
                 });
 
                 this.view.$el.find('.create-setting').click();
-
                 this.view.clear();
-
-                expect(this.promptSpies.constructor).toHaveBeenCalled();
-                expect(this.promptSpies.show).toHaveBeenCalled();
-                options = getPromptOptions(this.promptSpies);
-                expect(options.title).toMatch('Delete translations?');
-
-                clickPrimaryButton(this.promptSpies);
-                expect(this.promptSpies.hide).toHaveBeenCalled();
-
-                expect(this.deletingSpies.constructor).toHaveBeenCalled();
-                expect(this.deletingSpies.show).toHaveBeenCalled();
-                options = getPromptOptions(this.deletingSpies);
-                expect(options.title).toMatch('Deleting&hellip;');
-
-                create_sinon.respondWithJson(requests, {});
-                expect(this.deletingSpies.hide).toHaveBeenCalled();
 
                 expect(this.view).assertClear({
                     'en': 'en.srt',
@@ -303,22 +267,6 @@ function ($, _, create_sinon, Squire) {
 
                 expect(_.keys(this.view.model.get('value')).length).toEqual(4);
                 this.view.$el.find('.remove-setting').last().click();
-
-                expect(this.promptSpies.constructor).toHaveBeenCalled();
-                expect(this.promptSpies.show).toHaveBeenCalled();
-                options = getPromptOptions(this.promptSpies);
-                expect(options.title).toMatch('Delete this translation?');
-
-                clickPrimaryButton(this.promptSpies);
-                expect(this.promptSpies.hide).toHaveBeenCalled();
-
-                expect(this.deletingSpies.constructor).toHaveBeenCalled();
-                expect(this.deletingSpies.show).toHaveBeenCalled();
-                options = getPromptOptions(this.deletingSpies);
-                expect(options.title).toMatch('Deleting&hellip;');
-
-                create_sinon.respondWithJson(requests, {});
-                expect(this.deletingSpies.hide).toHaveBeenCalled();
                 expect(_.keys(this.view.model.get('value')).length).toEqual(3);
             });
 
