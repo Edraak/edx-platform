@@ -277,11 +277,6 @@ class VideoStudioViewHandlers(object):
             /translation/[language_id]
 
         `translation` dispatch support following HTTP methods:
-            `DELETE`:
-                clear field and remove loaded transcript asset for given language.
-                For now, works only for self.transcripts, not for `en`.
-                If language_id is set, remove transcripts file only for language_id, else remove all
-                transcript files which names are in self.transcripts.
             `POST`:
                 Upload srt file. Check possibility of generation of proper sjson files.
                 Rename uploaded srt file according to transcript format.
@@ -310,14 +305,6 @@ class VideoStudioViewHandlers(object):
 
         if dispatch.startswith('translation'):
             language = dispatch.replace('translation', '').strip('/')
-
-            if request.method == 'DELETE':  # We will clear field on front-end on save. So we remove files here:
-                if language:
-                    Transcript.delete_asset(self.location, self.transcripts[language])
-                else:
-                    for lang in self.transcripts:
-                        Transcript.delete_asset(self.location, self.transcripts[lang])
-                return Response(status=204)
 
             if not language:
                 log.info("Invalid /translation request: no language.")

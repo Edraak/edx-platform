@@ -222,7 +222,6 @@ class TestTranscriptDownloadDispatch(TestVideo):
     Tests for `download` dispatch.
     """
 
-    non_en_file = _create_srt_file()
     DATA = """
         <video show_captions="true"
         display_name="A Name"
@@ -230,7 +229,7 @@ class TestTranscriptDownloadDispatch(TestVideo):
             <source src="example.mp4"/>
             <source src="example.webm"/>
         </video>
-    """.format(os.path.split(non_en_file.name)[1])
+    """
 
     MODEL_DATA = {
         'data': DATA
@@ -458,59 +457,6 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
         self.assertEqual(response.headers['Content-Type'], 'application/x-subrip; charset=utf-8')
         self.assertEqual(response.headers['Content-Disposition'], 'attachment; filename="塞.srt"')
         self.assertEqual(response.headers['Content-Language'], 'zh')
-
-
-class TestStudioTranscriptTranslationDeleteDispatch(TestVideo):
-    """
-    Test Studio video handler that provide translation transcripts.
-
-    Tests for `translation`dispatch DELETE HTTP method.
-    """
-
-    non_en_file1 = _create_srt_file()
-    non_en_file2 = _create_srt_file()
-    DATA = """
-        <video show_captions="true"
-        display_name="A Name"
-        >
-            <source src="example.mp4"/>
-            <source src="example.webm"/>
-            <transcript language="uk" src="{}"/>
-            <transcript language="de" src="{}"/>
-        </video>
-    """.format(
-        os.path.split(non_en_file1.name)[1],
-        os.path.split(non_en_file2.name)[1]
-    )
-
-    MODEL_DATA = {
-        'data': DATA
-    }
-
-    def setUp(self):
-        super(TestStudioTranscriptTranslationDeleteDispatch, self).setUp()
-        self.non_en_file1.seek(0)
-        self.non_en_file2.seek(0)
-        _upload_file(self.non_en_file1, self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1])
-        _upload_file(self.non_en_file2, self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1])
-        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
-        self.request = Request.blank('')
-        self.request.method = 'DELETE'
-
-    def test_with_language(self):
-        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
-        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
-        response = self.item_descriptor.studio_transcript(request=self.request, dispatch='translation/uk')
-        self.assertEqual(response.status, '204 No Content')
-        self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
-        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
-
-    def test_without_languages(self):
-        self.assertTrue(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
-        response = self.item_descriptor.studio_transcript(request=self.request, dispatch='translation')
-        self.assertEqual(response.status, '204 No Content')
-        self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file1.name)[1]))
-        self.assertFalse(_check_asset(self.item_descriptor.location, os.path.split(self.non_en_file2.name)[1]))
 
 
 class TestStudioTranscriptTranslationPostDispatch(TestVideo):
