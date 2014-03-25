@@ -429,21 +429,22 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
         response = self.item_descriptor.studio_transcript(request=request, dispatch='translation')
         self.assertEqual(response.status, '400 Bad Request')
 
-        # Requested language is not in self.transcripts.
+        # No filename in request.GET
         request = Request.blank('')
-        with self.assertRaises(TranscriptException):
-            response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/de')
+        response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
+        self.assertEqual(response.status, '400 Bad Request')
 
         # Correct case:
-        _upload_file(self.non_en_file, self.item_descriptor.location, os.path.split(self.non_en_file.name)[1])
+        filename = os.path.split(self.non_en_file.name)[1]
+        _upload_file(self.non_en_file, self.item_descriptor.location, filename)
         self.non_en_file.seek(0)
-        request = Request.blank('')
+        request = Request.blank(u'translation/uk?filename={}'.format(filename))
         response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
         self.assertEqual(response.body, self.non_en_file.read())
         self.assertEqual(response.headers['Content-Type'], 'application/x-subrip; charset=utf-8')
         self.assertEqual(
             response.headers['Content-Disposition'],
-            'attachment; filename="{}"'.format(os.path.split(self.non_en_file.name)[1])
+            'attachment; filename="{}"'.format(filename)
         )
         self.assertEqual(response.headers['Content-Language'], 'uk')
 
@@ -451,7 +452,7 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
         self.non_en_file.seek(0)
         _upload_file(self.non_en_file, self.item_descriptor.location, u'塞.srt')
         self.non_en_file.seek(0)
-        request = Request.blank('')
+        request = Request.blank('translation/zh?filename={}'.format(u'塞.srt'.encode('utf8')))
         response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/zh')
         self.assertEqual(response.body, self.non_en_file.read())
         self.assertEqual(response.headers['Content-Type'], 'application/x-subrip; charset=utf-8')
@@ -513,7 +514,7 @@ class TestStudioTranscriptTranslationPostDispatch(TestVideo):
         response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
         self.assertEqual(response.status, '201 Created')
         self.assertDictEqual(json.loads(response.body), {'filename': u'filename.srt', 'status': 'Success'})
-        self.assertEqual(self.item_descriptor.transcripts['uk'], u'filename.srt')
+        self.assertDictEqual(self.item_descriptor.transcripts, {})
         self.assertTrue(_check_asset(self.item_descriptor.location, u'filename.srt'))
 
 

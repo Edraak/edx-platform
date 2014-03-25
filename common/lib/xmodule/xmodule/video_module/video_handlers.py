@@ -274,18 +274,15 @@ class VideoStudioViewHandlers(object):
         Entry point for Studio transcript handlers.
 
         Dispatches:
-            /translation/[language_id]
+            /translation/[language_id] - language_id sould be in url.
 
         `translation` dispatch support following HTTP methods:
             `POST`:
                 Upload srt file. Check possibility of generation of proper sjson files.
-                Rename uploaded srt file according to transcript format.
                 For now, it works only for self.transcripts, not for `en`.
-                language_id should be in url
                 Do not update self.transcripts, as fields are updated on save in Studio.
             `GET:
-                Provide translation for requested non-en language, SRT format is sent back on success.
-                Proper language_id should be in url.
+                Return filename from storage. SRT format is sent back on success. Filename should be in GET dict.
 
         We raise all exceptions right in Studio:
             NotFoundError:
@@ -298,8 +295,6 @@ class VideoStudioViewHandlers(object):
                 TranscriptsGenerationException, TranscriptException:
                     no SRT extension or not parse-able by PySRT
                 UnicodeDecodeError: non-UTF8 uploaded file content encoding.
-            /translation GET:
-                TranscriptException: requested language is not in self.transcripts.
         """
         _ = self.runtime.service(self, "i18n").ugettext
 
@@ -312,19 +307,21 @@ class VideoStudioViewHandlers(object):
 
             if request.method == 'POST':
                 subtitles = request.POST['file']
-                save_to_store(subtitles.file.read(), unicode(subtitles.filename), 'text/plain', self.location)
+                save_to_store(subtitles.file.read(), unicode(subtitles.filename), 'application/x-subrip', self.location)
                 generate_sjson_for_all_speeds(self, unicode(subtitles.filename), {}, language)
-                self.transcripts[language] = unicode(subtitles.filename)
                 response = {'filename': unicode(subtitles.filename), 'status': 'Success'}
                 return Response(json.dumps(response), status=201)
 
             elif request.method == 'GET':
-                if language not in self.transcripts:
-                    raise TranscriptException(_("Requested language does not exist (probably Upload failure.)"))
 
-                content = Transcript.get_asset(self.location, self.transcripts[language]).data
+                filename = request.GET.get('filename')
+                if not filename:
+                    log.info("Invalid /translation request: no filename in request.GET")
+                    return Response(status=400)
+
+                content = Transcript.get_asset(self.location, filename).data
                 response = Response(content, headerlist=[
-                    ('Content-Disposition', 'attachment; filename="{}"'.format(self.transcripts[language].encode('utf8'))),
+                    ('Content-Disposition', 'attachment; filename="{}"'.format(filename.encode('utf8'))),
                     ('Content-Language', language),
                 ])
                 response.content_type = Transcript.mime_types['srt']
