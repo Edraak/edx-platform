@@ -480,18 +480,18 @@ class TestStudioTranscriptTranslationPostDispatch(TestVideo):
         'data': DATA
     }
 
-    def test_studio_transcript_post(self):
+    METADATA = {}
 
+    def test_studio_transcript_post(self):
         # Check for exceptons:
 
-        # Language is passed, bad content or filename
+        # Language is passed, bad content or filename:
 
         # should be first, as other tests save transcrips to store.
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', SRT_content)})
         with patch('xmodule.video_module.video_handlers.save_to_store'):
             with self.assertRaises(TranscriptException):  # transcripts were not saved to store for some reason.
                 response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
-
         request = Request.blank('/translation/uk', POST={'file': ('filename', 'content')})
         with self.assertRaises(TranscriptsGenerationException):  # Not an srt filename
             self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
