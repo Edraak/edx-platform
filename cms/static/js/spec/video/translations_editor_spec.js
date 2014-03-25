@@ -1,9 +1,9 @@
 define(
     [
-        "jquery", "underscore", "js/spec/create_sinon", "squire"
+        'jquery', 'underscore', 'js/spec/create_sinon', 'squire'
     ],
 function ($, _, create_sinon, Squire) {
-    "use strict";
+    'use strict';
     describe('VideoTranslations', function () {
         var TranslationsEntryTemplate = readFixtures(
                 'video/metadata-translations-entry.underscore'
@@ -17,11 +17,11 @@ function ($, _, create_sinon, Squire) {
                     'en': 'en.srt',
                     'ru': 'ru.srt'
                 },
-                display_name: "Transcript Translation",
+                display_name: 'Transcript Translation',
                 explicitly_set: false,
-                field_name: "translations",
-                help: "Specifies the name for this component.",
-                type: "VideoTranslations",
+                field_name: 'translations',
+                help: 'Specifies the name for this component.',
+                type: 'VideoTranslations',
                 languages: [
                     {code: 'zh', label: 'Chinese'},
                     {code: 'en', label: 'English'},
@@ -90,7 +90,7 @@ function ($, _, create_sinon, Squire) {
                     var env = this.env,
                         view = this.actual,
                         model = view.model,
-                        expectOriginal = false;
+                        expectOriginal;
 
                     view.setValueInEditor(newValue);
                     expectOriginal = env.equals_(model.getValue(), originalValue);
@@ -102,7 +102,6 @@ function ($, _, create_sinon, Squire) {
                 verifyKeysUnique: function (initial, expected, testData) {
                     var env = this.env,
                         view = this.actual,
-                        model = view.model,
                         item, value;
 
                     view.setValueInEditor(initial);
@@ -116,8 +115,7 @@ function ($, _, create_sinon, Squire) {
                     return env.equals_(value, expected);
                 },
                 verifyButtons: function (upload, download, remove, index) {
-                    var env = this.env,
-                        view = this.actual,
+                    var view = this.actual,
                         items = view.$el.find('.list-settings-item'),
                         item  = index ? items.eq(index) : items.last(),
                         uploadBtn = item.find('.upload-setting'),
@@ -134,14 +132,14 @@ function ($, _, create_sinon, Squire) {
                 }
             });
 
-            appendSetFixtures($("<script>", {
-                id: "metadata-translations-entry",
-                type: "text/template"
+            appendSetFixtures($('<script>', {
+                id: 'metadata-translations-entry',
+                type: 'text/template'
             }).text(TranslationsEntryTemplate));
 
-            appendSetFixtures($("<script>", {
-                id: "metadata-translations-item",
-                type: "text/template"
+            appendSetFixtures($('<script>', {
+                id: 'metadata-translations-item',
+                type: 'text/template'
             }).text(TranslationsItenTemplate));
 
             this.promptSpies = createPromptSpy('Prompt.Warning');
@@ -149,21 +147,21 @@ function ($, _, create_sinon, Squire) {
             this.uploadSpies = createPromptSpy('UploadDialog');
 
             injector = new Squire();
-            injector.mock("js/views/feedback_prompt", {
-              "Warning": this.promptSpies.constructor
+            injector.mock('js/views/feedback_prompt', {
+              'Warning': this.promptSpies.constructor
             });
 
-            injector.mock("js/views/feedback_notification", {
-                "Mini": this.deletingSpies.constructor
+            injector.mock('js/views/feedback_notification', {
+                'Mini': this.deletingSpies.constructor
             });
 
-            injector.mock("js/views/uploads", function () {
+            injector.mock('js/views/uploads', function () {
                 return self.uploadSpies.constructor;
             });
 
             runs(function() {
                 injector.require([
-                    "js/models/metadata", "js/views/video/translations_editor"
+                    'js/models/metadata', 'js/views/video/translations_editor'
                 ],
                 function(MetadataModel, Translations) {
                     var model = new MetadataModel($.extend(true, {}, modelStub));
@@ -173,7 +171,7 @@ function ($, _, create_sinon, Squire) {
 
             waitsFor(function() {
                 return self.view;
-            }, "VideoTranslations was not created", 1000);
+            }, 'VideoTranslations was not created', 1000);
         });
 
         afterEach(function () {
@@ -181,7 +179,7 @@ function ($, _, create_sinon, Squire) {
             injector.remove();
         });
 
-        it("returns the initial value upon initialization", function () {
+        it('returns the initial value upon initialization', function () {
             expect(this.view).assertValueInView({
                 'en': 'en.srt',
                 'ru': 'ru.srt',
@@ -192,7 +190,7 @@ function ($, _, create_sinon, Squire) {
             expect(this.view).verifyButtons(true, true, true);
         });
 
-        it("updates its value correctly", function () {
+        it('updates its value correctly', function () {
             expect(this.view).assertCanUpdateView({
                 'ru': 'ru.srt',
                 'uk': 'uk.srt',
@@ -200,7 +198,7 @@ function ($, _, create_sinon, Squire) {
             });
         });
 
-        it("uploads works correctly", function () {
+        it('uploads works correctly', function () {
             var options;
 
             setValue(this.view, {
@@ -232,8 +230,8 @@ function ($, _, create_sinon, Squire) {
             });
         });
 
-        describe("has a clear method to revert to the model default", function () {
-            it("w/ popup, if values were changed", function (){
+        describe('has a clear method to revert to the model default', function () {
+            it('w/ popup, if values were changed', function (){
                 var requests = create_sinon.requests(this),
                     options;
 
@@ -249,7 +247,7 @@ function ($, _, create_sinon, Squire) {
                 expect(this.promptSpies.constructor).toHaveBeenCalled();
                 expect(this.promptSpies.show).toHaveBeenCalled();
                 options = getPromptOptions(this.promptSpies);
-                expect(options.title).toMatch("Delete translations?");
+                expect(options.title).toMatch('Delete translations?');
 
                 clickPrimaryButton(this.promptSpies);
                 expect(this.promptSpies.hide).toHaveBeenCalled();
@@ -257,7 +255,7 @@ function ($, _, create_sinon, Squire) {
                 expect(this.deletingSpies.constructor).toHaveBeenCalled();
                 expect(this.deletingSpies.show).toHaveBeenCalled();
                 options = getPromptOptions(this.deletingSpies);
-                expect(options.title).toMatch("Deleting&hellip;");
+                expect(options.title).toMatch('Deleting&hellip;');
 
                 create_sinon.respondWithJson(requests, {});
                 expect(this.deletingSpies.hide).toHaveBeenCalled();
@@ -269,7 +267,7 @@ function ($, _, create_sinon, Squire) {
                 expect(this.view.$el.find('.create-setting')).not.toHaveClass('is-disabled');
             });
 
-            it("w/o popup, if just keys were changed", function (){
+            it('w/o popup, if just keys were changed', function (){
                 setValue(this.view, {
                     'fr': 'en.srt',
                     'uk': 'ru.srt'
@@ -288,18 +286,18 @@ function ($, _, create_sinon, Squire) {
             });
         });
 
-        it("has an update model method", function () {
+        it('has an update model method', function () {
             expect(this.view).assertUpdateModel(null, {'fr': 'fr.srt'});
         });
 
-        it("can add an entry", function () {
+        it('can add an entry', function () {
             expect(_.keys(this.view.model.get('value')).length).toEqual(4);
             this.view.$el.find('.create-setting').click();
             expect(this.view.$el.find('select').length).toEqual(5);
         });
 
-        describe("can remove an entry", function () {
-            it("w/ popup, if values were changed", function (){
+        describe('can remove an entry', function () {
+            it('w/ popup, if values were changed', function (){
                 var requests = create_sinon.requests(this),
                     options;
 
@@ -309,7 +307,7 @@ function ($, _, create_sinon, Squire) {
                 expect(this.promptSpies.constructor).toHaveBeenCalled();
                 expect(this.promptSpies.show).toHaveBeenCalled();
                 options = getPromptOptions(this.promptSpies);
-                expect(options.title).toMatch("Delete this translation?");
+                expect(options.title).toMatch('Delete this translation?');
 
                 clickPrimaryButton(this.promptSpies);
                 expect(this.promptSpies.hide).toHaveBeenCalled();
@@ -317,14 +315,14 @@ function ($, _, create_sinon, Squire) {
                 expect(this.deletingSpies.constructor).toHaveBeenCalled();
                 expect(this.deletingSpies.show).toHaveBeenCalled();
                 options = getPromptOptions(this.deletingSpies);
-                expect(options.title).toMatch("Deleting&hellip;");
+                expect(options.title).toMatch('Deleting&hellip;');
 
                 create_sinon.respondWithJson(requests, {});
                 expect(this.deletingSpies.hide).toHaveBeenCalled();
                 expect(_.keys(this.view.model.get('value')).length).toEqual(3);
             });
 
-            it("w/o popup, if just keys were changed", function (){
+            it('w/o popup, if just keys were changed', function (){
                 setValue(this.view, {
                     'en': 'en.srt',
                     'ru': 'ru.srt',
@@ -336,14 +334,14 @@ function ($, _, create_sinon, Squire) {
             });
         });
 
-        it("only allows one blank entry at a time", function () {
+        it('only allows one blank entry at a time', function () {
             expect(this.view.$el.find('select').length).toEqual(4);
             this.view.$el.find('.create-setting').click();
             this.view.$el.find('.create-setting').click();
             expect(this.view.$el.find('select').length).toEqual(5);
         });
 
-        it("only allows unique keys", function () {
+        it('only allows unique keys', function () {
             expect(this.view).verifyKeysUnique(
                 {'ru': 'ru.srt'}, {'ru': 'ru.srt'}, {'key': 'ru', 'value': ''}
             );
@@ -357,7 +355,7 @@ function ($, _, create_sinon, Squire) {
             );
         });
 
-        it("re-enables the add setting button after entering a new value", function () {
+        it('re-enables the add setting button after entering a new value', function () {
             expect(this.view.$el.find('select').length).toEqual(4);
             this.view.$el.find('.create-setting').click();
             expect(this.view).verifyButtons(false, false, true);

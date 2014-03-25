@@ -209,7 +209,7 @@ Feature: CMS Video Component Editor
     And I edit the component
     And I open tab "Advanced"
     And I see translations for "zh"
-    And I upload transcript file "uk_transcripts.srt" for "zh" language code
+    And I replace transcript file for "zh" language code by "uk_transcripts.srt"
     And I save changes
     Then when I view the video it does show the captions
     And I see "Привіт, edX вітає вас." text in the captions
@@ -221,7 +221,7 @@ Feature: CMS Video Component Editor
     And I open tab "Advanced"
     And I upload transcript file "chinese_transcripts.srt" for "zh" language code
     And I see translations for "zh"
-    And I upload transcript file "uk_transcripts.srt" for "zh" language code
+    And I replace transcript file for "zh" language code by "uk_transcripts.srt"
     And I save changes
     Then when I view the video it does show the captions
     And I see "Привіт, edX вітає вас." text in the captions

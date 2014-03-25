@@ -20,8 +20,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
         templateItemName: "metadata-translations-item",
 
         initialize: function () {
-            var self = this,
-                templateName = _.result(this, 'templateItemName'),
+            var templateName = _.result(this, 'templateItemName'),
                 tpl = document.getElementById(templateName).text;
 
             if(!tpl) {
@@ -29,13 +28,12 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
             }
 
             this.templateItem = _.template(tpl);
-
             AbstractEditor.prototype.initialize.apply(this, arguments);
         },
 
         getDropdown: function () {
             var dropdown,
-                filter = function (element, values) {
+                disableOptions = function (element, values) {
                     var dropdown = $(element).clone();
 
                     _.each(values, function(value, key) {
@@ -51,7 +49,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
 
             return function (values) {
                 if (dropdown) {
-                    return filter(dropdown, values);
+                    return disableOptions(dropdown, values);
                 }
 
                 dropdown = document.createElement('select');
@@ -65,7 +63,7 @@ function($, _, AbstractEditor, PromptView, NotificationView, FileUpload, UploadD
                     dropdown.options.add(option);
                 });
 
-                return filter(dropdown, values);
+                return disableOptions(dropdown, values);
             };
         }(),
 

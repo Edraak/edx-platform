@@ -17,11 +17,6 @@
         <%static:include path="js/${template_name}.underscore" />
     </script>
 % endfor
-% for template_name in ["metadata-translations-entry", "metadata-translations-item"]:
-    <script id="${template_name}" type="text/template">
-        <%static:include path="js/video/${template_name}.underscore" />
-    </script>
-% endfor
 
 <% showHighLevelSource='source_code' in editable_metadata_fields and editable_metadata_fields['source_code']['explicitly_set'] and enable_latex_compiler %>
 <% metadata_field_copy = copy.copy(editable_metadata_fields) %>
