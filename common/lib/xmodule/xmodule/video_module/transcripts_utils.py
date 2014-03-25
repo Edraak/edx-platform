@@ -473,8 +473,8 @@ class Transcript(object):
     Container for transcript methods.
     """
     mime_types = {
-        'srt': 'application/x-subrip',
-        'txt': 'text/plain',
+        'srt': 'application/x-subrip; charset=utf-8',
+        'txt': 'text/plain; charset=utf-8',
         'sjson': 'application/json',
     }
 

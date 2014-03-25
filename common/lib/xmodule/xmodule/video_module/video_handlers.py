@@ -232,6 +232,7 @@ class VideoStudentViewHandlers(object):
                     transcript_content,
                     headerlist=[
                         ('Content-Disposition', 'attachment; filename="{}"'.format(transcript_filename.encode('utf8'))),
+                        ('Content-Language', self.transcript_language),
                     ]
                 )
                 response.content_type = transcript_mime_type
@@ -337,6 +338,7 @@ class VideoStudioViewHandlers(object):
                 content = Transcript.get_asset(self.location, self.transcripts[language]).data
                 response = Response(content, headerlist=[
                     ('Content-Disposition', 'attachment; filename="{}"'.format(self.transcripts[language].encode('utf8'))),
+                    ('Content-Language', language),
                 ])
                 response.content_type = Transcript.mime_types['srt']
 
