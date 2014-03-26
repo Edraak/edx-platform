@@ -1,3 +1,4 @@
+import time
 from datetime import timedelta, datetime
 from collections import deque
 from django.db.models import Min
@@ -7,9 +8,9 @@ from exploded.util import log_studentmodulehistories
 
 SECONDS_TOLERANCE_FOR_EQ = 5
 BUFFER_SIZE = 100
-MAX_WRITTEN = 100000000
+MAX_WRITTEN = 1000000000
 DB_BATCH = 50
-
+SLEEP_SECS = 10
 
 class StudentModuleHistoryDeDuper(object):
     def __init__(self):
@@ -24,7 +25,8 @@ class StudentModuleHistoryDeDuper(object):
         starttime = datetime.now()
         while self.num_written < MAX_WRITTEN:
             self.refill_buffer(course_id)
-            self.process_buffer()
+            if self.process_buffer(wait_until_full=True) <= 0:
+                time.sleep(SLEEP_SECS)
         print(datetime.now() - starttime)
 
     def refill_buffer(self, course_id):
@@ -46,7 +48,7 @@ class StudentModuleHistoryDeDuper(object):
         write_list = []
         # only do work when our buffer is full (so we have stuff to compare against)
         if wait_until_full and len(self.buffer) < BUFFER_SIZE:
-            return None
+            return 0
         for _ in range(DB_BATCH):
             if len(self.buffer) == 0:
                 continue
@@ -62,7 +64,7 @@ class StudentModuleHistoryDeDuper(object):
             if self.num_written >= MAX_WRITTEN:
                 break
         log_studentmodulehistories(write_list)
-        return
+        return len(write_list)
 
     @staticmethod
     def _scan_from_front(needle, haystack_list):

@@ -35,6 +35,12 @@ class LogModelBase(models.Model):
     created = models.DateTimeField(db_index=True, db_column='created')
     course_id = models.CharField(max_length=255, db_index=True, db_column='course_id')
 
+    @classmethod
+    def already_written(cls, instance):
+        table_name = _get_table_name(instance.student_module.course_id, instance.student_module.module_type)
+        cls._meta.db_table = table_name
+        return cls.objects.using(DB_NAME).filter(modulehistory_id=instance.id).exists()
+
 
 class LogModelJson(LogModelBase):
     class Meta:
@@ -44,9 +50,14 @@ class LogModelJson(LogModelBase):
     max_grade = models.FloatField(null=True, db_column='max_grade')
     json = JSONField(null=True, db_column='json')
 
+
     @classmethod
-    def write_log(cls, instance):
+    def write_log(cls, instance, check_written=False):
         """Given a courseware.models.StudentModuleHistory instance, writes a log entry"""
+
+        if check_written and cls.already_written(instance):
+            return
+
         table_name = _get_table_name(instance.student_module.course_id, instance.student_module.module_type)
 
         try:
@@ -60,7 +71,7 @@ class LogModelJson(LogModelBase):
             modulehistory_id=instance.id,
             student_id=instance.student_module.student_id,
             created=instance.created,
-            course_id=instance.course_id,
+            course_id=instance.student_module.course_id,
             grade=instance.grade,
             max_grade=instance.max_grade,
             json=state,
@@ -208,8 +219,11 @@ class ProblemLogModelJson(LogModelBase):
     ]
 
     @classmethod
-    def write_log(cls, instance):
+    def write_log(cls, instance, check_written=False):
         """Given a courseware.models.StudentModuleHistory instance from a problem module, writes a log entry"""
+        if check_written and cls.already_written(instance):
+            return
+
         table_name = _get_table_name(instance.student_module.course_id, u'problem')
 
         try:
@@ -227,7 +241,7 @@ class ProblemLogModelJson(LogModelBase):
             modulehistory_id=instance.id,
             student_id=instance.student_module.student_id,
             created=instance.created,
-            course_id=instance.course_id,
+            course_id=instance.student_module.course_id,
             grade=instance.grade,
             max_grade=instance.max_grade,
             json=state,
@@ -306,16 +320,16 @@ def log_studentmodulehistories(instance_iter):
         log_studentmodulehistory(instance)
 
 
-def log_studentmodulehistory(instance):
+def log_studentmodulehistory(instance, check_written=False):
     """
     This is the function that logs StudentModule instances
     """
     module_type = instance.student_module.module_type
     ensure_table(instance.student_module.course_id, module_type)
     if module_type == u'problem':
-        ProblemLogModelJson.write_log(instance)
+        ProblemLogModelJson.write_log(instance, check_written=check_written)
     else:
-        LogModelJson.write_log(instance)
+        LogModelJson.write_log(instance, check_written=check_written)
 
 
 #
