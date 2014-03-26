@@ -1,6 +1,6 @@
 <div class="wrapper-comp-setting metadata-video-translations">
-  <label class="label setting-label" for="<%= uniqueId %>"><%= model.get('display_name')%></label>
-  <div id="<%= uniqueId %>" class="wrapper-translations-settings">
+  <label class="label setting-label"><%= model.get('display_name')%></label>
+  <div class="wrapper-translations-settings">
     <ol class="list-settings"></ol>
     <a href="#" class="create-action create-setting">
       <i class="icon-plus"></i><%= gettext("Add") %> <span class="sr"><%= model.get('display_name')%></span>

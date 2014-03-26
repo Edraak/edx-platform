@@ -89,6 +89,7 @@ function($, _, AbstractEditor, FileUpload, UploadDialog) {
             return dict;
         },
 
+        // @TODO: Use backbone render patterns.
         setValueInEditor: function (values) {
             var self = this,
                 frag = document.createDocumentFragment(),

@@ -14,35 +14,35 @@ define ["js/models/uploads"], (FileUpload) ->
             expect(@model.isValid()).toBeTruthy()
 
         it "is invalid for text files by default", ->
-            file = {"type": "text/plain", name: "filename.txt"}
+            file = {"type": "text/plain", "name": "filename.txt"}
             @model.set("selectedFile", file);
             expect(@model.isValid()).toBeFalsy()
 
         it "is invalid for PNG files by default", ->
-            file = {"type": "image/png", name: "filename.png"}
+            file = {"type": "image/png", "name": "filename.png"}
             @model.set("selectedFile", file);
             expect(@model.isValid()).toBeFalsy()
 
         it "can accept a file type when explicitly set", ->
-            file = {"type": "image/png", name: "filename.png"}
+            file = {"type": "image/png", "name": "filename.png"}
             @model.set("mimeTypes": ["image/png"])
             @model.set("selectedFile", file)
             expect(@model.isValid()).toBeTruthy()
 
         it "can accept a file format when explicitly set", ->
-            file = {"type": "", name: "filename.png"}
+            file = {"type": "", "name": "filename.png"}
             @model.set("fileFormats": ["png"])
             @model.set("selectedFile", file)
             expect(@model.isValid()).toBeTruthy()
 
         it "can accept multiple file types", ->
-            file = {"type": "image/gif", name: "filename.gif"}
+            file = {"type": "image/gif", "name": "filename.gif"}
             @model.set("mimeTypes": ["image/png", "image/jpeg", "image/gif"])
             @model.set("selectedFile", file)
             expect(@model.isValid()).toBeTruthy()
 
         it "can accept multiple file formats", ->
-            file = {"type": "image/gif", name: "filename.gif"}
+            file = {"type": "image/gif", "name": "filename.gif"}
             @model.set("fileFormats": ["png", "jpeg", "gif"])
             @model.set("selectedFile", file)
             expect(@model.isValid()).toBeTruthy()
