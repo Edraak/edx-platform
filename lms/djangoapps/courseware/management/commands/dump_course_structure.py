@@ -53,8 +53,10 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        if len(args) != 1:
+        if len(args) < 1:
             raise CommandError("course_id not specified")
+        if len(args) > 1:
+            raise CommandError("spurrious parameters specified -- we only want course_id")
 
         # Get the modulestore
 
