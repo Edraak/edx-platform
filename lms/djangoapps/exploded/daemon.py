@@ -6,12 +6,12 @@ from django.db.models import Min
 from courseware.models import StudentModuleHistory
 from exploded.util import log_studentmodulehistories
 
-SECONDS_TOLERANCE_FOR_EQ = 5
-BUFFER_SIZE = 100
-MAX_WRITTEN = 1000000000
-DB_BATCH = 50
+SECONDS_TOLERANCE_FOR_EQ = 2
+BUFFER_SIZE = 1000
+DB_BATCH = 100
 SLEEP_SECS = 10
-START_PK = 45500000
+START_PK = 0
+
 
 class StudentModuleHistoryDeDuper(object):
     def __init__(self):
@@ -25,13 +25,18 @@ class StudentModuleHistoryDeDuper(object):
         else:
             self.cur_pk = START_PK
 
-    def run_daemon(self, course_id=None):
+    def run_daemon(self, course_id=None, daemon=False):
         starttime = datetime.now()
-        while self.num_written < MAX_WRITTEN:
+        while True:
             self.refill_buffer(course_id)
-            if self.process_buffer(wait_until_full=True) <= 0:
-                print("Buffer not full, sleeping for {} secs".format(SLEEP_SECS))
-                time.sleep(SLEEP_SECS)
+            if len(self.buffer) == 0:
+                break
+            if daemon:
+                if self.process_buffer(wait_until_full=True) < 0:
+                    print("Buffer not full, sleeping for {} secs".format(SLEEP_SECS))
+                    time.sleep(SLEEP_SECS)
+            else:
+                self.process_buffer(wait_until_full=False)
         print(datetime.now() - starttime)
 
     def refill_buffer(self, course_id):
@@ -51,12 +56,12 @@ class StudentModuleHistoryDeDuper(object):
 
     def process_buffer(self, wait_until_full=False):
         write_list = []
-        # only do work when our buffer is full (so we have stuff to compare against)
+        # only do work when our buffer is full
         if wait_until_full and len(self.buffer) < BUFFER_SIZE:
-            return 0
+            return -1
         for _ in range(DB_BATCH):
             if len(self.buffer) == 0:
-                continue
+                break
             head = self.buffer.popleft()
             #  scan the list manually, if dupe is found, discard and go on to the next element
             if StudentModuleHistoryDeDuper._scan_from_front(head, self.buffer):
@@ -66,8 +71,6 @@ class StudentModuleHistoryDeDuper(object):
             self.num_written += 1
             if self.num_written % 1000 == 0:
                 print("{} entry written, studentmodulehistory.id={}".format(self.num_written, head.pk))
-            if self.num_written >= MAX_WRITTEN:
-                break
         log_studentmodulehistories(write_list, check_written=True)
         return len(write_list)
 
@@ -76,11 +79,13 @@ class StudentModuleHistoryDeDuper(object):
         for member in haystack_list:
             if StudentModuleHistoryDeDuper.compare_smh(needle, member):
                 return True
+            if (member.created - needle.created) > timedelta(seconds=SECONDS_TOLERANCE_FOR_EQ):
+                return False
         return False
 
     @staticmethod
     def compare_smh(inst1, inst2):
         return (
             inst1.student_module_id == inst2.student_module_id and
-            abs(inst1.created - inst2.created) < timedelta(seconds=SECONDS_TOLERANCE_FOR_EQ)
+            abs(inst1.created - inst2.created) <= timedelta(seconds=SECONDS_TOLERANCE_FOR_EQ)
         )
