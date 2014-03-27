@@ -315,9 +315,9 @@ def _get_problem_subtable_name(course_id, subtype):
 
 
 @transaction.commit_on_success
-def log_studentmodulehistories(instance_iter):
+def log_studentmodulehistories(instance_iter, check_written=False):
     for instance in instance_iter:
-        log_studentmodulehistory(instance)
+        log_studentmodulehistory(instance, check_written=check_written)
 
 
 def log_studentmodulehistory(instance, check_written=False):

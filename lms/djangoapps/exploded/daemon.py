@@ -11,21 +11,26 @@ BUFFER_SIZE = 100
 MAX_WRITTEN = 1000000000
 DB_BATCH = 50
 SLEEP_SECS = 10
+START_PK = 45500000
 
 class StudentModuleHistoryDeDuper(object):
     def __init__(self):
         self.buffer = deque([])
         self.num_written = 0
         ##  initialize cur_pk.  This is the pk of the last item processed
-        self.cur_pk = (StudentModuleHistory.objects.aggregate(min_id=Min('id'))['min_id'] - 1
-                       if StudentModuleHistory.objects.all().exists()
-                       else -1)
+        if START_PK < 0:
+            self.cur_pk = (StudentModuleHistory.objects.aggregate(min_id=Min('id'))['min_id'] - 1
+                           if StudentModuleHistory.objects.all().exists()
+                           else -1)
+        else:
+            self.cur_pk = START_PK
 
     def run_daemon(self, course_id=None):
         starttime = datetime.now()
         while self.num_written < MAX_WRITTEN:
             self.refill_buffer(course_id)
             if self.process_buffer(wait_until_full=True) <= 0:
+                print("Buffer not full, sleeping for {} secs".format(SLEEP_SECS))
                 time.sleep(SLEEP_SECS)
         print(datetime.now() - starttime)
 
@@ -63,7 +68,7 @@ class StudentModuleHistoryDeDuper(object):
                 print("{} entry written, studentmodulehistory.id={}".format(self.num_written, head.pk))
             if self.num_written >= MAX_WRITTEN:
                 break
-        log_studentmodulehistories(write_list)
+        log_studentmodulehistories(write_list, check_written=True)
         return len(write_list)
 
     @staticmethod
