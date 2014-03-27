@@ -11,12 +11,12 @@
  */
 
 // Global vars:
-var tinymce,     // Reference to TinyMCE
-	editor,      // Reference to TinyMCE editor
-	codemirror,  // CodeMirror instance
-	chr = 0,     // Unused utf-8 character, placeholder for cursor
-	isMac = /macintosh|mac os/i.test(navigator.userAgent),
-	CMsettings;  // CodeMirror settings
+var codemirror,  // CodeMirror instance
+        chr = 0,     // Unused utf-8 character, placeholder for cursor
+        isMac = /macintosh|mac os/i.test(navigator.userAgent),
+        CMsettings,  // CodeMirror settings
+        messageHandler,
+        parentWindow;
 
 function inArray(key, arr)
 {
@@ -29,22 +29,19 @@ function inArray(key, arr)
 {// Initialise (before load)
 	"use strict";
 
-	tinymce = parent.tinymce;
-	editor = tinymce.activeEditor;
-	var i, userSettings = editor.settings.codemirror ? editor.settings.codemirror : null;
-	CMsettings = {
-		path: userSettings.path || 'CodeMirror',
-		indentOnInit: userSettings.indentOnInit || false,
-		config: {// Default config
-			mode: 'htmlmixed',
-			lineNumbers: true,
-			lineWrapping: true,
-			indentUnit: 1,
-			tabSize: 1,
-			matchBrackets: true,
-			styleActiveLine: true
-		},
-		jsFiles: [// Default JS files
+    CMsettings = {
+        path: window.location.search.substring(1),
+        indentOnInit: false,
+        config: {// Default config
+            mode: 'htmlmixed',
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 1,
+            tabSize: 1,
+            matchBrackets: true,
+            styleActiveLine: true
+        },
+        jsFiles: [// Default JS files
 // MODIFIED FOR EDX VENDOR FILE LOCATIONS.
             'codemirror-compressed.js',
 //			'addon/edit/matchbrackets.js', Chose not to enable
@@ -52,55 +49,61 @@ function inArray(key, arr)
 //			'mode/javascript/javascript.js', In compressed
 //			'mode/css/css.js', In compressed
 //			'mode/htmlmixed/htmlmixed.js', In compressed
-			'CodeMirror/addons/dialog/dialog.js'
+            'CodeMirror/addons/dialog/dialog.js'
 //			'addon/search/searchcursor.js', In compressed
 //			'addon/search/search.js', In compressed
 //			'addon/selection/active-line.js' Chose not to enable
-		],
-		cssFiles: [
-			'CodeMirror/codemirror.css',
-			'CodeMirror/addons/dialog/dialog.css'
-		]
-	};
+        ],
+        cssFiles: [
+            'CodeMirror/codemirror.css',
+            'CodeMirror/addons/dialog/dialog.css'
+        ]
+    };
 
-	// Merge config
-	for (i in userSettings.config) {
-		CMsettings.config[i] = userSettings.config[i];
-	}
-	
-	// Merge jsFiles
-	for (i in userSettings.jsFiles) {
-		if (!inArray(userSettings.jsFiles[i], CMsettings.jsFiles)) {
-			CMsettings.jsFiles.push(userSettings.jsFiles[i]);
-		}
-	}
 
-	// Merge cssFiles
-	for (i in userSettings.cssFiles) {
-		if (!inArray(userSettings.cssFiles[i], CMsettings.cssFiles)) {
-			CMsettings.cssFiles.push(userSettings.cssFiles[i]);
-		}
-	}
+    // Add trailing slash to path
+    if (!/\/$/.test(CMsettings.path)) {
+        CMsettings.path += '/';
+    }
 
-	// Add trailing slash to path
-	if (!/\/$/.test(CMsettings.path)) {
-		CMsettings.path += '/';
-	}
+    // Write stylesheets
+    for (var i = 0; i < CMsettings.cssFiles.length; i++) {
+        var link=document.createElement('link');
+        link.href=CMsettings.path + CMsettings.cssFiles[i];
+        link.rel='stylesheet';
+        link.type="text/css" ;
+//        document.getElementsByTagName("head")[0].appendChild(link);
+        document.write('<li' + 'nk rel="stylesheet" type="text/css" href="' + CMsettings.path + CMsettings.cssFiles[i] + '" />');
+    }
 
-	// Write stylesheets
-	for (i = 0; i < CMsettings.cssFiles.length; i++) {
-		document.write('<li'+'nk rel="stylesheet" type="text/css" href="' + CMsettings.path + CMsettings.cssFiles[i] + '" />');
-	}
+    // Write JS source files
+    for (var i = 0; i < CMsettings.jsFiles.length; i++) {
+        var link=document.createElement('script');
+        link.src=CMsettings.path + CMsettings.jsFiles[i];
+        link.type="text/javascript" ;
+   //     document.getElementsByTagName("head")[0].appendChild(link);
+        document.write('<scr' + 'ipt type="text/javascript" src="' + CMsettings.path + CMsettings.jsFiles[i] + '"></scr' + 'ipt>');
+    }
 
-	// Write JS source files
-	for (i = 0; i < CMsettings.jsFiles.length; i++) {
-		document.write('<scr'+'ipt type="text/javascript" src="' + CMsettings.path + CMsettings.jsFiles[i] + '"></scr'+'ipt>');
-	}
 
-	window.onload = start;
+    messageHandler = function (event) {
+        if (event.data.type === "init") {
+            start(event.data.content);
+        }
+    };
+
+    // Will need to remember to remove event listener!
+    window.addEventListener("message", messageHandler, false);
+
+    parentWindow = parent;
+    window.onload = function () {
+        parentWindow.postMessage({type: "init"}, "*");
+
+    };
+
 }());
 
-function start()
+function start(html)
 {// Initialise (on load)
 	"use strict";
 
@@ -120,15 +123,14 @@ function start()
 //	div.style.left = div.style.bottom = '5px';
 //	head.appendChild(div);
 
-	// Set CodeMirror cursor to same position as cursor was in TinyMCE:
-	var html = editor.getContent({source_view: true});
-	html = html.replace(/<span\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
-	editor.dom.remove(editor.dom.select('.CmCaReT'));
+    // Set CodeMirror cursor to same position as cursor was in TinyMCE:
+    html = html.replace(/<span\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
+//	editor.dom.remove(editor.dom.select('.CmCaReT'));
 
-	CodeMirror.defineInitHook(function(inst) 
+    CodeMirror.defineInitHook(function (inst)
 	{
         // EDX: added to switch static links.
-        editor.fire("ShowCodeMirror", inst);
+//        editor.fire("ShowCodeMirror", inst);
 
 		// Move cursor to correct position:
 		inst.focus();
@@ -137,9 +139,9 @@ function start()
 			inst.setCursor(cursor.to());
 			cursor.replace('');
 		}
-		
+
 		// Indent all code, if so requested:
-		if (editor.settings.codemirror.indentOnInit) {
+		if (CMsettings.indentOnInit) {
 			var last = inst.lineCount();
 			inst.operation(function() {
 				for (var i = 0; i < last; ++i) {
@@ -177,7 +179,7 @@ function findDepth(haystack, needle)
 function submit()
 {
 	"use strict";
-		
+
 	var cc = '&#x0;', isDirty = codemirror.isDirty, doc = codemirror.doc;
 
 	if (doc.somethingSelected()) {
@@ -196,36 +198,41 @@ function submit()
 		curLineHTML = curLineHTML.replace(cc, '');
 		doc.setLine(pos.line, curLineHTML);
 	}
+    // TODO: for some reason, this message is not being received
+    console.log("calling post message");
+    parentWindow.postMessage({type: "setText", text : codemirror.getValue().replace(cc, '<span id="CmCaReT"></span>')}, "*");
+    // will also need to remove on cancel
+    window.removeEventListener("message", messageHandler);
 
-	// Submit HTML to TinyMCE:
+    // Submit HTML to TinyMCE:
 
     // EDX: added to switch static links.
-    editor.fire('SaveCodeMirror', codemirror);
+//    editor.fire('SaveCodeMirror', codemirror);
 
-	editor.setContent(codemirror.getValue().replace(cc, '<span id="CmCaReT"></span>'));
-
-	// Set cursor:
-	var el = editor.dom.select('span#CmCaReT')[0];
-	if (el) {
-		editor.selection.scrollIntoView(el);
-		editor.selection.setCursorLocation(el,0);
-		editor.dom.remove(el);
-	}
-    // EDX: added because CmCaReT span was getting left in when caret was within a style tag.
-    // Make sure to strip it out (and accept that caret will not be in the correct place).
-    else {
-        var content = editor.getContent();
-        var strippedContent = content.replace('<span id="CmCaReT"></span>', '');
-        if (content !== strippedContent) {
-            editor.setContent(strippedContent);
-        }
-    }
-
-    // EDX: moved block of code from original location since we may change content in bug fix code above.
-    editor.isNotDirty = !isDirty;
-	if (isDirty) {
-		editor.nodeChanged();
-	}
+//	editor.setContent(codemirror.getValue().replace(cc, '<span id="CmCaReT"></span>'));
+//
+//	// Set cursor:
+//	var el = editor.dom.select('span#CmCaReT')[0];
+//	if (el) {
+//		editor.selection.scrollIntoView(el);
+//		editor.selection.setCursorLocation(el,0);
+//		editor.dom.remove(el);
+//	}
+//    // EDX: added because CmCaReT span was getting left in when caret was within a style tag.
+//    // Make sure to strip it out (and accept that caret will not be in the correct place).
+//    else {
+//        var content = editor.getContent();
+//        var strippedContent = content.replace('<span id="CmCaReT"></span>', '');
+//        if (content !== strippedContent) {
+//            editor.setContent(strippedContent);
+//        }
+//    }
+//
+//    // EDX: moved block of code from original location since we may change content in bug fix code above.
+//    editor.isNotDirty = !isDirty;
+//	if (isDirty) {
+//		editor.nodeChanged();
+//	}
 
 }
 
