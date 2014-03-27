@@ -6,6 +6,17 @@ define(
     ],
 function($, _, AbstractEditor, FileUpload, UploadDialog) {
     "use strict";
+
+    var VideoUploadDialog = UploadDialog.extend({
+        error: function() {
+            this.model.set({
+                "uploading": false,
+                "uploadedBytes": 0,
+                "title": gettext("Sorry, there was an error parsing the subtitles that you uploaded. Please check the format and try again.")
+            });
+        }
+    });
+
     var Translations = AbstractEditor.extend({
         events : {
             "click .setting-clear" : "clear",
@@ -137,7 +148,7 @@ function($, _, AbstractEditor, FileUpload, UploadDialog) {
                     title: gettext('Upload translation.'),
                     fileFormats: ['srt']
                 }),
-                view = new UploadDialog({
+                view = new VideoUploadDialog({
                     model: model,
                     url: self.model.get('urlRoot') + '/' + lang,
                     onSuccess: function (response) {

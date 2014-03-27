@@ -62,14 +62,12 @@
                         expect($.ajaxWithPrefix).toHaveBeenCalledWith({
                             url: '/transcript/translation/en',
                             notifyOnError: false,
-                            data: jasmine.any(Object),
+                            data: void(0),
                             success: jasmine.any(Function),
                             error: jasmine.any(Function)
                         });
                         expect($.ajaxWithPrefix.mostRecentCall.args[0].data)
-                            .toEqual({
-                                format: 'sjson'
-                            });
+                            .toBeUndefined();
                     });
                 });
 
@@ -94,7 +92,6 @@
                         });
                         expect($.ajaxWithPrefix.mostRecentCall.args[0].data)
                             .toEqual({
-                                format: 'sjson',
                                 videoId: 'abcdefghijkl'
                             });
                     });
@@ -119,7 +116,6 @@
                         });
                         expect($.ajaxWithPrefix.mostRecentCall.args[0].data)
                             .toEqual({
-                                format: 'sjson',
                                 videoId: 'cogebirgzzM'
                             });
                     });

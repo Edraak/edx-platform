@@ -47,6 +47,7 @@ function ($, _, create_sinon, Squire) {
             var spy = jasmine.createSpyObj(name, ['constructor', 'show', 'hide']);
             spy.constructor.andReturn(spy);
             spy.show.andReturn(spy);
+            spy.extend = jasmine.createSpy().andReturn(spy.constructor);
 
             return spy;
         };
@@ -137,7 +138,7 @@ function ($, _, create_sinon, Squire) {
 
             injector = new Squire();
             injector.mock('js/views/uploads', function () {
-                return self.uploadSpies.constructor;
+                return self.uploadSpies;
             });
 
             runs(function() {
@@ -179,7 +180,7 @@ function ($, _, create_sinon, Squire) {
             });
         });
 
-        it('uploads works correctly', function () {
+        it('upload works correctly', function () {
             var options;
 
             setValue(this.view, {
