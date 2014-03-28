@@ -301,3 +301,132 @@ class TestRealProblems(unittest.TestCase):
         g = {}
         safe_exec(code, g)
         self.assertIn("aVAP", g)
+
+
+class TestIndentationNormalization(unittest.TestCase):
+    '''
+    Test the python indentation normalization mechanism
+    '''
+    def test_no_indentation(self):
+        '''
+        The degenerate case is just a properly indented python statement as the first line, no adjustment needed
+        '''
+        code = """
+            import math"""
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def test_single_space(self):
+        '''
+        With a single space on the first line of code
+        '''
+        code = """
+             import math"""
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def test_multiple_spaces(self):
+        '''
+        With a single space on the first line of code
+        '''
+        code = """
+                             import math"""
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def test_multiple_whitespace_characters(self):
+        '''
+        With various whitespace characters on the first line of code
+        '''
+        code = """
+                 \t       \n     \r   import math"""
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def test_multiple_lines(self):
+        '''
+        With some lines of code presented on multiple lines
+        '''
+        code = """
+            import math
+            import random
+            import numpy
+            """
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def test_multiple_lines_with_first_indent(self):
+        '''
+        With some lines of code presented on multiple lines, the first line indented more (creating illegal python)
+        '''
+        code = """
+                           import math
+            import random
+            import numpy
+            """
+        self._test_indentation_exception(code, expect_exception=True)
+
+    def test_multiple_lines_with_first_indent(self):
+        '''
+        With some lines of code presented on multiple lines, the second line indented more (creating illegal python)
+        '''
+        code = """
+                           import math
+                               import random
+                           import numpy
+            """
+        self._test_indentation_exception(code, expect_exception=True)
+
+
+    def test_multiple_lines_with_if_indent(self):
+        '''
+        With some lines of code presented on multiple lines, including an if statement which demands relative indent
+        '''
+        code = """
+            import math
+            if True:
+                import random
+            import numpy
+        """
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def test_multiple_lines_with_improper_if_indent(self):
+        '''
+        With some lines of code presented on multiple lines, including a true phrase with too much indentation
+        '''
+        code = """
+            import math
+            if True:
+                        import random
+                           import numpy
+        """
+        self._test_indentation_exception(code, expect_exception=True)
+
+    def test_leading_blank_lines(self):
+        '''
+        With some lines of code presented on multiple lines, including a true phrase with too much indentation
+        '''
+        code = """
+
+
+
+            import math
+            import random
+            import numpy
+        """
+        self._test_indentation_exception(code, expect_exception=False)
+
+    def _test_indentation_exception(self, python_code, expect_exception):
+        '''
+        Execute the supplied python code, passing the test if NO indentation exception is thrown.
+        '''
+        g = {}
+        exception_thrown = False        # assume the test will fail with no exception
+        try:
+            safe_exec(python_code,g)
+        except Exception as err:
+            if 'IndentationError' in err.message:
+                exception_thrown = True
+
+        if expect_exception:
+            self.assertTrue(exception_thrown, 'Indentation error was not properly detected (missed): "' + python_code + '"')
+        else:
+            self.assertFalse(exception_thrown, 'Indentation error was inappropriately detected: "' + python_code + '"')
+
+
+

@@ -7,6 +7,7 @@ from . import lazymod
 from dogapi import dog_stats_api
 
 import hashlib
+import re
 
 # Establish the Python environment for Capa.
 # Capa assumes float-friendly division always.
@@ -46,6 +47,49 @@ for name, modname in ASSUMED_IMPORTS:
 
 LAZY_IMPORTS = "".join(LAZY_IMPORTS)
 
+def normalize_indentation(python_code):
+    '''
+    Check the first line of the supplied python code to determine if it is indented at all.
+    As this python code should always begin with no indentation (to adhere to python indentation
+    rules), remove from all lines the number of indentation spaces found so that all lines
+    will be properly indented--provided all the *relative* indentation is done properly.
+
+       (pretend this column | is column zero for this illustration)
+                            |
+                            V
+
+    For example, if the user wanted to construct a python function which worked like this:
+                            def hello():
+                                msg = 'hello, world!'
+                                if msg:
+                                    print msg
+
+    she might supply this fragment of code:
+                                msg = 'hello, world!'
+                                if msg:
+                                    print msg
+
+    but should have supplied the fragment without indentation like this:
+                            msg = 'hello, world!'
+                            if msg:
+                                print msg
+
+    @param python_code: a string of python code to which normalization should be applied
+    @return: the python_code with the appropriate number of leading spaces removed (if any)
+    '''
+    try:
+        p = re.compile('(\s*)\n([^A-Za-z0-9_]*)')   # we'll search for any unwanted indentation on the first line of code
+                                                    # group 0: any all whitespace lines -- which we will ignore
+                                                    # group 1: any whitespace between \n and code
+        m = p.match(python_code)
+        if m:
+            replacement_pattern = '\n' + m.groups()[1]
+            normalized_python_code = python_code.replace(replacement_pattern, '\n')
+            python_code = normalized_python_code
+    except:         # if an exception is thrown for some reason, we consume it and just pass back the original string
+        pass        # nothing needs doing here
+
+    return python_code
 
 def update_hash(hasher, obj):
     """
@@ -121,6 +165,7 @@ def safe_exec(code, globals_dict, random_seed=None, python_path=None, cache=None
 
     # Run the code!  Results are side effects in globals_dict.
     try:
+        code = normalize_indentation(code)      # remove any excess indentation
         exec_fn(
             code_prolog + LAZY_IMPORTS + code, globals_dict,
             python_path=python_path, slug=slug,
@@ -139,3 +184,4 @@ def safe_exec(code, globals_dict, random_seed=None, python_path=None, cache=None
     # If an exception happened, raise it now.
     if emsg:
         raise e
+
