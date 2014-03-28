@@ -790,6 +790,11 @@ hr.divide {
   cursor: pointer;
 }
 
+// UI STATE: disabled
+.is-disabled {
+  @extend %ui-disabled;
+}
+
 .non-list {
   list-style: none;
   margin: 0;
