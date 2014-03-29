@@ -411,6 +411,12 @@ class TestIndentationNormalization(unittest.TestCase):
         """
         self._test_indentation_exception(code, expect_exception=False)
 
+    def test_no_code(self):
+        '''
+        With no code supplied at all
+        '''
+        self._test_indentation_exception(None, expect_exception=False)
+
     def _test_indentation_exception(self, python_code, expect_exception):
         '''
         Execute the supplied python code, passing the test if NO indentation exception is thrown.
@@ -422,6 +428,9 @@ class TestIndentationNormalization(unittest.TestCase):
         except Exception as err:        # pylint: disable=broad-except
             if 'IndentationError' in err.message:
                 exception_thrown = True
+
+        if python_code is None:             # this test is included to allow the 'test_no_code' case to work
+            python_code = '';
 
         if expect_exception:
             self.assertTrue(exception_thrown, 'Indentation error was not properly detected (missed): "' + python_code + '"')
