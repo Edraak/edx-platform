@@ -5,6 +5,8 @@ These are notable changes in edx-platform.  This is a rolling list of changes,
 in roughly chronological order, most recent first.  Add your entries at or near
 the top.  Include a label indicating the component affected.
 
+Studio: The indentation requirement on Python code provided in a unit is now relaxed.
+
 Studio: Add ability to reorder Pages and hide the Wiki page. STUD-1375
 
 Blades: Added template for iFrames. BLD-611.
