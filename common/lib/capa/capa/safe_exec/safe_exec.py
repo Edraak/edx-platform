@@ -78,12 +78,12 @@ def normalize_indentation(python_code):
     @return: the python_code with the appropriate number of leading spaces removed (if any)
     '''
     try:
-        p = re.compile('(\s*)\n([^A-Za-z0-9_]*)')   # we'll search for any unwanted indentation on the first line of code
+        pattern = re.compile(r'(\s*)\n([^A-Za-z0-9_]*)')   # search for unwanted indentation on the first line of code
                                                     # group 0: any all whitespace lines -- which we will ignore
                                                     # group 1: any whitespace between \n and code
-        m = p.match(python_code)
-        if m:
-            replacement_pattern = '\n' + m.groups()[1]
+        match = pattern.match(python_code)
+        if match:
+            replacement_pattern = '\n' + match.groups()[1]
             normalized_python_code = python_code.replace(replacement_pattern, '\n')
             python_code = normalized_python_code
     except:         # if an exception is thrown for some reason, we consume it and just pass back the original string

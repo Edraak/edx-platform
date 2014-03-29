@@ -361,7 +361,7 @@ class TestIndentationNormalization(unittest.TestCase):
             """
         self._test_indentation_exception(code, expect_exception=True)
 
-    def test_multiple_lines_with_first_indent(self):
+    def test_multiple_lines_with_second_indent(self):
         '''
         With some lines of code presented on multiple lines, the second line indented more (creating illegal python)
         '''
@@ -415,11 +415,11 @@ class TestIndentationNormalization(unittest.TestCase):
         '''
         Execute the supplied python code, passing the test if NO indentation exception is thrown.
         '''
-        g = {}
+        globals_dict = {}
         exception_thrown = False        # assume the test will fail with no exception
         try:
-            safe_exec(python_code,g)
-        except Exception as err:
+            safe_exec(python_code, globals_dict)
+        except Exception as err:        # pylint: disable=broad-except
             if 'IndentationError' in err.message:
                 exception_thrown = True
 
