@@ -86,8 +86,9 @@ def normalize_indentation(python_code):
             replacement_pattern = '\n' + match.groups()[1]
             normalized_python_code = python_code.replace(replacement_pattern, '\n')
             python_code = normalized_python_code
-    except:         # if an exception is thrown for some reason, we consume it and just pass back the original string
-        pass        # nothing needs doing here
+    except:         # pylint: disable=bare-except
+        pass        # if an exception is thrown for some reason, we consume it and just pass back the original string
+
 
     return python_code
 
