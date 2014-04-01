@@ -1,8 +1,8 @@
 # Python libraries to install that are local to the edx-platform repo
--e .
--e common/lib/calc
--e common/lib/capa
--e common/lib/chem
--e common/lib/sandbox-packages
--e common/lib/symmath
--e common/lib/xmodule
+Open_edX==0.1
+calc==0.2
+capa==0.1
+chem==0.1.1
+sandbox_packages==0.1.1
+symmath==0.1
+XModule==0.1
