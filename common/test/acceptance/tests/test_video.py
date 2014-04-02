@@ -425,7 +425,6 @@ class VideoTestF(UniqueCourseTest):
             self.course_info['run'], self.course_info['display_name']
         )
 
-        course_fix.add_transcript_to_assets('chinese_transcripts.srt')
 
         metadata = {
             'youtube_id_1_0': '',
@@ -436,12 +435,17 @@ class VideoTestF(UniqueCourseTest):
             'transcripts': {'zh': 'chinese_transcripts.srt'}
         }
 
+        # from nose.tools import set_trace; set_trace()
+        course_fix.add_asset('chinese_transcripts.srt')
+
+        # from nose.tools import set_trace; set_trace()
         course_fix.add_children(
             XBlockFixtureDesc('chapter', 'Test Chapter').add_children(
                 XBlockFixtureDesc('sequential', 'Test Section').add_children(
                     XBlockFixtureDesc('vertical', 'Test Vertical-0').add_children(
                         XBlockFixtureDesc('video', 'Video', metadata=metadata)
         )))).install()
+
 
         # Auto-auth register for the course
         AutoAuthPage(self.browser, course_id=self.course_id).visit()

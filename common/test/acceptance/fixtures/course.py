@@ -185,7 +185,7 @@ class CourseFixture(StudioApiFixture):
         self._updates = []
         self._handouts = []
         self._children = []
-        self._transcripts = []
+        self._assets = []
 
     def __str__(self):
         """
@@ -216,12 +216,11 @@ class CourseFixture(StudioApiFixture):
         """
         self._handouts.append(asset_name)
 
-    def add_transcript_to_assets(self, transcript_name):
+    def add_asset(self, asset_name):
         """
-        Add the handout named `asset_name` to the course info page.
-        Note that this does not actually *create* the static asset; it only links to it.
+        Add the asset to the list of assets to be uploaded when the install method is called.
         """
-        self._transcripts.append(transcript_name)
+        self._assets.append(asset_name)
 
     def install(self):
         """
@@ -231,11 +230,10 @@ class CourseFixture(StudioApiFixture):
         conflicts between tests.
         """
         self._create_course()
-
         self._install_course_updates()
         self._install_course_handouts()
         self._configure_course()
-        self._upload_video_transcripts()
+        self._upload_assets()
         self._create_xblock_children(self._course_loc, self._children)
 
     @property
@@ -375,7 +373,7 @@ class CourseFixture(StudioApiFixture):
                     "Could not add update to course: {0}.  Status was {1}".format(
                         update, response.status_code))
 
-    def _upload_video_transcripts(self):
+    def _upload_assets(self):
         url = STUDIO_BASE_URL + self._assets_url
         # i4x://edX/Open_DemoX/video/d8c0501f4f2f4e6e8a4a345310475e48
 
@@ -391,12 +389,11 @@ class CourseFixture(StudioApiFixture):
         from path import path
         test_dir = path(__file__).abspath().dirname().dirname().dirname()
 
-        for transcript in self._transcripts:
-
-            srt_path = test_dir + '/data/uploads/' + transcript
+        for asset_name in self._assets:
+            srt_path = test_dir + '/data/uploads/' + asset_name
 
             fd = open(srt_path)
-            files = {'file': (transcript, fd)}
+            files = {'file': (asset_name, fd)}
 
             headers = {
                 'Accept': 'application/json',
@@ -407,10 +404,11 @@ class CourseFixture(StudioApiFixture):
 
             if upload_response.ok:
                 import sys
-                print >> sys.stderr, 'Successfully Uploaded Transcript to Assets: ', upload_response.content
+                print >> sys.stderr, 'Successfully Uploaded {asset_name} to Assets: {response}'.format(
+                    asset_name=asset_name, response=upload_response.content)
             else:
-                raise CourseFixtureError('Could not upload transcript. Status code: {0}'.
-                                         format(upload_response.status_code))
+                raise CourseFixtureError('Could not upload {asset_name}. Status code: {code}'.format(
+                    asset_name=asset_name, code=upload_response.status_code))
 
     def _create_xblock_children(self, parent_loc, xblock_descriptions):
         """
