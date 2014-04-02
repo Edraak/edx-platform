@@ -311,7 +311,7 @@ Feature: LMS Video component
     Then the video has rendered in "HTML5" mode
     And the video does not show the captions
 
-  # 27
+  # 28
   Scenario: Transcripts are available on different speeds of Flash mode
     Given I am registered for the course "test_course"
     And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
@@ -326,7 +326,7 @@ Feature: LMS Video component
     Then I select the "1.25" speed
     And I see "Hi, welcome to Edx." text in the captions
 
-  # 28
+  # 29
   Scenario: Elapsed time calculates correctly on different speeds of Flash mode
     Given I am registered for the course "test_course"
     And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
