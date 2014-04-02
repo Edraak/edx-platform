@@ -185,6 +185,7 @@ class CourseFixture(StudioApiFixture):
         self._updates = []
         self._handouts = []
         self._children = []
+        self._transcripts = []
 
     def __str__(self):
         """
@@ -215,6 +216,13 @@ class CourseFixture(StudioApiFixture):
         """
         self._handouts.append(asset_name)
 
+    def add_transcript_to_assets(self, transcript_name):
+        """
+        Add the handout named `asset_name` to the course info page.
+        Note that this does not actually *create* the static asset; it only links to it.
+        """
+        self._transcripts.append(transcript_name)
+
     def install(self):
         """
         Create the course and XBlocks within the course.
@@ -227,6 +235,7 @@ class CourseFixture(StudioApiFixture):
         self._install_course_updates()
         self._install_course_handouts()
         self._configure_course()
+        self._upload_video_transcripts()
         self._create_xblock_children(self._course_loc, self._children)
 
     @property
@@ -242,6 +251,13 @@ class CourseFixture(StudioApiFixture):
         Return the locator string for the course updates
         """
         return "{org}.{number}.{run}/branch/draft/block/updates".format(**self._course_dict)
+
+    @property
+    def _assets_url(self):
+        """
+        Return the url string for the assets
+        """
+        return "/assets/{org}.{number}.{run}/branch/draft/block/{run}".format(**self._course_dict)
 
     @property
     def _handouts_loc(self):
@@ -359,6 +375,43 @@ class CourseFixture(StudioApiFixture):
                     "Could not add update to course: {0}.  Status was {1}".format(
                         update, response.status_code))
 
+    def _upload_video_transcripts(self):
+        url = STUDIO_BASE_URL + self._assets_url
+        # i4x://edX/Open_DemoX/video/d8c0501f4f2f4e6e8a4a345310475e48
+
+        #c_id = self._course_dict['number']
+        #c_org = self._course_dict['org']
+
+
+        #url = STUDIO_BASE_URL + '/xblock/i4x:;_;_edX;_Open_DemoX;_video;_d8c0501f4f2f4e6e8a4a345310475e48/handler/studio_transcript/translation/zh'
+
+        #url = STUDIO_BASE_URL + '/xblock/i4x:;_;_' + c_org + ';_' + c_id + ';_video;_' + c_id + '/handler/studio_transcript/translation/zh'
+
+
+        from path import path
+        test_dir = path(__file__).abspath().dirname().dirname().dirname()
+
+        for transcript in self._transcripts:
+
+            srt_path = test_dir + '/data/uploads/' + transcript
+
+            fd = open(srt_path)
+            files = {'file': (transcript, fd)}
+
+            headers = {
+                'Accept': 'application/json',
+                'X-CSRFToken': self.session_cookies.get('csrftoken', '')
+            }
+
+            upload_response = self.session.post(url, files=files, headers=headers)
+
+            if upload_response.ok:
+                import sys
+                print >> sys.stderr, 'Successfully Uploaded Transcript to Assets: ', upload_response.content
+            else:
+                raise CourseFixtureError('Could not upload transcript. Status code: {0}'.
+                                         format(upload_response.status_code))
+
     def _create_xblock_children(self, parent_loc, xblock_descriptions):
         """
         Recursively create XBlock children.
@@ -398,6 +451,49 @@ class CourseFixture(StudioApiFixture):
 
         except ValueError:
             raise CourseFixtureError("Could not decode JSON from '{0}'".format(response.content))
+
+        import sys
+        print >> sys.stderr, 'loc: ', loc
+
+        # if xblock_desc.category == 'video':
+        #     self._upload_video_transcripts(loc)
+
+
+
+        # if xblock_desc.category == 'video':
+        #     #from nose.tools import set_trace; set_trace()
+        #     url = STUDIO_BASE_URL + '/transcripts/upload'
+        #
+        #     srt_filename = 'chinese_transcripts.srt'
+        #     from path import path
+        #     test_dir = path(__file__).abspath().dirname().dirname().dirname()
+        #
+        #     # I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
+        #
+        #     #  I have a "subs_b7xgknqkQk8.srt.sjson" transcript file in assets
+        #
+        #     srt_path = test_dir + '/data/uploads/' + srt_filename
+        #     locator = loc
+        #
+        #     video_name = 'edX-FA12-cware-1_100'
+        #     video_list = [{'mode': 'html5', 'video': 'chinese_transcripts', 'type': 'mp4'}]
+        #     data = {'locator': locator, 'video_list': json.dumps(video_list)}
+        #     fd = open(srt_path)
+        #     files = {'transcript-file': (srt_filename, fd)}
+        #     headers = {
+        #         'Accept': 'application/json',
+        #         'X-CSRFToken': self.session_cookies.get('csrftoken', '')
+        #     }
+        #
+        #     upload_response = self.session.post(url, data=data, files=files, headers=headers)
+        #
+        #     if upload_response.ok:
+        #         import sys
+        #         print >> sys.stderr, 'Transcript Upload Response: ', upload_response.content
+        #     else:
+        #         raise CourseFixtureError('Could not upload transcript. Status code: {0}'.
+        #                                  format(xblock_desc, upload_response.status_code))
+
 
         # Configure the XBlock
         response = self.session.post(
