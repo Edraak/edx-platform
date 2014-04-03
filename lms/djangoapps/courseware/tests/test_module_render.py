@@ -27,9 +27,12 @@ from xmodule.x_module import XModuleDescriptor
 from courseware import module_render as render
 from courseware.courses import get_course_with_access, course_image_url, get_course_info_section
 from courseware.model_data import FieldDataCache
-from courseware.tests.factories import StudentModuleFactory, UserFactory, StaffFactory
-from courseware.tests.tests import LoginEnrollmentTestCase, TEST_DATA_MONGO_MODULESTORE
+from courseware.tests.factories import StudentModuleFactory, UserFactory
+from courseware.tests.tests import LoginEnrollmentTestCase
+
 from courseware.tests.modulestore_config import TEST_DATA_MIXED_MODULESTORE
+from courseware.tests.modulestore_config import TEST_DATA_MONGO_MODULESTORE
+from courseware.tests.modulestore_config import TEST_DATA_XML_MODULESTORE
 
 from lms.lib.xblock.runtime import quote_slashes
 
@@ -513,6 +516,7 @@ class ViewInStudioTest(ModuleStoreTestCase):
     """Tests for the 'View in Studio' link visiblity."""
 
     def setUp(self):
+        """ Set up the user and request that will be used. """
         self.staff_user = UserFactory.create(
             is_staff=True,
         )
@@ -520,7 +524,8 @@ class ViewInStudioTest(ModuleStoreTestCase):
         self.request.user = self.staff_user
         self.request.session = {}
 
-    def create_course(self, course_edit_method='Studio'):
+    def setup_mongo_course(self, course_edit_method='Studio'):
+        """ Create a mongo backed course. """
         course = CourseFactory.create(
             course_edit_method = course_edit_method
         )
@@ -529,9 +534,23 @@ class ViewInStudioTest(ModuleStoreTestCase):
             category='vertical',
         )
 
-        location = descriptor.location
+        self._get_module(course.id, descriptor, descriptor.location)
+
+    def setup_xml_course(self):
+        """
+        Define the XML backed course to use.
+        Toy courses are already loaded in XML and mixed modulestores.
+        """
+        course_id = 'edX/toy/2012_Fall'
+        location = Location('i4x', 'edX', 'toy', 'chapter', 'Overview')
+        descriptor = modulestore().get_instance(course_id, location)
+
+        self._get_module(course_id, descriptor, location)
+
+
+    def _get_module(self, course_id, descriptor, location):
         field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
-            course.id,
+            course_id,
             self.staff_user,
             descriptor
         )
@@ -541,7 +560,7 @@ class ViewInStudioTest(ModuleStoreTestCase):
             self.request,
             location,
             field_data_cache,
-            course.id,
+            course_id,
         )
 
 
@@ -554,13 +573,13 @@ class MongoViewInStudioTest(ViewInStudioTest):
 
     def test_view_in_studio_link_studio_course(self):
         """Regular Studio courses should see 'View in Studio' links."""
-        self.create_course()
+        self.setup_mongo_course()
         result_fragment = self.module.render('student_view')
         self.assertIn('View Unit in Studio', result_fragment.content)
 
     def test_view_in_studio_link_xml_authored(self):
         """Courses that change 'course_edit_method' setting can hide 'View in Studio' links."""
-        self.create_course(course_edit_method='XML')
+        self.setup_mongo_course(course_edit_method='XML')
         result_fragment = self.module.render('student_view')
         self.assertNotIn('View Unit in Studio', result_fragment.content)
 
@@ -572,9 +591,35 @@ class MixedViewInStudioTest(ViewInStudioTest):
     def setUp(self):
         super(MixedViewInStudioTest, self).setUp()
 
+    def test_view_in_studio_link_mongo_backed(self):
+        """Mixed mongo courses that are mongo backed should see 'View in Studio' links."""
+        self.setup_mongo_course()
+        result_fragment = self.module.render('student_view')
+        self.assertIn('View Unit in Studio', result_fragment.content)
+
+    def test_view_in_studio_link_xml_authored(self):
+        """Courses that change 'course_edit_method' setting can hide 'View in Studio' links."""
+        self.setup_mongo_course(course_edit_method='XML')
+        result_fragment = self.module.render('student_view')
+        self.assertNotIn('View Unit in Studio', result_fragment.content)
+
     def test_view_in_studio_link_xml_backed(self):
-        """XML backed courses that don't use Mongo should not see 'View in Studio' links."""
-        self.create_course()
+        """Course in XML only modulestore should not see 'View in Studio' links."""
+        self.setup_xml_course()
+        result_fragment = self.module.render('student_view')
+        self.assertNotIn('View Unit in Studio', result_fragment.content)
+
+
+@override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
+class XmlViewInStudioTest(ViewInStudioTest):
+    """Test the 'View in Studio' link visibility in an xml backed course."""
+
+    def setUp(self):
+        super(XmlViewInStudioTest, self).setUp()
+
+    def test_view_in_studio_link_xml_backed(self):
+        """Course in XML only modulestore should not see 'View in Studio' links."""
+        self.setup_xml_course()
         result_fragment = self.module.render('student_view')
         self.assertNotIn('View Unit in Studio', result_fragment.content)
 
