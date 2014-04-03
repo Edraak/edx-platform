@@ -475,8 +475,7 @@ def i_see_duration(_step, position):
 
 @step('I seek video to "([^"]*)" seconds$')
 def seek_video_to_n_seconds(_step, seconds):
-    time = float(seconds.strip())
-    jsCode = "$('.video').data('video-player-state').videoPlayer.onSlideSeek({{time: {0:f}}})".format(time)
+    jsCode = "$('.video').data('video-player-state').videoPlayer.onSlideSeek({{time: {seek_time}}})".format(seek_time=seconds.strip())
     world.browser.execute_script(jsCode)
 
 

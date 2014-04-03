@@ -4,15 +4,15 @@ Feature: LMS Video component
 
   # BLD-970 Failing currently in master
   # 1
-#  Scenario: Video component stores position correctly when page is reloaded
-#    Given the course has a Video component in "Youtube" mode
-#    When the video has rendered in "Youtube" mode
-#    And I click video button "play"
-#    Then I seek video to "10" seconds
-#    And I click video button "pause"
-#    And I reload the page
-#    And I click video button "play"
-#    Then I see video starts playing from "0:10" position
+  Scenario: Video component stores position correctly when page is reloaded
+    Given the course has a Video component in "Youtube" mode
+    When the video has rendered in "Youtube" mode
+    And I click video button "play"
+    Then I seek video to "10" seconds
+    And I click video button "pause"
+    And I reload the page
+    And I click video button "play"
+    Then I see video starts playing from "0:10" position
 
   # 1
   Scenario: Video component is fully rendered in the LMS in HTML5 mode
