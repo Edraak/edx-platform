@@ -285,7 +285,7 @@ For example, the code for your problem may resemble the following.
 
 In this example, the problem is set at the subsection level to open on February 24, 2014 at midnight UTC. (This information does not appear in the code.) Additionally, the code specifies the following:
 
-* Students must can begin submitting responses on February 24, 2014 at midnight UTC, and must submit all responses before March 1, 2014 at midnight UTC:
+* Students must begin submitting responses on February 24, 2014 at midnight UTC, and must submit all responses before March 1, 2014 at midnight UTC:
 
   ``<openassessment submission_due="2014-03-01T00:00:00">``
 
