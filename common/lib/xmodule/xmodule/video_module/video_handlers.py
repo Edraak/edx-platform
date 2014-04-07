@@ -16,11 +16,10 @@ from xmodule.fields import RelativeTime
 
 from .transcripts_utils import (
     get_or_create_sjson,
-    TranscriptException,
-    TranscriptsGenerationException,
+    self.TranscriptException,
+    self.TranscriptsGenerationException,
     generate_sjson_for_all_speeds,
     youtube_speed_dict,
-    Transcript,
     save_to_store,
 )
 
@@ -107,13 +106,13 @@ class VideoStudentViewHandlers(object):
         if youtube_id:
             # Youtube case:
             if self.transcript_language == 'en':
-                return Transcript.asset(self.location, youtube_id).data
+                return self.Transcript.get_asset_by_subs_id(youtube_id).data
 
             youtube_ids = youtube_speed_dict(self)
             assert youtube_id in youtube_ids
 
             try:
-                sjson_transcript = Transcript.asset(self.location, youtube_id, self.transcript_language).data
+                sjson_transcript = self.Transcript.get_asset_by_subs_id(youtube_id, self.transcript_language).data
             except (NotFoundError):
                 log.info("Can't find content in storage for %s transcript: generating.", youtube_id)
                 generate_sjson_for_all_speeds(
@@ -122,13 +121,13 @@ class VideoStudentViewHandlers(object):
                     {speed: youtube_id for youtube_id, speed in youtube_ids.iteritems()},
                     self.transcript_language
                 )
-                sjson_transcript = Transcript.asset(self.location, youtube_id, self.transcript_language).data
+                sjson_transcript = self.Transcript.get_asset_by_subs_id(youtube_id, self.transcript_language).data
 
             return sjson_transcript
         else:
             # HTML5 case
             if self.transcript_language == 'en':
-                return Transcript.asset(self.location, self.sub).data
+                return self.Transcript.get_asset_by_subs_id(self.sub).data
             else:
                 return get_or_create_sjson(self)
 
@@ -157,19 +156,19 @@ class VideoStudentViewHandlers(object):
                 log.debug("No subtitles for 'en' language")
                 raise ValueError
 
-            data = Transcript.asset(self.location, transcript_name, lang).data
+            data = self.Transcript.get_asset_by_subs_id(transcript_name, lang).data
             filename = u'{}.{}'.format(transcript_name, transcript_format)
-            content = Transcript.convert(data, 'sjson', transcript_format)
+            content = self.Transcript.convert(data, 'sjson', transcript_format)
         else:
-            data = Transcript.asset(self.location, None, None, self.transcripts[lang]).data
+            data = self.Transcript.get_asset_by_filename(self.transcripts[lang]).data
             filename = u'{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
-            content = Transcript.convert(data, 'srt', transcript_format)
+            content = self.Transcript.convert(data, 'srt', transcript_format)
 
         if not content:
             log.debug('no subtitles produced in get_transcript')
             raise ValueError
 
-        return content, filename, Transcript.mime_types[transcript_format]
+        return content, filename, self.Transcript.mime_types[transcript_format]
 
     @XBlock.handler
     def transcript(self, request, dispatch):
@@ -209,17 +208,17 @@ class VideoStudentViewHandlers(object):
             try:
                 transcript = self.translation(request.GET.get('videoId', None))
             except (
-                TranscriptException,
+                self.TranscriptException,
                 NotFoundError,
                 UnicodeDecodeError,
-                TranscriptException,
-                TranscriptsGenerationException
+                self.TranscriptException,
+                self.TranscriptsGenerationException
             ) as ex:
                 log.info(ex.message)
                 response = Response(status=404)
             else:
                 response = Response(transcript, headerlist=[('Content-Language', language)])
-                response.content_type = Transcript.mime_types['sjson']
+                response.content_type = self.Transcript.mime_types['sjson']
 
         elif dispatch == 'download':
             try:
@@ -241,14 +240,14 @@ class VideoStudentViewHandlers(object):
             available_translations = []
             if self.sub:  # check if sjson exists for 'en'.
                 try:
-                    Transcript.asset(self.location, self.sub, 'en')
+                    self.Transcript.get_asset_by_subsid(self.sub, 'en')
                 except NotFoundError:
                     pass
                 else:
                     available_translations = ['en']
             for lang in self.transcripts:
                 try:
-                    Transcript.asset(self.location, None, None, self.transcripts[lang])
+                    self.Transcript.get_asset_by_filename(self.transcripts[lang])
                 except NotFoundError:
                     continue
                 available_translations.append(lang)
@@ -292,7 +291,7 @@ class VideoStudioViewHandlers(object):
             /translation POST:
                 TypeError:
                     Unjsonable filename or content.
-                TranscriptsGenerationException, TranscriptException:
+                self.TranscriptsGenerationException, self.TranscriptException:
                     no SRT extension or not parse-able by PySRT
                 UnicodeDecodeError: non-UTF8 uploaded file content encoding.
         """
@@ -319,12 +318,12 @@ class VideoStudioViewHandlers(object):
                     log.info("Invalid /translation request: no filename in request.GET")
                     return Response(status=400)
 
-                content = Transcript.get_asset(self.location, filename).data
+                content = self.Transcript.get_asset(self.location, filename).data
                 response = Response(content, headerlist=[
                     ('Content-Disposition', 'attachment; filename="{}"'.format(filename.encode('utf8'))),
                     ('Content-Language', language),
                 ])
-                response.content_type = Transcript.mime_types['srt']
+                response.content_type = self.Transcript.mime_types['srt']
 
         else:  # unknown dispatch
             log.debug("Dispatch is not allowed")

@@ -19,83 +19,11 @@ from xmodule.contentstore.django import contentstore
 log = logging.getLogger(__name__)
 
 
-class TranscriptException(Exception):  # pylint disable=C0111
-    pass
-
-
-class TranscriptsGenerationException(Exception):  # pylint disable=C0111
-    pass
-
-
-class GetTranscriptsFromYouTubeException(Exception):  # pylint disable=C0111
-    pass
-
-
-class TranscriptsRequestValidationException(Exception):  # pylint disable=C0111
-    pass
-
-
-def generate_subs(speed, source_speed, source_subs):
-    """
-    Generate transcripts from one speed to another speed.
-
-    Args:
-    `speed`: float, for this speed subtitles will be generated,
-    `source_speed`: float, speed of source_subs
-    `source_subs`: dict, existing subtitles for speed `source_speed`.
-
-    Returns:
-    `subs`: dict, actual subtitles.
-    """
-    if speed == source_speed:
-        return source_subs
-
-    coefficient = 1.0 * speed / source_speed
-    subs = {
-        'start': [
-            int(round(timestamp * coefficient)) for
-            timestamp in source_subs['start']
-        ],
-        'end': [
-            int(round(timestamp * coefficient)) for
-            timestamp in source_subs['end']
-        ],
-        'text': source_subs['text']}
-    return subs
-
-
-def save_to_store(content, name, mime_type, location):
-    """
-    Save named content to store by location.
-
-    Returns location of saved content.
-    """
-    content_location = Transcript.asset_location(location, name)
-    content = StaticContent(content_location, name, mime_type, content)
-    contentstore().save(content)
-    return content_location
-
-def save_subs_to_store(subs, subs_id, item, language='en'):
-    """
-    Save transcripts into `StaticContent`.
-
-    Args:
-    `subs_id`: str, subtitles id
-    `item`: video module instance
-    `language`: two chars str ('uk'), language of translation of transcripts
-
-    Returns: location of saved subtitles.
-    """
-    filedata = json.dumps(subs, indent=2)
-    filename = subs_filename(subs_id, language)
-    return save_to_store(filedata, filename, 'application/json', item.location)
-
 def get_transcripts_from_youtube(youtube_id, settings, i18n):
     """
     Gets transcripts from youtube for youtube_id.
 
-    Parses only utf-8 encoded transcripts.
-    Other encodings are not supported at the moment.
+    Parses only UTF8 encoded transcripts.
 
     Returns (status, transcripts): bool, dict.
     """
@@ -132,12 +60,12 @@ def get_transcripts_from_youtube(youtube_id, settings, i18n):
     return {'start': sub_starts, 'end': sub_ends, 'text': sub_texts}
 
 
-def download_youtube_subs(youtube_subs, item, settings):
+def download_youtube_subs(youtube_id, item, settings):
     """
     Download transcripts from Youtube and save them to assets.
 
     Args:
-    youtube_subs: dictionary of `speed: youtube_id` key:value pairs.
+    youtube_id: youtube_id to download
     item: video module instance.
 
     Returns: None, if transcripts were successfully downloaded and saved.
@@ -145,62 +73,9 @@ def download_youtube_subs(youtube_subs, item, settings):
     """
     i18n = item.runtime.service(item, "i18n")
     _ = i18n.ugettext
-
-    highest_speed = highest_speed_subs = None
-    missed_speeds = []
-    # Iterate from lowest to highest speed and try to do download transcripts
-    # from the Youtube service.
-    for speed, youtube_id in sorted(youtube_subs.iteritems()):
-        if not youtube_id:
-            continue
-        try:
-            subs = get_transcripts_from_youtube(youtube_id, settings, i18n)
-            if not subs:  # if empty subs are returned
-                raise GetTranscriptsFromYouTubeException
-        except GetTranscriptsFromYouTubeException:
-            missed_speeds.append(speed)
-            continue
-
-        save_subs_to_store(subs, youtube_id, item)
-
-        log.info(
-            "Transcripts for YouTube id %s (speed %s)"
-            "are downloaded and saved.", youtube_id, speed
-        )
-
-        highest_speed = speed
-        highest_speed_subs = subs
-
-    if not highest_speed:
-        raise GetTranscriptsFromYouTubeException(_("Can't find any transcripts on the Youtube service."))
-
-    # When we exit from the previous loop, `highest_speed` and `highest_speed_subs`
-    # are the transcripts data for the highest speed available on the
-    # Youtube service. We use the highest speed as main speed for the
-    # generation other transcripts, cause during calculation timestamps
-    # for lower speeds we just use multiplication instead of division.
-    for speed in missed_speeds:  # Generate transcripts for missed speeds.
-        save_subs_to_store(
-            generate_subs(speed, highest_speed, highest_speed_subs),
-            youtube_subs[speed],
-            item
-        )
-
-        log.info(
-            "Transcripts for YouTube id %s (speed %s)"
-            "are generated from YouTube id %s (speed %s) and saved",
-            youtube_subs[speed], speed,
-            youtube_subs[highest_speed],
-            highest_speed
-        )
-
-
-def remove_subs_from_store(subs_id, item, lang='en'):
-    """
-    Remove from store, if transcripts content exists.
-    """
-    filename = subs_filename(subs_id, lang)
-    Transcript.delete_asset(item.location, filename)
+    subs = get_transcripts_from_youtube(youtube_id, settings, i18n)
+    save_subs_to_store(subs, youtube_id, item)
+    log.info("Transcripts for YouTube id %s for 1.0 speed are downloaded and saved.", youtube_id)
 
 
 def generate_subs_from_source(speed_subs, subs_type, subs_filedata, item, language='en'):
@@ -300,14 +175,6 @@ def copy_or_rename_transcript(new_name, old_name, item, delete_old=False, user=N
         remove_subs_from_store(old_name, item)
 
 
-def get_html5_ids(html5_sources):
-    """
-    Helper method to parse out an HTML5 source into the ideas
-    NOTE: This assumes that '/' are not in the filename
-    """
-    html5_ids = [x.split('/')[-1].rsplit('.', 1)[0] for x in html5_sources]
-    return html5_ids
-
 
 def manage_video_subtitles_save(item, user, old_metadata=None, generate_translation=False):
     """
@@ -397,26 +264,6 @@ def manage_video_subtitles_save(item, user, old_metadata=None, generate_translat
             raise TranscriptException(reraised_message)
 
 
-def youtube_speed_dict(item):
-    """
-    Returns {speed: youtube_ids, ...} dict for existing youtube_ids
-    """
-    yt_ids = [item.youtube_id_0_75, item.youtube_id_1_0, item.youtube_id_1_25, item.youtube_id_1_5]
-    yt_speeds = [0.75, 1.00, 1.25, 1.50]
-    youtube_ids = {p[0]: p[1] for p in zip(yt_ids, yt_speeds) if p[0]}
-    return youtube_ids
-
-
-def subs_filename(subs_id, lang='en'):
-    """
-    Generate proper filename for storage.
-    """
-    if lang == 'en':
-        return u'subs_{0}.srt.sjson'.format(subs_id)
-    else:
-        return u'{0}_subs_{1}.srt.sjson'.format(lang, subs_id)
-
-
 def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
     """
     Generates sjson from srt for given lang.
@@ -467,82 +314,4 @@ def get_or_create_sjson(item):
         generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, item.transcript_language)
     sjson_transcript = Transcript.asset(item.location, source_subs_id, item.transcript_language).data
     return sjson_transcript
-
-class Transcript(object):
-    """
-    Container for transcript methods.
-    """
-    mime_types = {
-        'srt': 'application/x-subrip; charset=utf-8',
-        'txt': 'text/plain; charset=utf-8',
-        'sjson': 'application/json',
-    }
-
-    @staticmethod
-    def convert(content, input_format, output_format):
-        """
-        Convert transcript `content` from `input_format` to `output_format`.
-
-        Accepted input formats: sjson, srt.
-        Accepted output format: srt, txt.
-        """
-        assert input_format in ('srt', 'sjson')
-        assert output_format in ('txt', 'srt', 'sjson')
-
-        if input_format == output_format:
-            return content
-
-        if input_format == 'srt':
-
-            if output_format == 'txt':
-                text = SubRipFile.from_string(content.decode('utf8')).text
-                return HTMLParser().unescape(text)
-
-            elif output_format == 'sjson':
-                raise NotImplementedError
-
-        if input_format == 'sjson':
-
-            if output_format == 'txt':
-                text = json.loads(content)['text']
-                return HTMLParser().unescape("\n".join(text))
-
-            elif output_format == 'srt':
-                return generate_srt_from_sjson(json.loads(content), speed=1.0)
-
-    @staticmethod
-    def asset(location, subs_id, lang='en', filename=None):
-        """
-        Get asset from contentstore, asset location is built from subs_id and lang.
-
-        `location` is module location.
-        """
-        asset_filename = subs_filename(subs_id, lang) if not filename else filename
-        return Transcript.get_asset(location, asset_filename)
-
-    @staticmethod
-    def get_asset(location, filename):
-        """
-        Return asset by location and filename.
-        """
-        return contentstore().find(Transcript.asset_location(location, filename))
-
-    @staticmethod
-    def asset_location(location, filename):
-        """
-        Return asset location. `location` is module location.
-        """
-        return StaticContent.compute_location(location.org, location.course, filename)
-
-    @staticmethod
-    def delete_asset(location, filename):
-        """
-        Delete asset by location and filename.
-        """
-        try:
-            content = Transcript.get_asset(location, filename)
-            contentstore().delete(content.get_id())
-            log.info("Transcript asset %s was removed from store.", filename)
-        except NotFoundError:
-            pass
 

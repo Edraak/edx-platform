@@ -64,6 +64,7 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
     """
     video_time = 0
     icon_class = 'video'
+    Transcript = descriptor_attr('Transcript')
 
     # To make sure that js files are called in proper order we use numerical
     # index. We do that to avoid issues that occurs in tests.
@@ -228,6 +229,8 @@ class VideoDescriptor(VideoFields, VideoStudioViewHandlers, TabsEditingDescripto
         download_track = editable_fields['download_track']
         if not download_track['explicitly_set'] and self.track:
             self.download_track = True
+
+        self.Transcript = Transcript(self)
 
     def save_with_metadata(self, user):
         """

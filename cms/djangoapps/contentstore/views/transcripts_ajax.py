@@ -408,8 +408,9 @@ def replace_transcripts(request):
     if not youtube_id:
         return error_response(response, 'YouTube id {} is not presented in request data.'.format(youtube_id))
 
+
     try:
-        download_youtube_subs({1.0: youtube_id}, item, settings)
+        download_youtube_subs(youtube_id, item, settings)
     except GetTranscriptsFromYouTubeException as e:
         return error_response(response, e.message)
 
