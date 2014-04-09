@@ -5,7 +5,7 @@ Video player in the courseware.
 from bok_choy.page_object import PageObject
 from bok_choy.promise import EmptyPromise, Promise
 from bok_choy.javascript import wait_for_js, js_defined
-
+from ...tests.helpers import wait_for_ajax
 
 VIDEO_BUTTONS = {
     'CC': '.hide-subtitles',
@@ -16,10 +16,19 @@ VIDEO_BUTTONS = {
     'download_transcript': '.video-tracks > a',
 }
 
-VIDEO_MENUS = {
-    'language': '.lang .menu',
-    'speed': '.speed .menu',
-    'download_transcript': '.video-tracks .a11y-menu-list',
+CSS_CLASS_NAMES = {
+    'closed_captions': '.closed .subtitles',
+    'captions': '.subtitles',
+    'error_message': '.video .video-player h3',
+    'video_container': '.video',
+    'video_sources': '.video-player video source',
+    'video_spinner': '.video-wrapper .spinner',
+    'video_xmodule': '.xmodule_VideoModule'
+}
+
+VIDEO_MODES = {
+    'html5': 'video',
+    'youtube': 'iframe'
 }
 
 
@@ -33,23 +42,16 @@ class VideoPage(PageObject):
 
     @wait_for_js
     def is_browser_on_page(self):
-        return self.q(css='div.xmodule_VideoModule').present
-
-    def wait_for_ajax(self):
-        """ Make sure that all ajax requests are finished. """
-        def _is_ajax_finished():
-            return self.browser.execute_script("return jQuery.active") == 0
-
-        EmptyPromise(_is_ajax_finished, "Finished waiting for ajax requests.").fulfill()
+        return self.q(css='div{0}'.format(CSS_CLASS_NAMES['video_xmodule'])).present
 
     @wait_for_js
     def wait_for_video_class(self):
         """
-        Wait until Video Player Rendered Completely.
+        Wait until element with class name `video` appeared in DOM.
         """
-        video_css = 'div.video'
+        video_css = 'div{0}'.format(CSS_CLASS_NAMES['video_container'])
 
-        self.wait_for_ajax()
+        wait_for_ajax(self.browser)
         return EmptyPromise(lambda: self.q(css=video_css).present, "Video is initialized").fulfill()
 
     @wait_for_js
@@ -58,7 +60,7 @@ class VideoPage(PageObject):
         Wait until Video Player Rendered Completely.
         """
         def _is_finished_loading():
-            return not self.q(css='.video-wrapper .spinner').visible
+            return not self.q(css=CSS_CLASS_NAMES['video_spinner']).visible
 
         self.wait_for_video_class()
         return EmptyPromise(_is_finished_loading, 'Finished loading the video', try_limit=10, timeout=60,
@@ -69,32 +71,29 @@ class VideoPage(PageObject):
         Check that if video is rendered in `mode`.
         :param mode: Video mode, `html5` or `youtube`
         """
-        modes = {
-            'html5': 'video',
-            'youtube': 'iframe'
-        }
+        html_tag = VIDEO_MODES[mode]
+        css = '{0} {1}'.format(CSS_CLASS_NAMES['video_container'], html_tag)
 
-        html_tag = modes[mode]
-        css = '.video {0}'.format(html_tag)
+        def _is_element_present():
+            is_present = self.q(css=css).present
+            return is_present, is_present
 
-        EmptyPromise(lambda: self.q(css=css).present,
-                     'Video Rendering Failed in {0} mode.'.format(mode)).fulfill()
-
-        return self.q(css='.speed_link').present
+        return Promise(_is_element_present, 'Video Rendering Failed in {0} mode.'.format(mode)).fulfill()
 
     @property
     def all_video_sources(self):
         """
         Extract all video source urls on current page.
         """
-        return self.q(css='.video-player video source').map(lambda el: el.get_attribute('src').split('?')[0]).results
+        return self.q(css=CSS_CLASS_NAMES['video_sources']).map(
+            lambda el: el.get_attribute('src').split('?')[0]).results
 
     @property
     def is_autoplay_enabled(self):
         """
         Extract `data-autoplay` attribute to check video autoplay is enabled or disabled.
         """
-        auto_play = self.q(css='.video').attrs('data-autoplay')[0]
+        auto_play = self.q(css=CSS_CLASS_NAMES['video_container']).attrs('data-autoplay')[0]
 
         if auto_play.lower() == 'false':
             return False
@@ -107,7 +106,7 @@ class VideoPage(PageObject):
         Checks if video player error message shown.
         :return: bool
         """
-        return self.q(css='.video .video-player h3').visible
+        return self.q(css=CSS_CLASS_NAMES['error_message']).visible
 
     @property
     def error_message_text(self):
@@ -115,11 +114,10 @@ class VideoPage(PageObject):
         Extract video player error message text.
         :return: str
         """
-        return self.q(css='.video .video-player h3').text[0]
+        return self.q(css=CSS_CLASS_NAMES['error_message']).text[0]
 
-    @property
-    def is_CC_button_shown(self):
-        return self.q(css='.hide-subtitles').visible
+    def is_button_shown(self, button_id):
+        return self.q(css=VIDEO_BUTTONS[button_id]).visible
 
     @wait_for_js
     def show_captions(self):
@@ -127,20 +125,20 @@ class VideoPage(PageObject):
         Show the video captions.
         """
         def _is_subtitles_open():
-            is_open = not self.q(css='.closed .subtitles').present
+            is_open = not self.q(css=CSS_CLASS_NAMES['closed_captions']).present
             return is_open
 
         # Make sure that the CC button is there
-        EmptyPromise(lambda: self.is_CC_button_shown,
-            "CC button is shown").fulfill()
+        EmptyPromise(lambda: self.is_button_shown('CC'),
+                     "CC button is shown").fulfill()
 
         # Check if the captions are already open and click if not
         if _is_subtitles_open() is False:
-            self.q(css='.hide-subtitles').first.click()
+            self.q(css=VIDEO_BUTTONS['CC']).first.click()
 
         # Verify that they are now open
         EmptyPromise(_is_subtitles_open,
-            "Subtitles are shown").fulfill()
+                     "Subtitles are shown").fulfill()
 
     @property
     def captions_text(self):
@@ -148,12 +146,14 @@ class VideoPage(PageObject):
         Extract captions text.
         :return: str
         """
+        captions_css = CSS_CLASS_NAMES['captions']
+
         def _captions_text():
-            is_present = self.q(css='.subtitles').present
+            is_present = self.q(css=captions_css).present
             result = None
 
             if is_present:
-                result = self.q(css='.subtitles').text[0]
+                result = self.q(css=captions_css).text[0]
 
             return is_present, result
 

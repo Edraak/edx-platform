@@ -50,7 +50,7 @@ class VideoBaseTest(UniqueCourseTest):
         self.tab_nav = TabNavPage(self.browser)
         self.course_info_page = CourseInfoPage(self.browser, self.course_id)
 
-        self.course_fix = CourseFixture(
+        self.course_fixture = CourseFixture(
             self.course_info['org'], self.course_info['number'],
             self.course_info['run'], self.course_info['display_name']
         )
@@ -75,13 +75,13 @@ class VideoBaseTest(UniqueCourseTest):
     def _install_course_fixture(self):
         """ Install the course fixture that has been defined """
         if self.transcript:
-            self.course_fix.add_asset(self.transcript)
+            self.course_fixture.add_asset(self.transcript)
 
         # If you are not sending any metadata then `None` should be send as metadata to XBlockFixtureDesc
         # instead of empty dictionary otherwise test will not produce correct results.
         _metadata = self.metadata if self.metadata else None
 
-        self.course_fix.add_children(
+        self.course_fixture.add_children(
             XBlockFixtureDesc('chapter', 'Test Chapter').add_children(
                 XBlockFixtureDesc('sequential', 'Test Section').add_children(
                     XBlockFixtureDesc('vertical', 'Test Vertical-0').add_children(
@@ -162,7 +162,7 @@ class YouTubeVideoTest(VideoBaseTest):
         Then the "CC" button is hidden
         """
         self.navigate_to_video()
-        self.assertFalse(self.video.is_CC_button_shown)
+        self.assertFalse(self.video.is_button_shown('CC'))
 
 
 class YouTubeHtml5VideoTest(VideoBaseTest):
