@@ -4,6 +4,7 @@
 Acceptance tests for Video.
 """
 
+from unittest import skip
 from .helpers import UniqueCourseTest
 from ..pages.lms.video import VideoPage
 from ..pages.lms.tab_nav import TabNavPage
@@ -57,6 +58,8 @@ class VideoBaseTest(UniqueCourseTest):
 
         self.metadata = {}
         self.transcript = None
+        self.verticals = None
+        self.xblock_videos = None
 
     def navigate_to_video(self):
         """ Prepare the course and get to the video and render it """
@@ -77,16 +80,62 @@ class VideoBaseTest(UniqueCourseTest):
         if self.transcript:
             self.course_fixture.add_asset(self.transcript)
 
+        self.course_fixture.add_children(
+            XBlockFixtureDesc('chapter', 'Test Chapter').add_children(
+                self._videos()
+                )).install()
+
+    def _videos(self):
+
         # If you are not sending any metadata then `None` should be send as metadata to XBlockFixtureDesc
         # instead of empty dictionary otherwise test will not produce correct results.
         _metadata = self.metadata if self.metadata else None
 
-        self.course_fixture.add_children(
-            XBlockFixtureDesc('chapter', 'Test Chapter').add_children(
-                XBlockFixtureDesc('sequential', 'Test Section').add_children(
-                    XBlockFixtureDesc('vertical', 'Test Vertical-0').add_children(
-                        XBlockFixtureDesc('video', 'Video', metadata=_metadata)
-        )))).install()
+        if self.xblock_videos is None:
+            return XBlockFixtureDesc('sequential', 'Test Section').add_children(
+                XBlockFixtureDesc('vertical', 'Test Vertical-0').add_children(
+                XBlockFixtureDesc('video', 'Video', metadata=_metadata)
+            ))
+        else:
+            return self.xblock_videos
+
+    # def _install_course_fixture(self):
+    #     """ Install the course fixture that has been defined """
+    #     if self.transcript:
+    #         self.course_fixture.add_asset(self.transcript)
+    #
+    #     chapter_sequential = XBlockFixtureDesc('sequential', 'Test Section')
+    #     chapter_sequential.add_children(*self._add_course_verticals())
+    #     chapter = XBlockFixtureDesc('chapter', 'Test Chapter').add_children(chapter_sequential)
+    #     self.course_fixture.add_children(chapter)
+    #     self.course_fixture.install()
+
+    def _add_course_verticals(self):
+        xblock_verticals = []
+        verticals = self.verticals
+
+        if not verticals:
+            # If you are not sending any metadata then `None` should be send as metadata to XBlockFixtureDesc
+            # instead of empty dictionary otherwise test will not produce correct results.
+            _metadata = self.metadata if self.metadata else None
+            verticals = [[['Video', _metadata]]]
+
+        for vertical_index, vertical in enumerate(verticals):
+            xblock_verticals.append(self._create_vertical(vertical, vertical_index))
+        return xblock_verticals
+
+    def _create_vertical(self, vertical, vertical_index):
+        xblock_vertical = XBlockFixtureDesc('vertical', 'Test Vertical-{0}'.format(vertical_index))
+
+        for videos in vertical:
+
+            if len(videos) == 1:
+                xblock_vertical.add_children(XBlockFixtureDesc('video', videos[0]))
+            else:
+                xblock_vertical.add_children(XBlockFixtureDesc('video', videos[0], metadata=videos[1]))
+
+        return xblock_vertical
+
 
     def _navigate_to_courseware_video(self):
         """ Register for the course and navigate to the video unit """
@@ -220,3 +269,78 @@ class Html5VideoTest(VideoBaseTest):
         # Verify that error message has correct text
         correct_error_message_text = 'ERROR: No playable video sources found!'
         self.assertIn(correct_error_message_text, self.video.error_message_text)
+
+    @skip('incomplete')
+    def test_video_component_stores_speed_correctly_for_multiple_videos(self):
+        """
+        Scenario: Video component stores speed correctly when each video is in separate sequence
+        Given it has
+            a video "A" in "Youtube" mode in position "1" of sequential
+            a video "B" in "Youtube" mode in position "2" of sequential
+            a video "C" in "HTML5" mode in position "3" of sequential
+        """
+
+        self.xblock_videos = XBlockFixtureDesc('sequential', 'Test Section').add_children(
+            XBlockFixtureDesc('vertical', 'Test Vertical-0').add_children(
+                        XBlockFixtureDesc('video', 'A')
+        ),
+                    XBlockFixtureDesc('vertical', 'Test Vertical-1').add_children(
+                        XBlockFixtureDesc('video', 'B')
+        ),
+                    XBlockFixtureDesc('vertical', 'Test Vertical-2').add_children(
+                        XBlockFixtureDesc('video', 'C', metadata=HTML5_METADATA)
+        ))
+
+        self.verticals = [[['A']], [['B']], [['C', HTML5_METADATA]]]
+
+        self.navigate_to_video()
+
+        from nose.tools import set_trace; set_trace()
+
+        # # select the "2.0" speed on video "A"
+        # self.course_nav.go_to_sequential('A')
+        # self.video.change_speed('2.0')
+        #
+        # # select the "0.50" speed on video "B"
+        # self.course_nav.go_to_sequential('B')
+        # self.video.change_speed('0.50')
+        #
+        # # open video "C"
+        # self.course_nav.go_to_sequential('C')
+        #
+        # #self.video.wait_for_video_player()
+        #
+        # # check if video "C" should start playing at speed "0.75"
+        # self.assertEqual(self.video.get_video_speed, '0.75x')
+        #
+        # # open video "A"
+        # self.course_nav.go_to_sequential('A')
+        #
+        # # check if video "A" should start playing at speed "2.0"
+        # self.assertEqual(self.video.get_video_speed, '2.0x')
+        #
+        # # reload the page
+        # self.video.reload_page()
+        #
+        # self.video.wait_for_video_player()
+        #
+        # # open video "A"
+        # self.course_nav.go_to_sequential('A')
+        #
+        # # check if video "A" should start playing at speed "2.0"
+        # self.assertEqual(self.video.get_video_speed, '2.0x')
+        #
+        # # select the "1.0" speed on video "A"
+        # self.video.change_speed('1.0')
+        #
+        # # open video "B"
+        # self.course_nav.go_to_sequential('B')
+        #
+        # # check if video "B" should start playing at speed "0.50"
+        # self.assertEqual(self.video.get_video_speed, '0.50x')
+        #
+        # # open video "C"
+        # self.course_nav.go_to_sequential('C')
+        #
+        # # check if video "C" should start playing at speed "1.0"
+        # self.assertEqual(self.video.get_video_speed, '1.0x')
