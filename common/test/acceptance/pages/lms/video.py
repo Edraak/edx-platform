@@ -20,7 +20,7 @@ CSS_CLASS_NAMES = {
     'closed_captions': '.closed .subtitles',
     'captions': '.subtitles',
     'error_message': '.video .video-player h3',
-    'video_container': '.video',
+    'video_container': 'div.video',
     'video_sources': '.video-player video source',
     'video_spinner': '.video-wrapper .spinner',
     'video_xmodule': '.xmodule_VideoModule'
@@ -49,7 +49,7 @@ class VideoPage(PageObject):
         """
         Wait until element with class name `video` appeared in DOM.
         """
-        video_css = 'div{0}'.format(CSS_CLASS_NAMES['video_container'])
+        video_css = '{0}'.format(CSS_CLASS_NAMES['video_container'])
 
         wait_for_ajax(self.browser)
         return EmptyPromise(lambda: self.q(css=video_css).present, "Video is initialized").fulfill()
