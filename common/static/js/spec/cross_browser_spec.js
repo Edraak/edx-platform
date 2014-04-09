@@ -2,7 +2,7 @@ describe("Tests for cross_browser.js", function() {
 	describe("Test for disabled links in IE", function() {
 
 		beforeEach(function (){
-			set("<div><a class='ui-disabled' href='://www.example.com'>link</a></div>");
+			setFixtures("<div><a class='ui-disabled' href='://www.example.com'>link</a></div>");
 		});
 
 		it("affirms that jquery version is less than 1.9", function() {
