@@ -77,7 +77,7 @@
                 window.location.reload();
             }
             else {
-                Problem.gentle_alert(response.message);
+                Problem.gentle_alert(problemElement, response.message);
             }
           };
 
@@ -91,7 +91,7 @@
                   {'submission': submission}, plotCallback);
             }
             else {
-                Problem.gentle_alert(response.message);
+                Problem.gentle_alert(problemElement, response.message);
             }
           };
 
