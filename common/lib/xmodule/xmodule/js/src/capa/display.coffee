@@ -249,7 +249,7 @@ class @Problem
     for error in errors
       error_html += '<li>' + error + '</li>\n'
     error_html += '</ul>'
-    @gentle_alert error_html
+    Problem.gentle_alert @el, error_html
 
     abort_submission = file_too_large or file_not_selected or unallowed_file_submitted or required_files_not_submitted
 
@@ -264,7 +264,7 @@ class @Problem
             @render(response.contents)
             @updateProgress response
           else
-            @gentle_alert response.success
+            Problem.gentle_alert @el, response.success
         Logger.log 'problem_graded', [@answers, response.contents], @id
 
     if not abort_submission
@@ -292,7 +292,7 @@ class @Problem
             @el.removeClass 'showed'
           @$('div.action input.check').focus()
         else
-          @gentle_alert response.success
+          Problem.gentle_alert @el, response.success
       Logger.log 'problem_graded', [@answers, response.contents], @id
 
   reset: =>
@@ -367,12 +367,12 @@ class @Problem
           hideMethod = @inputtypeHideAnswerMethods[cls]
           hideMethod(inputtype, display) if hideMethod?
 
-  gentle_alert: (msg) =>
-    if @el.find('.capa_alert').length
-      @el.find('.capa_alert').remove()
+  @gentle_alert: (element, msg) =>
+    if element.find('.capa_alert').length
+      element.find('.capa_alert').remove()
     alert_elem = "<div class='capa_alert'>" + msg + "</div>"
-    @el.find('.action').after(alert_elem)
-    @el.find('.capa_alert').css(opacity: 0).animate(opacity: 1, 700)
+    element.find('.action').after(alert_elem)
+    element.find('.capa_alert').css(opacity: 0).animate(opacity: 1, 700)
     window.SR.readElts @el.find('.capa_alert')
 
   save: =>
@@ -383,7 +383,7 @@ class @Problem
     Logger.log 'problem_save', @answers
     $.postWithPrefix "#{@url}/problem_save", @answers, (response) =>
       saveMessage = response.msg
-      @gentle_alert saveMessage
+      Problem.gentle_alert @el, saveMessage
       @updateProgress response
 
   refreshMath: (event, element) =>
