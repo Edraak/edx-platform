@@ -1197,6 +1197,28 @@ class CapaMixin(CapaFields):
             'msg': msg,
         }
 
+    def stop_problem(self, _data, event_info=None):
+        if not isinstance(event_info, dict):
+            event_info = dict()
+            event_info['old_state'] = self.lcp.get_state()
+            event_info['problem_id'] = self.location.url()
+
+        _ = self.runtime.service(self, "i18n").ugettext
+
+        # Generate a new problem with either the previous seed or a new seed
+        self.lcp = self.new_lcp(None)
+
+        # Pull in the new problem seed
+        self.set_state_from_lcp()
+
+        event_info['new_state'] = self.lcp.get_state()
+        self.runtime.track_function('stop_problem', event_info)
+
+        return {
+            'success': True,
+            'html': self.get_problem_html(encapsulate=False),
+        }
+
     def reset_problem(self, _data):
         """
         Changes problem state to unfinished -- removes student answers,
@@ -1235,16 +1257,4 @@ class CapaMixin(CapaFields):
             # Reset random number generator seed.
             self.choose_new_seed()
 
-        # Generate a new problem with either the previous seed or a new seed
-        self.lcp = self.new_lcp(None)
-
-        # Pull in the new problem seed
-        self.set_state_from_lcp()
-
-        event_info['new_state'] = self.lcp.get_state()
-        self.runtime.track_function('reset_problem', event_info)
-
-        return {
-            'success': True,
-            'html': self.get_problem_html(encapsulate=False),
-        }
+        return self.stop_problem(_data, event_info)

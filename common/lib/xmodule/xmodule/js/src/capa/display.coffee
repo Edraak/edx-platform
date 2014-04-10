@@ -22,6 +22,7 @@ class @Problem
     @$('div.action input:button').click @refreshAnswers
     @$('div.action input.check').click @check_fd
     @$('div.action input.reset').click @reset
+    @$('div.plot-button input.action-stop').click @stop
     @$('div.action button.show').click @show
     @$('div.action input.save').click @save
 
@@ -289,7 +290,7 @@ class @Problem
           @updateProgress response
           if @el.hasClass 'showed'
             @el.removeClass 'showed'
-          @$('div.action input.check').focus()            
+          @$('div.action input.check').focus()
         else
           @gentle_alert response.success
       Logger.log 'problem_graded', [@answers, response.contents], @id
@@ -297,6 +298,12 @@ class @Problem
   reset: =>
     Logger.log 'problem_reset', @answers
     $.postWithPrefix "#{@url}/problem_reset", id: @id, (response) =>
+        @render(response.html)
+        @updateProgress response
+
+  stop: =>
+    Logger.log 'problem_stop', @answers
+    $.postWithPrefix "#{@url}/problem_stop", id: @id, (response) =>
         @render(response.html)
         @updateProgress response
 

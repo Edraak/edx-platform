@@ -1,10 +1,10 @@
 <section id="textbox_${id}" class="capa_inputtype cminput">
 <div class="script_placeholder" data-src="${matlab_editor_js}"></div>
-<textarea 
-  rows="${rows}" 
-  cols="${cols}" 
-  name="input_${id}" 
-  aria-describedby="answer_${id}" 
+<textarea
+  rows="${rows}"
+  cols="${cols}"
+  name="input_${id}"
+  aria-describedby="answer_${id}"
   id="input_${id}"
   data-tabsize="${tabsize}"
   data-mode="octave"
@@ -44,29 +44,25 @@
   </div>
 
   % if button_enabled:
-  <div class="plot-button">
-      <input type="button" class="save" name="plot-button" id="plot_${id}" value="Run Code" />
-  </div>
+    % if status == 'queued':
+      <div class="plot-button">
+          <input type="button" class="save action-stop" name="plot-button" id="plot_${id}" value="Stop Code" />
+      </div>
+    % else:
+      <div class="plot-button">
+          <input type="button" class="save action-run" name="plot-button" id="plot_${id}" value="Run Code" />
+      </div>
+    % endif
   %endif
 
   <script>
     $(function(){
-      var gentle_alert = function (parent_elt, msg) {
-          if($(parent_elt).find('.capa_alert').length) {
-              $(parent_elt).find('.capa_alert').remove();
-          }
-          var alert_elem = "<div>" + msg + "</div>";
-          alert_elem = $(alert_elem).addClass('capa_alert');
-          $(parent_elt).find('.action').after(alert_elem);
-          $(parent_elt).find('.capa_alert').css({opacity: 0}).animate({opacity: 1}, 700);
-      }
-
-
       // hook up the plot button
       var plot = function(event) {
-          var problem_elt = $(event.target).closest('.problems-wrapper');
-          url = $(event.target).closest('.problems-wrapper').data('url');
-          input_id = "${id}";
+          var problemElement = $(event.target).closest('.problems-wrapper'),
+              url = problemElement.data('url'),
+              input = $("#input_${id}"),
+              answer = input.serialize();
 
           // save the codemirror text to the textarea
           // since there could be multiple codemirror instances on the page,
@@ -74,40 +70,36 @@
           $('.CodeMirror').each(function(i, el){
             el.CodeMirror.save();
           });
-          var input = $("#input_${id}");
-
-          // pull out the coded text
-          submission = input.val();
-
-          answer = input.serialize();
 
           // setup callback for after we send information to plot
-          var plot_callback = function(response) {
-              if(response.success) {
-                  window.location.reload();
-              }
-              else {
-                  gentle_alert(problem_elt, response.message);
-              }
-          }
+          var plotCallback = function(response) {
+            if(response.success) {
+                window.location.reload();
+            }
+            else {
+                Problem.gentle_alert(response.message);
+            }
+          };
 
-          var save_callback = function(response) {
-                  if(response.success) {
-                      // send information to the problem's plot functionality
-                      Problem.inputAjax(url, input_id, 'plot',
-                        {'submission': submission}, plot_callback);
-                  }
-                  else {
-                      gentle_alert(problem_elt, response.message);
-                  }
-          }
+          var saveCallback = function(response) {
+            if(response.success) {
+                // pull out the coded text
+                var submission = input.val(),
+                    inputId = "${id}";
+                // send information to the problem's plot functionality
+                Problem.inputAjax(url, inputId, 'plot',
+                  {'submission': submission}, plotCallback);
+            }
+            else {
+                Problem.gentle_alert(response.message);
+            }
+          };
 
           // save the answer
-          $.postWithPrefix(url + '/problem_save', answer, save_callback);
+          $.postWithPrefix(url + '/problem_save', answer, saveCallback);
+      };
 
-      }
-      $('#plot_${id}').click(plot);
-
+      $('#plot_${id}.action-run').click(plot);
     });
   </script>
 </section>

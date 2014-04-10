@@ -370,7 +370,9 @@ class CodeResponseXMLFactory(ResponseXMLFactory):
 
         # Create the input within the response
         if not has_files:
-            input_element = etree.SubElement(response_element, "textbox")
+            # @TODO RESTORE THIS LINE
+            # input_element = etree.SubElement(response_element, "textbox")
+            input_element = etree.SubElement(response_element, "matlabinput")
             input_element.set("mode", "python")
 
         return response_element
