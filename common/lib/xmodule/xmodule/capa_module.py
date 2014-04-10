@@ -59,7 +59,7 @@ class CapaModule(CapaMixin, XModule):
             'problem_get': self.get_problem,
             'problem_check': self.check_problem,
             'problem_reset': self.reset_problem,
-            'problem_stop': self.stop_problem,
+            'problem_reinit': self.reinit_problem,
             'problem_save': self.save_problem,
             'problem_show': self.get_answer,
             'score_update': self.update_score,
