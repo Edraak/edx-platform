@@ -5,7 +5,7 @@ section.tool-wrapper {
   border-bottom: 1px solid darken(#002b36, 10%);
   border-top: 1px solid darken(#002b36, 10%);
   box-shadow: inset 0 0 0 4px darken(#094959, 2%);
-  color: #839496;
+  color: #91a0a2;
   display: table;
   margin: lh() (-(lh())) 0;
 
@@ -59,7 +59,7 @@ section.tool-wrapper {
 
         a {
           border: none;
-          color: #839496;
+          color: #91a0a2;
           font: bold 12px $body-font-family;
           letter-spacing: 1px;
           text-transform: uppercase;
@@ -131,7 +131,7 @@ section.tool-wrapper {
         margin: 0;
         text-shadow: 0 -1px 0 darken(#073642, 10%);
         -webkit-font-smoothing: antialiased;
-        color: #839496;
+        color: #91a0a2;
       }
 
       ul {
@@ -207,7 +207,7 @@ section.tool-wrapper {
           font-weight: bold;
           @include inline-block();
           margin: 0 lh(.5) lh() 0;
-          color: #839496;
+          color: #91a0a2;
           text-shadow: 0 -1px 0 darken(#073642, 10%);
           -webkit-font-smoothing: antialiased;
         }
@@ -237,7 +237,7 @@ section.tool-wrapper {
           margin-top: -.3em;
 
           &:hover, &:active, &:focus {
-            background-color: lighten( #586e75, 10% );
+            background-color: lighten( #586e75, 25% );
           }
         }
       }
