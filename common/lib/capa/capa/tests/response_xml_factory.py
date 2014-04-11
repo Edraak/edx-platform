@@ -332,6 +332,8 @@ class CodeResponseXMLFactory(ResponseXMLFactory):
                             [DEFAULT: None]
         *required_files*: A space-separated string of file names.
                             [DEFAULT: None]
+        *input_type*: The type of input entry field in this Response.
+                            [DEFAULT: "textbox"]
 
         """
         # Get **kwargs
@@ -340,6 +342,7 @@ class CodeResponseXMLFactory(ResponseXMLFactory):
         grader_payload = kwargs.get("grader_payload", '{}')
         allowed_files = kwargs.get("allowed_files", None)
         required_files = kwargs.get("required_files", None)
+        input_type = kwargs.get("input_type", "textbox")
 
         # Create the <coderesponse> element
         response_element = etree.Element("coderesponse")
@@ -370,9 +373,7 @@ class CodeResponseXMLFactory(ResponseXMLFactory):
 
         # Create the input within the response
         if not has_files:
-            # @TODO RESTORE THIS LINE
-            # input_element = etree.SubElement(response_element, "textbox")
-            input_element = etree.SubElement(response_element, "matlabinput")
+            input_element = etree.SubElement(response_element, input_type)
             input_element.set("mode", "python")
 
         return response_element

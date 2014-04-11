@@ -20,9 +20,7 @@ class StubXQueueHandler(StubHttpRequestHandler):
     """
     A handler for XQueue POST requests.
     """
-    # @TODO RESTORE THIS LINE
-    # DEFAULT_RESPONSE_DELAY = 2
-    DEFAULT_RESPONSE_DELAY = 20
+    DEFAULT_RESPONSE_DELAY = 2
     DEFAULT_GRADE_RESPONSE = {'correct': True, 'score': 1, 'msg': ''}
 
     @require_params('POST', 'xqueue_body', 'xqueue_header')

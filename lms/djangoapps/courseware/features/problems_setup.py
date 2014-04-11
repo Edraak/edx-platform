@@ -141,6 +141,17 @@ PROBLEM_DICT = {
         'incorrect': ['span.incorrect'],
         'unanswered': ['span.unanswered']},
 
+    'matlab': {
+        'factory': CodeResponseXMLFactory(),
+        'kwargs': {
+            'question_text': 'Submit code to an external grader',
+            'initial_display': 'print "Hello world!"',
+            'grader_payload': '{"grader": "ps1/Spring2013/test_grader.py"}',
+            'input_type': 'matlabinput', },
+        'correct': ['span.correct'],
+        'incorrect': ['span.incorrect'],
+        'unanswered': ['span.unanswered']},
+
     'radio_text': {
         'factory': ChoiceTextResponseXMLFactory(),
         'kwargs': {

@@ -172,3 +172,29 @@ def assert_answer_mark(_step, problem_type, isnt_marked, correctness):
 
     # Expect that we found the expected selector
     assert(has_expected)
+
+
+@step(u'external graders message is( NOT)? shown$')
+def assert_external_message(_step, not_shown):
+    css = 'div.external-grader-queue-message'
+    if not_shown:
+        expected_message = ''
+    else:
+        expected_message = world.xqueue.config['default'].get('msg', '')
+
+    world.wait_for(lambda _: world.css_has_text(css, expected_message))
+
+
+@step(u'I press the plot button with label "([^"]*)"$')
+def press_the_plot_button(_step, buttonname):
+    button_css = '[name="plot-button"]'
+    world.css_click(button_css)
+
+
+@step(u'The "([^"]*)" plot button does( not)? appear')
+def plot_button_present(_step, buttonname, doesnt_appear):
+    button_css = '[name="plot-button"][value*="%s"]' % buttonname
+    if bool(doesnt_appear):
+        assert world.is_css_not_present(button_css)
+    else:
+        assert world.is_css_present(button_css)

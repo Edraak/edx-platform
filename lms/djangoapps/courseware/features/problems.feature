@@ -7,7 +7,6 @@ Feature: LMS.Answer problems
     Scenario: I can answer a problem correctly
         Given External graders respond "correct"
         And I am viewing a "<ProblemType>" problem
-        And I run ipdb
         When I answer a "<ProblemType>" problem "correctly"
         Then my "<ProblemType>" answer is marked "correct"
         And The "<ProblemType>" problem displays a "correct" answer
@@ -16,18 +15,18 @@ Feature: LMS.Answer problems
 
         Examples:
         | ProblemType       |
-#        | drop down         |
-#        | multiple choice   |
-#        | checkbox          |
-#        | radio             |
-#        | string            |
-#        | numerical         |
-#        | formula           |
-#        | script            |
+        | drop down         |
+        | multiple choice   |
+        | checkbox          |
+        | radio             |
+        | string            |
+        | numerical         |
+        | formula           |
+        | script            |
         | code              |
-#        | radio_text        |
-#        | checkbox_text     |
-#        | image             |
+        | radio_text        |
+        | checkbox_text     |
+        | image             |
 
     Scenario: I can answer a problem incorrectly
         Given External graders respond "incorrect"
@@ -245,3 +244,28 @@ Feature: LMS.Answer problems
         | numerical         |
         | formula           |
         | script            |
+
+    Scenario: I can run the code of problem
+        Given External graders respond "correct"
+        And I am viewing a "<ProblemType>" problem
+        And I press the plot button with label "Run Code"
+        Then external graders message is shown
+        Then my "<ProblemType>" answer is marked "unanswered"
+
+        Examples:
+        | ProblemType       |
+        | matlab            |
+
+    Scenario: I can stop code processing of problem
+        Given External graders respond "correct"
+        And I am viewing a "<ProblemType>" problem
+        And I press the plot button with label "Run Code"
+        And The "Stop Code" plot button does appear
+        And I press the plot button with label "Stop Code"
+        Then external graders message is NOT shown
+        Then my "<ProblemType>" answer is marked "unanswered"
+        And The "Run Code" plot button does appear
+
+        Examples:
+        | ProblemType       |
+        | matlab            |
