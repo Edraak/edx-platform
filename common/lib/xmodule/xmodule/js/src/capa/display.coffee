@@ -22,7 +22,7 @@ class @Problem
     @$('div.action input:button').click @refreshAnswers
     @$('div.action input.check').click @check_fd
     @$('div.action input.reset').click @reset
-    @$('div.plot-button input.action-stop').click @stop
+    @$('div.plot-button input.action-stop').click @stop_submission
     @$('div.action button.show').click @show
     @$('div.action input.save').click @save
 
@@ -301,9 +301,9 @@ class @Problem
         @render(response.html)
         @updateProgress response
 
-  stop: =>
+  stop_submisstion: =>
     Logger.log 'problem_stop', @answers
-    $.postWithPrefix "#{@url}/problem_stop", id: @id, (response) =>
+    $.postWithPrefix "#{@url}/problem_reinit", id: @id, (response) =>
         @render(response.html)
         @updateProgress response
 

@@ -1197,13 +1197,28 @@ class CapaMixin(CapaFields):
             'msg': msg,
         }
 
-    def stop_problem(self, _data, event_info=None):
+    def reinit_problem(self, _data, event_info=None):
+        """
+        Creates new problem from old problem data.
+
+        As a side-effect, removes problem submission from Xqueue.
+        Because Xqueue can't hit new problem, as it is not in Xqueue.
+
+        Changes problem state to unfinished -- removes student answers,
+        and causes problem to rerender itself.
+
+        Returns a dictionary of the form:
+          {'success': True/False,
+           'html': Problem HTML string }
+
+        If an error occurs, the dictionary will also have an
+        `error` key containing an error message.
+        """
         if not isinstance(event_info, dict):
             event_info = dict()
-            event_info['old_state'] = self.lcp.get_state()
-            event_info['problem_id'] = self.location.url()
 
-        _ = self.runtime.service(self, "i18n").ugettext
+        event_info['old_state'] = self.lcp.get_state()
+        event_info['problem_id'] = self.location.url()
 
         # Generate a new problem with either the previous seed or a new seed
         self.lcp = self.new_lcp(None)
@@ -1212,7 +1227,7 @@ class CapaMixin(CapaFields):
         self.set_state_from_lcp()
 
         event_info['new_state'] = self.lcp.get_state()
-        self.runtime.track_function('stop_problem', event_info)
+        self.runtime.track_function('reinitialize_problem', event_info)
 
         return {
             'success': True,
