@@ -16,11 +16,8 @@ from xmodule.fields import RelativeTime
 
 from .transcripts_utils import (
     get_or_create_sjson,
-    self.TranscriptException,
-    self.TranscriptsGenerationException,
     generate_sjson_for_all_speeds,
     youtube_speed_dict,
-    save_to_store,
 )
 
 
@@ -108,28 +105,23 @@ class VideoStudentViewHandlers(object):
             if self.transcript_language == 'en':
                 return self.Transcript.get_asset_by_subs_id(youtube_id).data
 
-            youtube_ids = youtube_speed_dict(self)
-            assert youtube_id in youtube_ids
+            return self.Transcript.get_or_create_sjson_from_srt(
+                youtube_id,
+                self.transcripts[item.transcript_language],
+                self.transcript_language
+            )
 
-            try:
-                sjson_transcript = self.Transcript.get_asset_by_subs_id(youtube_id, self.transcript_language).data
-            except (NotFoundError):
-                log.info("Can't find content in storage for %s transcript: generating.", youtube_id)
-                generate_sjson_for_all_speeds(
-                    self,
-                    self.transcripts[self.transcript_language],
-                    {speed: youtube_id for youtube_id, speed in youtube_ids.iteritems()},
-                    self.transcript_language
-                )
-                sjson_transcript = self.Transcript.get_asset_by_subs_id(youtube_id, self.transcript_language).data
-
-            return sjson_transcript
         else:
             # HTML5 case
             if self.transcript_language == 'en':
                 return self.Transcript.get_asset_by_subs_id(self.sub).data
             else:
-                return get_or_create_sjson(self)
+                subs_id = os.path.splitext(self.transcripts[item.transcript_language])[0]
+                return self.Transcript.get_or_create_sjson_from_srt(
+                    subs_id,
+                    self.transcripts[item.transcript_language],
+                    self.transcript_language
+                )
 
     def get_transcript(self, transcript_format='srt'):
         """
@@ -208,11 +200,11 @@ class VideoStudentViewHandlers(object):
             try:
                 transcript = self.translation(request.GET.get('videoId', None))
             except (
-                self.TranscriptException,
+                self.Transcript.TranscriptEx,
                 NotFoundError,
                 UnicodeDecodeError,
-                self.TranscriptException,
-                self.TranscriptsGenerationException
+                self.Transcript.TranscriptEx,
+                self.Transcript.TranscriptConvertEx
             ) as ex:
                 log.info(ex.message)
                 response = Response(status=404)
@@ -291,7 +283,7 @@ class VideoStudioViewHandlers(object):
             /translation POST:
                 TypeError:
                     Unjsonable filename or content.
-                self.TranscriptsGenerationException, self.TranscriptException:
+                self.Transcript.TranscriptConvertEx, self.Transcript.TranscriptEx:
                     no SRT extension or not parse-able by PySRT
                 UnicodeDecodeError: non-UTF8 uploaded file content encoding.
         """
@@ -306,8 +298,10 @@ class VideoStudioViewHandlers(object):
 
             if request.method == 'POST':
                 subtitles = request.POST['file']
-                save_to_store(subtitles.file.read(), unicode(subtitles.filename), 'application/x-subrip', self.location)
-                generate_sjson_for_all_speeds(self, unicode(subtitles.filename), {}, language)
+                srt_content = subtitles.file.read()
+                self.Transcript.save_asset(srt_content, unicode(subtitles.filename), 'application/x-subrip')
+                sjson_transcript = self.Transcript.convert(srt_content, 'srt', 'sjson')
+                self.Transcript.save_sjson_asset(sjson_transcript, subs_id, language)
                 response = {'filename': unicode(subtitles.filename), 'status': 'Success'}
                 return Response(json.dumps(response), status=201)
 

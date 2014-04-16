@@ -78,84 +78,6 @@ def download_youtube_subs(youtube_id, item, settings):
     log.info("Transcripts for YouTube id %s for 1.0 speed are downloaded and saved.", youtube_id)
 
 
-def generate_subs_from_source(speed_subs, subs_type, subs_filedata, item, language='en'):
-    """Generate transcripts from source files (like SubRip format, etc.)
-    and save them to assets for `item` module.
-    We expect, that speed of source subs equal to 1
-
-    :param speed_subs: dictionary {speed: sub_id, ...}
-    :param subs_type: type of source subs: "srt", ...
-    :param subs_filedata:unicode, content of source subs.
-    :param item: module object.
-    :param language: str, language of translation of transcripts
-    :returns: True, if all subs are generated and saved successfully.
-    """
-    _ = item.runtime.service(item, "i18n").ugettext
-    if subs_type.lower() != 'srt':
-        raise TranscriptsGenerationException(_("We support only SubRip (*.srt) transcripts format."))
-    try:
-        srt_subs_obj = SubRipFile.from_string(subs_filedata)
-    except Exception as ex:
-        msg = _("Something wrong with SubRip transcripts file during parsing. Inner message is {error_message}").format(
-            error_message=ex.message
-        )
-        raise TranscriptsGenerationException(msg)
-    if not srt_subs_obj:
-        raise TranscriptsGenerationException(_("Something wrong with SubRip transcripts file during parsing."))
-
-    sub_starts = []
-    sub_ends = []
-    sub_texts = []
-
-    for sub in srt_subs_obj:
-        sub_starts.append(sub.start.ordinal)
-        sub_ends.append(sub.end.ordinal)
-        sub_texts.append(sub.text.replace('\n', ' '))
-
-    subs = {
-        'start': sub_starts,
-        'end': sub_ends,
-        'text': sub_texts}
-
-    for speed, subs_id in speed_subs.iteritems():
-        save_subs_to_store(
-            generate_subs(speed, 1, subs),
-            subs_id,
-            item,
-            language
-        )
-
-    return subs
-
-
-def generate_srt_from_sjson(sjson_subs, speed):
-    """Generate transcripts with speed = 1.0 from sjson to SubRip (*.srt).
-
-    :param sjson_subs: "sjson" subs.
-    :param speed: speed of `sjson_subs`.
-    :returns: "srt" subs.
-    """
-
-    output = ''
-
-    equal_len = len(sjson_subs['start']) == len(sjson_subs['end']) == len(sjson_subs['text'])
-    if not equal_len:
-        return output
-
-    sjson_speed_1 = generate_subs(speed, 1, sjson_subs)
-
-    for i in range(len(sjson_speed_1['start'])):
-        item = SubRipItem(
-            index=i,
-            start=SubRipTime(milliseconds=sjson_speed_1['start'][i]),
-            end=SubRipTime(milliseconds=sjson_speed_1['end'][i]),
-            text=sjson_speed_1['text'][i]
-        )
-        output += (unicode(item))
-        output += '\n'
-    return output
-
-
 def copy_or_rename_transcript(new_name, old_name, item, delete_old=False, user=None):
     """
     Renames `old_name` transcript file in storage to `new_name`.
@@ -173,7 +95,6 @@ def copy_or_rename_transcript(new_name, old_name, item, delete_old=False, user=N
     item.save_with_metadata(user)
     if delete_old:
         remove_subs_from_store(old_name, item)
-
 
 
 def manage_video_subtitles_save(item, user, old_metadata=None, generate_translation=False):
@@ -264,54 +185,4 @@ def manage_video_subtitles_save(item, user, old_metadata=None, generate_translat
             raise TranscriptException(reraised_message)
 
 
-def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
-    """
-    Generates sjson from srt for given lang.
-
-    `item` is module object.
-    """
-    _ = item.runtime.service(item, "i18n").ugettext
-
-    try:
-        srt_transcripts = contentstore().find(Transcript.asset_location(item.location, user_filename))
-    except NotFoundError as ex:
-        raise TranscriptException(_("{exception_message}: Can't find uploaded transcripts: {user_filename}").format(
-            exception_message=ex.message,
-            user_filename=user_filename
-        ))
-
-    if not lang:
-        lang = item.transcript_language
-
-    generate_subs_from_source(
-        result_subs_dict,
-        os.path.splitext(user_filename)[1][1:],
-        srt_transcripts.data.decode('utf8'),
-        item,
-        lang
-    )
-
-
-def get_or_create_sjson(item):
-    """
-    Get sjson if already exists, otherwise generate it.
-
-    Generate sjson with subs_id name, from user uploaded srt.
-    Subs_id is extracted from srt filename, which was set by user.
-
-    Raises:
-        TranscriptException: when srt subtitles do not exist,
-        and exceptions from generate_subs_from_source.
-
-    `item` is module object.
-    """
-    user_filename = item.transcripts[item.transcript_language]
-    user_subs_id = os.path.splitext(user_filename)[0]
-    source_subs_id, result_subs_dict = user_subs_id, {1.0: user_subs_id}
-    try:
-        sjson_transcript = Transcript.asset(item.location, source_subs_id, item.transcript_language).data
-    except (NotFoundError):  # generating sjson from srt
-        generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, item.transcript_language)
-    sjson_transcript = Transcript.asset(item.location, source_subs_id, item.transcript_language).data
-    return sjson_transcript
 

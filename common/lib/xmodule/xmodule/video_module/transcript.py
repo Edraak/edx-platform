@@ -1,40 +1,27 @@
-class Srt(AbstractClass):
-    MIME_TYPE = 'application/x-subrip'
+"""
+Abstractions for trancripts.
+"""
+from srt import Srt
+from sjson import Sjson
 
-    @staticmethod
-    def get(contestore, location, filename):
-        name = Srt.get_filename(filename)
 
-    @staticmethod
-    def add(contestore, location, filename):
-        name = Srt.get_filename(filename)
-
-    @staticmethod
-    def delete(contestore, location, filename):
-        name = Srt.get_filename(filename)
-
-    @staticmethod
-    def copy(contestore, location, filename):
-        name = Srt.get_filename(filename)
-
-    @staticmethod
-    def rename(contestore, location, filename):
-        name = Srt.get_filename(filename)
-
-    @staticmethod
-    def get_filename(contestore, location, filename):
-        pass
-
+class TranscriptFormat(object):
+    """
+    Interface for transcript files.
+    """
     @staticmethod
     def get_mime_type():
-        return Srt.MIME_TYPE
+        raise NotImplemented
+
+    @staticmethod
+    def convert_to(output_format, content):
+        raise NotImplemented
 
 
 class Transcript(object):
     """
     Container for transcript methods.
     """
-
     mime_types = {
         'srt': 'application/x-subrip; charset=utf-8',
         'txt': 'text/plain; charset=utf-8',
@@ -48,26 +35,25 @@ class Transcript(object):
         pass
 
 
-    class TranscriptsGenerationException(Exception):
+    class TranscriptConvertEx(Exception):
+        """
+        Raise when convertion fails.
+        """
+        pass
+
+
+    class GetTranscriptFromYouTubeEx(Exception):
         """
         When ?
         """
         pass
 
 
-    class GetTranscriptsFromYouTubeException(Exception):
+    class TranscriptRequestValidationEx(Exception):
         """
         When ?
         """
         pass
-
-
-    class TranscriptsRequestValidationException(Exception):
-        """
-        When ?
-        """
-        pass
-
 
 
     def __init__ (video_descriptor_instance):
@@ -92,67 +78,33 @@ class Transcript(object):
         Convert transcript `content` from `input_format` to `output_format`.
 
         Accepted input formats: sjson, srt.
-        Accepted output format: srt, txt.
+        Accepted output format: srt, txt, sjsons.
         """
-        assert input_format in ('srt', 'sjson')
-        assert output_format in ('txt', 'srt', 'sjson')
-
         if input_format == output_format:
             return content
+        elif input_format == 'srt':
+            return SRT.convert_to(output_format, content, language???)
+        elif input_format == 'sjson':
+            return SJSON.convert_to('output_format', json.loads(content))
+        else:
+            raise Transcript.TranscriptConvertEx(_('Transcipt convertsion from {} to {] format is unsupported').format(
+                input_format,
+                output_format
+            ))
 
-        if input_format == 'srt':
-
-            if output_format == 'txt':
-                text = SubRipFile.from_string(content.decode('utf8')).text
-                return HTMLParser().unescape(text)
-
-            elif output_format == 'sjson':
-                raise NotImplementedError
-
-        if input_format == 'sjson':
-
-            if output_format == 'txt':
-                text = json.loads(content)['text']
-                return HTMLParser().unescape("\n".join(text))
-
-            elif output_format == 'srt':
-                return generate_srt_from_sjson(json.loads(content), speed=1.0)
-
-    @staticmethod
-    def change_sjson_subs_speed(to_speed, from_speed, sjson_subs):
-    """
-    Generate transcripts from one speed to another speed.
-
-    Args:
-    `to_speed`: float, for this speed subtitles will be generated,
-    `from_speed`: float, speed of source_subs
-    `sjson_subs`: dict, existing subtitles for speed `source_speed`.
-
-    Returns:
-    `subs`: dict, actual subtitles.
-    """
-    if to_speed == from_speed:
-        return sjson_subs
-
-    coefficient = 1.0 * to_speed / from_speed
-    subs = {
-        'start': [
-            int(round(timestamp * coefficient)) for
-            timestamp in sjson_subs['start']
-        ],
-        'end': [
-            int(round(timestamp * coefficient)) for
-            timestamp in sjson_subs['end']
-        ],
-        'text': sjson_subs['text']}
-    return subs
-
-
-    def get_asset_by_filename(filename):
+    def get_asset_by_filename(self. filename):
         """
         Return asset by location and filename.
         """
-        return contentstore().find(self.asset_location(filename))
+        _ = self.descriptor.runtime.service(item, "i18n").ugettext
+        try:
+            contentstore().find(self.asset_location(filename))
+        except NotFoundError as ex:
+            log.info("Can't find content in storage for %s transcript.", filename)
+            raise TranscriptException(_("{exception_message}: Can't find transcripts: {filename} in contentstore.").format(
+                exception_message=ex.message,
+                user_filename=filename
+            ))
 
     def get_asset_by_subsid(self, subs_id, lang='en'):
         """
@@ -187,13 +139,13 @@ class Transcript(object):
 
 
     def save_asset(content, content_name, mime_type):
-    """
-    Save named content to store. Returns location of saved content.
-    """
-    content_location = self.asset_location(content_name)
-    content = StaticContent(content_location, content_name, mime_type, content)
-    contentstore().save(content)
-    return content_location
+        """
+        Save named content to store. Returns location of saved content.
+        """
+        content_location = self.asset_location(content_name)
+        content = StaticContent(content_location, content_name, mime_type, content)
+        contentstore().save(content)
+        return content_location
 
 
     def save_sjson_asset(sjson_content, subs_id, language='en'):
@@ -210,13 +162,25 @@ class Transcript(object):
         filename = self.subs_filename(subs_id, language)
         return self.save_asset(filedata, filename, 'application/json')
 
-    # def get (self, className, filename):
-    #     return className.get(contentstore, self.location, filename)
+    def get_or_create_sjson_from_srt(self, subs_id, srt_filename, language):
+        """
+        Get sjson if already exists, otherwise generate it.
 
-    # def set (self, className):
-    #     className.get(contentstore);
+        Generate sjson with subs_id name, from user uploaded srt.
+        Subs_id is extracted from srt filename, which was set by user.
 
-    # def delete (self, className):
-    #     className.get();
+        Raises:
+            TranscriptException: when srt subtitles do not exist,
+            and exceptions from generate_subs_from_source.
+
+        `item` is module object.
+        """
+        try:
+            sjson_transcript = self.get_asset_by_subsid(subs_id, language)
+        except (TranscriptException):  # generating sjson from srt
+            srt_transcripts = self.get_asset_by_filename(srt_filename)
+            sjson_transcript = self.convert(srt_transcripts, 'srt', 'sjson')
+            self.save_sjson_asset(sjson_transcript, subs_id, language)
+        return sjson_transcript.data
 
 
