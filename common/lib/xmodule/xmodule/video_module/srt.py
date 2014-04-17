@@ -3,6 +3,7 @@ Functions specific to SRT transcript format.
 """
 import json
 from pysrt import SubRipFile
+from HTMLParser import HTMLParser
 
 from .transcript import TranscriptFormat, Transcript
 
@@ -28,7 +29,7 @@ class Srt(TranscriptFormat):
             msg = self._("SubRip transcripts file parsing error. Inner message is {error_message}").format(
                 error_message=ex.message
             )
-            raise TranscriptConvertEx(msg)
+            raise Transcript.TranscriptConvertEx(msg)
         if not pysrt_obj:
             raise Transcript.TranscriptConvertEx(self._("Empty SubRip transcript after decoding."))
 

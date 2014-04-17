@@ -2,7 +2,8 @@
 Functions specific to SRT transcript format.
 """
 import json
-from pysrt import SubRipItem
+from pysrt import SubRipItem, SubRipTime
+from HTMLParser import HTMLParser
 
 from .transcript import TranscriptFormat, Transcript
 
@@ -38,8 +39,7 @@ class Sjson(TranscriptFormat):
         Convert SJSON transcrit to SRT SubRip transcript.
 
         Args:
-            content: list, "sjson" subs.
-            subs: list, subs.
+            content: dict, sjson subs.
 
         Raises:
             TranscriptConvertEx if SJSON transcript is broken.
@@ -47,6 +47,8 @@ class Sjson(TranscriptFormat):
         Returns:
             output, unicode.
         """
+        output = ''
+
         equal_len = len(content['start']) == len(content['end']) == len(content['text'])
         if not equal_len:
             raise Transcript.TranscriptConvertEx(self._("Sjson transcript format are empty or incorrectly formed."))

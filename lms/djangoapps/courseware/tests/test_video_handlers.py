@@ -460,21 +460,16 @@ class TestStudioTranscriptTranslationPostDispatch(TestVideo):
 
         # Language is passed, bad content or filename:
 
-        # should be first, as other tests save transcrips to store.
-        request = Request.blank('/translation/uk', POST={'file': ('filename.srt', SRT_content)})
-        with patch('xmodule.video_module.video_handlers.Transcript.save_asset'):
-            with self.assertRaises(NotFoundError):  # transcripts were not saved to store for some reason.
-                response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
         request = Request.blank('/translation/uk', POST={'file': ('filename', 'content')})
-        with self.assertRaises(Transcript.TranscriptGenerationEx):  # Not an srt filename
+        with self.assertRaises(Transcript.TranscriptRequestValidationEx):  # Not an srt filename extension
             self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', 'content')})
-        with self.assertRaises(Transcript.TranscriptGenerationEx):  # Content format is not srt.
+        with self.assertRaises(Transcript.TranscriptConvertEx):  # Content format is not srt.
             response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', SRT_content.decode('utf8').encode('cp1251'))})
-        with self.assertRaises(UnicodeDecodeError):  # Non-UTF8 file content encoding.
+        with self.assertRaises(Transcript.TranscriptConvertEx):  # Non-UTF8 file content encoding.
             response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         # No language is passed.

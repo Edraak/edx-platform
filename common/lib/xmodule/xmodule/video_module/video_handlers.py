@@ -15,6 +15,7 @@ from xmodule.exceptions import NotFoundError
 from xmodule.fields import RelativeTime
 
 from .transcript import Transcript
+from .video_utils import get_ext
 
 
 log = logging.getLogger(__name__)
@@ -196,7 +197,6 @@ class VideoStudentViewHandlers(object):
                 transcript = self.translation(request.GET.get('videoId', None))
             except (
                 NotFoundError,
-                UnicodeDecodeError,
                 self.Transcript.TranscriptConvertEx
             ) as ex:
                 log.info(ex.message)
@@ -208,7 +208,7 @@ class VideoStudentViewHandlers(object):
         elif dispatch == 'download':
             try:
                 transcript_content, transcript_filename, transcript_mime_type = self.get_transcript(self.transcript_download_format)
-            except (NotFoundError, ValueError, KeyError, UnicodeDecodeError):
+            except (NotFoundError, ValueError, KeyError):
                 log.debug("Video@download exception")
                 return Response(status=404)
             else:
@@ -276,9 +276,11 @@ class VideoStudioViewHandlers(object):
             /translation POST:
                 TypeError:
                     Unjsonable filename or content.
-                self.Transcript.TranscriptConvertEx:
-                    no SRT extension or not parse-able by PySRT
-                UnicodeDecodeError: non-UTF8 uploaded file content encoding.
+                Transcript.TranscriptConvertEx:
+                    - non parseable by PySRT,
+                    - non-UTF8 uploaded file content encoding.
+                Transcript.TranscriptRequestValidationEx:
+                    no SRT extension
         """
         _ = self.runtime.service(self, "i18n").ugettext
 
@@ -291,6 +293,8 @@ class VideoStudioViewHandlers(object):
 
             if request.method == 'POST':  # TODO check for SRT extension
                 subtitles = request.POST['file']
+                if get_ext(subtitles.filename).lower() != 'srt':
+                    raise self.Transcript.TranscriptRequestValidationEx(_('Not SRT file extension.'))
                 srt_content = subtitles.file.read()
                 self.Transcript.save_asset(srt_content, unicode(subtitles.filename), 'application/x-subrip')
                 sjson_transcript = self.Transcript.convert(srt_content, 'srt', 'sjson')

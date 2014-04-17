@@ -1,6 +1,7 @@
 """
 Module containts utils specific for video_module.
 """
+from urlparse import urlparse
 
 
 def create_youtube_string(video):
@@ -50,3 +51,9 @@ def get_html5_ids(html5_sources):
     """
     html5_ids = [x.split('/')[-1].rsplit('.', 1)[0] for x in html5_sources]
     return html5_ids
+
+
+def get_ext(filename):
+    # Prevent incorrectly parsing urls like 'http://abc.com/path/video.mp4?xxxx'.
+    path = urlparse(filename).path
+    return path.rpartition('.')[-1]
