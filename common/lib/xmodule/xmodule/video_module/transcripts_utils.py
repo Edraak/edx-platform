@@ -40,7 +40,7 @@ def get_transcripts_from_youtube(youtube_id, settings, i18n):
             youtube_id=youtube_id,
             status_code=data.status_code
         )
-        raise GetTranscriptsFromYouTubeException(msg)
+        raise Transcript.GetTranscriptFromYouTubeEx(msg)
 
     sub_starts, sub_ends, sub_texts = [], [], []
     xmltree = etree.fromstring(data.content, parser=utf8_parser)
@@ -74,7 +74,7 @@ def download_youtube_subs(youtube_id, item, settings):
     i18n = item.runtime.service(item, "i18n")
     _ = i18n.ugettext
     subs = get_transcripts_from_youtube(youtube_id, settings, i18n)
-    save_subs_to_store(subs, youtube_id, item)
+    item.Transcript.save_sjson_asset(subs, youtube_id)
     log.info("Transcripts for YouTube id %s for 1.0 speed are downloaded and saved.", youtube_id)
 
 
@@ -85,16 +85,12 @@ def copy_or_rename_transcript(new_name, old_name, item, delete_old=False, user=N
     If `old_name` is not found in storage, raises `NotFoundError`.
     If `delete_old` is True, removes `old_name` files from storage.
     """
-    filename = 'subs_{0}.srt.sjson'.format(old_name)
-    content_location = StaticContent.compute_location(
-        item.location.org, item.location.course, filename
-    )
-    transcripts = contentstore().find(content_location).data
-    save_subs_to_store(json.loads(transcripts), new_name, item)
+    transcripts = item.Transcript.get_asset_by_subsid(old_name).data
+    item.Transcript.save_sjson_asset(json.loads(transcripts), new_name)
     item.sub = new_name
     item.save_with_metadata(user)
     if delete_old:
-        remove_subs_from_store(old_name, item)
+        item.Transcript.delete_asset_by_subsid(old_name)
 
 
 def manage_video_subtitles_save(item, user, old_metadata=None, generate_translation=False):

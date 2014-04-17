@@ -107,23 +107,22 @@ def upload_transcripts(request):
 
     basename = os.path.basename(source_subs_filename)
     source_subs_name = os.path.splitext(basename)[0]
-    source_subs_ext = os.path.splitext(basename)[1][1:]
 
     if item.category != 'video':
         return error_response(response, 'Transcripts are supported only for "video" modules.')
 
     # Allow upload only if any video link is presented
     if video_list:
-        sub_attr = source_subs_name
         try:
             # Generate and save for 1.0 speed, will create subs_sub_attr.srt.sjson subtitles file in storage.
-            generate_subs_from_source({1: sub_attr}, source_subs_ext, source_subs_filedata, item)
+            sjson_transcript = item.Transcript.convert(source_subs_filedata, 'srt', 'sjson')
+            item.Transcript.save_sjson_asset(sjson_transcript, source_subs_name, 'en')
 
             for video_dict in video_list:
                 video_name = video_dict['video']
                 # We are creating transcripts for every video source, if in future some of video sources would be deleted.
                 # Updates item.sub with `video_name` on success.
-                copy_or_rename_transcript(video_name, sub_attr, item, user=request.user)
+                copy_or_rename_transcript(video_name, source_subs_name, item, user=request.user)
 
             response['subs'] = item.sub
             response['status'] = 'Success'
@@ -169,9 +168,9 @@ def download_transcripts(request):
     try:
         sjson_transcripts = contentstore().find(content_location)
         log.debug("Downloading subs for %s id", subs_id)
-        str_subs = generate_srt_from_sjson(json.loads(sjson_transcripts.data), speed=1.0)
+        srt_subs = item.Transcript.convert(sjson_transcripts.data, 'sjson', 'srt')
         if not str_subs:
-            log.debug('generate_srt_from_sjson produces no subtitles')
+            log.debug('Convertion sjson to srt fails.')
             raise Http404
         response = HttpResponse(str_subs, content_type='application/x-subrip')
         response['Content-Disposition'] = 'attachment; filename="{0}.srt"'.format(subs_id)
@@ -242,14 +241,10 @@ def check_transcripts(request):
         transcripts_presence['is_youtube_mode'] = True
 
         # youtube local
-        filename = 'subs_{0}.srt.sjson'.format(youtube_id)
-        content_location = StaticContent.compute_location(
-            item.location.org, item.location.course, filename
-        )
         try:
-            local_transcripts = contentstore().find(content_location).data
+            local_transcripts = item.Transcript.get_asset_by_subsid(youtube_id)
             transcripts_presence['youtube_local'] = True
-        except NotFoundError:
+        except Transcript.TranscriptEx:
             log.debug("Can't find transcripts in storage for youtube id: %s", youtube_id)
 
         # youtube server
@@ -269,20 +264,16 @@ def check_transcripts(request):
                 )
                 if json.loads(local_transcripts) == youtube_server_subs:  # check transcripts for equality
                     transcripts_presence['youtube_diff'] = False
-            except GetTranscriptsFromYouTubeException:
+            except Transcript.GetTranscriptFromYouTubeEx:
                 pass
 
     # Check for html5 local transcripts presence
     html5_subs = []
     for html5_id in videos['html5']:
-        filename = 'subs_{0}.srt.sjson'.format(html5_id)
-        content_location = StaticContent.compute_location(
-            item.location.org, item.location.course, filename
-        )
         try:
-            html5_subs.append(contentstore().find(content_location).data)
+            html5_subs.append(item.Transcript.get_asset_by_subsid(html5_id).data)
             transcripts_presence['html5_local'].append(html5_id)
-        except NotFoundError:
+        except Transcript.TranscriptEx:
             log.debug("Can't find transcripts in storage for non-youtube video_id: %s", html5_id)
         if len(html5_subs) == 2:  # check html5 transcripts for equality
             transcripts_presence['html5_equal'] = json.loads(html5_subs[0]) == json.loads(html5_subs[1])
@@ -379,8 +370,7 @@ def choose_transcripts(request):
     # find rejected html5_id and remove appropriate subs from store
     html5_id_to_remove = [x for x in videos['html5'] if x != html5_id]
     if html5_id_to_remove:
-        remove_subs_from_store(html5_id_to_remove, item)
-
+        item.Transcript.delete_asset_by_subsid(html5_id_to_remove)
     if item.sub != html5_id:  # update sub value
         item.sub = html5_id
         item.save_with_metadata(request.user)
@@ -443,7 +433,7 @@ def _validate_transcripts_data(request):
         raise TranscriptsRequestValidationException(_("Can't find item by locator."))
 
     if item.category != 'video':
-        raise TranscriptsRequestValidationException(_('Transcripts are supported only for "video" modules.'))
+        raise Transcript.TranscriptRequestValidationEx(_('Transcripts are supported only for "video" modules.'))
 
     # parse data form request.GET.['data']['video'] to useful format
     videos = {'youtube': '', 'html5': {}}
@@ -524,7 +514,7 @@ def save_transcripts(request):
             current_subs = data.get('current_subs')
             if current_subs is not None:
                 for sub in current_subs:
-                    remove_subs_from_store(sub, item)
+                    item.Transcript.delete_asset_by_subsid(sub)
 
         response['status'] = 'Success'
 
