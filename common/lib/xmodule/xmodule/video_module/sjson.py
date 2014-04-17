@@ -1,12 +1,13 @@
 """
 Functions specific to SRT transcript format.
 """
+import json
 from pysrt import SubRipItem
 
 from .transcript import TranscriptFormat, Transcript
 
 
-clase Sjson(TranscriptFormat):
+class Sjson(TranscriptFormat):
 
     MIME_TYPE = 'application/json'
 
@@ -14,24 +15,25 @@ clase Sjson(TranscriptFormat):
     def mime_type():
         return Sjson.MIME_TYPE
 
-    @staticmethod
-    def convert_to(output_format, content):
+    def convert_to(self, output_format, content):
         """
-        Convert transcript from SRT SubRip to SJSON or TXT format.
+        Convert transcript from SJSON to SRT or TXT format.
 
         Output format is string representing convertion format: 'srt' or 'txt'
         """
-        if output_format.lower == 'srt':
-            return _convert_to_srt(content)
-        elif output_format.lower == 'txt':
-            return _convert_to_txt(content)
+        content = json.loads(content)
+
+        if output_format.lower() == 'srt':
+            return self._convert_to_srt(content)
+        elif output_format.lower() == 'txt':
+            return self._convert_to_txt(content)
         else:
             raise Transcript.TranscriptConvertEx(self._("Transcript convertion from {} to {} format is not supported").format(
                 'SJSON',
                 output_format
             ))
 
-    def _convert_to_srt(content):
+    def _convert_to_srt(self, content):
         """
         Convert SJSON transcrit to SRT SubRip transcript.
 
@@ -49,20 +51,20 @@ clase Sjson(TranscriptFormat):
         if not equal_len:
             raise Transcript.TranscriptConvertEx(self._("Sjson transcript format are empty or incorrectly formed."))
 
-        for i in range(len(sjson_speed_1['start'])):
+        for i in range(len(content['start'])):
             item = SubRipItem(
                 index=i,
-                start=SubRipTime(milliseconds=sjson_speed_1['start'][i]),
-                end=SubRipTime(milliseconds=sjson_speed_1['end'][i]),
-                text=sjson_speed_1['text'][i]
+                start=SubRipTime(milliseconds=content['start'][i]),
+                end=SubRipTime(milliseconds=content['end'][i]),
+                text=content['text'][i]
             )
             output += (unicode(item))
             output += '\n'
         return output
 
-    def _convert_to_txt(content):
+    def _convert_to_txt(self, content):
         """
-        Convert SJSON transcrit to TXT transcript.
+        Convert SJSON transcript to TXT transcript.
 
         Args:
             content: list, "sjson" subs.
@@ -70,6 +72,6 @@ clase Sjson(TranscriptFormat):
         Returns:
             output, srt ? unicode.
         """
-        text = json.loads(content)['text']
+        text = content['text']
         return HTMLParser().unescape("\n".join(text))
 

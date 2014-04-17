@@ -99,23 +99,23 @@ class VideoStudentViewHandlers(object):
         if youtube_id:
             # Youtube case:
             if self.transcript_language == 'en':
-                return self.Transcript.get_asset_by_subs_id(youtube_id).data
+                return self.Transcript.get_asset_by_subsid(youtube_id).data
 
             return self.Transcript.get_or_create_sjson_from_srt(
                 youtube_id,
-                self.transcripts[item.transcript_language],
+                self.transcripts[self.transcript_language],
                 self.transcript_language
             )
 
         else:
             # HTML5 case
             if self.transcript_language == 'en':
-                return self.Transcript.get_asset_by_subs_id(self.sub).data
+                return self.Transcript.get_asset_by_subsid(self.sub).data
             else:
-                subs_id = os.path.splitext(self.transcripts[item.transcript_language])[0]
+                subs_id = os.path.splitext(self.transcripts[self.transcript_language])[0]
                 return self.Transcript.get_or_create_sjson_from_srt(
                     subs_id,
-                    self.transcripts[item.transcript_language],
+                    self.transcripts[self.transcript_language],
                     self.transcript_language
                 )
 
@@ -144,7 +144,7 @@ class VideoStudentViewHandlers(object):
                 log.debug("No subtitles for 'en' language")
                 raise ValueError
 
-            data = self.Transcript.get_asset_by_subs_id(transcript_name, lang).data
+            data = self.Transcript.get_asset_by_subsid(transcript_name, lang).data
             filename = u'{}.{}'.format(transcript_name, transcript_format)
             content = self.Transcript.convert(data, 'sjson', transcript_format)
         else:
@@ -190,16 +190,13 @@ class VideoStudentViewHandlers(object):
             if language not in ['en'] + self.transcripts.keys():
                 log.info("Video: transcript facilities are not available for given language.")
                 return Response(status=404)
-
             if language != self.transcript_language:
                 self.transcript_language = language
             try:
                 transcript = self.translation(request.GET.get('videoId', None))
             except (
-                self.Transcript.TranscriptEx,
                 NotFoundError,
                 UnicodeDecodeError,
-                self.Transcript.TranscriptEx,
                 self.Transcript.TranscriptConvertEx
             ) as ex:
                 log.info(ex.message)
@@ -279,7 +276,7 @@ class VideoStudioViewHandlers(object):
             /translation POST:
                 TypeError:
                     Unjsonable filename or content.
-                self.Transcript.TranscriptConvertEx, self.Transcript.TranscriptEx:
+                self.Transcript.TranscriptConvertEx:
                     no SRT extension or not parse-able by PySRT
                 UnicodeDecodeError: non-UTF8 uploaded file content encoding.
         """
@@ -292,12 +289,11 @@ class VideoStudioViewHandlers(object):
                 log.info("Invalid /translation request: no language.")
                 return Response(status=400)
 
-            if request.method == 'POST':
+            if request.method == 'POST':  # TODO check for SRT extension
                 subtitles = request.POST['file']
                 srt_content = subtitles.file.read()
                 self.Transcript.save_asset(srt_content, unicode(subtitles.filename), 'application/x-subrip')
                 sjson_transcript = self.Transcript.convert(srt_content, 'srt', 'sjson')
-                self.Transcript.save_sjson_asset(sjson_transcript, subs_id, language)
                 response = {'filename': unicode(subtitles.filename), 'status': 'Success'}
                 return Response(json.dumps(response), status=201)
 
@@ -308,7 +304,7 @@ class VideoStudioViewHandlers(object):
                     log.info("Invalid /translation request: no filename in request.GET")
                     return Response(status=400)
 
-                content = self.Transcript.get_asset(self.location, filename).data
+                content = self.Transcript.get_asset_by_filename(filename).data
                 response = Response(content, headerlist=[
                     ('Content-Disposition', 'attachment; filename="{}"'.format(filename.encode('utf8'))),
                     ('Content-Language', language),

@@ -17,10 +17,8 @@ from .test_video_xml import SOURCE_XML
 from cache_toolbox.core import del_cached_content
 from xmodule.exceptions import NotFoundError
 
-from xmodule.video_module.transcripts_utils import (
-    TranscriptException,
-    TranscriptsGenerationException,
-)
+from xmodule.video_module.transcript import Transcript
+
 
 SRT_content = textwrap.dedent("""
         0
@@ -321,7 +319,7 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
         response = self.item.transcript(request=request, dispatch='translation/ru')
         self.assertEqual(response.status, '404 Not Found')
 
-    def test_translaton_en_youtube_success(self):
+    def test_translation_en_youtube_success(self):
         subs = {"start": [10], "end": [100], "text": ["Hi, welcome to Edx."]}
         good_sjson = _create_file(json.dumps(subs))
         _upload_sjson_file(good_sjson, self.item_descriptor.location)
@@ -345,34 +343,9 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
 
         # youtube 1_0 request, will generate for all speeds for existing ids
         self.item.youtube_id_1_0 = subs_id
-        self.item.youtube_id_0_75 = '0_75'
         request = Request.blank('/translation/uk?videoId={}'.format(subs_id))
         response = self.item.transcript(request=request, dispatch='translation/uk')
         self.assertDictEqual(json.loads(response.body), subs)
-
-        # 0_75 subs are exist
-        request = Request.blank('/translation/uk?videoId={}'.format('0_75'))
-        response = self.item.transcript(request=request, dispatch='translation/uk')
-        calculated_0_75 = {
-            u'end': [75],
-            u'start': [9],
-            u'text': [
-            u'\u041f\u0440\u0438\u0432\u0456\u0442, edX \u0432\u0456\u0442\u0430\u0454 \u0432\u0430\u0441.'
-            ]
-        }
-        self.assertDictEqual(json.loads(response.body), calculated_0_75)
-        # 1_5 will be generated from 1_0
-        self.item.youtube_id_1_5 = '1_5'
-        request = Request.blank('/translation/uk?videoId={}'.format('1_5'))
-        response = self.item.transcript(request=request, dispatch='translation/uk')
-        calculated_1_5 = {
-            u'end': [150],
-            u'start': [18],
-            u'text': [
-            u'\u041f\u0440\u0438\u0432\u0456\u0442, edX \u0432\u0456\u0442\u0430\u0454 \u0432\u0430\u0441.'
-            ]
-        }
-        self.assertDictEqual(json.loads(response.body), calculated_1_5)
 
     def test_translaton_en_html5_success(self):
         subs = {"start": [10], "end": [100], "text": ["Hi, welcome to Edx."]}
@@ -385,7 +358,7 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
         response = self.item.transcript(request=request, dispatch='translation/en')
         self.assertDictEqual(json.loads(response.body), subs)
 
-    def test_translaton_non_en_html5_success(self):
+    def test_translation_non_en_html5_success(self):
         subs = {
             u'end': [100],
             u'start': [12],
@@ -489,15 +462,15 @@ class TestStudioTranscriptTranslationPostDispatch(TestVideo):
 
         # should be first, as other tests save transcrips to store.
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', SRT_content)})
-        with patch('xmodule.video_module.video_handlers.save_to_store'):
-            with self.assertRaises(TranscriptException):  # transcripts were not saved to store for some reason.
+        with patch('xmodule.video_module.video_handlers.Transcript.save_asset'):
+            with self.assertRaises(NotFoundError):  # transcripts were not saved to store for some reason.
                 response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
         request = Request.blank('/translation/uk', POST={'file': ('filename', 'content')})
-        with self.assertRaises(TranscriptsGenerationException):  # Not an srt filename
+        with self.assertRaises(Transcript.TranscriptGenerationEx):  # Not an srt filename
             self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', 'content')})
-        with self.assertRaises(TranscriptsGenerationException):  # Content format is not srt.
+        with self.assertRaises(Transcript.TranscriptGenerationEx):  # Content format is not srt.
             response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', SRT_content.decode('utf8').encode('cp1251'))})
