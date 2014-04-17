@@ -14,11 +14,7 @@ from xblock.core import XBlock
 from xmodule.exceptions import NotFoundError
 from xmodule.fields import RelativeTime
 
-from .transcripts_utils import (
-    get_or_create_sjson,
-    generate_sjson_for_all_speeds,
-    youtube_speed_dict,
-)
+from .transcript import Transcript
 
 
 log = logging.getLogger(__name__)

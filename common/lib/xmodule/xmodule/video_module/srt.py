@@ -1,12 +1,15 @@
 """
 Functions specific to SRT transcript format.
 """
-from transcript import TranscriptFormat, Transcript
+from pysrt import SubRipFile
+
+from .transcript import TranscriptFormat, Transcript
 
 
 class Srt(TranscriptFormat):
 
     MIME_TYPE = 'application/x-subrip'
+
 
     @property
     def mime_type():
@@ -24,21 +27,19 @@ class Srt(TranscriptFormat):
         elif output_format.lower == 'txt':
             return _convert_to_txt(content)
         else:
-            raise TranscriptConvertEx(_("Transcript convertion from {} to {} format is not supported").format(
+            raise Transcript.TranscriptConvertEx(self._("Transcript convertion from {} to {} format is not supported").format(
                 'SRT',
                 output_format
             ))
 
     @staticmethod
-    def _convert_to_sjson(speed_subs, subs_type, subs_filedata, item, language='en'):
-        """
+    def _convert_to_sjson(content):
+        """=
         Convert transcript from SRT SubRip to SJSON format.
 
         Args:
             speed_subs: dictionary {speed: sub_id, ...}
-            subs_type: type of source subs: "srt", ...
-            subs_filedata:unicode, content of source subs.
-            item: module object.
+            content:unicode, content of source subs.
             language: str, language of translation of transcripts
 
         Returns:
@@ -47,16 +48,16 @@ class Srt(TranscriptFormat):
         Raises:
             TranscriptConvertEx when convertion fails
         """
-        _ = item.runtime.service(item, "i18n").ugettext
+
         try:
-            srt_subs_obj = SubRipFile.from_string(subs_filedata)
+            srt_subs_obj = SubRipFile.from_string(content)
         except Exception as ex:
-            msg = _("Something wrong with SubRip transcripts file during parsing. Inner message is {error_message}").format(
+            msg = self._("Something wrong with SubRip transcripts file during parsing. Inner message is {error_message}").format(
                 error_message=ex.message
             )
             raise TranscriptConvertEx(msg)
         if not srt_subs_obj:
-            raise TranscriptConvertEx(_("Something wrong with SubRip transcripts file during parsing."))
+            raise TranscriptConvertEx(self._("Something wrong with SubRip transcripts file during parsing."))
 
         sub_starts = []
         sub_ends = []
@@ -74,20 +75,28 @@ class Srt(TranscriptFormat):
 
         return subs
 
-  def _convert_to_txt(content):
+    def _convert_to_txt(content):
         """
         Convert SRT transcrit to TXT transcript.
 
         Args:
-            content: list, "sjson" subs.
+            content: dict, "sjson" subs.
             subs: list, subs.
 
         Raises:
-            TODO ??? cathc exception of SubripFIle?
+           TranscriptConvertEx when convertion fails
 
         Returns:
             output, srt ? unicode.
         """
 
         text = SubRipFile.from_string(content.decode('utf8')).text
+
+        try:
+            text = SubRipFile.from_string(content.decode('utf8')).text
+        except Exception as ex:
+            msg = self._("Something wrong with SubRip transcripts file during parsing. Inner message is {error_message}").format(
+                error_message=ex.message
+            )
+            raise TranscriptConvertEx(msg)
         return HTMLParser().unescape(text)

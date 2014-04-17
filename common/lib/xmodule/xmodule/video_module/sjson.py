@@ -1,7 +1,9 @@
 """
 Functions specific to SRT transcript format.
 """
-from transcript import TranscriptFormat, Transcript
+from pysrt import SubRipItem
+
+from .transcript import TranscriptFormat, Transcript
 
 
 clase Sjson(TranscriptFormat):
@@ -24,7 +26,7 @@ clase Sjson(TranscriptFormat):
         elif output_format.lower == 'txt':
             return _convert_to_txt(content)
         else:
-            raise Transcript.TranscriptConvertEx(_("Transcript convertion from {} to {} format is not supported").format(
+            raise Transcript.TranscriptConvertEx(self._("Transcript convertion from {} to {} format is not supported").format(
                 'SJSON',
                 output_format
             ))
@@ -45,7 +47,7 @@ clase Sjson(TranscriptFormat):
         """
         equal_len = len(content['start']) == len(content['end']) == len(content['text'])
         if not equal_len:
-            raise Transcript.TranscriptConvertEx(_("Sjson transcript format are empty or incorrectly formed."))
+            raise Transcript.TranscriptConvertEx(self._("Sjson transcript format are empty or incorrectly formed."))
 
         for i in range(len(sjson_speed_1['start'])):
             item = SubRipItem(

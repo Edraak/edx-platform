@@ -24,20 +24,17 @@ from xmodule.contentstore.django import contentstore
 from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError, InsufficientSpecificationError
 
 from util.json_request import JsonResponse
-from xmodule.modulestore.locator import BlockUsageLocator
 
+from xmodule.modulestore.locator import BlockUsageLocator
 from xmodule.video_module.transcripts_utils import (
-    generate_subs_from_source,
-    generate_srt_from_sjson, remove_subs_from_store,
-    download_youtube_subs, get_transcripts_from_youtube,
-    copy_or_rename_transcript,
+    download_youtube_subs
+    get_transcripts_from_youtube,
     manage_video_subtitles_save,
-    TranscriptsGenerationException,
-    GetTranscriptsFromYouTubeException,
-    TranscriptsRequestValidationException
 )
+from xmodule.video_module.transcript import Transcript
 
 from .access import has_course_access
+
 
 __all__ = [
     'upload_transcripts',

@@ -27,7 +27,7 @@ from xblock.fields import ScopeIds
 from xblock.runtime import KvsFieldData
 
 from xmodule.modulestore.inheritance import InheritanceKeyValueStore
-from xmodule.x_module import XModule, module_attr
+from xmodule.x_module import XModule, module_attr, descriptor_attr
 from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
@@ -35,6 +35,7 @@ from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_fie
 from .video_utils import create_youtube_string
 from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
+from .transcript import Transcript
 
 from xmodule.modulestore.inheritance import InheritanceKeyValueStore
 from xblock.runtime import KvsFieldData

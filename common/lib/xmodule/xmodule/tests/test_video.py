@@ -137,31 +137,23 @@ class VideoDescriptorTest(unittest.TestCase):
         Test that Youtube ID strings are correctly created when writing
         back out to XML.
         """
-        system = DummySystem(load_error_modules=True)
-        location = Location(["i4x", "edX", "video", "default", "SampleProblem1"])
-        field_data = DictFieldData({'location': location})
-        descriptor = VideoDescriptor(system, field_data, Mock())
-        descriptor.youtube_id_0_75 = 'izygArpw-Qo'
-        descriptor.youtube_id_1_0 = 'p2Q6BrNhdh8'
-        descriptor.youtube_id_1_25 = '1EeWXzPdhSA'
-        descriptor.youtube_id_1_5 = 'rABDYkeK0x8'
+        self.descriptor.youtube_id_0_75 = 'izygArpw-Qo'
+        self.descriptor.youtube_id_1_0 = 'p2Q6BrNhdh8'
+        self.descriptor.youtube_id_1_25 = '1EeWXzPdhSA'
+        self.descriptor.youtube_id_1_5 = 'rABDYkeK0x8'
         expected = "0.75:izygArpw-Qo,1.00:p2Q6BrNhdh8,1.25:1EeWXzPdhSA,1.50:rABDYkeK0x8"
-        self.assertEqual(create_youtube_string(descriptor), expected)
+        self.assertEqual(create_youtube_string(self.descriptor), expected)
 
     def test_create_youtube_string_missing(self):
         """
         Test that Youtube IDs which aren't explicitly set aren't included
         in the output string.
         """
-        system = DummySystem(load_error_modules=True)
-        location = Location(["i4x", "edX", "video", "default", "SampleProblem1"])
-        field_data = DictFieldData({'location': location})
-        descriptor = VideoDescriptor(system, field_data, Mock())
-        descriptor.youtube_id_0_75 = 'izygArpw-Qo'
-        descriptor.youtube_id_1_0 = 'p2Q6BrNhdh8'
-        descriptor.youtube_id_1_25 = '1EeWXzPdhSA'
+        self.descriptor.youtube_id_0_75 = 'izygArpw-Qo'
+        self.descriptor.youtube_id_1_0 = 'p2Q6BrNhdh8'
+        self.descriptor.youtube_id_1_25 = '1EeWXzPdhSA'
         expected = "0.75:izygArpw-Qo,1.00:p2Q6BrNhdh8,1.25:1EeWXzPdhSA"
-        self.assertEqual(create_youtube_string(descriptor), expected)
+        self.assertEqual(create_youtube_string(self.descriptor), expected)
 
 
 class VideoDescriptorImportTestCase(unittest.TestCase):

@@ -1,14 +1,24 @@
 """
-Abstractions for trancripts.
+Abstractions for trancript.
 """
-from srt import Srt
-from sjson import Sjson
+#
+#
 
 
 class TranscriptFormat(object):
     """
     Interface for transcript files.
     """
+
+    def __init___(self, translation):
+        """
+        Args:
+            `translation` is ugettext function.
+            For example, item.runtime.service(item, "i18n").ugettext
+        """
+        self._ = translation
+
+
     @staticmethod
     def get_mime_type():
         raise NotImplemented
@@ -56,24 +66,23 @@ class Transcript(object):
         pass
 
 
-    def __init__ (video_descriptor_instance):
+    def __init__ (self, video_descriptor_instance):
         self.descriptor = video_descriptor_instance
         self.location = video_descriptor_instance.location
+        self._ = video_descriptor_instance.runtime.service(video_descriptor_instance, "i18n").ugettext
 
 
     @staticmethod
     def subs_filename(subs_id, lang='en'):
-    """
-    Generate proper filename for storage.
-    """
-    if lang == 'en':
-        return u'subs_{0}.srt.sjson'.format(subs_id)
-    else:
-        return u'{0}_subs_{1}.srt.sjson'.format(lang, subs_id)
+        """
+        Generate proper filename for storage.
+        """
+        if lang == 'en':
+            return u'subs_{0}.srt.sjson'.format(subs_id)
+        else:
+            return u'{0}_subs_{1}.srt.sjson'.format(lang, subs_id)
 
-
-    @staticmethod
-    def convert(content, input_format, output_format):
+    def convert(self, content, input_format, output_format):
         """
         Convert transcript `content` from `input_format` to `output_format`.
 
@@ -83,16 +92,18 @@ class Transcript(object):
         if input_format == output_format:
             return content
         elif input_format == 'srt':
-            return SRT.convert_to(output_format, content, language???)
+            from .srt import Srt
+            return Srt(self._).convert_to(output_format, content)
         elif input_format == 'sjson':
-            return SJSON.convert_to('output_format', json.loads(content))
+            from .sjson import Sjson
+            return Sjson(self._).convert_to(output_format, json.loads(content))
         else:
-            raise Transcript.TranscriptConvertEx(_('Transcipt convertsion from {} to {] format is unsupported').format(
+            raise Transcript.TranscriptConvertEx(self._('Transcipt convertsion from {} to {] format is unsupported').format(
                 input_format,
                 output_format
             ))
 
-    def get_asset_by_filename(self. filename):
+    def get_asset_by_filename(self, filename):
         """
         Return asset by location and filename.
         """
@@ -101,7 +112,7 @@ class Transcript(object):
             contentstore().find(self.asset_location(filename))
         except NotFoundError as ex:
             log.info("Can't find content in storage for %s transcript.", filename)
-            raise TranscriptException(_("{exception_message}: Can't find transcripts: {filename} in contentstore.").format(
+            raise TranscriptException(self._("{exception_message}: Can't find transcripts: {filename} in contentstore.").format(
                 exception_message=ex.message,
                 user_filename=filename
             ))
