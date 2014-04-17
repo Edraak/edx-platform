@@ -165,10 +165,10 @@ def download_transcripts(request):
         sjson_transcripts = contentstore().find(content_location)
         log.debug("Downloading subs for %s id", subs_id)
         srt_subs = item.Transcript.convert(sjson_transcripts.data, 'sjson', 'srt')
-        if not str_subs:
+        if not srt_subs:
             log.debug('Convertion sjson to srt fails.')
             raise Http404
-        response = HttpResponse(str_subs, content_type='application/x-subrip')
+        response = HttpResponse(srt_subs, content_type='application/x-subrip')
         response['Content-Disposition'] = 'attachment; filename="{0}.srt"'.format(subs_id)
         return response
     except NotFoundError:
@@ -216,7 +216,7 @@ def check_transcripts(request):
     }
     try:
         __, videos, item = _validate_transcripts_data(request)
-    except TranscriptsRequestValidationException as e:
+    except Transcritp.TranscriptsRequestValidationEx as e:
         return error_response(transcripts_presence, e.message)
 
     transcripts_presence['status'] = 'Success'
@@ -358,7 +358,7 @@ def choose_transcripts(request):
 
     try:
         data, videos, item = _validate_transcripts_data(request)
-    except TranscriptsRequestValidationException as e:
+    except Transcritp.TranscriptsRequestValidationEx as e:
         return error_response(response, e.message)
 
     html5_id = data.get('html5_id')  # html5_id chosen by user
@@ -387,7 +387,7 @@ def replace_transcripts(request):
 
     try:
         __, videos, item = _validate_transcripts_data(request)
-    except TranscriptsRequestValidationException as e:
+    except Transcritp.TranscriptsRequestValidationEx as e:
         return error_response(response, e.message)
 
     youtube_id = videos['youtube']
@@ -421,17 +421,17 @@ def _validate_transcripts_data(request):
         videos: parsed `data` to useful format,
         item:  video item from storage
 
-    Raises `TranscriptsRequestValidationException` if validation is unsuccessful
+    Raises `Transcritp.TranscriptsRequestValidationEx` if validation is unsuccessful
     or `PermissionDenied` if user has no access.
     """
     data = json.loads(request.GET.get('data', '{}'))
     if not data:
-        raise TranscriptsRequestValidationException(_('Incoming video data is empty.'))
+        raise Transcritp.TranscriptsRequestValidationEx(_('Incoming video data is empty.'))
 
     try:
         item = _get_item(request, data)
     except (ItemNotFoundError, InvalidLocationError, InsufficientSpecificationError):
-        raise TranscriptsRequestValidationException(_("Can't find item by locator."))
+        raise Transcritp.TranscriptsRequestValidationEx(_("Can't find item by locator."))
 
     if item.category != 'video':
         raise Transcript.TranscriptRequestValidationEx(_('Transcripts are supported only for "video" modules.'))
@@ -461,7 +461,7 @@ def rename_transcripts(request):
 
     try:
         __, videos, item = _validate_transcripts_data(request)
-    except TranscriptsRequestValidationException as e:
+    except Transcritp.TranscriptsRequestValidationEx as e:
         return error_response(response, e.message)
 
     old_name = item.sub
