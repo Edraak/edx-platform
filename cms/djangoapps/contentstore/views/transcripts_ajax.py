@@ -27,7 +27,6 @@ from util.json_request import JsonResponse
 
 from xmodule.modulestore.locator import BlockUsageLocator
 from xmodule.video_module.transcripts_utils import (
-    download_youtube_subs
     get_transcripts_from_youtube,
     manage_video_subtitles_save,
 )
@@ -396,9 +395,14 @@ def replace_transcripts(request):
         return error_response(response, 'YouTube id {} is not presented in request data.'.format(youtube_id))
 
 
+    i18n = item.runtime.service(item, "i18n")
+    _ = i18n.ugettext
+
     try:
-        download_youtube_subs(youtube_id, item, settings)
-    except GetTranscriptsFromYouTubeException as e:
+        subs = get_transcripts_from_youtube(youtube_id, settings, i18n)
+        item.Transcript.save_sjson_asset(subs, youtube_id)
+        log.info("Transcripts for YouTube id %s for 1.0 speed are downloaded and saved.", youtube_id)
+    except item.Transcript.GetTranscriptsFromYouTubeExc as e:
         return error_response(response, e.message)
 
     item.sub = youtube_id

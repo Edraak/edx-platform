@@ -14,6 +14,7 @@ from HTMLParser import HTMLParser
 from xmodule.exceptions import NotFoundError
 from xmodule.contentstore.content import StaticContent
 from xmodule.contentstore.django import contentstore
+from xmodule.video_module.transcript import Transcript
 
 
 log = logging.getLogger(__name__)
@@ -26,6 +27,9 @@ def get_transcripts_from_youtube(youtube_id, settings, i18n):
     Parses only UTF8 encoded transcripts.
 
     Returns (status, transcripts): bool, dict.
+
+    Raises:
+        Transcript.GetTranscriptsFromYouTubeEx on fail.
     """
     _ = i18n.ugettext
 
@@ -58,24 +62,6 @@ def get_transcripts_from_youtube(youtube_id, settings, i18n):
                 sub_texts.append(text.replace('\n', ' '))
 
     return {'start': sub_starts, 'end': sub_ends, 'text': sub_texts}
-
-
-def download_youtube_subs(youtube_id, item, settings):
-    """
-    Download transcripts from Youtube and save them to assets.
-
-    Args:
-    youtube_id: youtube_id to download
-    item: video module instance.
-
-    Returns: None, if transcripts were successfully downloaded and saved.
-    Otherwise raises GetTranscriptsFromYouTubeException.
-    """
-    i18n = item.runtime.service(item, "i18n")
-    _ = i18n.ugettext
-    subs = get_transcripts_from_youtube(youtube_id, settings, i18n)
-    item.Transcript.save_sjson_asset(subs, youtube_id)
-    log.info("Transcripts for YouTube id %s for 1.0 speed are downloaded and saved.", youtube_id)
 
 
 def copy_or_rename_transcript(new_name, old_name, item, delete_old=False, user=None):

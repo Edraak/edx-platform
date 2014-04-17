@@ -99,7 +99,7 @@ def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
         lang
     )
 
-def change_speed(to_speed, from_speed, content):
+def generate_subs(to_speed, from_speed, content):
     """
     Generate transcripts from one speed to another speed.
 
