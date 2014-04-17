@@ -16,6 +16,7 @@ the course, section, subsection, unit, etc.
 import unittest
 import datetime
 from mock import Mock
+from functools import partial
 
 from . import LogicTest
 from lxml import etree
@@ -26,6 +27,7 @@ from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
 
 from xmodule.tests import get_test_descriptor_system
+from xmodule.modulestore.xml import CourseLocationGenerator
 
 
 def instantiate_descriptor(**field_data):
@@ -39,6 +41,13 @@ def instantiate_descriptor(**field_data):
         scope_ids=ScopeIds(None, None, location, location),
         field_data=DictFieldData(field_data),
     )
+
+
+partial_from_xml = partial(
+    VideoDescriptor.from_xml,
+    system=get_test_descriptor_system(),
+    id_generator=CourseLocationGenerator('org', 'course')
+)
 
 
 class VideoModuleTest(LogicTest):
@@ -210,7 +219,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         })
 
     def test_from_xml(self):
-        module_system = DummySystem(load_error_modules=True)
         xml_data = '''
             <video display_name="Test Video"
                    youtube="1.0:p2Q6BrNhdh8,0.75:izygArpw-Qo,1.25:1EeWXzPdhSA,1.5:rABDYkeK0x8"
@@ -225,7 +233,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
               <transcript language="de" src="german_translation.srt" />
             </video>
         '''
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': 'izygArpw-Qo',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
@@ -247,7 +255,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         Ensure that attributes have the right values if they aren't
         explicitly set in XML.
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = '''
             <video display_name="Test Video"
                    youtube="1.0:p2Q6BrNhdh8,1.25:1EeWXzPdhSA"
@@ -255,7 +262,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
               <source src="http://www.example.com/source.mp4"/>
             </video>
         '''
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': '',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
@@ -276,7 +283,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         Ensure that attributes have the right values if they aren't
         explicitly set in XML.
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = '''
             <video display_name="Test Video"
                    youtube="1.0:p2Q6BrNhdh8,1.25:1EeWXzPdhSA"
@@ -285,7 +291,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
               <track src="http://www.example.com/track"/>
             </video>
         '''
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': '',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
@@ -306,9 +312,8 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         """
         Make sure settings are correct if none are explicitly set in XML.
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = '<video></video>'
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': '',
             'youtube_id_1_0': 'OEoXaMPEzfM',
@@ -330,7 +335,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         Make sure we can handle the double-quoted string format (which was used for exporting for
         a few weeks).
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = '''
             <video display_name="&quot;display_name&quot;"
                 html5_sources="[&quot;source_1&quot;, &quot;source_2&quot;]"
@@ -345,7 +349,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
                 youtube_id_1_0="&quot;OEoXaMPEzf10&quot;"
                 />
         '''
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': 'OEoXaMPEzf65',
             'youtube_id_1_0': 'OEoXaMPEzf10',
@@ -362,13 +366,12 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         })
 
     def test_from_xml_double_quote_concatenated_youtube(self):
-        module_system = DummySystem(load_error_modules=True)
         xml_data = '''
             <video display_name="Test Video"
                    youtube="1.0:&quot;p2Q6BrNhdh8&quot;,1.25:&quot;1EeWXzPdhSA&quot;">
             </video>
         '''
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': '',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
@@ -388,7 +391,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         """
         Test backwards compatibility with VideoModule's XML format.
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = """
             <video display_name="Test Video"
                    youtube="1.0:p2Q6BrNhdh8,0.75:izygArpw-Qo,1.25:1EeWXzPdhSA,1.5:rABDYkeK0x8"
@@ -400,7 +402,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
               <track src="http://www.example.com/track"/>
             </video>
         """
-        output = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        output = partial_from_xml(xml_data)
         self.assert_attributes_equal(output, {
             'youtube_id_0_75': 'izygArpw-Qo',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
@@ -419,7 +421,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         """
         Ensure that Video is able to read VideoModule's model data.
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = """
             <video display_name="Test Video"
                    youtube="1.0:p2Q6BrNhdh8,0.75:izygArpw-Qo,1.25:1EeWXzPdhSA,1.5:rABDYkeK0x8"
@@ -430,7 +431,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
               <track src="http://www.example.com/track"/>
             </video>
         """
-        video = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        video = partial_from_xml(xml_data)
         self.assert_attributes_equal(video, {
             'youtube_id_0_75': 'izygArpw-Qo',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
@@ -449,7 +450,6 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
         """
         Ensure that Video is able to read VideoModule's model data.
         """
-        module_system = DummySystem(load_error_modules=True)
         xml_data = """
             <video display_name="Test Video"
                    youtube="1.0:p2Q6BrNhdh8,0.75:izygArpw-Qo,1.25:1EeWXzPdhSA,1.5:rABDYkeK0x8"
@@ -460,7 +460,7 @@ class VideoDescriptorImportTestCase(unittest.TestCase):
               <track src="http://www.example.com/track"/>
             </video>
         """
-        video = VideoDescriptor.from_xml(xml_data, module_system, Mock())
+        video = partial_from_xml(xml_data)
         self.assert_attributes_equal(video, {
             'youtube_id_0_75': 'izygArpw-Qo',
             'youtube_id_1_0': 'p2Q6BrNhdh8',
