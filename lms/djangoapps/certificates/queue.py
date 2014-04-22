@@ -15,6 +15,8 @@ from verify_student.models import SoftwareSecurePhotoVerification
 import json
 import random
 import logging
+import lxml
+from lxml.etree import XMLSyntaxError, ParserError
 from xmodule.modulestore import Location
 
 
@@ -177,11 +179,8 @@ class XQueueCertInterface(object):
             self.request.user = student
             self.request.session = {}
 
-            course_name = course.display_name or course_id
             is_whitelisted = self.whitelist.filter(user=student, course_id=course_id, whitelist=True).exists()
             grade = grades.grade(student, self.request, course)
-            is_whitelisted = self.whitelist.filter(
-                user=student, course_id=course_id, whitelist=True).exists()
             enrollment_mode = CourseEnrollment.enrollment_mode_for_user(student, course_id)
             mode_is_verified = (enrollment_mode == GeneratedCertificate.MODES.verified)
             user_is_verified = SoftwareSecurePhotoVerification.user_is_verified(student)
@@ -206,8 +205,15 @@ class XQueueCertInterface(object):
             cert.grade = grade['percent']
             cert.course_id = course_id
             cert.name = profile_name
+            # Strip HTML from grade range label
+            grade_text = grade.get('grade', None)
+            try:
+                grade_text = lxml.html.fromstring(grade_text).text_content()
+            except (TypeError, XMLSyntaxError, ParserError) as e:
+                # Despite blowing up the xml parser, bad values here are fine
+                grade_text = None
 
-            if is_whitelisted or grade['grade'] is not None:
+            if is_whitelisted or grade_text is not None:
 
                 # check to see whether the student is on the
                 # the embargoed country restricted list
@@ -225,9 +231,8 @@ class XQueueCertInterface(object):
                         'action': 'create',
                         'username': student.username,
                         'course_id': course_id,
-                        'course_name': course_name,
-                        'name': profile.name,
-                        'grade': grade['grade'],
+                        'name': profile_name,
+                        'grade': grade_text,
                         'template_pdf': template_pdf,
                         'designation':  profile_title,
                     }
@@ -244,6 +249,22 @@ class XQueueCertInterface(object):
 
         return new_status
 
+    def verify_cert(self, student, course_id, course):
+        """Create a new verification page for a certificate.
+
+        Use the existing URL if one exists, otherwise add a new one."""
+        cert = GeneratedCertificate.objects.get(user=student, course_id=course_id)
+        key = cert.key
+        uuid = cert.verify_uuid or make_hashkey(random.random())
+        contents = {
+            'action': 'reverify',
+            'username': student.username,
+            'course_id': course_id,
+            'verify_uuid': uuid,
+        }
+        self.self_to_xqueue(contents, key)
+        return uuid
+           
     def _send_to_xqueue(self, contents, key):
 
         if self.use_https:
