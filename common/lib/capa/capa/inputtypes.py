@@ -823,6 +823,12 @@ class MatlabInput(CodeInput):
             self.status = 'queued'
             self.queue_len = 1
             self.msg = self.submitted_msg
+
+            if not self.input_state['queuetime']:
+                self.input_state['queuetime'] = time.time()
+
+            print time.time() - self.input_state['queuetime']
+
             # Handle situation if no response from xqueue arrived during specified time.
             if ('queuetime' not in self.input_state or
                     time.time() - self.input_state['queuetime'] > XQUEUE_TIMEOUT):
@@ -831,6 +837,7 @@ class MatlabInput(CodeInput):
                 self.msg = _(
                     'No response from Xqueue within {xqueue_timeout} seconds. Aborted.'
                 ).format(xqueue_timeout=XQUEUE_TIMEOUT)
+                self.input_state['queuetime'] = None
 
 
     def handle_ajax(self, dispatch, data):
@@ -956,7 +963,7 @@ class MatlabInput(CodeInput):
         if error == 0:
             self.input_state['queuekey'] = queuekey
             self.input_state['queuestate'] = 'queued'
-            self.input_state['queuetime'] = time.time()
+            #self.input_state['queuetime'] = time.time()
 
         return {'success': error == 0, 'message': msg}
 
