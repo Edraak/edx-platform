@@ -122,9 +122,11 @@ if not settings.FEATURES["USE_CUSTOM_THEME"]:
 
         # Favicon
         (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'}),
+    )
 
+if settings.FEATURES["ENABLE_FEEDBACK_SUBMISSION"]:
+    urlpatterns += (
         url(r'^submit_feedback$', 'util.views.submit_feedback'),
-
     )
 
 # Only enable URLs for those marketing links actually enabled in the
