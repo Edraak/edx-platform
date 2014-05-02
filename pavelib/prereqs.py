@@ -111,7 +111,7 @@ def install_python_prereqs():
     Installs Python prerequisites
     """
     for req_file in PYTHON_REQ_FILES:
-        sh("pip install -q --exists-action w -r {req_file}".format(req_file=req_file))
+        sh("pip install -q --use-wheel --find-links=http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise/Python-2.7 --exists-action w -r {req_file}".format(req_file=req_file))
 
 
 @task
