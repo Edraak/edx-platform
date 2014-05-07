@@ -106,6 +106,7 @@ def install_node_prereqs():
     sh('npm install')
 
 
+@task
 def install_python_prereqs():
     """
     Installs Python prerequisites
