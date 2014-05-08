@@ -510,6 +510,55 @@ class YouTubeHtml5VideoTest(VideoBaseTest):
         # Verify that the video has rendered in "Youtube" mode
         self.assertTrue(self.video.is_video_rendered('youtube'))
 
+    def test_video_transcript_for_non_english_countries(self):
+        """
+        Scenario: Verify that each video in each sub-section includes a transcript for non-Youtube countries
+        Given youtube server is up and response time is 2 seconds
+        And i have defined transcripts for the videos
+        And it has videos "A, B" in "Youtube_HTML5" mode in position "1" of sequential
+        And a video "C" in "Youtube_HTML5" mode in position "2" of sequential
+        And a video "D" in "Youtube_HTML5" mode in position "3" of sequential
+        And I open the section with videos "A, B"
+        Then videos have rendered in "HTML5" mode
+        And I see text in the captions
+        When I open video "C"
+        Then the video has rendered in "HTML5" mode
+        And I make sure captions are opened
+        And I see "好 各位同学" text in the captions
+        When I open video "D"
+        Then the video has rendered in "HTML5" mode
+        And the video does not show the captions
+
+        """
+        # configure youtube server
+        self.youtube_configuration['time_to_response'] = 2.0
+
+        # add transcripts to be uploaded to assets
+        self.assets.extend(['subs_OEoXaMPEzfM.srt.sjson', 'subs_b7xgknqkQk8.srt.sjson', 'chinese_transcripts.srt'])
+
+        # construct metadata for videos
+        data_a = {'youtube_id_1_0': 'OEoXaMPEzfM', 'sub': 'OEoXaMPEzfM'}
+        video_a_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_a)
+
+        data_b = {'youtube_id_1_0': 'b7xgknqkQk8', 'sub': 'b7xgknqkQk8'}
+        video_b_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_b)
+
+        # data_c = {'transcripts': {"zh": "chinese_transcripts.srt"}}
+        # video_c_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_c)
+        #
+        # video_d_metadata = self.metadata_for_mode('youtube_html5')
+
+        self.verticals = [
+            [{'display_name': 'A', 'metadata': video_a_metadata}, {'display_name': 'B', 'metadata': video_b_metadata}]
+            # [{'display_name': 'C', 'metadata': video_c_metadata}],
+            # [{'display_name': 'D', 'metadata': video_d_metadata}]
+        ]
+
+        self.navigate_to_video()
+
+        # from nose.tools import set_trace; set_trace()
+
+
 
 class Html5VideoTest(VideoBaseTest):
     """ Test HTML5 Video Player """
