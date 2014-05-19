@@ -31,6 +31,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
 from bulk_email.models import (
     CourseEmail, Optout, CourseEmailTemplate,
@@ -118,8 +119,18 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
                 courseenrollment__course_id=course_id,
                 courseenrollment__is_active=True
             )
-            recipient_qset = recipient_qset | enrollment_qset
-        recipient_qset = recipient_qset.distinct()
+
+            # Now we do some queryset sidestepping to avoid doing a DISTINCT
+            # query across the course staff and the enrolled students, which
+            # forces the creation of a temporary table in the db, causing a big headache
+            unenrolled_staff_qset = recipient_qset.filter(
+                ~Q(courseenrollment__course_id=course_id) | Q(courseenrollment__is_active=False)
+            ).distinct()
+
+            recipient_qset = unenrolled_staff_qset
+
+            for staff_member in unenrolled_staff_qset:
+                recipient_qset = recipient_qset | User.objects.filter(id=staff_member.id)
 
     recipient_qset = recipient_qset.order_by('pk')
     return recipient_qset
