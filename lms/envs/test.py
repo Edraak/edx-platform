@@ -17,7 +17,10 @@ import os
 from path import path
 from warnings import filterwarnings
 
-MAKO_MODULE_DIR = REPO_ROOT / "mako"
+# Super-hacky enablement of Mako coverage support.  It won't stay this way!
+COVERAGE_MAKO_PATH = os.environ.get('COVERAGE_MAKO_PATH')
+if COVERAGE_MAKO_PATH:
+    MAKO_MODULE_DIR = REPO_ROOT / (COVERAGE_MAKO_PATH.strip("/"))
 
 os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8000-9000'
 
