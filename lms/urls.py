@@ -67,10 +67,15 @@ urlpatterns = ('',  # nopep8
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^embargo$', 'student.views.embargo', name="embargo"),
-    
+
     # Feedback Form endpoint
     url(r'^submit_feedback$', 'util.views.submit_feedback'),
 )
+
+if settings.FEATURES["ENABLE_PUBLIC_REST_API"]:
+    urlpatterns += (
+        url(r'^public_api/', include('public_api.urls')),
+    )
 
 # if settings.FEATURES.get("MULTIPLE_ENROLLMENT_ROLES"):
 urlpatterns += (

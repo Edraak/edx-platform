@@ -255,6 +255,9 @@ FEATURES = {
     # Show a "Download your certificate" on the Progress page if the lowest
     # nonzero grade cutoff is met
     'SHOW_PROGRESS_SUCCESS_BUTTON': False,
+
+    # Expose public REST APIs (mostly used for mobile at the moment)
+    'ENABLE_PUBLIC_REST_API': False,
 }
 
 # Used for A/B testing
@@ -1256,6 +1259,10 @@ INSTALLED_APPS = (
 
     # Monitoring functionality
     'monitoring',
+
+    # edX Public API
+    'public_api',
+    'public_api.users',
 )
 
 ######################### MARKETING SITE ###############################
