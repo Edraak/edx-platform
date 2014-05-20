@@ -105,6 +105,9 @@ FEATURES = {
 
     # Temporary feature flag for deleting xblock leaves
     'ENABLE_DELETE_XBLOCK_LEAF_COMPONENT': False,
+
+    # Expose public REST APIs (mostly used for mobile at the moment)
+    'ENABLE_PUBLIC_REST_API': False
 }
 ENABLE_JASMINE = False
 
@@ -531,6 +534,10 @@ INSTALLED_APPS = (
 
     # Monitoring signals
     'monitoring',
+
+    # Public REST APIs
+    'public_rest_apis',
+    'public_rest_apis.users',
 )
 
 

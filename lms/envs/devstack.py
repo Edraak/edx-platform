@@ -68,6 +68,7 @@ CC_PROCESSOR['CyberSource']['PURCHASE_ENDPOINT'] = '/shoppingcart/payment_fake/'
 ########################### EDX API #################################
 
 FEATURES['API'] = True
+FEATURES['ENABLE_PUBLIC_REST_API'] = True
 
 
 #####################################################################

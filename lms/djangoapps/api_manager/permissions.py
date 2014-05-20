@@ -83,4 +83,4 @@ class SecureAPIView(APIView):
     """
         Inherited from APIView
     """
-    permission_classes = (ApiKeyHeaderPermission, IPAddressRestrictedPermission)
+    permission_classes = (ApiKeyHeaderPermission,) # , IPAddressRestrictedPermission)

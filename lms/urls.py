@@ -76,6 +76,11 @@ if settings.FEATURES["API"]:
         url(r'^api/*', include('api_manager.urls')),
     )
 
+if settings.FEATURES["ENABLE_PUBLIC_REST_API"]:
+    urlpatterns += (
+        url(r'^public_api/*', include('public_api.urls')),
+    )
+
 # if settings.FEATURES.get("MULTIPLE_ENROLLMENT_ROLES"):
 urlpatterns += (
     url(r'^verify_student/', include('verify_student.urls')),

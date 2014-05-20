@@ -571,7 +571,7 @@ class CourseEnrollment(models.Model):
     """
     MODEL_TAGS = ['course_id', 'is_active', 'mode']
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name="course_enrollments")
     course_id = models.CharField(max_length=255, db_index=True)
     created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
 
@@ -935,6 +935,10 @@ class CourseEnrollment(models.Model):
             return False
         else:
             return True
+
+    @property
+    def username(self):
+        return self.user.username
 
 
 class CourseEnrollmentAllowed(models.Model):
