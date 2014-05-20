@@ -28,6 +28,13 @@ HTML5_SOURCES_INCORRECT = [
     'http://localhost:{0}/gizmo.mp99'.format(VIDEO_SOURCE_PORT),
 ]
 
+FLASH_SOURCES = {
+    'youtube_id_1_0': 'OEoXaMPEzfM',
+    'youtube_id_0_75': 'JMD_ifUUfsU',
+    'youtube_id_1_25': 'AKqURZnYqpk',
+    'youtube_id_1_5': 'DYpADpL7jAY'
+}
+
 
 class YouTubeConfigError(Exception):
     """
@@ -213,6 +220,10 @@ class VideoBaseTest(UniqueCourseTest):
                 'youtube_id_1_5': '',
                 'html5_sources': HTML5_SOURCES_INCORRECT
             })
+
+        if player_mode == 'flash':
+            metadata.update(FLASH_SOURCES)
+            self.browser.add_cookie({'name': 'edX_video_player_mode', 'value': 'flash'})
 
         if additional_data:
             metadata.update(additional_data)
@@ -723,3 +734,76 @@ class Html5VideoTest(VideoBaseTest):
         self.assertTrue(self.video.is_video_rendered('html5'))
 
         self.assertTrue(all([source in HTML5_SOURCES for source in self.video.sources()]))
+
+
+class FlashVideoTest(VideoBaseTest):
+    """ Test Flash Video Player """
+
+    def setUp(self):
+        super(FlashVideoTest, self).setUp()
+
+        self.assets.append('subs_OEoXaMPEzfM.srt.sjson')
+        self.metadata = self.metadata_for_mode('flash')
+        self.navigate_to_video()
+
+    def test_transcripts_at_different_video_speeds(self):
+        """
+        Given I have a video in "Flash" mode
+          And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
+          Then the video has rendered in "Flash" mode
+          And I make sure captions are opened
+          And I see "Hi, welcome to Edx." text in the captions
+          Then I select the "1.50" speed
+          And I see "Hi, welcome to Edx." text in the captions
+          Then I select the "0.75" speed
+          And I see "Hi, welcome to Edx." text in the captions
+          Then I select the "1.25" speed
+          And I see "Hi, welcome to Edx." text in the captions
+
+        """
+        self.assertTrue(self.video.is_video_rendered('flash'))
+
+        self.video.show_captions()
+
+        self.assertIn('Hi, welcome to Edx.', self.video.captions_text)
+
+        speeds = ['1.50', '0.75', '1.25']
+        for speed in speeds:
+            self.video.set_speed(speed)
+            self.assertIn('Hi, welcome to Edx.', self.video.captions_text)
+
+    def test_elapsed_time_at_different_video_speeds(self):
+        """
+        Scenario: Elapsed time calculates correctly on different speeds of Flash mode
+          Given I have a video in "Flash" mode
+          And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
+          And I make sure captions are opened
+
+          Then I select the "1.50" speed
+          And I click video button "pause"
+          And I click on caption line "4"
+          Then video module shows elapsed time "7"
+
+          Then I select the "0.75" speed
+          And I click video button "pause"
+          And I click on caption line "3"
+          Then video module shows elapsed time "9"
+
+          Then I select the "1.25" speed
+          And I click video button "pause"
+          And I click on caption line "2"
+          Then video module shows elapsed time "4"
+
+        """
+        self.assertTrue(self.video.is_video_rendered('flash'))
+
+        self.video.show_captions()
+
+        steps = [{'speed': '1.50', 'line': 4, 'elapsed_time': '0:07'},
+                 {'speed': '0.75', 'line': 3, 'elapsed_time': '0:09'},
+                 {'speed': '1.25', 'line': 2, 'elapsed_time': '0:04'}]
+
+        for step in steps:
+            self.video.set_speed(step['speed'])
+            self.video.click_caption_line(step['line'])
+            self.assertEqual(self.video.elapsed_time(), step['elapsed_time'])

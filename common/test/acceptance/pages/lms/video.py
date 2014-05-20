@@ -38,7 +38,8 @@ CSS_CLASS_NAMES = {
 
 VIDEO_MODES = {
     'html5': 'div.video video',
-    'youtube': 'div.video iframe'
+    'youtube': 'div.video iframe',
+    'flash': 'div.video iframe'
 }
 
 VIDEO_MENUS = {
@@ -649,3 +650,41 @@ class VideoPage(PageObject):
         language_names = self.q(css=languages_selector).attrs('textContent')
 
         return dict(zip(language_codes, language_names))
+
+    def click_caption_line(self, line_number, video_display_name=None):
+        """
+        Get video Elapsed Time.
+
+        Arguments:
+            line_number (int): Caption line number
+            video_display_name (str or None): Display name of a Video.
+
+        Returns:
+            str: Elapsed Time in format min:sec
+
+        """
+        caption_line_selector = CSS_CLASS_NAMES['captions'] + " > li[data-index='{line}']".format(line=line_number)
+        selector = self.get_element_selector(video_display_name, caption_line_selector)
+
+        self.q(css=selector).first.click()
+
+    def elapsed_time(self, video_display_name=None):
+        """
+        Get video Elapsed Time.
+
+        Arguments:
+            video_display_name (str or None): Display name of a Video.
+
+        Returns:
+            str: Elapsed Time in format min:sec
+
+        """
+        selector = self.get_element_selector(video_display_name, CSS_CLASS_NAMES['video_time'])
+
+        # The full time has the form "0:32 / 3:14" elapsed/duration
+        all_times = self.q(css=selector).text[0]
+
+        elapsed_str, duration_str = all_times.split('/')
+
+        return elapsed_str
+
