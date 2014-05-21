@@ -78,7 +78,7 @@ if settings.FEATURES["API"]:
 
 if settings.FEATURES["ENABLE_PUBLIC_REST_API"]:
     urlpatterns += (
-        url(r'^public_api/*', include('public_api.urls')),
+        url(r'^public_api/', include('public_api.urls')),
     )
 
 # if settings.FEATURES.get("MULTIPLE_ENROLLMENT_ROLES"):

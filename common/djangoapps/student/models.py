@@ -39,6 +39,7 @@ from eventtracking import tracker
 from importlib import import_module
 
 from xmodule.modulestore import Location
+from xmodule.modulestore.django import modulestore
 
 from course_modes.models import CourseMode
 import lms.lib.comment_client as cc
@@ -939,6 +940,10 @@ class CourseEnrollment(models.Model):
     @property
     def username(self):
         return self.user.username
+
+    @property
+    def course(self):
+        return modulestore().get_course(self.course_id)
 
 
 class CourseEnrollmentAllowed(models.Model):
