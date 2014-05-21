@@ -110,12 +110,10 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
     else:
         staff_qset = CourseStaffRole(course_location).users_with_role()
 
-        # exclude instructors who are also course staff so that recipient_qset
-        # doesn't contain any dupes
-        instructor_qset = CourseInstructorRole(course_location).users_with_role().exclude(
-            id__in=staff_qset.values('id')
-        )
+        instructor_qset = CourseInstructorRole(course_location).users_with_role()
         recipient_qset = staff_qset | instructor_qset
+        recipient_qset = recipient_qset.distinct()
+
         if to_option == SEND_TO_ALL:
             # We also require students to have activated their accounts to
             # provide verification that the provided email address is valid.
@@ -124,15 +122,16 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
                 courseenrollment__course_id=course_id,
                 courseenrollment__is_active=True
             )
-
             # Now we do some queryset sidestepping to avoid doing a DISTINCT
             # query across the course staff and the enrolled students, which
             # forces the creation of a temporary table in the db.
-            unenrolled_staff_qset = recipient_qset.filter(
-                ~Q(courseenrollment__course_id=course_id) | Q(courseenrollment__is_active=False)
-            )
 
-            recipient_qset = enrollment_qset | unenrolled_staff_qset
+            unenrolled_staff_qset = recipient_qset.exclude(
+                courseenrollment__course_id=course_id, courseenrollment__is_active=True
+            )
+            recipient_qset = enrollment_qset
+            for user in unenrolled_staff_qset:
+                recipient_qset = recipient_qset | User.objects.filter(id=user.id)[:1]
 
     return recipient_qset
 
