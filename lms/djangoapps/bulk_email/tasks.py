@@ -109,7 +109,12 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
         recipient_qset = User.objects.filter(id=user_id)
     else:
         staff_qset = CourseStaffRole(course_location).users_with_role()
-        instructor_qset = CourseInstructorRole(course_location).users_with_role()
+
+        # exclude instructors who are also course staff so that recipient_qset
+        # doesn't contain any dupes
+        instructor_qset = CourseInstructorRole(course_location).users_with_role().exclude(
+            id__in=staff_qset.values('id')
+        )
         recipient_qset = staff_qset | instructor_qset
         if to_option == SEND_TO_ALL:
             # We also require students to have activated their accounts to
@@ -122,17 +127,13 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
 
             # Now we do some queryset sidestepping to avoid doing a DISTINCT
             # query across the course staff and the enrolled students, which
-            # forces the creation of a temporary table in the db, causing a big headache
+            # forces the creation of a temporary table in the db.
             unenrolled_staff_qset = recipient_qset.filter(
                 ~Q(courseenrollment__course_id=course_id) | Q(courseenrollment__is_active=False)
-            ).distinct()
+            )
 
-            recipient_qset = unenrolled_staff_qset
+            recipient_qset = enrollment_qset | unenrolled_staff_qset
 
-            for staff_member in unenrolled_staff_qset:
-                recipient_qset = recipient_qset | User.objects.filter(id=staff_member.id)
-
-    recipient_qset = recipient_qset.order_by('pk')
     return recipient_qset
 
 
@@ -242,8 +243,7 @@ def perform_delegate_email_batches(entry_id, course_id, task_input, action_name)
         _create_send_email_subtask,
         recipient_qset,
         recipient_fields,
-        settings.BULK_EMAIL_EMAILS_PER_QUERY,
-        settings.BULK_EMAIL_EMAILS_PER_TASK
+        settings.BULK_EMAIL_EMAILS_PER_TASK,
     )
 
     # We want to return progress here, as this is what will be stored in the
