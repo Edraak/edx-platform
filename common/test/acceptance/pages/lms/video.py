@@ -653,7 +653,7 @@ class VideoPage(PageObject):
 
     def click_caption_line(self, line_number, video_display_name=None):
         """
-        Get video Elapsed Time.
+        Click on a caption line.
 
         Arguments:
             line_number (int): Caption line number
@@ -663,7 +663,7 @@ class VideoPage(PageObject):
             str: Elapsed Time in format min:sec
 
         """
-        caption_line_selector = CSS_CLASS_NAMES['captions'] + " > li[data-index='{line}']".format(line=line_number)
+        caption_line_selector = CSS_CLASS_NAMES['captions'] + " > li[data-index='{line}']".format(line=line_number-1)
         selector = self.get_element_selector(video_display_name, caption_line_selector)
 
         self.q(css=selector).first.click()
@@ -686,5 +686,5 @@ class VideoPage(PageObject):
 
         elapsed_str, duration_str = all_times.split('/')
 
-        return elapsed_str
+        return elapsed_str.strip()
 

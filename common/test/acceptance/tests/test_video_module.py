@@ -743,13 +743,14 @@ class FlashVideoTest(VideoBaseTest):
         super(FlashVideoTest, self).setUp()
 
         self.assets.append('subs_OEoXaMPEzfM.srt.sjson')
-        self.metadata = self.metadata_for_mode('flash')
+        data = {'sub': 'OEoXaMPEzfM'}
+        self.metadata = self.metadata_for_mode('flash', additional_data=data)
         self.navigate_to_video()
 
     def test_transcripts_at_different_video_speeds(self):
         """
         Given I have a video in "Flash" mode
-          And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
+          And I have a transcript file in assets
           Then the video has rendered in "Flash" mode
           And I make sure captions are opened
           And I see "Hi, welcome to Edx." text in the captions
@@ -776,32 +777,38 @@ class FlashVideoTest(VideoBaseTest):
         """
         Scenario: Elapsed time calculates correctly on different speeds of Flash mode
           Given I have a video in "Flash" mode
-          And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
+          And I have a transcript file in assets
+
           And I make sure captions are opened
 
-          Then I select the "1.50" speed
+          And I click video button "play"
           And I click video button "pause"
+
+          Then I select the "1.50" speed
           And I click on caption line "4"
-          Then video module shows elapsed time "7"
+          Then video module shows elapsed time "0:07"
 
           Then I select the "0.75" speed
-          And I click video button "pause"
           And I click on caption line "3"
-          Then video module shows elapsed time "9"
+          Then video module shows elapsed time "0:05"
 
           Then I select the "1.25" speed
-          And I click video button "pause"
           And I click on caption line "2"
-          Then video module shows elapsed time "4"
+          Then video module shows elapsed time "0:02"
 
         """
         self.assertTrue(self.video.is_video_rendered('flash'))
 
         self.video.show_captions()
 
+        # these two steps are necessary so that video player loads video duration, without these steps
+        # clicking on any caption line will not update the elapsed time and video progress slider
+        self.video.click_player_button('play')
+        self.video.click_player_button('pause')
+
         steps = [{'speed': '1.50', 'line': 4, 'elapsed_time': '0:07'},
-                 {'speed': '0.75', 'line': 3, 'elapsed_time': '0:09'},
-                 {'speed': '1.25', 'line': 2, 'elapsed_time': '0:04'}]
+                 {'speed': '0.75', 'line': 3, 'elapsed_time': '0:05'},
+                 {'speed': '1.25', 'line': 2, 'elapsed_time': '0:02'}]
 
         for step in steps:
             self.video.set_speed(step['speed'])
