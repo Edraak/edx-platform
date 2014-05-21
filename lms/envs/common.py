@@ -1235,6 +1235,10 @@ INSTALLED_APPS = (
 
     # EDX API application
     'api_manager',
+
+    # edX Public API
+    'public_api',
+    'public_api.users',
 )
 
 ######################### MARKETING SITE ###############################

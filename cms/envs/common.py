@@ -534,10 +534,6 @@ INSTALLED_APPS = (
 
     # Monitoring signals
     'monitoring',
-
-    # Public REST APIs
-    'public_rest_apis',
-    'public_rest_apis.users',
 )
 
 
