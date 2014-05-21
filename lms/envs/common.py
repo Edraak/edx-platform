@@ -257,7 +257,7 @@ FEATURES = {
     'SHOW_PROGRESS_SUCCESS_BUTTON': False,
 
     # Expose public REST APIs (mostly used for mobile at the moment)
-    'ENABLE_PUBLIC_REST_API': False,
+    'ENABLE_PUBLIC_REST_API': True,
 }
 
 # Used for A/B testing
