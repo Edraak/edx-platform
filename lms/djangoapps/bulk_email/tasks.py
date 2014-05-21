@@ -31,7 +31,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.urlresolvers import reverse
-from django.db.models import Q
 
 from bulk_email.models import (
     CourseEmail, Optout, CourseEmailTemplate,
@@ -109,11 +108,8 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
         recipient_qset = User.objects.filter(id=user_id)
     else:
         staff_qset = CourseStaffRole(course_location).users_with_role()
-
         instructor_qset = CourseInstructorRole(course_location).users_with_role()
-        recipient_qset = staff_qset | instructor_qset
-        recipient_qset = recipient_qset.distinct()
-
+        recipient_qset = (staff_qset | instructor_qset).distinct()
         if to_option == SEND_TO_ALL:
             # We also require students to have activated their accounts to
             # provide verification that the provided email address is valid.
