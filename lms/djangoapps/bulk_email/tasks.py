@@ -121,7 +121,6 @@ def _get_recipient_queryset(user_id, to_option, course_id, course_location):
             # Now we do some queryset sidestepping to avoid doing a DISTINCT
             # query across the course staff and the enrolled students, which
             # forces the creation of a temporary table in the db.
-
             unenrolled_staff_qset = recipient_qset.exclude(
                 courseenrollment__course_id=course_id, courseenrollment__is_active=True
             )

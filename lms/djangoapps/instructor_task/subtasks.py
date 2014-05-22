@@ -64,7 +64,7 @@ def _generate_items_for_subtask(item_queryset, item_fields, total_num_items, ite
     num_subtasks = 0
 
     items_for_task = []
-    for item in item_queryset.values(*all_item_fields):
+    for item in item_queryset.values(*all_item_fields).iterator():
         if len(items_for_task) == items_per_task and num_subtasks < total_num_subtasks - 1:
             yield items_for_task
             num_items_queued += items_per_task
