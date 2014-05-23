@@ -41,6 +41,10 @@ class Command(BaseCommand):
     def simulate_query_iterator(self, course_id):
         items_qset = self.get_course_qset(course_id)
         items_count = items_qset.count()
+        item_list = []
 
         for items in _generate_items_for_subtask(items_qset, ['profile__name', 'email'], items_count, 10000, math.ceil(items_count / 10000)):
-            items
+            for item in items:
+                item_list.append(item)  # accumulate these items to get memory profile to report on size of accumulated list
+
+        print(len(item_list))
