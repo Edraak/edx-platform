@@ -14,8 +14,9 @@ class CourseField(serializers.RelatedField):
 
     def to_native(self, course):
         return {
-            "id": course.id,
-            "display_name": course.display_name,
+            "id": course.id._to_string(),
+            "name": course.display_name,
+            "number": course.number,
             "org": course.display_org_with_default,
             "start": course.start,
             "end": course.end,
