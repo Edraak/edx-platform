@@ -1,152 +1,108 @@
-(function (requirejs, require, define) {
-
-/*
-"This is as true in everyday life as it is in battle: we are given one life
-and the decision is ours whether to wait for circumstances to make up our
-mind, or whether to act, and in acting, to live."
-— Omar N. Bradley
- */
-
+(function(define) {
+'use strict';
 // VideoProgressSlider module.
 define(
-'video/06_video_progress_slider.js',
-[],
-function () {
-    // VideoProgressSlider() function - what this module "exports".
-    return function (state) {
-        var dfd = $.Deferred();
+'video/06_video_progress_slider.js', [],
+function() {
+    /**
+     * Video progress slider module.
+     * @exports video/06_video_progress_slider.js
+     * @constructor
+     * @param {Object} state The object containing the state of the video
+     * @param {Object} i18n The object containing strings with translations.
+     * @return {jquery Promise}
+     */
+    var ProgressSlider = function(state, i18n) {
+        if (!(this instanceof ProgressSlider)) {
+            return new ProgressSlider(state, i18n);
+        }
 
-        state.videoProgressSlider = {};
+        this.state = state;
+        this.state.videoProgressSlider = this;
+        this.i18n = i18n;
+        this.initialize();
 
-        _makeFunctionsPublic(state);
-        _renderElements(state);
-        // No callbacks to DOM events (click, mousemove, etc.).
-
-        dfd.resolve();
-        return dfd.promise();
+        return $.Deferred().resolve().promise();
     };
 
-    // ***************************************************************
-    // Private functions start here.
-    // ***************************************************************
+    ProgressSlider.prototype = {
+        /** Step to increase/decrease volume level via keyboard. */
+        step: 20,
 
-    // function _makeFunctionsPublic(state)
-    //
-    //     Functions which will be accessible via 'state' object. When called,
-    //     these functions will get the 'state' object as a context.
-    function _makeFunctionsPublic(state) {
-        var methodsDict = {
-            buildSlider: buildSlider,
-            getRangeParams: getRangeParams,
-            onSlide: onSlide,
-            onStop: onStop,
-            updatePlayTime: updatePlayTime,
-            updateStartEndTimeRegion: updateStartEndTimeRegion,
-            notifyThroughHandleEnd: notifyThroughHandleEnd,
-            getTimeDescription: getTimeDescription
-        };
+        /** Initializes the module. */
+        initialize: function() {
+            this.el = this.state.el.find('.video-controls .slider');
+            this.render();
+            this.a11y = new Accessibility(this.el, this.slider, this.i18n);
+            this.bindHandlers();
+        },
 
-        state.bindTo(methodsDict, state.videoProgressSlider, state);
-    }
-
-    // function _renderElements(state)
-    //
-    //     Create any necessary DOM elements, attach them, and set their
-    //     initial configuration. Also make the created DOM elements available
-    //     via the 'state' object. Much easier to work this way - you don't
-    //     have to do repeated jQuery element selects.
-    function _renderElements(state) {
-        state.videoProgressSlider.el = state.videoControl.sliderEl;
-
-        state.videoProgressSlider.buildSlider();
-        _buildHandle(state);
-    }
-
-    function _buildHandle(state) {
-        state.videoProgressSlider.handle = state.videoProgressSlider.el
-            .find('.ui-slider-handle');
-
-        // ARIA
-        // We just want the knob to be selectable with keyboard
-        state.videoProgressSlider.el.attr('tabindex', -1);
-        // Let screen readers know that this anchor, representing the slider
-        // handle, behaves as a slider named 'video position'.
-        state.videoProgressSlider.handle.attr({
-            'role': 'slider',
-            'title': gettext('Video position'),
-            'aria-disabled': false,
-            'aria-valuetext': getTimeDescription(state.videoProgressSlider
-                .slider.slider('option', 'value'))
-        });
-    }
-
-    // ***************************************************************
-    // Public functions start here.
-    // These are available via the 'state' object. Their context ('this'
-    // keyword) is the 'state' object. The magic private function that makes
-    // them available and sets up their context is makeFunctionsPublic().
-    // ***************************************************************
-
-    function buildSlider() {
-        this.videoProgressSlider.slider = this.videoProgressSlider.el
-            .slider({
+        /**
+         * Creates any necessary DOM elements, attach them, and set their,
+         * initial configuration.
+         */
+        render: function() {
+            this.slider = this.el.slider({
                 range: 'min',
-                slide: this.videoProgressSlider.onSlide,
-                stop: this.videoProgressSlider.onStop
+                slide: this.onSlide.bind(this),
+                stop: this.onStop.bind(this)
             });
 
-        this.videoProgressSlider.sliderProgress = this.videoProgressSlider
-            .slider
-            .find('.ui-slider-range.ui-widget-header.ui-slider-range-min');
-    }
+            this.sliderProgress = this.slider
+                .find('.ui-slider-range.ui-widget-header.ui-slider-range-min');
+        },
 
-    // Rebuild the slider start-end range (if it doesn't take up the
-    // whole slider). Remember that endTime === null means the end-time
-    // is set to the end of video by default.
-    function updateStartEndTimeRegion(params) {
-        var left, width, start, end, duration, rangeParams;
+        /** Bind any necessary function callbacks to DOM events. */
+        bindHandlers: function() { },
 
-        // We must have a duration in order to determine the area of range.
-        // It also must be non-zero.
-        if (!params.duration) {
-            return;
-        } else {
-            duration = params.duration;
-        }
 
-        start = this.config.startTime;
-        end = this.config.endTime;
+        // Rebuild the slider start-end range (if it doesn't take up the
+        // whole slider). Remember that endTime === null means the end-time
+        // is set to the end of video by default.
+        updateStartEndTimeRegion: function (params) {
+            var start, end, duration, rangeParams;
 
-        if (start > duration) {
-            start = 0;
-        } else if (this.isFlashMode()) {
-            start /= Number(this.speed);
-        }
+            // We must have a duration in order to determine the area of range.
+            // It also must be non-zero.
+            if (!params.duration) {
+                return;
+            } else {
+                duration = params.duration;
+            }
 
-        // If end is set to null, or it is greater than the duration of the
-        // video, then we set it to the end of the video.
-        if (end === null || end > duration) {
-            end = duration;
-        } else if (this.isFlashMode()) {
-            end /= Number(this.speed);
-        }
+            start = this.state.config.startTime;
+            end = this.state.config.endTime;
 
-        // Don't build a range if it takes up the whole slider.
-        if (start === 0 && end === duration) {
-            return;
-        }
+            if (start > duration) {
+                start = 0;
+            } else if (this.state.isFlashMode()) {
+                start /= Number(this.state.speed);
+            }
 
-        // Because JavaScript has weird rounding rules when a series of
-        // mathematical operations are performed in a single statement, we will
-        // split everything up into smaller statements.
-        //
-        // This will ensure that visually, the start-end range aligns nicely
-        // with actual starting and ending point of the video.
+            // If end is set to null, or it is greater than the duration of the
+            // video, then we set it to the end of the video.
+            if (end === null || end > duration) {
+                end = duration;
+            } else if (this.state.isFlashMode()) {
+                end /= Number(this.state.speed);
+            }
 
-        rangeParams = getRangeParams(start, end, duration);
+            // Don't build a range if it takes up the whole slider.
+            if (start === 0 && end === duration) {
+                return;
+            }
 
-        if (!this.videoProgressSlider.sliderRange) {
-            this.videoProgressSlider.sliderRange = $('<div />', {
+            // Because JavaScript has weird rounding rules when a series of
+            // mathematical operations are performed in a single statement, we
+            // will split everything up into smaller statements.
+            //
+            // This will ensure that visually, the start-end range aligns nicely
+            // with actual starting and ending point of the video.
+
+            rangeParams = this.getRangeParams(start, end, duration);
+
+            if (!this.sliderRange) {
+                this.sliderRange = $('<div />', {
                     'class': 'ui-slider-range ' +
                              'ui-widget-header ' +
                              'ui-corner-all ' +
@@ -157,160 +113,169 @@ function () {
                     width: rangeParams.width
                 });
 
-            this.videoProgressSlider.sliderProgress
-                .after(this.videoProgressSlider.sliderRange);
-        } else {
-            this.videoProgressSlider.sliderRange
-                .css(rangeParams);
-        }
-    }
-
-    function getRangeParams(startTime, endTime, duration) {
-        var step = 100 / duration,
-            left = startTime * step,
-            width = endTime * step - left;
-
-        return {
-            left: left + '%',
-            width: width + '%'
-        };
-    }
-
-    function onSlide(event, ui) {
-        var time = ui.value,
-            duration = this.videoPlayer.duration();
-
-        this.videoProgressSlider.frozen = true;
-
-        // Remember the seek to value so that we don't repeat ourselves on the
-        // 'stop' slider event.
-        this.videoProgressSlider.lastSeekValue = time;
-
-        this.trigger(
-            'videoControl.updateVcrVidTime',
-            {
-                time: time,
-                duration: duration
+                this.sliderProgress.after(this.sliderRange);
+            } else {
+                this.sliderRange.css(rangeParams);
             }
-        );
+        },
 
-        this.trigger(
-            'videoPlayer.onSlideSeek',
-            {'type': 'onSlideSeek', 'time': time}
-        );
+        getRangeParams: function (startTime, endTime, duration) {
+            var step = 100 / duration,
+                left = startTime * step,
+                width = endTime * step - left;
 
-        // ARIA
-        this.videoProgressSlider.handle.attr(
-            'aria-valuetext', getTimeDescription(this.videoPlayer.currentTime)
-        );
-    }
-
-    function onStop(event, ui) {
-        var _this = this;
-
-        this.videoProgressSlider.frozen = true;
-
-        // Only perform a seek if we haven't made a seek for the new slider value.
-        // This is necessary so that if the user only clicks on the slider, without
-        // dragging it, then only one seek is made, even when a 'slide' and a 'stop'
-        // events are triggered on the slider.
-        if (this.videoProgressSlider.lastSeekValue !== ui.value) {
-            this.trigger(
-                'videoPlayer.onSlideSeek',
-                {'type': 'onSlideSeek', 'time': ui.value}
-            );
-        }
-
-        // ARIA
-        this.videoProgressSlider.handle.attr(
-            'aria-valuetext', getTimeDescription(this.videoPlayer.currentTime)
-        );
-
-        setTimeout(function() {
-            _this.videoProgressSlider.frozen = false;
-        }, 200);
-    }
-
-    function updatePlayTime(params) {
-        var time = Math.floor(params.time),
-            duration = Math.floor(params.duration);
-
-        if (
-            this.videoProgressSlider.slider &&
-            !this.videoProgressSlider.frozen
-        ) {
-            this.videoProgressSlider.slider
-                .slider('option', 'max', duration)
-                .slider('option', 'value', time);
-        }
-    }
-
-    // When the video stops playing (either because the end was reached, or
-    // because endTime was reached), the screen reader must be notified that
-    // the video is no longer playing. We do this by a little trick. Setting
-    // the title attribute of the slider know to "video ended", and focusing
-    // on it. The screen reader will read the attr text.
-    //
-    // The user can then tab his way forward, landing on the next control
-    // element, the Play button.
-    //
-    // @param params  -  object with property `end`. If set to true, the
-    //                   function must set the title attribute to
-    //                   `video ended`;
-    //                   if set to false, the function must reset the attr to
-    //                   it's original state.
-    //
-    // This function will be triggered from VideoPlayer methods onEnded(),
-    // onPlay(), and update() (update method handles endTime).
-    function notifyThroughHandleEnd(params) {
-        if (params.end) {
-            this.videoProgressSlider.handle
-                .attr('title', gettext('Video ended'))
-                .focus();
-        } else {
-            this.videoProgressSlider.handle
-                .attr('title', gettext('Video position'));
-        }
-    }
-
-    // Returns a string describing the current time of video in
-    // `%d hours %d minutes %d seconds` format.
-    function getTimeDescription(time) {
-        var seconds = Math.floor(time),
-            minutes = Math.floor(seconds / 60),
-            hours = Math.floor(minutes / 60),
-            i18n = function (value, word) {
-                var msg;
-
-                switch(word) {
-                    case 'hour':
-                        msg = ngettext('%(value)s hour', '%(value)s hours', value);
-                        break;
-                    case 'minute':
-                        msg = ngettext('%(value)s minute', '%(value)s minutes', value);
-                        break;
-                    case 'second':
-                        msg = ngettext('%(value)s second', '%(value)s seconds', value);
-                        break;
-                }
-                return interpolate(msg, {'value': value}, true);
+            return {
+                left: left + '%',
+                width: width + '%'
             };
+        },
 
-        seconds = seconds % 60;
-        minutes = minutes % 60;
+        onSlide: function (event, ui) {
+            console.log('onSlide');
+            var time = ui.value,
+                duration = this.state.videoPlayer.duration();
 
-        if (hours) {
-            return  i18n(hours, 'hour') + ' ' +
-                    i18n(minutes, 'minute') + ' ' +
-                    i18n(seconds, 'second');
-        } else if (minutes) {
-            return  i18n(minutes, 'minute') + ' ' +
-                    i18n(seconds, 'second');
+            this.state.trigger(
+                'videoControl.updateVcrVidTime',
+                {
+                    time: time,
+                    duration: duration
+                }
+            );
+
+            this.state.trigger(
+                'videoPlayer.onSlideSeek',
+                {'type': 'onSlideSeek', 'time': time}
+            );
+
+            this.a11y.update(this.state.videoPlayer.currentTime);
+
+            event.stopPropagation();
+        },
+
+        updatePlayTime: function (params) {
+            var time = Math.floor(params.time),
+                duration = Math.floor(params.duration);
+
+            if (this.slider) {
+                this.slider.slider('option', {
+                    'max': duration,
+                    'value': time
+                });
+            }
         }
+    };
 
-        return i18n(seconds, 'second');
-    }
+    /**
+     * Module responsible for the accessibility of volume controls.
+     * @constructor
+     * @private
+     * @param {jquery $} button The volume button.
+     * @param {Number} min Minimum value for the volume slider.
+     * @param {Number} max Maximum value for the volume slider.
+     * @param {Object} i18n The object containing strings with translations.
+     */
+    var Accessibility = function (el, slider, i18n) {
+        this.el = el;
+        this.slider = slider;
+        this.handle = slider.find('.ui-slider-handle');
+        this.i18n = i18n;
 
+        this.initialize();
+    };
+
+    Accessibility.prototype = {
+        /** Initializes the module. */
+        initialize: function() {
+            // ARIA
+            // We just want the knob to be selectable with keyboard
+            this.el.attr('tabindex', -1);
+            this.handle.attr({
+                'role': 'slider',
+                'title': this.i18n['Video position'],
+                'aria-disabled': false,
+                'aria-valuetext': this.getTimeDescription(
+                    this.slider.slider('option', 'value')
+                )
+            });
+        },
+
+        update: function (value) {
+            this.handle.attr('aria-valuetext', this.getTimeDescription(value));
+        },
+
+        // When the video stops playing (either because the end was reached, or
+        // because endTime was reached), the screen reader must be notified that
+        // the video is no longer playing. We do this by a little trick. Setting
+        // the title attribute of the slider know to "video ended", and focusing
+        // on it. The screen reader will read the attr text.
+        //
+        // The user can then tab his way forward, landing on the next control
+        // element, the Play button.
+        //
+        // @param params  -  object with property `end`. If set to true, the
+        // function must set the title attribute to `video ended`;
+        // if set to false, the function must reset the attr to it's original
+        // state.
+        // This function will be triggered from VideoPlayer methods onEnded(),
+        // onPlay(), and update() (update method handles endTime).
+        notifyThroughHandleEnd: function (params) {
+            if (params.end) {
+                this.handle.attr('title', this.i18n['Video ended']).focus();
+            } else {
+                this.handle.attr('title', this.i18n['Video position']);
+            }
+        },
+
+        // Returns a string describing the current time of video in
+        // `%d hours %d minutes %d seconds` format.
+        getTimeDescription: function (time) {
+            var seconds = Math.floor(time),
+                minutes = Math.floor(seconds / 60),
+                hours = Math.floor(minutes / 60),
+                i18n = function (value, word) {
+                    var msg;
+
+                    switch(word) {
+                        case 'hour':
+                        // @TODO i18n
+                            msg = ngettext(
+                                '%(value)s hour', '%(value)s hours', value
+                            );
+                            break;
+                        case 'minute':
+                        // @TODO i18n
+                            msg = ngettext(
+                                '%(value)s minute', '%(value)s minutes', value
+                            );
+                            break;
+                        case 'second':
+                        // @TODO i18n
+                            msg = ngettext(
+                                '%(value)s second', '%(value)s seconds', value
+                            );
+                            break;
+                    }
+                    return interpolate(msg, {'value': value}, true);
+                };
+
+            seconds = seconds % 60;
+            minutes = minutes % 60;
+
+            if (hours) {
+                return  i18n(hours, 'hour') + ' ' +
+                        i18n(minutes, 'minute') + ' ' +
+                        i18n(seconds, 'second');
+            } else if (minutes) {
+                return  i18n(minutes, 'minute') + ' ' +
+                        i18n(seconds, 'second');
+            }
+
+            return i18n(seconds, 'second');
+        }
+    };
+
+    return ProgressSlider;
 });
+}(RequireJS.define));
 
-}(RequireJS.requirejs, RequireJS.require, RequireJS.define));
