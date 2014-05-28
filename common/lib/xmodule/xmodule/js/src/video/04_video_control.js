@@ -94,20 +94,40 @@ function () {
     function _bindHandlers(state) {
         state.videoControl.playPauseEl.on('click', state.videoControl.togglePlayback);
         state.videoControl.fullScreenEl.on('click', state.videoControl.toggleFullScreen);
-        state.el.on('fullscreen', function (event, isFullScreen) {
-            var height = state.videoControl.updateControlsHeight();
+        state.el.on({
+            'controls:update_vcr': function (event, time, duration) {
+                state.videoControl.updateVcrVidTime({
+                    time: time,
+                    duration: duration
+                });
+            },
+            'progress': function (event, time, duration) {
+                state.videoControl.updateVcrVidTime({
+                    time: time,
+                    duration: duration
+                });
+            },
+            'seek': function (event, time, duration) {
+                state.videoControl.updateVcrVidTime({
+                    time: time,
+                    duration: duration
+                });
+            },
+            'fullscreen': function (event, isFullScreen) {
+                var height = state.videoControl.updateControlsHeight();
 
-            if (isFullScreen) {
-                state.resizer
-                    .delta
-                    .substract(height, 'height')
-                    .setMode('both');
+                if (isFullScreen) {
+                    state.resizer
+                        .delta
+                        .substract(height, 'height')
+                        .setMode('both');
 
-            } else {
-                state.resizer
-                    .delta
-                    .reset()
-                    .setMode('width');
+                } else {
+                    state.resizer
+                        .delta
+                        .reset()
+                        .setMode('width');
+                }
             }
         });
 

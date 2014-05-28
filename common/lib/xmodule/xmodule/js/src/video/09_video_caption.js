@@ -116,6 +116,12 @@ function (Sjson, AsyncProcess) {
                 .on({
                     'caption:fetch': this.fetchCaption.bind(this),
                     'caption:resize': this.onResize.bind(this),
+                    'progress': function (event, time) {
+                        self.updatePlayTime(time);
+                    },
+                    'seek': function (event, time) {
+                        self.updatePlayTime(time);
+                    },
                     'caption:update': function (event, time) {
                         self.updatePlayTime(time);
                     },
@@ -688,7 +694,7 @@ function (Sjson, AsyncProcess) {
         * @param {jquery Event} event
         *
         */
-        seekPlayer: function (event) {
+        seekPlayer: _.debounce(function (event) {
             var state = this.state,
                 time = parseInt($(event.target).data('start'), 10);
 
@@ -696,16 +702,17 @@ function (Sjson, AsyncProcess) {
                 time = Math.round(Time.convert(time, '1.0', state.speed));
             }
 
-            state.trigger(
-                'videoPlayer.onCaptionSeek',
-                {
-                    'type': 'onCaptionSeek',
-                    'time': time/1000
-                }
-            );
+            this.state.log('seek_video', {
+                old_time: this.state.videoPlayer.currentTime,
+                new_time: time/1000,
+                type: 'onCaptionSeek'
+            });
+            this.state.el.trigger('seek', [
+                time/1000, this.state.videoPlayer.duration()
+            ]);
 
             event.preventDefault();
-        },
+        }, 300),
 
         /**
         * @desc Calculates offset for paddings.
@@ -793,7 +800,7 @@ function (Sjson, AsyncProcess) {
                 .text(gettext(text));
 
             if (state.videoPlayer) {
-                state.videoPlayer.log(type, {
+                state.log(type, {
                     currentTime: state.videoPlayer.currentTime
                 });
             }

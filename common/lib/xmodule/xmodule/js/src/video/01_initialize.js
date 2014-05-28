@@ -64,11 +64,13 @@ function (VideoPlayer, VideoStorage, i18n) {
         getCurrentLanguage: getCurrentLanguage,
         getDuration: getDuration,
         getPlayerMode: getPlayerMode,
+        getStartEndTimesRange: getStartEndTimesRange,
         getVideoMetadata: getVideoMetadata,
         initialize: initialize,
         isHtml5Mode: isHtml5Mode,
         isFlashMode: isFlashMode,
         isYoutubeType: isYoutubeType,
+        log: log,
         parseSpeed: parseSpeed,
         parseYoutubeStreams: parseYoutubeStreams,
         saveState: saveState,
@@ -828,6 +830,28 @@ function (VideoPlayer, VideoStorage, i18n) {
         return this.lang;
     }
 
+    function getStartEndTimesRange(startTime, endTime, duration) {
+        var startTime = this.config.startTime,
+            endTime = this.config.endTime;
+
+        if (startTime >= duration) {
+            startTime = 0;
+        } else if (this.isFlashMode()) {
+            startTime /= Number(this.speed);
+        }
+
+        if (endTime === null || endTime <= startTime || endTime >= duration) {
+            endTime = null;
+        } else if (this.isFlashMode()) {
+            endTime /= Number(this.speed);
+        }
+
+        return {
+            startTime: startTime,
+            endTime: endTime
+        };
+    }
+
     /*
      * The trigger() function will assume that the @objChain is a complete
      * chain with a method (function) at the end. It will call this function.
@@ -866,6 +890,30 @@ function (VideoPlayer, VideoStorage, i18n) {
         tmpObj.apply(this, extraParameters);
 
         return true;
+    }
+
+    function log(eventName, data) {
+        var logInfo;
+
+        // Default parameters that always get logged.
+        logInfo = {
+            id:   this.id
+        };
+
+        // If extra parameters were passed to the log.
+        if (data) {
+            $.each(data, function (paramName, value) {
+                logInfo[paramName] = value;
+            });
+        }
+
+        if (this.isYoutubeType()) {
+            logInfo.code = this.youtubeId();
+        } else {
+            logInfo.code = 'html5';
+        }
+
+        Logger.log(eventName, logInfo);
     }
 });
 

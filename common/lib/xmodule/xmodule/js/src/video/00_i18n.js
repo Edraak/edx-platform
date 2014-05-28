@@ -10,6 +10,14 @@ function() {
      * @return {object}
      */
 
+    var getTextForHMS = function (text, value) {
+        var msg = ngettext(
+            text, value
+        );
+
+        return interpolate(msg, {'value': value}, true);
+    };
+
     return {
         'Volume': gettext('Volume'),
         // Translators: Volume level equals 0%.
@@ -25,7 +33,19 @@ function() {
         // Translators: Volume level in range ]80,99]%
         'Very loud': gettext('Very loud'),
         // Translators: Volume level equals 100%.
-        'Maximum': gettext('Maximum')
+        'Maximum': gettext('Maximum'),
+
+        getTextForSeconds: _.partial(
+            getTextForHMS, '%(value)s second', '%(value)s seconds'
+        ),
+
+        getTextForMinutes: _.partial(
+            getTextForHMS, '%(value)s minute', '%(value)s minutes'
+        ),
+
+        getTextForHours: _.partial(
+            getTextForHMS, '%(value)s hour', '%(value)s hours'
+        )
     };
 });
 }(RequireJS.define));
