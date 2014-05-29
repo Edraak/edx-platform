@@ -26,8 +26,9 @@ function() {
     };
 
     ProgressSlider.prototype = {
-        /** Step to increase/decrease volume level via keyboard. */
-        step: 20,
+        min: 0,
+        /** Step to rewind forward/back video position via keyboard. */
+        step: 5,
 
         /** Initializes the module. */
         initialize: function() {
@@ -55,9 +56,9 @@ function() {
         /** Bind any necessary function callbacks to DOM events. */
         bindHandlers: function() {
             this.state.el.on({
-                'controls:update_region': function (event, params) {
-                    this.updateStartEndTimeRegion(params);
-                }.bind(this),
+                'keydown': _.throttle(this.keyDownHandler.bind(this), 100),
+                'keyup': this.keyUpHandler.bind(this),
+                'controls:update_region': this.onUpdateRegionHandler.bind(this),
                 'endTime': function () {
                     this.a11y.notifyThroughHandleEnd(true);
                 }.bind(this),
@@ -77,15 +78,12 @@ function() {
          * Rebuild the slider start-end range (if it doesn't take up the
          * whole slider). Remember that endTime === null means the end-time
          * is set to the end of video by default.
-         * @param {Object} params The object containing start. end times and
-         * duration for the video.
+         * @param {Number} startTime Start time for the video.
+         * @param {Number} endTime End time for the video.
+         * @param {Number} duration The video duration.
          */
-
-        updateStartEndTimeRegion: function (params) {
-            var duration = params.duration,
-                startTime = params.startTime,
-                endTime = params.endTime,
-                isCorrectStartTime = _.isNumber(startTime),
+        updateStartEndTimeRegion: function (startTime, endTime, duration) {
+            var isCorrectStartTime = _.isNumber(startTime),
                 isCorrectEndTime = _.isNumber(endTime) || _.isNull(endTime),
                 rangeParams;
 
@@ -99,13 +97,6 @@ function() {
                 return false;
             }
 
-            // Because JavaScript has weird rounding rules when a series of
-            // mathematical operations are performed in a single statement, we
-            // will split everything up into smaller statements.
-            //
-            // This will ensure that visually, the start-end range aligns nicely
-            // with actual starting and ending point of the video.
-
             rangeParams = this.getRangeParams(startTime, endTime, duration);
 
             if (!this.sliderRange) {
@@ -114,14 +105,18 @@ function() {
                              'ui-widget-header ' +
                              'ui-corner-all ' +
                              'slider-range'
-                }).css(rangeParams);
-
-                this.sliderProgress.after(this.sliderRange);
+                }).css(rangeParams).insertAfter(this.sliderProgress);
             } else {
                 this.sliderRange.css(rangeParams);
             }
         },
 
+        /**
+         * Returns start/end positions in percents for the video.
+         * @param {Number} startTime Start time for the video.
+         * @param {Number} endTime End time for the video.
+         * @param {Number} duration The video duration.
+         */
         getRangeParams: function (startTime, endTime, duration) {
             var step = 100 / duration,
                 left = startTime * step,
@@ -135,34 +130,109 @@ function() {
 
         onSlide: function (event, ui) {
             event.stopPropagation();
-
-            var time = ui.value,
-                duration = this.state.videoPlayer.duration();
-
             this.state.el.off('progress.progres_control');
-            this.updatePlayTime(time, duration);
-            this.a11y.update(this.state.videoPlayer.currentTime);
-            this.state.el.trigger('seek', [time, duration]);
+            this.rewind(ui.value);
         },
 
         onStop: function (event, ui) {
             event.stopPropagation();
+            this.state.log('seek_video', {
+                old_time: this.time,
+                new_time: ui.value,
+                type: 'onSlideSeek'
+            });
             this.state.el.on(
                 'progress.progres_control',
                 this.onUpdateTimeHandler.bind(this)
             );
-            this.state.log('seek_video', {
-                old_time: this.state.videoPlayer.currentTime,
-                new_time: ui.value,
-                type: 'onSlideSeek'
-            });
         },
 
         updatePlayTime: function (time, duration) {
+            this.max = Math.floor(duration);
+            this.time = time;
+            this.duration = duration;
             this.slider.slider('option', {
                 'max': Math.floor(duration),
                 'value': Math.floor(time)
             });
+        },
+
+        rewind: function (time) {
+            this.updatePlayTime(time, this.duration);
+            this.a11y.update(this.state.videoPlayer.currentTime);
+            this.state.el.trigger('seek', [time, this.duration]);
+        },
+
+        rewindForward: function () {
+            var time = Math.min(this.time + this.step, this.max);
+
+            this.rewind(time);
+        },
+
+        rewindBack: function () {
+            var time = Math.max(this.time - this.step, this.min);
+
+            this.rewind(time);
+        },
+
+        /**
+         * Keyup event handler for the video container.
+         * @param {jquery Event} event
+         */
+        keyUpHandler: function(event) {
+            setTimeout(function () {
+                this.state.el.on(
+                    'progress.progres_control',
+                    this.onUpdateTimeHandler.bind(this)
+                );
+            }.bind(this), 500);
+        },
+
+        /**
+         * Keydown event handler for the video container.
+         * @param {jquery Event} event
+         */
+        keyDownHandler: function(event) {
+            this.state.el.off('progress.progres_control');
+            // ALT key is used to change (alternate) the function of
+            // other pressed keys. In this case, do nothing.
+            if (event.altKey) {
+                return true;
+            }
+
+            if ($(event.target).hasClass('ui-slider-handle')) {
+                return true;
+            }
+
+            var KEY = $.ui.keyCode,
+                keyCode = event.keyCode;
+
+            switch (keyCode) {
+                case KEY.RIGHT:
+                    // Shift + Arrows keyboard shortcut might be used by
+                    // screen readers. In this case, do nothing.
+                    if (event.shiftKey) {
+                        return true;
+                    }
+
+                    this.rewindForward();
+                    return false;
+                case KEY.LEFT:
+                    // Shift + Arrows keyboard shortcut might be used by
+                    // screen readers. In this case, do nothing.
+                    if (event.shiftKey) {
+                        return true;
+                    }
+
+                    this.rewindBack();
+                    return false;
+            }
+
+            return true;
+        },
+
+        onUpdateRegionHandler: function (event, startTime, endTime, duration) {
+            this.updateStartEndTimeRegion(startTime, endTime, duration);
         },
 
         onUpdateTimeHandler: function (event, time, duration) {
@@ -171,7 +241,7 @@ function() {
     };
 
     /**
-     * Module responsible for the accessibility of volume controls.
+     * Module responsible for the accessibility of the progress slider.
      * @constructor
      * @private
      * @param {jquery $} el Wrapper of the progress slider.

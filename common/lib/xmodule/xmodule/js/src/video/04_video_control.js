@@ -107,12 +107,12 @@ function () {
                     duration: duration
                 });
             },
-            'seek': function (event, time, duration) {
+            'seek': _.throttle(function (event, time, duration) {
                 state.videoControl.updateVcrVidTime({
                     time: time,
                     duration: duration
                 });
-            },
+            }, 100),
             'fullscreen': function (event, isFullScreen) {
                 var height = state.videoControl.updateControlsHeight();
 

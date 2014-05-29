@@ -193,11 +193,9 @@ function (HTML5Video, Resizer) {
             );
 
             // Update the time slider.
-            state.el.trigger('controls:update_region', [{
-                startTime: timeRange.startTime,
-                endTime: timeRange.endTime,
-                duration: duration
-            }]);
+            state.el.trigger('controls:update_region', [
+                timeRange.startTime, timeRange.endTime, duration
+            ]);
 
             state.el.trigger('controls:update_time', [time, duration]);
         };
@@ -380,11 +378,9 @@ function (HTML5Video, Resizer) {
                     this.config.startTime, this.config.endTime, duration
                 );
 
-                this.el('controls:update_region', [{
-                    startTime: timeRange.startTime,
-                    endTime: timeRange.endTime,
-                    duration: duration
-                }]);
+                this.el('controls:update_region', [
+                    timeRange.startTime, timeRange.endTime, duration
+                ]);
             }
         }
     }
@@ -554,9 +550,9 @@ function (HTML5Video, Resizer) {
         });
 
         this.el.on('seek', _.debounce(onSeek.bind(this), 300));
-        this.el.on('seek', function (event, time) {
+        this.el.on('seek', _.throttle(function (event, time) {
             this.videoPlayer.updatePlayTime(time);
-        }.bind(this));
+        }.bind(this), 100));
 
         this.el.on('volumechange volumechange:silent',
         function (event, volume) {
