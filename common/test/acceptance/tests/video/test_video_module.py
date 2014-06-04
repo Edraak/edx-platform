@@ -698,17 +698,11 @@ class YouTubeVideoTest(VideoBaseTest):
 
         """
         self.navigate_to_video()
-
         self.video.click_player_button('play')
-        self.video.click_player_button('pause')
-
         self.video.seek('0:10')
-
-        self.video.click_player_button('play')
         self.video.click_player_button('pause')
-
+        # from nose.tools import set_trace; set_trace()
         self.video.reload_page()
-
         self.assertGreaterEqual(int(self.video.position().split(':')[1]), 10)
 
 
@@ -914,4 +908,4 @@ class Html5VideoTest(VideoBaseTest):
 
         self.assertTrue(self.video.is_video_rendered('html5'))
 
-        self.assertTrue(all([source in HTML5_SOURCES for source in self.video.sources()]))
+        self.assertTrue(all([source in HTML5_SOURCES for source in self.video.sources()])
