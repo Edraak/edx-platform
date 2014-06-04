@@ -142,15 +142,12 @@ def _preview_module_system(request, descriptor):
     )
 
 
-def _load_preview_module(request, descriptor, studio_view=False):
+def _load_preview_module(request, descriptor):
     """
     Return a preview XModule instantiated from the supplied descriptor.
 
     request: The active django request
     descriptor: An XModuleDescriptor
-    studio_view: if False (default value), editing of the descriptor's field data
-      will not be allowed. If the preview is being rendered in Studio and in-place editing is
-      desired, specify True.
     """
     has_author_view = False
     if hasattr(descriptor, 'has_author_view'):
@@ -163,7 +160,9 @@ def _load_preview_module(request, descriptor, studio_view=False):
         field_data = LmsFieldData(descriptor._field_data, student_data)  # pylint: disable=protected-access
     descriptor.bind_for_student(
         _preview_module_system(request, descriptor),
-        field_data
+        # TODO: if we go with this approach, do we still want to create LmsFieldData
+        # when this method is called from preview_handler? Does it matter?
+        CmsFieldData(descriptor._field_data, student_data),  # pylint: disable=protected-access
     )
     return descriptor
 

@@ -2,11 +2,9 @@
  * XBlockContainerPage is used to display Studio's container page for an xblock which has children.
  * This page allows the user to understand and manipulate the xblock and its children.
  */
-define(["jquery", "underscore", "gettext", "js/views/feedback_notification",
-    "js/views/baseview", "js/views/container", "js/views/xblock", "js/views/components/add_xblock",
-    "js/views/modals/edit_xblock", "js/models/xblock_info"],
-    function ($, _, gettext, NotificationView, BaseView, ContainerView, XBlockView, AddXBlockComponent,
-              EditXBlockModal, XBlockInfo) {
+define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/container",
+        "js/views/xblock", "js/views/components/add_xblock", "js/views/modals/edit_xblock", "js/models/xblock_info"],
+    function ($, _, gettext, BaseView, ContainerView, XBlockView, AddXBlockComponent, EditXBlockModal, XBlockInfo) {
         var XBlockContainerPage = BaseView.extend({
             // takes XBlockInfo as a model
 
@@ -36,6 +34,7 @@ define(["jquery", "underscore", "gettext", "js/views/feedback_notification",
                 // Render the xblock
                 xblockView.render({
                     success: function(xblock) {
+                        xblockView.xblock.runtime.notify("page-shown", self);
                         xblockView.$el.removeClass('is-hidden');
                         self.renderAddXBlockComponents();
                         self.onXBlockRefresh(xblockView);
@@ -173,10 +172,11 @@ define(["jquery", "underscore", "gettext", "js/views/feedback_notification",
              * Refreshes the specified xblock's display. If the xblock is an inline child of a
              * reorderable container then the element will be refreshed inline. If not, then the
              * parent container will be refreshed instead.
-             * @param xblockElement The element representing the xblock to be refreshed.
+             * @param xblockElement An element representing the xblock to be refreshed.
              */
-            refreshXBlock: function(xblockElement) {
-                var parentElement = xblockElement.parent(),
+            refreshXBlock: function(element) {
+                var xblockElement = this.findXBlockElement(element),
+                    parentElement = xblockElement.parent(),
                     rootLocator = this.xblockView.model.id;
                 if (xblockElement.length === 0 || xblockElement.data('locator') === rootLocator) {
                     this.render({ });

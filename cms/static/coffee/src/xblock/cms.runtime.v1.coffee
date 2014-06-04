@@ -13,6 +13,18 @@ define [
             if query? then uri.search(query)
             uri.toString()
 
+        # Notify the Studio client-side runtime so it can update the UI.
+        notify: (name, data) ->
+            if name == 'save'
+                if 'state' of data
+                    if data.state == 'end'
+                        # If a page has been registered, then ask it to refresh the saved xblock
+                        if @page
+                            @page.refreshXBlock(data.element)
+
+            else if name == 'page-shown'
+                @page = data
+
     @StudioRuntime = {}
 
     class StudioRuntime.v1 extends XBlock.Runtime.v1
@@ -55,6 +67,8 @@ define [
                         # and then refresh the xblock.
                         if @modal
                             @modal.onSave()
+                        else if @page
+                            @page.refreshXBlock(data.element)
 
                         @savingNotification.hide()
 
@@ -63,6 +77,9 @@ define [
 
             else if name == 'edit-modal-hidden'
                 @modal = null
+
+            else if name == 'page-shown'
+                @page = data
 
             else if name == 'cancel'
                 @_hideAlerts()

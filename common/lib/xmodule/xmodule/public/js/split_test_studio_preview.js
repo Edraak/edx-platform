@@ -3,7 +3,12 @@ window.SplitTestStudioPreviewView = function (runtime, element) {
     var $element = $(element);
 
     $element.find('.add-missing-groups-button').click(function () {
-        $.post(runtime.handlerUrl(element, 'add_missing_groups'));
+        $.post(runtime.handlerUrl(element, 'add_missing_groups')).done(function() {
+            runtime.notify('save', {
+                state: 'end',
+                element: element
+            });
+        });
     });
 
     return {};

@@ -507,7 +507,7 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
                 _(u"This content experiment will not be shown to students because it refers to a group configuration that has been deleted. You can delete this experiment or reinstate the group configuration to repair it."), \
                 ValidationMessageType.error
         if len(self.active_children()) < len(user_partition.groups):
-            return _(u"This content experiment is missing groups that are defined in the current configuration. You can press the 'Fix Me' button to have the missing groups created."), ValidationMessageType.error
+            return _(u"This content experiment is missing groups that are defined in the current configuration. You can press the 'Create Missing Groups' button to create them."), ValidationMessageType.error
         if len(self.inactive_children()) > 0:
             return _(u"This content experiment has children that are not associated with the selected group configuration. You can move content into an active group or delete it if it is unneeded."), ValidationMessageType.warning
 

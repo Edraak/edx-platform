@@ -15,15 +15,15 @@
 }
 
 // Don't show delete buttons by default for verticals
-.xblock-header-vertical {
-  .delete-button {
+.wrapper-xblock .xblock-header-vertical {
+  .header-actions .actions-list .action-delete .delete-button {
     display: none;
   }
 }
 
 // For inactive groups, we do want to allow the user to delete the associated vertical
-.wrapper-groups.is-inactive .xblock-header-vertical {
-  .delete-button {
-    display: none;
+.wrapper-groups.is-inactive .wrapper-xblock .xblock-header-vertical {
+  .header-actions .actions-list .action-delete .delete-button {
+    display: block;
   }
 }
