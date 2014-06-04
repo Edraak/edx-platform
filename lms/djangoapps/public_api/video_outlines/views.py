@@ -58,11 +58,13 @@ class BlockOutline(object):
 
 def video_summary(video_module):
     return {
-        "url": video_module.html5_sources[0] if video_module.html5_sources else video_module.source,
+        "video_url": video_module.html5_sources[0] if video_module.html5_sources else video_module.source,
+        "video_thumbnail_url": None,
         "duration": None,
         "size": 200000000,
         "name": video_module.display_name,
         "category": video_module.category,
+        "id": video_module.scope_ids.usage_id._to_string()
     }
 
 
