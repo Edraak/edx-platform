@@ -92,7 +92,7 @@ class ImageAnnotationModule(AnnotatableFields, CommonAnnotatorMixin, XModule):
             'tag': self.instructor_tags,
             'openseadragonjson': self.openseadragonjson,
         }
-        context.update(self.extra_context)
+        context.update(self.extra_context())
         print context
         fragment = Fragment(self.system.render_template('imageannotation.html', context))
         fragment.add_javascript_url("/static/js/vendor/tinymce/js/tinymce/tinymce.full.min.js")
