@@ -90,12 +90,3 @@ class CommonAnnotatorMixin(object):
         scope=Scope.settings,
         default="everyone",
     )
-
-
-    def extra_context(self):
-        return {
-        'annotation_storage': self.annotation_storage_url,
-        'default_tab': self.default_tab,
-        'instructor_email': self.instructor_email,
-        'annotation_mode': self.annotation_mode,
-        }
