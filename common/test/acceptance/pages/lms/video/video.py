@@ -381,9 +381,14 @@ class VideoPage(PageObject):
         button_selector = self.get_element_selector(video_display_name, VIDEO_BUTTONS[button])
         self.q(css=button_selector).first.click()
 
-        if button == 'play':
-            # wait for video buffering
-            self._wait_for_video_play(video_display_name)
+        button_states = {'play': 'playing', 'pause': 'pause'}
+
+        if button in button_states:
+            self.wait_for_state(button_states[button], video_display_name)
+        #
+        # if button == 'play':
+        #     # wait for video buffering
+        #     self._wait_for_video_play(video_display_name)
 
         self.wait_for_ajax()
 
@@ -771,7 +776,16 @@ class VideoPage(PageObject):
         seek_selector = self.get_element_selector(video_display_name, ' .video')
         js_code = "$('{seek_selector}').data('video-player-state').videoPlayer.onSlideSeek({{time: {seek_time}}})".format(
             seek_selector=seek_selector, seek_time=seek_time)
+
         self.browser.execute_script(js_code)
+
+        # after seek, player goes into `is-buffered` state. we need to get
+        # out of this state before doing any further operation/action.
+        def _is_buffering_completed():
+
+            return self.state(video_display_name) != 'buffering'
+
+        self._wait_for(_is_buffering_completed, 'Buffering completed after Seek.')
 
     def reload_page(self):
         """

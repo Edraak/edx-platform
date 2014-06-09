@@ -39,7 +39,7 @@ class YouTubeConfigError(Exception):
     pass
 
 
-@flaky
+# @flaky
 @skipIf(is_youtube_available() is False, 'YouTube is not available!')
 class VideoBaseTest(UniqueCourseTest):
     """
@@ -267,7 +267,7 @@ class YouTubeVideoTest(VideoBaseTest):
         unicode_text = "好 各位同学".decode('utf-8')
         self.assertIn(unicode_text, self.video.captions_text())
 
-    @skip("Failing Intermittently in master. BLD-1115")
+    # @skip("Failing Intermittently in master. BLD-1115")
     def test_cc_button_transcripts_and_sub_fields_empty(self):
         """
         Scenario: CC button works correctly if transcripts and sub fields are empty,
@@ -682,7 +682,7 @@ class YouTubeVideoTest(VideoBaseTest):
 
         self.assertGreaterEqual(int(self.video.position().split(':')[1]), 5)
 
-    @skip("Intermittently fails 03 June 2014")
+    # @skip("Intermittently fails 03 June 2014")
     def test_video_position_stored_correctly_with_seek(self):
         """
         Scenario: Video component stores position correctly when page is reloaded
@@ -701,8 +701,9 @@ class YouTubeVideoTest(VideoBaseTest):
         self.video.click_player_button('play')
         self.video.seek('0:10')
         self.video.click_player_button('pause')
-        # from nose.tools import set_trace; set_trace()
         self.video.reload_page()
+        self.video.click_player_button('play')
+        self.video.click_player_button('pause')
         self.assertGreaterEqual(int(self.video.position().split(':')[1]), 10)
 
 
@@ -908,4 +909,4 @@ class Html5VideoTest(VideoBaseTest):
 
         self.assertTrue(self.video.is_video_rendered('html5'))
 
-        self.assertTrue(all([source in HTML5_SOURCES for source in self.video.sources()])
+        self.assertTrue(all([source in HTML5_SOURCES for source in self.video.sources()]))
