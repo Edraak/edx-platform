@@ -77,10 +77,15 @@ msgstr "De acuerdo"
 #: cms/static/js/views/modals/base_modal.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
+#: cms/templates/js/add-xblock-component-menu-problem.underscore
+#: cms/templates/js/add-xblock-component-menu.underscore
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Cancel"
 msgstr "Cancelar"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
+#: cms/templates/js/checklist.underscore
 msgid "This link will open in a new browser window/tab"
 msgstr "Este enlace se abrirá en una nueva ventana/pestaña del navegador "
 
@@ -90,7 +95,7 @@ msgstr "Este enlace se abrirá en una nueva ventana/pestaña del navegador "
 #: cms/templates/js/course_grade_policy.underscore
 #: cms/templates/js/show-textbook.underscore
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -322,11 +327,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "This browser cannot play .mp4, .ogg, or .webm files."
-msgstr ""
+msgstr "Este navegador no puede reproducir archivos .mp4, .ogg o .webm."
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "Try using a different browser, such as Google Chrome."
-msgstr ""
+msgstr "Pruebe a usar un navegador diferente, como Google Chrome."
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Video slider"
@@ -462,6 +467,7 @@ msgstr "..."
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
+#: common/templates/js/image-modal.underscore
 msgid "Close"
 msgstr "Cerrar"
 
@@ -523,14 +529,16 @@ msgid ""
 "No results found for %(original_query)s. Showing results for "
 "%(suggested_query)s."
 msgstr ""
+"No se encontraron resultados para %(original_query)s. Mostrando resultados "
+"para %(suggested_query)s."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "No threads matched your query."
-msgstr ""
+msgstr "Nin"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Show posts by %(username)s."
-msgstr ""
+msgstr "Mostrar entradas de  %(username)s."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Click to remove report"
@@ -654,23 +662,23 @@ msgstr "¿Está seguro de querer borrar esta respuesta?"
 
 #: common/static/js/capa/drag_and_drop/base_image.js
 msgid "Drop target image"
-msgstr ""
+msgstr "Suelte la imagen destino"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dragging out of slider"
-msgstr ""
+msgstr "arrastrando fuera del slider"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dragging"
-msgstr ""
+msgstr "arrastrando"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped in slider"
-msgstr ""
+msgstr "Soltado en el slider"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped on target"
-msgstr ""
+msgstr "soltado en destino"
 
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
@@ -738,65 +746,65 @@ msgstr[1] "%d años"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
-msgstr ""
+msgstr "Usuario"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation"
-msgstr ""
+msgstr "Anotación"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Start"
-msgstr ""
+msgstr "Inicio"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "End"
-msgstr ""
+msgstr "Fin"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "#Replies"
-msgstr ""
+msgstr "#Respuestas"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Date posted"
-msgstr ""
+msgstr "Fecha de publicación"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "More"
-msgstr ""
+msgstr "Más"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "Mis Notas"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
-msgstr ""
+msgstr "Instructor"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Public"
-msgstr ""
+msgstr "Público"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Users"
-msgstr ""
+msgstr "Usuarios"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation Text"
-msgstr ""
+msgstr "Anotación"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -810,33 +818,33 @@ msgstr ""
 #: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear"
-msgstr ""
+msgstr "Limpiar"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Image"
-msgstr ""
+msgstr "Imagen"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Reply"
-msgstr ""
+msgstr "Respuesta"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: cms/templates/js/show-textbook.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
-msgstr ""
+msgstr "Etiquetas:"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Available %s"
@@ -872,6 +880,7 @@ msgid "Choose"
 msgstr "Elegir"
 
 #: lms/static/admin/js/SelectFilter2.js
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "Eliminar"
 
@@ -1008,6 +1017,7 @@ msgid "Close Calculator"
 msgstr "Cerrar Calculadora"
 
 #: lms/static/coffee/src/customwmd.js
+#: cms/templates/js/asset-library.underscore
 msgid "Preview"
 msgstr "Vista previa"
 
@@ -1304,6 +1314,8 @@ msgid ""
 "Error getting student progress url for '<%= student_id %>'. Make sure that "
 "the student identifier is spelled correctly."
 msgstr ""
+"Error al obtener la url de progreso del estudiante '<%= student_id %>'. "
+"Verifique que el identificador del estudiante está bien escrito."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
@@ -1313,7 +1325,7 @@ msgstr ""
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Please enter a problem location."
-msgstr ""
+msgstr "Por favor, introduzca una localización para el problema."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -1329,6 +1341,9 @@ msgid ""
 " '<%= student_id %>'. Make sure that the problem and student identifiers are"
 " complete and correct."
 msgstr ""
+"Error reseteando los intentos del problema para el problema '<%= problem_id "
+"%>' y estudiante '<%= student_id %>'. Asegúrese de que los identificadores "
+"de problema y estudiante están completos y son correctos."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -1343,6 +1358,9 @@ msgid ""
 " %>'. Make sure that the problem and student identifiers are complete and "
 "correct."
 msgstr ""
+"Error borrando el estado del estudiante '<%= student_id %> en el problema "
+"'<%= problem_id %>'. Asegúrese de que los identificadores de problema y "
+"estudiante están completos y son correctos."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Module state successfully deleted."
@@ -1364,6 +1382,9 @@ msgid ""
 "'<%= student_id %>'. Make sure that the the problem and student identifiers "
 "are complete and correct."
 msgstr ""
+"Error iniciando una tarea para re-calificar el problema '<%= problem_id %>' "
+"para el estudiante '<%= student_id %>'. Asegúrese de que los identificadores"
+" de problema y estudiante están completos y son correctos."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -1371,6 +1392,9 @@ msgid ""
 "student_id %>'. Make sure that the problem and student identifiers are "
 "complete and correct."
 msgstr ""
+"Error intentando obtener el historial de tareas para el problema '<%= "
+"problem_id %>' y estudiante '<%= student_id %>'. Asegúrese de que los "
+"identificadores de problema y estudiante están completos y son correctos."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Reset attempts for all students on problem '<%= problem_id %>'?"
@@ -1394,6 +1418,9 @@ msgid ""
 "problem_id %>'. Make sure that the problem identifier is complete and "
 "correct."
 msgstr ""
+"Error iniciando una tarea para resetear los intentos para todos los "
+"estudiantes para el problema '<%= problem_id %>'. Asegúrese de que el "
+"identificador del problema está completo y es correcto."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Rescore problem '<%= problem_id %>' for all students?"
@@ -1414,6 +1441,8 @@ msgid ""
 "Error starting a task to rescore problem '<%= problem_id %>'. Make sure that"
 " the problem identifier is complete and correct."
 msgstr ""
+"Error iniciando una tarea para recalificar el problema '<%= problem_id %>'. "
+"Asegúrese de que el identificador de problema está completo y es correcto."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Error listing task history for this student and problem."
@@ -1647,31 +1676,31 @@ msgstr ""
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Unknown Error Occurred."
-msgstr ""
+msgstr "Ocurrió un error desconocido."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Successfully reset the attempts for user {user}"
-msgstr ""
+msgstr "Se reestablecieron con exito los intentos para el usuario {user}"
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Failed to reset attempts."
-msgstr ""
+msgstr "Fallo al reiniciar los intentos"
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Successfully deleted student state for user {user}"
-msgstr ""
+msgstr "Eliminado con éxito el estado del usuario {user}"
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Failed to delete student state."
-msgstr ""
+msgstr "Fallo al el eliminar el estado del estudiante."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Successfully rescored problem for user {user}"
-msgstr ""
+msgstr "Éxito al repuntuar el problema para el usuario  {user}"
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Failed to rescore problem."
-msgstr ""
+msgstr "Fallo al repuntuar el problema."
 
 #: lms/templates/class_dashboard/all_section_metrics.js
 #: lms/templates/class_dashboard/all_section_metrics.js
@@ -1688,14 +1717,14 @@ msgstr[1] ""
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student"
 msgid_plural "%(num_students)s students"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_students)s estudiante"
+msgstr[1] "%(num_students)s estudiantes"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_questions)s question"
 msgid_plural "%(num_questions)s questions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_questions)s pregunta"
+msgstr[1] "%(num_questions)s preguntas"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "Number of Students"
@@ -1896,31 +1925,31 @@ msgstr ""
 msgid "Your file has been deleted."
 msgstr "Su archivo ha sido borrado."
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
 msgstr "Nombre"
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
 msgstr "Fecha de adición"
 
 #: cms/static/js/views/assets.js
 msgid "Uploading…"
-msgstr ""
+msgstr "Subiendo..."
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Choose File"
-msgstr ""
+msgstr "Elegir archivo"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Upload New File"
-msgstr ""
+msgstr "Subir nuevo archivo"
 
 #: cms/static/js/views/assets.js
 msgid "Load Another File"
-msgstr ""
+msgstr "Cargar Otro Fichero"
 
 #: cms/static/js/views/course_info_update.js
 msgid "Are you sure you want to delete this update?"
@@ -2000,12 +2029,14 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s descending"
 msgstr ""
+"Mostrando %(current_item_range)s de un total de  %(total_items_count)s, "
+"organizados por  %(sort_name)s en orden descendente"
 
 #. Translators: turns into "25 total" to be used in other sentences, e.g.
 #. "Showing 0-9 out of 25 total".
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
-msgstr ""
+msgstr "total %(total_items)s "
 
 #: cms/static/js/views/section_edit.js
 msgid "Your change could not be saved"
@@ -2033,6 +2064,8 @@ msgid "Deleting"
 msgstr "Borrando"
 
 #: cms/static/js/views/uploads.js
+#: cms/templates/js/metadata-file-uploader-item.underscore
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Upload"
 msgstr "Subir"
 
@@ -2080,6 +2113,8 @@ msgid "Adding&hellip;"
 msgstr "Añadiendo&hellip;"
 
 #: cms/static/js/views/modals/base_modal.js
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Save"
 msgstr "Guardar"
 
@@ -2136,31 +2171,31 @@ msgstr "Subir traducción."
 
 #: common/templates/js/image-modal.underscore
 msgid "Fullscreen"
-msgstr ""
+msgstr "Pantalla completa"
 
 #: common/templates/js/image-modal.underscore
 msgid "Large"
-msgstr ""
+msgstr "Grande"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom In"
-msgstr ""
+msgstr "Acercar"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom Out"
-msgstr ""
+msgstr "Alejar"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problem Types"
-msgstr ""
+msgstr "Tipos de problemas comunes"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Advanced"
-msgstr ""
+msgstr "Avanzado"
 
 #: cms/templates/js/add-xblock-component.underscore
 msgid "Add New Component"
-msgstr ""
+msgstr "Añadir nuevo Componente"
 
 #: cms/templates/js/advanced_entry.underscore
 msgid "Deprecated"
@@ -2168,48 +2203,48 @@ msgstr ""
 
 #: cms/templates/js/asset-library.underscore
 msgid "List of uploaded files and assets in this course"
-msgstr ""
+msgstr "Lista de archivos y recursos cargados en este curso"
 
 #: cms/templates/js/asset-library.underscore
 msgid "Embed URL"
-msgstr ""
+msgstr "ULR incrustada"
 
 #: cms/templates/js/asset-library.underscore
 msgid "External URL"
-msgstr ""
+msgstr "URL externa"
 
 #: cms/templates/js/asset-library.underscore
 #: cms/templates/js/basic-modal.underscore
 msgid "Actions"
-msgstr ""
+msgstr "Acciones"
 
 #: cms/templates/js/asset-library.underscore
 msgid "You haven't added any assets to this course yet."
-msgstr ""
+msgstr "Aún no ha añadido ningún recurso a este curso."
 
 #: cms/templates/js/asset-library.underscore
 msgid "Upload your first asset"
-msgstr ""
+msgstr "Carga tu primer recurso"
 
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "close"
-msgstr ""
+msgstr "cerrar"
 
 #: cms/templates/js/asset.underscore
 msgid "Open/download this file"
-msgstr ""
+msgstr "Abrir/bajar este archivo"
 
 #: cms/templates/js/asset.underscore
 msgid "Delete this asset"
-msgstr ""
+msgstr "borre este activo"
 
 #: cms/templates/js/asset.underscore
 msgid "Lock this asset"
-msgstr ""
+msgstr "bloquee este activo"
 
 #: cms/templates/js/asset.underscore
 msgid "Lock/unlock file"
-msgstr ""
+msgstr "desbloquee este activo"
 
 #: cms/templates/js/checklist.underscore
 msgid "{number}% of checklists completed"
@@ -2217,39 +2252,39 @@ msgstr ""
 
 #: cms/templates/js/checklist.underscore
 msgid "Tasks Completed:"
-msgstr ""
+msgstr "Tareas completadas"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Assignment Type Name"
-msgstr ""
+msgstr "Nombre del tipo de tarea"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. Homework, Midterm Exams"
-msgstr ""
+msgstr "Ejemplo: Tarea, Examen de medio termino"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Abbreviation"
-msgstr ""
+msgstr "Abreviatura"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. HW, Midterm"
-msgstr ""
+msgstr "Ejemplo: Tarea, Medio termino"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Weight of Total Grade"
-msgstr ""
+msgstr "ponderación del Grado Total"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "as a percent, e.g. 40"
-msgstr ""
+msgstr "como un porcentaje, ej. 40"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Total Number"
-msgstr ""
+msgstr "Número Total"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises assigned"
-msgstr ""
+msgstr "total de ejercicios asignado"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Number of Droppable"
@@ -2257,7 +2292,7 @@ msgstr ""
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises that won't be graded"
-msgstr ""
+msgstr "total de ejercicios que no se calificarán"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid "You have no handouts defined"
@@ -2268,14 +2303,16 @@ msgid ""
 "There is invalid code in your content. Please check to make sure it is valid"
 " HTML."
 msgstr ""
+"Hay código no válido en su contenido. Por favor, compruébelo para asegurarse"
+" de que es código HTML válido."
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter Name"
-msgstr ""
+msgstr "Nombre del capítulo"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter %s"
-msgstr ""
+msgstr "Capítulo %s"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "provide the title/name of the chapter that will be used in navigating"
@@ -2283,7 +2320,7 @@ msgstr ""
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter Asset"
-msgstr ""
+msgstr "Capitulo del recurso"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "path/to/introductionToCookieBaking-CH%d.pdf"
@@ -2291,51 +2328,53 @@ msgstr ""
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "upload a PDF file or provide the path to a Studio asset file"
-msgstr ""
+msgstr "Cargar un archivo PDF o provea un camino al Studio"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Upload PDF"
-msgstr ""
+msgstr "Colgar PDF"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "delete chapter"
-msgstr ""
+msgstr "borrar capítulo"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "error.message"
-msgstr ""
+msgstr "mensaje.error"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook information"
-msgstr ""
+msgstr "Información del libro de texto"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook Name"
-msgstr ""
+msgstr "Nombre del libro de texto"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Introduction to Cookie Baking"
-msgstr ""
+msgstr "Introducción a hornear galletas"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid ""
 "provide the title/name of the text book as you would like your students to "
 "see it"
 msgstr ""
+"Proporcione el título/nombre del libro de texto como querría que sus "
+"estudiantes lo vieran"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Chapter information"
-msgstr ""
+msgstr "Información del capitulo"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Add a Chapter"
-msgstr ""
+msgstr "Añada un Capítulo"
 
 #: cms/templates/js/metadata-dict-entry.underscore
 #: cms/templates/js/metadata-list-entry.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 #: cms/templates/js/metadata-dict-entry.underscore
 #: cms/templates/js/metadata-file-uploader-entry.underscore
@@ -2347,51 +2386,51 @@ msgstr ""
 #: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear Value"
-msgstr ""
+msgstr "Limpiar valor"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
-msgstr ""
+msgstr "Reemplazar"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Download"
-msgstr ""
+msgstr "Descargar"
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "You haven't added any textbooks to this course yet."
-msgstr ""
+msgstr "Aún no ha añadido ningún libro de texto a este curso."
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "Add your first textbook"
-msgstr ""
+msgstr "Añadir su primer libro de texto"
 
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Previous"
-msgstr ""
+msgstr "Previo"
 
 #: cms/templates/js/paging-footer.underscore
 msgid "Page number"
-msgstr ""
+msgstr "Número de página"
 
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: cms/templates/js/show-textbook.underscore
 msgid "View Live"
-msgstr ""
+msgstr "Ver en vivo"
 
 #: cms/templates/js/upload-dialog.underscore
 msgid "File upload succeeded"
-msgstr ""
+msgstr "Subida del archivo exitosa"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Add URLs for additional versions"
-msgstr ""
+msgstr "Añadir URLs para versiones adicionales"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid ""
@@ -2428,7 +2467,7 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Error."
-msgstr ""
+msgstr "Error."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid "Timed Transcript from"
@@ -2483,6 +2522,9 @@ msgid ""
 " a transcript on YouTube. You can import the YouTube transcript or upload "
 "your own .srt transcript file."
 msgstr ""
+"EdX no tiene una transcripción para este video en Studio, pero hemos "
+"encontrado una transcripción en YouTube. Puedes importar la transcripción de"
+" YouTube o cargar tu propio archivo .srt"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
@@ -2513,7 +2555,7 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Yes, replace the edX transcript with the YouTube transcript"
-msgstr ""
+msgstr "SI. reemplace la transcripción edX con la de YouTube"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid "Timed Transcript Uploaded Successfully"
@@ -2541,4 +2583,4 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
-msgstr ""
+msgstr "Usar transcripción actual"

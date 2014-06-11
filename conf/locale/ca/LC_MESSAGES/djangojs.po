@@ -55,10 +55,15 @@ msgstr "D'acord"
 #: cms/static/js/views/modals/base_modal.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
+#: cms/templates/js/add-xblock-component-menu-problem.underscore
+#: cms/templates/js/add-xblock-component-menu.underscore
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Cancel"
 msgstr "Cancel·lar"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
+#: cms/templates/js/checklist.underscore
 msgid "This link will open in a new browser window/tab"
 msgstr "Aquest enllaç s'obrirà en una nova finestra/pestanya del navegador"
 
@@ -68,7 +73,7 @@ msgstr "Aquest enllaç s'obrirà en una nova finestra/pestanya del navegador"
 #: cms/templates/js/course_grade_policy.underscore
 #: cms/templates/js/show-textbook.underscore
 msgid "Delete"
-msgstr ""
+msgstr "Esborrar"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -438,6 +443,7 @@ msgstr "..."
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
+#: common/templates/js/image-modal.underscore
 msgid "Close"
 msgstr "Tancar"
 
@@ -746,7 +752,7 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "Les meves notes"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
@@ -760,7 +766,7 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "Cerca"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -811,7 +817,7 @@ msgstr ""
 #: cms/templates/js/show-textbook.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
@@ -851,6 +857,7 @@ msgid "Choose"
 msgstr "Escollir"
 
 #: lms/static/admin/js/SelectFilter2.js
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "Eliminar"
 
@@ -986,6 +993,7 @@ msgid "Close Calculator"
 msgstr "Tancar la calculadora"
 
 #: lms/static/coffee/src/customwmd.js
+#: cms/templates/js/asset-library.underscore
 msgid "Preview"
 msgstr "Previsualitzar"
 
@@ -1867,11 +1875,11 @@ msgstr ""
 msgid "Your file has been deleted."
 msgstr "El teu fitxer s'ha esborrat."
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
 msgstr "Nom"
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
 msgstr "Data afegida"
 
@@ -2005,6 +2013,8 @@ msgid "Deleting"
 msgstr "Esborrant"
 
 #: cms/static/js/views/uploads.js
+#: cms/templates/js/metadata-file-uploader-item.underscore
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Upload"
 msgstr "Pujar"
 
@@ -2052,6 +2062,8 @@ msgid "Adding&hellip;"
 msgstr "Afegint&hellip;"
 
 #: cms/static/js/views/modals/base_modal.js
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Save"
 msgstr "Guardar"
 
@@ -2323,7 +2335,7 @@ msgstr ""
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
-msgstr ""
+msgstr "Substituir"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore

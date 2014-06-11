@@ -5673,7 +5673,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Could not find user by email address '{email}'."
-msgstr ""
+msgstr "'{email}' email මගින් සොයා ගැනීමත නොහැකිි විය"
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "User {email} has registered but has not yet activated his/her account."
@@ -13979,7 +13979,7 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "මෙය මුල් වැකියක්"
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"

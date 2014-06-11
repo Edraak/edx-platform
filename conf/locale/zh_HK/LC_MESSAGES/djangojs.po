@@ -45,7 +45,7 @@ msgstr ""
 #: cms/static/js/views/modals/edit_xblock.js
 #: common/static/coffee/src/discussion/utils.js
 msgid "OK"
-msgstr ""
+msgstr "好"
 
 #: cms/static/coffee/src/views/tabs.js cms/static/js/base.js
 #: cms/static/js/views/asset.js cms/static/js/views/baseview.js
@@ -54,6 +54,10 @@ msgstr ""
 #: cms/static/js/views/modals/base_modal.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
+#: cms/templates/js/add-xblock-component-menu-problem.underscore
+#: cms/templates/js/add-xblock-component-menu.underscore
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Cancel"
 msgstr "取消"
 
@@ -68,7 +72,7 @@ msgstr ""
 #: cms/templates/js/course_grade_policy.underscore
 #: cms/templates/js/show-textbook.underscore
 msgid "Delete"
-msgstr ""
+msgstr "刪除"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -76,7 +80,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Hide Annotations"
-msgstr ""
+msgstr "隱藏註解"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Expand Instructions"
@@ -84,7 +88,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "收起說明"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Commentary"
@@ -126,11 +130,11 @@ msgstr ""
 #. student must solve.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Show Answer"
-msgstr ""
+msgstr "顯示答案"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Reveal Answer"
-msgstr ""
+msgstr "顯示答案"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Answer hidden"
@@ -229,7 +233,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Hide Question"
-msgstr ""
+msgstr "隱藏問題"
 
 #: common/lib/xmodule/xmodule/js/src/sequence/display.js
 msgid ""
@@ -295,15 +299,15 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Pause"
-msgstr ""
+msgstr "暫停"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Play"
-msgstr ""
+msgstr "播放"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Fill browser"
-msgstr ""
+msgstr "填滿瀏覽器"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Exit full browser"
@@ -315,12 +319,12 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD off"
-msgstr ""
+msgstr "關閉高清"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "Video position"
-msgstr ""
+msgstr "影片位置"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "Video ended"
@@ -351,7 +355,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn off captions"
-msgstr ""
+msgstr "關閉字幕"
 
 #: common/lib/xmodule/xmodule/public/js/split_test_author_view.js
 msgid "Creating missing groups&hellip;"
@@ -364,7 +368,7 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 msgid "Show Discussion"
-msgstr ""
+msgstr "顯示討論"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 #: common/static/coffee/src/discussion/discussion_module_view.js
@@ -376,7 +380,7 @@ msgstr ""
 #: common/static/coffee/src/discussion/views/discussion_user_profile_view.js
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "Sorry"
-msgstr ""
+msgstr "對不起"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 msgid "We had some trouble loading the discussion. Please try again."
@@ -494,7 +498,7 @@ msgstr ""
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js
 msgid "Report Misuse"
-msgstr ""
+msgstr "報告濫用"
 
 #. Translators: The text between start_sr_span and end_span is not shown
 #. in most browsers but will be read by screen readers.
@@ -508,11 +512,11 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Pinned"
-msgstr ""
+msgstr "置頂"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Pin Thread"
-msgstr ""
+msgstr "主題置頂"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid ""
@@ -621,25 +625,25 @@ msgstr ""
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "less than a minute"
-msgstr ""
+msgstr "少於一分鐘"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a minute"
-msgstr ""
+msgstr "大約一分鐘"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
+msgstr[0] "%d 分鐘"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about an hour"
-msgstr ""
+msgstr "大約一小時"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about %d hour"
 msgid_plural "about %d hours"
-msgstr[0] ""
+msgstr[0] "大約 %d 小時"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "a day"
@@ -648,29 +652,29 @@ msgstr "一天"
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
+msgstr[0] "%d 天"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a month"
-msgstr ""
+msgstr "大約一個月"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
+msgstr[0] "%d 個月"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a year"
-msgstr ""
+msgstr "大約一年"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
+msgstr[0] "%d 年"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
-msgstr ""
+msgstr "使用者"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation"
@@ -699,7 +703,7 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "我的筆記"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
@@ -713,12 +717,12 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "搜尋"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Users"
-msgstr ""
+msgstr "使用者"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -764,7 +768,7 @@ msgstr ""
 #: cms/templates/js/show-textbook.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "編輯"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
@@ -786,27 +790,28 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Filter"
-msgstr ""
+msgstr "過濾"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose all"
-msgstr ""
+msgstr "全選"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to choose all %s at once."
-msgstr ""
+msgstr "點擊以選擇全部%s。"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose"
-msgstr ""
+msgstr "選擇"
 
+#: lms/static/admin/js/SelectFilter2.js
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "移除"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Chosen %s"
-msgstr ""
+msgstr "已選%s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
@@ -816,11 +821,11 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr ""
+msgstr "移除所有"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to remove all chosen %s at once."
-msgstr ""
+msgstr "點擊以取消全部%s選擇。"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid "%(sel)s of %(cnt)s selected"
@@ -862,11 +867,11 @@ msgstr "日|一|二|三|四|五|六"
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.js.c
 #: lms/static/admin/js/collapse.min.js
 msgid "Show"
-msgstr ""
+msgstr "顯示"
 
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.min.js
 msgid "Hide"
-msgstr ""
+msgstr "隱藏"
 
 #. Translators: the names of days, keep the pipe (|) separators.
 #: lms/static/admin/js/dateparse.js
@@ -876,7 +881,7 @@ msgstr "週日|週一|週二|週三|週四|週五|週六"
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Now"
-msgstr ""
+msgstr "現在"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Clock"
@@ -909,21 +914,22 @@ msgstr ""
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Yesterday"
-msgstr ""
+msgstr "昨天"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Tomorrow"
-msgstr ""
+msgstr "明天"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"
-msgstr ""
+msgstr "開啟計算機"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Close Calculator"
-msgstr ""
+msgstr "關閉計算機"
 
 #: lms/static/coffee/src/customwmd.js
+#: cms/templates/js/asset-library.underscore
 msgid "Preview"
 msgstr "預覽"
 
@@ -982,11 +988,11 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Username"
-msgstr ""
+msgstr "使用者名稱"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Email"
-msgstr ""
+msgstr "電郵"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -1290,13 +1296,13 @@ msgstr ""
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task Type"
-msgstr ""
+msgstr "任務類型"
 
 #. Translators: a "Task" is a background process such as grading students or
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task inputs"
-msgstr ""
+msgstr "任務輸入"
 
 #. Translators: a "Task" is a background process such as grading students or
 #. sending email
@@ -1308,19 +1314,19 @@ msgstr ""
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Requester"
-msgstr ""
+msgstr "請求者"
 
 #. Translators: A timestamp of when a task (eg, sending email) was submitted
 #. appears after this
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Submitted"
-msgstr ""
+msgstr "已提交"
 
 #. Translators: The length of a task (eg, sending email) in seconds appears
 #. this
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Duration (sec)"
-msgstr ""
+msgstr "持續時間（秒）"
 
 #. Translators: The state (eg, "In progress") of a task (eg, sending email)
 #. appears after this.
@@ -1338,7 +1344,7 @@ msgstr ""
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task Progress"
-msgstr ""
+msgstr "任務進度"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Grades saved.  Fetching the next submission to grade."
@@ -1346,11 +1352,11 @@ msgstr ""
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Problem Name"
-msgstr ""
+msgstr "問題名稱"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Graded"
-msgstr ""
+msgstr "已評分"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Available to Grade"
@@ -1358,11 +1364,11 @@ msgstr ""
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Required"
-msgstr ""
+msgstr "必要"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Progress"
-msgstr ""
+msgstr "進度"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Back to problem list"
@@ -1403,7 +1409,7 @@ msgstr "(隱藏)"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "(Show)"
-msgstr ""
+msgstr "(顯示)"
 
 #: lms/static/js/Markdown.Editor.js
 msgid "Insert Hyperlink"
@@ -1672,7 +1678,7 @@ msgstr ""
 
 #: cms/static/js/models/uploads.js
 msgid "or"
-msgstr ""
+msgstr "或者"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course must have an assigned start date."
@@ -1739,7 +1745,7 @@ msgstr ""
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
-msgstr ""
+msgstr "名稱"
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
@@ -1907,7 +1913,7 @@ msgstr ""
 
 #: cms/static/js/views/xblock_editor.js
 msgid "Settings"
-msgstr ""
+msgstr "設置"
 
 #: cms/static/js/views/components/add_xblock.js
 msgid "Adding&hellip;"
@@ -1917,7 +1923,7 @@ msgstr ""
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/section-name-edit.underscore
 msgid "Save"
-msgstr ""
+msgstr "儲存"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Component"
@@ -2009,7 +2015,7 @@ msgstr ""
 #: cms/templates/js/asset-library.underscore
 #: cms/templates/js/basic-modal.underscore
 msgid "Actions"
-msgstr ""
+msgstr "動作"
 
 #: cms/templates/js/asset-library.underscore
 msgid "You haven't added any assets to this course yet."
@@ -2021,7 +2027,7 @@ msgstr ""
 
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "close"
-msgstr ""
+msgstr "關閉"
 
 #: cms/templates/js/asset.underscore
 msgid "Open/download this file"
@@ -2198,7 +2204,7 @@ msgstr ""
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Previous"
-msgstr ""
+msgstr "上一個"
 
 #: cms/templates/js/paging-footer.underscore
 msgid "Page number"
@@ -2207,7 +2213,7 @@ msgstr "頁數"
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Next"
-msgstr ""
+msgstr "下一個"
 
 #: cms/templates/js/show-textbook.underscore
 msgid "View Live"

@@ -297,27 +297,27 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Pause"
-msgstr ""
+msgstr "Berhenti seketika"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Play"
-msgstr ""
+msgstr "Mainkan"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Fill browser"
-msgstr ""
+msgstr "Isikan browser"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Exit full browser"
-msgstr ""
+msgstr "Keluar dari browser"
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD on"
-msgstr ""
+msgstr "Hidupkan HD"
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD off"
-msgstr ""
+msgstr "padamkan HD"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
@@ -345,15 +345,15 @@ msgstr[0] ""
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Caption will be displayed when "
-msgstr ""
+msgstr "Terjemahan akan dipaparkan apabila"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn on captions"
-msgstr ""
+msgstr "Paparkan terjemahan"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn off captions"
-msgstr ""
+msgstr "Padamkan terjemahan"
 
 #: common/lib/xmodule/xmodule/public/js/split_test_author_view.js
 msgid "Creating missing groups&hellip;"
@@ -561,7 +561,7 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
-msgstr ""
+msgstr "samaran"
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js
@@ -623,52 +623,52 @@ msgstr ""
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "less than a minute"
-msgstr ""
+msgstr "kurang dari seminit"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a minute"
-msgstr ""
+msgstr "lebih kurang seminit"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
+msgstr[0] "%d minit"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about an hour"
-msgstr ""
+msgstr "lebih kurang sejam"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about %d hour"
 msgid_plural "about %d hours"
-msgstr[0] ""
+msgstr[0] "lebih kurang %d jam"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "a day"
-msgstr ""
+msgstr "sehari"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
+msgstr[0] "%d hari"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a month"
-msgstr ""
+msgstr "lebih kurang sebulan"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
+msgstr[0] "%d bulan"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a year"
-msgstr ""
+msgstr "lebih kurang setahun"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
+msgstr[0] "%d tahun"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
@@ -774,67 +774,76 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Available %s"
-msgstr ""
+msgstr "kesediaan %s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of available %s. You may choose some by selecting them in "
 "the box below and then clicking the \"Choose\" arrow between the two boxes."
 msgstr ""
+"Ini adalah senarai yang disediakan %s. Anda boleh memilih dalam kotak di "
+"bawah dan memilih tanda \"Pilih\" di antara dua kotak."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Type into this box to filter down the list of available %s."
 msgstr ""
+"Taip di dalam kotak berkenaan untuk menapis senarai yang disediakan %s."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Filter"
-msgstr ""
+msgstr "Tapis"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose all"
-msgstr ""
+msgstr "Pilih semua"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to choose all %s at once."
-msgstr ""
+msgstr "Klik untuk memiih semua %s sekaligus."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose"
-msgstr ""
+msgstr "Pilih"
 
 #: lms/static/admin/js/SelectFilter2.js
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
-msgstr ""
+msgstr "Buang"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Chosen %s"
-msgstr ""
+msgstr "Pilihan %s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of chosen %s. You may remove some by selecting them in the "
 "box below and then clicking the \"Remove\" arrow between the two boxes."
 msgstr ""
+"Ini adalah senarai yang dipilih %s. Anda boleh membuang diantaranya dengan "
+"memilih di dalam kotak berkenaan dan kemudian klik tanda \"Buang\" di antara"
+" dua kotak."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr ""
+msgstr "Buang semua"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to remove all chosen %s at once."
-msgstr ""
+msgstr "Klik untuk membuang semua pilihan %s sekaligus."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid "%(sel)s of %(cnt)s selected"
 msgid_plural "%(sel)s of %(cnt)s selected"
-msgstr[0] ""
+msgstr[0] "%(sel)s daripada %(cnt)s dipilih"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
 "You have unsaved changes on individual editable fields. If you run an "
 "action, your unsaved changes will be lost."
 msgstr ""
+"Anda mempunyai perubahan yang belum disimpan pada ruang pembolehubah. "
+"Sekiranya anda melaksanakan arahan seterusnya, maklumat yang tidak disimpan "
+"akan hilang. "
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
@@ -855,68 +864,69 @@ msgstr ""
 msgid ""
 "January|February|March|April|May|June|July|August|September|October|November|December"
 msgstr ""
+"Januari|Februari|Mac|April|Mei|Jun|Julai|Ogos|September|Oktober|November|Disember|"
 
 #. Translators: abbreviations for days of the week, keep the pipe (|)
 #. separators.
 #: lms/static/admin/js/calendar.js
 msgid "S|M|T|W|T|F|S"
-msgstr ""
+msgstr "A|I|S|R|K|J|S"
 
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.js.c
 #: lms/static/admin/js/collapse.min.js
 msgid "Show"
-msgstr ""
+msgstr "Tunjuk"
 
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.min.js
 msgid "Hide"
-msgstr ""
+msgstr "Sorok"
 
 #. Translators: the names of days, keep the pipe (|) separators.
 #: lms/static/admin/js/dateparse.js
 msgid "Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday"
-msgstr ""
+msgstr "Ahad|Isnin|Selasa|Rabu|Khamis|Jumaat|Sabtu"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Now"
-msgstr ""
+msgstr "Sekarang"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Clock"
-msgstr ""
+msgstr "Jam"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Choose a time"
-msgstr ""
+msgstr "Pilihan waktu"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Midnight"
-msgstr ""
+msgstr "Tengahmalam"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "6 a.m."
-msgstr ""
+msgstr "6 pagi"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Noon"
-msgstr ""
+msgstr "Tengahari"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Today"
-msgstr ""
+msgstr "Hari ini"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Calendar"
-msgstr ""
+msgstr "Kalendar"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Yesterday"
-msgstr ""
+msgstr "Semalam"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Tomorrow"
-msgstr ""
+msgstr "Esok"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"

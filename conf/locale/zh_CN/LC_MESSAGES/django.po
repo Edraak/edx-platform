@@ -211,6 +211,8 @@ msgstr "开放问题面板"
 msgid "Discussion"
 msgstr "论坛"
 
+#: cms/djangoapps/contentstore/views/component.py
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
@@ -220,7 +222,7 @@ msgstr "问题"
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Advanced"
-msgstr ""
+msgstr "高级"
 
 #: common/djangoapps/course_modes/models.py
 msgid "Honor Code Certificate"
@@ -992,11 +994,11 @@ msgstr "处理中"
 #. Translators: 'ChoiceGroup' is an input type and should not be translated.
 #: common/lib/capa/capa/inputtypes.py
 msgid "ChoiceGroup: unexpected tag {tag_name}"
-msgstr ""
+msgstr "ChoiceGroup：未知标签{tag_name}"
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "Answer received."
-msgstr ""
+msgstr "收到答案"
 
 #. Translators: '<choice>' is a tag name and should not be translated.
 #: common/lib/capa/capa/inputtypes.py
@@ -1068,7 +1070,7 @@ msgstr "查看XML源文件{sourcenum}."
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "Execution of unsafe Javascript code is not allowed."
-msgstr ""
+msgstr "禁止使用不安全的脚本代码"
 
 #. Translators: 'unmask_name' is a method name and should not be translated.
 #: common/lib/capa/capa/responsetypes.py
@@ -1140,7 +1142,7 @@ msgstr "或者"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error getting student answer from {student_answers}"
-msgstr ""
+msgstr "获取学生答案错误 {student_answers}"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "No answer entered!"
@@ -1154,7 +1156,7 @@ msgstr "客户端响应：检查函数返回无效字典！"
 #. translated.
 #: common/lib/capa/capa/responsetypes.py
 msgid "An error occurred with SymbolicResponse. The error was: {error_msg}"
-msgstr ""
+msgstr "SymbolicResponse时发生一个错误。错误描述: {error_msg}"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "No answer provided."
@@ -1206,7 +1208,7 @@ msgstr "评估SchematicResponse出错。错误为： {error_msg}"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error grading {image_input_id} (input={user_input})"
-msgstr ""
+msgstr "评分误差 {image_input_id} (input={user_input})"
 
 #. Translators: {sr_coords} are the coordinates of a rectangle
 #: common/lib/capa/capa/responsetypes.py
@@ -1230,7 +1232,7 @@ msgstr "无法将'{given_answer}'解析为一个数字。"
 #: common/lib/xmodule/xmodule/textannotation_module.py
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 msgid "XML data for the annotation"
-msgstr ""
+msgstr "注释的XML数据"
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 #: common/lib/xmodule/xmodule/capa_base.py
@@ -1246,7 +1248,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Display Name"
-msgstr ""
+msgstr "显示名称"
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 #: common/lib/xmodule/xmodule/discussion_module.py
@@ -1257,40 +1259,40 @@ msgstr ""
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Display name for this module"
-msgstr ""
+msgstr "该模块的显示名称"
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 msgid "Annotation"
-msgstr ""
+msgstr "解说"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/html_module.py
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "This name appears in the horizontal navigation at the top of the page."
-msgstr ""
+msgstr "该名字出现在页面顶部的横向导航栏中"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Number of attempts taken by the student on this problem"
-msgstr ""
+msgstr "学生对于这个问题所允许的尝试次数"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Maximum Attempts"
-msgstr ""
+msgstr "最大尝试次数"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
 "Defines the number of times a student can try to answer this problem. If the"
 " value is not set, infinite attempts are allowed."
-msgstr ""
+msgstr "定义学生对于这个问题所允许的尝试次数. 如果次数未设定, 则允许无限次尝试."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Date that this problem is due by"
-msgstr ""
+msgstr "问题的截至日期为"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -1304,8 +1306,10 @@ msgstr ""
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Amount of time after the due date that submissions will be accepted"
-msgstr ""
+msgstr "超过期限后允许作业提交作业的时间间隔"
 
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/modulestore/inheritance.py
 #: lms/templates/problem.html
 msgid "Show Answer"
 msgstr "显示答案"
@@ -1314,46 +1318,46 @@ msgstr "显示答案"
 msgid ""
 "Defines when to show the answer to the problem. A default value can be set "
 "in Advanced Settings."
-msgstr ""
+msgstr "定义何时显示问题的答案，默认值可在高级设置里设定。"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Always"
-msgstr ""
+msgstr "总是"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Answered"
-msgstr ""
+msgstr "已回答"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Attempted"
-msgstr ""
+msgstr "已尝试"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Closed"
-msgstr ""
+msgstr "已关闭"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Finished"
-msgstr ""
+msgstr "已完成"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Past Due"
-msgstr ""
+msgstr "已到期"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Never"
-msgstr ""
+msgstr "从不"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Whether to force the save button to appear on the page"
-msgstr ""
+msgstr "是否强制显示保存按钮"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Randomization"
-msgstr ""
+msgstr "随机化"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
@@ -1364,17 +1368,17 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "On Reset"
-msgstr ""
+msgstr "在重置时"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Per Student"
-msgstr ""
+msgstr "每学生"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid "XML data for the problem"
-msgstr ""
+msgstr "问题的XML数据"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Dictionary with the correctness of current student answers"
@@ -1390,7 +1394,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Whether the student has answered the problem"
-msgstr ""
+msgstr "学生是否已经回答问题"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Random seed for this student"
@@ -1398,11 +1402,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Last submission time"
-msgstr ""
+msgstr "最后提交时间"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Timer Between Attempts"
-msgstr ""
+msgstr "解题倒计时间"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
@@ -1414,7 +1418,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Problem Weight"
-msgstr ""
+msgstr "问题权重"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
@@ -1549,7 +1553,7 @@ msgstr "该问题的描述在你加载本页面之后已经发生变化了。请
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Open Response Assessment"
-msgstr ""
+msgstr "开放式评价"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Current task that the student is on."
@@ -1571,6 +1575,8 @@ msgstr ""
 msgid "Which step within the current task that the student is on."
 msgstr ""
 
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Graded"
 msgstr "已评分"
@@ -1591,7 +1597,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Allow File Uploads"
-msgstr ""
+msgstr "允许上传文件"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Whether or not the student can submit files as a response."
@@ -1599,7 +1605,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Disable Quality Filter"
-msgstr ""
+msgstr "禁用质量过滤"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1609,7 +1615,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Current version number"
-msgstr ""
+msgstr "当前版本号"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/peer_grading_module.py
@@ -1620,7 +1626,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Minimum Peer Grading Calibrations"
-msgstr ""
+msgstr "最少互评校准数量"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1630,7 +1636,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Maximum Peer Grading Calibrations"
-msgstr ""
+msgstr "最多互评校准数量"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1640,7 +1646,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Peer Graders per Response"
-msgstr ""
+msgstr "每个回答的互评者数量"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "The number of peers who will grade each submission."
@@ -1648,7 +1654,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Required Peer Grading"
-msgstr ""
+msgstr "必须的互评数量"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1658,7 +1664,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Allow \"overgrading\" of peer submissions"
-msgstr ""
+msgstr "允许互评提交时“过评分”"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1874,71 +1880,71 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Getting Started With Studio"
-msgstr ""
+msgstr "Studio 入门"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Add Course Team Members"
-msgstr ""
+msgstr "添加课程团队成员"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Grant your collaborators permission to edit your course so you can work "
 "together."
-msgstr ""
+msgstr "将编辑课程的权限授予您的合作者，从而你们可以一起工作。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Edit Course Team"
-msgstr ""
+msgstr "编辑课程团队"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Set Important Dates for Your Course"
-msgstr ""
+msgstr "设定课程的关键日期"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Establish your course's student enrollment and launch dates on the Schedule "
 "and Details page."
-msgstr ""
+msgstr "在日程与细节页面，确定课程的注册时间和开始时间。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Edit Course Details &amp; Schedule"
-msgstr ""
+msgstr "编辑课程日程与细节"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Draft Your Course's Grading Policy"
-msgstr ""
+msgstr "起草课程评分策略"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Set up your assignment types and grading policy even if you haven't created "
 "all your assignments."
-msgstr ""
+msgstr "即使尚未创建所有的作业，也请您先设置作业类型和评分准则。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Edit Grading Settings"
-msgstr ""
+msgstr "编辑评分设置"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Explore the Other Studio Checklists"
-msgstr ""
+msgstr "浏览他人的 Studio 检查表"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Discover other available course authoring tools, and find help when you need"
 " it."
-msgstr ""
+msgstr "探索其他可用的课程创作工具，并在需要时寻求帮助。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Draft a Rough Course Outline"
-msgstr ""
+msgstr "起草课程大纲"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Create Your First Section and Subsection"
-msgstr ""
+msgstr "创建首个章节和小节"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Use your course outline to build your first Section and Subsection."
-msgstr ""
+msgstr "根据课程大纲来创建第一个章节和小节。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/course_module.py
@@ -1948,114 +1954,114 @@ msgstr ""
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Edit Course Outline"
-msgstr ""
+msgstr "编辑课程大纲"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Set Section Release Dates"
-msgstr ""
+msgstr "设定章节的发布日期"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Specify the release dates for each Section in your course. Sections become "
 "visible to students on their release dates."
-msgstr ""
+msgstr "设定课程中每个章节的发布日期。只有到了发布时间，学生们才能看到章节的内容。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Designate a Subsection as Graded"
-msgstr ""
+msgstr "划定要进行评分的小节"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Set a Subsection to be graded as a specific assignment type. Assignments "
 "within graded Subsections count toward a student's final grade."
-msgstr ""
+msgstr "将一个小节设置为按指定的作业类型评分。学生的最终成绩将根据所有这些评分小节中的作业分数计算。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Reordering Course Content"
-msgstr ""
+msgstr "对课程内容排序"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Use drag and drop to reorder the content in your course."
-msgstr ""
+msgstr "可以通过拖拽来重新组织课程内容。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Renaming Sections"
-msgstr ""
+msgstr "重命名章节"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Rename Sections by clicking the Section name from the Course Outline."
-msgstr ""
+msgstr "只要在大纲页面中点击章节名，就能重命名该章节。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Deleting Course Content"
-msgstr ""
+msgstr "删除课程内容"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Delete Sections, Subsections, or Units you don't need anymore. Be careful, "
 "as there is no Undo function."
-msgstr ""
+msgstr "删除不再需要的章节、小节或者单元。请小心操作，因为一旦删除将不可撤销。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Add an Instructor-Only Section to Your Outline"
-msgstr ""
+msgstr "在大纲中添加“仅教师可见”的章节"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Some course authors find using a section for unsorted, in-progress work "
 "useful. To do this, create a section and set the release date to the distant"
 " future."
-msgstr ""
+msgstr "有些人认为将所有未排序的或者尚未完成的内容组织到一个章节下面会有助于课程创建工作。为此，可以创建一个章节并将其发布日期设置为遥远的将来。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Explore edX's Support Tools"
-msgstr ""
+msgstr "浏览 edX 的支持工具"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Explore the Studio Help Forum"
-msgstr ""
+msgstr "浏览 Studio 帮助论坛"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Access the Studio Help forum from the menu that appears when you click your "
 "user name in the top right corner of Studio."
-msgstr ""
+msgstr "您可以单击 Studio 界面右上角的用户名，通过下拉菜单中的链接访问 Studio 帮助论坛。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Visit Studio Help"
-msgstr ""
+msgstr "访问 Studio 帮助页面"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enroll in edX 101"
-msgstr ""
+msgstr "注册 edX 101 课程"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Register for edX 101, edX's primer for course creation."
-msgstr ""
+msgstr "注册 edX 101，edX 提供的课程创建入门。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Register for edX 101"
-msgstr ""
+msgstr "注册 edX 101"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Download the Studio Documentation"
-msgstr ""
+msgstr "下载 Studio 文档"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Download the searchable Studio reference documentation in PDF form."
-msgstr ""
+msgstr "下载可搜索的 Studio 参考文档（PDF 格式）。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Download Documentation"
-msgstr ""
+msgstr "下载文档"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Draft Your Course About Page"
-msgstr ""
+msgstr "起草课程介绍页面"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Draft a Course Description"
-msgstr ""
+msgstr "起草课程描述"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -2063,41 +2069,42 @@ msgid ""
 " and more. Draft the text students will read before deciding to enroll in "
 "your course."
 msgstr ""
+"edX 上的课程都有一个介绍页面，其中包含了课程的介绍视频、课程描述等信息。起草这样一段文字，使学生们可以先对课程内容有初步了解后再决定是否注册该课程。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Edit Course Schedule &amp; Details"
-msgstr ""
+msgstr "编辑课程日程与细节"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Add Staff Bios"
-msgstr ""
+msgstr "添加教员简历"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Showing prospective students who their instructor will be is helpful. "
 "Include staff bios on the course About page."
-msgstr ""
+msgstr "向学生们展示将参与课程教学工作的教师信息是有好处的。将教员的简历也包含介绍页面中。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Add Course FAQs"
-msgstr ""
+msgstr "添加课程 FAQ"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Include a short list of frequently asked questions about your course."
-msgstr ""
+msgstr "在课程介绍页面中列出这门课程的一些常见问题。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Add Course Prerequisites"
-msgstr ""
+msgstr "添加课程先修要求"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Let students know what knowledge and/or skills they should have before they "
 "enroll in your course."
-msgstr ""
+msgstr "让学生们知道他们在学习这门课程之前需要先掌握哪些知识（技能）。"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Course Info Sidebar Name"
@@ -2251,7 +2258,7 @@ msgstr "待定"
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid "Category"
-msgstr ""
+msgstr "分类"
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid ""
@@ -2261,7 +2268,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid "Subcategory"
-msgstr ""
+msgstr "子分类"
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid ""
@@ -2271,7 +2278,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
-msgstr ""
+msgstr "文本"
 
 #: common/lib/xmodule/xmodule/html_module.py
 #: common/lib/xmodule/xmodule/html_module.py
@@ -2290,18 +2297,20 @@ msgid ""
 "HTML. Select Raw to edit HTML directly. If you change this setting, you must"
 " save the component and then re-open it for editing."
 msgstr ""
+"选择“可视化”时，您只需输入内容，编辑器将生成相应的 HTML 代码。选择“代码”时，您可以直接编辑 HTML "
+"代码。如果您改变了该设置，则该设置将在您保存并重新打开编辑器才生效。"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "编辑器"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
-msgstr ""
+msgstr "可视化"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Raw"
-msgstr ""
+msgstr "代码"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "HTML for the additional pages"
@@ -2313,7 +2322,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/imageannotation_module.py
 msgid "Image Annotation"
-msgstr ""
+msgstr "图片解说"
 
 #: common/lib/xmodule/xmodule/imageannotation_module.py
 #: common/lib/xmodule/xmodule/textannotation_module.py
@@ -2401,7 +2410,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "LTI ID"
-msgstr ""
+msgstr "LTI ID"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
@@ -2412,7 +2421,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "LTI URL"
-msgstr ""
+msgstr "LTI URL"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
@@ -2432,7 +2441,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Open in New Page"
-msgstr ""
+msgstr "在新的窗口打开"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
@@ -2474,7 +2483,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Hide External Tool"
-msgstr ""
+msgstr "隐藏扩展工具"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
@@ -2497,7 +2506,7 @@ msgstr "无法解析LTI通行证：{lti_passport}。其格式应当是由“身�
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Show Single Problem"
-msgstr ""
+msgstr "显示单个问题"
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid ""
@@ -2508,7 +2517,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Link to Problem Location"
-msgstr ""
+msgstr "问题所在位置的链接"
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid ""
@@ -2536,12 +2545,12 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Peer Grading Interface"
-msgstr ""
+msgstr "互评界面"
 
 #: common/lib/xmodule/xmodule/seq_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Due Date"
-msgstr ""
+msgstr "规定期限"
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Enter the date by which problems are due."
@@ -2554,6 +2563,11 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
+#. Translators: This message will be added to the front of messages of type
+#. error,
+#. e.g. "Error: required field is missing".
+#: common/lib/xmodule/xmodule/split_test_module.py
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
@@ -2600,7 +2614,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Select a Group Configuration"
-msgstr ""
+msgstr "选择一个组别配置"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid ""
@@ -2692,11 +2706,11 @@ msgstr "主讲教师"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Text Annotation"
-msgstr ""
+msgstr "文字解说"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Source/Citation"
-msgstr ""
+msgstr "来源/引用"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid ""
@@ -2716,7 +2730,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 msgid "Video Annotation"
-msgstr ""
+msgstr "视频解说"
 
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 msgid "The external source URL for the video."
@@ -2736,7 +2750,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Inputs"
-msgstr ""
+msgstr "投入"
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Number of text boxes available for students to input words/sentences."
@@ -2744,7 +2758,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Maximum Words"
-msgstr ""
+msgstr "字数上限"
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Maximum number of words to be displayed in generated word cloud."
@@ -2752,7 +2766,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Show Percents"
-msgstr ""
+msgstr "显示百分比"
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Statistics are shown for entered words near that word."
@@ -2764,7 +2778,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Student answer."
-msgstr ""
+msgstr "学生答案"
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "All possible words from all students."
@@ -2772,7 +2786,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Top num_top_words words for word cloud."
-msgstr ""
+msgstr "词云中的最热门词汇"
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Enter the default date by which problems are due."
@@ -3112,7 +3126,7 @@ msgstr "{exception_message}: 找不到上传的成绩单: {user_filename}"
 
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Basic"
-msgstr ""
+msgstr "基本"
 
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid ""
@@ -3123,83 +3137,83 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Default Video URL"
-msgstr ""
+msgstr "默认的视频 URL"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "The name students see. This name appears in the course ribbon and as a "
 "header for the video."
-msgstr ""
+msgstr "学生看到的名称。该名称会显示在课程带上，并作为视频的标题。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Component Display Name"
-msgstr ""
+msgstr "组件显示名称"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Current position in the video."
-msgstr ""
+msgstr "视频的当前位置。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "Optional, for older browsers: the YouTube ID for the normal speed video."
-msgstr ""
+msgstr "可选，针对较早的浏览器：正常速度视频的 YouTube ID。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "YouTube ID"
-msgstr ""
+msgstr "YouTube ID"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Optional, for older browsers: the YouTube ID for the .75x speed video."
-msgstr ""
+msgstr "可选，针对较早的浏览器：0.75 倍速视频的 YouTube ID。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "YouTube ID for .75x speed"
-msgstr ""
+msgstr "YouTube ID（0.75 倍速）"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "Optional, for older browsers: the YouTube ID for the 1.25x speed video."
-msgstr ""
+msgstr "可选，针对较早的浏览器：1.25 倍速视频的 YouTube ID。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "YouTube ID for 1.25x speed"
-msgstr ""
+msgstr "YouTube ID（1.25 倍速）"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Optional, for older browsers: the YouTube ID for the 1.5x speed video."
-msgstr ""
+msgstr "可选，针对较早的浏览器：1.5 倍速视频的 YouTube ID。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "YouTube ID for 1.5x speed"
-msgstr ""
+msgstr "YouTube ID（1.5 倍速）"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "Time you want the video to start if you don't want the entire video to play."
 " Formatted as HH:MM:SS. The maximum value is 23:59:59."
-msgstr ""
+msgstr "如果不希望播放整个视频，则在此提供视频播放的开始时间。格式为 HH:MM:SS，最大值为 23:59:59。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Video Start Time"
-msgstr ""
+msgstr "视频开始时间"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "Time you want the video to stop if you don't want the entire video to play. "
 "Formatted as HH:MM:SS. The maximum value is 23:59:59."
-msgstr ""
+msgstr "如果不希望播放整个视频，则在此提供视频播放的结束时间。格式为 HH:MM:SS，最大值为 23:59:59。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Video Stop Time"
-msgstr ""
+msgstr "视频结束时间"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "The external URL to download the video."
-msgstr ""
+msgstr "下载视频的外部 URL。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Download Video"
-msgstr ""
+msgstr "下载视频"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3207,10 +3221,12 @@ msgid ""
 "they cannot use the edX video player or do not have access to YouTube. You "
 "must add at least one non-YouTube URL in the Video File URLs field."
 msgstr ""
+"如果学生无法使用 edX 视频播放器，或者不能访问 YouTube，则可以允许学生以不同的格式下载该视频。为此，必须在“视频文件 "
+"URL”域中添加至少一个非 YouTube 的视频 URL。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Video Download Allowed"
-msgstr ""
+msgstr "允许下载视频"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3224,7 +3240,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Video File URLs"
-msgstr ""
+msgstr "视频文件 URL"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3236,10 +3252,13 @@ msgid ""
 " the URL for the transcript here. Students see a link to download that "
 "transcript below the video."
 msgstr ""
+"默认情况下，当“允许下载字幕”设置为“是”的时候，学生可以下载 .srt 或者 .txt "
+"格式的字幕。如果您需要提供不同文件格式的字幕供学生下载，我们建议您首先考虑使用“上传讲义”域上传您的讲义；其次您可以将字幕文件上传至“文件 & "
+"上传”页面或者 Internet，并在这里添加下载字幕的 URL。学生们会在视频的下方看到一个下载字幕的链接。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Downloadable Transcript URL"
-msgstr ""
+msgstr "字幕下载 URL"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3248,51 +3267,53 @@ msgid ""
 "file. If you want to provide the transcript for download in a different "
 "format, upload a file by using the Upload Handout field."
 msgstr ""
+"允许学生下载字幕。下载链接会出现在视频的下方。默认情况下，下载的字幕是一个 .srt 或者 .txt "
+"文件。如果您需要提供不同文件格式的字幕下载，使用“上传讲义”域上传该文件。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Download Transcript Allowed"
-msgstr ""
+msgstr "允许下载字幕"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "The default transcript for the video, from the Default Timed Transcript "
 "field on the Basic tab. This transcript should be in English. You don't have"
 " to change this setting."
-msgstr ""
+msgstr "视频的默认字幕，来自于“基本”面板的“默认字幕”域。该字幕应当是英语字幕。您不必修改这个设置。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Default Timed Transcript"
-msgstr ""
+msgstr "默认字幕"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Specify whether the transcripts appear with the video by default."
-msgstr ""
+msgstr "指定是否默认就显示字幕。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Show Transcript"
-msgstr ""
+msgstr "显示字幕"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "Add transcripts in different languages. Click below to specify a language "
 "and upload an .srt transcript file for that language."
-msgstr ""
+msgstr "添加不同语言的字幕。单击下方以指定语言并上传该语言对应的 .srt 字幕文件。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Transcript Languages"
-msgstr ""
+msgstr "字幕语言"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Preferred language for transcript."
-msgstr ""
+msgstr "首选的字幕语言。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Preferred language for transcript"
-msgstr ""
+msgstr "首选的字幕语言"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Transcript file format to download by user."
-msgstr ""
+msgstr "用户下载的字幕文件格式。"
 
 #. Translators: This is a type of file used for captioning in the video
 #. player.
@@ -3306,25 +3327,25 @@ msgstr "文本 (.txt) 文件"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "The last speed that the user specified for the video."
-msgstr ""
+msgstr "该视频上一次用户指定的速度。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "The default speed for the video."
-msgstr ""
+msgstr "该视频的默认速度。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Specify whether YouTube is available for the user."
-msgstr ""
+msgstr "指定 YouTube 是否对用户可用。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
 "Upload a handout to accompany this video. Students can download the handout "
 "by clicking Download Handout under the video."
-msgstr ""
+msgstr "上传与该视频相关的讲义。学生可以单击视频下方的“下载讲义”按钮来下载该讲义。"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Upload Handout"
-msgstr ""
+msgstr "上传讲义"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Navigation"
@@ -3378,10 +3399,12 @@ msgstr "名称"
 msgid "Username"
 msgstr "用户名"
 
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Grade"
 msgstr "成绩"
 
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Percent"
 msgstr "百分比"
@@ -3390,35 +3413,36 @@ msgstr "百分比"
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Section"
-msgstr ""
+msgstr "章"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Subsection"
-msgstr ""
+msgstr "节"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Opened by this number of students"
-msgstr ""
+msgstr "打开过的学生"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "subsections"
-msgstr ""
+msgstr "节"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Count of Students"
-msgstr ""
+msgstr "学生数量"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Percent of Students"
-msgstr ""
+msgstr "学生百分比"
 
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
 msgid "Score"
 msgstr "得分"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "problems"
-msgstr ""
+msgstr "问题"
 
 #. Translators: this string includes wiki markup.  Leave the ** and the _
 #. alone.
@@ -3440,11 +3464,11 @@ msgstr "浏览课程维基添加课程标题"
 
 #: lms/djangoapps/courseware/views.py
 msgid "Invalid course id."
-msgstr ""
+msgstr "无效账号"
 
 #: lms/djangoapps/courseware/views.py
 msgid "Invalid location."
-msgstr ""
+msgstr "无效地址"
 
 #: lms/djangoapps/courseware/views.py
 msgid "User {username} does not exist."
@@ -3500,10 +3524,12 @@ msgstr "指定的远程分支无效。"
 msgid "Unable to switch to specified branch. Please check your branch name."
 msgstr "无法切换到指定的分支。请检查你的分支名。"
 
-#: cms/templates/login.html cms/templates/register.html
+#: lms/djangoapps/dashboard/support.py cms/templates/login.html
+#: cms/templates/register.html
 msgid "Email Address"
 msgstr "电子邮件地址"
 
+#: lms/djangoapps/dashboard/support.py
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Course ID"
 msgstr "课程编号"
@@ -3916,6 +3942,7 @@ msgstr "数据下载"
 msgid "Analytics"
 msgstr "分析"
 
+#: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Metrics"
 msgstr "度量"
@@ -3934,15 +3961,15 @@ msgstr "用该邮箱或用户名找不到对应的学生"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of students enrolled in {course_key}"
-msgstr ""
+msgstr "选修课程 {course_key}的学生清单"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Summary Grades of students enrolled in {course_key}"
-msgstr ""
+msgstr "选修课程{course_key}的学生成绩汇总"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Raw Grades of students enrolled in {course_key}"
-msgstr ""
+msgstr "选修课程{course_key}的学生原始成绩"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for rescoring \"{problem_url}\"."
@@ -3976,7 +4003,7 @@ msgstr "无法为\"{url}\": {message}重新设置创建后台任务。"
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Could not find problem location \"{url}\"."
-msgstr ""
+msgstr "找不到错误位置 \"{url}\""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Found module.  "
@@ -4152,7 +4179,7 @@ msgstr "用户\"{username}\"已添加为课程\"{course_id}\"论坛的\"{rolenam
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "{title} in course {course_key}"
-msgstr ""
+msgstr "{title} 课程中 {course_key}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "ID"
@@ -5868,15 +5895,15 @@ msgstr "上传完成"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Video"
-msgstr ""
+msgstr "视频"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Blank"
-msgstr ""
+msgstr "空白"
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -6190,7 +6217,7 @@ msgstr ")："
 
 #: common/templates/course_modes/choose.html
 msgid "Why do I have to pay? What if I want a free honor code certificate?"
-msgstr ""
+msgstr "为什么我要付费？如果我想要个荣誉准则证书呢？"
 
 #: common/templates/course_modes/choose.html
 msgid "Why do I have to pay?"
@@ -6416,7 +6443,7 @@ msgstr "请验证您的新邮箱"
 msgid ""
 "You'll receive a confirmation in your inbox. Please click the link in the "
 "email to confirm the email change."
-msgstr ""
+msgstr "你会收到一封确认邮件，请点击邮件里的链接确认修改邮箱地址。"
 
 #. Translators: this message is displayed when a user tries to link their
 #. account with a third-party authentication provider (for example, Google or
@@ -6894,7 +6921,7 @@ msgstr "请稍后再试。"
 
 #: lms/templates/imageannotation.html
 msgid "Note: only instructors may annotate."
-msgstr ""
+msgstr "提示：只有教师可以评注"
 
 #: lms/templates/index.html
 msgid "Free courses from <strong>{university_name}</strong>"
@@ -7553,11 +7580,11 @@ msgstr ""
 
 #: lms/templates/split_test_author_view.html
 msgid "Active Groups"
-msgstr ""
+msgstr "活跃小组"
 
 #: lms/templates/split_test_author_view.html
 msgid "Inactive Groups"
-msgstr ""
+msgstr "待激活小组"
 
 #. Translators: The 'Group' here refers to the group of users that has been
 #. sorted into group_id
@@ -7849,7 +7876,7 @@ msgstr "播放视频"
 
 #: lms/templates/video.html
 msgid "No playable video sources found."
-msgstr ""
+msgstr "未找到可播放的视频源。"
 
 #: lms/templates/video.html
 msgid "Video position"
@@ -7875,7 +7902,7 @@ msgstr "音量"
 msgid ""
 "Click on this button to mute or unmute this video or press UP or DOWN "
 "buttons to increase or decrease volume level."
-msgstr ""
+msgstr "静音或非静音请点击按钮, 或者使用键盘\"向上\"或\"向下\"键调节音量大小."
 
 #: lms/templates/video.html
 msgid "Fill browser"
@@ -8243,7 +8270,7 @@ msgstr "课程导航"
 
 #: lms/templates/courseware/courseware.html
 msgid "No content has been added to this course"
-msgstr ""
+msgstr "本课程未添加新内容"
 
 #: lms/templates/courseware/courseware.html
 msgid "Open Calculator"
@@ -8476,7 +8503,7 @@ msgstr "调整特定课程的分数"
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Specify a problem in the course here with its complete location:"
-msgstr ""
+msgstr "通过课程完整的位置来提出特定的问题:"
 
 #. Translators: A location (string of text) follows this sentence.
 #: lms/templates/courseware/instructor_dashboard.html
@@ -8486,7 +8513,7 @@ msgstr ""
 msgid ""
 "You must provide the complete location of the problem. In the Staff Debug "
 "viewer, the location looks like this:"
-msgstr ""
+msgstr "您必须提供问题的所在位置. 在 员工漏洞查询器中, 位置是这样:"
 
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -10372,7 +10399,7 @@ msgstr "添加社区助教"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Use Reload Graphs to refresh the graphs."
-msgstr ""
+msgstr "使用重新加载图片来刷新"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Reload Graphs"
@@ -10380,44 +10407,44 @@ msgstr "重新载入图片"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Subsection Data"
-msgstr ""
+msgstr "小节数据"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Each bar shows the number of students that opened the subsection."
-msgstr ""
+msgstr "每条栏目显示开通子栏目的学生数量"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid ""
 "You can click on any of the bars to list the students that opened the "
 "subsection."
-msgstr ""
+msgstr "你可以点击任一栏目去查看开通子栏目学生名单"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "You can also download this data as a CSV file."
-msgstr ""
+msgstr "您也可以以CSV文件下载这些数据"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Download Subsection Data for all Subsections as a CSV"
-msgstr ""
+msgstr "所有的小节数据以CSV文件下载"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Grade Distribution Data"
-msgstr ""
+msgstr "成绩分布数据"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Each bar shows the grade distribution for that problem."
-msgstr ""
+msgstr "每条栏目显示不同问题学生得分区间"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid ""
 "You can click on any of the bars to list the students that attempted the "
 "problem, along with the grades they received."
-msgstr ""
+msgstr "你可以点击任一栏目去查看回答问题学生名单并且查看对应成绩"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Download Problem Data for all Problems as a CSV"
-msgstr ""
+msgstr "以CSV文件下载所有问题数据"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Download Student Opened as a CSV"
@@ -10505,7 +10532,7 @@ msgstr "特定学生分数调整"
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Problem location"
-msgstr ""
+msgstr "问题所在位置"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Next, select an action to perform for the given user and problem:"
@@ -11289,6 +11316,7 @@ msgid ""
 " turned on, and allowed to function in your web browser (commonly adjustable"
 " in your browser settings).</strong>"
 msgstr ""
+"请确认你的浏览器已更新到{a_start}最新可用版本{a_end}。同时，请确认你的<strong>摄像头已经插好并打开，并且允许其在浏览器中使用(通常可以在你的浏览器设置中调整)。</strong>"
 
 #: lms/templates/verify_student/face_upload.html
 msgid "Edit Your Full Name"
@@ -11566,7 +11594,7 @@ msgstr "注册于{date}"
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 msgid "Re-verify for {course_number}"
-msgstr ""
+msgstr "重新认证{course_number}"
 
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 msgid "You currently need to re-verify for the following course:"
@@ -12276,7 +12304,7 @@ msgstr "您所做的课程检查表的修改将会自动保存，其它成员也
 
 #: cms/templates/checklists.html
 msgid "Studio checklists"
-msgstr ""
+msgstr "Studio 检查表"
 
 #: cms/templates/component.html cms/templates/container_xblock_component.html
 #: cms/templates/container_xblock_component.html
@@ -12298,7 +12326,7 @@ msgstr "删除此组件"
 #: cms/templates/overview.html cms/templates/overview.html
 #: cms/templates/studio_xblock_wrapper.html
 msgid "Drag to reorder"
-msgstr ""
+msgstr "拖动以重排序"
 
 #: cms/templates/container.html
 msgid "Container"
@@ -12339,7 +12367,7 @@ msgstr "您可以在这个页面上浏览、编辑包含其它组件的课程组
 #: cms/templates/container_xblock_component.html
 #: cms/templates/studio_xblock_wrapper.html
 msgid "This block contains multiple components."
-msgstr ""
+msgstr "此版块含有多个组成部分。"
 
 #: cms/templates/course_info.html cms/templates/course_info.html
 msgid "Course Updates"
@@ -12733,7 +12761,7 @@ msgstr "欢迎来到"
 #: cms/templates/howitworks.html
 msgid ""
 "Studio helps manage your online courses, so you can focus on teaching them"
-msgstr ""
+msgstr "Studio 帮您管理在线课程，让您可以专注于课程的教学。"
 
 #: cms/templates/howitworks.html
 msgid "Studio's Many Features"
@@ -12773,7 +12801,7 @@ msgstr "随时改变您的思路"
 msgid ""
 "Draft your outline and build content anywhere. Simple drag and drop tools "
 "let you reorganize quickly."
-msgstr ""
+msgstr "您可以在任意位置起草大纲并创建内容。简单的拖放工具将帮助您快速地重新组织课程内容。"
 
 #: cms/templates/howitworks.html
 msgid "Go A Week Or A Semester At A Time"
@@ -12795,7 +12823,7 @@ msgid ""
 "Studio lets you weave your content together in a way that reinforces "
 "learning. Insert videos, discussions, and a wide variety of exercises with "
 "just a few clicks."
-msgstr ""
+msgstr "Studio 以一种能巩固学习效果的方式帮您组织内容。只需简单地几次点击，就可以插入视频、讨论以及各种各样的练习题。"
 
 #: cms/templates/howitworks.html
 msgid "Create Learning Pathways"
@@ -12805,7 +12833,7 @@ msgstr "创建学习路径"
 msgid ""
 "Help your students understand one concept at a time with multimedia, HTML, "
 "and exercises."
-msgstr ""
+msgstr "帮助您的学生一次性理解某个概念通过多媒体，网页和练习。"
 
 #: cms/templates/howitworks.html
 msgid "Work Visually, Organize Quickly"
@@ -12825,7 +12853,7 @@ msgstr "丰富的平台库可以支持各种问题类型"
 msgid ""
 "It's more than just multiple choice. Studio supports more than a dozen types"
 " of problems to challenge your learners."
-msgstr ""
+msgstr "它不仅仅是选择题。Studio支持各种各样的题型来挑战你的学生们。"
 
 #: cms/templates/howitworks.html cms/templates/howitworks.html
 msgid ""
@@ -12853,7 +12881,7 @@ msgstr "即时修改"
 msgid ""
 "Caught a bug? No problem. When you want, your changes go live when you click"
 " Save."
-msgstr ""
+msgstr "发现了一个错误？没有问题。只要您需要，点击保存按钮就可以随时保存修改并呈现给学生。"
 
 #: cms/templates/howitworks.html
 msgid "Release-On Date Publishing"
@@ -13287,7 +13315,7 @@ msgstr "edX员工正在审核您的请求，并将尽快给您反馈。"
 
 #: cms/templates/index.html
 msgid "New to edX Studio?"
-msgstr ""
+msgstr "刚开始接触 edX Studio？"
 
 #: cms/templates/index.html
 msgid ""
@@ -13296,14 +13324,16 @@ msgid ""
 " page to access our continously updated documentation and other Studio "
 "resources."
 msgstr ""
+"点击页面右上角的“帮助”链接获取更多关于您正在查看的 Studio 页面的信息。您也可以通过页面底部的链接访问我们持续更新的文档以及其他 Studio "
+"资源"
 
 #: cms/templates/index.html
 msgid "Getting Started with edX Studio"
-msgstr ""
+msgstr "edX Studio 入门"
 
 #: cms/templates/index.html cms/templates/widgets/sock.html
 msgid "Request help with edX Studio"
-msgstr ""
+msgstr "请求关于 edX Studio 的帮助"
 
 #: cms/templates/index.html cms/templates/index.html cms/templates/index.html
 msgid "Can I create courses in Studio?"
@@ -13803,6 +13833,8 @@ msgid ""
 "summary page, follow the instructions provided by your <abbr title=\"Program"
 " Manager\">PM</abbr>."
 msgstr ""
+"这些日期会影响<strong>您的课程在何时可以让学生浏览</strong>，但是它们<strong>并不是在您的课程介绍页面显示的日期</strong>。要在课程介绍页面提供课程开始日期和注册日期，请遵循您的<abbr"
+" title=\"Program Manager\">项目经理</abbr>提供的指导 。"
 
 #: cms/templates/settings.html
 msgid "Introducing Your Course"
@@ -14084,7 +14116,7 @@ msgstr "如果您的教材没有独立的章节，您可以上传整个文本作
 
 #: cms/templates/textbooks.html
 msgid "Learn More"
-msgstr ""
+msgstr "了解更多"
 
 #: cms/templates/unit.html cms/templates/ux/reference/unit.html
 msgid "Individual Unit"
@@ -14265,7 +14297,7 @@ msgstr "帮助 &amp; 账户导航"
 
 #: cms/templates/widgets/header.html cms/templates/widgets/header.html
 msgid "Contextual Online Help"
-msgstr ""
+msgstr "在线上下文帮助"
 
 #: cms/templates/widgets/header.html
 msgid "Currently signed in as:"
@@ -14332,11 +14364,11 @@ msgstr "标签"
 
 #: cms/templates/widgets/sock.html
 msgid "Looking for help with Studio?"
-msgstr ""
+msgstr "查找关于 Studio 的帮助？"
 
 #: cms/templates/widgets/sock.html cms/templates/widgets/sock.html
 msgid "edX Studio Documentation"
-msgstr ""
+msgstr "edX Studio 文档"
 
 #: cms/templates/widgets/sock.html
 msgid ""
@@ -14345,14 +14377,16 @@ msgid ""
 "download the Building and Running an edX Course PDF file, to go to the edX "
 "Author Support site, or to enroll in edX101."
 msgstr ""
+"您可以点击页面右上角的“帮助”链接获取更多关于当前页面的信息。您也可以通过页面下方的链接下载名为《创建并运行的一门 edX 课程》的PDF文件、跳转到 "
+"edX 作者支持网站或者注册 edX101 课程。"
 
 #: cms/templates/widgets/sock.html
 msgid "Building and Running an edX Course PDF"
-msgstr ""
+msgstr "创建并运行的一门 edX 课程（PDF）"
 
 #: cms/templates/widgets/sock.html cms/templates/widgets/sock.html
 msgid "edX Studio Author Support"
-msgstr ""
+msgstr "edX Studio 作者支持"
 
 #: cms/templates/widgets/sock.html
 msgid "Enroll in edX101"
@@ -14360,11 +14394,11 @@ msgstr "注册edX101"
 
 #: cms/templates/widgets/sock.html
 msgid "How to use edX Studio to build your course"
-msgstr ""
+msgstr "如何使用 edX Studio 创建您的课程"
 
 #: cms/templates/widgets/sock.html
 msgid "Have problems, questions, or suggestions about edX Studio?"
-msgstr ""
+msgstr "对 edX Studio 有问题、疑问或者建议？"
 
 #: cms/templates/widgets/tabs-aggregator.html
 msgid "name"

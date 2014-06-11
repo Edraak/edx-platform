@@ -70,7 +70,7 @@ msgstr ""
 #: cms/templates/js/course_grade_policy.underscore
 #: cms/templates/js/show-textbook.underscore
 msgid "Delete"
-msgstr ""
+msgstr "Törlés"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Magyarázatok elrejtése"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Expand Instructions"
@@ -86,7 +86,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "Utasítások összecsukása"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Commentary"
@@ -315,11 +315,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD on"
-msgstr ""
+msgstr "HD be"
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD off"
-msgstr ""
+msgstr "HD ki"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
@@ -421,12 +421,12 @@ msgstr ""
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/templates/js/image-modal.underscore
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "Open"
-msgstr ""
+msgstr "Megnyitás"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "remove vote"
@@ -687,7 +687,7 @@ msgstr[1] ""
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
-msgstr ""
+msgstr "Felhasználó"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation"
@@ -716,11 +716,11 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "Jegyzeteim"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
-msgstr ""
+msgstr "Oktató"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -730,12 +730,12 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "Keresés"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Users"
-msgstr ""
+msgstr "Felhasználók"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -763,7 +763,7 @@ msgstr ""
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Text"
-msgstr ""
+msgstr "Szöveg"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Video"
@@ -771,17 +771,17 @@ msgstr ""
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Image"
-msgstr ""
+msgstr "Kép"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Reply"
-msgstr ""
+msgstr "Válasz"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: cms/templates/js/show-textbook.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "Szerkesztés"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
@@ -820,7 +820,7 @@ msgstr ""
 #: lms/static/admin/js/SelectFilter2.js
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
-msgstr ""
+msgstr "Eltávolítás"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Chosen %s"
@@ -834,7 +834,7 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr ""
+msgstr "Összes eltávolítása"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to remove all chosen %s at once."
@@ -871,6 +871,7 @@ msgstr ""
 msgid ""
 "January|February|March|April|May|June|July|August|September|October|November|December"
 msgstr ""
+"Január|Február|Március|Április|Május|Június|Július|Augusztus|Szeptember|Október|November|December"
 
 #. Translators: abbreviations for days of the week, keep the pipe (|)
 #. separators.
@@ -945,7 +946,7 @@ msgstr ""
 #: lms/static/coffee/src/customwmd.js
 #: cms/templates/js/asset-library.underscore
 msgid "Preview"
-msgstr ""
+msgstr "Előnézet"
 
 #: lms/static/coffee/src/customwmd.js
 msgid "Post body"
@@ -1002,11 +1003,11 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Username"
-msgstr ""
+msgstr "Felhasználói név"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -1015,11 +1016,11 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Enter username or email"
-msgstr ""
+msgstr "Add meg a felhasználói neved vagy e-mail címed"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Please enter a username or email."
-msgstr ""
+msgstr "Kérlek, add meg a felhasználói neved vagy e-mail címed."
 
 #. Translators: A rolename appears this sentence. A rolename is something like
 #. "staff" or "beta tester".;
@@ -1146,11 +1147,11 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your message must have a subject."
-msgstr ""
+msgstr "Az üzenetednek tartalmaznia kell tárgyat."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your message cannot be blank."
-msgstr ""
+msgstr "Az üzeneted nem maradhat üresen."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your email was successfully queued for sending."
@@ -1183,7 +1184,7 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Error sending email."
-msgstr ""
+msgstr "Hiba az üzenet küldése közben."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "There is no email history for this course."
@@ -1334,7 +1335,7 @@ msgstr ""
 #. appears after this
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Submitted"
-msgstr ""
+msgstr "Elküldve"
 
 #. Translators: The length of a task (eg, sending email) in seconds appears
 #. this
@@ -1366,11 +1367,11 @@ msgstr ""
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Problem Name"
-msgstr ""
+msgstr "Feladat neve"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Graded"
-msgstr ""
+msgstr "Értékelt"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Available to Grade"
@@ -1695,7 +1696,7 @@ msgstr ""
 
 #: cms/static/js/models/uploads.js
 msgid "or"
-msgstr ""
+msgstr "vagy"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course must have an assigned start date."
@@ -1762,7 +1763,7 @@ msgstr ""
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
-msgstr ""
+msgstr "Név"
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
@@ -1819,7 +1820,7 @@ msgstr ""
 
 #: cms/static/js/views/metadata.js
 msgid "Upload File"
-msgstr ""
+msgstr "Fájl feltöltése"
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
@@ -2221,7 +2222,7 @@ msgstr ""
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Previous"
-msgstr ""
+msgstr "Elózó"
 
 #: cms/templates/js/paging-footer.underscore
 msgid "Page number"
@@ -2230,7 +2231,7 @@ msgstr ""
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Next"
-msgstr ""
+msgstr "Következő"
 
 #: cms/templates/js/show-textbook.underscore
 msgid "View Live"

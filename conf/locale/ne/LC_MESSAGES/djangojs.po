@@ -570,7 +570,7 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
-msgstr ""
+msgstr "गुमनाम"
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js

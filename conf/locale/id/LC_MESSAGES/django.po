@@ -78,7 +78,7 @@ msgstr ""
 #. needs to grade
 #: cms/djangoapps/contentstore/utils.py common/lib/xmodule/xmodule/tabs.py
 msgid "Open Ended Panel"
-msgstr ""
+msgstr "Panel Open Ended"
 
 #. Translators: "Discussion" is the title of the course forum page
 #. Translators: 'Discussion' refers to the tab in the courseware that leads to
@@ -99,39 +99,39 @@ msgstr ""
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Advanced"
-msgstr ""
+msgstr "Tingkat Lanjut"
 
 #: common/djangoapps/course_modes/models.py
 msgid "Honor Code Certificate"
-msgstr ""
+msgstr "Sertifikat Kode Kehormatan"
 
 #: common/djangoapps/course_modes/views.py common/djangoapps/student/views.py
 msgid "Enrollment is closed"
-msgstr ""
+msgstr "Pendaftaran ditutup"
 
 #: common/djangoapps/course_modes/views.py
 msgid "Enrollment mode not supported"
-msgstr ""
+msgstr "Mode pendaftaran tidak didukung"
 
 #: common/djangoapps/course_modes/views.py
 msgid "Invalid amount selected."
-msgstr ""
+msgstr "Jumlah yang tidak valid dipilih."
 
 #: common/djangoapps/course_modes/views.py
 msgid "No selected price or selected price is too low."
-msgstr ""
+msgstr "Harga belum dipilih atau harga pilihan terlalu rendah."
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Community TA"
-msgstr ""
+msgstr "Asisten-Pengajar Komunitas"
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Student"
@@ -142,24 +142,26 @@ msgid ""
 "Your account has been disabled. If you believe this was done in error, "
 "please contact us at {link_start}{support_email}{link_end}"
 msgstr ""
+"Akun anda telah dinonaktifkan. jka anda merasa hal ini terjadi karena sebuah"
+" kesalahan, harap hubungi kami di{link_start}{support_email}{link_end}"
 
 #: common/djangoapps/student/middleware.py
 msgid "Disabled Account"
-msgstr ""
+msgstr "Nonaktifkan akun Anda."
 
 #: common/djangoapps/student/models.py
 msgid "Male"
-msgstr ""
+msgstr "Pria"
 
 #: common/djangoapps/student/models.py
 msgid "Female"
-msgstr ""
+msgstr "Wanita"
 
 #. Translators: 'Other' refers to the student's gender
 #. Translators: 'Other' refers to the student's level of education
 #: common/djangoapps/student/models.py common/djangoapps/student/models.py
 msgid "Other"
-msgstr ""
+msgstr "Lainnya"
 
 #: common/djangoapps/student/models.py
 msgid "Doctorate"
@@ -196,11 +198,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
-msgstr ""
+msgstr "Id kursus belum ditentukan"
 
 #: common/djangoapps/student/views.py
 msgid "Course id is invalid"
-msgstr ""
+msgstr "Id kursus invalid"
 
 #: common/djangoapps/student/views.py
 #: lms/templates/courseware/course_about.html
@@ -213,11 +215,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "Anda tidak terdaftar di kursus ini"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
-msgstr ""
+msgstr "Tindakan pendaftaran invalid"
 
 #. Translators: provider_name is the name of an external, third-party user
 #. authentication service (like
@@ -231,7 +233,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "There was an error receiving your login information. Please email us."
-msgstr ""
+msgstr "Ada kesalahan saat menerima informasi login Anda. Mohon email kami."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -248,37 +250,39 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Too many failed login attempts. Try again later."
-msgstr ""
+msgstr "Terlalu sering gagal login. Coba lagi nanti."
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "Email atau password tidak benar."
 
 #: common/djangoapps/student/views.py
 msgid ""
 "This account has not been activated. We have sent another activation "
 "message. Please check your e-mail for the activation instructions."
 msgstr ""
+"Akun ini belum diaktifkan. Kami telah mengirim pesan aktivasi lainnya. Mohon"
+" cek email Anda untuk petunjuk aktivasi."
 
 #: common/djangoapps/student/views.py
 msgid "Please enter a username"
-msgstr ""
+msgstr "Harap masukan nama pengguna"
 
 #: common/djangoapps/student/views.py
 msgid "Please choose an option"
-msgstr ""
+msgstr "Harap pilih opsi"
 
 #: common/djangoapps/student/views.py
 msgid "User with username {} does not exist"
-msgstr ""
+msgstr "Pengguna dengan nama {} tidak ada"
 
 #: common/djangoapps/student/views.py
 msgid "Successfully disabled {}'s account"
-msgstr ""
+msgstr "Berhasil menonaktifkan akun {}"
 
 #: common/djangoapps/student/views.py
 msgid "Successfully reenabled {}'s account"
-msgstr ""
+msgstr "Berhasil mengaktifkan akun {}"
 
 #: common/djangoapps/student/views.py
 msgid "Unexpected account status"
@@ -286,23 +290,23 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Public Username '{username}' already exists."
-msgstr ""
+msgstr "Akun dengan Nama Publik '{username}' sudah digunakan."
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
-msgstr ""
+msgstr "Akun dengan Email '{email}' sudah digunakan."
 
 #: common/djangoapps/student/views.py
 msgid "Error (401 {field}). E-mail us."
-msgstr ""
+msgstr "Kesalahan(401 {field}). Email kami."
 
 #: common/djangoapps/student/views.py
 msgid "To enroll, you must follow the honor code."
-msgstr ""
+msgstr "Untuk mendaftar, Anda harus mengikuti kode kehormatan."
 
 #: common/djangoapps/student/views.py
 msgid "You must accept the terms of service."
-msgstr ""
+msgstr "Anda harus menerima kondisi layanan."
 
 #: common/djangoapps/student/views.py
 msgid "Username must be minimum of two characters long"
@@ -358,19 +362,19 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Username cannot be more than {0} characters long"
-msgstr ""
+msgstr "Nama pengguna tidak diperkenankan menggunakan lebih dari {0} karakter"
 
 #: common/djangoapps/student/views.py
 msgid "Email cannot be more than {0} characters long"
-msgstr ""
+msgstr "Alamat Email tidak diperkenankan menggunakan lebih dari {0} karakter"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail is required."
-msgstr ""
+msgstr "Dibutuhkan email yang valid."
 
 #: common/djangoapps/student/views.py
 msgid "Username should only consist of A-Z and 0-9, with no spaces."
-msgstr ""
+msgstr "Nama user harus terdiri atas A-Z dan 0-9, tanpa spasi."
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Password: "
@@ -378,11 +382,13 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Could not send activation e-mail."
-msgstr ""
+msgstr "Tidak dapat mengirim email aktivasi."
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
 msgstr ""
+"Kesalahan tidak diketahui. Mohon email kami untuk memberitahu kenapa itu "
+"terjadi."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -408,27 +414,27 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "No inactive user with this e-mail exists"
-msgstr ""
+msgstr "Tidak ada pengguna non aktif dengan email ini"
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send reactivation email"
-msgstr ""
+msgstr "Tidak dapat mengirim email aktivasi"
 
 #: common/djangoapps/student/views.py
 msgid "Invalid password"
-msgstr ""
+msgstr "Password tidak valid"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
-msgstr ""
+msgstr "Dibutuhkan alamat email yang valid."
 
 #: common/djangoapps/student/views.py
 msgid "An account with this e-mail already exists."
-msgstr ""
+msgstr "Akun dengan email ini telah digunakan."
 
 #: common/djangoapps/student/views.py
 msgid "Old email is the same as the new email."
-msgstr ""
+msgstr "Email lama sama dengan email baru."
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send email activation link. Please try again later."
@@ -436,11 +442,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
-msgstr ""
+msgstr "Dibutuhkan nama"
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Invalid ID"
-msgstr ""
+msgstr "ID tidak valid"
 
 #. Translators: the translation for "LONG_DATE_FORMAT" must be a format
 #. string for formatting dates in a long form.  For example, the
@@ -448,7 +454,7 @@ msgstr ""
 #. See http://strftime.org for details.
 #: common/djangoapps/util/date_utils.py
 msgid "LONG_DATE_FORMAT"
-msgstr ""
+msgstr "LONG_DATE_FORMAT"
 
 #. Translators: the translation for "DATE_TIME_FORMAT" must be a format
 #. string for formatting dates with times.  For example, the American
@@ -456,7 +462,7 @@ msgstr ""
 #. See http://strftime.org for details.
 #: common/djangoapps/util/date_utils.py
 msgid "DATE_TIME_FORMAT"
-msgstr ""
+msgstr "DATE_TIME_FORMAT"
 
 #. Translators: the translation for "SHORT_DATE_FORMAT" must be a
 #. format string for formatting dates in a brief form.  For example,
@@ -464,14 +470,14 @@ msgstr ""
 #. See http://strftime.org for details.
 #: common/djangoapps/util/date_utils.py
 msgid "SHORT_DATE_FORMAT"
-msgstr ""
+msgstr "SHORT_DATE_FORMAT"
 
 #. Translators: the translation for "TIME_FORMAT" must be a format
 #. string for formatting times.  For example, the American English
 #. form is "%H:%M:%S". See http://strftime.org for details.
 #: common/djangoapps/util/date_utils.py
 msgid "TIME_FORMAT"
-msgstr ""
+msgstr "TIME_FORMAT"
 
 #. Translators: This is an AM/PM indicator for displaying times.  It is
 #. used for the %p directive in date-time formats. See http://strftime.org
@@ -479,7 +485,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "am/pm indicator"
 msgid "AM"
-msgstr ""
+msgstr "AM"
 
 #. Translators: This is an AM/PM indicator for displaying times.  It is
 #. used for the %p directive in date-time formats. See http://strftime.org
@@ -487,7 +493,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "am/pm indicator"
 msgid "PM"
-msgstr ""
+msgstr "PM"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Monday Februrary 10, 2014". It is used for the %A
@@ -495,7 +501,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Monday"
-msgstr ""
+msgstr "Senin"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Tuesday Februrary 11, 2014". It is used for the %A
@@ -503,7 +509,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Tuesday"
-msgstr ""
+msgstr "Selasa"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Wednesday Februrary 12, 2014". It is used for the %A
@@ -511,7 +517,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Wednesday"
-msgstr ""
+msgstr "Rabu"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Thursday Februrary 13, 2014". It is used for the %A
@@ -519,7 +525,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Thursday"
-msgstr ""
+msgstr "Kamis"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Friday Februrary 14, 2014". It is used for the %A
@@ -527,7 +533,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Friday"
-msgstr ""
+msgstr "Jumat"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Saturday Februrary 15, 2014". It is used for the %A
@@ -535,7 +541,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Saturday"
-msgstr ""
+msgstr "Sabtu"
 
 #. Translators: this is a weekday name that will be used when displaying
 #. dates, as in "Sunday Februrary 16, 2014". It is used for the %A
@@ -543,7 +549,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "weekday name"
 msgid "Sunday"
-msgstr ""
+msgstr "Minggu"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Mon Feb 10, 2014". It is used for the %a
@@ -551,7 +557,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Mon"
-msgstr ""
+msgstr "Sen"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Tue Feb 11, 2014". It is used for the %a
@@ -559,7 +565,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Tue"
-msgstr ""
+msgstr "Sel"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Wed Feb 12, 2014". It is used for the %a
@@ -567,7 +573,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Wed"
-msgstr ""
+msgstr "Rab"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Thu Feb 13, 2014". It is used for the %a
@@ -575,7 +581,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Thu"
-msgstr ""
+msgstr "Kam"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Fri Feb 14, 2014". It is used for the %a
@@ -583,7 +589,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Fri"
-msgstr ""
+msgstr "Jum"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Sat Feb 15, 2014". It is used for the %a
@@ -591,7 +597,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Sat"
-msgstr ""
+msgstr "Sab"
 
 #. Translators: this is an abbreviated weekday name that will be used when
 #. displaying dates, as in "Sun Feb 16, 2014". It is used for the %a
@@ -599,7 +605,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated weekday name"
 msgid "Sun"
-msgstr ""
+msgstr "Mig"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Jan 10, 2014". It is used for the %b
@@ -607,7 +613,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Jan"
-msgstr ""
+msgstr "Jan"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Feb 10, 2014". It is used for the %b
@@ -615,7 +621,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Feb"
-msgstr ""
+msgstr "Feb"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Mar 10, 2014". It is used for the %b
@@ -623,7 +629,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Mar"
-msgstr ""
+msgstr "Mar"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Apr 10, 2014". It is used for the %b
@@ -631,7 +637,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Apr"
-msgstr ""
+msgstr "Apr"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "May 10, 2014". It is used for the %b
@@ -639,7 +645,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "May"
-msgstr ""
+msgstr "Mei"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Jun 10, 2014". It is used for the %b
@@ -647,7 +653,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Jun"
-msgstr ""
+msgstr "Jun"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Jul 10, 2014". It is used for the %b
@@ -655,7 +661,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Jul"
-msgstr ""
+msgstr "Jul"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Aug 10, 2014". It is used for the %b
@@ -663,7 +669,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Aug"
-msgstr ""
+msgstr "Ags"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Sep 10, 2014". It is used for the %b
@@ -671,7 +677,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Sep"
-msgstr ""
+msgstr "Sep"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Oct 10, 2014". It is used for the %b
@@ -679,7 +685,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Oct"
-msgstr ""
+msgstr "Okt"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Nov 10, 2014". It is used for the %b
@@ -687,7 +693,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Nov"
-msgstr ""
+msgstr "Nov"
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Dec 10, 2014". It is used for the %b
@@ -695,7 +701,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Dec"
-msgstr ""
+msgstr "Des"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "January 10, 2014". It is used for the %B directive in
@@ -703,7 +709,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "January"
-msgstr ""
+msgstr "Januari"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "February 10, 2014". It is used for the %B directive in
@@ -711,7 +717,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "February"
-msgstr ""
+msgstr "Februari"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "March 10, 2014". It is used for the %B directive in
@@ -719,7 +725,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "March"
-msgstr ""
+msgstr "Maret"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "April 10, 2014". It is used for the %B directive in
@@ -727,7 +733,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "May 10, 2014". It is used for the %B directive in
@@ -735,7 +741,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "May"
-msgstr ""
+msgstr "Mei"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "June 10, 2014". It is used for the %B directive in
@@ -743,7 +749,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "July 10, 2014". It is used for the %B directive in
@@ -751,7 +757,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "August 10, 2014". It is used for the %B directive in
@@ -759,7 +765,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "August"
-msgstr ""
+msgstr "Agustus"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "September 10, 2014". It is used for the %B directive in
@@ -767,7 +773,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "September"
-msgstr ""
+msgstr "September"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "October 10, 2014". It is used for the %B directive in
@@ -775,7 +781,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "November 10, 2014". It is used for the %B directive in
@@ -783,7 +789,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "November"
-msgstr ""
+msgstr "November"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "December 10, 2014". It is used for the %B directive in
@@ -791,7 +797,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "December"
-msgstr ""
+msgstr "Desember"
 
 #: common/djangoapps/util/password_policy_validators.py
 msgid "Invalid Length ({0})"
@@ -843,19 +849,19 @@ msgstr ""
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "correct"
-msgstr ""
+msgstr "Benar"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "incorrect"
-msgstr ""
+msgstr "Salah"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "incomplete"
-msgstr ""
+msgstr "Belum selesai"
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "unanswered"
-msgstr ""
+msgstr "Belum dibalas"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "processing"
@@ -1008,7 +1014,7 @@ msgstr ""
 #: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 msgid "or"
-msgstr ""
+msgstr "atau"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error getting student answer from {student_answers}"
@@ -1133,7 +1139,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 msgid "Annotation"
-msgstr ""
+msgstr "Catatan"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -1182,7 +1188,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 #: lms/templates/problem.html
 msgid "Show Answer"
-msgstr ""
+msgstr "Tampilkan jawaban"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
@@ -1193,7 +1199,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Always"
-msgstr ""
+msgstr "Selalu"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Answered"
@@ -1218,7 +1224,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Never"
-msgstr ""
+msgstr "Tidak pernah"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Whether to force the save button to appear on the page"
@@ -1242,7 +1248,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Per Student"
-msgstr ""
+msgstr "Per Siswa"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -1317,11 +1323,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Check"
-msgstr ""
+msgstr "Cek"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Final Check"
-msgstr ""
+msgstr "Cek Final"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Checking..."
@@ -1449,7 +1455,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Graded"
-msgstr ""
+msgstr "Bergelar"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -2117,7 +2123,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "General"
-msgstr ""
+msgstr "Umum"
 
 #. Translators: TBD stands for 'To Be Determined' and is used when a course
 #. does not yet have an announced start date.
@@ -2147,7 +2153,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
-msgstr ""
+msgstr "Teks"
 
 #: common/lib/xmodule/xmodule/html_module.py
 #: common/lib/xmodule/xmodule/html_module.py
@@ -2169,11 +2175,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
-msgstr ""
+msgstr "Visual"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Raw"
@@ -2438,7 +2444,7 @@ msgstr ""
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
-msgstr ""
+msgstr "Kesalahan"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Not Selected"
@@ -2517,14 +2523,14 @@ msgstr ""
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Course Info"
-msgstr ""
+msgstr "Info Kursus"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: "Progress" is the name of the student's course progress page
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Progress"
-msgstr ""
+msgstr "Kemajuan"
 
 #. Translators: "Wiki" is the name of the course's wiki page
 #: common/lib/xmodule/xmodule/tabs.py lms/djangoapps/course_wiki/views.py
@@ -2535,7 +2541,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/tabs.py cms/templates/textbooks.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
 msgid "Textbooks"
-msgstr ""
+msgstr "Buku teks"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: "Staff grading" appears on a tab that allows
@@ -2556,7 +2562,7 @@ msgstr ""
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
-msgstr ""
+msgstr "Silabus"
 
 #. Translators: 'Instructor' appears on the tab that leads to the instructor
 #. dashboard, which is
@@ -2564,7 +2570,7 @@ msgstr ""
 #. their course
 #: common/lib/xmodule/xmodule/tabs.py
 msgid "Instructor"
-msgstr ""
+msgstr "Instruktur"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Text Annotation"
@@ -2925,12 +2931,13 @@ msgstr ""
 msgid ""
 "Your response has been submitted. Please check back later for your grade."
 msgstr ""
+"Respon Anda telah diajukan. Harap cek kembali nanti untuk peringkat Anda."
 
 #. Translators: "Not started" communicates to a student that their response
 #. has not yet been graded
 #: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py
 msgid "Not started"
-msgstr ""
+msgstr "Belum dimulai"
 
 #. Translators: "In progress" communicates to a student that their response
 #. is currently in the grading process
@@ -3202,27 +3209,27 @@ msgstr ""
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Navigation"
-msgstr ""
+msgstr "Navigasi"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "About these documents"
-msgstr ""
+msgstr "Tentang dokumen ini"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Index"
-msgstr ""
+msgstr "Indeks"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/wiki/plugins/attachments/index.html
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Search"
-msgstr ""
+msgstr "Cari"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/static_templates/copyright.html
 #: lms/templates/static_templates/copyright.html
 msgid "Copyright"
-msgstr ""
+msgstr "Hak Cipta"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3232,7 +3239,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/open_ended_problems/open_ended_flagged_problems.html
 msgid "Name"
-msgstr ""
+msgstr "Nama"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3245,7 +3252,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Username"
-msgstr ""
+msgstr "Username"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
@@ -3286,7 +3293,7 @@ msgstr ""
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
 msgid "Score"
-msgstr ""
+msgstr "Skor"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "problems"
@@ -3328,7 +3335,7 @@ msgstr ""
 
 #: lms/djangoapps/courseware/features/video.py
 msgid "ERROR: No playable video sources found!"
-msgstr ""
+msgstr "KESALAHAN: Tidak ditemukan sumber video yang bisa dimainkan!"
 
 #: lms/djangoapps/dashboard/git_import.py
 msgid ""
@@ -3375,7 +3382,7 @@ msgstr ""
 #: lms/djangoapps/dashboard/support.py cms/templates/login.html
 #: cms/templates/register.html
 msgid "Email Address"
-msgstr ""
+msgstr "Alamat Email"
 
 #: lms/djangoapps/dashboard/support.py
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -3433,15 +3440,15 @@ msgstr ""
 #. Translators: this means everything happened successfully, yay!
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "All ok!"
-msgstr ""
+msgstr "Semua Ok!"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 msgid "Must provide username"
-msgstr ""
+msgstr "Wajib menyertakan nama pengguna "
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Must provide full name"
-msgstr ""
+msgstr "Wajib menyertakan nama lengkap"
 
 #. Translators: Domain is an email domain, such as "@gmail.com"
 #: lms/djangoapps/dashboard/sysadmin.py
@@ -3458,7 +3465,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "email address required (not username)"
-msgstr ""
+msgstr "Alamat surel dibutuhkan (bukan username)"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Oops, failed to create user {user}, {error}"
@@ -3482,19 +3489,19 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Statistic"
-msgstr ""
+msgstr "Statistik"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Value"
-msgstr ""
+msgstr "Nilai"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Site statistics"
-msgstr ""
+msgstr "Statistik situs"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Total number of users"
-msgstr ""
+msgstr "Jumlah keseluruhan pengguna"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Courses loaded in the modulestore"
@@ -3503,15 +3510,15 @@ msgstr ""
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 #: lms/templates/tracking_log.html
 msgid "username"
-msgstr ""
+msgstr "nama pengguna"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 msgid "email"
-msgstr ""
+msgstr "Email"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Repair Results"
-msgstr ""
+msgstr "Hasil Perbaikan"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Create User Results"
@@ -3571,7 +3578,7 @@ msgstr ""
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 #: cms/templates/index.html
 msgid "Course Name"
-msgstr ""
+msgstr "Nama Kursus"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Directory/ID"
@@ -3585,7 +3592,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Last Change"
-msgstr ""
+msgstr "Perubahan terakhir"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Last Editor"
@@ -3601,7 +3608,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Deleted"
-msgstr ""
+msgstr "Terhapus"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 msgid "course_id"
@@ -3613,23 +3620,23 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "# staff"
-msgstr ""
+msgstr "# staff"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "instructors"
-msgstr ""
+msgstr "Instruktur"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Enrollment information for all courses"
-msgstr ""
+msgstr "Informasi keikutsertaan dalam seluruh program"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "role"
-msgstr ""
+msgstr "peran"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "full_name"
-msgstr ""
+msgstr "nama_lengkap"
 
 #: lms/djangoapps/dashboard/management/commands/git_add_course.py
 msgid ""
@@ -3664,16 +3671,18 @@ msgstr ""
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "allowed file types are '%(file_types)s'"
-msgstr ""
+msgstr "jenis berkas yang diperbolehkan '%(file_types)s'"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "maximum upload file size is %(file_size)sK"
-msgstr ""
+msgstr "Maksimum ukuran unggah berkas %(file_size)sK"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid ""
 "Error uploading file. Please contact the site administrator. Thank you."
 msgstr ""
+"Terjadi kesalahan unggah berkas. Mohon kontak administrator situs. Terima "
+"kasih."
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "Good"
@@ -3681,11 +3690,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User does not exist."
-msgstr ""
+msgstr "Pengguna tidak ada."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Task is already running."
-msgstr ""
+msgstr "Tugas sudah berjalan."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User ID"
@@ -3696,24 +3705,24 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
-msgstr ""
+msgstr "Bahasa"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Location"
-msgstr ""
+msgstr "Lokasi"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Birth Year"
-msgstr ""
+msgstr "Tahun Lahir"
 
 #: lms/djangoapps/instructor/views/api.py lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "Gender"
-msgstr ""
+msgstr "Kelamin"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
@@ -3722,11 +3731,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py lms/templates/register.html
 msgid "Mailing Address"
-msgstr ""
+msgstr "Alamat Pos"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Goals"
-msgstr ""
+msgstr "Tujuan"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Module does not exist."
@@ -3740,11 +3749,11 @@ msgstr ""
 #: lms/djangoapps/instructor/views/api.py
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 msgid "Complete"
-msgstr ""
+msgstr "Selesai"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Incomplete"
-msgstr ""
+msgstr "Belum selesai"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -3769,11 +3778,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Membership"
-msgstr ""
+msgstr "Keanggotaan"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Student Admin"
-msgstr ""
+msgstr "Admin Siswa"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Extensions"
@@ -3782,12 +3791,12 @@ msgstr ""
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Data Download"
-msgstr ""
+msgstr "Unduh Data"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Analytics"
-msgstr ""
+msgstr "Analitis"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
@@ -3891,20 +3900,20 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Assignment Name"
-msgstr ""
+msgstr "Judul Tugas"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Please enter an assignment name"
-msgstr ""
+msgstr "Harap masukan judul tugas"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Invalid assignment name '{name}'"
-msgstr ""
+msgstr "Judul tugas salah '{name}'"
 
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "External email"
-msgstr ""
+msgstr "Email eksternal"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Grades for assignment \"{name}\""
@@ -3912,11 +3921,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Staff"
-msgstr ""
+msgstr "Daftar Staff"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Instructors"
-msgstr ""
+msgstr "Daftar Instruktur"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Student profile data for course {course_id}"
@@ -3936,7 +3945,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Beta Testers"
-msgstr ""
+msgstr "Daftar Beta Testers"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid ""
@@ -3944,10 +3953,13 @@ msgid ""
 "classes, it may take up to an hour (or more, if other courses are "
 "simultaneously sending email) to send all emails."
 msgstr ""
+"Surel Anda berhasil masuk antrian untuk dikirimkan. Harap dicatat untuk "
+"kelas yang lebih besar, mungkin butuh satu jam (atau lebih jika kursus lain "
+"juga kirim email secara simultan) untuk mengirim semua email."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Your email was successfully queued for sending."
-msgstr ""
+msgstr "Surel Anda berhasil masuk antrian untuk dikirimkan."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Grades from {course_id}"
@@ -3971,7 +3983,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Error: {err}"
-msgstr ""
+msgstr "Error: {err}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Remote gradebook response for {action}"
@@ -3980,11 +3992,11 @@ msgstr ""
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Full name"
-msgstr ""
+msgstr "Nama Lengkap"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Roles"
-msgstr ""
+msgstr "Peran"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Forum {name}s in course {id}"
@@ -4039,11 +4051,11 @@ msgstr ""
 #: lms/templates/verify_student/_modal_editname.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Full Name"
-msgstr ""
+msgstr "Nama Lengkap"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "edX email"
-msgstr ""
+msgstr "email edX"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Enrollment of students"
@@ -4108,13 +4120,13 @@ msgstr ""
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/templates/wiki/plugins/attachments/index.html wiki/models/article.py
 msgid "deleted"
-msgstr ""
+msgstr "telah dihapus"
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
 #: lms/djangoapps/instructor_task/tasks.py
 msgid "emailed"
-msgstr ""
+msgstr "terkirim melalui surel"
 
 #: lms/djangoapps/instructor_task/tasks.py
 msgid "graded"
@@ -4123,7 +4135,7 @@ msgstr ""
 #: lms/djangoapps/instructor_task/views.py
 #: lms/djangoapps/instructor_task/views.py
 msgid "No status information available"
-msgstr ""
+msgstr "Tidak ada status informasi yang tersedia"
 
 #: lms/djangoapps/instructor_task/views.py
 msgid "No task_output information found for instructor_task {0}"
@@ -4227,19 +4239,19 @@ msgstr ""
 #. {succeeded} and {attempted} are counts.
 #: lms/djangoapps/instructor_task/views.py
 msgid "Status: {action} {succeeded} of {attempted}"
-msgstr ""
+msgstr "Status: {action} {succeeded} of {attempted}"
 
 #. Translators: {skipped} is a count.  This message is appended to task
 #. progress status messages.
 #: lms/djangoapps/instructor_task/views.py
 msgid " (skipping {skipped})"
-msgstr ""
+msgstr " (skipping {skipped})"
 
 #. Translators: {total} is a count.  This message is appended to task progress
 #. status messages.
 #: lms/djangoapps/instructor_task/views.py
 msgid " (out of {total})"
-msgstr ""
+msgstr " (out of {total})"
 
 #: lms/djangoapps/linkedin/templates/linkedin_email.html
 msgid ""
@@ -4277,72 +4289,81 @@ msgstr ""
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "AI Assessment"
-msgstr ""
+msgstr "Penilaian AI"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Peer Assessment"
-msgstr ""
+msgstr "Penilaian Sejawat"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Not yet available"
-msgstr ""
+msgstr "Belum tersedia"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Automatic Checker"
-msgstr ""
+msgstr "Pengecek Otomatis"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Instructor Assessment"
-msgstr ""
+msgstr "Penilaian Instruktur"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid ""
 "Error occurred while contacting the grading service.  Please notify course "
 "staff."
 msgstr ""
+"Muncul kesalahan saat mengontak layanan pemeringkatan. Harap beritahu staf "
+"kursus."
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid ""
 "Error occurred while contacting the grading service.  Please notify your edX"
 " point of contact."
 msgstr ""
+"Muncul kesalahan saat mengontak layanan pemeringkatan. Harap beritahu kontak"
+" edX Anda."
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "for course {0} and student {1}."
-msgstr ""
+msgstr "untuk kursus {0} dan siswa {1}."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
 "View all problems that require peer assessment in this particular course."
 msgstr ""
+"Lihat semua masalah yang membutuhkan penilaian sejawat pada kuliah ini."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
 "View ungraded submissions submitted by students for the open ended problems "
 "in the course."
 msgstr ""
+"Lihat kiriman yang belum diperingkat yang dikirim siswa untuk masalah open "
+"ended pada kursus ini."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
 "View open ended problems that you have previously submitted for grading."
 msgstr ""
+"Lihat masalah open ended yang Anda sebelumnya telah kirim untuk "
+"pemeringkatan."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "View submissions that have been flagged by students as inappropriate."
-msgstr ""
+msgstr "Lihat kiriman yang telah ditandai oleh siswa sebagai tidak pantas."
 
 #: lms/djangoapps/open_ended_grading/views.py
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "New submissions to grade"
-msgstr ""
+msgstr "Kiriman baru untuk diperingkat"
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "New grades have been returned"
-msgstr ""
+msgstr "Peringkat baru telah dikembalikan"
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "Submissions have been flagged for review"
-msgstr ""
+msgstr "Kiriman telah ditandai untuk ulasan"
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
@@ -4352,14 +4373,18 @@ msgid ""
 "        Please check back later for this.\n"
 "        "
 msgstr ""
+"\n"
+"Kesalahan pada inisialisasi pemeringkatan sejawat.\n"
+"Belum ada modul pemeringkatan sejawat dibuat pada materi kuliah yang memungkinkan Anda memeringkat siswa lainnya.\n"
+"Harap cek kembali nanti."
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Order Payment Confirmation"
-msgstr ""
+msgstr "Konfirmasi Order Pembayaran"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Trying to add a different currency into the cart"
-msgstr ""
+msgstr "Mencoba untuk menambahkan mata uang berbeda ke dalam keranjang"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Registration for Course: {course_name}"
@@ -4370,6 +4395,8 @@ msgid ""
 "Please visit your <a href=\"{dashboard_link}\">dashboard</a> to see your new"
 " enrollments."
 msgstr ""
+"Harap kunjungi <a href=\"{dashboard_link}\">dashboard</a> untuk melihat "
+"pendaftaran baru Anda."
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "[Refund] User-Requested Refund"
@@ -4377,11 +4404,11 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Mode {mode} does not exist for {course_id}"
-msgstr ""
+msgstr "Mode {mode} tidak ada pada {course_id}"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Certificate of Achievement, {mode_name} for course {course}"
-msgstr ""
+msgstr "Sertifikat Prestasi, {mode_name} untuk kursus {course}"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid ""
@@ -4390,6 +4417,11 @@ msgid ""
 "contact {billing_email}. Please include your order number in your e-mail. "
 "Please do NOT include your credit card information."
 msgstr ""
+"Catatan - Anda punya waktu hingga 2 minggu sejak mengikuti kursus untuk "
+"membatalkan pendaftaran opsi Sertifikat yang Diverifikasi dan menerima "
+"refund utuh. Untuk menerima refund, kontak {billing_email}. Harap sertakan "
+"nomor order dalam e-mail Anda. Harap JANGAN menyertakan informasi nomor "
+"kartu kredit. "
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Order Number"
@@ -4432,7 +4464,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/reports.py lms/templates/shoppingcart/list.html
 msgid "Quantity"
-msgstr ""
+msgstr "Kuantitas"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Unit Cost"
@@ -4440,12 +4472,12 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Total Cost"
-msgstr ""
+msgstr "Jumlah Biaya"
 
 #: lms/djangoapps/shoppingcart/reports.py lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
 msgid "Currency"
-msgstr ""
+msgstr "Mata uang"
 
 #: lms/djangoapps/shoppingcart/reports.py lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
@@ -4453,23 +4485,23 @@ msgstr ""
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: wiki/plugins/attachments/forms.py
 msgid "Description"
-msgstr ""
+msgstr "Deskripsi"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Comments"
-msgstr ""
+msgstr "Komentar"
 
 #: lms/djangoapps/shoppingcart/reports.py
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "University"
-msgstr ""
+msgstr "Universitas"
 
 #: lms/djangoapps/shoppingcart/reports.py
 #: lms/djangoapps/shoppingcart/reports.py cms/templates/widgets/header.html
 #: cms/templates/widgets/header.html
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Course"
-msgstr ""
+msgstr "Kursus"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Course Announce Date"
@@ -4477,7 +4509,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/reports.py cms/templates/settings.html
 msgid "Course Start Date"
-msgstr ""
+msgstr "Tanggal Mulai Kursus"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Course Registration Close Date"
@@ -4541,48 +4573,55 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "You must be logged-in to add to a shopping cart"
-msgstr ""
+msgstr "Anda mesti sudah login untuk menambahkan ke keranjang belanja"
 
 #: lms/djangoapps/shoppingcart/views.py
 #: lms/djangoapps/shoppingcart/tests/test_views.py
 msgid "The course you requested does not exist."
-msgstr ""
+msgstr "Kuliah yang diminta tidak ada."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "The course {0} is already in your cart."
-msgstr ""
+msgstr "Kursus {0} sudah ada dalam keranjang."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "You are already registered in course {0}."
-msgstr ""
+msgstr "Anda sudah terdaftar di kuliah {0}."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "Course added to cart."
-msgstr ""
+msgstr "Kuliah ditambahkan ke keranjang."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "You do not have permission to view this page."
-msgstr ""
+msgstr "Anda tidak memiliki izin untuk melihat halaman ini."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The payment processor did not return a required parameter: {0}"
 msgstr ""
+"Pemroses pembayaran tidak mengembalikan parameter yang dibutuhkan: {0}"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The payment processor returned a badly-typed value {0} for param {1}."
 msgstr ""
+"Pemroses pembayaran mengembalikan nilai {0} untuk param {1} yang diketik-"
+"jelek."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "The payment processor accepted an order whose number is not in our system."
 msgstr ""
+"Pemroses pembayaran telah menerima order yang nomornya tidak ada di sistem k"
+" ami."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "The amount charged by the processor {0} {1} is different than the total cost"
 " of the order {2} {3}."
 msgstr ""
+"Jumlah yang dikenakan oleh pemroses {0} {1} berbeda dari total biaya dari "
+"order {2} {3}."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4635,15 +4674,16 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "Successful transaction."
-msgstr ""
+msgstr "Transaksi sukses."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The request is missing one or more required fields."
-msgstr ""
+msgstr "Permintaan kurang satu atau lebih isian wajib."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "One or more fields in the request contains invalid data."
 msgstr ""
+"Satu atau lebih isian dalam permintaan mengandung data yang tidak valid."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4659,6 +4699,8 @@ msgid ""
 "Error: General system failure. Possible fix: retry the payment after a few "
 "minutes."
 msgstr ""
+"Kesalahan: Kegagalan umum sistem. Coba ulangi pembayaran setelah beberapa "
+"menit."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4682,6 +4724,8 @@ msgid ""
 "The issuing bank has questions about the request. Possible fix: retry with "
 "another form of payment"
 msgstr ""
+"Bank penerbit mempertanyakan permintaannya. Coba ulangi dengan bentuk "
+"pembayaran lainnya"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4705,16 +4749,18 @@ msgid ""
 "Insufficient funds in the account. Possible fix: retry with another form of "
 "payment"
 msgstr ""
+"Dana yang tersedia di akun tidak cukup. Coba ulangi dengan bentuk pembayaran"
+" lainnya "
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "Unknown reason"
-msgstr ""
+msgstr "Alasan tidak diketahui"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "Issuing bank unavailable. Possible fix: retry again after a few minutes"
-msgstr ""
+msgstr "Bank penerbit tidak tersedia. Coba lagi setelah beberapa menit"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4729,17 +4775,20 @@ msgid ""
 "The card has reached the credit limit. Possible fix: retry with another form"
 " of payment"
 msgstr ""
+"Kartunya telah mencapai limit. Coba ulangi dengan bentuk pembayaran lainnya"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "Invalid card verification number. Possible fix: retry with another form of "
 "payment"
 msgstr ""
+"Nomor verifikasi kartu tidak valid. Coba ulangi dengan bentuk pembayaran "
+"lainnya"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "Invalid account number. Possible fix: retry with another form of payment"
-msgstr ""
+msgstr "Nomor akun tidak valid. Coba ulangi dengan bentuk pembayaran lainnya"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4754,6 +4803,7 @@ msgid ""
 "General decline by the processor.  Possible fix: retry with another form of "
 "payment"
 msgstr ""
+"Penolakan umum oleh pemroses. Coba ulangi dengan bentuk pembayaran lainnya "
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4764,20 +4814,22 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The requested amount exceeds the originally authorized amount."
-msgstr ""
+msgstr "Jumlah yang diminta melampaui jumlah yang semula diotorisasi."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "Processor Failure.  Possible fix: retry the payment"
-msgstr ""
+msgstr "Kegagalan Pemroses. Coba ulangi pembayaran"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The authorization has already been captured"
-msgstr ""
+msgstr "Otorisasi telah ditangkap"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "The requested transaction amount must match the previous transaction amount."
 msgstr ""
+"Jumlah transaksi yang diminta harus sesuai dengan jumlah transaksi "
+"sebelumnya."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4789,7 +4841,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The request ID is invalid."
-msgstr ""
+msgstr "ID permintaan tidak valid."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4800,7 +4852,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The transaction has already been settled or reversed."
-msgstr ""
+msgstr "Transaksi ini telah diselesaikan atau dibalik."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4812,7 +4864,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "You requested a credit for a capture that was previously voided"
-msgstr ""
+msgstr "Anda meminta kredit untuk suatu capture yang telah dibatalkan"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4868,15 +4920,15 @@ msgstr ""
 
 #: lms/djangoapps/verify_student/views.py
 msgid "Selected price is not valid number."
-msgstr ""
+msgstr "Harga yang dipilih bukan angka valid."
 
 #: lms/djangoapps/verify_student/views.py
 msgid "This course doesn't support verified certificates"
-msgstr ""
+msgstr "Kursus ini tidak mendukung sertifikat yang diverifikasi"
 
 #: lms/djangoapps/verify_student/views.py
 msgid "No selected price or selected price is below minimum."
-msgstr ""
+msgstr "Harga tidak dipilih atau harga pilihan di bawah minimum."
 
 #: lms/lib/xblock/mixin.py
 msgid "Courseware Chrome"
@@ -4972,7 +5024,7 @@ msgstr ""
 #: lms/templates/registration/password_reset_complete.html
 #: lms/templates/registration/password_reset_complete.html
 msgid "Your Password Reset is Complete"
-msgstr ""
+msgstr "Penggantian Sandi Sudah Selesai"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid ""
@@ -4980,6 +5032,8 @@ msgid ""
 "      Your password has been set.  You may go ahead and %(link_start)slog in%(link_end)s now.\n"
 "      "
 msgstr ""
+"\n"
+"Sanda Anda sudah diset. Anda boleh lanjut dan %(link_start)slog in%(link_end)s sekarang."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -4987,6 +5041,8 @@ msgid ""
 "      Reset Your %(platform_name)s Password\n"
 "  "
 msgstr ""
+"\n"
+"Ganti Sandi %(platform_name)s Anda"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -4994,10 +5050,12 @@ msgid ""
 "          Reset Your %(platform_name)s Password\n"
 "          "
 msgstr ""
+"\n"
+"Ganti Sandi %(platform_name)s Anda"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Password Reset Form"
-msgstr ""
+msgstr "Form Ganti Sandi"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5005,6 +5063,8 @@ msgid ""
 "                We're sorry, %(platform_name)s enrollment is not available in your region\n"
 "            "
 msgstr ""
+"\n"
+"Kami mohon maaf, pendaftaran %(platform_name)s tidak tersedia untuk wilayah Anda"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The following errors occurred while processing your registration: "
@@ -5012,17 +5072,19 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "You must complete all fields."
-msgstr ""
+msgstr "Anda harus melengkapi semua isian."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The two password fields didn't match."
-msgstr ""
+msgstr "Kedua isian sandi tidak cocok."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
 "We're sorry, our systems seem to be having trouble processing your password "
 "reset"
 msgstr ""
+"Kami mohon maaf, sistem kami sepertinya sedang mengalami kendala dalam "
+"memproses penggantian sandi Anda"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5030,6 +5092,8 @@ msgid ""
 "                Someone has been made aware of this issue. Please try again shortly. Please %(start_link)scontact us%(end_link)s about any concerns you have.\n"
 "            "
 msgstr ""
+"\n"
+"Seseorang telah diberitahu masalah ini. Harap coba sebentar lagi. Harap %(start_link)shubungi%(end_link)s tentang segala keprihatinan anda."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5037,28 +5101,32 @@ msgid ""
 "correctly. <br /> Required fields are noted by <strong "
 "class=\"indicator\">bold text and an asterisk (*)</strong>."
 msgstr ""
+"Harap masukkan sandi baru anda dua kali sehingga kami bisa memverifikasi "
+"Anda sudah mengetikkannya dengan benar. <br />Isian yang wajib diisi "
+"ditandai dengan <strong class=\"indicator\">teks tebal dan tanda bintang "
+"(*)</strong>."
 
 #: lms/templates/registration/password_reset_confirm.html
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid "Required Information"
-msgstr ""
+msgstr "Informasi yang Dibutuhkan"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password"
-msgstr ""
+msgstr "Sandi Baru Anda"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password Again"
-msgstr ""
+msgstr "Sandi Baru Anda Sekali lagi"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Change My Password"
-msgstr ""
+msgstr "Ubah Sandi Saya"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your Password Reset Was Unsuccessful"
-msgstr ""
+msgstr "Penggantian Sandi Anda tidak Berhasil"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5066,16 +5134,18 @@ msgid ""
 "            The password reset link was invalid, possibly because the link has already been used.  Please return to the %(start_link)slogin page%(end_link)s and start the password reset process again.\n"
 "        "
 msgstr ""
+"\n"
+"Tautan penggantian sandi tidak valid, kemungkinan karena tautan tersebut telah digunakan. Harap kembali ke %(start_link)shalaman login%(end_link)s dan mulai proses penggantian sandi sekali lagi."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Password Reset Help"
-msgstr ""
+msgstr "Bantuan Penggantian Sandi"
 
 #: lms/templates/registration/password_reset_confirm.html
 #: cms/templates/login.html lms/templates/login-sidebar.html
 #: lms/templates/register-sidebar.html
 msgid "Need Help?"
-msgstr ""
+msgstr "Butuh Bantuan?"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5083,16 +5153,19 @@ msgid ""
 "              View our %(start_link)shelp section for contact information and answers to commonly asked questions%(end_link)s\n"
 "          "
 msgstr ""
+"\n"
+"Lihat %(start_link)sbagian bantuan untuk informasi kontak dan jawaban atas pertanyaan yang sering diajukan%(end_link)s"
 
 #: lms/templates/registration/password_reset_email.html
 msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at edx.org."
 msgstr ""
+"Anda menerima email ini karena Anda minta penggantian sandi untuk akun Anda"
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Please go to the following page and choose a new password:"
-msgstr ""
+msgstr "Mohon buka halaman berikut dan pilih password baru:"
 
 #: lms/templates/registration/password_reset_email.html
 msgid ""
@@ -5102,41 +5175,41 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Thanks for using our site!"
-msgstr ""
+msgstr "Terima kasih telah menggunakan situs kami!"
 
 #: lms/templates/registration/password_reset_email.html
 msgid "The edX Team"
-msgstr ""
+msgstr "Tim edX"
 
 #: lms/templates/wiki/article.html
 msgid "Last modified:"
-msgstr ""
+msgstr "Modifikasi terakhir:"
 
 #: lms/templates/wiki/article.html
 msgid "See all children"
-msgstr ""
+msgstr "Lihat semua cabang"
 
 #: lms/templates/wiki/article.html
 msgid "This article was last modified:"
-msgstr ""
+msgstr "Artikel ini dimodifikasi terakhir kali:"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/create.html.py
 msgid "Add new article"
-msgstr ""
+msgstr "Tambah artikel baru"
 
 #: lms/templates/wiki/create.html
 msgid "Create article"
-msgstr ""
+msgstr "Buat artikel"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/delete.html
 #: lms/templates/wiki/delete.html.py
 msgid "Go back"
-msgstr ""
+msgstr "Kembali"
 
 #: lms/templates/wiki/delete.html lms/templates/wiki/delete.html.py
 #: lms/templates/wiki/edit.html
 msgid "Delete article"
-msgstr ""
+msgstr "Hapus artikel"
 
 #: lms/templates/wiki/delete.html
 #: lms/templates/wiki/plugins/attachments/index.html
@@ -5148,35 +5221,39 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "Hapus"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
-msgstr ""
+msgstr "Anda tidak dapat menghapus artikel utama."
 
 #: lms/templates/wiki/delete.html
 msgid ""
 "You cannot delete this article because you do not have permission to delete "
 "articles with children. Try to remove the children manually one-by-one."
 msgstr ""
+"Anda tidak dapat menghapus artikel ini karena Anda tidak punya ijin untuk "
+"menghapus artikel dengan cabang. Coba hapus cabang artikel satu satu."
 
 #: lms/templates/wiki/delete.html
 msgid ""
 "You are deleting an article. This means that its children will be deleted as"
 " well. If you choose to purge, children will also be purged!"
 msgstr ""
+"Anda menghapus sebuah artikel. Ini berarti cabang artikel juga akan dihapus."
+" Jika Anda pilih untuk membersihkan, cabang juga akan dibersihkan!"
 
 #: lms/templates/wiki/delete.html
 msgid "Articles that will be deleted"
-msgstr ""
+msgstr "Artikel yang akan dihapus"
 
 #: lms/templates/wiki/delete.html
 msgid "...and more!"
-msgstr ""
+msgstr ".. dan banyak lagi!"
 
 #: lms/templates/wiki/delete.html
 msgid "You are deleting an article. Please confirm."
-msgstr ""
+msgstr "Anda akan menghapus artikel. Mohon konfirmasi."
 
 #: lms/templates/wiki/edit.html cms/templates/component.html
 #: cms/templates/container.html cms/templates/container_xblock_component.html
@@ -5188,15 +5265,15 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Edit"
-msgstr ""
+msgstr "Ubah"
 
 #: lms/templates/wiki/edit.html lms/templates/wiki/edit.html.py
 msgid "Save changes"
-msgstr ""
+msgstr "Simpan perubahan"
 
 #: lms/templates/wiki/edit.html cms/templates/unit.html
 msgid "Preview"
-msgstr ""
+msgstr "Pratinjau"
 
 #. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a control to allow users to exit out of this modal
@@ -5215,7 +5292,7 @@ msgstr ""
 #: lms/templates/modal/_modal-settings-language.html
 #: lms/templates/modal/accessible_confirm.html
 msgid "Close"
-msgstr ""
+msgstr "Tutup"
 
 #: lms/templates/wiki/edit.html
 msgid "Wiki Preview"
@@ -5235,11 +5312,11 @@ msgstr ""
 
 #: lms/templates/wiki/edit.html
 msgid "Back to editor"
-msgstr ""
+msgstr "Kembali ke editor"
 
 #: lms/templates/wiki/history.html
 msgid "History"
-msgstr ""
+msgstr "Sejarah"
 
 #: lms/templates/wiki/history.html
 msgid ""
@@ -5248,6 +5325,10 @@ msgid ""
 " can change to a particular revision or merge an old revision with the "
 "current one."
 msgstr ""
+"Klik tiap revisi untuk melihat daftar baris yang diedit. Klik tombol "
+"Pratinjau untuk melihat bagaimana artikel terlihat saat ini. Di bagaian "
+"bawah halaman, Anda dapat mengganti ke revisi khusus atau jadisatukan revisi"
+" lama dengan saat ini."
 
 #: lms/templates/wiki/history.html
 msgid "(no log message)"
@@ -5255,23 +5336,23 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Preview this revision"
-msgstr ""
+msgstr "Pratinjau revisi ini"
 
 #: lms/templates/wiki/history.html
 msgid "Auto log:"
-msgstr ""
+msgstr "Log otomatis:"
 
 #: lms/templates/wiki/history.html
 msgid "Change"
-msgstr ""
+msgstr "Ganti"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Merge selected with current..."
-msgstr ""
+msgstr "Gabungkan tersorot dengan saat ini..."
 
 #: lms/templates/wiki/history.html
 msgid "Switch to selected version"
-msgstr ""
+msgstr "Pindah ke versi tersorot"
 
 #: lms/templates/wiki/history.html
 msgid "Wiki Revision Preview"
@@ -5279,11 +5360,11 @@ msgstr ""
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Back to history view"
-msgstr ""
+msgstr "Kembali ke tampilan terdahulu"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Switch to this version"
-msgstr ""
+msgstr "Ganti ke versi ini"
 
 #: lms/templates/wiki/history.html
 msgid "Merge Revision"
@@ -5291,21 +5372,23 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Merge with current"
-msgstr ""
+msgstr "Gabung dengan terkini"
 
 #: lms/templates/wiki/history.html
 msgid ""
 "When you merge a revision with the current, all data will be retained from "
 "both versions and merged at its approximate location from each revision."
 msgstr ""
+"Ketika Anda menggabung revisi dengan terkini, seluruh data akan disimpan "
+"dari kedua versi dan digabung dari lokasi terkira pada tiap revisinya."
 
 #: lms/templates/wiki/history.html
 msgid "After this, it's important to do a manual review."
-msgstr ""
+msgstr "Setelah ini, penting untuk review manual."
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Create new merged version"
-msgstr ""
+msgstr "Buat versi tergabung yang baru"
 
 #: lms/templates/wiki/preview_inline.html
 msgid "Previewing revision:"
@@ -5317,11 +5400,11 @@ msgstr ""
 
 #: lms/templates/wiki/preview_inline.html
 msgid "This revision has been deleted."
-msgstr ""
+msgstr "Revisi telah dihapus."
 
 #: lms/templates/wiki/preview_inline.html
 msgid "Restoring to this revision will mark the article as deleted."
-msgstr ""
+msgstr "Mengembalikan ke revisi ini akan menandai artikel sebagai terhapus."
 
 #: lms/templates/wiki/includes/anonymous_blocked.html
 msgid ""
@@ -5329,10 +5412,12 @@ msgid ""
 "  You need to <a href=\"%(login_url)s\">log in</a> or <a href=\"%(signup_url)s\">sign up</a> to use this function.\n"
 "  "
 msgstr ""
+"\n"
+"Anda harus <a href=\"%(login_url)s\">masuk</a> atau <a href=\"%(signup_url)s\">daftar</a> untuk pakai fungsi ini."
 
 #: lms/templates/wiki/includes/anonymous_blocked.html
 msgid "You need to log in or sign up to use this function."
-msgstr ""
+msgstr "Anda harus masuk atau daftar untuk pakai fungsi ini."
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wiki Cheatsheet"
@@ -5340,40 +5425,44 @@ msgstr ""
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wiki Syntax Help"
-msgstr ""
+msgstr "Bantuan Sintaks Wiki"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid ""
 "This wiki uses <strong>Markdown</strong> for styling. There are several "
 "useful guides online. See any of the links below for in-depth details:"
 msgstr ""
+"Wiki ini menggunakan <strong>Markdown</strong> untuk gaya. Ada beberapa "
+"panduan online yang berguna. Lihat tautan di bawah untuk detil lengkapnya:"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Markdown: Basics"
-msgstr ""
+msgstr "Markdown: Dasar-dasar"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Quick Markdown Syntax Guide"
-msgstr ""
+msgstr "Panduan Sintaks Cepat Markdown"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Miniature Markdown Guide"
-msgstr ""
+msgstr "Miniatur Panduan Markdown"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid ""
 "To create a new wiki article, create a link to it. Clicking the link gives "
 "you the creation page."
 msgstr ""
+"Untuk membuat artikel wiki yang baru, buat tautan ke dirinya. Mengklik "
+"tautan memberikan Anda halaman pembuatan."
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "[Article Name](wiki:ArticleName)"
-msgstr ""
+msgstr "[Nama Artikel](wiki:NamaArtikel)"
 
 #. Translators: Do not translate "edX"
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "edX Additions:"
-msgstr ""
+msgstr "Tambahan edX:"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Math Expression"
@@ -5381,57 +5470,57 @@ msgstr ""
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Useful examples:"
-msgstr ""
+msgstr "Contoh yang bermanfaat:"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wikipedia"
-msgstr ""
+msgstr "Wikipedia"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "edX Wiki"
-msgstr ""
+msgstr "Wiki edX"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Huge Header"
-msgstr ""
+msgstr "Header Besar"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Smaller Header"
-msgstr ""
+msgstr "Header Lebih Kecil"
 
 #. Translators: Leave the punctuation, but translate "emphasis"
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "*emphasis* or _emphasis_"
-msgstr ""
+msgstr "*penekanan* atau _penekanan_"
 
 #. Translators: Leave the punctuation, but translate "strong"
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "**strong** or __strong__"
-msgstr ""
+msgstr "**tegas** atau __tegas__"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Unordered List"
-msgstr ""
+msgstr "Daftar tanpa-urutan"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Sub Item 1"
-msgstr ""
+msgstr "Sub Item 1"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Sub Item 2"
-msgstr ""
+msgstr "Sub Item 2"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Ordered"
-msgstr ""
+msgstr "Terurut"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "List"
-msgstr ""
+msgstr "Daftar"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Quotes"
-msgstr ""
+msgstr "Kutipan"
 
 #: lms/templates/wiki/includes/editor_widget.html
 msgid ""
@@ -5443,83 +5532,87 @@ msgstr ""
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "Attachments"
-msgstr ""
+msgstr "Sisipan"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload new file"
-msgstr ""
+msgstr "Unggah berkas baru"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search and add file"
-msgstr ""
+msgstr "Cari dan tambah berkas"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload File"
-msgstr ""
+msgstr "Unggah Berkas"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload file"
-msgstr ""
+msgstr "Unggah berkas"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search files and articles"
-msgstr ""
+msgstr "Cari berkas dan artikel"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid ""
 "You can reuse files from other articles. These files are subject to updates "
 "on other articles which may or may not be a good thing."
 msgstr ""
+"Anda dapat menggunakan kembali berkas dari artikel lain. Berkas juga akan "
+"diperbarui jika berkas artikel lainnya diperbarui."
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid ""
 "The following files are available for this article. Copy the markdown tag to"
 " directly refer to a file from the article text."
 msgstr ""
+"Berkas berikut tersedia untuk artikel ini. Kopi tag markdown-nya untuk "
+"mengacu secara langsung ke berkas dari teks artikel."
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Markdown tag"
-msgstr ""
+msgstr "Label Markdown"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Uploaded by"
-msgstr ""
+msgstr "Diunggah oleh"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Size"
-msgstr ""
+msgstr "Ukuran"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File History"
-msgstr ""
+msgstr "Sejarah Berkas"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Detach"
-msgstr ""
+msgstr "Lepas kaitan"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Replace"
-msgstr ""
+msgstr "Ganti"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Restore"
-msgstr ""
+msgstr "Kembalikan Semula"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "anonymous (IP logged)"
-msgstr ""
+msgstr "anonim (IP tercatat)"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File history"
-msgstr ""
+msgstr "Sejarah berkas"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "revisions"
-msgstr ""
+msgstr "revisi"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "There are no attachments for this article."
-msgstr ""
+msgstr "Tidak ada sisipan di artikel ini."
 
 #: cms/djangoapps/contentstore/course_info_model.py
 #: cms/djangoapps/contentstore/course_info_model.py
@@ -5599,7 +5692,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/utils.py lms/templates/notes.html
 msgid "My Notes"
-msgstr ""
+msgstr "Catatanku"
 
 #: cms/djangoapps/contentstore/management/commands/git_export.py
 msgid ""
@@ -5609,15 +5702,15 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/assets.py
 msgid "Upload completed"
-msgstr ""
+msgstr "Unggah selesai"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Blank"
@@ -5635,12 +5728,14 @@ msgid ""
 " and course run. Please change either organization or course number to be "
 "unique."
 msgstr ""
+"Sudah ada kursus dengan organisasi, nomor kursus, dan waktu yang sama. Mohon"
+" ganti organisasinya atau nomor kursusnya agar unik."
 
 #: cms/djangoapps/contentstore/views/course.py
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
 "Please change either the organization or course number so that it is unique."
-msgstr ""
+msgstr "Mohon ganti organisasi atau kursusnya agar unik."
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -5648,6 +5743,9 @@ msgid ""
 "\n"
 "{err}"
 msgstr ""
+"Tidak dapat membuat kursus '{name}'.\n"
+"\n"
+"{err}"
 
 #: cms/djangoapps/contentstore/views/export_git.py
 msgid "Course successfully exported to git repository"
@@ -5655,15 +5753,15 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "We only support uploading a .tar.gz file."
-msgstr ""
+msgstr "Kami hanya mendukung unggahan berkas .tar.gz."
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "File upload corrupted. Please try again"
-msgstr ""
+msgstr "Berkas yang diunggah rusak. Harap coba lagi"
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "Could not find the course.xml file in the package."
-msgstr ""
+msgstr "Tidak ditemukan berkas course.xml dalam paket. "
 
 #: cms/djangoapps/contentstore/views/item.py
 msgid "Duplicate of {0}"
@@ -5687,61 +5785,63 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Insufficient permissions"
-msgstr ""
+msgstr "Izin tidak cukup"
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Could not find user by email address '{email}'."
-msgstr ""
+msgstr "Pengguna dengan ratron '{email}' tidak ditemukan."
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "User {email} has registered but has not yet activated his/her account."
-msgstr ""
+msgstr "Pengguna {email} telah terdaftar tapi belum mengaktifkan akunnya."
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "`role` is required"
-msgstr ""
+msgstr "`peran` dibutuhkan"
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Only instructors may create other instructors"
-msgstr ""
+msgstr "Hanya instruktur yang bisa membuat instruktur lain"
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "You may not remove the last instructor from a course"
-msgstr ""
+msgstr "Anda tidak boleh menghapus instruktur terakhir dari kursus"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "unrequested"
-msgstr ""
+msgstr "tidak diminta"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "pending"
-msgstr ""
+msgstr "ditunda"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "granted"
-msgstr ""
+msgstr "disetujui"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "denied"
-msgstr ""
+msgstr "ditolak"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "Studio user"
-msgstr ""
+msgstr "Pengguna studio"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "The date when state was last updated"
-msgstr ""
+msgstr "Tanggal terakhir pembaruan status"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "Current course creator state"
-msgstr ""
+msgstr "Status pembuat kursus saat ini"
 
 #: cms/djangoapps/course_creators/models.py
 msgid ""
 "Optional notes about this user (for example, why course creation access was "
 "denied)"
 msgstr ""
+"Catatan tambahan tentang pengguna ini (misalnya, kenapa akses pembuatan "
+"kursus ditolak)"
 
 #: cms/djangoapps/models/settings/course_metadata.py
 msgid "Incorrect format for field '{name}'. {detailed_message}"
@@ -5750,11 +5850,11 @@ msgstr ""
 #: cms/templates/404.html cms/templates/error.html
 #: lms/templates/static_templates/404.html
 msgid "Page Not Found"
-msgstr ""
+msgstr "Halaman Tidak Ditemukan"
 
 #: cms/templates/404.html lms/templates/static_templates/404.html
 msgid "Page not found"
-msgstr ""
+msgstr "Halaman tidak ditemukan"
 
 #: cms/templates/asset_index.html lms/templates/courseware/courseware.html
 #: lms/templates/verify_student/_modal_editname.html
@@ -5766,7 +5866,7 @@ msgstr ""
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Loading..."
-msgstr ""
+msgstr "Loading..."
 
 #. Translators: this is a verb describing the action of viewing more details
 #: cms/templates/container_xblock_component.html
@@ -5777,12 +5877,12 @@ msgstr ""
 
 #: cms/templates/html_error.html lms/templates/module-error.html
 msgid "Error:"
-msgstr ""
+msgstr "Kesalahan:"
 
 #: cms/templates/index.html cms/templates/settings.html
 #: lms/templates/courseware/course_about.html
 msgid "Course Number"
-msgstr ""
+msgstr "Nomor Kursus"
 
 #: cms/templates/index.html cms/templates/manage_users.html
 #: cms/templates/overview.html cms/templates/overview.html
@@ -5793,7 +5893,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Cancel"
-msgstr ""
+msgstr "Batal"
 
 #: cms/templates/index.html
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
@@ -5813,7 +5913,7 @@ msgstr ""
 
 #: cms/templates/login.html lms/templates/login.html
 msgid "Forgot password?"
-msgstr ""
+msgstr "Lupa Sandi?"
 
 #: cms/templates/login.html cms/templates/register.html
 #: lms/templates/login.html lms/templates/provider_login.html
@@ -5821,19 +5921,19 @@ msgstr ""
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/sysadmin_dashboard.html
 msgid "Password"
-msgstr ""
+msgstr "Sandi"
 
 #: cms/templates/manage_users.html cms/templates/settings.html
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
 #: cms/templates/widgets/header.html
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Settings"
-msgstr ""
+msgstr "Setelan"
 
 #: cms/templates/manage_users.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: cms/templates/overview.html cms/templates/overview.html
 #: cms/templates/overview.html cms/templates/overview.html
@@ -5842,38 +5942,40 @@ msgstr ""
 #: lms/templates/combinedopenended/selfassessment/self_assessment_prompt.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Save"
-msgstr ""
+msgstr "Simpan"
 
 #: cms/templates/register.html cms/templates/widgets/header.html
 #: lms/templates/index.html
 msgid "Sign Up"
-msgstr ""
+msgstr "Daftar"
 
 #: cms/templates/register.html lms/templates/register-shib.html
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/signup_modal.html
 msgid "Public Username"
-msgstr ""
+msgstr "Nama publik"
 
 #: cms/templates/register.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "Preferred Language"
-msgstr ""
+msgstr "Bahasa Pilihan"
 
 #: cms/templates/registration/activation_complete.html
 #: lms/templates/registration/activation_complete.html
 msgid "Thanks for activating your account."
-msgstr ""
+msgstr "Terima kasih telah mengaktifkan akun Anda."
 
 #: cms/templates/registration/activation_complete.html
 #: lms/templates/registration/activation_complete.html
 msgid "This account has already been activated."
-msgstr ""
+msgstr "Akun ini telah diaktifkan."
 
 #: cms/templates/registration/activation_complete.html
 #: lms/templates/registration/activation_complete.html
 msgid "Visit your {link_start}dashboard{link_end} to see your courses."
 msgstr ""
+"Kunjungi {link_start}dashboard{link_end} Anda untuk melihat kursus-kursus "
+"Anda."
 
 #: cms/templates/widgets/footer.html lms/templates/static_templates/tos.html
 #: lms/templates/static_templates/tos.html
@@ -5884,14 +5986,14 @@ msgstr ""
 #: lms/templates/static_templates/privacy.html
 #: lms/templates/static_templates/privacy.html
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Kebijakan Privasi"
 
 #: cms/templates/widgets/header.html cms/templates/widgets/header.html
 #: lms/templates/help_modal.html lms/templates/navigation.html
 #: lms/templates/static_templates/help.html
 #: lms/templates/static_templates/help.html wiki/plugins/help/wiki_plugin.py
 msgid "Help"
-msgstr ""
+msgstr "Bantuan"
 
 #: common/templates/course_modes/choose.html
 msgid "Upgrade Your Registration for {} | Choose Your Track"
@@ -5928,7 +6030,7 @@ msgstr ""
 #: common/templates/course_modes/choose.html
 #: lms/templates/verify_student/photo_verification.html
 msgid "):"
-msgstr ""
+msgstr "):"
 
 #: common/templates/course_modes/choose.html
 msgid "Why do I have to pay? What if I want a free honor code certificate?"
@@ -6037,43 +6139,43 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "Panduan"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "Sembunyikan Panduan"
 
 #: lms/templates/annotatable.html
 msgid "Guided Discussion"
-msgstr ""
+msgstr "Diskusi Terpandu"
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Sembunyikan Anotasi "
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
 msgid "Vision"
-msgstr ""
+msgstr "Visi"
 
 #: lms/templates/contact.html
 msgid "Faq"
-msgstr ""
+msgstr "Faq"
 
 #: lms/templates/contact.html lms/templates/footer.html
 msgid "Press"
-msgstr ""
+msgstr "Pers"
 
 #: lms/templates/contact.html lms/templates/footer.html
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "Kontak"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
-msgstr ""
+msgstr "Umpan balik Kelas"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6085,7 +6187,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "General Inquiries and Feedback"
-msgstr ""
+msgstr "Pertanyaan Umum dan Tanggapan"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6098,7 +6200,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Technical Inquiries and Feedback"
-msgstr ""
+msgstr "Pertanyaan Teknis dan Saran"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6113,7 +6215,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6123,7 +6225,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Universities"
-msgstr ""
+msgstr "Universitas"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6133,11 +6235,11 @@ msgstr ""
 
 #: lms/templates/course.html
 msgid "New"
-msgstr ""
+msgstr "Baru"
 
 #: lms/templates/dashboard.html
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: lms/templates/dashboard.html lms/templates/courseware/course_about.html
 #: lms/templates/courseware/course_about.html
@@ -6172,7 +6274,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
-msgstr ""
+msgstr "edit"
 
 #. Translators: this section lists all the third-party authentication
 #. providers
@@ -6198,27 +6300,27 @@ msgstr ""
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Reset Password"
-msgstr ""
+msgstr "Ganti Sandi"
 
 #: lms/templates/dashboard.html
 msgid "Current Courses"
-msgstr ""
+msgstr " Ω"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't registered for any courses yet."
-msgstr ""
+msgstr "Sepertinya Anda belum mendaftar kursus manapun."
 
 #: lms/templates/dashboard.html
 msgid "Find courses now!"
-msgstr ""
+msgstr "Temukan kursus sekarang!"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't been enrolled in any courses yet."
-msgstr ""
+msgstr "Sepertinya Anda belum mendaftar di kursus manapun."
 
 #: lms/templates/dashboard.html
 msgid "Course-loading errors"
-msgstr ""
+msgstr "Kesalahan Pemuatan-kursus"
 
 #: lms/templates/dashboard.html
 msgid "Email Settings for {course_number}"
@@ -6234,35 +6336,39 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Password Reset Email Sent"
-msgstr ""
+msgstr "Email Ganti Sandi Dikirim"
 
 #: lms/templates/dashboard.html
 msgid ""
 "An email has been sent to {email}. Follow the link in the email to change "
 "your password."
 msgstr ""
+"Sebuah email telah dikirim ke {email}. Ikuti tautan pada email tersebut "
+"untuk mengganti sandi anda."
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Change Email"
-msgstr ""
+msgstr "Ganti Email"
 
 #: lms/templates/dashboard.html
 msgid "Please enter your new email address:"
-msgstr ""
+msgstr "Harap masukkan alamat email baru Anda:"
 
 #: lms/templates/dashboard.html
 msgid "Please confirm your password:"
-msgstr ""
+msgstr "Harap konfirmasi sandi Anda:"
 
 #: lms/templates/dashboard.html
 msgid ""
 "We will send a confirmation to both {email} and your new email as part of "
 "the process."
 msgstr ""
+"Kami akan mengirimkan konfirmasi ke {email} dan email baru Anda sebagai "
+"bagian dari proses ini."
 
 #: lms/templates/dashboard.html
 msgid "Change your name"
-msgstr ""
+msgstr "Ganti nama anda"
 
 #. Translators: note that {platform} {cert_name_short} will look something
 #. like: "edX certificate". Please do not change the order of these
@@ -6285,11 +6391,11 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Reason for name change:"
-msgstr ""
+msgstr "Alasan penggantian nama:"
 
 #: lms/templates/dashboard.html
 msgid "Change My Name"
-msgstr ""
+msgstr "Ganti Nama Saya"
 
 #: lms/templates/dashboard.html
 msgid ""
@@ -6302,7 +6408,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Unregister"
-msgstr ""
+msgstr "Bata"
 
 #: lms/templates/edit_unit_link.html
 msgid "View Unit in Studio"
@@ -6310,11 +6416,11 @@ msgstr ""
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 msgid "E-mail change failed"
-msgstr ""
+msgstr "Penggantian email gagal"
 
 #: lms/templates/email_change_failed.html
 msgid "We were unable to send a confirmation email to {email}"
-msgstr ""
+msgstr "Kami tidak bisa mengirim email konfirmasi ke {email}"
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 #: lms/templates/invalid_email_key.html
@@ -6324,28 +6430,29 @@ msgstr ""
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
 msgid "E-mail change successful!"
-msgstr ""
+msgstr "Penggantian email berhasil!"
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
 msgid "You should see your new email in your {link_start}dashboard{link_end}."
 msgstr ""
+"Anda bisa melihat email baru Anda di  {link_start}dashboard{link_end} Anda."
 
 #: lms/templates/email_exists.html
 msgid "An account with the new e-mail address already exists."
-msgstr ""
+msgstr "Akun dengan alamat email baru telah ada sebelumnya."
 
 #: lms/templates/enroll_students.html
 msgid "Student Enrollment Form"
-msgstr ""
+msgstr "Form Pendaftaran Siswa"
 
 #: lms/templates/enroll_students.html
 msgid "Course: "
-msgstr ""
+msgstr "Kursus:"
 
 #: lms/templates/enroll_students.html
 msgid "Add new students"
-msgstr ""
+msgstr "Tambah siswa baru"
 
 #: lms/templates/enroll_students.html
 msgid "Existing students:"
@@ -6394,7 +6501,7 @@ msgstr ""
 #: lms/templates/folditbasic.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Submitted"
-msgstr ""
+msgstr "Terkirim"
 
 #: lms/templates/folditchallenge.html
 msgid "Puzzle Leaderboard"
@@ -6402,21 +6509,21 @@ msgstr ""
 
 #: lms/templates/folditchallenge.html
 msgid "User"
-msgstr ""
+msgstr "Pengguna"
 
 #: lms/templates/footer.html
 msgid "About"
-msgstr ""
+msgstr "Tentang"
 
 #: lms/templates/footer.html lms/templates/static_templates/jobs.html
 #: lms/templates/static_templates/jobs.html
 msgid "Jobs"
-msgstr ""
+msgstr "Lowongan"
 
 #: lms/templates/footer.html lms/templates/static_templates/faq.html
 #: lms/templates/static_templates/faq.html
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 #: lms/templates/footer.html
 msgid "{platform_name} Logo"
@@ -6437,34 +6544,36 @@ msgstr ""
 
 #: lms/templates/footer.html
 msgid "Terms of Service and Honor Code"
-msgstr ""
+msgstr "Ketentuan Layanan dan Kode Kehormatan"
 
 #: lms/templates/forgot_password_modal.html
 #: lms/templates/forgot_password_modal.html
 msgid "Password Reset"
-msgstr ""
+msgstr "Ganti Sandi"
 
 #: lms/templates/forgot_password_modal.html
 msgid ""
 "Please enter your e-mail address below, and we will e-mail instructions for "
 "setting a new password."
 msgstr ""
+"Harap masukkan alamat email Anda di bawah, dan kami akan meng-email "
+"instruksi untuk menyetel sandi yang baru."
 
 #: lms/templates/forgot_password_modal.html
 msgid "Your E-mail Address"
-msgstr ""
+msgstr "Alamat Email Anda"
 
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 msgid "This is the e-mail address you used to register with {platform}"
-msgstr ""
+msgstr "Ini adalah alamat email yang digunakan saat mendaftar {platform}"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Reset My Password"
-msgstr ""
+msgstr "Ganti Sandi Saya"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Email is incorrect."
-msgstr ""
+msgstr "Email tidak tepat."
 
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 msgid "{platform_name} Help"
@@ -6492,15 +6601,15 @@ msgstr ""
 
 #: lms/templates/help_modal.html
 msgid "Report a problem"
-msgstr ""
+msgstr "Laporkan masalah"
 
 #: lms/templates/help_modal.html
 msgid "Make a suggestion"
-msgstr ""
+msgstr "Buat saran"
 
 #: lms/templates/help_modal.html
 msgid "Ask a question"
-msgstr ""
+msgstr "Ajukan pertanyaan"
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -6515,7 +6624,7 @@ msgstr ""
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/signup_modal.html
 msgid "E-mail"
-msgstr ""
+msgstr "Email"
 
 #: lms/templates/help_modal.html
 msgid "Briefly describe your issue"
@@ -6528,6 +6637,8 @@ msgstr ""
 #: lms/templates/help_modal.html
 msgid "Include error messages, steps which lead to the issue, etc"
 msgstr ""
+"Sertakan pesan kesalahan, serta langkah-langkah menuju timbulnya masalah "
+"tersebut, dll."
 
 #: lms/templates/help_modal.html lms/templates/manage_user_standing.html
 #: lms/templates/register-shib.html
@@ -6541,11 +6652,11 @@ msgstr ""
 #: lms/templates/instructor/staff_grading.html
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Submit"
-msgstr ""
+msgstr "Ajukan"
 
 #: lms/templates/help_modal.html
 msgid "Thank You!"
-msgstr ""
+msgstr "Terima Kasih!"
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -6554,6 +6665,10 @@ msgid ""
 "UTC.) In the meantime, please review our {link_start}detailed FAQs{link_end}"
 " where most questions have already been answered."
 msgstr ""
+"Terima kasih atas permintaan atau umpan balik Anda. Biasanya kami merespon "
+"dalam satu hari kerja  (Senin sampai Jumat, {open_time} 09.00 sampai "
+"{close_time} 17.00.) Sementara ini, harap tinjau {link_start}FAQ "
+"mendetil{link_end} kami di mana kebanyakan pertanyaan telah dijawab."
 
 #: lms/templates/help_modal.html
 msgid "problem"
@@ -6590,7 +6705,7 @@ msgstr ""
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 #: lms/templates/module-error.html
 msgid "Details"
-msgstr ""
+msgstr "Detil"
 
 #: lms/templates/help_modal.html
 msgid "question"
@@ -6622,23 +6737,23 @@ msgstr ""
 
 #: lms/templates/index.html
 msgid "Free courses from <strong>{university_name}</strong>"
-msgstr ""
+msgstr "Kursus gratis dari <strong>{university_name}</strong>"
 
 #: lms/templates/index.html
 msgid "The Future of Online Education"
-msgstr ""
+msgstr "Masa Depan Pendidikan Online"
 
 #: lms/templates/index.html
 msgid "For anyone, anywhere, anytime"
-msgstr ""
+msgstr "Untuk siapa saja, di mana saja, kapan saja"
 
 #: lms/templates/index.html
 msgid "Stay up to date with all {platform_name} has to offer!"
-msgstr ""
+msgstr "Tetap up to date dengan semua yang {platform_name} tawarkan!"
 
 #: lms/templates/invalid_email_key.html
 msgid "Invalid email change key"
-msgstr ""
+msgstr "Kunci perubahan email tidak valid"
 
 #: lms/templates/invalid_email_key.html
 msgid "This e-mail key is not valid. Please check:"
@@ -6660,11 +6775,11 @@ msgstr ""
 
 #: lms/templates/login-sidebar.html
 msgid "Helpful Information"
-msgstr ""
+msgstr "Informasi Berguna"
 
 #: lms/templates/login-sidebar.html lms/templates/login-sidebar.html
 msgid "Login via OpenID"
-msgstr ""
+msgstr "Login via OpenID"
 
 #: lms/templates/login-sidebar.html
 msgid ""
@@ -6674,11 +6789,11 @@ msgstr ""
 
 #: lms/templates/login-sidebar.html
 msgid "Not Enrolled?"
-msgstr ""
+msgstr "Tidak Terdaftar?"
 
 #: lms/templates/login-sidebar.html
 msgid "Sign up for {platform_name} today!"
-msgstr ""
+msgstr "Daftar {platform_name} hari ini!"
 
 #: lms/templates/login-sidebar.html
 msgid "Looking for help in logging in or with your {platform_name} account?"
@@ -6690,15 +6805,15 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Log into your {platform_name} Account"
-msgstr ""
+msgstr "Masuk ke Akun {platform_name} Anda"
 
 #: lms/templates/login.html
 msgid "Log into My {platform_name} Account"
-msgstr ""
+msgstr "Masuk ke Akun {platform_name} saya"
 
 #: lms/templates/login.html
 msgid "Access My Courses"
-msgstr ""
+msgstr "Akses Kursus Saya"
 
 #: lms/templates/login.html lms/templates/register.html
 msgid "Processing your account information…"
@@ -6706,15 +6821,15 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Please log in"
-msgstr ""
+msgstr "Harap log in"
 
 #: lms/templates/login.html
 msgid "to access your account and courses"
-msgstr ""
+msgstr "untuk mengakses akun dan kursus Anda"
 
 #: lms/templates/login.html
 msgid "We're Sorry, {platform_name} accounts are unavailable currently"
-msgstr ""
+msgstr "Kami mohon maaf, akun-akun {platform_name} saat ini tidak tersedia"
 
 #: lms/templates/login.html
 msgid "The following errors occurred while logging you in:"
@@ -6722,7 +6837,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Your email or password is incorrect"
-msgstr ""
+msgstr "Email atau sandi Anda salah"
 
 #: lms/templates/login.html
 msgid ""
@@ -6730,19 +6845,22 @@ msgid ""
 "account. Required fields are noted by <strong class=\"indicator\">bold text "
 "and an asterisk (*)</strong>."
 msgstr ""
+"Harap berikan informasi berikut untuk masuk ke akun {platform_name}. Isian "
+"yang dibutuhkan ditandai dengan <strong class=\"indicator\">teks tebal dan "
+"tanda bintang (*)</strong>."
 
 #: lms/templates/login.html lms/templates/register-shib.html
 #: lms/templates/register.html lms/templates/register.html
 msgid "example: username@domain.com"
-msgstr ""
+msgstr "contoh: username@domain.com"
 
 #: lms/templates/login.html
 msgid "Account Preferences"
-msgstr ""
+msgstr "Preferensi Akun"
 
 #: lms/templates/login.html
 msgid "Remember me"
-msgstr ""
+msgstr "Ingat saya"
 
 #. Translators: this is the last choice of a number of choices of how to log
 #. in
@@ -6850,39 +6968,39 @@ msgstr ""
 
 #: lms/templates/module-error.html
 msgid "Raw data:"
-msgstr ""
+msgstr "Data mentah:"
 
 #: lms/templates/name_changes.html
 msgid "Accepted"
-msgstr ""
+msgstr "Diterima"
 
 #: lms/templates/name_changes.html
 msgid "Rejected"
-msgstr ""
+msgstr "Ditolak"
 
 #: lms/templates/name_changes.html
 msgid "Pending name changes"
-msgstr ""
+msgstr "Perubahan nama dalam penundaan"
 
 #: lms/templates/name_changes.html lms/templates/modal/accessible_confirm.html
 msgid "Confirm"
-msgstr ""
+msgstr "Konfirmasi"
 
 #: lms/templates/name_changes.html
 msgid "[Reject]"
-msgstr ""
+msgstr "[Tolak]"
 
 #: lms/templates/navigation.html
 msgid "Global Navigation"
-msgstr ""
+msgstr "Navigasi Global"
 
 #: lms/templates/navigation.html
 msgid "Find Courses"
-msgstr ""
+msgstr "Temukan Kursus"
 
 #: lms/templates/navigation.html
 msgid "Dashboard for:"
-msgstr ""
+msgstr "Dashboard untuk:"
 
 #: lms/templates/navigation.html
 msgid "More options dropdown"
@@ -6890,7 +7008,7 @@ msgstr ""
 
 #: lms/templates/navigation.html
 msgid "Log Out"
-msgstr ""
+msgstr "Keluar"
 
 #: lms/templates/navigation.html
 msgid "Shopping Cart"
@@ -6898,25 +7016,25 @@ msgstr ""
 
 #: lms/templates/navigation.html
 msgid "How it Works"
-msgstr ""
+msgstr "Cara Kerja"
 
 #: lms/templates/navigation.html lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 #: lms/templates/courseware/courses.html
 msgid "Courses"
-msgstr ""
+msgstr "Kursus"
 
 #: lms/templates/navigation.html
 msgid "Schools"
-msgstr ""
+msgstr "Sekolah"
 
 #: lms/templates/navigation.html lms/templates/navigation.html
 msgid "Register Now"
-msgstr ""
+msgstr "Daftar Sekarang"
 
 #: lms/templates/navigation.html lms/templates/navigation.html
 msgid "Log in"
-msgstr ""
+msgstr "Masuk"
 
 #: lms/templates/navigation.html
 msgid ""
@@ -6924,19 +7042,22 @@ msgid ""
 "recommend using {chrome_link_start}Chrome{chrome_link_end} or "
 "{ff_link_start}Firefox{ff_link_end}."
 msgstr ""
+"<strong>Perhatian:</strong> Peramban Anda tidak sepenuhnya didukung. Kami "
+"sangat sarankan Anda menggunakan  {chrome_link_start}Chrome{chrome_link_end}"
+" atau {ff_link_start}Firefox{ff_link_end}."
 
 #: lms/templates/notes.html lms/templates/textannotation.html
 #: lms/templates/videoannotation.html
 msgid "You do not have any notes."
-msgstr ""
+msgstr "Anda tidak memiliki catatan apapun."
 
 #: lms/templates/problem.html
 msgid "Reset"
-msgstr ""
+msgstr "Ganti"
 
 #: lms/templates/problem.html
 msgid "Reveal Answer"
-msgstr ""
+msgstr "Perlihatkan Jawaban"
 
 #: lms/templates/problem.html
 msgid "You have used {num_used} of {num_total} submissions"
@@ -6944,7 +7065,7 @@ msgstr ""
 
 #: lms/templates/provider_login.html
 msgid "Log In"
-msgstr ""
+msgstr "Masuk"
 
 #: lms/templates/provider_login.html
 msgid ""
@@ -6971,12 +7092,13 @@ msgstr ""
 
 #: lms/templates/register-shib.html
 msgid "Welcome {username}!  Please set your preferences below"
-msgstr ""
+msgstr "Selamat datang {username}! Harap set preferensi Anda di bawah"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid ""
 "We're sorry, {platform_name} enrollment is not available in your region"
 msgstr ""
+"Kami mohon maaf, pendaftaran {platform_name} tidak tersedia di wilayah Anda"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid "The following errors occurred while processing your registration:"
@@ -6987,20 +7109,23 @@ msgid ""
 "Required fields are noted by <strong class=\"indicator\">bold text and an "
 "asterisk (*)</strong>."
 msgstr ""
+"Isian yang wajib ditandai dengan <strong class=\"indicator\">teks tebal dan "
+"tanda bintang (*)</strong>."
 
 #: lms/templates/register-shib.html lms/templates/signup_modal.html
 msgid "Enter a public username:"
-msgstr ""
+msgstr "Masukkan nama publik:"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/register.html
 msgid "example: JaneDoe"
-msgstr ""
+msgstr "contoh: BudiRaharjo"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/register.html
 msgid "Will be shown in any discussions or forums you participate in"
 msgstr ""
+"Akan ditampilkan pada diskusi atau forum yang Anda ikut berpartisipasi"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid "Account Acknowledgements"
@@ -7009,12 +7134,12 @@ msgstr ""
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "I agree to the {link_start}Terms of Service{link_end}"
-msgstr ""
+msgstr "Saya setuju dengan {link_start}Ketentuan Layanan{link_end}"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "I agree to the {link_start}Honor Code{link_end}"
-msgstr ""
+msgstr "Saya setuju dengan {link_start}Kode Kehormatan{link_end}"
 
 #: lms/templates/register-shib.html
 msgid "Update My Account"
@@ -7022,19 +7147,19 @@ msgstr ""
 
 #: lms/templates/register-sidebar.html
 msgid "Registration Help"
-msgstr ""
+msgstr "Bantuan Pendaftaran"
 
 #: lms/templates/register-sidebar.html
 msgid "Already registered?"
-msgstr ""
+msgstr "Sudah terdaftar?"
 
 #: lms/templates/register-sidebar.html
 msgid "Click here to log in."
-msgstr ""
+msgstr "Klik di sini untuk masuk."
 
 #: lms/templates/register-sidebar.html
 msgid "Welcome to {platform_name}"
-msgstr ""
+msgstr "Selamat datang di {platform_name}"
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -7042,10 +7167,14 @@ msgid ""
 "future free courses. Not ready to take a course just yet? Registering puts "
 "you on our mailing list - we will update you as courses are added."
 msgstr ""
+"Mendaftar di {platform_name} memberikan Anda akses ke semua kursus gratis "
+"kami saat ini dan nanti. Belum siap untuk mengikuti kursus? Mendaftar "
+"menyertakan anda pada mailing list kami - kami akan memberi tahu Anda begitu"
+" kursus-kursus baru ditambahkan."
 
 #: lms/templates/register-sidebar.html
 msgid "Next Steps"
-msgstr ""
+msgstr "Langkah Berikutnya"
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -7054,6 +7183,10 @@ msgid ""
 "mark emails from class.stanford.edu as 'not spam', since you'll want to be "
 "able to receive email from your courses."
 msgstr ""
+"Anda akan menerima email aktivasi. Anda harus mengklik tautan aktivasi untuk"
+" menyelesaikan proses pendaftaran. Tidak mendapati emailnya? Cek folder spam"
+" dan tandai email-email dari kami sebagai 'bukan spam', karena tentunya Anda"
+" ingin bisa menerima email dari kursus Anda."
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -7062,24 +7195,31 @@ msgid ""
 "the email?  Check your spam folder and mark {platform_name} emails as 'not "
 "spam'.  At {platform_name}, we communicate mostly through email."
 msgstr ""
+"Sebagai bagian dari bergabung dengan {platform_name}, Anda akan menerima "
+"email aktivasi. Anda harus mengklik tautan aktivasi untuk menyelesaikan "
+"proses pendaftaran. Tidak mendapati emailnya? Cek folder spam dan tandai "
+"email-email dari kami sebagai 'bukan spam'. Di {platform_name}, kami "
+"berkomunikasi terutama lewat email."
 
 #: lms/templates/register-sidebar.html
 msgid "Need help in registering with {platform_name}?"
-msgstr ""
+msgstr "Butuh bantuan dalam mendaftar di {platform_name}?"
 
 #: lms/templates/register-sidebar.html
 msgid "View our FAQs for answers to commonly asked questions."
-msgstr ""
+msgstr "Lihat FAQ kami untuk jawaban atas pertanyaan yang sering diajukan."
 
 #: lms/templates/register-sidebar.html
 msgid ""
 "Once registered, most questions can be answered in the course specific "
 "discussion forums or through the FAQs."
 msgstr ""
+"Setelah terdaftar, kebanyakan pertanyaan dapat dijawab di forum diskusi "
+"kursus atau lewat FAQ."
 
 #: lms/templates/register.html
 msgid "Register for {platform_name}"
-msgstr ""
+msgstr "Daftar {platform_name}"
 
 #: lms/templates/register.html
 msgid "Create My {platform_name} Account"
@@ -7087,11 +7227,11 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Welcome!"
-msgstr ""
+msgstr "Selamat Datang!"
 
 #: lms/templates/register.html
 msgid "Register below to create your {platform_name} account"
-msgstr ""
+msgstr "Daftar di bawah untuk membuat akun {platform_name} Anda"
 
 #: lms/templates/register.html
 msgid "Register to start learning today!"
@@ -7115,7 +7255,7 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Please complete the following fields to register for an account. "
-msgstr ""
+msgstr "Harap lengkapi isian-isian berikut untuk mendaftar sebuah akun."
 
 #: lms/templates/register.html lms/templates/register.html
 msgid "cannot be changed later"
@@ -7123,15 +7263,15 @@ msgstr ""
 
 #: lms/templates/register.html lms/templates/verify_student/face_upload.html
 msgid "example: Jane Doe"
-msgstr ""
+msgstr "contoh: Budi Raharjo"
 
 #: lms/templates/register.html lms/templates/register.html
 msgid "Needed for any certificates you may earn"
-msgstr ""
+msgstr "Dibutuhkan untuk sertifikat yang bisa Anda peroleh"
 
 #: lms/templates/register.html
 msgid "Welcome {username}"
-msgstr ""
+msgstr "Selamat Datang {username}"
 
 #: lms/templates/register.html
 msgid "Enter a Public Display Name:"
@@ -7159,24 +7299,24 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Highest Level of Education Completed"
-msgstr ""
+msgstr "Jenjang Pendidikan Paling Tinggi Yang Diselesaikan"
 
 #: lms/templates/register.html
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
 msgid "Year of Birth"
-msgstr ""
+msgstr "Tahun Kelahiran"
 
 #: lms/templates/register.html
 msgid "Please share with us your reasons for registering with {platform_name}"
-msgstr ""
+msgstr "Harap beritahukan alasan Anda mendaftar {platform_name}"
 
 #: lms/templates/register.html
 msgid "Register"
-msgstr ""
+msgstr "Daftar"
 
 #: lms/templates/register.html lms/templates/signup_modal.html
 msgid "Create My Account"
-msgstr ""
+msgstr "Buat Akun Saya"
 
 #: lms/templates/resubscribe.html
 msgid "Re-subscribe Successful!"
@@ -7191,16 +7331,16 @@ msgstr ""
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "Previous"
-msgstr ""
+msgstr "Sebelumnya"
 
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 msgid "Section Navigation"
-msgstr ""
+msgstr "Navigasi Bagian"
 
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "Next"
-msgstr ""
+msgstr "Berikutnya"
 
 #: lms/templates/signup_modal.html
 msgid "Sign Up for {platform_name}"
@@ -7208,47 +7348,47 @@ msgstr ""
 
 #: lms/templates/signup_modal.html lms/templates/signup_modal.html
 msgid "e.g. yourname@domain.com"
-msgstr ""
+msgstr "mis. namaanda@domain.com"
 
 #: lms/templates/signup_modal.html lms/templates/signup_modal.html
 msgid "e.g. yourname (shown on forums)"
-msgstr ""
+msgstr "mis. namaanda (diperlihatkan di forum)"
 
 #: lms/templates/signup_modal.html lms/templates/signup_modal.html
 msgid "e.g. Your Name (for certificates)"
-msgstr ""
+msgstr "mis. Nama Anda (untuk sertifikat)"
 
 #: lms/templates/signup_modal.html
 msgid "<i>Welcome</i> {name}"
-msgstr ""
+msgstr "<i>Selamat Datang</i> {name}"
 
 #: lms/templates/signup_modal.html
 msgid "Full Name *"
-msgstr ""
+msgstr "Nama Lengkap *"
 
 #: lms/templates/signup_modal.html
 msgid "Ed. Completed"
-msgstr ""
+msgstr "Pend. yang Diselesaikan"
 
 #: lms/templates/signup_modal.html
 msgid "Year of birth"
-msgstr ""
+msgstr "Tahun kelahiran"
 
 #: lms/templates/signup_modal.html
 msgid "Mailing address"
-msgstr ""
+msgstr "Alaat Pos"
 
 #: lms/templates/signup_modal.html
 msgid "Goals in signing up for {platform_name}"
-msgstr ""
+msgstr "Tujuan mendaftar di {platform_name}"
 
 #: lms/templates/signup_modal.html
 msgid "Already have an account?"
-msgstr ""
+msgstr "Telah memiliki akun?"
 
 #: lms/templates/signup_modal.html
 msgid "Login."
-msgstr ""
+msgstr "Masuk."
 
 #: lms/templates/split_test_author_view.html
 msgid "This content experiment uses group configuration '{experiment_name}'."
@@ -7274,11 +7414,11 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "Staff Debug Info"
-msgstr ""
+msgstr "Info Debug Staf"
 
 #: lms/templates/staff_problem_info.html
 msgid "Submission history"
-msgstr ""
+msgstr "Sejarah Kiriman"
 
 #: lms/templates/staff_problem_info.html
 msgid "{platform_name} Content Quality Assessment"
@@ -7286,15 +7426,15 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "Comment"
-msgstr ""
+msgstr "Komentar"
 
 #: lms/templates/staff_problem_info.html
 msgid "comment"
-msgstr ""
+msgstr "komentar"
 
 #: lms/templates/staff_problem_info.html
 msgid "Tag"
-msgstr ""
+msgstr "Label"
 
 #: lms/templates/staff_problem_info.html
 msgid "Optional tag (eg \"done\" or \"broken\"):"
@@ -7302,15 +7442,15 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "tag"
-msgstr ""
+msgstr "label"
 
 #: lms/templates/staff_problem_info.html
 msgid "Add comment"
-msgstr ""
+msgstr "Tambah komentar"
 
 #: lms/templates/staff_problem_info.html
 msgid "Staff Debug"
-msgstr ""
+msgstr "Debug Staf"
 
 #: lms/templates/staff_problem_info.html
 msgid "Actions"
@@ -7332,41 +7472,41 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html lms/templates/staff_problem_info.html
 msgid "Module Fields"
-msgstr ""
+msgstr "Isian Modul"
 
 #: lms/templates/staff_problem_info.html
 msgid "XML attributes"
-msgstr ""
+msgstr "Atribut XML"
 
 #: lms/templates/staff_problem_info.html
 msgid "Submission History Viewer"
-msgstr ""
+msgstr "Pelihat Sejarah Kiriman"
 
 #: lms/templates/staff_problem_info.html
 msgid "User:"
-msgstr ""
+msgstr "Pengguna:"
 
 #: lms/templates/staff_problem_info.html
 msgid "View History"
-msgstr ""
+msgstr "Lihat Sejarah"
 
 #: lms/templates/static_htmlbook.html lms/templates/static_pdfbook.html
 #: lms/templates/staticbook.html
 msgid "{course_number} Textbook"
-msgstr ""
+msgstr "Buku teks {course_number}"
 
 #: lms/templates/static_htmlbook.html lms/templates/static_pdfbook.html
 #: lms/templates/staticbook.html
 msgid "Textbook Navigation"
-msgstr ""
+msgstr "Navigasi Buku teks"
 
 #: lms/templates/staticbook.html
 msgid "Previous page"
-msgstr ""
+msgstr "Halaman sebelumnya"
 
 #: lms/templates/staticbook.html
 msgid "Next page"
-msgstr ""
+msgstr "Halaman selanjutnya"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -7376,7 +7516,7 @@ msgstr ""
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Users"
-msgstr ""
+msgstr "Pengguna"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -7557,11 +7697,11 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Video position"
-msgstr ""
+msgstr "Posisi video"
 
 #: lms/templates/video.html
 msgid "Play"
-msgstr ""
+msgstr "Mainkan"
 
 #: lms/templates/video.html
 msgid "Speeds"
@@ -7573,7 +7713,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: lms/templates/video.html
 msgid ""
@@ -7583,15 +7723,15 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Fill browser"
-msgstr ""
+msgstr "Peramban penuh"
 
 #: lms/templates/video.html
 msgid "HD off"
-msgstr ""
+msgstr "HD off"
 
 #: lms/templates/video.html lms/templates/video.html
 msgid "Turn off captions"
-msgstr ""
+msgstr "Matikan keterangan"
 
 #: lms/templates/video.html
 msgid "Skip to end of transcript."
@@ -7638,7 +7778,7 @@ msgstr ""
 #: lms/templates/combinedopenended/combined_open_ended.html
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Hide Question"
-msgstr ""
+msgstr "Sembunyikan Pertanyaan"
 
 #: lms/templates/combinedopenended/combined_open_ended.html
 msgid "New Submission"
@@ -7850,7 +7990,7 @@ msgstr ""
 
 #: lms/templates/courseware/course_about.html
 msgid "Register for {course.display_number_with_default}"
-msgstr ""
+msgstr "Daftar {course.display_number_with_default}"
 
 #: lms/templates/courseware/course_about.html
 msgid "View About Page in studio"
@@ -7862,7 +8002,7 @@ msgstr ""
 
 #: lms/templates/courseware/course_about.html
 msgid "Share with friends and family!"
-msgstr ""
+msgstr "Berbagi dengan kawan dan keluarga!"
 
 #. Translators: This text will be automatically posted to the student's
 #. Twitter account. {url} should appear at the end of the text.
@@ -7880,11 +8020,11 @@ msgstr ""
 
 #: lms/templates/courseware/course_about.html
 msgid "Classes Start"
-msgstr ""
+msgstr "Kelas Dimulai"
 
 #: lms/templates/courseware/course_about.html
 msgid "Classes End"
-msgstr ""
+msgstr "Kelas Berakhir"
 
 #: lms/templates/courseware/course_about.html
 msgid "Estimated Effort"
@@ -7892,11 +8032,11 @@ msgstr ""
 
 #: lms/templates/courseware/course_about.html
 msgid "Prerequisites"
-msgstr ""
+msgstr "Prasyarat"
 
 #: lms/templates/courseware/course_about.html
 msgid "Additional Resources"
-msgstr ""
+msgstr "Sumber Tambahan"
 
 #. Translators: 'needs attention' is an alternative string for the
 #. notification image that indicates the tab "needs attention".
@@ -7907,7 +8047,7 @@ msgstr ""
 #: lms/templates/courseware/course_navigation.html
 #: lms/templates/courseware/course_navigation.html
 msgid "Staff view"
-msgstr ""
+msgstr "Lihat Pengajar"
 
 #: lms/templates/courseware/course_navigation.html
 msgid "Student view"
@@ -7915,11 +8055,11 @@ msgstr ""
 
 #: lms/templates/courseware/courses.html
 msgid "Explore free courses from leading universities."
-msgstr ""
+msgstr "Jelajahi kursus gratis dari Universitas terkemuka"
 
 #: lms/templates/courseware/courses.html
 msgid "Explore free courses from {university_name}."
-msgstr ""
+msgstr "Jelajahi kursus gratis dari {university_name}."
 
 #: lms/templates/courseware/courseware-error.html
 msgid ""
@@ -7934,7 +8074,7 @@ msgstr ""
 
 #: lms/templates/courseware/courseware.html
 msgid "Return to Exam"
-msgstr ""
+msgstr "Kembali ke Ujian"
 
 #: lms/templates/courseware/courseware.html
 msgid "Course Navigation"
@@ -7946,7 +8086,7 @@ msgstr ""
 
 #: lms/templates/courseware/courseware.html
 msgid "Open Calculator"
-msgstr ""
+msgstr "Buka Kalculator"
 
 #: lms/templates/courseware/courseware.html
 msgid "Calculator Input Field"
@@ -7960,7 +8100,7 @@ msgstr ""
 
 #: lms/templates/courseware/courseware.html
 msgid "Hints"
-msgstr ""
+msgstr "Petunjuk"
 
 #: lms/templates/courseware/courseware.html
 msgid "Integers"
@@ -8396,7 +8536,7 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Day"
-msgstr ""
+msgstr "Label"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Students"
@@ -8463,11 +8603,11 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Task Type"
-msgstr ""
+msgstr "Jenis Tugas"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Task inputs"
-msgstr ""
+msgstr "Inputan tugas"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Task Id"
@@ -8475,7 +8615,7 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Requester"
-msgstr ""
+msgstr "Permintaan"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Task State"
@@ -8483,11 +8623,11 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Duration (sec)"
-msgstr ""
+msgstr "Durasi (sec)"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Task Progress"
-msgstr ""
+msgstr "Perkembangan Tugas"
 
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -8500,7 +8640,7 @@ msgstr ""
 
 #: lms/templates/courseware/mktg_coming_soon.html
 msgid "About {course_id}"
-msgstr ""
+msgstr "Tentang {course_id}"
 
 #: lms/templates/courseware/mktg_coming_soon.html
 msgid "Coming Soon"
@@ -8508,7 +8648,7 @@ msgstr ""
 
 #: lms/templates/courseware/mktg_course_about.html
 msgid "About {course_number}"
-msgstr ""
+msgstr "Tentang {course_number}"
 
 #: lms/templates/courseware/mktg_course_about.html
 msgid "Access Courseware"
@@ -8520,7 +8660,7 @@ msgstr ""
 
 #: lms/templates/courseware/mktg_course_about.html
 msgid "Register for"
-msgstr ""
+msgstr "Daftar"
 
 #: lms/templates/courseware/mktg_course_about.html
 msgid "Registration Is Closed"
@@ -8588,7 +8728,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your final grade:"
-msgstr ""
+msgstr "Nilai akhir anda:"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Grade required for a {cert_name_short}:"
@@ -8620,7 +8760,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "This link will open/download a PDF document"
-msgstr ""
+msgstr "Tautan ini akan membuka/mengunduh dokumen PDF"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
@@ -8862,7 +9002,7 @@ msgstr ""
 
 #: lms/templates/discussion/_discussion_module.html
 msgid "Show Discussion"
-msgstr ""
+msgstr "Tampilkan Diskusi"
 
 #: lms/templates/discussion/_discussion_module_studio.html
 msgid "To view live discussions, click Preview or View Live in Unit Settings."
@@ -8900,7 +9040,7 @@ msgstr ""
 
 #: lms/templates/discussion/_similar_posts.html
 msgid "Hide"
-msgstr ""
+msgstr "Sembunyikan"
 
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Discussion topics; current selection is: "
@@ -8957,7 +9097,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "anonim"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."
@@ -8976,17 +9116,17 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Report Misuse"
-msgstr ""
+msgstr "Laporkan Penyalahgunaan"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Pin Thread"
-msgstr ""
+msgstr "Sematkan Topik"
 
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Pinned"
-msgstr ""
+msgstr "disematkan"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "(this post is about %(courseware_title_linked)s)"
@@ -9004,7 +9144,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html wiki/forms.py
 #: wiki/forms.py wiki/forms.py
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Update post"
@@ -9131,7 +9271,7 @@ msgstr ""
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Create new post about:"
-msgstr ""
+msgstr "Buat pos baru tentang:"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Show All Discussions"
@@ -9182,7 +9322,7 @@ msgstr ""
 
 #: lms/templates/discussion/_user_profile.html
 msgid ", "
-msgstr ""
+msgstr ", "
 
 #: lms/templates/discussion/_user_profile.html
 msgid "%s discussion started"
@@ -9230,7 +9370,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_pagination.mustache
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "…"
-msgstr ""
+msgstr "…"
 
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "View discussion"
@@ -9444,7 +9584,7 @@ msgstr ""
 #: lms/templates/emails/order_confirmation_email.txt
 #: lms/templates/shoppingcart/receipt.html
 msgid "#:"
-msgstr ""
+msgstr "#:"
 
 #: lms/templates/emails/reject_name_change.txt
 msgid ""
@@ -9511,6 +9651,13 @@ msgid ""
 " grading, though with diminishing returns. You can see the current accuracy "
 "of AI grading in the problem view."
 msgstr ""
+"Ini adalah daftar masalah yang saat ini butuh diperingkat untuk melatih "
+"pemeringkatan AI dan membuat esai kalibrasi untuk pemeringkatan sejawat. "
+"Tiap masalah harus diperlakukan terpisah, dan kami telah mengindikasikan "
+"jumlah kiriman siswa yang perlu diperingkat. Anda dapat memeringkat lebih "
+"dari jumlah yang dibutuhkan --ini akan meningkatkan akurasi dari "
+"pemeringkatan AI, meskipun hasilnya akan menurun. Anda bisa melihat akurasi "
+"dari pemeringkatan AI saat ini pada tampilan masalah."
 
 #: lms/templates/instructor/staff_grading.html
 msgid "Problem List"
@@ -9531,7 +9678,7 @@ msgstr ""
 
 #: lms/templates/instructor/staff_grading.html
 msgid "(Hide)"
-msgstr ""
+msgstr "(Sembunyikan)"
 
 #: lms/templates/instructor/staff_grading.html
 #: lms/templates/peer_grading/peer_grading_problem.html
@@ -9673,7 +9820,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Grading Configuration"
-msgstr ""
+msgstr "Konfigurasi Pemeringkatan"
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Click to download a CSV of anonymized student IDs:"
@@ -9877,11 +10024,11 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Enroll"
-msgstr ""
+msgstr "Daftar"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Unenroll"
-msgstr ""
+msgstr "Batalkan Pendaftaran"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Batch Beta Tester Addition"
@@ -10299,7 +10446,7 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Problem Name"
-msgstr ""
+msgstr "Nama Masalah"
 
 #: lms/templates/open_ended_problems/open_ended_problems.html
 msgid "Grader Type"
@@ -10339,7 +10486,7 @@ msgstr ""
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Required"
-msgstr ""
+msgstr "Diperlukan"
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "No due date"
@@ -10441,7 +10588,7 @@ msgstr ""
 
 #: lms/templates/registration/activate_account_notice.html
 msgid "Thanks For Registering!"
-msgstr ""
+msgstr "Terimakasih Telah Mendaftar!"
 
 #: lms/templates/registration/activate_account_notice.html
 msgid ""
@@ -10451,11 +10598,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "Aktivasi Berhasil!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "Akun telah aktif!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -10463,7 +10610,7 @@ msgstr ""
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Activation Invalid"
-msgstr ""
+msgstr "Aktivasi Invalid"
 
 #: lms/templates/registration/activation_invalid.html
 msgid ""
@@ -10471,10 +10618,14 @@ msgid ""
 "e-mail programs will sometimes split it into two lines. If you still have "
 "issues, e-mail us to let us know what happened at {email}."
 msgstr ""
+"Ada yang salah. Cek untuk memastikan URL yang Anda tuju benar -- program "
+"e-mail kadang memisahkannya ke dalam dua baris. Jika Anda masih belum "
+"berhasil, kirim email kepada kami dan beritahukan apa yang terjadi ke "
+"{email}."
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Or you can go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Atau Anda dapat kembali ke {link_start}beranda{link_end}."
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"
@@ -10536,12 +10687,12 @@ msgstr ""
 #: lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
 msgid "Unit Price"
-msgstr ""
+msgstr "Harga Satuan"
 
 #: lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
 msgid "Price"
-msgstr ""
+msgstr "Harga"
 
 #: lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
@@ -10554,7 +10705,7 @@ msgstr ""
 
 #: lms/templates/shoppingcart/receipt.html
 msgid "Register for [Course Name] | Receipt (Order"
-msgstr ""
+msgstr "Mendaftar untuk [Course Name] | Penerimaan (Order"
 
 #: lms/templates/shoppingcart/receipt.html
 msgid "Thank you for your Purchase!"
@@ -10584,7 +10735,7 @@ msgstr ""
 
 #: lms/templates/shoppingcart/receipt.html
 msgid "Qty"
-msgstr ""
+msgstr "Qty"
 
 #. Translators: Please keep the "<del>" and "</del>" tags around your
 #. translation of the word "this" in your translation.
@@ -10599,15 +10750,15 @@ msgstr ""
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Receipt (Order"
-msgstr ""
+msgstr "Penerimaan (Order"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "You are now registered for: "
-msgstr ""
+msgstr "Anda sekarang terdaftar untuk:"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Registered as: "
-msgstr ""
+msgstr "Terdaftar sebagai:"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/_verification_header.html
@@ -10623,7 +10774,7 @@ msgstr ""
 #: lms/templates/verify_student/show_requirements.html
 #: lms/templates/verify_student/verified.html
 msgid "Your Progress"
-msgstr ""
+msgstr "Kemajuan Anda"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/shoppingcart/verified_cert_receipt.html
@@ -10639,19 +10790,19 @@ msgstr ""
 #: lms/templates/verify_student/photo_verification.html
 #: lms/templates/verify_student/show_requirements.html
 msgid "Intro"
-msgstr ""
+msgstr "Intro"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/photo_verification.html
 #: lms/templates/verify_student/show_requirements.html
 msgid "Take Photo"
-msgstr ""
+msgstr "Ambil foto"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/photo_verification.html
 #: lms/templates/verify_student/show_requirements.html
 msgid "Take ID Photo"
-msgstr ""
+msgstr "Ambil foto ID"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/photo_reverification.html
@@ -10660,14 +10811,14 @@ msgstr ""
 #: lms/templates/verify_student/show_requirements.html
 #: lms/templates/verify_student/verified.html
 msgid "Review"
-msgstr ""
+msgstr "Ulasan"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/photo_verification.html
 #: lms/templates/verify_student/show_requirements.html
 #: lms/templates/verify_student/verified.html
 msgid "Make Payment"
-msgstr ""
+msgstr "Lakukan Pembayaran"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/photo_reverification.html
@@ -10676,21 +10827,23 @@ msgstr ""
 #: lms/templates/verify_student/show_requirements.html
 #: lms/templates/verify_student/verified.html
 msgid "Confirmation"
-msgstr ""
+msgstr "Konfirmasi"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Congratulations! You are now verified on "
-msgstr ""
+msgstr "Selamat! Anda sekarang diverifikasi pada"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid ""
 "You are now registered as a verified student! Your registration details are "
 "below."
 msgstr ""
+"Anda kini terdaftar sebagai siswa terverifikasi! Detil pendaftaran Anda di "
+"bawah ini."
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "You are registered for:"
-msgstr ""
+msgstr "Anda terdaftar untuk:"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "A list of courses you have just registered for as a verified student"
@@ -10698,7 +10851,7 @@ msgstr ""
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Options"
-msgstr ""
+msgstr "Pilihan"
 
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Starts: {start_date}"
@@ -10869,7 +11022,7 @@ msgstr ""
 #: lms/templates/verify_student/_reverification_support.html
 #: lms/templates/verify_student/_verification_support.html
 msgid "Have questions?"
-msgstr ""
+msgstr "Punya pertanyaan?"
 
 #: lms/templates/verify_student/_reverification_support.html
 #: lms/templates/verify_student/_verification_support.html
@@ -10943,7 +11096,7 @@ msgstr ""
 #: lms/templates/verify_student/photo_reverification.html
 #: lms/templates/verify_student/photo_verification.html
 msgid "No Webcam Detected"
-msgstr ""
+msgstr "Webcam Tidak Terdeteksi "
 
 #: lms/templates/verify_student/midcourse_photo_reverification.html
 #: lms/templates/verify_student/photo_reverification.html
@@ -11569,7 +11722,7 @@ msgstr ""
 
 #: lms/templates/verify_student/show_requirements.html
 msgid "Register for {}"
-msgstr ""
+msgstr "Daftar {}"
 
 #: lms/templates/verify_student/show_requirements.html
 msgid "You need to activate your edX account before proceeding"
@@ -11593,7 +11746,7 @@ msgstr ""
 
 #: lms/templates/verify_student/show_requirements.html
 msgid "What You Will Need to Register"
-msgstr ""
+msgstr "Apa yang Anda Butuhkan untuk Mendaftar"
 
 #: lms/templates/verify_student/show_requirements.html
 msgid ""
@@ -11715,33 +11868,39 @@ msgstr ""
 
 #: cms/templates/404.html
 msgid "The page that you were looking for was not found."
-msgstr ""
+msgstr "Halaman yang Anda cari tidak ditemukan."
 
 #: cms/templates/404.html
 msgid ""
 "Go back to the {homepage} or let us know about any pages that may have been "
 "moved at {email}."
 msgstr ""
+"Kembali ke {homepage} atau beri tahu kami tentang halaman yang mungkin "
+"dipindah ke {email}."
 
 #: cms/templates/500.html
 msgid "Studio Server Error"
-msgstr ""
+msgstr "Ada Kesalahan di Server Studio"
 
 #: cms/templates/500.html
 msgid "The <em>Studio</em> servers encountered an error"
-msgstr ""
+msgstr "Server <em>Studio</em> mengalami kesalahan"
 
 #: cms/templates/500.html
 msgid ""
 "An error occurred in Studio and the page could not be loaded. Please try "
 "again in a few moments."
 msgstr ""
+"Terjadi kesalahan di Studio dan halaman tidak bisa ditampilkan. Mohon coba "
+"beberapa saat lagi."
 
 #: cms/templates/500.html
 msgid ""
 "We've logged the error and our staff is currently working to resolve this "
 "error as soon as possible."
 msgstr ""
+"Kami telah mencatat kesalahannya dan staff kami saat ini bekerja untuk "
+"mengatasi masalah ini sesegera mungkin."
 
 #: cms/templates/500.html
 msgid "If the problem persists, please email us at {email_link}."
@@ -11792,32 +11951,34 @@ msgid ""
 "If you still have issues, contact edX Support. In the meatime, you can also "
 "return to"
 msgstr ""
+"Bila Anda masih mendapatkan masalah, kontak Dukungan edX. Sementara, Anda "
+"dapat kembali ke"
 
 #: cms/templates/activation_invalid.html
 msgid "Contact edX Support"
-msgstr ""
+msgstr "Kontak Dukungan edX"
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 #: cms/templates/widgets/header.html
 msgid "Files &amp; Uploads"
-msgstr ""
+msgstr "Unggah &amp; Berkas "
 
 #: cms/templates/asset_index.html cms/templates/course_info.html
 #: cms/templates/edit-tabs.html cms/templates/overview.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
 msgid "Content"
-msgstr ""
+msgstr "Konten"
 
 #: cms/templates/asset_index.html cms/templates/container.html
 #: cms/templates/course_info.html cms/templates/edit-tabs.html
 #: cms/templates/index.html cms/templates/manage_users.html
 #: cms/templates/overview.html cms/templates/textbooks.html
 msgid "Page Actions"
-msgstr ""
+msgstr "Tindakan Halaman"
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 msgid "Upload New File"
-msgstr ""
+msgstr "Unggah Berkas Baru"
 
 #: cms/templates/asset_index.html
 msgid "Loading&hellip;"
@@ -11865,29 +12026,29 @@ msgstr ""
 
 #: cms/templates/asset_index.html
 msgid "Choose File"
-msgstr ""
+msgstr "Pilih Berkas"
 
 #: cms/templates/asset_index.html
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "Berkas Anda telah dihapus"
 
 #: cms/templates/asset_index.html
 msgid "close alert"
-msgstr ""
+msgstr "peringatan tutup"
 
 #: cms/templates/checklists.html cms/templates/checklists.html
 msgid "Course Checklists"
-msgstr ""
+msgstr "Ceklis Kursus"
 
 #: cms/templates/checklists.html cms/templates/export.html
 #: cms/templates/export_git.html cms/templates/import.html
 #: cms/templates/widgets/header.html
 msgid "Tools"
-msgstr ""
+msgstr "Alat Bantu"
 
 #: cms/templates/checklists.html
 msgid "Current Checklists"
-msgstr ""
+msgstr "Ceklis Saat Ini"
 
 #: cms/templates/checklists.html
 msgid "What are course checklists?"
@@ -11929,7 +12090,7 @@ msgstr ""
 #: cms/templates/overview.html cms/templates/overview.html
 #: cms/templates/studio_xblock_wrapper.html
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Tarik untuk mengurutkan"
 
 #: cms/templates/container.html
 msgid "Container"
@@ -11974,11 +12135,11 @@ msgstr ""
 
 #: cms/templates/course_info.html cms/templates/course_info.html
 msgid "Course Updates"
-msgstr ""
+msgstr "Pembaruan Kursus"
 
 #: cms/templates/course_info.html
 msgid "New Update"
-msgstr ""
+msgstr "Pembaruan Terkini"
 
 #: cms/templates/course_info.html
 msgid ""
@@ -11996,13 +12157,13 @@ msgstr ""
 
 #: cms/templates/edit-tabs.html
 msgid "New Page"
-msgstr ""
+msgstr "Halaman Baru"
 
 #: cms/templates/edit-tabs.html cms/templates/edit_subsection.html
 #: cms/templates/index.html cms/templates/overview.html
 #: cms/templates/unit.html
 msgid "View Live"
-msgstr ""
+msgstr "Tampilkan Live"
 
 #: cms/templates/edit-tabs.html
 msgid ""
@@ -12085,85 +12246,86 @@ msgstr ""
 #: cms/templates/edit-tabs.html cms/templates/howitworks.html
 #: cms/templates/howitworks.html cms/templates/howitworks.html
 msgid "close modal"
-msgstr ""
+msgstr "tutup modal"
 
 #: cms/templates/edit_subsection.html
 msgid "CMS Subsection"
-msgstr ""
+msgstr "Sub bagian CMS"
 
 #: cms/templates/edit_subsection.html cms/templates/unit.html
 msgid "Display Name:"
-msgstr ""
+msgstr "Nama Tertampil:"
 
 #: cms/templates/edit_subsection.html
 msgid "Units:"
-msgstr ""
+msgstr "Unit:"
 
 #: cms/templates/edit_subsection.html
 msgid "Subsection Settings"
-msgstr ""
+msgstr "Setelan Sub Bagian"
 
 #: cms/templates/edit_subsection.html cms/templates/overview.html
 msgid "Release Day"
-msgstr ""
+msgstr "Tanggal Rilis"
 
 #: cms/templates/edit_subsection.html cms/templates/overview.html
 msgid "Release Time"
-msgstr ""
+msgstr "Waktu Rilis"
 
 #: cms/templates/edit_subsection.html cms/templates/edit_subsection.html
 #: cms/templates/overview.html
 msgid "Coordinated Universal Time"
-msgstr ""
+msgstr "Coordinated Universal Time"
 
 #: cms/templates/edit_subsection.html
 msgid "UTC"
-msgstr ""
+msgstr "UTC"
 
 #: cms/templates/edit_subsection.html
 msgid ""
 "The date above differs from the release date of {name}, which is unset."
 msgstr ""
+"Tanggal di atas berbeda dengan tanggal rilis {name}, yang belum ditentukan."
 
 #: cms/templates/edit_subsection.html
 msgid "The date above differs from the release date of {name} - {start_time}"
-msgstr ""
+msgstr "Tanggal di atas berbeda dengan tanggal rilis {name} - {start_time}"
 
 #: cms/templates/edit_subsection.html
 msgid "Sync to {name}."
-msgstr ""
+msgstr "Sinkronkan dengan {name}"
 
 #: cms/templates/edit_subsection.html
 msgid "Graded as:"
-msgstr ""
+msgstr "Dinilai sebagai:"
 
 #: cms/templates/edit_subsection.html
 msgid "Set a due date"
-msgstr ""
+msgstr "Tentukan tanggal berakhir"
 
 #: cms/templates/edit_subsection.html
 msgid "Due Day"
-msgstr ""
+msgstr "Hari Berakhir"
 
 #: cms/templates/edit_subsection.html
 msgid "Due Time"
-msgstr ""
+msgstr "Waktu Berakhir"
 
 #: cms/templates/edit_subsection.html
 msgid "Remove due date"
-msgstr ""
+msgstr "Hapus tanggal berakhir"
 
 #: cms/templates/edit_subsection.html
 msgid "Preview Drafts"
-msgstr ""
+msgstr "Pratinjau Rancangan"
 
 #: cms/templates/error.html
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Kesalahan Server Internal"
 
 #: cms/templates/error.html
 msgid "The Page You Requested Page Cannot be Found"
-msgstr ""
+msgstr "Halaman Yang Anda Minta Tidak Dapat Ditemukan"
 
 #: cms/templates/error.html
 msgid ""
@@ -12172,15 +12334,19 @@ msgid ""
 "having problems accessing things, please feel free to {link_start}contact "
 "Studio support{link_end} for further help."
 msgstr ""
+"Mohon Maaf. Kami tidak temukan halaman Studio yang Anda cari. Anda mungkin "
+"ingin kembali ke Dashboard Studio dan coba lagi. Jika masih bermasalah dan "
+"ingin bantuan lebih lanjut, silakan mengontak {link_start}kontak support "
+"Studio{link_end}."
 
 #: cms/templates/error.html cms/templates/error.html
 #: cms/templates/widgets/footer.html cms/templates/widgets/sock.html
 msgid "Use our feedback tool, Tender, to share your feedback"
-msgstr ""
+msgstr "Gunakan alat bantu kami, Tender, untuk membagi umpan balik Anda"
 
 #: cms/templates/error.html
 msgid "The Server Encountered an Error"
-msgstr ""
+msgstr "Server Mengalami Masalah"
 
 #: cms/templates/error.html
 msgid ""
@@ -12190,18 +12356,22 @@ msgid ""
 "please feel free to {link_start}contact Studio support{link_end} for further"
 " help."
 msgstr ""
+"Kami mohon maaf. Ada masalah dengan server saat memproses permintaan "
+"terakhir Anda. Mungkin Anda ingin kembali ke Dashboard dan mencoba lagi. "
+"Jika masih bermasalah dan ingin bantuan lebih lanjut, silakan mengontak "
+"{link_start}kontak support Studio{link_end}."
 
 #: cms/templates/error.html
 msgid "Back to dashboard"
-msgstr ""
+msgstr "Kembali ke dashboard"
 
 #: cms/templates/export.html cms/templates/export.html
 msgid "Course Export"
-msgstr ""
+msgstr "Ekspor Kursus"
 
 #: cms/templates/export.html
 msgid "About Exporting Courses"
-msgstr ""
+msgstr "Tentang Ekspor Kursus"
 
 #. Translators: ".tar.gz" is a file extension, and should not be translated
 #: cms/templates/export.html
@@ -12234,11 +12404,11 @@ msgstr ""
 
 #: cms/templates/export.html
 msgid "Individual Problems"
-msgstr ""
+msgstr "Masalah Individu"
 
 #: cms/templates/export.html
 msgid "Course Assets"
-msgstr ""
+msgstr "Aset Kursus"
 
 #: cms/templates/export.html
 msgid "Course Settings"
@@ -12351,11 +12521,11 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Welcome"
-msgstr ""
+msgstr "Selamat Datang"
 
 #: cms/templates/howitworks.html
 msgid "Welcome to"
-msgstr ""
+msgstr "Selamat Datang di "
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12364,15 +12534,15 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Studio's Many Features"
-msgstr ""
+msgstr "Fitur-fitur Studio"
 
 #: cms/templates/howitworks.html cms/templates/howitworks.html
 msgid "Studio Helps You Keep Your Courses Organized"
-msgstr ""
+msgstr "Studio Membantu Kursus Anda Teratur"
 
 #: cms/templates/howitworks.html
 msgid "Keeping Your Course Organized"
-msgstr ""
+msgstr "Menjaga Keteraturan Kursus Anda"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12380,20 +12550,25 @@ msgid ""
 "<strong>Outline</strong> editor, providing a simple hierarchy and easy drag "
 "and drop to help you and your students stay organized."
 msgstr ""
+"Pengorganisasian adalah bagian penting dari kursus Anda. Studio menawarkan "
+"editor <strong>Garis Besar</strong>, memberi hierarki sederhana dengan drag "
+"and drop mudah agar Anda dan siswa tetap terorganisir."
 
 #: cms/templates/howitworks.html
 msgid "Simple Organization For Content"
-msgstr ""
+msgstr "Pengelompokan Sederhana untuk Konten"
 
 #: cms/templates/howitworks.html
 msgid ""
 "Studio uses a simple hierarchy of <strong>sections</strong> and "
 "<strong>subsections</strong> to organize your content."
 msgstr ""
+"Studio menggunakan hierarki <strong>bagian</strong> dan <strong>sub "
+"bagian</strong> sederhana untuk mengorganisasi konten Anda."
 
 #: cms/templates/howitworks.html
 msgid "Change Your Mind Anytime"
-msgstr ""
+msgstr "Mengubah Pikiran Anda Kapan saja"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12403,18 +12578,20 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Go A Week Or A Semester At A Time"
-msgstr ""
+msgstr "Jalankan Per Minggu atau Per Semester"
 
 #: cms/templates/howitworks.html
 msgid ""
 "Build and release <strong>sections</strong> to your students incrementally. "
 "You don't have to have it all done at once."
 msgstr ""
+"Bangun dan rilis <strong>bagian</strong> untuk siswa Anda secara berurutan. "
+"Anda tidak perlu melakukannya sekaligus."
 
 #: cms/templates/howitworks.html cms/templates/howitworks.html
 #: cms/templates/howitworks.html
 msgid "Learning is More than Just Lectures"
-msgstr ""
+msgstr "Belajar itu Lebih dari sekedar Pengajaran"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12425,7 +12602,7 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Create Learning Pathways"
-msgstr ""
+msgstr "Membuat Jalur Pembelajaran"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12435,17 +12612,19 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Work Visually, Organize Quickly"
-msgstr ""
+msgstr "Kerja secara Visual, Atur secara Cepat"
 
 #: cms/templates/howitworks.html
 msgid ""
 "Work visually and see exactly what your students will see. Reorganize all "
 "your content with drag and drop."
 msgstr ""
+"Kerja secara visual dan lihat secara persis apa yang siswa Anda akan lihat. "
+"Atur ulang semua isi Anda dengan seret dan lepas"
 
 #: cms/templates/howitworks.html
 msgid "A Broad Library of Problem Types"
-msgstr ""
+msgstr "Pustaka Luas dari Jenis Masalah"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12460,7 +12639,7 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Simple, Fast, and Incremental Publishing. With Friends."
-msgstr ""
+msgstr "Mudah, Cepat, dan Publikasi Bertahap. Dengan Kawan."
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12472,7 +12651,7 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Instant Changes"
-msgstr ""
+msgstr "Perubahan Cepat"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12492,7 +12671,7 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Work in Teams"
-msgstr ""
+msgstr "Bekerja di dalam Tim"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12502,19 +12681,19 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Sign Up for Studio Today!"
-msgstr ""
+msgstr "Daftar di Studio Hari ini!"
 
 #: cms/templates/howitworks.html
 msgid "Sign Up &amp; Start Making an edX Course"
-msgstr ""
+msgstr "Daftar &amp; Mulai Menyusun Kursus edX"
 
 #: cms/templates/howitworks.html
 msgid "Already have a Studio Account? Sign In"
-msgstr ""
+msgstr "Sudah punya Akun Studio? Masuk"
 
 #: cms/templates/howitworks.html
 msgid "Outlining Your Course"
-msgstr ""
+msgstr "Garis-bawahi Kursus Anda"
 
 #: cms/templates/howitworks.html
 msgid ""
@@ -12524,23 +12703,27 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "More than Just Lectures"
-msgstr ""
+msgstr "Lebih dari hanya Sekedar Pengajaran"
 
 #: cms/templates/howitworks.html
 msgid ""
 "Quickly create videos, text snippets, inline discussions, and a variety of "
 "problem types."
 msgstr ""
+"Buat secara cepat video, potongan teks, diskusi inline, dan beragam jenis "
+"masalah."
 
 #: cms/templates/howitworks.html
 msgid "Publishing on Date"
-msgstr ""
+msgstr "Publikasikan di Tanggal"
 
 #: cms/templates/howitworks.html
 msgid ""
 "Simply set the date of a section or subsection, and Studio will publish it "
 "to your students for you."
 msgstr ""
+"Cukup atur tanggal tanggal bagian atau subbagian, dan Studio akan "
+"mempublikasinya pada siswa Anda."
 
 #: cms/templates/html_error.html
 msgid "We're having trouble rendering your component"
@@ -12554,7 +12737,7 @@ msgstr ""
 
 #: cms/templates/import.html cms/templates/import.html
 msgid "Course Import"
-msgstr ""
+msgstr "Impor Kursus"
 
 #: cms/templates/import.html
 msgid ""
@@ -12624,7 +12807,7 @@ msgstr ""
 
 #: cms/templates/import.html
 msgid "Verifying"
-msgstr ""
+msgstr "Memverifikasi"
 
 #: cms/templates/import.html
 msgid "Reviewing semantics, syntax, and required data"
@@ -12632,7 +12815,7 @@ msgstr ""
 
 #: cms/templates/import.html
 msgid "Updating Course"
-msgstr ""
+msgstr "Memperbarui Kursus"
 
 #: cms/templates/import.html
 msgid ""
@@ -12642,15 +12825,15 @@ msgstr ""
 
 #: cms/templates/import.html
 msgid "Success"
-msgstr ""
+msgstr "Sukses"
 
 #: cms/templates/import.html
 msgid "Your imported content has now been integrated into this course"
-msgstr ""
+msgstr "Konten yang Anda impor kini telah diintegrasikan ke dalam kursus ini"
 
 #: cms/templates/import.html
 msgid "View Updated Outline"
-msgstr ""
+msgstr "Lihat garis besar yang diperbarui"
 
 #: cms/templates/import.html
 msgid "Why import a course?"
@@ -12705,7 +12888,7 @@ msgstr ""
 
 #: cms/templates/import.html
 msgid "Your import has failed."
-msgstr ""
+msgstr "Impor Anda gagal"
 
 #: cms/templates/import.html cms/templates/import.html
 msgid "Choose new file"
@@ -12718,23 +12901,23 @@ msgstr ""
 #: cms/templates/index.html cms/templates/index.html
 #: cms/templates/widgets/header.html
 msgid "My Courses"
-msgstr ""
+msgstr "Kursus Saya"
 
 #: cms/templates/index.html
 msgid "New Course"
-msgstr ""
+msgstr "Kursus Baru"
 
 #: cms/templates/index.html
 msgid "Email staff to create course"
-msgstr ""
+msgstr "Email staff untuk membuat kursus"
 
 #: cms/templates/index.html
 msgid "Welcome, {0}!"
-msgstr ""
+msgstr "Selamat datang, {0}!"
 
 #: cms/templates/index.html
 msgid "Here are all of the courses you currently have access to in Studio:"
-msgstr ""
+msgstr "Ini adalah semua kursus yang Anda punya akses di Studio"
 
 #: cms/templates/index.html
 msgid "You currently aren't associated with any Studio Courses."
@@ -12746,15 +12929,15 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "Create a New Course"
-msgstr ""
+msgstr "Buat Kursus Baru"
 
 #: cms/templates/index.html
 msgid "Required Information to Create a New Course"
-msgstr ""
+msgstr "Informasi yang Dibutuhkan untuk Membuat Kursus Baru"
 
 #: cms/templates/index.html
 msgid "e.g. Introduction to Computer Science"
-msgstr ""
+msgstr "mis. Pengantar Ilmu Komputer"
 
 #: cms/templates/index.html
 msgid "The public display name for your course."
@@ -12762,7 +12945,7 @@ msgstr ""
 
 #: cms/templates/index.html cms/templates/settings.html
 msgid "Organization"
-msgstr ""
+msgstr "Lembaga"
 
 #: cms/templates/index.html
 msgid "e.g. UniversityX or OrganizationX"
@@ -12813,7 +12996,7 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "Create"
-msgstr ""
+msgstr "Buat"
 
 #: cms/templates/index.html
 msgid "Course Run:"
@@ -12832,7 +13015,7 @@ msgstr ""
 
 #: cms/templates/index.html cms/templates/index.html
 msgid "Create Your First Course"
-msgstr ""
+msgstr "Buat Kursus Pertama Anda"
 
 #: cms/templates/index.html
 msgid "Your new course is just a click away!"
@@ -12857,7 +13040,7 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "Request the Ability to Create Courses"
-msgstr ""
+msgstr "Minta Kemampuan untuk Membuat Kursus"
 
 #: cms/templates/index.html cms/templates/index.html
 msgid "Your Course Creator Request Status"
@@ -12920,21 +13103,23 @@ msgstr ""
 
 #: cms/templates/index.html cms/templates/index.html cms/templates/index.html
 msgid "Can I create courses in Studio?"
-msgstr ""
+msgstr "Dapatkah saya membuat kursus di Studio?"
 
 #: cms/templates/index.html
 msgid "In order to create courses in Studio, you must"
-msgstr ""
+msgstr "Untuk membuat kursus di Studio, Anda harus"
 
 #: cms/templates/index.html
 msgid "contact edX staff to help you create a course"
-msgstr ""
+msgstr "kontak staf edX untuk membantu Anda membuat kursus"
 
 #: cms/templates/index.html
 msgid ""
 "In order to create courses in Studio, you must have course creator "
 "privileges to create your own course."
 msgstr ""
+"Untuk membuat kursus di Studio, Anda harus memiliki hak pembuat kursus untuk"
+" membuat kursus sendiri."
 
 #: cms/templates/index.html
 msgid "Your request to author courses in studio has been denied. Please"
@@ -12942,15 +13127,15 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "contact edX Staff with further questions"
-msgstr ""
+msgstr "kontak staf edX untuk pertanyaan lebih lanjut"
 
 #: cms/templates/index.html
 msgid "Thanks for signing up, %(name)s!"
-msgstr ""
+msgstr "Terima kasih telah mendaftar, %(name)s!"
 
 #: cms/templates/index.html
 msgid "We need to verify your email address"
-msgstr ""
+msgstr "Kami perlu memverifikasi alamat surel Anda"
 
 #: cms/templates/index.html
 msgid ""
@@ -12961,7 +13146,7 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "Need help?"
-msgstr ""
+msgstr "Butuh bantuan?"
 
 #: cms/templates/index.html
 msgid ""
@@ -12972,23 +13157,23 @@ msgstr ""
 
 #: cms/templates/login.html cms/templates/widgets/header.html
 msgid "Sign In"
-msgstr ""
+msgstr "Masuk"
 
 #: cms/templates/login.html cms/templates/login.html
 msgid "Sign In to edX Studio"
-msgstr ""
+msgstr "Masuk ke edX Studio"
 
 #: cms/templates/login.html
 msgid "Don't have a Studio Account? Sign up!"
-msgstr ""
+msgstr "tidak punya Akun Studio? Daftar!"
 
 #: cms/templates/login.html
 msgid "Required Information to Sign In to edX Studio"
-msgstr ""
+msgstr "Informasi Tang Dibutuhkan untuk Daftar di edX Studio"
 
 #: cms/templates/login.html
 msgid "Studio Support"
-msgstr ""
+msgstr "Dukungan Studio"
 
 #: cms/templates/login.html
 msgid ""
@@ -12999,13 +13184,13 @@ msgstr ""
 
 #: cms/templates/manage_users.html
 msgid "Course Team Settings"
-msgstr ""
+msgstr "Setelan Tim Kursus"
 
 #: cms/templates/manage_users.html cms/templates/settings.html
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
 #: cms/templates/widgets/header.html
 msgid "Course Team"
-msgstr ""
+msgstr "Tim Kursus"
 
 #: cms/templates/manage_users.html
 msgid "New Team Member"
@@ -13035,7 +13220,7 @@ msgstr ""
 
 #: cms/templates/manage_users.html
 msgid "Add User"
-msgstr ""
+msgstr "Tambahkan Pengguna"
 
 #: cms/templates/manage_users.html cms/templates/manage_users.html
 msgid "Current Role:"
@@ -13043,15 +13228,15 @@ msgstr ""
 
 #: cms/templates/manage_users.html cms/templates/manage_users.html
 msgid "You!"
-msgstr ""
+msgstr "Anda!"
 
 #: cms/templates/manage_users.html
 msgid "Staff"
-msgstr ""
+msgstr "Pegawai"
 
 #: cms/templates/manage_users.html
 msgid "send an email message to {email}"
-msgstr ""
+msgstr "Mengirim surel ke {email}"
 
 #: cms/templates/manage_users.html
 msgid "Promote another member to Admin to remove your admin rights"
@@ -13063,11 +13248,11 @@ msgstr ""
 
 #: cms/templates/manage_users.html
 msgid "Add Admin Access"
-msgstr ""
+msgstr "Tambahkan Akses Admin"
 
 #: cms/templates/manage_users.html
 msgid "Delete the user, {username}"
-msgstr ""
+msgstr "Hapus pengguna, {username}"
 
 #: cms/templates/manage_users.html
 msgid "Add Team Members to This Course"
@@ -13112,7 +13297,7 @@ msgstr ""
 
 #: cms/templates/overview.html cms/templates/overview.html
 msgid "Course Outline"
-msgstr ""
+msgstr "Garis Besar Kursus"
 
 #: cms/templates/overview.html cms/templates/overview.html
 #: cms/templates/overview.html
@@ -13121,7 +13306,7 @@ msgstr ""
 
 #: cms/templates/overview.html cms/templates/overview.html
 msgid "New Section Name"
-msgstr ""
+msgstr "Nama Bagian Baru"
 
 #: cms/templates/overview.html
 msgid "Add a new section name"
@@ -13129,19 +13314,19 @@ msgstr ""
 
 #: cms/templates/overview.html cms/templates/overview.html
 msgid "Delete this section"
-msgstr ""
+msgstr "Hapus Bagian Ini"
 
 #: cms/templates/overview.html
 msgid "Drag to re-order"
-msgstr ""
+msgstr "Tarik untuk mengurutkan"
 
 #: cms/templates/overview.html cms/templates/overview.html
 msgid "New Subsection"
-msgstr ""
+msgstr "Sub Bagian Baru"
 
 #: cms/templates/overview.html cms/templates/widgets/units.html
 msgid "New Unit"
-msgstr ""
+msgstr "Unit Baru"
 
 #: cms/templates/overview.html
 msgid "You haven't added any sections to your course outline yet."
@@ -13153,11 +13338,11 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Collapse All Sections"
-msgstr ""
+msgstr "Lipat Semua Bagian"
 
 #: cms/templates/overview.html
 msgid "New Section"
-msgstr ""
+msgstr "Bagian Baru"
 
 #: cms/templates/overview.html
 msgid "This section is not scheduled for release"
@@ -13165,15 +13350,15 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Schedule"
-msgstr ""
+msgstr "Jadwal"
 
 #: cms/templates/overview.html
 msgid "Release date:"
-msgstr ""
+msgstr "Tanggal rilis:"
 
 #: cms/templates/overview.html
 msgid "Edit section release date"
-msgstr ""
+msgstr "Sunting bagian tanggal rilis"
 
 #: cms/templates/overview.html
 msgid "Delete section"
@@ -13189,7 +13374,7 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Delete this subsection"
-msgstr ""
+msgstr "Hapus sub bagian ini"
 
 #: cms/templates/overview.html
 msgid "Delete subsection"
@@ -13211,7 +13396,7 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Section Release Date"
-msgstr ""
+msgstr "Tanggal Rilis Bagian"
 
 #: cms/templates/overview.html
 msgid ""
@@ -13225,11 +13410,11 @@ msgstr ""
 
 #: cms/templates/register.html
 msgid "Sign Up for edX Studio"
-msgstr ""
+msgstr "Daftar edx Studio"
 
 #: cms/templates/register.html
 msgid "Already have a Studio Account? Sign in"
-msgstr ""
+msgstr "Sudah punya Akun Studio? Masuk"
 
 #: cms/templates/register.html
 msgid ""
@@ -13249,7 +13434,7 @@ msgstr ""
 
 #: cms/templates/register.html
 msgid "Your Location"
-msgstr ""
+msgstr "Lokasi Anda"
 
 #: cms/templates/register.html
 msgid "I agree to the {a_start} Terms of Service {a_end}"
@@ -13257,15 +13442,15 @@ msgstr ""
 
 #: cms/templates/register.html
 msgid "Create My Account &amp; Start Authoring Courses"
-msgstr ""
+msgstr "Buat Akun Saya &amp; Mulai Buat Kursus"
 
 #: cms/templates/register.html
 msgid "Common Studio Questions"
-msgstr ""
+msgstr "Pertanyaan Umum Studio"
 
 #: cms/templates/register.html
 msgid "Who is Studio for?"
-msgstr ""
+msgstr "Untuk siapa Studio?"
 
 #: cms/templates/register.html
 msgid ""
@@ -13273,10 +13458,14 @@ msgid ""
 "global edX platform. Our users are often faculty members, teaching "
 "assistants and course staff, and members of instructional technology groups."
 msgstr ""
+"Studio adalah untuk siapa saja yang ingin membuat kursus online yang "
+"memanfaatkan platform edX. Pengguna kami seringkali adalah dosen, asisten "
+"dan staf pengajar, dan anggota kelompok teknologi instruksional. "
 
 #: cms/templates/register.html
 msgid "How technically savvy do I need to be to create courses in Studio?"
 msgstr ""
+"Seberapa perlu saya paham teknologi untuk bisa membuat kursus di Studio?   "
 
 #: cms/templates/register.html
 msgid ""
@@ -13286,10 +13475,15 @@ msgid ""
 "technical background would be helpful. As always, we are here to help, so "
 "don't hesitate to dive right in."
 msgstr ""
+"Studio dirancang untuk mudah digunakan oleh hampir siapapun yang akrab "
+"dengan lingkungan penulisan berbasis web (Wordpress, Moodle, dll.). Tidak "
+"dibutuhkan pengetahuan pemrograman, tapi untuk beberapa fitur tingkat lebih "
+"lanjut, latar belakang teknis akan membantu. Seperti biasa, kami di sini "
+"untuk membantu, jadi jangan ragu untuk mencoba."
 
 #: cms/templates/register.html
 msgid "I've never authored a course online before. Is there help?"
-msgstr ""
+msgstr "Saya sebelumnya tidak pernah membuat kursus online. Adakah bantuan? "
 
 #: cms/templates/register.html
 msgid ""
@@ -13298,6 +13492,10 @@ msgid ""
 "running an online course. Additionally, we're always here to help, just drop"
 " us a note."
 msgstr ""
+"Tentu saja. Kami telah membuat kuliah online, edX101, yang menjelaskan "
+"sebagian praktek terbaik: dari memfilmkan video, membuat latihan, hingga "
+"dasar-dasar menjalankan kuliah online. Sebagai tambahan, kami selalu di sini"
+" untuk membantu, tanya saja."
 
 #: cms/templates/settings.html
 msgid "Schedule &amp; Details Settings"
@@ -13305,15 +13503,15 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Schedule & Details"
-msgstr ""
+msgstr "Jadwal & Detil"
 
 #: cms/templates/settings.html
 msgid "Basic Information"
-msgstr ""
+msgstr "Informasi Dasar"
 
 #: cms/templates/settings.html
 msgid "The nuts and bolts of your course"
-msgstr ""
+msgstr "Pernak pernik kursus Anda"
 
 #: cms/templates/settings.html cms/templates/settings.html
 #: cms/templates/settings.html
@@ -13330,15 +13528,15 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Send a note to students via email"
-msgstr ""
+msgstr "Kirimkan catatan ke siswa lewat email"
 
 #: cms/templates/settings.html
 msgid "Invite your students"
-msgstr ""
+msgstr "Undang siswa Anda"
 
 #: cms/templates/settings.html
 msgid "Promoting Your Course with edX"
-msgstr ""
+msgstr "Promosikan Kursus Anda dengan edX"
 
 #: cms/templates/settings.html
 msgid ""
@@ -13349,7 +13547,7 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Course Schedule"
-msgstr ""
+msgstr "Jadwal Kursus"
 
 #: cms/templates/settings.html
 msgid "Dates that control when your course can be viewed"
@@ -13357,51 +13555,51 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "First day the course begins"
-msgstr ""
+msgstr "Hari pertama kursus dimulai"
 
 #: cms/templates/settings.html
 msgid "Course Start Time"
-msgstr ""
+msgstr "Waktu Mulai Kursus"
 
 #: cms/templates/settings.html
 msgid "Course End Date"
-msgstr ""
+msgstr "Tanggal Selesai Kursus"
 
 #: cms/templates/settings.html
 msgid "Last day your course is active"
-msgstr ""
+msgstr "Hari terakhir kursus anda aktif"
 
 #: cms/templates/settings.html
 msgid "Course End Time"
-msgstr ""
+msgstr "Waktu Selesai Kursus"
 
 #: cms/templates/settings.html
 msgid "Enrollment Start Date"
-msgstr ""
+msgstr "Tanggal Mulai Pendaftaran"
 
 #: cms/templates/settings.html
 msgid "First day students can enroll"
-msgstr ""
+msgstr "Hari pertama siswa bisa mendaftar"
 
 #: cms/templates/settings.html
 msgid "Enrollment Start Time"
-msgstr ""
+msgstr "Waktu Mulai Pendaftaran"
 
 #: cms/templates/settings.html
 msgid "Enrollment End Date"
-msgstr ""
+msgstr "Hari Akhir Pendaftaran"
 
 #: cms/templates/settings.html
 msgid "Last day students can enroll"
-msgstr ""
+msgstr "Hari terakhir siswa bisa mendaftar"
 
 #: cms/templates/settings.html
 msgid "Enrollment End Time"
-msgstr ""
+msgstr "Waktu Akhir Pendaftaran"
 
 #: cms/templates/settings.html
 msgid "These Dates Are Not Used When Promoting Your Course"
-msgstr ""
+msgstr "Tanggal-tanggal Ini Tidak Digunakan Ketika Mempromosikan Kursus Anda"
 
 #: cms/templates/settings.html
 msgid ""
@@ -13414,11 +13612,11 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Introducing Your Course"
-msgstr ""
+msgstr "Mengenalkan Kursus Anda"
 
 #: cms/templates/settings.html
 msgid "Information for prospective students"
-msgstr ""
+msgstr "Informasi untuk siswa prospektif"
 
 #: cms/templates/settings.html
 msgid "Course Short Description"
@@ -13432,16 +13630,17 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Course Overview"
-msgstr ""
+msgstr "Ikhtisar Kursus"
 
 #: cms/templates/settings.html
 msgid "your course summary page"
-msgstr ""
+msgstr "halaman ringkasan kursus anda"
 
 #: cms/templates/settings.html
 msgid ""
 "Introductions, prerequisites, FAQs that are used on %s (formatted in HTML)"
 msgstr ""
+"Perkenalan, prasyarat, FAQ yang digunakan pada %s (diformat dalam HTML)"
 
 #: cms/templates/settings.html cms/templates/settings.html
 #: cms/templates/settings.html
@@ -13472,31 +13671,33 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Course Introduction Video"
-msgstr ""
+msgstr "Video Perkenalan Kursus"
 
 #: cms/templates/settings.html
 msgid "Delete Current Video"
-msgstr ""
+msgstr "Hapus Video Saat ini"
 
 #: cms/templates/settings.html
 msgid "Enter your YouTube video's ID (along with any restriction parameters)"
 msgstr ""
+"Masukkan ID-nya video Youtube anda (bersama dengan parameter pembatasan yang"
+" ada)"
 
 #: cms/templates/settings.html
 msgid "Requirements"
-msgstr ""
+msgstr "Kebutuhan"
 
 #: cms/templates/settings.html
 msgid "Expectations of the students taking this course"
-msgstr ""
+msgstr "Harapan untuk siswa yang mengambil kursus ini"
 
 #: cms/templates/settings.html
 msgid "Hours of Effort per Week"
-msgstr ""
+msgstr "Jumlah Jam Usaha per Minggu"
 
 #: cms/templates/settings.html
 msgid "Time spent on all course work"
-msgstr ""
+msgstr "Waktu dihabiskan untuk semua tugas kursus"
 
 #: cms/templates/settings.html
 msgid "How are these settings used?"
@@ -13519,18 +13720,18 @@ msgstr ""
 #: cms/templates/settings.html cms/templates/settings_advanced.html
 #: cms/templates/settings_graders.html
 msgid "Other Course Settings"
-msgstr ""
+msgstr "Setelan Kursus Lainnya"
 
 #: cms/templates/settings.html cms/templates/settings_advanced.html
 #: cms/templates/settings_graders.html cms/templates/widgets/header.html
 msgid "Grading"
-msgstr ""
+msgstr "Pemeringkatan"
 
 #: cms/templates/settings.html cms/templates/settings_advanced.html
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
 #: cms/templates/widgets/header.html
 msgid "Advanced Settings"
-msgstr ""
+msgstr "Setelan Tingkat Lanjut"
 
 #: cms/templates/settings_advanced.html
 msgid "Hide Deprecated Settings"
@@ -13542,21 +13743,24 @@ msgstr ""
 
 #: cms/templates/settings_advanced.html
 msgid "Your policy changes have been saved."
-msgstr ""
+msgstr "Perubahan kebijakan Anda telah disimpan."
 
 #: cms/templates/settings_advanced.html
 msgid "There was an error saving your information. Please see below."
 msgstr ""
+"Terjadi kesalahan saat menyimpan informasi anda. Harap lihat di bawah."
 
 #: cms/templates/settings_advanced.html
 msgid "Manual Policy Definition"
-msgstr ""
+msgstr "Definisi Kebijakan Manual"
 
 #: cms/templates/settings_advanced.html
 msgid ""
 "<strong>Warning</strong>: Do not modify these policies unless you are "
 "familiar with their purpose."
 msgstr ""
+"<strong>Peringatan</strong>: Jangan mengubah kebijakan-kebijakan berikut "
+"kecuali Anda familiar dengan maksudnya."
 
 #: cms/templates/settings_advanced.html
 msgid "What do advanced settings do?"
@@ -13585,39 +13789,39 @@ msgstr ""
 
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
 msgid "Details &amp; Schedule"
-msgstr ""
+msgstr "Detil &amp; Jadwal"
 
 #: cms/templates/settings_graders.html
 msgid "Grading Settings"
-msgstr ""
+msgstr "Setelan Pemeringkatan"
 
 #: cms/templates/settings_graders.html
 msgid "Overall Grade Range"
-msgstr ""
+msgstr "Rentang Pemeringkatan Keseluruhan"
 
 #: cms/templates/settings_graders.html
 msgid "Your overall grading scale for student final grades"
-msgstr ""
+msgstr "Skala pemeringkatan keseluruhan Anda untuk peringkat akhir siswa"
 
 #: cms/templates/settings_graders.html
 msgid "Grading Rules &amp; Policies"
-msgstr ""
+msgstr "Aturan  &amp; Kebijakan Pemeringkatan "
 
 #: cms/templates/settings_graders.html
 msgid "Deadlines, requirements, and logistics around grading student work"
-msgstr ""
+msgstr "Tenggat, persyaratan, dan logistik sekitar pemeringkatan tugas siswa"
 
 #: cms/templates/settings_graders.html
 msgid "Grace Period on Deadline:"
-msgstr ""
+msgstr "Periode Tenggang pada Tenggat:"
 
 #: cms/templates/settings_graders.html
 msgid "Leeway on due dates"
-msgstr ""
+msgstr "Kelonggaran saat tanggal akhir"
 
 #: cms/templates/settings_graders.html
 msgid "Assignment Types"
-msgstr ""
+msgstr "Tipe Tugas"
 
 #: cms/templates/settings_graders.html
 msgid "Categories and labels for any exercises that are gradable"
@@ -13664,7 +13868,7 @@ msgstr ""
 
 #: cms/templates/textbooks.html
 msgid "New Textbook"
-msgstr ""
+msgstr "Buku Teks Baru"
 
 #: cms/templates/textbooks.html
 msgid "Why should I break my textbook into chapters?"
@@ -13680,7 +13884,7 @@ msgstr ""
 
 #: cms/templates/textbooks.html
 msgid "What if my book isn't divided into chapters?"
-msgstr ""
+msgstr "Bagaimana bila buku saya tidak dibagi menjadi bab-bab?"
 
 #: cms/templates/textbooks.html
 msgid ""
@@ -13695,47 +13899,51 @@ msgstr ""
 
 #: cms/templates/unit.html cms/templates/ux/reference/unit.html
 msgid "Individual Unit"
-msgstr ""
+msgstr "Unit individu"
 
 #: cms/templates/unit.html
 msgid "You are editing a draft."
-msgstr ""
+msgstr "Anda sedang mengedit draft"
 
 #: cms/templates/unit.html
 msgid "This unit was originally published on {date}."
-msgstr ""
+msgstr "Unit ini aslinya dipublikasikan pada {date}."
 
 #: cms/templates/unit.html
 msgid "View the Live Version"
-msgstr ""
+msgstr "Lihat Versi Tayang"
 
 #: cms/templates/unit.html
 msgid "Unit Settings"
-msgstr ""
+msgstr "Setelan Unit"
 
 #: cms/templates/unit.html
 msgid "Visibility:"
-msgstr ""
+msgstr "Keterlihatan:"
 
 #: cms/templates/unit.html
 msgid "Public"
-msgstr ""
+msgstr "Publik"
 
 #: cms/templates/unit.html
 msgid "Private"
-msgstr ""
+msgstr "Privat"
 
 #: cms/templates/unit.html
 msgid ""
 "This unit has been published. To make changes, you must {link_start}edit a "
 "draft{link_end}."
 msgstr ""
+"Unit ini telah dipublikasikan. Untuk membuat perubahan, Anda harus "
+"{link_start}mengedit rancangan{link_end}"
 
 #: cms/templates/unit.html
 msgid ""
 "This is a draft of the published unit. To update the live version, you must "
 "{link_start}replace it with this draft{link_end}."
 msgstr ""
+"Ini adalah draft dari unit yang terpublikasi. Untuk memperbarui versi "
+"tayang, Anda harus {link_start}menggantinya dengan draft ini{link_end}"
 
 #: cms/templates/unit.html
 msgid ""
@@ -13751,11 +13959,11 @@ msgstr ""
 
 #: cms/templates/unit.html
 msgid "Delete Draft"
-msgstr ""
+msgstr "Hapus Draft"
 
 #: cms/templates/unit.html
 msgid "Unit Location"
-msgstr ""
+msgstr "Lokasi Unit"
 
 #: cms/templates/unit.html
 msgid "Unit Identifier:"
@@ -13816,7 +14024,7 @@ msgstr ""
 
 #: cms/templates/registration/activation_complete.html
 msgid "You can now {link_start}login{link_end}."
-msgstr ""
+msgstr "Anda kini bisa {link_start}login{link_end}."
 
 #: cms/templates/registration/reg_complete.html
 msgid ""
@@ -13826,47 +14034,47 @@ msgstr ""
 
 #: cms/templates/widgets/footer.html
 msgid "All rights reserved."
-msgstr ""
+msgstr "Hak cipta dilindungi."
 
 #: cms/templates/widgets/footer.html cms/templates/widgets/sock.html
 msgid "Contact Us"
-msgstr ""
+msgstr "Hubungi Kami"
 
 #: cms/templates/widgets/header.html
 msgid "Current Course:"
-msgstr ""
+msgstr "Kursus Saat Ini:"
 
 #: cms/templates/widgets/header.html
 msgid "{course_name}'s Navigation:"
-msgstr ""
+msgstr "Navigasi {course_name}:"
 
 #: cms/templates/widgets/header.html
 msgid "Outline"
-msgstr ""
+msgstr "Garis Besar"
 
 #: cms/templates/widgets/header.html
 msgid "Updates"
-msgstr ""
+msgstr "Pembaruan"
 
 #: cms/templates/widgets/header.html
 msgid "Schedule &amp; Details"
-msgstr ""
+msgstr "Detil Jadwal"
 
 #: cms/templates/widgets/header.html
 msgid "Checklists"
-msgstr ""
+msgstr "Ceklis"
 
 #: cms/templates/widgets/header.html
 msgid "Import"
-msgstr ""
+msgstr "Impor"
 
 #: cms/templates/widgets/header.html
 msgid "Export"
-msgstr ""
+msgstr "Ekspor"
 
 #: cms/templates/widgets/header.html
 msgid "Help &amp; Account Navigation"
-msgstr ""
+msgstr "Navigasi Bantuan &amp; Akun"
 
 #: cms/templates/widgets/header.html cms/templates/widgets/header.html
 msgid "Contextual Online Help"
@@ -13874,15 +14082,15 @@ msgstr ""
 
 #: cms/templates/widgets/header.html
 msgid "Currently signed in as:"
-msgstr ""
+msgstr "Saat ini masuk sebagai:"
 
 #: cms/templates/widgets/header.html
 msgid "Sign Out"
-msgstr ""
+msgstr "Keluar"
 
 #: cms/templates/widgets/header.html
 msgid "You're not currently signed in"
-msgstr ""
+msgstr "Anda saat ini belum masuk"
 
 #: cms/templates/widgets/metadata-edit.html
 msgid "Launch Latex Source Compiler"
@@ -13896,12 +14104,12 @@ msgstr ""
 #: cms/templates/widgets/problem-edit.html
 #: cms/templates/widgets/problem-edit.html
 msgid "Multiple Choice"
-msgstr ""
+msgstr "Pilihan Ganda"
 
 #: cms/templates/widgets/problem-edit.html
 #: cms/templates/widgets/problem-edit.html
 msgid "Checkboxes"
-msgstr ""
+msgstr "Centangan"
 
 #: cms/templates/widgets/problem-edit.html
 #: cms/templates/widgets/problem-edit.html
@@ -13925,7 +14133,7 @@ msgstr ""
 
 #: cms/templates/widgets/problem-edit.html
 msgid "Advanced Editor"
-msgstr ""
+msgstr "Editor Tingkat Lanjut"
 
 #: cms/templates/widgets/problem-edit.html
 msgid "Toggle Cheatsheet"
@@ -13993,11 +14201,11 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "Ini sebuah string kunci"
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
-msgstr ""
+msgstr "dibuat"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
@@ -14006,10 +14214,12 @@ msgstr ""
 #: wiki/forms.py
 msgid "Initial title of the article. May be overridden with revision titles."
 msgstr ""
+"Judul awal artikel. Mungkin tidak sesuai dengan judul-judul yang telah "
+"direvisi."
 
 #: wiki/forms.py
 msgid "Type in some contents"
-msgstr ""
+msgstr "Tuliskan sebagian isi artikel Anda"
 
 #: wiki/forms.py
 msgid ""
@@ -14017,19 +14227,24 @@ msgid ""
 "can use more complex features like adding plugins, meta data, related "
 "articles etc..."
 msgstr ""
+"Ini hanya isi awal artikel Anda. Setelah menciptakan itu, Anda dapat "
+"menggunakan fitur yang lebih kompleks seperti menambahkan plugin, meta data,"
+" artikel terkait dll..."
 
 #: wiki/forms.py wiki/forms.py
 msgid "Contents"
-msgstr ""
+msgstr "Isi"
 
 #: wiki/forms.py wiki/forms.py
 msgid "Summary"
-msgstr ""
+msgstr "Rangkuman"
 
 #: wiki/forms.py
 msgid ""
 "Give a short reason for your edit, which will be stated in the revision log."
 msgstr ""
+"Berikan alasan singkat perihal perubahan yang anda lakukan, hal tersebut "
+"akan dicantumkan dalam log revisi."
 
 #: wiki/forms.py
 msgid ""
@@ -14037,18 +14252,21 @@ msgid ""
 "have been automatically merged with the new contents. Please review the text"
 " below."
 msgstr ""
+"Saat Anda mengedit, seseorang telah mengubah revisi yang dibuat. Isi yang "
+"Anda ubah telah disatukan secara otomatis dengan isi yang baru. Silakan "
+"tinjau teks di bawah ini."
 
 #: wiki/forms.py
 msgid "No changes made. Nothing to save."
-msgstr ""
+msgstr "Tidak ada perubahan yang dilakukan. Tidak ada yang disimpan."
 
 #: wiki/forms.py
 msgid "Select an option"
-msgstr ""
+msgstr "Pilih opsi"
 
 #: wiki/forms.py
 msgid "Slug"
-msgstr ""
+msgstr "Slug"
 
 #: wiki/forms.py
 msgid ""
@@ -14056,18 +14274,21 @@ msgid ""
 "alphanumeric characters and - or _. Note that you cannot change the slug "
 "after creating the article."
 msgstr ""
+"Artikel Anda dapat ditemukan disini. Hanya gunakan karakter alfanumerik saja"
+" dan - atau _. Mohon diperhatikan bahwa Anda tidak dapat mengubah slug "
+"setelah membuat artikel."
 
 #: wiki/forms.py
 msgid "Write a brief message for the article's history log."
-msgstr ""
+msgstr "Tulislah pesan singkat untuk log riwayat artikel."
 
 #: wiki/forms.py
 msgid "A slug may not begin with an underscore."
-msgstr ""
+msgstr "Sebuah slug tidak boleh dimulai dengan garis bawah."
 
 #: wiki/forms.py
 msgid "A deleted article with slug \"%s\" already exists."
-msgstr ""
+msgstr "A deleted article with slug \"%s\" already exists."
 
 #: wiki/forms.py
 msgid "A slug named \"%s\" already exists."
@@ -14075,11 +14296,11 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Yes, I am sure"
-msgstr ""
+msgstr "Ya, saya yakin"
 
 #: wiki/forms.py
 msgid "Purge"
-msgstr ""
+msgstr "Pembersihan"
 
 #: wiki/forms.py
 msgid ""
@@ -14091,39 +14312,41 @@ msgstr ""
 #: wiki/forms.py wiki/plugins/attachments/forms.py
 #: wiki/plugins/images/forms.py
 msgid "You are not sure enough!"
-msgstr ""
+msgstr "Anda tidak cukup yakin!"
 
 #: wiki/forms.py
 msgid "While you tried to delete this article, it was modified. TAKE CARE!"
 msgstr ""
+"Artikel ini sedang diubah saat Anda mencoba untuk menghapusnya. PERIKSA "
+"KEMBALI!"
 
 #: wiki/forms.py
 msgid "Lock article"
-msgstr ""
+msgstr "Kunci artikel"
 
 #: wiki/forms.py
 msgid "Deny all users access to edit this article."
-msgstr ""
+msgstr "Tolak semua akses pengguna untuk mengedit artikel ini."
 
 #: wiki/forms.py
 msgid "Permissions"
-msgstr ""
+msgstr "izin"
 
 #: wiki/forms.py
 msgid "Owner"
-msgstr ""
+msgstr "Pemilik"
 
 #: wiki/forms.py
 msgid "Enter the username of the owner."
-msgstr ""
+msgstr "Masukkan username pemilik."
 
 #: wiki/forms.py
 msgid "(none)"
-msgstr ""
+msgstr "(none)"
 
 #: wiki/forms.py
 msgid "Inherit permissions"
-msgstr ""
+msgstr "Mendapat izin"
 
 #: wiki/forms.py
 msgid ""
@@ -14133,36 +14356,36 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Permission settings for the article were updated."
-msgstr ""
+msgstr "Pengaturan izin untuk artikel telah diperbarui."
 
 #: wiki/forms.py
 msgid "Your permission settings were unchanged, so nothing saved."
-msgstr ""
+msgstr "Pengaturan izin Anda tidak berubah, jadi tidak ada yang disimpan."
 
 #: wiki/forms.py
 msgid "No user with that username"
-msgstr ""
+msgstr "Nama pengguna tidak terdaftar"
 
 #: wiki/forms.py
 msgid "Article locked for editing"
-msgstr ""
+msgstr "Artikel dikunci untuk pengeditan"
 
 #: wiki/forms.py
 msgid "Article unlocked for editing"
-msgstr ""
+msgstr "Artikel dibuka untuk pengeditan"
 
 #: wiki/forms.py
 msgid "Filter..."
-msgstr ""
+msgstr "Filter..."
 
 #: wiki/core/plugins/base.py
 msgid "Settings for plugin"
-msgstr ""
+msgstr "Pengaturan plugin"
 
 #: wiki/models/article.py wiki/models/pluginbase.py
 #: wiki/plugins/attachments/models.py
 msgid "current revision"
-msgstr ""
+msgstr "revisi saat ini"
 
 #: wiki/models/article.py
 msgid ""
@@ -14172,7 +14395,7 @@ msgstr ""
 
 #: wiki/models/article.py
 msgid "modified"
-msgstr ""
+msgstr "telah dirubah"
 
 #: wiki/models/article.py
 msgid "Article properties last modified"
@@ -14180,7 +14403,7 @@ msgstr ""
 
 #: wiki/models/article.py
 msgid "owner"
-msgstr ""
+msgstr "Pemilik"
 
 #: wiki/models/article.py
 msgid ""
@@ -14190,7 +14413,7 @@ msgstr ""
 
 #: wiki/models/article.py
 msgid "group"
-msgstr ""
+msgstr "grup"
 
 #: wiki/models/article.py
 msgid ""
@@ -14584,7 +14807,7 @@ msgstr ""
 
 #: wiki/views/article.py
 msgid "New title"
-msgstr ""
+msgstr "Judul baru"
 
 #: wiki/views/article.py
 msgid "Merge between Revision #%(r1)d and Revision #%(r2)d"

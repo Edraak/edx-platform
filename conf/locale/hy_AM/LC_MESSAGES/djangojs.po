@@ -69,7 +69,7 @@ msgstr ""
 #: cms/templates/js/course_grade_policy.underscore
 #: cms/templates/js/show-textbook.underscore
 msgid "Delete"
-msgstr ""
+msgstr "Ջնջել"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -144,7 +144,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "unanswered"
-msgstr ""
+msgstr "Անպատասխան"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Status: unsubmitted"
@@ -181,6 +181,7 @@ msgstr ""
 msgid ""
 "Your response has been submitted. Please check back later for your grade."
 msgstr ""
+"Ձեր պատասխանը գրանցվել է: Գնահատականի համար խնդրում ենք այցելել ավելի ուշ:"
 
 #. Translators: this button is clicked to submit a student's rating of
 #. an evaluator's assessment
@@ -420,7 +421,7 @@ msgstr ""
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/templates/js/image-modal.underscore
 msgid "Close"
-msgstr ""
+msgstr "Փակել"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
@@ -580,7 +581,7 @@ msgstr ""
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js
 msgid "Community TA"
-msgstr ""
+msgstr "Միաջավայրի TA"
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
@@ -715,11 +716,11 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "Իմ նշումները"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
-msgstr ""
+msgstr "Դասախոս"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -729,7 +730,7 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "Փնտրել"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -780,7 +781,7 @@ msgstr ""
 #: cms/templates/js/show-textbook.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "Խմբագրել"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
@@ -943,8 +944,13 @@ msgstr ""
 
 #: lms/static/coffee/src/customwmd.js
 #: cms/templates/js/asset-library.underscore
+#, fuzzy
 msgid "Preview"
 msgstr ""
+"#-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#\n"
+"Նախատեսք\n"
+"#-#-#-#-#  underscore-studio.po (edx-platform)  #-#-#-#-#\n"
+"Նախադիտում"
 
 #: lms/static/coffee/src/customwmd.js
 msgid "Post body"
@@ -1001,11 +1007,11 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Username"
-msgstr ""
+msgstr "Օգտագործողի անուն"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Email"
-msgstr ""
+msgstr "էլ. փոստ"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -1153,7 +1159,7 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your email was successfully queued for sending."
-msgstr ""
+msgstr "Ձեր էլ. նամակը հաջողությամբ հերթագրվել է ուղարկման համար"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
@@ -1179,6 +1185,9 @@ msgid ""
 "classes, it may take up to an hour (or more, if other courses are "
 "simultaneously sending email) to send all emails."
 msgstr ""
+"Ձեր էլ. նամակը հաջողությամբ հերթագրվել է ուղարկման համար: Մեծ դասընթանցերի "
+"համար բոլոր նամակներն ուղարկելը կարող է տևել մինչև մեկ ժամ (կամ ավելի, եթե "
+"այլ դասընթացներ միաժամանակ նամակներ են ուղարկում):"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Error sending email."
@@ -1381,7 +1390,7 @@ msgstr ""
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Progress"
-msgstr ""
+msgstr "Առաջընթաց"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Back to problem list"
@@ -1761,7 +1770,7 @@ msgstr ""
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
-msgstr ""
+msgstr "Անուն"
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
@@ -1818,7 +1827,7 @@ msgstr ""
 
 #: cms/static/js/views/metadata.js
 msgid "Upload File"
-msgstr ""
+msgstr "Վերբեռնել ֆայլը"
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
@@ -2202,7 +2211,7 @@ msgstr ""
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
-msgstr ""
+msgstr "Փոխարինել"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore

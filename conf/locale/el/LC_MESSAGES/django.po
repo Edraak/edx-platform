@@ -72,7 +72,7 @@ msgstr ""
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/tabs.py common/lib/xmodule/xmodule/tabs.py
 msgid "Discussion"
-msgstr ""
+msgstr "Συζήτηση"
 
 #: cms/djangoapps/contentstore/views/component.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -85,27 +85,27 @@ msgstr ""
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Advanced"
-msgstr ""
+msgstr "Προχωρημένα"
 
 #: common/djangoapps/course_modes/models.py
 msgid "Honor Code Certificate"
-msgstr ""
+msgstr "Πιστοποιητικό κώδικα τιμής"
 
 #: common/djangoapps/course_modes/views.py common/djangoapps/student/views.py
 msgid "Enrollment is closed"
-msgstr ""
+msgstr "Τέλος εγγραφών"
 
 #: common/djangoapps/course_modes/views.py
 msgid "Enrollment mode not supported"
-msgstr ""
+msgstr "Η λειτουργία εγγραφής δεν υποστηρίζεται"
 
 #: common/djangoapps/course_modes/views.py
 msgid "Invalid amount selected."
-msgstr ""
+msgstr "Επιλέχθηκε μη έγκυρο ποσό."
 
 #: common/djangoapps/course_modes/views.py
 msgid "No selected price or selected price is too low."
-msgstr ""
+msgstr "Δεν έχει επιλεγεί τιμή ή επιλεγμένη τιμή είναι πολύ χαμηλή."
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Administrator"
@@ -121,17 +121,20 @@ msgstr ""
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Student"
-msgstr ""
+msgstr "Μαθητής"
 
 #: common/djangoapps/student/middleware.py
 msgid ""
 "Your account has been disabled. If you believe this was done in error, "
 "please contact us at {link_start}{support_email}{link_end}"
 msgstr ""
+"Ο λογαριασμός σας έχει απενεργοποιηθεί. Αν πιστεύετε ότι αυτό έγινε κατά "
+"λάθος, παρακαλούμε επικοινωνήστε μαζί μας στη διεύθυνση "
+"{link_start}{support_email}{link_end}"
 
 #: common/djangoapps/student/middleware.py
 msgid "Disabled Account"
-msgstr ""
+msgstr "Απενεργοποιημένος λογαριασμός"
 
 #: common/djangoapps/student/models.py
 msgid "Male"
@@ -182,11 +185,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
-msgstr ""
+msgstr "H ταυτότητα του μαθήματος δεν καθορίζεται"
 
 #: common/djangoapps/student/views.py
 msgid "Course id is invalid"
-msgstr ""
+msgstr "Λάθος ταυτότητα μαθήματος"
 
 #: common/djangoapps/student/views.py
 #: lms/templates/courseware/course_about.html
@@ -199,11 +202,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "Δεν είστε εγγεγραμμένος σε αυτο το μάθημα"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
-msgstr ""
+msgstr "Λάθος εγγραφή"
 
 #. Translators: provider_name is the name of an external, third-party user
 #. authentication service (like
@@ -218,6 +221,8 @@ msgstr ""
 #: common/djangoapps/student/views.py
 msgid "There was an error receiving your login information. Please email us."
 msgstr ""
+"Παρουσιάστηκε σφάλμα κατά τη λήψη πληροφοριών σύνδεσής σας. Παρακαλούμε να "
+"μας στείλετε μήνυμα."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -235,80 +240,84 @@ msgstr ""
 #: common/djangoapps/student/views.py
 msgid "Too many failed login attempts. Try again later."
 msgstr ""
+"Πάρα πολλές αποτυχημένες προσπάθειες σύνδεσης. Δοκιμάστε ξανά αργότερα."
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "Η διεύθηνση η κωδικός ειναι λάθος."
 
 #: common/djangoapps/student/views.py
 msgid ""
 "This account has not been activated. We have sent another activation "
 "message. Please check your e-mail for the activation instructions."
 msgstr ""
+"Αυτός ο λογαριασμός δεν έχει ενεργοποιηθεί. Έχουμε στείλει άλλο μήνυμα "
+"ενεργοποίησης. Παρακαλούμε ελέγξτε στο λογαριασμό σας το μήνυμα με της "
+"οδηγίες ενεργοποίησης."
 
 #: common/djangoapps/student/views.py
 msgid "Please enter a username"
-msgstr ""
+msgstr "Παρακαλώ εισάγετε ένα όνομα χρήστη"
 
 #: common/djangoapps/student/views.py
 msgid "Please choose an option"
-msgstr ""
+msgstr "Παρακαλώ επιλέξτε μια επιλογή"
 
 #: common/djangoapps/student/views.py
 msgid "User with username {} does not exist"
-msgstr ""
+msgstr "Ο χρήστης {} δεν υπάρχει"
 
 #: common/djangoapps/student/views.py
 msgid "Successfully disabled {}'s account"
-msgstr ""
+msgstr "Ο λογαριασμός {} απενεργοποιήθηκε επιτυχώς"
 
 #: common/djangoapps/student/views.py
 msgid "Successfully reenabled {}'s account"
-msgstr ""
+msgstr "Ο λογαριασμός {} επανενεργοποιήθηκε επιτυχώς"
 
 #: common/djangoapps/student/views.py
 msgid "Unexpected account status"
-msgstr ""
+msgstr "Μη αναμενόμενη κατάσταση λογαρισμού"
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Public Username '{username}' already exists."
-msgstr ""
+msgstr "Ο λογαριασμός με όνομα χρήστη '{username}' υπάρχει ήδη."
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
-msgstr ""
+msgstr "Ο λογαριασμός με την διέυθηνση '{email}' υπάρχει ήδη."
 
 #: common/djangoapps/student/views.py
 msgid "Error (401 {field}). E-mail us."
-msgstr ""
+msgstr "Σφάλμα (401{field}). Στείλτε μας μήνυμα."
 
 #: common/djangoapps/student/views.py
 msgid "To enroll, you must follow the honor code."
-msgstr ""
+msgstr "Για να εγγραφείτε, θα πρέπει να ακολουθήσετε τον κώδικα τιμής."
 
 #: common/djangoapps/student/views.py
 msgid "You must accept the terms of service."
-msgstr ""
+msgstr "Πρέπει να αποδεχτείτε τους όρους χρήσης της υπηρεσίας."
 
 #: common/djangoapps/student/views.py
 msgid "Username must be minimum of two characters long"
-msgstr ""
+msgstr "Το όνομα χρήστη πρέπει να έχει μήκος τουλάχιστον δύο χαρακτήρες"
 
 #: common/djangoapps/student/views.py
 msgid "A properly formatted e-mail is required"
-msgstr ""
+msgstr "Μία έγκυρη διεύθυνση ηλεκτρονικού ταχυδρομείου απαιτείται"
 
 #: common/djangoapps/student/views.py
 msgid "Your legal name must be a minimum of two characters long"
-msgstr ""
+msgstr "Το νόμιμο όνομά σας πρέπει να έχει μήκος τουλάχιστον δύο χαρακτήρες"
 
 #: common/djangoapps/student/views.py
 msgid "A valid password is required"
-msgstr ""
+msgstr "Απαιτείται έγκυρος κωδικός"
 
 #: common/djangoapps/student/views.py
 msgid "Accepting Terms of Service is required"
-msgstr ""
+msgstr "Πρέπει να αποδεχτείτε τους όρους παροχής υπηρεσιών"
 
 #: common/djangoapps/student/views.py
 msgid "Agreeing to the Honor Code is required"
@@ -320,7 +329,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Your gender is required"
-msgstr ""
+msgstr "Το φύλο σας απαιτείται"
 
 #: common/djangoapps/student/views.py
 msgid "Your year of birth is required"
@@ -352,11 +361,12 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail is required."
-msgstr ""
+msgstr "Απαιτείται έγγυρη διεύθυνση ταχυδρομίου."
 
 #: common/djangoapps/student/views.py
 msgid "Username should only consist of A-Z and 0-9, with no spaces."
 msgstr ""
+"Το όνομα χρήστη θα πρέπει να αποτελείται μόνο απο A-Z και 0-9, χωρίς κενά."
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Password: "
@@ -364,11 +374,12 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Could not send activation e-mail."
-msgstr ""
+msgstr "Δεν ήταν δυνατή η αποστολή μηνύματος ενεργοποίησης."
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
 msgstr ""
+"Άγνωστο σφάλμα. Παρακαλώ στείλτε μας μήνυμα για να μας πείτε πώς συνέβη."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -396,27 +407,27 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "No inactive user with this e-mail exists"
-msgstr ""
+msgstr "Δεν υπάρχει κανένας ανενεργός χρήστης με αυτη την διέυθηνση"
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send reactivation email"
-msgstr ""
+msgstr "Μη έγγυρη αποστολή μηνύματος επανενεργοποίησης"
 
 #: common/djangoapps/student/views.py
 msgid "Invalid password"
-msgstr ""
+msgstr "Μη έγκυρος κωδικός πρόσβασης"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
-msgstr ""
+msgstr "Απαιτείται έγκυρη διεύθυνση."
 
 #: common/djangoapps/student/views.py
 msgid "An account with this e-mail already exists."
-msgstr ""
+msgstr "Ένας λογαριασμός με αυτή τη διεύθηνση υπάρχει ήδη."
 
 #: common/djangoapps/student/views.py
 msgid "Old email is the same as the new email."
-msgstr ""
+msgstr "Η παλιά διεύθηνση είναι ίδια με τη νέα διεύθηνση."
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send email activation link. Please try again later."
@@ -424,11 +435,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
-msgstr ""
+msgstr "Όνομα υποχρεωτικό"
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Invalid ID"
-msgstr ""
+msgstr "Μη έγγυρη ταυτότητα"
 
 #. Translators: the translation for "LONG_DATE_FORMAT" must be a format
 #. string for formatting dates in a long form.  For example, the
@@ -996,7 +1007,7 @@ msgstr ""
 #: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 msgid "or"
-msgstr ""
+msgstr "ή"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error getting student answer from {student_answers}"
@@ -1305,11 +1316,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Check"
-msgstr ""
+msgstr "Έλεγχος"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Final Check"
-msgstr ""
+msgstr "Τελικός Έλεγχος"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Checking..."
@@ -1356,7 +1367,7 @@ msgstr ""
 #. Translators: {msg} will be replaced with a problem's error message.
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Error: {msg}"
-msgstr ""
+msgstr "Σφάλμα: {msg}"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_hour} hour"
@@ -1386,12 +1397,14 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Your answers have been saved."
-msgstr ""
+msgstr "Οι απαντήσεις σας έχουν αποθηκευτεί."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
 "Your answers have been saved but not graded. Click 'Check' to grade them."
 msgstr ""
+"Οι απαντήσεις σας έχουν αποθηκευτεί αλλά δεν έχουν βαθμολογηθεί. Πατήστε "
+"«Έλεγχος» για να βαθμολογηθούν."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Refresh the page and make an attempt before resetting."
@@ -2157,7 +2170,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "Συντάκτης"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
@@ -2426,7 +2439,7 @@ msgstr ""
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
-msgstr ""
+msgstr "Σφάλμα"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Not Selected"
@@ -2544,7 +2557,7 @@ msgstr ""
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
-msgstr ""
+msgstr "Αναλυτικό πρόγραμμα"
 
 #. Translators: 'Instructor' appears on the tab that leads to the instructor
 #. dashboard, which is
@@ -2774,7 +2787,7 @@ msgstr ""
 #. graded
 #: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py
 msgid "Peer"
-msgstr ""
+msgstr "Συνάδελφος"
 
 #. Translators: "Not started" is used to communicate to a student that their
 #. response
@@ -3190,27 +3203,27 @@ msgstr ""
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Navigation"
-msgstr ""
+msgstr "Πλοήγηση"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "About these documents"
-msgstr ""
+msgstr "Σχετικά με αυτά τα έγγραφα"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Index"
-msgstr ""
+msgstr "Ευρετήριο"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/wiki/plugins/attachments/index.html
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Search"
-msgstr ""
+msgstr "Αναζήτηση"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/static_templates/copyright.html
 #: lms/templates/static_templates/copyright.html
 msgid "Copyright"
-msgstr ""
+msgstr "Πνευματική ιδιοκτησία"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3220,7 +3233,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/open_ended_problems/open_ended_flagged_problems.html
 msgid "Name"
-msgstr ""
+msgstr "Όνομα"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3233,7 +3246,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Username"
-msgstr ""
+msgstr "Όνομα χρήστη"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
@@ -3274,7 +3287,7 @@ msgstr ""
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
 msgid "Score"
-msgstr ""
+msgstr "Βαθμός"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "problems"
@@ -3316,7 +3329,7 @@ msgstr ""
 
 #: lms/djangoapps/courseware/features/video.py
 msgid "ERROR: No playable video sources found!"
-msgstr ""
+msgstr "ΣΦΑΛΜΑ: Δεν βρέθηκαν έγγυρες πηγές βίντεο!"
 
 #: lms/djangoapps/dashboard/git_import.py
 msgid ""
@@ -3421,15 +3434,15 @@ msgstr ""
 #. Translators: this means everything happened successfully, yay!
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "All ok!"
-msgstr ""
+msgstr "Όλα εντάξει!"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 msgid "Must provide username"
-msgstr ""
+msgstr "Πρέπει να εισάγετε όνομα χρήστη"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Must provide full name"
-msgstr ""
+msgstr "Πρέπει να εισάγετε ονοματεπώνυμο"
 
 #. Translators: Domain is an email domain, such as "@gmail.com"
 #: lms/djangoapps/dashboard/sysadmin.py
@@ -3652,16 +3665,18 @@ msgstr ""
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "allowed file types are '%(file_types)s'"
-msgstr ""
+msgstr "επιτρεπόμενοι τύποι αρχείων είναι '%(file_types)s'"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "maximum upload file size is %(file_size)sK"
-msgstr ""
+msgstr "μέγιστο μέγεθος αρχείου αποστολής είναι %(file_size)sΚ"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid ""
 "Error uploading file. Please contact the site administrator. Thank you."
 msgstr ""
+"Σφάλμα μεταφόρτωση του αρχείου. Παρακαλώ επικοινωνήστε με τον διαχειριστή "
+"της σελίδας.Ευχαριστώ."
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "Good"
@@ -3669,11 +3684,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User does not exist."
-msgstr ""
+msgstr "Ο χρήστης δεν υπάρχει."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Task is already running."
-msgstr ""
+msgstr "Η εργασία εκτελείται ήδη."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User ID"
@@ -3684,7 +3699,7 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Email"
-msgstr ""
+msgstr "Διεύθυνση ηλεκτρονικού ταχυδρομείου"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
@@ -3728,11 +3743,11 @@ msgstr ""
 #: lms/djangoapps/instructor/views/api.py
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 msgid "Complete"
-msgstr ""
+msgstr "Ολοκληρωμένα"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Incomplete"
-msgstr ""
+msgstr "Μη ολοκληρωμένο"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -3757,11 +3772,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Membership"
-msgstr ""
+msgstr "Συνδρομή μέλους"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Student Admin"
-msgstr ""
+msgstr "Διαχειριστής μαθητών"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Extensions"
@@ -3770,12 +3785,12 @@ msgstr ""
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Data Download"
-msgstr ""
+msgstr "Λήψη δεδομένων"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Analytics"
-msgstr ""
+msgstr "Αναλυτική"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
@@ -4027,7 +4042,7 @@ msgstr ""
 #: lms/templates/verify_student/_modal_editname.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Full Name"
-msgstr ""
+msgstr "Ονοματεπώνυμο"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "edX email"
@@ -4096,7 +4111,7 @@ msgstr ""
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/templates/wiki/plugins/attachments/index.html wiki/models/article.py
 msgid "deleted"
-msgstr ""
+msgstr "διεγραμένο"
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
@@ -4127,7 +4142,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor_task/views.py
 msgid "No message provided"
-msgstr ""
+msgstr "Δεν παρέχεται μήνυμα"
 
 #: lms/djangoapps/instructor_task/views.py
 msgid "Invalid task_output information found for instructor_task {0}: {1}"
@@ -4227,7 +4242,7 @@ msgstr ""
 #. status messages.
 #: lms/djangoapps/instructor_task/views.py
 msgid " (out of {total})"
-msgstr ""
+msgstr "(από {total} συνολικά)"
 
 #: lms/djangoapps/linkedin/templates/linkedin_email.html
 msgid ""
@@ -4235,6 +4250,9 @@ msgid ""
 "      Dear %(student_name)s,\n"
 "    "
 msgstr ""
+"\n"
+"      Αγαπητέ/ή %(student_name)s,\n"
+"    "
 
 #: lms/djangoapps/linkedin/templates/linkedin_email.html
 msgid ""
@@ -4265,72 +4283,81 @@ msgstr ""
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "AI Assessment"
-msgstr ""
+msgstr "Αξιολόγηση Al"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Peer Assessment"
-msgstr ""
+msgstr "Oμότιμη αξιολόγηση"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Not yet available"
-msgstr ""
+msgstr "Δεν είναι ακόμη διαθέσιμα"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Automatic Checker"
-msgstr ""
+msgstr "Αυτόματος ελεγκτής"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "Instructor Assessment"
-msgstr ""
+msgstr "Εκπαιδευτής αξιολόγησης"
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid ""
 "Error occurred while contacting the grading service.  Please notify course "
 "staff."
 msgstr ""
+"Παρουσιάστηκε σφάλμα κατά την επικοινωνία με τη υπηρεσία βαθμολόγησης. "
+"Παρακαλείστε να ενημερώσετε το προσωπικό του μαθήματος."
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid ""
 "Error occurred while contacting the grading service.  Please notify your edX"
 " point of contact."
 msgstr ""
+"Παρουσιάστηκε σφάλμα κατά την επικοινωνία με την υπηρεσία βαθμολόγησης. "
+"Παρακαλείστε να ενημερώσετε το EDX σημείο επαφής σας."
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "for course {0} and student {1}."
-msgstr ""
+msgstr "για το μάθημα {0} και μαθητή {1}."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
 "View all problems that require peer assessment in this particular course."
 msgstr ""
+"Προβολή όλων των προβλημάτων που απαιτούν αξιολόγηση από ομοτίμους σε αυτό "
+"το συγκεκριμένο μάθημα."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
 "View ungraded submissions submitted by students for the open ended problems "
 "in the course."
 msgstr ""
+"Προβολή αναβαθμολόγητων υποβολών που υποβλήθηκαν από τους μαθητές για τα "
+"προβλήματα του μαθήματος."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
 "View open ended problems that you have previously submitted for grading."
 msgstr ""
+"Προβολή προβλήματων που έχουν υποβληθεί στο παρελθόν για τηνβαθμολόγηση."
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "View submissions that have been flagged by students as inappropriate."
-msgstr ""
+msgstr "Δείτε υποβολές που έχουν επισημανθεί από τους μαθητές ως ανάρμοστες."
 
 #: lms/djangoapps/open_ended_grading/views.py
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "New submissions to grade"
-msgstr ""
+msgstr "Νέες παρατηρήσεις για βαθμολόγηση"
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "New grades have been returned"
-msgstr ""
+msgstr "Νέοι βαθμοί έχουν επιστραφεί"
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid "Submissions have been flagged for review"
-msgstr ""
+msgstr "Υποβολές επισημανθεί προς έλεγχο"
 
 #: lms/djangoapps/open_ended_grading/views.py
 msgid ""
@@ -4340,14 +4367,18 @@ msgid ""
 "        Please check back later for this.\n"
 "        "
 msgstr ""
+"\n"
+"Σφάλμα με την προετοιμασία ομότιμης αξιολόγησης.\n"
+"Δεν έχει υπάρξει μονάδα ταξινόμησης από ομοτίμους που έχει δημιουργήθη στο διδακτικό υλικό που θα σας επιτρέψει τη βαθμολόγηση στους άλλους.\n"
+"Παρακαλώ δοκιμάστε ξανά αργότερα για αυτό."
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Order Payment Confirmation"
-msgstr ""
+msgstr "Επιβεβαίωση Εντολής Πληρωμής"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Trying to add a different currency into the cart"
-msgstr ""
+msgstr "Προσπαθώντας να προσθέσετε ένα διαφορετικό συνάλλαγμα στο καλάθι"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Registration for Course: {course_name}"
@@ -4358,6 +4389,8 @@ msgid ""
 "Please visit your <a href=\"{dashboard_link}\">dashboard</a> to see your new"
 " enrollments."
 msgstr ""
+"Παρακαλούμε επισκεφθείτε το <a href=\"{dashboard_link}\">πίνακα</a> για να "
+"δείτε τις νέες εγγραφές σας."
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "[Refund] User-Requested Refund"
@@ -4365,11 +4398,11 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Mode {mode} does not exist for {course_id}"
-msgstr ""
+msgstr "Ο τρόπος {τρόπος} δεν υπάρχει για {το μάθημα}"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Certificate of Achievement, {mode_name} for course {course}"
-msgstr ""
+msgstr "Πιστοποιητικό Κατάρτισης, {τρόπος_όνομα} για το μάθημα {μάθημα}"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid ""
@@ -4378,18 +4411,24 @@ msgid ""
 "contact {billing_email}. Please include your order number in your e-mail. "
 "Please do NOT include your credit card information."
 msgstr ""
+"Σημείωση - θα διαθέτουν έως και 2 εβδομάδες από την έναρξη του μαθήματος για"
+" κατάργηση της εγγραφής σας από την επιλογή επικυρωμένου πιστοποιητικού και "
+"να λάβετε πλήρη επιστροφή χρημάτων. Για να λάβετε την επιστροφή σας, "
+"επικοινωνήστε στο {διεύθυνση_λογαριασμού}. Παρακαλείσθε να συμπεριλάβετε τον"
+" αριθμό της παραγγελίας σας στο e-mail σας. Παρακαλώ μην περιλαμβάνουν τα "
+"στοιχεία της πιστωτικής σας κάρτας."
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Order Number"
-msgstr ""
+msgstr "Αριθμός παραγγελίας"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Customer Name"
-msgstr ""
+msgstr "Όνομα πελάτη"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Date of Original Transaction"
-msgstr ""
+msgstr "Ημερομηνία αρχικής συναλλαγής"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Date of Refund"
@@ -4406,34 +4445,34 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Purchase Time"
-msgstr ""
+msgstr "Ώρα αγοράς"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Order ID"
-msgstr ""
+msgstr "Αριθμός παραγγελίας"
 
 #: lms/djangoapps/shoppingcart/reports.py
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Status"
-msgstr ""
+msgstr "Κατάσταση"
 
 #: lms/djangoapps/shoppingcart/reports.py lms/templates/shoppingcart/list.html
 msgid "Quantity"
-msgstr ""
+msgstr "Ποσότητα"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Unit Cost"
-msgstr ""
+msgstr "Κόστος μονάδας"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Total Cost"
-msgstr ""
+msgstr "Συνολικό κόστος"
 
 #: lms/djangoapps/shoppingcart/reports.py lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
 msgid "Currency"
-msgstr ""
+msgstr "Νόμισμα"
 
 #: lms/djangoapps/shoppingcart/reports.py lms/templates/shoppingcart/list.html
 #: lms/templates/shoppingcart/receipt.html
@@ -4441,23 +4480,23 @@ msgstr ""
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: wiki/plugins/attachments/forms.py
 msgid "Description"
-msgstr ""
+msgstr "Περιγραφή"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Comments"
-msgstr ""
+msgstr "Σχόλια"
 
 #: lms/djangoapps/shoppingcart/reports.py
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "University"
-msgstr ""
+msgstr "Πανεπιστήμιο"
 
 #: lms/djangoapps/shoppingcart/reports.py
 #: lms/djangoapps/shoppingcart/reports.py cms/templates/widgets/header.html
 #: cms/templates/widgets/header.html
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Course"
-msgstr ""
+msgstr "Μάθημα"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Course Announce Date"
@@ -4529,48 +4568,54 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "You must be logged-in to add to a shopping cart"
-msgstr ""
+msgstr "Θα πρέπει να είστε συνδεδεμένοι για να κάνετε τις αγορές σας"
 
 #: lms/djangoapps/shoppingcart/views.py
 #: lms/djangoapps/shoppingcart/tests/test_views.py
 msgid "The course you requested does not exist."
-msgstr ""
+msgstr "Το μάθημα που ζητήσατε δεν υπάρχει."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "The course {0} is already in your cart."
-msgstr ""
+msgstr "Το μάθημα {0} είναι ήδη στο καλάθι σας."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "You are already registered in course {0}."
-msgstr ""
+msgstr "Έχετε ήδη εγγραφεί στο μάθημα {0}."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "Course added to cart."
-msgstr ""
+msgstr "Το μάθημα προστέθηκε στο καλάθι."
 
 #: lms/djangoapps/shoppingcart/views.py
 msgid "You do not have permission to view this page."
-msgstr ""
+msgstr "Δεν έχετε άδεια να δείτε αυτή την σελίδα"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The payment processor did not return a required parameter: {0}"
-msgstr ""
+msgstr "Ο επεξεργαστής πληρωμής δεν επέστρεψε μια απαιτούμενη παράμετρο: {0}"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The payment processor returned a badly-typed value {0} for param {1}."
 msgstr ""
+"Ο επεξεργαστής πληρωμής επέστρεψε ένα άσχημα δακτυλογραφημένη αξία{0} για "
+"παραμ {1}."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "The payment processor accepted an order whose number is not in our system."
 msgstr ""
+"Ο επεξεργαστής πληρωμής έκανε μια παραγγελία η οποία ο αριθμός δεν είναι στο"
+" σύστημά μας."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "The amount charged by the processor {0} {1} is different than the total cost"
 " of the order {2} {3}."
 msgstr ""
+"Το ποσό που χρεώνεται από τον επεξεργαστή {0} {1} είναι διαφορετικό από το "
+"συνολικό κόστος της παραγγελίας {2} {3}."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4623,15 +4668,15 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "Successful transaction."
-msgstr ""
+msgstr "Επιτυχή συναλλαγή."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The request is missing one or more required fields."
-msgstr ""
+msgstr "Στο αίτημα λείπει ένα ή περισσότερα απαιτούμενα πεδία."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "One or more fields in the request contains invalid data."
-msgstr ""
+msgstr "Ένα ή περισσότερα πεδία στο αίτημα περιέχει μη έγκυρα δεδομένα."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4647,6 +4692,8 @@ msgid ""
 "Error: General system failure. Possible fix: retry the payment after a few "
 "minutes."
 msgstr ""
+"Σφάλμα: Γενική αποτυχία του συστήματος. Πιθανή λύση: επαναλάβετε την πληρωμή"
+" "
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4670,6 +4717,8 @@ msgid ""
 "The issuing bank has questions about the request. Possible fix: retry with "
 "another form of payment"
 msgstr ""
+"Η εκδότρια τράπεζα έχει ερωτήματα σχετικά με το αίτημα. Πιθανή λύση: "
+"δοκιμάστε ξανά με άλλο τρόπο πληρωμής."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4693,16 +4742,20 @@ msgid ""
 "Insufficient funds in the account. Possible fix: retry with another form of "
 "payment"
 msgstr ""
+"Ανεπαρκής κεφάλαια στο λογαριασμό. Πιθανή λύση: δοκιμάστε ξανά με άλλο τρόπο"
+" πληρωμής"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "Unknown reason"
-msgstr ""
+msgstr "Άγνωστος λόγος"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "Issuing bank unavailable. Possible fix: retry again after a few minutes"
 msgstr ""
+"Η εκδότρια τράπεζα δεν είναι διαθέσιμη. Πιθανή λύση: προσπαθήστε ξανά  μετά "
+"από λίγα λεπτά"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4717,17 +4770,23 @@ msgid ""
 "The card has reached the credit limit. Possible fix: retry with another form"
 " of payment"
 msgstr ""
+"Η κάρτα έχει φτάσει το πιστωτικό όριο. Πιθανή λύση: δοκιμάστε ξανά με άλλο "
+"τρόπο πληρωμής"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "Invalid card verification number. Possible fix: retry with another form of "
 "payment"
 msgstr ""
+"Μη έγκυρος αριθμός επαλήθευσης της κάρτας. Πιθανή λύση: δοκιμάστε ξανά με "
+"άλλο τρόπο πληρωμής"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "Invalid account number. Possible fix: retry with another form of payment"
 msgstr ""
+"Μη έγκυρος αριθμός λογαριασμού. Πιθανή λύση: δοκιμάστε ξανά με άλλο τρόπο "
+"πληρωμής"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4742,6 +4801,8 @@ msgid ""
 "General decline by the processor.  Possible fix: retry with another form of "
 "payment"
 msgstr ""
+"Γενική πτώση από τον επεξεργαστή. Πιθανή λύση: δοκιμάστε ξανά με άλλο τρόπο "
+"πληρωμής"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4752,20 +4813,22 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The requested amount exceeds the originally authorized amount."
-msgstr ""
+msgstr "Το αιτούμενο ποσό υπερβαίνει το αρχικά εγκεκριμένο ποσό."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "Processor Failure.  Possible fix: retry the payment"
-msgstr ""
+msgstr "Αποτυχία επεξεργαστή. Πιθανή λύση: επαναλάβετε την πληρωμή"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The authorization has already been captured"
-msgstr ""
+msgstr "Η εξουσιοδότηση έχει ήδη συλληφθεί"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
 "The requested transaction amount must match the previous transaction amount."
 msgstr ""
+"Το ποσό της συναλλαγής πρέπει να ταιριάζει με το προηγούμενο ποσό της "
+"συναλλαγής."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4777,7 +4840,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The request ID is invalid."
-msgstr ""
+msgstr "Το αναγνωριστικό αίτημα είναι άκυρο."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4788,7 +4851,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "The transaction has already been settled or reversed."
-msgstr ""
+msgstr "Η συναλλαγή έχει ήδη διευθετηθεί ή να αντιστραφεί."
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4800,7 +4863,7 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid "You requested a credit for a capture that was previously voided"
-msgstr ""
+msgstr "Ζητήσατε μια πίστωση για μια σύλληψη που είχε προηγουμένως ακυρωθεί"
 
 #: lms/djangoapps/shoppingcart/processors/CyberSource.py
 msgid ""
@@ -4856,15 +4919,16 @@ msgstr ""
 
 #: lms/djangoapps/verify_student/views.py
 msgid "Selected price is not valid number."
-msgstr ""
+msgstr "Μη έγκυρος αριθμός επιλεγμένης τιμής."
 
 #: lms/djangoapps/verify_student/views.py
 msgid "This course doesn't support verified certificates"
-msgstr ""
+msgstr "Αυτό το μάθημα δεν υποστηρίζει επικυρωμένα πιστοποιήτικα"
 
 #: lms/djangoapps/verify_student/views.py
 msgid "No selected price or selected price is below minimum."
 msgstr ""
+"Δεν έχει επιλεγεί τιμή ή την επιλεγμένη τιμή είναι κάτω από το ελάχιστο."
 
 #: lms/lib/xblock/mixin.py
 msgid "Courseware Chrome"
@@ -4960,7 +5024,7 @@ msgstr ""
 #: lms/templates/registration/password_reset_complete.html
 #: lms/templates/registration/password_reset_complete.html
 msgid "Your Password Reset is Complete"
-msgstr ""
+msgstr "Η Επαναφορά του Κωδικού σας έχει ολοκληρωθεί"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid ""
@@ -4968,6 +5032,8 @@ msgid ""
 "      Your password has been set.  You may go ahead and %(link_start)slog in%(link_end)s now.\n"
 "      "
 msgstr ""
+"\n"
+"Ο κωδικός πρόσβασής σας έχει οριστεί. Μπορείτε να προχωρήσετε στη %(link_start)sσύνδεση%(link_end)s τώρα."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -4975,6 +5041,8 @@ msgid ""
 "      Reset Your %(platform_name)s Password\n"
 "  "
 msgstr ""
+"\n"
+"Επανέφερε %(platform_name)s Κωδικό"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -4982,10 +5050,12 @@ msgid ""
 "          Reset Your %(platform_name)s Password\n"
 "          "
 msgstr ""
+"\n"
+"Επανέφερε %(platform_name)s Κωδικό"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Password Reset Form"
-msgstr ""
+msgstr "Φόρμα Κωδικόυ Επαναφοράς"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -4993,6 +5063,8 @@ msgid ""
 "                We're sorry, %(platform_name)s enrollment is not available in your region\n"
 "            "
 msgstr ""
+"\n"
+"Συγνώμη, %(platform_name)s η εγγραφή δεν είναι διαθέσιμη στην περιοχή σας"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The following errors occurred while processing your registration: "
@@ -5000,17 +5072,19 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "You must complete all fields."
-msgstr ""
+msgstr "Πρέπει να συμπληρώσετε όλα τα πεδία."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The two password fields didn't match."
-msgstr ""
+msgstr "Τα δύο πεδία κωδικού πρόσβασης δεν ταιριάζουν."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
 "We're sorry, our systems seem to be having trouble processing your password "
 "reset"
 msgstr ""
+"Δυστυχώς, τα συστήματά μας φαίνεται να έχουν πρόβλημα στην επεξεργασία "
+"επαναφοράς κωδικού πρόσβασης σας"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5018,6 +5092,8 @@ msgid ""
 "                Someone has been made aware of this issue. Please try again shortly. Please %(start_link)scontact us%(end_link)s about any concerns you have.\n"
 "            "
 msgstr ""
+"\n"
+"Κάποιος έχει ενημερωθεί για το θέμα αυτό. Παρακαλώ δοκιμάστε ξανά σύντομα. Παρακαλώ %(start_link)sεπικοινωνήστε μαζί μας%(end_link)s για τυχόν προβλήματα που έχετε."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5025,28 +5101,32 @@ msgid ""
 "correctly. <br /> Required fields are noted by <strong "
 "class=\"indicator\">bold text and an asterisk (*)</strong>."
 msgstr ""
+"Παρακαλούμε, εισάγετε το νέο κωδικό πρόσβασης δύο φορές ώστε να μπορούμε να "
+"επιβεβαιώσουμε ότι έχετε πληκτρολογήσει σωστά. <br /> Τα υποχρεωτικά πεδία "
+"είναι σημειώμένα με <strong class=\"indicator\">έντονο κείμενο και ένα "
+"αστερίσκο(*)</strong>."
 
 #: lms/templates/registration/password_reset_confirm.html
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid "Required Information"
-msgstr ""
+msgstr "Απαιτούμενες πληροφορίες"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password"
-msgstr ""
+msgstr "Ο Νέος Κωδικός Πρόσβασής Σας"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password Again"
-msgstr ""
+msgstr "Ο Νέος Κωδικός Πρόσβασής Σας Ξανά"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Change My Password"
-msgstr ""
+msgstr "Αλλαγή κωδικού πρόσβασης μου"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your Password Reset Was Unsuccessful"
-msgstr ""
+msgstr "Η Επαναφορά Του Κωδικού Πρόσβασής ήταν Ανεπιτυχής"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5054,16 +5134,16 @@ msgid ""
 "            The password reset link was invalid, possibly because the link has already been used.  Please return to the %(start_link)slogin page%(end_link)s and start the password reset process again.\n"
 "        "
 msgstr ""
+"\n"
+"Ο σύνδεσμος επαναφοράς κωδικού πρόσβασης δεν ήταν έγκυρη, πιθανώς επειδή η σύνδεση έχει ήδη χρησιμοποιηθεί. Παρακαλώ επιστρέψτε στο %(start_link)sσελίδα σύνδεσης%(end_link)s αρχίσε και πάλι τη διαδικασία επαναφοράς κωδικού πρόσβασης."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Password Reset Help"
-msgstr ""
+msgstr "Βοήθεια Επαναφοράς Κωδικού"
 
 #: lms/templates/registration/password_reset_confirm.html
-#: cms/templates/login.html lms/templates/login-sidebar.html
-#: lms/templates/register-sidebar.html
 msgid "Need Help?"
-msgstr ""
+msgstr "Χρειάζεστε βοήθεια;"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5071,16 +5151,22 @@ msgid ""
 "              View our %(start_link)shelp section for contact information and answers to commonly asked questions%(end_link)s\n"
 "          "
 msgstr ""
+"\n"
+"Δείτε το %(start_link)sτμήμα βοήθειας για τα στοιχεία επικοινωνίας και απαντήσεις σε συνήθεις ερωτήσεις%(end_link)s"
 
 #: lms/templates/registration/password_reset_email.html
 msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at edx.org."
 msgstr ""
+"Λάβατε αυτό το μήνυμα γιατί έχετε ζητήσει επαναφοράς κωδικού πρόσβασης για "
+"το λογαριασμό χρήστη σας στο edx.org."
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Please go to the following page and choose a new password:"
 msgstr ""
+"Παρακαλώ πηγαίνετε στην επόμενη σελίδα και να επιλέξετε ένα νέο κωδικό "
+"πρόσβασης:"
 
 #: lms/templates/registration/password_reset_email.html
 msgid ""
@@ -5090,41 +5176,41 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Thanks for using our site!"
-msgstr ""
+msgstr "Ευχαριστούμε για την χρήση της σελίδας μας!"
 
 #: lms/templates/registration/password_reset_email.html
 msgid "The edX Team"
-msgstr ""
+msgstr "Η ομάδα edX"
 
 #: lms/templates/wiki/article.html
 msgid "Last modified:"
-msgstr ""
+msgstr "Τελευταία τροποποίηση:"
 
 #: lms/templates/wiki/article.html
 msgid "See all children"
-msgstr ""
+msgstr "Δείτε όλα τα παιδιά"
 
 #: lms/templates/wiki/article.html
 msgid "This article was last modified:"
-msgstr ""
+msgstr "Το άρθρο αυτό τροποποιήθηκε τελευταία:"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/create.html.py
 msgid "Add new article"
-msgstr ""
+msgstr "Προσθήκη νέου άρθρου"
 
 #: lms/templates/wiki/create.html
 msgid "Create article"
-msgstr ""
+msgstr "Δημιουργία άρθρου"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/delete.html
 #: lms/templates/wiki/delete.html.py
 msgid "Go back"
-msgstr ""
+msgstr "Πήγαινε πίσω"
 
 #: lms/templates/wiki/delete.html lms/templates/wiki/delete.html.py
 #: lms/templates/wiki/edit.html
 msgid "Delete article"
-msgstr ""
+msgstr "Διαγραφή του άρθρου"
 
 #: lms/templates/wiki/delete.html
 #: lms/templates/wiki/plugins/attachments/index.html
@@ -5136,35 +5222,39 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "Διαγραφή"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
-msgstr ""
+msgstr "Δεν μπορείτε να διαγράψετε ένα άρθρο διαδρομής"
 
 #: lms/templates/wiki/delete.html
 msgid ""
 "You cannot delete this article because you do not have permission to delete "
 "articles with children. Try to remove the children manually one-by-one."
 msgstr ""
+"Δεν μπορείτε να διαγράψετε αυτό το άρθρο γιατί δεν έχετε άδεια να διαγράψετε"
+" άρθρα με παιδιά. Προσπαθήστε να αφαιρέσετε τα παιδιά με το χέρι ένα-ένα."
 
 #: lms/templates/wiki/delete.html
 msgid ""
 "You are deleting an article. This means that its children will be deleted as"
 " well. If you choose to purge, children will also be purged!"
 msgstr ""
+"Διαγράψατε ένα άρθρο. Αυτό σημαίνει ότι τα παιδιά του θα διαγραφούν επίσης. "
+"Εάν επιλέξετε να καθαριστεί, τα παιδιά θα πρέπει να καθάριστούν και αυτά."
 
 #: lms/templates/wiki/delete.html
 msgid "Articles that will be deleted"
-msgstr ""
+msgstr "Τα άρθρα που θα διαγραφούν"
 
 #: lms/templates/wiki/delete.html
 msgid "...and more!"
-msgstr ""
+msgstr "...και άλλα!"
 
 #: lms/templates/wiki/delete.html
 msgid "You are deleting an article. Please confirm."
-msgstr ""
+msgstr "Διαγράφετε ένα άρθρο. Παρακαλούμε επιβεβαιώστε."
 
 #: lms/templates/wiki/edit.html cms/templates/component.html
 #: cms/templates/container.html cms/templates/container_xblock_component.html
@@ -5176,15 +5266,15 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Edit"
-msgstr ""
+msgstr "Επεξεργασία"
 
 #: lms/templates/wiki/edit.html lms/templates/wiki/edit.html.py
 msgid "Save changes"
-msgstr ""
+msgstr "Αποθηκεύστε τις αλλαγές"
 
 #: lms/templates/wiki/edit.html cms/templates/unit.html
 msgid "Preview"
-msgstr ""
+msgstr "Προεπισκόπηση"
 
 #. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a control to allow users to exit out of this modal
@@ -5203,7 +5293,7 @@ msgstr ""
 #: lms/templates/modal/_modal-settings-language.html
 #: lms/templates/modal/accessible_confirm.html
 msgid "Close"
-msgstr ""
+msgstr "Κλείσιμο"
 
 #: lms/templates/wiki/edit.html
 msgid "Wiki Preview"
@@ -5223,11 +5313,11 @@ msgstr ""
 
 #: lms/templates/wiki/edit.html
 msgid "Back to editor"
-msgstr ""
+msgstr "Πίσω στην επεξεργασία"
 
 #: lms/templates/wiki/history.html
 msgid "History"
-msgstr ""
+msgstr "Ιστορικό"
 
 #: lms/templates/wiki/history.html
 msgid ""
@@ -5236,6 +5326,10 @@ msgid ""
 " can change to a particular revision or merge an old revision with the "
 "current one."
 msgstr ""
+"Κάντε κλικ σε κάθε αναθεώρηση για να δείτε την λίστα με της γραμμες που "
+"επιμελήθηκαν.Κάντε κλικ στη Προεπισκόπηση για να δείτε το στάδιο του άρθρου."
+" Στο κάτω μέρος της σελίδας, μπορείτε να αλλάξετε σε μια συγκεκριμένη "
+"αναθεώρηση ή τη συγχώνευση μίας παλιάς αναθεώρησης στη σημερινή."
 
 #: lms/templates/wiki/history.html
 msgid "(no log message)"
@@ -5243,23 +5337,23 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Preview this revision"
-msgstr ""
+msgstr "Κάντε επισκόπηση σε αυτήν την αναθεώρηση"
 
 #: lms/templates/wiki/history.html
 msgid "Auto log:"
-msgstr ""
+msgstr "Αναφορά"
 
 #: lms/templates/wiki/history.html
 msgid "Change"
-msgstr ""
+msgstr "Αλλαγή"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Merge selected with current..."
-msgstr ""
+msgstr "Συγχώνευσε επιλεγμένη με την τρέχουσα..."
 
 #: lms/templates/wiki/history.html
 msgid "Switch to selected version"
-msgstr ""
+msgstr "Αλλαγή στήν επιλεγμένη έκδοση"
 
 #: lms/templates/wiki/history.html
 msgid "Wiki Revision Preview"
@@ -5267,11 +5361,11 @@ msgstr ""
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Back to history view"
-msgstr ""
+msgstr "Πίσω στο ιστορικό"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Switch to this version"
-msgstr ""
+msgstr "Αλλαγή σε αυτή την έκδοση"
 
 #: lms/templates/wiki/history.html
 msgid "Merge Revision"
@@ -5279,21 +5373,24 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Merge with current"
-msgstr ""
+msgstr "Συγχώνευση με την τρέχουσα"
 
 #: lms/templates/wiki/history.html
 msgid ""
 "When you merge a revision with the current, all data will be retained from "
 "both versions and merged at its approximate location from each revision."
 msgstr ""
+"Όταν κάνετε συγχώνευση μιας αναθεώρησης με την τρέχουσα, όλα τα δεδομένα θα "
+"διατηρούνται και από τις δύο εκδόσεις και θα συγχωνεύονται σε κατά "
+"προσέγγιση θέση του από κάθε αναθεώρηση."
 
 #: lms/templates/wiki/history.html
 msgid "After this, it's important to do a manual review."
-msgstr ""
+msgstr "Μετά από αυτό, είναι σημαντικό να κάνετε μια χειροκίνητη αναθεώρηση"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Create new merged version"
-msgstr ""
+msgstr "Δημιουργήστε νεα συγχωνευμένη έκδοση"
 
 #: lms/templates/wiki/preview_inline.html
 msgid "Previewing revision:"
@@ -5305,11 +5402,12 @@ msgstr ""
 
 #: lms/templates/wiki/preview_inline.html
 msgid "This revision has been deleted."
-msgstr ""
+msgstr "Η αναθεώρηση αυτή έχει διαγραφεί."
 
 #: lms/templates/wiki/preview_inline.html
 msgid "Restoring to this revision will mark the article as deleted."
 msgstr ""
+"Αποκατάσταση της αναθεώρησης αυτής θα σηματοδοτήσει το άρθρο ως διαγραμμένο."
 
 #: lms/templates/wiki/includes/anonymous_blocked.html
 msgid ""
@@ -5317,10 +5415,14 @@ msgid ""
 "  You need to <a href=\"%(login_url)s\">log in</a> or <a href=\"%(signup_url)s\">sign up</a> to use this function.\n"
 "  "
 msgstr ""
+"\n"
+"Πρέπει να <a href=\"%(login_url)s\">σύνδεση</a> ή <a href=\"%(signup_url)s\">εγγραφή</a> για να χρησιμοποιήσετε αυτή τη λειτουργία."
 
 #: lms/templates/wiki/includes/anonymous_blocked.html
 msgid "You need to log in or sign up to use this function."
 msgstr ""
+"Πρέπει να συνδεθείτε ή να εγγραφείτε για να χρησιμοποιήσετε αυτή τη "
+"λειτουργία."
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wiki Cheatsheet"
@@ -5328,7 +5430,7 @@ msgstr ""
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wiki Syntax Help"
-msgstr ""
+msgstr "Βοήθεια Σύνταξης Wiki"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid ""
@@ -5338,30 +5440,32 @@ msgstr ""
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Markdown: Basics"
-msgstr ""
+msgstr "Υποσημείωση: Τα Βασικά"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Quick Markdown Syntax Guide"
-msgstr ""
+msgstr "Γρηγορη Υποσημείωση Οδηγου Σύνταξης"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Miniature Markdown Guide"
-msgstr ""
+msgstr "Μινιατούρα Οδηγός Υποσημείωσης"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid ""
 "To create a new wiki article, create a link to it. Clicking the link gives "
 "you the creation page."
 msgstr ""
+"Για να δημιουργήσετε ένα νέο άρθρο wiki, δημιουργήστε μια σύνδεση σε αυτό. "
+"Κάνοντας κλικ στο σύνδεσμο σας δίνει τη δημιουργία της σελίδας."
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "[Article Name](wiki:ArticleName)"
-msgstr ""
+msgstr "[Όνομα Άρθρου](wiki:ΌνομαΆρθρου)"
 
 #. Translators: Do not translate "edX"
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "edX Additions:"
-msgstr ""
+msgstr "edX Προσθήκες:"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Math Expression"
@@ -5369,7 +5473,7 @@ msgstr ""
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Useful examples:"
-msgstr ""
+msgstr "Χρήσιμα παραδείγματα:"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wikipedia"
@@ -5381,45 +5485,45 @@ msgstr ""
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Huge Header"
-msgstr ""
+msgstr "Τεράστια Επικεφαλίδα"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Smaller Header"
-msgstr ""
+msgstr "Μικρότερη Επικεφαλίδα"
 
 #. Translators: Leave the punctuation, but translate "emphasis"
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "*emphasis* or _emphasis_"
-msgstr ""
+msgstr "*έμφαση* ή _έμφαση_"
 
 #. Translators: Leave the punctuation, but translate "strong"
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "**strong** or __strong__"
-msgstr ""
+msgstr "**δυνατός** ή __δυνατός__"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Unordered List"
-msgstr ""
+msgstr "Μη αριθμημένη λίστα"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Sub Item 1"
-msgstr ""
+msgstr "Κατώτερο Είδος 1"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Sub Item 2"
-msgstr ""
+msgstr "Κατώτερο Είδος 2"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Ordered"
-msgstr ""
+msgstr "Παραγγέλθηκε"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "List"
-msgstr ""
+msgstr "Λίστα"
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Quotes"
-msgstr ""
+msgstr "Αποσπάσματα"
 
 #: lms/templates/wiki/includes/editor_widget.html
 msgid ""
@@ -5431,83 +5535,89 @@ msgstr ""
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "Attachments"
-msgstr ""
+msgstr "Συνημμένα"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload new file"
-msgstr ""
+msgstr "Μεταφόρτωση νέου αρχείου"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search and add file"
-msgstr ""
+msgstr "Αναζητήστε και προσθέστε το αρχείο"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload File"
-msgstr ""
+msgstr "Μεταφορτώστε το αρχείο"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload file"
-msgstr ""
+msgstr "Ανεβάστε το αρχείο"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search files and articles"
-msgstr ""
+msgstr "Αναζήτηση αρχείων και άρθρων"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid ""
 "You can reuse files from other articles. These files are subject to updates "
 "on other articles which may or may not be a good thing."
 msgstr ""
+"Μπορείτε να χρησιμοποιήσετε ξανά τα αρχεία από άλλα άρθρα. Τα αρχεία αυτά "
+"αποτελούν αντικείμενο ενημερώσεων αλλων άρθρων τα οποία μπορεί να είναι η να"
+" μήν είναι καλό πράγμα."
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid ""
 "The following files are available for this article. Copy the markdown tag to"
 " directly refer to a file from the article text."
 msgstr ""
+"Τα ακόλουθα αρχεία είναι διαθέσιμα για αυτό το άρθρο. Αντιγράψτε την "
+"υποσημειωμενη ετικέτα να αναφέρονται απευθείας σε ένα αρχείο από το κείμενο "
+"του άρθρου."
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Markdown tag"
-msgstr ""
+msgstr "Υποσημείωση ετικέτας"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Uploaded by"
-msgstr ""
+msgstr "Ανέβηκε από"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Size"
-msgstr ""
+msgstr "Μέγεθος"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File History"
-msgstr ""
+msgstr "Ιστορικό φακέλου"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Detach"
-msgstr ""
+msgstr "Αποσυνδέστε"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Replace"
-msgstr ""
+msgstr "Αντικαταστήστε"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Restore"
-msgstr ""
+msgstr "Επαναφορά"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "anonymous (IP logged)"
-msgstr ""
+msgstr "ανώνυμη (IP συνδέθηκε)"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File history"
-msgstr ""
+msgstr "Ιστορικό φακέλου"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "revisions"
-msgstr ""
+msgstr "αναθεώρηση"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "There are no attachments for this article."
-msgstr ""
+msgstr "Δεν υπάρχουν συνημμένα για αυτό το άρθρο."
 
 #: cms/djangoapps/contentstore/course_info_model.py
 #: cms/djangoapps/contentstore/course_info_model.py
@@ -5587,7 +5697,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/utils.py lms/templates/notes.html
 msgid "My Notes"
-msgstr ""
+msgstr "Οι Σημειώσεις μου"
 
 #: cms/djangoapps/contentstore/management/commands/git_export.py
 msgid ""
@@ -5597,7 +5707,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/assets.py
 msgid "Upload completed"
-msgstr ""
+msgstr "Το ανέβασμα ολοκληρώθηκε."
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
@@ -5623,12 +5733,16 @@ msgid ""
 " and course run. Please change either organization or course number to be "
 "unique."
 msgstr ""
+"Υπάρχει ήδη ένα ορισμένο μάθημα από τον ίδιο οργανισμό, με ίδιο κωδικό "
+"μαθήματος, και χαρακτηριστικά επιλογής. Παρακαλούμε, αλλάξτε είτε τον "
+"οργανισμό ή τον κωδικό για να υπάρχει μοναδικότητα."
 
 #: cms/djangoapps/contentstore/views/course.py
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
 "Please change either the organization or course number so that it is unique."
 msgstr ""
+"Παρακαλούμε αλλάξτε είτε τον οργανισμό ή το μάθημα ώστε να είναι μοναδικό."
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -5636,6 +5750,9 @@ msgid ""
 "\n"
 "{err}"
 msgstr ""
+"Αδυναμία δημιουργίας μαθήματος '{name}'.\n"
+"\n"
+"{err}"
 
 #: cms/djangoapps/contentstore/views/export_git.py
 msgid "Course successfully exported to git repository"
@@ -5747,7 +5864,7 @@ msgstr ""
 #: cms/templates/asset_index.html lms/templates/courseware/courseware.html
 #: lms/templates/verify_student/_modal_editname.html
 msgid "close"
-msgstr ""
+msgstr "Κλείσιμο"
 
 #: cms/templates/container.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -5781,7 +5898,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Cancel"
-msgstr ""
+msgstr "Ακύρωση"
 
 #: cms/templates/index.html
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
@@ -5816,7 +5933,7 @@ msgstr ""
 #: cms/templates/widgets/header.html
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Settings"
-msgstr ""
+msgstr "Ρυθμίσεις"
 
 #: cms/templates/manage_users.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -5830,7 +5947,7 @@ msgstr ""
 #: lms/templates/combinedopenended/selfassessment/self_assessment_prompt.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Save"
-msgstr ""
+msgstr "Αποθήκευση"
 
 #: cms/templates/register.html cms/templates/widgets/header.html
 #: lms/templates/index.html
@@ -5879,7 +5996,7 @@ msgstr ""
 #: lms/templates/static_templates/help.html
 #: lms/templates/static_templates/help.html wiki/plugins/help/wiki_plugin.py
 msgid "Help"
-msgstr ""
+msgstr "Βοήθεια"
 
 #: common/templates/course_modes/choose.html
 msgid "Upgrade Your Registration for {} | Choose Your Track"
@@ -6025,7 +6142,7 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "Οδηγίες"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
@@ -6034,11 +6151,11 @@ msgstr ""
 
 #: lms/templates/annotatable.html
 msgid "Guided Discussion"
-msgstr ""
+msgstr "Κατευθυνόμενη συζήτηση"
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Απόκρυψη σχολίων"
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
@@ -6047,7 +6164,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Faq"
-msgstr ""
+msgstr "Συνήθεις απορίες"
 
 #: lms/templates/contact.html lms/templates/footer.html
 msgid "Press"
@@ -6057,11 +6174,11 @@ msgstr ""
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "Επικοινωνία"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
-msgstr ""
+msgstr "Σχολιασμός μαθήματος"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6070,10 +6187,12 @@ msgid ""
 " issues specific to a particular class, please post on the discussion forums"
 " of that&nbsp;class."
 msgstr ""
+"Επιδιώκουμε πάντα εποικοδομητική κριτική για τη βελτίωση των μαθημάτων μας. "
+"Αν είστε εγγεγραμμένος φοιτητής και έχετε οποιαδήποτε απορία, "
 
 #: lms/templates/contact.html
 msgid "General Inquiries and Feedback"
-msgstr ""
+msgstr "Γενικές ερωτήσεις και σχόλια"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6086,7 +6205,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Technical Inquiries and Feedback"
-msgstr ""
+msgstr "Τεχνικές ερωτήσεις και σχόλια"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6101,31 +6220,37 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Media"
-msgstr ""
+msgstr "ΜΜΕ"
 
 #: lms/templates/contact.html
 msgid ""
 "Please visit our {link_start}media/press page{link_end} for more "
 "information. For any media or press inquiries, please email {email}."
 msgstr ""
+"Παρακαλούμε επισκεφθείτε την {link_start} ιστοσελίδα ΜΜΕ/Τύπου {link_end} "
+"για περισσότερες πληροφορίες. Για οποιεσδήποτε ερωτήσεις σχετικά με τα ΜΜΕ "
+"και τον Τύπο, επικοινωνήστε στη διεύθυνση {email}."
 
 #: lms/templates/contact.html
 msgid "Universities"
-msgstr ""
+msgstr "Πανεπιστήμια"
 
 #: lms/templates/contact.html
 msgid ""
 "If you are a university wishing to collaborate with or if you have questions"
 " about {platform_name}, please email {email}."
 msgstr ""
+"Αν είστε πανεπιστήμιο που επιθυμεί να συνεργαστεί μαζί μας ή έχετε ερωτήματα"
+" σχετικά με την πλατφόρμα {platform_name}, παρακαλούμε επικοινωνήστε μαζί "
+"μας στη διεύθυνση {email}."
 
 #: lms/templates/course.html
 msgid "New"
-msgstr ""
+msgstr "Νέο"
 
 #: lms/templates/dashboard.html
 msgid "Dashboard"
-msgstr ""
+msgstr "Πίνακας"
 
 #: lms/templates/dashboard.html lms/templates/courseware/course_about.html
 #: lms/templates/courseware/course_about.html
@@ -6160,7 +6285,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
-msgstr ""
+msgstr "επεξεργασία"
 
 #. Translators: this section lists all the third-party authentication
 #. providers
@@ -6186,19 +6311,19 @@ msgstr ""
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Reset Password"
-msgstr ""
+msgstr "Επαναρύθμιση κωδικού πρόσβασης"
 
 #: lms/templates/dashboard.html
 msgid "Current Courses"
-msgstr ""
+msgstr "Τρέχοντα μαθήματα"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't registered for any courses yet."
-msgstr ""
+msgstr "Φαίνεται ότι δεν έχετε εγγραφεί σε κανένα μάθημα ακόμα."
 
 #: lms/templates/dashboard.html
 msgid "Find courses now!"
-msgstr ""
+msgstr "Βρείτε μαθήματα τώρα!"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't been enrolled in any courses yet."
@@ -6206,7 +6331,7 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Course-loading errors"
-msgstr ""
+msgstr "Σφάλματα φόρτωσης μαθήματος"
 
 #: lms/templates/dashboard.html
 msgid "Email Settings for {course_number}"
@@ -6223,34 +6348,42 @@ msgstr ""
 #: lms/templates/dashboard.html
 msgid "Password Reset Email Sent"
 msgstr ""
+"Ο κωδικός πρόσβασης επαναρυθμίστηκε. Έχει αποσταλεί μήνυμα ηλεκτρονικού "
+"ταχυδρομείου."
 
 #: lms/templates/dashboard.html
 msgid ""
 "An email has been sent to {email}. Follow the link in the email to change "
 "your password."
 msgstr ""
+"Απεστάλη μήνυμα ηλεκτρονικού ταχυδρομείου στη διεύθυνση {email}. "
+"Ακολουθείστε τον σύνδεσμο στο απεσταλμένο μήνυμα για να αλλάξετε τον κωδικό "
+"σας."
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Change Email"
-msgstr ""
+msgstr "Αλλαγή διεύθυνσης ηλεκτρονικού ταχυδρομείου"
 
 #: lms/templates/dashboard.html
 msgid "Please enter your new email address:"
 msgstr ""
+"Παρακαλούμε πληκτρολογείστε την καινούργια σας διεύθυνση ηλ. ταχυδρομείου:"
 
 #: lms/templates/dashboard.html
 msgid "Please confirm your password:"
-msgstr ""
+msgstr "Παρακαλούμε, επιβεβαιώστε τον κωδικό πρόσβασής σας:"
 
 #: lms/templates/dashboard.html
 msgid ""
 "We will send a confirmation to both {email} and your new email as part of "
 "the process."
 msgstr ""
+"Θα σας στείλουμε επιβεβαίωση στο {email} και στη νέα ηλεκτρονική διεύθυνσή "
+"σας ως μέρος της διαδικασίας."
 
 #: lms/templates/dashboard.html
 msgid "Change your name"
-msgstr ""
+msgstr "Αλλαγή ονόματος"
 
 #. Translators: note that {platform} {cert_name_short} will look something
 #. like: "edX certificate". Please do not change the order of these
@@ -6273,11 +6406,11 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Reason for name change:"
-msgstr ""
+msgstr "Αιτία αλλαγής ονόματος:"
 
 #: lms/templates/dashboard.html
 msgid "Change My Name"
-msgstr ""
+msgstr "Αλλάξτε το Όνομά μου"
 
 #: lms/templates/dashboard.html
 msgid ""
@@ -6290,7 +6423,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Unregister"
-msgstr ""
+msgstr "Διαγραφείτε από το μάθημα"
 
 #: lms/templates/edit_unit_link.html
 msgid "View Unit in Studio"
@@ -6298,21 +6431,22 @@ msgstr ""
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 msgid "E-mail change failed"
-msgstr ""
+msgstr "Αποτυχία αλλαγής διεύθυνσης ηλ. ταχυδρομείου"
 
 #: lms/templates/email_change_failed.html
 msgid "We were unable to send a confirmation email to {email}"
 msgstr ""
+"Δεν ήταν δυνατή η αποστολή μηνύματος επιβεβαίωσης στη διεύθυνση {email}"
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 #: lms/templates/invalid_email_key.html
 msgid "Go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Επιστρέψτε στην {link_start} αρχική σελίδα {link_end}."
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
 msgid "E-mail change successful!"
-msgstr ""
+msgstr "Επιτυχής αλλαγή διεύθυνσης ηλ. ταχυδρομείου"
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
@@ -6321,19 +6455,19 @@ msgstr ""
 
 #: lms/templates/email_exists.html
 msgid "An account with the new e-mail address already exists."
-msgstr ""
+msgstr "Υπάρχει ήδη λογαριασμός με τη νέα ηλεκτρονική διεύθυνση."
 
 #: lms/templates/enroll_students.html
 msgid "Student Enrollment Form"
-msgstr ""
+msgstr "Φόρμα εγγραφής μαθητή"
 
 #: lms/templates/enroll_students.html
 msgid "Course: "
-msgstr ""
+msgstr "Μάθημα:"
 
 #: lms/templates/enroll_students.html
 msgid "Add new students"
-msgstr ""
+msgstr "Προσθήκη νέων μαθητών"
 
 #: lms/templates/enroll_students.html
 msgid "Existing students:"
@@ -6341,23 +6475,23 @@ msgstr ""
 
 #: lms/templates/enroll_students.html
 msgid "New students added: "
-msgstr ""
+msgstr "Νέοι μαθητές που προστέθηκαν:"
 
 #: lms/templates/enroll_students.html
 msgid "Students rejected: "
-msgstr ""
+msgstr "Απορριφθέντες μαθητές:"
 
 #: lms/templates/enroll_students.html
 msgid "Debug: "
-msgstr ""
+msgstr "Εντοπισμός λαθών/ εκσφαλμάτωση:"
 
 #: lms/templates/extauth_failure.html lms/templates/extauth_failure.html
 msgid "External Authentication failed"
-msgstr ""
+msgstr "Απέτυχε εξωτερική επαλήθευση ταυτότητας"
 
 #: lms/templates/folditbasic.html
 msgid "Due:"
-msgstr ""
+msgstr "Προθεσμία υποβολής:"
 
 #: lms/templates/folditbasic.html
 msgid "Status:"
@@ -6365,24 +6499,24 @@ msgstr ""
 
 #: lms/templates/folditbasic.html
 msgid "You have successfully gotten to level {goal_level}."
-msgstr ""
+msgstr "Προχωρήσατε επιτυχώς στο επίπεδο {goal_level}."
 
 #: lms/templates/folditbasic.html
 msgid "You have not yet gotten to level {goal_level}."
-msgstr ""
+msgstr "Δεν έχετε ακόμα φτάσει στο επίπεδο {goal_level}."
 
 #: lms/templates/folditbasic.html
 msgid "Completed puzzles"
-msgstr ""
+msgstr "Συμπληρωμένα παζλ"
 
 #: lms/templates/folditbasic.html
 msgid "Level"
-msgstr ""
+msgstr "Επίπεδο"
 
 #: lms/templates/folditbasic.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Submitted"
-msgstr ""
+msgstr "Έχει υποβληθεί"
 
 #: lms/templates/folditchallenge.html
 msgid "Puzzle Leaderboard"
@@ -6390,21 +6524,21 @@ msgstr ""
 
 #: lms/templates/folditchallenge.html
 msgid "User"
-msgstr ""
+msgstr "Χρήστης"
 
 #: lms/templates/footer.html
 msgid "About"
-msgstr ""
+msgstr "Σχετικά με"
 
 #: lms/templates/footer.html lms/templates/static_templates/jobs.html
 #: lms/templates/static_templates/jobs.html
 msgid "Jobs"
-msgstr ""
+msgstr "Εργασίες"
 
 #: lms/templates/footer.html lms/templates/static_templates/faq.html
 #: lms/templates/static_templates/faq.html
 msgid "FAQ"
-msgstr ""
+msgstr "Συνήθεις απορίες"
 
 #: lms/templates/footer.html
 msgid "{platform_name} Logo"
@@ -6418,6 +6552,13 @@ msgid ""
 "{platform_name}'s free online MOOCs are interactive and subjects include "
 "computer science, public health, and artificial intelligence."
 msgstr ""
+"Το {platform_name} είναι μη κερδοσκοπικός οργανισμός που δημιουργήθηκε από "
+"τη συνεργασία των ιδρυτών του {Harvard} και {MIT}, που έχουν ως αποστολή "
+"τους να φέρουν την καλύτερη δυνατή ανώτατη εκπαίδευση σε μαθητές όλων των "
+"ηλικιών σε οποιοδήποτε μέρος του κόσμου, εφόσον υπάρχει πρόσβαση στο "
+"διαδίκτυο. Τα δωρεάν διαδικτυακά MOOC του {platform_name} είναι διαδραστικά "
+"και στα αντικείμενα τους περιλαμβάνεται η επιστήμη υπολογιστών, η δημόσια "
+"υγεία και η τεχνητή νοημοσύνη. "
 
 #: lms/templates/footer.html
 msgid "&copy; 2014 {platform_name}, some rights reserved."
@@ -6425,22 +6566,24 @@ msgstr ""
 
 #: lms/templates/footer.html
 msgid "Terms of Service and Honor Code"
-msgstr ""
+msgstr "Όροι παροχής υπηρεσιών και Κώδικας Δεοντολογίας"
 
 #: lms/templates/forgot_password_modal.html
 #: lms/templates/forgot_password_modal.html
 msgid "Password Reset"
-msgstr ""
+msgstr "Επαναφορά κωδικού "
 
 #: lms/templates/forgot_password_modal.html
 msgid ""
 "Please enter your e-mail address below, and we will e-mail instructions for "
 "setting a new password."
 msgstr ""
+"Παρακαλούμε, εισάγετε την ηλεκτρονική διεύθυνσή σας παρακάτω, και θα σας "
+"αποστείλουμε ηλεκτρονικά οδηγίες για δημιουργία νέου κωδικού."
 
 #: lms/templates/forgot_password_modal.html
 msgid "Your E-mail Address"
-msgstr ""
+msgstr "Η ηλεκτρονική διεύθυνσή σας"
 
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 msgid "This is the e-mail address you used to register with {platform}"
@@ -6448,11 +6591,11 @@ msgstr ""
 
 #: lms/templates/forgot_password_modal.html
 msgid "Reset My Password"
-msgstr ""
+msgstr "Επαναρυθμίστε τον Κωδικό μου"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Email is incorrect."
-msgstr ""
+msgstr "Λανθασμένη ηλεκτρονική διεύθυνση."
 
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 msgid "{platform_name} Help"
@@ -6464,6 +6607,9 @@ msgid ""
 "this course</strong>, post in the {link_start}course discussion "
 "forum{link_end}."
 msgstr ""
+"Αν έχετε <strong>απορίες σχετικά με τις διαλέξεις, τις εργασίες, τα εργαλεία"
+" ή την ύλη του μαθήματος</strong>, αναρτήστε τις στο {link_start}φόρουμ του "
+"μαθήματος{link_end}."
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -7179,7 +7325,7 @@ msgstr ""
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "Previous"
-msgstr ""
+msgstr "Προηγούμενο"
 
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 msgid "Section Navigation"
@@ -7188,7 +7334,7 @@ msgstr ""
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "Next"
-msgstr ""
+msgstr "Επόμενο"
 
 #: lms/templates/signup_modal.html
 msgid "Sign Up for {platform_name}"
@@ -7302,7 +7448,7 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "Actions"
-msgstr ""
+msgstr "Ενέργειες"
 
 #: lms/templates/staff_problem_info.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
@@ -7350,11 +7496,11 @@ msgstr ""
 
 #: lms/templates/staticbook.html
 msgid "Previous page"
-msgstr ""
+msgstr "Προηγούμενη σελίδα"
 
 #: lms/templates/staticbook.html
 msgid "Next page"
-msgstr ""
+msgstr "Επόμενη σελίδα"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -7549,7 +7695,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Play"
-msgstr ""
+msgstr "Εκκίνηση/Παίξιμο"
 
 #: lms/templates/video.html
 msgid "Speeds"
@@ -8575,10 +8721,12 @@ msgid ""
 "Final course details are being wrapped up at this time. Your final standing "
 "will be available shortly."
 msgstr ""
+"Πραγματοποιείται τελική επεξεργασία βαθμολογίας. Ο τελικός βαθμός σας θα "
+"είναι διαθέσιμος σύντομα."
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your final grade:"
-msgstr ""
+msgstr "Ο τελικός βαθμός σας:"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Grade required for a {cert_name_short}:"
@@ -8610,7 +8758,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "This link will open/download a PDF document"
-msgstr ""
+msgstr "Ο σύνδεσμος αυτός ανοίγει/κατεβάζει ένα αρχείο PDF"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
@@ -8677,11 +8825,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Completed - {end_date}"
-msgstr ""
+msgstr "Το μάθημα ολοκληρώθηκε στις - {end_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Started - {start_date}"
-msgstr ""
+msgstr "Το μάθημα ξεκίνησε στις {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course has not yet started"
@@ -8689,7 +8837,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Starts - {start_date}"
-msgstr ""
+msgstr "Το μάθημα ξεκινά στις {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Document your accomplishment!"
@@ -8717,11 +8865,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Archived Course"
-msgstr ""
+msgstr "Δείτε το αρχειοθετημένο Μάθημα"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Course"
-msgstr ""
+msgstr "Δείτε το μάθημα"
 
 #. Translators: The course's name will be added to the end of this sentence.
 #: lms/templates/dashboard/_dashboard_course_listing.html
@@ -8890,7 +9038,7 @@ msgstr ""
 
 #: lms/templates/discussion/_similar_posts.html
 msgid "Hide"
-msgstr ""
+msgstr "Απόκρυψη"
 
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Discussion topics; current selection is: "
@@ -8947,7 +9095,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "Ανώνυμος"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."
@@ -8994,7 +9142,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html wiki/forms.py
 #: wiki/forms.py wiki/forms.py
 msgid "Title"
-msgstr ""
+msgstr "Τίτλος"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Update post"
@@ -9172,7 +9320,7 @@ msgstr ""
 
 #: lms/templates/discussion/_user_profile.html
 msgid ", "
-msgstr ""
+msgstr ","
 
 #: lms/templates/discussion/_user_profile.html
 msgid "%s discussion started"
@@ -10443,11 +10591,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "Η ενεργοποίηση ολοκληρώθηκε!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "Λογαριασμός ήδη ενεργός!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -10455,7 +10603,7 @@ msgstr ""
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Activation Invalid"
-msgstr ""
+msgstr "Άκυρη ενεργοποίηση"
 
 #: lms/templates/registration/activation_invalid.html
 msgid ""
@@ -10463,10 +10611,14 @@ msgid ""
 "e-mail programs will sometimes split it into two lines. If you still have "
 "issues, e-mail us to let us know what happened at {email}."
 msgstr ""
+"Κάτι δεν λειτούργησε σωστά. Ελέγξτε αν το URL στο οποίο μεταβήκατε ήταν "
+"σωστό -τα προγράμματα ηλεκτρονικού ταχυδρομείου μερικές φορές διαχωρίζονται "
+"σε δύο γραμμές. Αν το πρόβλημα δεν λυθεί, στείλτε μας μήνυμα για να μας "
+"γνωστοποιήσετε τι συνέβη στη διεύθυνση {email}."
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Or you can go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Ή μπορείτε να επιστρέψετε στην {link_start}αρχική σελίδα{link_end}."
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"
@@ -10830,6 +10982,8 @@ msgid ""
 "To uphold the credibility of {platform} certificates, all name changes will "
 "be logged and recorded."
 msgstr ""
+"Για να διατηρήσουμε την αξιοπιστία των πιστοποιητικών {platform}, όλες οι "
+"αλλαγές ονόματος θα καταγράφονται και θα αρχειοθετούνται."
 
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Change my name"
@@ -11809,7 +11963,7 @@ msgstr ""
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 msgid "Upload New File"
-msgstr ""
+msgstr "Μεταφορτώστε Νέο Αρχείο"
 
 #: cms/templates/asset_index.html
 msgid "Loading&hellip;"
@@ -11857,11 +12011,11 @@ msgstr ""
 
 #: cms/templates/asset_index.html
 msgid "Choose File"
-msgstr ""
+msgstr "Κλείσιμο Αρχείου"
 
 #: cms/templates/asset_index.html
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "Το αρχείο σας έχει διαγραφεί."
 
 #: cms/templates/asset_index.html
 msgid "close alert"
@@ -11994,7 +12148,7 @@ msgstr ""
 #: cms/templates/index.html cms/templates/overview.html
 #: cms/templates/unit.html
 msgid "View Live"
-msgstr ""
+msgstr "Παρακολουθήστε ζωντανά"
 
 #: cms/templates/edit-tabs.html
 msgid ""
@@ -13145,7 +13299,7 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Collapse All Sections"
-msgstr ""
+msgstr "Σύμπτυξη όλων των κατηγορίων"
 
 #: cms/templates/overview.html
 msgid "New Section"
@@ -13161,11 +13315,11 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Release date:"
-msgstr ""
+msgstr "Ημερομηνία διάθεσης:"
 
 #: cms/templates/overview.html
 msgid "Edit section release date"
-msgstr ""
+msgstr "Επεξεργασία του τομέα Ημερομηνία διάθεσης"
 
 #: cms/templates/overview.html
 msgid "Delete section"
@@ -13534,7 +13688,7 @@ msgstr ""
 
 #: cms/templates/settings_advanced.html
 msgid "Your policy changes have been saved."
-msgstr ""
+msgstr "Οι αλλαγές στην πολιτική σας έχουν αποθηκευτεί."
 
 #: cms/templates/settings_advanced.html
 msgid "There was an error saving your information. Please see below."
@@ -13985,23 +14139,24 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "Αυτό είναι ένα βασικό πεδίο."
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
-msgstr ""
+msgstr "δημιουργήθηκε"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
-msgstr ""
+msgstr "Mόνο localhost... χαχαχαχαχα"
 
 #: wiki/forms.py
 msgid "Initial title of the article. May be overridden with revision titles."
 msgstr ""
+"Αρχικός τίτλος του άρθρου. Μπορεί να παρακαμφθεί με τίτλους αναθεώρησης"
 
 #: wiki/forms.py
 msgid "Type in some contents"
-msgstr ""
+msgstr "Πληχτρολόγισε στοιχεία περιεχομένου"
 
 #: wiki/forms.py
 msgid ""
@@ -14009,19 +14164,24 @@ msgid ""
 "can use more complex features like adding plugins, meta data, related "
 "articles etc..."
 msgstr ""
+"Αυτό είναι ακριβώς το αρχικό περιεχόμενο του άρθρου σου. Αφού δημιουργηθεί "
+"μπορείς να χρησιμοποίησεις πιο σύνθετες λειτουργίες όπως προσθέτοντας "
+"πρόσθετα, μετα-δεδομένα, συναφή άρθρα κλπ..."
 
 #: wiki/forms.py wiki/forms.py
 msgid "Contents"
-msgstr ""
+msgstr "Περιεχόμενα"
 
 #: wiki/forms.py wiki/forms.py
 msgid "Summary"
-msgstr ""
+msgstr "Περίληψη"
 
 #: wiki/forms.py
 msgid ""
 "Give a short reason for your edit, which will be stated in the revision log."
 msgstr ""
+"Δώστε ενα σύντομο λόγο για την έκδοση σας,που θα αναφέρθη στο ημερολόγιο "
+"αναθεώρησης."
 
 #: wiki/forms.py
 msgid ""
@@ -14029,18 +14189,21 @@ msgid ""
 "have been automatically merged with the new contents. Please review the text"
 " below."
 msgstr ""
+"Την στιγμή του μόνταζ, κάποιος αλλαξε την διασκευή. Τα περιεχόμενα "
+"συγχωνεύθηκαν αυτομάτως με τα νέα περιεχόμενα. Παρακαλω επιθεωρήστε το "
+"κείμενο παρακάτω."
 
 #: wiki/forms.py
 msgid "No changes made. Nothing to save."
-msgstr ""
+msgstr "Δεν έγιναν αλλαγές. Τίποτα δεν σώθηκε."
 
 #: wiki/forms.py
 msgid "Select an option"
-msgstr ""
+msgstr "Επιλέξτε μια επιλογή"
 
 #: wiki/forms.py
 msgid "Slug"
-msgstr ""
+msgstr "Συντομία"
 
 #: wiki/forms.py
 msgid ""
@@ -14048,30 +14211,33 @@ msgid ""
 "alphanumeric characters and - or _. Note that you cannot change the slug "
 "after creating the article."
 msgstr ""
+"Αυτή θα είναι η διευθυνση που θα μπορεί να βρεθεί το άρθρο σου. "
+"Χρησιμοποιήσε μόνο αλφαριθμητικούς χαρακτήρες καί - ή όπως _. Υπενθύμιση δεν"
+" μπορείς να αλλάξεις τη συντομία αφου εχεις δημιουργήση το άρθρο."
 
 #: wiki/forms.py
 msgid "Write a brief message for the article's history log."
-msgstr ""
+msgstr "Γράψτε ένα σύντομο μήνυμα για το ιστορικό καταγραφής του άρθρου."
 
 #: wiki/forms.py
 msgid "A slug may not begin with an underscore."
-msgstr ""
+msgstr "Μια συντομία δεν μπορέι να ξεκινησει με υπογράμμιση."
 
 #: wiki/forms.py
 msgid "A deleted article with slug \"%s\" already exists."
-msgstr ""
+msgstr "Ένα διαγραμμένο άρθρο με τη συντομία \"%s\" υπάρχει ήδη."
 
 #: wiki/forms.py
 msgid "A slug named \"%s\" already exists."
-msgstr ""
+msgstr "Μια συντομία ονομασμένη \"%s\" υπάρχει ήδη."
 
 #: wiki/forms.py
 msgid "Yes, I am sure"
-msgstr ""
+msgstr "Ναι, ειμαι σίγουρος"
 
 #: wiki/forms.py
 msgid "Purge"
-msgstr ""
+msgstr "Καθαρίσε"
 
 #: wiki/forms.py
 msgid ""
@@ -14079,236 +14245,255 @@ msgid ""
 " Purging is a good idea if you want to free the slug such that users can "
 "create new articles in its place."
 msgstr ""
+"Καθάρισε το άρθρο: Απομάκρυνση εντελώς (όλων των δεδομένων) χωρίς αναίρεση. "
+"Το καθάρισμα ειναι μια καλή ιδέα όταν θες να ελευθερώσεις τη συντομία ώστε "
+"χρήστες να φτιάξουν καινούργια άρθρα στη θέση του."
 
 #: wiki/forms.py wiki/plugins/attachments/forms.py
 #: wiki/plugins/images/forms.py
 msgid "You are not sure enough!"
-msgstr ""
+msgstr "Δεν είστε αρκετά σίγουροι!"
 
 #: wiki/forms.py
 msgid "While you tried to delete this article, it was modified. TAKE CARE!"
 msgstr ""
+"Ενώ εσείς προσπαθήσατε να διαγράψετε αυτό το άρθρο, τροποποιήθηκε. ΠΡΟΣΕΞΤΕ!"
 
 #: wiki/forms.py
 msgid "Lock article"
-msgstr ""
+msgstr "Κλειδώστε το άρθρο"
 
 #: wiki/forms.py
 msgid "Deny all users access to edit this article."
 msgstr ""
+"Απαγορέυστε την είσοδο σε όλους τους χρήστες την επεξεργασία του άρθρου."
 
 #: wiki/forms.py
 msgid "Permissions"
-msgstr ""
+msgstr "Δικαιώματα"
 
 #: wiki/forms.py
 msgid "Owner"
-msgstr ""
+msgstr "Ιδιοκτήτης"
 
 #: wiki/forms.py
 msgid "Enter the username of the owner."
-msgstr ""
+msgstr "Εισάγετε το όνομα του κατόχου."
 
 #: wiki/forms.py
 msgid "(none)"
-msgstr ""
+msgstr "(οὐδείς)"
 
 #: wiki/forms.py
 msgid "Inherit permissions"
-msgstr ""
+msgstr "Κληρονομικά δικαιώματα"
 
 #: wiki/forms.py
 msgid ""
 "Check here to apply the above permissions recursively to articles under this"
 " one."
 msgstr ""
+"Ελέγξτε εδώ για να εφαρμόσετε τα ανωτέρω δικαιώματα αναδρομικά στα άρθρα "
+"κάτω από αυτό."
 
 #: wiki/forms.py
 msgid "Permission settings for the article were updated."
-msgstr ""
+msgstr "Ρυθμίσεις αδειών για το άρθρο ενημερώθηκαν."
 
 #: wiki/forms.py
 msgid "Your permission settings were unchanged, so nothing saved."
 msgstr ""
+"Οι ρυθμίσεις άδεια σας παρέμειναν αμετάβλητες, έτσι τίποτα δεν αποθηκεύτηκε."
 
 #: wiki/forms.py
 msgid "No user with that username"
-msgstr ""
+msgstr "Δεν υπάρχει χρήστης με αυτό το όνομα"
 
 #: wiki/forms.py
 msgid "Article locked for editing"
-msgstr ""
+msgstr "Άρθρο κλειδωσε για επεξεργασία"
 
 #: wiki/forms.py
 msgid "Article unlocked for editing"
-msgstr ""
+msgstr "Άρθρο ξεκλειδωθήκε για επεξεργασία"
 
 #: wiki/forms.py
 msgid "Filter..."
-msgstr ""
+msgstr "Φίλτρο..."
 
 #: wiki/core/plugins/base.py
 msgid "Settings for plugin"
-msgstr ""
+msgstr "Ρυθμίσεις για πρόσθετα"
 
 #: wiki/models/article.py wiki/models/pluginbase.py
 #: wiki/plugins/attachments/models.py
 msgid "current revision"
-msgstr ""
+msgstr "τρέχουσα αναθεώρηση"
 
 #: wiki/models/article.py
 msgid ""
 "The revision being displayed for this article. If you need to do a roll-"
 "back, simply change the value of this field."
 msgstr ""
+"Η αναθεώρηση που εμφανίζεται για αυτό το άρθρο. Αν χρειαστεί να κάνετε ένα "
+"γύρισμα πίσω, απλά αλλάξτε την τιμή του πεδίου αυτού."
 
 #: wiki/models/article.py
 msgid "modified"
-msgstr ""
+msgstr "τροποποιημένο"
 
 #: wiki/models/article.py
 msgid "Article properties last modified"
-msgstr ""
+msgstr "Ιδιότητες του άρθρου τελευταία τροποποημένες"
 
 #: wiki/models/article.py
 msgid "owner"
-msgstr ""
+msgstr "ιδιοκτήτης"
 
 #: wiki/models/article.py
 msgid ""
 "The owner of the article, usually the creator. The owner always has both "
 "read and write access."
 msgstr ""
+"Ο ιδιοκτήτης του άρθρου, συνήθως ο δημιουργός. Ο ιδιοκτήτης έχει πάντα "
+"πρόσβαση ανάγνωσης και εγγραφής."
 
 #: wiki/models/article.py
 msgid "group"
-msgstr ""
+msgstr "ομάδα"
 
 #: wiki/models/article.py
 msgid ""
 "Like in a UNIX file system, permissions can be given to a user according to "
 "group membership. Groups are handled through the Django auth system."
 msgstr ""
+"Σε ένα σύστημα αρχείων UNIX, τα δικαιώματα μπορεί να δοθούν στο χρήστη "
+"σύμφωνα με την ιδιότητα του μέλους της ομάδας. Οι ομάδες που διακινούνται "
+"μέσω του συστήματος Django auth."
 
 #: wiki/models/article.py
 msgid "group read access"
-msgstr ""
+msgstr "πρόσβαση ομάδας ανάγνωσης"
 
 #: wiki/models/article.py
 msgid "group write access"
-msgstr ""
+msgstr "πρόαβαση ομάδας εγγραφής"
 
 #: wiki/models/article.py
 msgid "others read access"
-msgstr ""
+msgstr "προσβαση ανάγνωσης άλλων"
 
 #: wiki/models/article.py
 msgid "others write access"
-msgstr ""
+msgstr "πρόσβαση εγγράφης άλλων"
 
 #: wiki/models/article.py
 msgid "Article without content (%(id)d)"
-msgstr ""
+msgstr "Άρθρο χωρίς περιεχόμενο (%(id)d)"
 
 #: wiki/models/article.py
 msgid "content type"
-msgstr ""
+msgstr "τύπος περιεχομένου"
 
 #: wiki/models/article.py
 msgid "object ID"
-msgstr ""
+msgstr "αντικείμενο ταυτοποίησης"
 
 #: wiki/models/article.py
 msgid "Article for object"
-msgstr ""
+msgstr "Άρθρο για αντικείμενο"
 
 #: wiki/models/article.py
 msgid "Articles for object"
-msgstr ""
+msgstr "Άρθρα για αντικείμενα"
 
 #: wiki/models/article.py
 msgid "revision number"
-msgstr ""
+msgstr "αριθμός αναθεώρησης"
 
 #: wiki/models/article.py
 msgid "IP address"
-msgstr ""
+msgstr "διεύθυνση IP"
 
 #: wiki/models/article.py
 msgid "user"
-msgstr ""
+msgstr "χρήστης"
 
 #: wiki/models/article.py
 msgid "locked"
-msgstr ""
+msgstr "κλειδομένο"
 
 #: wiki/models/article.py wiki/models/pluginbase.py
 msgid "article"
-msgstr ""
+msgstr "άρθρο"
 
 #: wiki/models/article.py
 msgid "article contents"
-msgstr ""
+msgstr "περιεχόμενα άρθρου"
 
 #: wiki/models/article.py
 msgid "article title"
-msgstr ""
+msgstr "τίτλος άρθρου"
 
 #: wiki/models/article.py
 msgid ""
 "Each revision contains a title field that must be filled out, even if the "
 "title has not changed"
 msgstr ""
+"Κάθε αναθεώρηση περιέχει ένα πεδίο τίτλου που πρέπει να συμπληρωθεί, έστω "
+"και αν ο τίτλος δεν έχει αλλάξει"
 
 #: wiki/models/pluginbase.py
 msgid "original article"
-msgstr ""
+msgstr "αρχικό άρθρο"
 
 #: wiki/models/pluginbase.py
 msgid "Permissions are inherited from this article"
-msgstr ""
+msgstr "Τα δικαιώματα κρηρονομούνται από αυτό το άρθρο"
 
 #: wiki/models/pluginbase.py
 msgid "A plugin was changed"
-msgstr ""
+msgstr "Ένα πρόσθετο άλλαξε"
 
 #: wiki/models/pluginbase.py
 msgid ""
 "The revision being displayed for this plugin.If you need to do a roll-back, "
 "simply change the value of this field."
 msgstr ""
+"Η αναθεώρηση που εμφανίζεται για αυτό το πρόσθετο. Εάν πρέπει να κάνετε "
+"γύρισμα πίσω απλά αλλάξτε την τιμή του πεδίου αυτού."
 
 #: wiki/models/urlpath.py
 msgid "Cache lookup value for articles"
-msgstr ""
+msgstr "Τιμή αναζήτησης cache για τα άρθρα"
 
 #: wiki/models/urlpath.py
 msgid "slug"
-msgstr ""
+msgstr "συντομία"
 
 #: wiki/models/urlpath.py
 msgid "(root)"
-msgstr ""
+msgstr "(διαδρομή)"
 
 #: wiki/models/urlpath.py
 msgid "URL path"
-msgstr ""
+msgstr "μονοπάτι URL"
 
 #: wiki/models/urlpath.py
 msgid "URL paths"
-msgstr ""
+msgstr "μονοπάτια URL"
 
 #: wiki/models/urlpath.py
 msgid "Sorry but you cannot have a root article with a slug."
-msgstr ""
+msgstr "Συγνωμη αλλά δεν μπορεί το άρθρο να κανει διαδρομη με συντομία."
 
 #: wiki/models/urlpath.py
 msgid "A non-root note must always have a slug."
-msgstr ""
+msgstr "Μια σημείωση μη διαδρομης πρέπει να εχει πάντα συντομία."
 
 #: wiki/models/urlpath.py
 msgid "There is already a root node on %s"
-msgstr ""
+msgstr "Υπάρχει ήδη ένας κόμβος ρίζας σε %s"
 
 #: wiki/models/urlpath.py
 msgid ""
@@ -14317,273 +14502,297 @@ msgid ""
 "\n"
 "The children of this article have had their parents deleted. You should probably find a new home for them."
 msgstr ""
+"Άρθρα που έχασαν τους γονείς τους.\n"
+"===============================\n"
+"\n"
+"Τα παιδιά αυτού του άρθρου είχαν διαγράψει τούς γονείς τούς. Θα πρέπει να βρείτε ένα νέο σπίτι για αυτούς."
 
 #: wiki/models/urlpath.py
 msgid "Lost and found"
-msgstr ""
+msgstr "Χάθηκε και βρέθηκε"
 
 #: wiki/plugins/attachments/forms.py
 msgid "A short summary of what the file contains"
-msgstr ""
+msgstr "Μια σύντομη περίληψη του τι περιέχει το αρχείο"
 
 #: wiki/plugins/attachments/forms.py
 msgid "Yes I am sure..."
-msgstr ""
+msgstr "Ναί είμαι σίγουρος..."
 
 #: wiki/plugins/attachments/markdown_extensions.py
 msgid "Click to download file"
-msgstr ""
+msgstr "Κάντε κλικ για να κατεβάσετε το αρχείο"
 
 #: wiki/plugins/attachments/models.py
 msgid ""
 "The revision of this attachment currently in use (on all articles using the "
 "attachment)"
 msgstr ""
+"Η αναθεώρηση αυτής της προσάρτησης που χρησιμοποιείτε σήμερα (σε όλα τα "
+"άρθρα χρησιμοποιώντας το συνημμένο)"
 
 #: wiki/plugins/attachments/models.py
 msgid "original filename"
-msgstr ""
+msgstr "αρχικό όνομα αρχείου"
 
 #: wiki/plugins/attachments/models.py
 msgid "attachment"
-msgstr ""
+msgstr "συνημμένο"
 
 #: wiki/plugins/attachments/models.py
 msgid "attachments"
-msgstr ""
+msgstr "συνημμένα"
 
 #: wiki/plugins/attachments/models.py
 msgid "file"
-msgstr ""
+msgstr "αρχείο"
 
 #: wiki/plugins/attachments/models.py
 msgid "attachment revision"
-msgstr ""
+msgstr "αναθεώρηση συνημμένου"
 
 #: wiki/plugins/attachments/models.py
 msgid "attachment revisions"
-msgstr ""
+msgstr "αναθεωρήσεις συνημμένου"
 
 #: wiki/plugins/attachments/views.py
 msgid "%s was successfully added."
-msgstr ""
+msgstr "%s προστέθηκε με επιτυχία."
 
 #: wiki/plugins/attachments/views.py wiki/plugins/attachments/views.py
 msgid "Your file could not be saved: %s"
-msgstr ""
+msgstr "Το αρχείο σας δεν θα μπορούσε να σωθεί: %s"
 
 #: wiki/plugins/attachments/views.py wiki/plugins/attachments/views.py
 msgid ""
 "Your file could not be saved, probably because of a permission error on the "
 "web server."
 msgstr ""
+"Το αρχείο σας δεν θα μπορούσε να σωθεί, ίσως εξαιτίας ενός σφάλματος "
+"δικαιωμάτων στον server διαδικτύου."
 
 #: wiki/plugins/attachments/views.py
 msgid "%s uploaded and replaces old attachment."
-msgstr ""
+msgstr "%s ανέβηκε και αντικατέστησε παλαιό συνημμένο."
 
 #: wiki/plugins/attachments/views.py
 msgid ""
 "Your new file will automatically be renamed to match the file already "
 "present. Files with different extensions are not allowed."
 msgstr ""
+"Το νέο αρχείο σας θα μετονομαστεί αυτόματα για να ταιριάζει με το ήδη "
+"υπάρχων αρχείο. Αρχεία με διαφορετικές επεκτάσεις δεν επιτρέπονται."
 
 #: wiki/plugins/attachments/views.py
 msgid "Current revision changed for %s."
-msgstr ""
+msgstr "Η τρέχουσα αναθεώρηση άλλαξε για %s"
 
 #: wiki/plugins/attachments/views.py
 msgid "Added a reference to \"%(att)s\" from \"%(art)s\"."
-msgstr ""
+msgstr "Προστέθηκε μια αναφορά στην ''%(att)s'' απο ''%(art)s''."
 
 #: wiki/plugins/attachments/views.py
 msgid "The file %s was deleted."
-msgstr ""
+msgstr "Το αρχείο %s διεγράφη."
 
 #: wiki/plugins/attachments/views.py
 msgid "This article is no longer related to the file %s."
-msgstr ""
+msgstr "Αυτό το άρθρο πλέον δεν σχετίζετε με το αρχείο %s."
 
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "A file was changed: %s"
-msgstr ""
+msgstr "Ενα αρχείο αλλαξε: %s"
 
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "A file was deleted: %s"
-msgstr ""
+msgstr "Ένα αρχείο διεγράφη: %s"
 
 #: wiki/plugins/images/forms.py
 msgid ""
 "New image %s was successfully uploaded. You can use it by selecting it from "
 "the list of available images."
 msgstr ""
+"Νέα εικόνα %s ανέβηκε με επιτυχία. Μπορείτε να τη χρησιμοποιήσετε "
+"επιλέγοντάς την από τη λίστα των διαθέσιμων εικόνων."
 
 #: wiki/plugins/images/forms.py
 msgid "Are you sure?"
-msgstr ""
+msgstr "Είστε σίγουρος;"
 
 #: wiki/plugins/images/models.py
 msgid "image"
-msgstr ""
+msgstr "εικόνα"
 
 #: wiki/plugins/images/models.py
 msgid "images"
-msgstr ""
+msgstr "εικόνες"
 
 #: wiki/plugins/images/models.py
 msgid "Image: %s"
-msgstr ""
+msgstr "Εικόνα: %s"
 
 #: wiki/plugins/images/models.py
 msgid "Current revision not set!!"
-msgstr ""
+msgstr "Η τρέχουσα αναθεώρηση δεν έχει γίνει!!"
 
 #: wiki/plugins/images/models.py
 msgid "image revision"
-msgstr ""
+msgstr "αναθεώρηση εικόνας"
 
 #: wiki/plugins/images/models.py
 msgid "image revisions"
-msgstr ""
+msgstr "αναθεωρήσείς εικόνων"
 
 #: wiki/plugins/images/models.py
 msgid "Image Revsion: %d"
-msgstr ""
+msgstr "έκδοση εικόνας: %d"
 
 #: wiki/plugins/images/views.py
 msgid "%s has been restored"
-msgstr ""
+msgstr "%s έχει αποκατασταθεί"
 
 #: wiki/plugins/images/views.py
 msgid "%s has been marked as deleted"
-msgstr ""
+msgstr "%s έχει επισημανθεί ως διαγραμμένες"
 
 #: wiki/plugins/images/views.py
 msgid "%(file)s has been changed to revision #%(revision)d"
-msgstr ""
+msgstr "%(file)s έχει αλλάξει σε αναθεώρηση #%(revision)d"
 
 #: wiki/plugins/images/views.py
 msgid "%(file)s has been saved."
-msgstr ""
+msgstr "%(file)s εχουν σωθει."
 
 #: wiki/plugins/images/wiki_plugin.py
 msgid "Images"
-msgstr ""
+msgstr "Εικόνες"
 
 #: wiki/plugins/images/wiki_plugin.py
 msgid "An image was added: %s"
-msgstr ""
+msgstr "Μια εικόνα προστέθηκε: %s"
 
 #: wiki/plugins/links/wiki_plugin.py
 msgid "Links"
-msgstr ""
+msgstr "Δεσμός"
 
 #: wiki/plugins/notifications/forms.py
 msgid "Notifications"
-msgstr ""
+msgstr "Ειδοποιήσεις"
 
 #: wiki/plugins/notifications/forms.py
 msgid "When this article is edited"
-msgstr ""
+msgstr "Όταν αυτό το άρθρο επεξεργαστεί"
 
 #: wiki/plugins/notifications/forms.py
 msgid "Also receive emails about article edits"
 msgstr ""
+"Επίσης, λάβετε μηνύματα ηλεκτρονικού ταχυδρομείου σχετικά με τις αλλαγές του"
+" άρθρου"
 
 #: wiki/plugins/notifications/forms.py
 msgid "Your notification settings were updated."
-msgstr ""
+msgstr "Οι ρυθμίσεις των ειδοποιήσεων σας ενημερώθηκαν."
 
 #: wiki/plugins/notifications/forms.py
 msgid "Your notification settings were unchanged, so nothing saved."
 msgstr ""
+"Οι ρυθμίσεις ειδοποίησης σας παρέμειναν αμετάβλητες, έτσι τίποτα δεν "
+"αποθηκεύτικε."
 
 #: wiki/plugins/notifications/models.py
 msgid "%(user)s subscribing to %(article)s (%(type)s)"
-msgstr ""
+msgstr "%(user)s συνδρομητική στο %(article)s (%(type)s)"
 
 #: wiki/plugins/notifications/models.py
 msgid "Article deleted: %s"
-msgstr ""
+msgstr "Άρθρο διεγράφη: %s"
 
 #: wiki/plugins/notifications/models.py
 msgid "Article modified: %s"
-msgstr ""
+msgstr "Άρθρο τροποποιήθηκε: %s"
 
 #: wiki/plugins/notifications/models.py
 msgid "New article created: %s"
-msgstr ""
+msgstr "Νέο άρθρο δημιουργήθηκε: %s"
 
 #: wiki/views/accounts.py
 msgid "You are now sign up... and now you can sign in!"
-msgstr ""
+msgstr "Έχετε κάνει εγγραφή... και τώρα μπορείτε να συνδεθείτε!"
 
 #: wiki/views/accounts.py
 msgid "You are no longer logged in. Bye bye!"
-msgstr ""
+msgstr "Δεν είστε πλέον συνδεδεμένος. Γεία σας!"
 
 #: wiki/views/accounts.py
 msgid "You are now logged in! Have fun!"
-msgstr ""
+msgstr "Συνδεθήκατε! Καλή διασκέδαση!"
 
 #: wiki/views/article.py
 msgid "New article '%s' created."
-msgstr ""
+msgstr "Νέο άρθρο '%s' δημιουργήθηκε."
 
 #: wiki/views/article.py
 msgid "There was an error creating this article: %s"
-msgstr ""
+msgstr "Υπήρξε ένα σφάλμα κατά τη δημιουργία αυτού του άρθρου: %s"
 
 #: wiki/views/article.py
 msgid "There was an error creating this article."
-msgstr ""
+msgstr "Υπήρξε ένα σφάλμα κατά τη δημιουργία αυτού του άρθρου."
 
 #: wiki/views/article.py
 msgid ""
 "This article cannot be deleted because it has children or is a root article."
 msgstr ""
+"Αυτό το άρθρο δεν μπορεί να διαγραφεί γιατί έχει παιδιά ή είναι άρθρο "
+"διαδρομής."
 
 #: wiki/views/article.py
 msgid ""
 "This article together with all its contents are now completely gone! Thanks!"
 msgstr ""
+"Το άρθρο αυτό, μαζί με όλα τα περιεχόμενά του έχουν τώρα εξαφανιστεί "
+"εντελώς! Ευχαριστώ!"
 
 #: wiki/views/article.py
 msgid ""
 "The article \"%s\" is now marked as deleted! Thanks for keeping the site "
 "free from unwanted material!"
 msgstr ""
+"Το άρθρο \"%s\" έχει επιλεχθεί ως διεγραμένο! Ευχαριστώ για τη διατήρηση της"
+" σελίδας απαλλαγμένη από ανεπιθύμητα υλικά!"
 
 #: wiki/views/article.py
 msgid "Your changes were saved."
-msgstr ""
+msgstr "Οι αλλαγές σας αποθηκεύτηκαν."
 
 #: wiki/views/article.py
 msgid "A new revision of the article was succesfully added."
-msgstr ""
+msgstr "Μια νέα αναθεώρηση του άρθρου προστέθηκε επιτυχώς."
 
 #: wiki/views/article.py
 msgid "Restoring article"
-msgstr ""
+msgstr "Αποκατάσταση άρθρου"
 
 #: wiki/views/article.py
 msgid "The article \"%s\" and its children are now restored."
-msgstr ""
+msgstr "Το άρθρο \"%s\" και τα παιδιά του έχουν τώρα αποκατασταθεί."
 
 #: wiki/views/article.py
 msgid "The article %s is now set to display revision #%d"
-msgstr ""
+msgstr "Το άρθρο %s καλείται τώρα να εμφανίση την αναθεώρηση #%d"
 
 #: wiki/views/article.py
 msgid "New title"
-msgstr ""
+msgstr "Νέος τίτλος"
 
 #: wiki/views/article.py
 msgid "Merge between Revision #%(r1)d and Revision #%(r2)d"
-msgstr ""
+msgstr "Συγχώνευση μεταξύ Αναθεώρησης #%(r1)d και αναθεώρηση #%(r2)d"
 
 #: wiki/views/article.py
 msgid ""
 "A new revision was created: Merge between Revision #%(r1)d and Revision "
 "#%(r2)d"
 msgstr ""
+"Μια νέα αναθεώρηση δημιουργήθηκε: Συγχώνευση μεταξύ Αναθεώρηση #%(r1)d και "
+"αναθεώρηση #%(r2)d"

@@ -73,10 +73,15 @@ msgstr "Tamam"
 #: cms/static/js/views/modals/base_modal.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
+#: cms/templates/js/add-xblock-component-menu-problem.underscore
+#: cms/templates/js/add-xblock-component-menu.underscore
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Cancel"
 msgstr "İptal"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
+#: cms/templates/js/checklist.underscore
 msgid "This link will open in a new browser window/tab"
 msgstr "Bu link yeni tarayıcı sekmesinde açılacak"
 
@@ -86,7 +91,7 @@ msgstr "Bu link yeni tarayıcı sekmesinde açılacak"
 #: cms/templates/js/course_grade_policy.underscore
 #: cms/templates/js/show-textbook.underscore
 msgid "Delete"
-msgstr ""
+msgstr "Sil"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -308,15 +313,16 @@ msgstr "Maksimum"
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid ""
 "VideoPlayer: Element corresponding to the given selector was not found."
-msgstr ""
+msgstr "Video Oynatıcı: Verilmiş seçiciye karşılık gelen öge bulunamadı."
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "This browser cannot play .mp4, .ogg, or .webm files."
 msgstr ""
+"Bu tarayıcı .mp4, .ogg veya .webm uzantılı dosyaları oynatamamaktadır."
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "Try using a different browser, such as Google Chrome."
-msgstr ""
+msgstr "Başka bir tarayıcı kullanmayı deneyin, örneğin; Google Chrome."
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Video slider"
@@ -446,6 +452,7 @@ msgstr "..."
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
+#: common/templates/js/image-modal.underscore
 msgid "Close"
 msgstr "Kapa"
 
@@ -465,12 +472,12 @@ msgstr "oyla"
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "vote (click to remove your vote)"
 msgid_plural "votes (click to remove your vote)"
-msgstr[0] ""
+msgstr[0] "oylar (oyunuzu kaldırmak için tıklayın)"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "vote (click to vote)"
 msgid_plural "votes (click to vote)"
-msgstr[0] ""
+msgstr[0] "oylar (oylamak için tıklayın)"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Load more"
@@ -503,14 +510,16 @@ msgid ""
 "No results found for %(original_query)s. Showing results for "
 "%(suggested_query)s."
 msgstr ""
+"%(original_query)s için sonuç bulunamadı.  %(suggested_query)s için sonuçlar"
+" gösteriliyor."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "No threads matched your query."
-msgstr ""
+msgstr "Sorgunuzla eşleşen iplik bulunamadı."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Show posts by %(username)s."
-msgstr ""
+msgstr "%(username) kullanıcısının gönderilerini göster."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Click to remove report"
@@ -554,7 +563,7 @@ msgstr "İşaret İpliği"
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid ""
 "The thread you selected has been deleted. Please select another thread."
-msgstr ""
+msgstr "Seçtiğiniz başlık silinmiş. Lütfen başka bir başlık seçiniz."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "We had some trouble loading responses. Please reload the page."
@@ -595,6 +604,8 @@ msgstr "Bu gönderiyi silmek istiyor musunuz?"
 #: common/static/coffee/src/discussion/views/discussion_user_profile_view.js
 msgid "We had some trouble loading the page you requested. Please try again."
 msgstr ""
+"İstediğiniz sayfayı yüklerken sorunlarla karşılaştık. Lütfen tekrar "
+"deneyiniz."
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
@@ -630,23 +641,23 @@ msgstr "Bu cevabı silmeye emin misiniz?"
 
 #: common/static/js/capa/drag_and_drop/base_image.js
 msgid "Drop target image"
-msgstr ""
+msgstr "Hedef görseli bırakın"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dragging out of slider"
-msgstr ""
+msgstr "Kaydırıcının dışına sürükleme"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dragging"
-msgstr ""
+msgstr "Sürükleme"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped in slider"
-msgstr ""
+msgstr "kaydırıcıya bırakıldı."
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped on target"
-msgstr ""
+msgstr "Hedefe bırakıldı."
 
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
@@ -709,65 +720,65 @@ msgstr[0] "%d yıl"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
-msgstr ""
+msgstr "Kullanıcı"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation"
-msgstr ""
+msgstr "İpucu"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Start"
-msgstr ""
+msgstr "Başlangıç"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "End"
-msgstr ""
+msgstr "Bitiş"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "#Replies"
-msgstr ""
+msgstr "#Yanıtlar"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Date posted"
-msgstr ""
+msgstr "Gönderilme tarihi"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "More"
-msgstr ""
+msgstr "Fazlası"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "Notlarım"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
-msgstr ""
+msgstr "Eğitmen"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Public"
-msgstr ""
+msgstr "Genel"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "Arama"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Users"
-msgstr ""
+msgstr "Kullanıcılar"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags"
-msgstr ""
+msgstr "Etiketler"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation Text"
-msgstr ""
+msgstr "İpucu Yazısı"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -781,33 +792,33 @@ msgstr ""
 #: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear"
-msgstr ""
+msgstr "Temizle"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Text"
-msgstr ""
+msgstr "Yazı"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Image"
-msgstr ""
+msgstr "Görüntü"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Reply"
-msgstr ""
+msgstr "Yanıtla"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: cms/templates/js/show-textbook.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "Düzenle"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
-msgstr ""
+msgstr "Etiketler:"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Available %s"
@@ -842,6 +853,7 @@ msgid "Choose"
 msgstr "Seç"
 
 #: lms/static/admin/js/SelectFilter2.js
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "Çıkart"
 
@@ -974,6 +986,7 @@ msgid "Close Calculator"
 msgstr "Hesap Makinesini Kapat"
 
 #: lms/static/coffee/src/customwmd.js
+#: cms/templates/js/asset-library.underscore
 msgid "Preview"
 msgstr "Önizleme"
 
@@ -1120,7 +1133,7 @@ msgstr ""
 #. usernames) appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Could not find users associated with the following identifiers:"
-msgstr ""
+msgstr "Bu özelliklere uygun kullanıcı bulunamadı: "
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Error enrolling/unenrolling users."
@@ -1128,7 +1141,7 @@ msgstr "Kullanıcıları kaydederken/kayıtları silerken hata."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "The following email addresses and/or usernames are invalid:"
-msgstr ""
+msgstr "Aşağıdaki e-posta adresleri veya kullanıcı adları geçersizdir."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Successfully enrolled and sent email to the following users:"
@@ -1266,6 +1279,8 @@ msgid ""
 "Error getting student progress url for '<%= student_id %>'. Make sure that "
 "the student identifier is spelled correctly."
 msgstr ""
+"<%= student_id %> nolu öğrencinin ilerlemesini getirirken hatayla "
+"karşılaşıldı. Öğrencinin numarasının doğru yazıldığına emin olunuz. "
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
@@ -1275,7 +1290,7 @@ msgstr ""
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Please enter a problem location."
-msgstr ""
+msgstr "Lütfen bir hata konumu giriniz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -1291,6 +1306,9 @@ msgid ""
 " '<%= student_id %>'. Make sure that the problem and student identifiers are"
 " complete and correct."
 msgstr ""
+"<%= student_id %> nolu öğrencinin <%= problem_id %> problemi için problem "
+"denemelerini sıfırlarken hata oluştu. Problem ve öğrenci numaralarının tam "
+"ve doğru yazıldığına emin olunuz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -1305,6 +1323,9 @@ msgid ""
 " %>'. Make sure that the problem and student identifiers are complete and "
 "correct."
 msgstr ""
+"'<%= student_id %>' nolu öğrencinin problem '<%= problem_id %>' için durumu "
+"sıfırlanırken sorunla karşılaşıldı. Problem ve öğrenci numaralarının tam ve "
+"doğru yazıldığına emin olunuz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Module state successfully deleted."
@@ -1326,6 +1347,9 @@ msgid ""
 "'<%= student_id %>'. Make sure that the the problem and student identifiers "
 "are complete and correct."
 msgstr ""
+"'<%= student_id %> nolu öğrencinin '<%= problem_id %>' problemi için yeniden"
+" notlandırma görevi oluşturulurken hatayla karşılaşıldı. Problem ve öğrenci "
+"numaralarının tam ve doğru yazıldığına emin olunuz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -1333,6 +1357,9 @@ msgid ""
 "student_id %>'. Make sure that the problem and student identifiers are "
 "complete and correct."
 msgstr ""
+"'<%= student_id %> nolu öğrencinin '<%= problem_id %>' problemi için görev "
+"geçmişi alınırken hatayla karşılaşıldı. Problem ve öğrenci numaralarının tam"
+" ve doğru yazıldığına emin olunuz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Reset attempts for all students on problem '<%= problem_id %>'?"
@@ -1356,6 +1383,9 @@ msgid ""
 "problem_id %>'. Make sure that the problem identifier is complete and "
 "correct."
 msgstr ""
+"Tüm öğrencilerin '<%= problem_id %>' problemi için denemelerini sıfırlamak "
+"için görev başlatılırken hatayla karşılaşıldı. Problem numarasının tam ve "
+"doğru yazıldığına emin olunuz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Rescore problem '<%= problem_id %>' for all students?"
@@ -1378,6 +1408,9 @@ msgid ""
 "Error starting a task to rescore problem '<%= problem_id %>'. Make sure that"
 " the problem identifier is complete and correct."
 msgstr ""
+" '<%= problem_id %>' problemi için tekrar notlandırma görevi başlatılırken "
+"hatayla karşılaşıldı. Problem numarasının tam ve doğru yazıldığına emin "
+"olunuz."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Error listing task history for this student and problem."
@@ -1504,16 +1537,16 @@ msgstr "(Göster)"
 
 #: lms/static/js/Markdown.Editor.js
 msgid "Insert Hyperlink"
-msgstr ""
+msgstr "Hiperlink Girin"
 
 #. Translators: Please keep the quotation marks (") around this text
 #: lms/static/js/Markdown.Editor.js lms/static/js/Markdown.Editor.js.c
 msgid "\"optional title\""
-msgstr ""
+msgstr "\"tercihe bağlı başlık\""
 
 #: lms/static/js/Markdown.Editor.js
 msgid "Insert Image (upload file or type url)"
-msgstr ""
+msgstr "Resim koyun (dosya yükleyin veya url girin)"
 
 #: lms/static/js/Markdown.Editor.js
 msgid "Markdown Editing Help"
@@ -1609,31 +1642,31 @@ msgstr ""
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Unknown Error Occurred."
-msgstr ""
+msgstr "Bilinmeyen bir hata oluştu."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Successfully reset the attempts for user {user}"
-msgstr ""
+msgstr "{user} adlı kullanıcının denemeleri başarıyla sıfırlandı"
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Failed to reset attempts."
-msgstr ""
+msgstr "Denemeleri sıfırlama başarısızlıkla sonuçlandı."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Successfully deleted student state for user {user}"
-msgstr ""
+msgstr "{user} için öğrencilik durumu silindi."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Failed to delete student state."
-msgstr ""
+msgstr "Öğrencilik durumu silinemedi."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Successfully rescored problem for user {user}"
-msgstr ""
+msgstr "{user} adlı kullanıcının problemi tekrar notlandırıldı."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Failed to rescore problem."
-msgstr ""
+msgstr "Problem tekrar notlandırılamadı."
 
 #: lms/templates/class_dashboard/all_section_metrics.js
 #: lms/templates/class_dashboard/all_section_metrics.js
@@ -1643,7 +1676,7 @@ msgstr "Veri alınamadı, lütfen tekrar deneyin."
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student opened Subsection"
 msgid_plural "%(num_students)s students opened Subsection"
-msgstr[0] ""
+msgstr[0] "%(num_students)s öğrenciler alt bölüm açtı."
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student"
@@ -1685,12 +1718,12 @@ msgstr "Kaydediliyor&hellip;"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid "Delete Page Confirmation"
-msgstr ""
+msgstr "Sayfa onayını kaldır"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid ""
 "Are you sure you want to delete this page? This action cannot be undone."
-msgstr ""
+msgstr "Bu sayfayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
 
 #: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/unit.js
 #: cms/static/js/base.js cms/static/js/views/course_info_update.js
@@ -1716,7 +1749,7 @@ msgstr "Evet, bu bileşeni sil"
 
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 msgid "OpenAssessment Save Error"
-msgstr ""
+msgstr "AçıkDeğerlendirme Kayıt Hatası"
 
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
@@ -1846,31 +1879,41 @@ msgstr ""
 msgid "Your file has been deleted."
 msgstr "Dosyanız silindi."
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
 msgstr "İsim"
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
 msgstr "Tarih Eklendi"
 
 #: cms/static/js/views/assets.js
 msgid "Uploading…"
-msgstr ""
+msgstr "Yükleniyor..."
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
+#, fuzzy
 msgid "Choose File"
 msgstr ""
+"#-#-#-#-#  djangojs-studio.po (edx-platform)  #-#-#-#-#\n"
+"Dosya Seç\n"
+"#-#-#-#-#  underscore-studio.po (edx-platform)  #-#-#-#-#\n"
+"Dosyayı Seç"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
+#, fuzzy
 msgid "Upload New File"
 msgstr ""
+"#-#-#-#-#  djangojs-studio.po (edx-platform)  #-#-#-#-#\n"
+"Yeni Dosya Yükle\n"
+"#-#-#-#-#  underscore-studio.po (edx-platform)  #-#-#-#-#\n"
+"Yeni dosya yükle"
 
 #: cms/static/js/views/assets.js
 msgid "Load Another File"
-msgstr ""
+msgstr "Başka Bir Dosya Yükle"
 
 #: cms/static/js/views/course_info_update.js
 msgid "Are you sure you want to delete this update?"
@@ -1940,6 +1983,8 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s ascending"
 msgstr ""
+" %(total_items_count)s sonuçtan %(current_item_range)s tanesi gösteriliyor. "
+"%(sort_name)s bilgisine göre artan şekilde sıralandı."
 
 #. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
 #. Added descending"
@@ -1948,12 +1993,14 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s descending"
 msgstr ""
+" %(total_items_count)s sonuçtan %(current_item_range)s tanesi gösteriliyor. "
+"%(sort_name)s bilgisine göre azalan şekilde sıralandı."
 
 #. Translators: turns into "25 total" to be used in other sentences, e.g.
 #. "Showing 0-9 out of 25 total".
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
-msgstr ""
+msgstr "Toplam %(total_items)s"
 
 #: cms/static/js/views/section_edit.js
 msgid "Your change could not be saved"
@@ -1980,6 +2027,8 @@ msgid "Deleting"
 msgstr "Siliniyor"
 
 #: cms/static/js/views/uploads.js
+#: cms/templates/js/metadata-file-uploader-item.underscore
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Upload"
 msgstr "Yükle"
 
@@ -2025,6 +2074,8 @@ msgid "Adding&hellip;"
 msgstr "Ekliyor&hellip;"
 
 #: cms/static/js/views/modals/base_modal.js
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Save"
 msgstr "Kaydet"
 
@@ -2080,7 +2131,7 @@ msgstr "Çeviriyi yükle"
 
 #: common/templates/js/image-modal.underscore
 msgid "Fullscreen"
-msgstr ""
+msgstr "Tamekran"
 
 #: common/templates/js/image-modal.underscore
 msgid "Large"
@@ -2088,23 +2139,23 @@ msgstr ""
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom In"
-msgstr ""
+msgstr "Büyüt"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom Out"
-msgstr ""
+msgstr "Küçült"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problem Types"
-msgstr ""
+msgstr "Sıklıklıkla karşılaşılan Problem Tipleri"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Advanced"
-msgstr ""
+msgstr "Gelişmiş"
 
 #: cms/templates/js/add-xblock-component.underscore
 msgid "Add New Component"
-msgstr ""
+msgstr "Yeni Bileşen ekle"
 
 #: cms/templates/js/advanced_entry.underscore
 msgid "Deprecated"
@@ -2137,7 +2188,7 @@ msgstr ""
 
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "close"
-msgstr ""
+msgstr "kapat"
 
 #: cms/templates/js/asset.underscore
 msgid "Open/download this file"
@@ -2145,7 +2196,7 @@ msgstr ""
 
 #: cms/templates/js/asset.underscore
 msgid "Delete this asset"
-msgstr ""
+msgstr "Bu veriyi sil"
 
 #: cms/templates/js/asset.underscore
 msgid "Lock this asset"
@@ -2161,11 +2212,11 @@ msgstr ""
 
 #: cms/templates/js/checklist.underscore
 msgid "Tasks Completed:"
-msgstr ""
+msgstr "Tamamlanan görevler:"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Assignment Type Name"
-msgstr ""
+msgstr "Ödev Türü İsmi"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. Homework, Midterm Exams"
@@ -2239,7 +2290,7 @@ msgstr ""
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Upload PDF"
-msgstr ""
+msgstr "PDF yükle"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "delete chapter"
@@ -2255,7 +2306,7 @@ msgstr ""
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook Name"
-msgstr ""
+msgstr "Ders kitabı adı"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Introduction to Cookie Baking"
@@ -2296,12 +2347,12 @@ msgstr ""
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
-msgstr ""
+msgstr "Üstüne yaz"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Download"
-msgstr ""
+msgstr "Karşıdan yükle"
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "You haven't added any textbooks to this course yet."
@@ -2314,24 +2365,24 @@ msgstr ""
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Previous"
-msgstr ""
+msgstr "Önceki"
 
 #: cms/templates/js/paging-footer.underscore
 msgid "Page number"
-msgstr ""
+msgstr "Sayfa numarası"
 
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Next"
-msgstr ""
+msgstr "Sonraki"
 
 #: cms/templates/js/show-textbook.underscore
 msgid "View Live"
-msgstr ""
+msgstr "Canlı Görüntüle"
 
 #: cms/templates/js/upload-dialog.underscore
 msgid "File upload succeeded"
-msgstr ""
+msgstr "Dosya yükleme işlemi başarılı."
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Add URLs for additional versions"
@@ -2372,7 +2423,7 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Error."
-msgstr ""
+msgstr "Hata."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid "Timed Transcript from"

@@ -8934,7 +8934,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "ಅನಾಮಿಕ"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."

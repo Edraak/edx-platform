@@ -1,10 +1,11 @@
 # #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
-# edX community translations have been downloaded from Urdu (http://www.transifex.com/projects/p/edx-platform/language/ur/).
+# edX community translations have been downloaded from Pirate English (http://www.transifex.com/projects/p/edx-platform/language/en@pirate/).
 # Copyright (C) 2014 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # 
 # Translators:
-# mzeeshan <zeeshanriaz@msn.com>, 2014
+# David Baumgold <david@davidbaumgold.com>, 2014
+# dkh <dkh@edx.org>, 2014
 # #-#-#-#-#  djangojs-studio.po (edx-platform)  #-#-#-#-#
 # edX translation file.
 # Copyright (C) 2014 EdX
@@ -27,15 +28,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-07-07 10:28-0400\n"
-"PO-Revision-Date: 2014-07-07 14:30+0000\n"
+"POT-Creation-Date: 2014-06-23 08:51-0400\n"
+"PO-Revision-Date: 2014-06-19 04:17+0000\n"
 "Last-Translator: Sarina Canelake <sarina@edx.org>\n"
-"Language-Team: Urdu (http://www.transifex.com/projects/p/edx-platform/language/ur/)\n"
+"Language-Team: Pirate English (http://www.transifex.com/projects/p/edx-platform/language/en@pirate/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
-"Language: ur\n"
+"Language: en@pirate\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: cms/static/coffee/src/views/tabs.js
@@ -57,7 +58,7 @@ msgstr ""
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/section-name-edit.underscore
 msgid "Cancel"
-msgstr ""
+msgstr "Belay"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
 #: cms/templates/js/checklist.underscore
@@ -78,7 +79,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Hide Ye Annotations"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Expand Instructions"
@@ -86,7 +87,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "Fold Ye Instructions Here"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Commentary"
@@ -204,6 +205,8 @@ msgid ""
 "You are trying to upload a file that is too large for our system.  Please "
 "choose a file under 2MB or paste a link to it into the answer box."
 msgstr ""
+"Ye be tryin' t' load a shipment that be too large fer th' ship. Please be "
+"choosin' one that be under 2MB or be pastin' a link into th' answer box."
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid ""
@@ -350,15 +353,15 @@ msgstr[1] ""
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Caption will be displayed when "
-msgstr ""
+msgstr "Captions be showin' when"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn on captions"
-msgstr ""
+msgstr "Be turnin' on me captions"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn off captions"
-msgstr ""
+msgstr "Be turnin' off me captions"
 
 #: common/lib/xmodule/xmodule/public/js/split_test_author_view.js
 msgid "Creating missing groups&hellip;"
@@ -409,6 +412,7 @@ msgid "We had some trouble processing your request. Please try again."
 msgstr ""
 
 #: common/static/coffee/src/discussion/utils.js
+#: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 #: common/static/coffee/src/discussion/views/new_post_view.js
@@ -465,10 +469,6 @@ msgid "%(unread_count)s new comment"
 msgid_plural "%(unread_count)s new comments"
 msgstr[0] ""
 msgstr[1] ""
-
-#: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
-msgid "Search Results"
-msgstr ""
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Loading thread list"
@@ -716,7 +716,7 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "Me Notes"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
@@ -730,7 +730,7 @@ msgstr ""
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "Scour"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -789,68 +789,76 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Available %s"
-msgstr ""
+msgstr "Available to ye %s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of available %s. You may choose some by selecting them in "
 "the box below and then clicking the \"Choose\" arrow between the two boxes."
 msgstr ""
+"This be the list o' available %s. Ye may choose some by selecting them in "
+"that thar box belowdecks, and then click the \"Be Choosin'\" arrow 'tween "
+"the two boxes."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Type into this box to filter down the list of available %s."
-msgstr ""
+msgstr "Be typin' into th' box to be filterin' down the list o' available %s."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Filter"
-msgstr ""
+msgstr "Be Filterin'"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose all"
-msgstr ""
+msgstr "Selectin' them all"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to choose all %s at once."
-msgstr ""
+msgstr "Be clickin' to be choosin' all %s at once, matey."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose"
-msgstr ""
+msgstr "Be Choosin'"
 
 #: lms/static/admin/js/SelectFilter2.js
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
-msgstr ""
+msgstr "Be Removin'"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Chosen %s"
-msgstr ""
+msgstr "This Here Be Th' Chosen %s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of chosen %s. You may remove some by selecting them in the "
 "box below and then clicking the \"Remove\" arrow between the two boxes."
 msgstr ""
+"This be the list o' available %s. Ye may choose some by selecting them in "
+"that thar box belowdecks, and then click the \"Be Removin'\" arrow 'tween "
+"the two boxes."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr ""
+msgstr "Removin' them all"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to remove all chosen %s at once."
-msgstr ""
+msgstr "Be clickin' to be removin' all chosen %s at once, matey."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid "%(sel)s of %(cnt)s selected"
 msgid_plural "%(sel)s of %(cnt)s selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(sel)s of %(cnt)s be selected"
+msgstr[1] "%(sel)s of %(cnt)s be selected"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
 "You have unsaved changes on individual editable fields. If you run an "
 "action, your unsaved changes will be lost."
 msgstr ""
+"Ye be havin' changes ye haven't stored away yet. If ye be runnin' any "
+"actions, yer unsaved changes be lost to ye."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
@@ -903,7 +911,7 @@ msgstr ""
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Choose a time"
-msgstr ""
+msgstr "Be choosin' a time"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Midnight"
@@ -936,7 +944,7 @@ msgstr ""
 
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"
-msgstr ""
+msgstr "Be Openin' yer Electric Abacus"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Close Calculator"
@@ -1006,7 +1014,7 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -1526,10 +1534,6 @@ msgstr ""
 msgid "Heading"
 msgstr ""
 
-#: lms/static/js/ajax-error.js
-msgid "You have been logged out of your edX account. "
-msgstr ""
-
 #: lms/static/js/staff_debug_actions.js
 msgid "Unknown Error Occurred."
 msgstr ""
@@ -1940,7 +1944,7 @@ msgstr ""
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/section-name-edit.underscore
 msgid "Save"
-msgstr ""
+msgstr "Bury Treasure"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Component"
@@ -2011,10 +2015,6 @@ msgstr ""
 
 #: cms/templates/js/add-xblock-component.underscore
 msgid "Add New Component"
-msgstr ""
-
-#: cms/templates/js/advanced_entry.underscore
-msgid "Deprecated"
 msgstr ""
 
 #: cms/templates/js/asset-library.underscore

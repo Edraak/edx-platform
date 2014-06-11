@@ -233,7 +233,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "E-pošta ili zaporka nisu ispravni"
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -2423,7 +2423,7 @@ msgstr ""
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
-msgstr ""
+msgstr "Greška"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Not Selected"
@@ -2541,7 +2541,7 @@ msgstr ""
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
-msgstr ""
+msgstr "Syllabus"
 
 #. Translators: 'Instructor' appears on the tab that leads to the instructor
 #. dashboard, which is
@@ -3271,7 +3271,7 @@ msgstr ""
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
 msgid "Score"
-msgstr ""
+msgstr "Rezultat"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "problems"
@@ -3681,7 +3681,7 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Email"
-msgstr ""
+msgstr "E-pošta"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
@@ -5027,7 +5027,7 @@ msgstr ""
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid "Required Information"
-msgstr ""
+msgstr "Obvezne informacije"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password"
@@ -5584,7 +5584,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/utils.py lms/templates/notes.html
 msgid "My Notes"
-msgstr ""
+msgstr "Moje bilješke"
 
 #: cms/djangoapps/contentstore/management/commands/git_export.py
 msgid ""
@@ -5863,20 +5863,20 @@ msgstr ""
 #: cms/templates/widgets/footer.html lms/templates/static_templates/tos.html
 #: lms/templates/static_templates/tos.html
 msgid "Terms of Service"
-msgstr ""
+msgstr "Uvjeti uporabe"
 
 #: cms/templates/widgets/footer.html lms/templates/footer.html
 #: lms/templates/static_templates/privacy.html
 #: lms/templates/static_templates/privacy.html
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Zaštita privatnosti"
 
 #: cms/templates/widgets/header.html cms/templates/widgets/header.html
 #: lms/templates/help_modal.html lms/templates/navigation.html
 #: lms/templates/static_templates/help.html
 #: lms/templates/static_templates/help.html wiki/plugins/help/wiki_plugin.py
 msgid "Help"
-msgstr ""
+msgstr "Pomoć"
 
 #: common/templates/course_modes/choose.html
 msgid "Upgrade Your Registration for {} | Choose Your Track"
@@ -6012,7 +6012,7 @@ msgstr ""
 
 #: lms/templates/admin_dashboard.html
 msgid "{platform_name}-wide Summary"
-msgstr ""
+msgstr "Sažetak o cijelokupnoj {platform_name}"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
@@ -6022,43 +6022,43 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "Upute"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "Zatvori upute"
 
 #: lms/templates/annotatable.html
 msgid "Guided Discussion"
-msgstr ""
+msgstr "Vođene rasprave"
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Sakrij bilješke"
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
 msgid "Vision"
-msgstr ""
+msgstr "Pogled"
 
 #: lms/templates/contact.html
 msgid "Faq"
-msgstr ""
+msgstr "ČPP"
 
 #: lms/templates/contact.html lms/templates/footer.html
 msgid "Press"
-msgstr ""
+msgstr "Objave"
 
 #: lms/templates/contact.html lms/templates/footer.html
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
-msgstr ""
+msgstr "Povratna informacija razreda"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6067,10 +6067,14 @@ msgid ""
 " issues specific to a particular class, please post on the discussion forums"
 " of that&nbsp;class."
 msgstr ""
+"Mi stalno tražimo povratne informacije za poboljšanje naših kolegija. Ako "
+"ste upisani student i imate bilo kakvih pitanja, povratnih informacija, "
+"prijedloga ili bilo kakvih drugih pitanja specifičnih za određen kolegija, "
+"molimo Vas da ih postavite na forumima tih kolegija."
 
 #: lms/templates/contact.html
 msgid "General Inquiries and Feedback"
-msgstr ""
+msgstr "Opći upiti i povratna informacija"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6083,7 +6087,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Technical Inquiries and Feedback"
-msgstr ""
+msgstr "Tehnički upiti i povratna informacija"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6098,31 +6102,35 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Media"
-msgstr ""
+msgstr "Medij"
 
 #: lms/templates/contact.html
 msgid ""
 "Please visit our {link_start}media/press page{link_end} for more "
 "information. For any media or press inquiries, please email {email}."
 msgstr ""
+"Molimo Vas posjetite {link_start}media/press page{link_end} za više "
+"informacija. Za novinarske upite, pošaljite e-poštu na {email}."
 
 #: lms/templates/contact.html
 msgid "Universities"
-msgstr ""
+msgstr "Sveučilišta"
 
 #: lms/templates/contact.html
 msgid ""
 "If you are a university wishing to collaborate with or if you have questions"
 " about {platform_name}, please email {email}."
 msgstr ""
+"Ako ste sveučilište zainteresirano za suradnju ili imate pitanja oko "
+"{platform_name}, pošaljite e-poštu na {email}."
 
 #: lms/templates/course.html
 msgid "New"
-msgstr ""
+msgstr "Novo"
 
 #: lms/templates/dashboard.html
 msgid "Dashboard"
-msgstr ""
+msgstr "Nadzorna ploča"
 
 #: lms/templates/dashboard.html lms/templates/courseware/course_about.html
 #: lms/templates/courseware/course_about.html
@@ -6157,7 +6165,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
-msgstr ""
+msgstr "uredi"
 
 #. Translators: this section lists all the third-party authentication
 #. providers
@@ -6183,19 +6191,19 @@ msgstr ""
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Reset Password"
-msgstr ""
+msgstr "Resetiraj zaporku"
 
 #: lms/templates/dashboard.html
 msgid "Current Courses"
-msgstr ""
+msgstr "Tekući kolegij"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't registered for any courses yet."
-msgstr ""
+msgstr "Izgleda kako niste registrirani niti za jedan kurs"
 
 #: lms/templates/dashboard.html
 msgid "Find courses now!"
-msgstr ""
+msgstr "Pronađite kolegije!"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't been enrolled in any courses yet."
@@ -6203,7 +6211,7 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Course-loading errors"
-msgstr ""
+msgstr "Greška u učitavanju kolegija"
 
 #: lms/templates/dashboard.html
 msgid "Email Settings for {course_number}"
@@ -6219,35 +6227,38 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Password Reset Email Sent"
-msgstr ""
+msgstr "E-pošta za ponovno postavaljanje zaporke je poslana"
 
 #: lms/templates/dashboard.html
 msgid ""
 "An email has been sent to {email}. Follow the link in the email to change "
 "your password."
 msgstr ""
+"Poruka je poslana na {email}. Odaberite poveznicu u poruci kako biste "
+"promijenili zaporku."
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Change Email"
-msgstr ""
+msgstr "Promjena adrese e-pošte"
 
 #: lms/templates/dashboard.html
 msgid "Please enter your new email address:"
-msgstr ""
+msgstr "Molim upišite novu adresu e-pošte:"
 
 #: lms/templates/dashboard.html
 msgid "Please confirm your password:"
-msgstr ""
+msgstr "Molim potvrdite zaporku:"
 
 #: lms/templates/dashboard.html
 msgid ""
 "We will send a confirmation to both {email} and your new email as part of "
 "the process."
 msgstr ""
+"Poslat ćemo Vam potvrdu na  {email}  kao i na novu e-poštu kao dio postupka."
 
 #: lms/templates/dashboard.html
 msgid "Change your name"
-msgstr ""
+msgstr "Promjena imena"
 
 #. Translators: note that {platform} {cert_name_short} will look something
 #. like: "edX certificate". Please do not change the order of these
@@ -6270,11 +6281,11 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Reason for name change:"
-msgstr ""
+msgstr "Razlog za promjenu imena:"
 
 #: lms/templates/dashboard.html
 msgid "Change My Name"
-msgstr ""
+msgstr "Promjena mog imena"
 
 #: lms/templates/dashboard.html
 msgid ""
@@ -6287,7 +6298,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Unregister"
-msgstr ""
+msgstr "Ispiši se"
 
 #: lms/templates/edit_unit_link.html
 msgid "View Unit in Studio"
@@ -6295,21 +6306,21 @@ msgstr ""
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 msgid "E-mail change failed"
-msgstr ""
+msgstr "Promjena e-pošte nije uspjela"
 
 #: lms/templates/email_change_failed.html
 msgid "We were unable to send a confirmation email to {email}"
-msgstr ""
+msgstr "Ne možemo poslati poruku potvrde na {email}"
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 #: lms/templates/invalid_email_key.html
 msgid "Go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Vrati se na  {link_start}naslovicu{link_end}."
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
 msgid "E-mail change successful!"
-msgstr ""
+msgstr "E-pošta uspješno promjenjena."
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
@@ -6318,90 +6329,90 @@ msgstr ""
 
 #: lms/templates/email_exists.html
 msgid "An account with the new e-mail address already exists."
-msgstr ""
+msgstr "Račun sa novom adresom e-pošte već postoji."
 
 #: lms/templates/enroll_students.html
 msgid "Student Enrollment Form"
-msgstr ""
+msgstr "Formular za upis studenta"
 
 #: lms/templates/enroll_students.html
 msgid "Course: "
-msgstr ""
+msgstr "Kolegij:"
 
 #: lms/templates/enroll_students.html
 msgid "Add new students"
-msgstr ""
+msgstr "Dodaj novog studenta"
 
 #: lms/templates/enroll_students.html
 msgid "Existing students:"
-msgstr ""
+msgstr "Postojeći studenti:"
 
 #: lms/templates/enroll_students.html
 msgid "New students added: "
-msgstr ""
+msgstr "Novo dodani studenti:"
 
 #: lms/templates/enroll_students.html
 msgid "Students rejected: "
-msgstr ""
+msgstr "Odbijeni studenti:"
 
 #: lms/templates/enroll_students.html
 msgid "Debug: "
-msgstr ""
+msgstr "Debug:"
 
 #: lms/templates/extauth_failure.html lms/templates/extauth_failure.html
 msgid "External Authentication failed"
-msgstr ""
+msgstr "Vanjska autentikacija nije uspjela"
 
 #: lms/templates/folditbasic.html
 msgid "Due:"
-msgstr ""
+msgstr "Rok:"
 
 #: lms/templates/folditbasic.html
 msgid "Status:"
-msgstr ""
+msgstr "Status:"
 
 #: lms/templates/folditbasic.html
 msgid "You have successfully gotten to level {goal_level}."
-msgstr ""
+msgstr "Uspješno ste stigli do razine {goal_level}."
 
 #: lms/templates/folditbasic.html
 msgid "You have not yet gotten to level {goal_level}."
-msgstr ""
+msgstr "Niste stigli do razine {goal_level}."
 
 #: lms/templates/folditbasic.html
 msgid "Completed puzzles"
-msgstr ""
+msgstr "Završene zagonetke"
 
 #: lms/templates/folditbasic.html
 msgid "Level"
-msgstr ""
+msgstr "Razina"
 
 #: lms/templates/folditbasic.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Submitted"
-msgstr ""
+msgstr "Predano"
 
 #: lms/templates/folditchallenge.html
 msgid "Puzzle Leaderboard"
-msgstr ""
+msgstr "Ljestvica riješavača zagonetki"
 
 #: lms/templates/folditchallenge.html
 msgid "User"
-msgstr ""
+msgstr "Korisnik"
 
 #: lms/templates/footer.html
 msgid "About"
-msgstr ""
+msgstr "O projektu"
 
 #: lms/templates/footer.html lms/templates/static_templates/jobs.html
 #: lms/templates/static_templates/jobs.html
 msgid "Jobs"
-msgstr ""
+msgstr "Poslovi"
 
 #: lms/templates/footer.html lms/templates/static_templates/faq.html
 #: lms/templates/static_templates/faq.html
 msgid "FAQ"
-msgstr ""
+msgstr "ČPP"
 
 #: lms/templates/footer.html
 msgid "{platform_name} Logo"
@@ -6422,12 +6433,12 @@ msgstr ""
 
 #: lms/templates/footer.html
 msgid "Terms of Service and Honor Code"
-msgstr ""
+msgstr "Uvjeti uporabe i kodeks časti"
 
 #: lms/templates/forgot_password_modal.html
 #: lms/templates/forgot_password_modal.html
 msgid "Password Reset"
-msgstr ""
+msgstr "Ponovo postavljanje zaporke"
 
 #: lms/templates/forgot_password_modal.html
 msgid ""
@@ -6437,7 +6448,7 @@ msgstr ""
 
 #: lms/templates/forgot_password_modal.html
 msgid "Your E-mail Address"
-msgstr ""
+msgstr "Vaša adresa e-pošte"
 
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 msgid "This is the e-mail address you used to register with {platform}"
@@ -6445,11 +6456,11 @@ msgstr ""
 
 #: lms/templates/forgot_password_modal.html
 msgid "Reset My Password"
-msgstr ""
+msgstr "Ponovo postavi moju zaporku"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Email is incorrect."
-msgstr ""
+msgstr "E-pošta nije ispravna"
 
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 msgid "{platform_name} Help"
@@ -6477,15 +6488,15 @@ msgstr ""
 
 #: lms/templates/help_modal.html
 msgid "Report a problem"
-msgstr ""
+msgstr "Prijavi problem"
 
 #: lms/templates/help_modal.html
 msgid "Make a suggestion"
-msgstr ""
+msgstr "Predloži"
 
 #: lms/templates/help_modal.html
 msgid "Ask a question"
-msgstr ""
+msgstr "Pitaj"
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -6500,7 +6511,7 @@ msgstr ""
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/signup_modal.html
 msgid "E-mail"
-msgstr ""
+msgstr "E-pošta"
 
 #: lms/templates/help_modal.html
 msgid "Briefly describe your issue"
@@ -6530,7 +6541,7 @@ msgstr ""
 
 #: lms/templates/help_modal.html
 msgid "Thank You!"
-msgstr ""
+msgstr "Hvala Vam!"
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -6575,7 +6586,7 @@ msgstr ""
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 #: lms/templates/module-error.html
 msgid "Details"
-msgstr ""
+msgstr "Pojedinosti"
 
 #: lms/templates/help_modal.html
 msgid "question"
@@ -6645,7 +6656,7 @@ msgstr ""
 
 #: lms/templates/login-sidebar.html
 msgid "Helpful Information"
-msgstr ""
+msgstr "Korisne informacije"
 
 #: lms/templates/login-sidebar.html lms/templates/login-sidebar.html
 msgid "Login via OpenID"
@@ -6659,7 +6670,7 @@ msgstr ""
 
 #: lms/templates/login-sidebar.html
 msgid "Not Enrolled?"
-msgstr ""
+msgstr "Niste prijavljeni?"
 
 #: lms/templates/login-sidebar.html
 msgid "Sign up for {platform_name} today!"
@@ -6675,7 +6686,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Log into your {platform_name} Account"
-msgstr ""
+msgstr "Prijavite se u Vašim  {platform_name} računom"
 
 #: lms/templates/login.html
 msgid "Log into My {platform_name} Account"
@@ -6683,7 +6694,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Access My Courses"
-msgstr ""
+msgstr "Pristupi mojim kolegijima"
 
 #: lms/templates/login.html lms/templates/register.html
 msgid "Processing your account information…"
@@ -6691,7 +6702,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Please log in"
-msgstr ""
+msgstr "Molimo prijavite se"
 
 #: lms/templates/login.html
 msgid "to access your account and courses"
@@ -6699,7 +6710,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "We're Sorry, {platform_name} accounts are unavailable currently"
-msgstr ""
+msgstr "Žao nam je ali We're  {platform_name} računi trenutno nisu dostupni"
 
 #: lms/templates/login.html
 msgid "The following errors occurred while logging you in:"
@@ -6707,7 +6718,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Your email or password is incorrect"
-msgstr ""
+msgstr "Vaša e-pošta ili zaporska su neispravne"
 
 #: lms/templates/login.html
 msgid ""
@@ -6723,11 +6734,11 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Account Preferences"
-msgstr ""
+msgstr "Postavke računa"
 
 #: lms/templates/login.html
 msgid "Remember me"
-msgstr ""
+msgstr "Upamti me"
 
 #. Translators: this is the last choice of a number of choices of how to log
 #. in
@@ -6835,47 +6846,47 @@ msgstr ""
 
 #: lms/templates/module-error.html
 msgid "Raw data:"
-msgstr ""
+msgstr "Izvorni podaci:"
 
 #: lms/templates/name_changes.html
 msgid "Accepted"
-msgstr ""
+msgstr "Prihvaćeno"
 
 #: lms/templates/name_changes.html
 msgid "Rejected"
-msgstr ""
+msgstr "Odbijeno"
 
 #: lms/templates/name_changes.html
 msgid "Pending name changes"
-msgstr ""
+msgstr "Promjena imena u tijeku"
 
 #: lms/templates/name_changes.html lms/templates/modal/accessible_confirm.html
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdite"
 
 #: lms/templates/name_changes.html
 msgid "[Reject]"
-msgstr ""
+msgstr "[Odbaci]"
 
 #: lms/templates/navigation.html
 msgid "Global Navigation"
-msgstr ""
+msgstr "Globalna navigacija"
 
 #: lms/templates/navigation.html
 msgid "Find Courses"
-msgstr ""
+msgstr "Nađi kolegije"
 
 #: lms/templates/navigation.html
 msgid "Dashboard for:"
-msgstr ""
+msgstr "Nadzorna ploča za:"
 
 #: lms/templates/navigation.html
 msgid "More options dropdown"
-msgstr ""
+msgstr "Padajući izbornik s više opcija"
 
 #: lms/templates/navigation.html
 msgid "Log Out"
-msgstr ""
+msgstr "Odjavi se"
 
 #: lms/templates/navigation.html
 msgid "Shopping Cart"
@@ -6883,25 +6894,25 @@ msgstr ""
 
 #: lms/templates/navigation.html
 msgid "How it Works"
-msgstr ""
+msgstr "Kako radi"
 
 #: lms/templates/navigation.html lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 #: lms/templates/courseware/courses.html
 msgid "Courses"
-msgstr ""
+msgstr "Kolegiji"
 
 #: lms/templates/navigation.html
 msgid "Schools"
-msgstr ""
+msgstr "Škole"
 
 #: lms/templates/navigation.html lms/templates/navigation.html
 msgid "Register Now"
-msgstr ""
+msgstr "Registirajte se"
 
 #: lms/templates/navigation.html lms/templates/navigation.html
 msgid "Log in"
-msgstr ""
+msgstr "Prijava"
 
 #: lms/templates/navigation.html
 msgid ""
@@ -6917,7 +6928,7 @@ msgstr ""
 
 #: lms/templates/problem.html
 msgid "Reset"
-msgstr ""
+msgstr "Ponovo postavi"
 
 #: lms/templates/problem.html
 msgid "Reveal Answer"
@@ -6929,7 +6940,7 @@ msgstr ""
 
 #: lms/templates/provider_login.html
 msgid "Log In"
-msgstr ""
+msgstr "Prijava"
 
 #: lms/templates/provider_login.html
 msgid ""
@@ -6940,7 +6951,7 @@ msgstr ""
 
 #: lms/templates/provider_login.html
 msgid "Return To %s"
-msgstr ""
+msgstr "Vati se na %s"
 
 #: lms/templates/register-shib.html
 msgid "Preferences for {platform_name}"
@@ -6994,7 +7005,7 @@ msgstr ""
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "I agree to the {link_start}Terms of Service{link_end}"
-msgstr ""
+msgstr "Suglasan sam s  {link_start}Uvjetima uporabe{link_end}"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
@@ -7019,7 +7030,7 @@ msgstr ""
 
 #: lms/templates/register-sidebar.html
 msgid "Welcome to {platform_name}"
-msgstr ""
+msgstr "Dobrodoši u {platform_name}"
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -7064,7 +7075,7 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Register for {platform_name}"
-msgstr ""
+msgstr "Registriraj se za {platform_name}"
 
 #: lms/templates/register.html
 msgid "Create My {platform_name} Account"
@@ -7072,7 +7083,7 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Welcome!"
-msgstr ""
+msgstr "Dobrodošli!"
 
 #: lms/templates/register.html
 msgid "Register below to create your {platform_name} account"
@@ -7116,7 +7127,7 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Welcome {username}"
-msgstr ""
+msgstr "Dobrodošli {username}"
 
 #: lms/templates/register.html
 msgid "Enter a Public Display Name:"
@@ -7205,7 +7216,7 @@ msgstr ""
 
 #: lms/templates/signup_modal.html
 msgid "<i>Welcome</i> {name}"
-msgstr ""
+msgstr "<i>Dobrodošli</i> {name}"
 
 #: lms/templates/signup_modal.html
 msgid "Full Name *"
@@ -7233,7 +7244,7 @@ msgstr ""
 
 #: lms/templates/signup_modal.html
 msgid "Login."
-msgstr ""
+msgstr "Prijava."
 
 #: lms/templates/split_test_author_view.html
 msgid "This content experiment uses group configuration '{experiment_name}'."
@@ -7347,11 +7358,11 @@ msgstr ""
 
 #: lms/templates/staticbook.html
 msgid "Previous page"
-msgstr ""
+msgstr "Prethodna stranica"
 
 #: lms/templates/staticbook.html
 msgid "Next page"
-msgstr ""
+msgstr "Sljedeća stranica"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -8489,7 +8500,7 @@ msgstr ""
 
 #: lms/templates/courseware/mktg_coming_soon.html
 msgid "About {course_id}"
-msgstr ""
+msgstr "O {course_id}"
 
 #: lms/templates/courseware/mktg_coming_soon.html
 msgid "Coming Soon"
@@ -8497,7 +8508,7 @@ msgstr ""
 
 #: lms/templates/courseware/mktg_course_about.html
 msgid "About {course_number}"
-msgstr ""
+msgstr "O {course_number}"
 
 #: lms/templates/courseware/mktg_course_about.html
 msgid "Access Courseware"
@@ -8574,10 +8585,12 @@ msgid ""
 "Final course details are being wrapped up at this time. Your final standing "
 "will be available shortly."
 msgstr ""
+"Konačne pojedinosti o kolegiju se trenutno završavaju. Vaša konačna pozicija"
+" biti će uskoro dostupna."
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your final grade:"
-msgstr ""
+msgstr "Vaša konačna ocjena:"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Grade required for a {cert_name_short}:"
@@ -8609,7 +8622,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "This link will open/download a PDF document"
-msgstr ""
+msgstr "Ova poveznia će otvoriti/preuzeti PDF dokument"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
@@ -8635,12 +8648,12 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Complete our course feedback survey"
-msgstr ""
+msgstr "Ispunite upitnik o našem kolegiju"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "{course_number} {course_name} Cover Image"
-msgstr ""
+msgstr "{course_number} {course_name} Naslovna slika"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You're enrolled as a verified student"
@@ -8664,7 +8677,7 @@ msgstr ""
 #: lms/templates/static_templates/honor.html
 #: lms/templates/static_templates/honor.html
 msgid "Honor Code"
-msgstr ""
+msgstr "Kodeks časti"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You're auditing this course"
@@ -8676,11 +8689,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Completed - {end_date}"
-msgstr ""
+msgstr "Kolegij završen - {end_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Started - {start_date}"
-msgstr ""
+msgstr "Kolegij započeo - {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course has not yet started"
@@ -8688,7 +8701,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Starts - {start_date}"
-msgstr ""
+msgstr "Kolegij počinje - {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Document your accomplishment!"
@@ -8716,11 +8729,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Archived Course"
-msgstr ""
+msgstr "Pogledaj arhivirani kolegij"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Course"
-msgstr ""
+msgstr "Pogledaj kolegij"
 
 #. Translators: The course's name will be added to the end of this sentence.
 #: lms/templates/dashboard/_dashboard_course_listing.html
@@ -8946,7 +8959,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "anoniman"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."
@@ -9171,7 +9184,7 @@ msgstr ""
 
 #: lms/templates/discussion/_user_profile.html
 msgid ", "
-msgstr ""
+msgstr ","
 
 #: lms/templates/discussion/_user_profile.html
 msgid "%s discussion started"
@@ -10444,11 +10457,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "Aktivacija je završena!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "Račun je već aktivan!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -10456,7 +10469,7 @@ msgstr ""
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Activation Invalid"
-msgstr ""
+msgstr "Aktivacija je neispravna"
 
 #: lms/templates/registration/activation_invalid.html
 msgid ""
@@ -10464,10 +10477,13 @@ msgid ""
 "e-mail programs will sometimes split it into two lines. If you still have "
 "issues, e-mail us to let us know what happened at {email}."
 msgstr ""
+"Dogodila se greška. Provjerite da je URL na koji ste otišli ispravan - "
+"programi za e-poštu ga ponekad rastave u dvije linije. Ako i dalje imate "
+"probleme, obavijestite nas što se dogodilo na {email}."
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Or you can go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Ili se možete vratiti na {link_start}naslovnicu{link_end}."
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"
@@ -10831,6 +10847,8 @@ msgid ""
 "To uphold the credibility of {platform} certificates, all name changes will "
 "be logged and recorded."
 msgstr ""
+"Kako bi se čuvala kredibilnost {platform} certifikata, sva promjena imena "
+"biti će zabilježena i sačuvana."
 
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Change my name"
@@ -11708,70 +11726,80 @@ msgstr ""
 
 #: cms/templates/404.html
 msgid "The page that you were looking for was not found."
-msgstr ""
+msgstr "Stranica koju ste tražili je nedostupna."
 
 #: cms/templates/404.html
 msgid ""
 "Go back to the {homepage} or let us know about any pages that may have been "
 "moved at {email}."
 msgstr ""
+"Vratite se na {homepage} ili nas obavijestite o bilo kojoj premještenoj "
+"stranici na {email}."
 
 #: cms/templates/500.html
 msgid "Studio Server Error"
-msgstr ""
+msgstr "Greška Studio Servera"
 
 #: cms/templates/500.html
 msgid "The <em>Studio</em> servers encountered an error"
-msgstr ""
+msgstr "<em>Studio</em> serveri su naišli na pogrešku"
 
 #: cms/templates/500.html
 msgid ""
 "An error occurred in Studio and the page could not be loaded. Please try "
 "again in a few moments."
 msgstr ""
+"Došlo je do pogreške u Studio te stranica ne može biti učitana. Molimo da "
+"pokušate malo kasnije."
 
 #: cms/templates/500.html
 msgid ""
 "We've logged the error and our staff is currently working to resolve this "
 "error as soon as possible."
 msgstr ""
+"Greška je prijavljena i naše osoblje trenutno radi kako bi greška što prije "
+"bila riješena."
 
 #: cms/templates/500.html
 msgid "If the problem persists, please email us at {email_link}."
-msgstr ""
+msgstr "Ako problem i dalje postoji, molimo Vas, pišite nam na {email_link}"
 
 #: cms/templates/activation_active.html cms/templates/activation_complete.html
 #: cms/templates/activation_invalid.html
 msgid "Studio Account Activation"
-msgstr ""
+msgstr "Studio Račun Aktivacija"
 
 #: cms/templates/activation_active.html
 msgid "Your account is already active"
-msgstr ""
+msgstr "Vaš račun je već aktivan"
 
 #: cms/templates/activation_active.html
 msgid ""
 "This account, set up using {0}, has already been activated. Please sign in "
 "to start working within edX Studio."
 msgstr ""
+"Ovaj račun, postavke pomoću {0}, je već aktiviran. Molimo vas, prijavite se "
+"za početak rada u edX Studiu."
 
 #: cms/templates/activation_active.html cms/templates/activation_complete.html
 msgid "Sign into Studio"
-msgstr ""
+msgstr "Prijavite se u Studio"
 
 #: cms/templates/activation_complete.html
 msgid "Your account activation is complete!"
-msgstr ""
+msgstr "Aktivacija vašeg računa je završena!"
 
 #: cms/templates/activation_complete.html
 msgid ""
 "Thank you for activating your account. You may now sign in and start using "
 "edX Studio to author courses."
 msgstr ""
+"Hvala za aktiviranje vašeg računa. Sada se možete prijaviti i početi "
+"koristiti edX Studio za autorske tečajeve."
 
 #: cms/templates/activation_invalid.html
 msgid "Your account activation is invalid"
-msgstr ""
+msgstr "Aktiviranje vašeg računa nije važeće"
 
 #: cms/templates/activation_invalid.html
 msgid ""
@@ -11779,38 +11807,43 @@ msgid ""
 "the URL you went to was correct &mdash; e-mail programs will sometimes split"
 " it into two lines."
 msgstr ""
+"žao nam je. Dogodila se greška prilikom vaše aktivacije. Provjerite da je "
+"URL na koji ste otišli ispravan &mdash; programi za e-poštu ga ponekad "
+"rastave u dvije linije."
 
 #: cms/templates/activation_invalid.html
 msgid ""
 "If you still have issues, contact edX Support. In the meatime, you can also "
 "return to"
 msgstr ""
+"Ako i dalje imate probleme, obavijestite edX Podršku. U međuvremenu, možete "
+"se i vratiti na"
 
 #: cms/templates/activation_invalid.html
 msgid "Contact edX Support"
-msgstr ""
+msgstr "Kontaktirajte edX Podršku"
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 #: cms/templates/widgets/header.html
 msgid "Files &amp; Uploads"
-msgstr ""
+msgstr "Datoteke &amp; Učitavanja"
 
 #: cms/templates/asset_index.html cms/templates/course_info.html
 #: cms/templates/edit-tabs.html cms/templates/overview.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
 msgid "Content"
-msgstr ""
+msgstr "Sadržaj"
 
 #: cms/templates/asset_index.html cms/templates/container.html
 #: cms/templates/course_info.html cms/templates/edit-tabs.html
 #: cms/templates/index.html cms/templates/manage_users.html
 #: cms/templates/overview.html cms/templates/textbooks.html
 msgid "Page Actions"
-msgstr ""
+msgstr "Aktivnosti Stranice"
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 msgid "Upload New File"
-msgstr ""
+msgstr "Uploadajte Novu Datoteku"
 
 #: cms/templates/asset_index.html
 msgid "Loading&hellip;"
@@ -11818,7 +11851,7 @@ msgstr ""
 
 #: cms/templates/asset_index.html
 msgid "What files are listed here?"
-msgstr ""
+msgstr "Koje su datoteke ovdje navedene?"
 
 #: cms/templates/asset_index.html
 msgid ""
@@ -11847,7 +11880,7 @@ msgstr ""
 #: cms/templates/asset_index.html cms/templates/container.html
 #: cms/templates/overview.html cms/templates/settings_graders.html
 msgid "What can I do on this page?"
-msgstr ""
+msgstr "Što mogu na ovoj stranici?"
 
 #: cms/templates/asset_index.html
 msgid ""
@@ -11858,45 +11891,49 @@ msgstr ""
 
 #: cms/templates/asset_index.html
 msgid "Choose File"
-msgstr ""
+msgstr "Izaberite Datoteku"
 
 #: cms/templates/asset_index.html
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "Vaša datoteka je izbrisana."
 
 #: cms/templates/asset_index.html
 msgid "close alert"
-msgstr ""
+msgstr "zatvori upozorenje"
 
 #: cms/templates/checklists.html cms/templates/checklists.html
 msgid "Course Checklists"
-msgstr ""
+msgstr "Kontrolni popis Tečaja"
 
 #: cms/templates/checklists.html cms/templates/export.html
 #: cms/templates/export_git.html cms/templates/import.html
 #: cms/templates/widgets/header.html
 msgid "Tools"
-msgstr ""
+msgstr "Alati"
 
 #: cms/templates/checklists.html
 msgid "Current Checklists"
-msgstr ""
+msgstr "Trenutni Kontrolni Popis"
 
 #: cms/templates/checklists.html
 msgid "What are course checklists?"
-msgstr ""
+msgstr "Što su kontrolni popisi tečaja?"
 
 #: cms/templates/checklists.html
 msgid ""
 "Course checklists are tools to help you understand and keep track of all the"
 " steps necessary to get your course ready for students."
 msgstr ""
+"Kontrolni popisi tečajeva su alati koji vam pomažu u razumijevanju i koji "
+"prate sve korake potrebne da vaš tečaj bude spreman za učenike."
 
 #: cms/templates/checklists.html
 msgid ""
 "Any changes you make to these checklists are saved automatically and are "
 "immediately visible to other course team members."
 msgstr ""
+"Sve promjene koje izvršite u ovim kontrolnim popisima automatski su spašene "
+"i odmah vidljive ostalim članovima tima tečaja."
 
 #: cms/templates/checklists.html
 msgid "Studio checklists"
@@ -11967,11 +12004,11 @@ msgstr ""
 
 #: cms/templates/course_info.html cms/templates/course_info.html
 msgid "Course Updates"
-msgstr ""
+msgstr "Ažuriranja Tečaja"
 
 #: cms/templates/course_info.html
 msgid "New Update"
-msgstr ""
+msgstr "Novo Ažuriranje"
 
 #: cms/templates/course_info.html
 msgid ""
@@ -11989,7 +12026,7 @@ msgstr ""
 
 #: cms/templates/edit-tabs.html
 msgid "New Page"
-msgstr ""
+msgstr "Nova Stranica"
 
 #: cms/templates/edit-tabs.html cms/templates/edit_subsection.html
 #: cms/templates/index.html cms/templates/overview.html
@@ -13986,7 +14023,7 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "Ovo je ključni string."
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"

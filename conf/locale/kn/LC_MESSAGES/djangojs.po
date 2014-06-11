@@ -561,7 +561,7 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
-msgstr ""
+msgstr "ಅನಾಮಿಕ"
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js
@@ -805,6 +805,7 @@ msgid "Choose"
 msgstr "ಆಯ್ಕೆ"
 
 #: lms/static/admin/js/SelectFilter2.js
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "ತೆಗೆದುಹಾಕುವುದು"
 

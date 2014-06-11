@@ -2538,7 +2538,7 @@ msgstr ""
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
-msgstr ""
+msgstr "பாடத்திட்டம்"
 
 #. Translators: 'Instructor' appears on the tab that leads to the instructor
 #. dashboard, which is
@@ -6019,7 +6019,7 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "அறிவுறுத்தல்கள்"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
@@ -6032,7 +6032,7 @@ msgstr ""
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "சிறுகுறிப்புகளை மறை"
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
@@ -6041,17 +6041,17 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Faq"
-msgstr ""
+msgstr "அடிக்கடி கேட்கப்படும் கேள்விகள்"
 
 #: lms/templates/contact.html lms/templates/footer.html
 msgid "Press"
-msgstr ""
+msgstr "செய்தியாளர்"
 
 #: lms/templates/contact.html lms/templates/footer.html
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "தொடர்பு"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
@@ -6067,7 +6067,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "General Inquiries and Feedback"
-msgstr ""
+msgstr "பொதுவான விசாரணைகள் மற்றும் கருத்து"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6080,7 +6080,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Technical Inquiries and Feedback"
-msgstr ""
+msgstr "தொழில்நுட்ப விசாரணைகள் மற்றும் கருத்து"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6095,7 +6095,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Media"
-msgstr ""
+msgstr "ஊடகங்கள்"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6105,7 +6105,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Universities"
-msgstr ""
+msgstr "பல்கலைக்கழகங்கள்"
 
 #: lms/templates/contact.html
 msgid ""
@@ -7344,11 +7344,11 @@ msgstr ""
 
 #: lms/templates/staticbook.html
 msgid "Previous page"
-msgstr ""
+msgstr "முந்தைய பக்கம்"
 
 #: lms/templates/staticbook.html
 msgid "Next page"
-msgstr ""
+msgstr "அடுத்த பக்கம்"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -8988,7 +8988,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html wiki/forms.py
 #: wiki/forms.py wiki/forms.py
 msgid "Title"
-msgstr ""
+msgstr "தலைப்பு"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Update post"
@@ -10437,11 +10437,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "செயலாக்கம் நிறைவுற்றது!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "கணக்கு ஏற்கனவே செயலில்!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -10449,7 +10449,7 @@ msgstr ""
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Activation Invalid"
-msgstr ""
+msgstr "செயலாக்கம் செல்லுபடியற்றது"
 
 #: lms/templates/registration/activation_invalid.html
 msgid ""
@@ -13979,11 +13979,11 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "இது ஒரு முக்கிய சரம்."
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
-msgstr ""
+msgstr "உருவாக்கப்பட்டது"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
@@ -13995,7 +13995,7 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Type in some contents"
-msgstr ""
+msgstr "சில உள்ளடக்கங்களை தட்டச்சு செய்க"
 
 #: wiki/forms.py
 msgid ""
@@ -14006,11 +14006,11 @@ msgstr ""
 
 #: wiki/forms.py wiki/forms.py
 msgid "Contents"
-msgstr ""
+msgstr "உள்ளடக்கங்கள்"
 
 #: wiki/forms.py wiki/forms.py
 msgid "Summary"
-msgstr ""
+msgstr "சுருக்கம்"
 
 #: wiki/forms.py
 msgid ""
@@ -14030,7 +14030,7 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Select an option"
-msgstr ""
+msgstr "ஒரு விருப்பத்தை தேர்ந்தெடுங்கள்"
 
 #: wiki/forms.py
 msgid "Slug"
@@ -14061,11 +14061,11 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Yes, I am sure"
-msgstr ""
+msgstr "ஆமாம், நான் உறுதியாக இருக்கிறேன்"
 
 #: wiki/forms.py
 msgid "Purge"
-msgstr ""
+msgstr "சுத்தி செய்"
 
 #: wiki/forms.py
 msgid ""
@@ -14093,15 +14093,15 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Permissions"
-msgstr ""
+msgstr "அனுமதிகள்"
 
 #: wiki/forms.py
 msgid "Owner"
-msgstr ""
+msgstr "உரிமையாளர்"
 
 #: wiki/forms.py
 msgid "Enter the username of the owner."
-msgstr ""
+msgstr "உரிமையாளர் பெயர் சேர்க்கவும்."
 
 #: wiki/forms.py
 msgid "(none)"

@@ -7539,7 +7539,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Play"
-msgstr ""
+msgstr "Mainkan"
 
 #: lms/templates/video.html
 msgid "Speeds"
@@ -7561,15 +7561,15 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Fill browser"
-msgstr ""
+msgstr "Isikan browser"
 
 #: lms/templates/video.html
 msgid "HD off"
-msgstr ""
+msgstr "padamkan HD"
 
 #: lms/templates/video.html lms/templates/video.html
 msgid "Turn off captions"
-msgstr ""
+msgstr "Padamkan terjemahan"
 
 #: lms/templates/video.html
 msgid "Skip to end of transcript."
@@ -8878,7 +8878,7 @@ msgstr ""
 
 #: lms/templates/discussion/_similar_posts.html
 msgid "Hide"
-msgstr ""
+msgstr "Sorok"
 
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Discussion topics; current selection is: "
@@ -8935,7 +8935,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "samaran"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."
@@ -13971,7 +13971,7 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "Ini adalah kunci string."
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"

@@ -2537,7 +2537,7 @@ msgstr ""
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
-msgstr ""
+msgstr "અભ્યાસક્રમ"
 
 #. Translators: 'Instructor' appears on the tab that leads to the instructor
 #. dashboard, which is
@@ -3677,7 +3677,7 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Email"
-msgstr ""
+msgstr "ઈ-મેલ"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
@@ -6008,7 +6008,7 @@ msgstr ""
 
 #: lms/templates/admin_dashboard.html
 msgid "{platform_name}-wide Summary"
-msgstr ""
+msgstr "{platform_name}-વિસ્તૃત સારાંશ"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
@@ -6018,43 +6018,43 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "સૂચનાઓ"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "સૂચનાઓ નાની કરો."
 
 #: lms/templates/annotatable.html
 msgid "Guided Discussion"
-msgstr ""
+msgstr "માર્ગદર્શિત ચર્ચા"
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "વિવરણ છુપાવો"
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
 msgid "Vision"
-msgstr ""
+msgstr "દર્શન"
 
 #: lms/templates/contact.html
 msgid "Faq"
-msgstr ""
+msgstr "વારંવાર પૂછાતા પ્રશ્નો"
 
 #: lms/templates/contact.html lms/templates/footer.html
 msgid "Press"
-msgstr ""
+msgstr "વર્તમાનપત્રો"
 
 #: lms/templates/contact.html lms/templates/footer.html
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "સંપર્ક"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
-msgstr ""
+msgstr "અભ્યાસક્રમ પ્રતિસાદ"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6063,10 +6063,12 @@ msgid ""
 " issues specific to a particular class, please post on the discussion forums"
 " of that&nbsp;class."
 msgstr ""
+"અમારા અભ્યાસક્રમો સુધારવા માટે હંમેશા તમારા પ્રતિસાદની અપેક્ષા  છે. જો તમે વિધાર્થી હો તો તમારા પ્રશ્નો અને અભિપ્રાયો અથવા વર્ગ ને સંબંધિત બાબતો માટે  તે વર્ગ ના ચર્ચા વિભાગમાં રજુ કરો.\n"
+" "
 
 #: lms/templates/contact.html
 msgid "General Inquiries and Feedback"
-msgstr ""
+msgstr "સામાન્ય પૂછપરછ અને અભિપ્રાય"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6079,7 +6081,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Technical Inquiries and Feedback"
-msgstr ""
+msgstr "ટેકનીકલ પૂછપરછ અને અભિપ્રાય"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6094,31 +6096,35 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Media"
-msgstr ""
+msgstr "મીડિયા"
 
 #: lms/templates/contact.html
 msgid ""
 "Please visit our {link_start}media/press page{link_end} for more "
 "information. For any media or press inquiries, please email {email}."
 msgstr ""
+"કૃપયા વધુ માહિતી માટે અમારા {link_start}મીડિયા/પ્રેસ પેજ {link_end} ની "
+"મુલાકાત લો. મીડિયા અથવા પ્રેસની કોઈ પૂછપરછ માટે અમોને ઈ મેલ {email} કરો."
 
 #: lms/templates/contact.html
 msgid "Universities"
-msgstr ""
+msgstr "વિશ્વવિદ્યાલય"
 
 #: lms/templates/contact.html
 msgid ""
 "If you are a university wishing to collaborate with or if you have questions"
 " about {platform_name}, please email {email}."
 msgstr ""
+"જો તમે કોઈ વિશ્વવિદ્યાલય તરફથી અમારી સાથે સહયોગ કરવા ઈચ્છુક છો અથવા તમોને "
+"{platform_name}   વિશે કોઈ પ્રશ્નો હોય તો અમોને {email} કરો."
 
 #: lms/templates/course.html
 msgid "New"
-msgstr ""
+msgstr "નવું"
 
 #: lms/templates/dashboard.html
 msgid "Dashboard"
-msgstr ""
+msgstr "ડેશબોર્ડ"
 
 #: lms/templates/dashboard.html lms/templates/courseware/course_about.html
 #: lms/templates/courseware/course_about.html
@@ -6153,7 +6159,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
-msgstr ""
+msgstr "ફેરફાર"
 
 #. Translators: this section lists all the third-party authentication
 #. providers
@@ -6179,19 +6185,19 @@ msgstr ""
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Reset Password"
-msgstr ""
+msgstr "રીસેટ પાસવર્ડ"
 
 #: lms/templates/dashboard.html
 msgid "Current Courses"
-msgstr ""
+msgstr "વર્તમાન અભ્યાસક્રમ"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't registered for any courses yet."
-msgstr ""
+msgstr "તમે કોઈ પણ અભ્યાસક્રમ રજીસ્ટર કરેલ નથી તેવું લાગે છે."
 
 #: lms/templates/dashboard.html
 msgid "Find courses now!"
-msgstr ""
+msgstr "હવે અભ્યાસક્રમની શોધ કરો!"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't been enrolled in any courses yet."
@@ -6199,7 +6205,7 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Course-loading errors"
-msgstr ""
+msgstr "અભ્યાસક્રમ લોડીંગ માં ખામી છે."
 
 #: lms/templates/dashboard.html
 msgid "Email Settings for {course_number}"
@@ -6215,21 +6221,23 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Password Reset Email Sent"
-msgstr ""
+msgstr "પાસવર્ડ રીસેટ કરવા માટે ઇ-મેલ મોકલી આપેલ છે  "
 
 #: lms/templates/dashboard.html
 msgid ""
 "An email has been sent to {email}. Follow the link in the email to change "
 "your password."
 msgstr ""
+"{email} પર ઇ-મેલ મોકલી આપેલ છે. ઇ-મેલ માં આપેલ લીંક પર જઈ ને પાસવર્ડ રીસેટ "
+"કરો."
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Change Email"
-msgstr ""
+msgstr "ઈ-મેલ બદલો  "
 
 #: lms/templates/dashboard.html
 msgid "Please enter your new email address:"
-msgstr ""
+msgstr "કૃપયા તમારું નવું ઈ-મેલ એડ્રેસ આપો: "
 
 #: lms/templates/dashboard.html
 msgid "Please confirm your password:"
@@ -6283,7 +6291,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Unregister"
-msgstr ""
+msgstr "અન-રજીસ્ટર"
 
 #: lms/templates/edit_unit_link.html
 msgid "View Unit in Studio"
@@ -7343,11 +7351,11 @@ msgstr ""
 
 #: lms/templates/staticbook.html
 msgid "Previous page"
-msgstr ""
+msgstr "પાછલું પેજ"
 
 #: lms/templates/staticbook.html
 msgid "Next page"
-msgstr ""
+msgstr "આગલું  પેજ"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -8568,10 +8576,12 @@ msgid ""
 "Final course details are being wrapped up at this time. Your final standing "
 "will be available shortly."
 msgstr ""
+"અભ્યાસક્રમની  આખરી વિગતો તૈયાર થયી રહેલ છે. ટૂંક સમયમાં તમારું પરિણામ મળી "
+"જશે"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your final grade:"
-msgstr ""
+msgstr "તમારો અંતિમ ગુણાંક:"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Grade required for a {cert_name_short}:"
@@ -8603,7 +8613,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "This link will open/download a PDF document"
-msgstr ""
+msgstr "આ લીંક પરથી પીડીએફ દસ્તાવેજ ખુલશે/ડાઉનલોડ થશે. "
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
@@ -8629,12 +8639,12 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Complete our course feedback survey"
-msgstr ""
+msgstr "અમારા અભ્યાસક્રમના પ્રતિભાવ સર્વેક્ષણ પૂર્ણ કરો."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "{course_number} {course_name} Cover Image"
-msgstr ""
+msgstr "{course_number} {course_name} કવર ઈમેજ "
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You're enrolled as a verified student"
@@ -8670,11 +8680,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Completed - {end_date}"
-msgstr ""
+msgstr "અભ્યાસક્રમ સમાપન - {end_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Started - {start_date}"
-msgstr ""
+msgstr "અભ્યાસક્રમ શરૂઆત - {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course has not yet started"
@@ -8682,7 +8692,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Starts - {start_date}"
-msgstr ""
+msgstr "અભ્યાસક્રમ શરુ થશે - {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Document your accomplishment!"
@@ -8710,11 +8720,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Archived Course"
-msgstr ""
+msgstr "સંગ્રહિત અભ્યાસક્રમ જુઓ"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Course"
-msgstr ""
+msgstr "અભ્યાસક્રમ જુઓ"
 
 #. Translators: The course's name will be added to the end of this sentence.
 #: lms/templates/dashboard/_dashboard_course_listing.html
@@ -10436,11 +10446,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "એકટીવેશન પૂર્ણ!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "એકાઉન્ટ પહેલેથી જ સક્રિય!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -10448,7 +10458,7 @@ msgstr ""
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Activation Invalid"
-msgstr ""
+msgstr "એકટીવેશન અમાન્ય"
 
 #: lms/templates/registration/activation_invalid.html
 msgid ""
@@ -10456,10 +10466,13 @@ msgid ""
 "e-mail programs will sometimes split it into two lines. If you still have "
 "issues, e-mail us to let us know what happened at {email}."
 msgstr ""
+"કોઈ સમસ્યા છે. ‍‌‌ખાત્રી કરોકે યુઆરએલ  બરાબર છે. ઈ મેલ પ્રોગ્રામ ક્યારેક બે "
+"ભાગમાં  યુઆરએલ વિભાજિત કરે છે.   જો હજુ પણ સમસ્યા હોય તો અમોને આ ઈ-મેલ  "
+"{email} પર સંપર્ક કરો."
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Or you can go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "અથવા તમે આ {link_start}હોમપેજ{link_end} પર  જઈ શકો છો. "
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"

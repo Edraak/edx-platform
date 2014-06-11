@@ -16,6 +16,7 @@
 # Jefferson Floyd Conz <jefferson@conz.com.br>, 2014
 # Kayo Leone Dias Perim <kayo_2008_@hotmail.com>, 2014
 # Kevin Grist <kgrist@localconcept.com>, 2014
+# Leonardo Lehnemann Agostinho Martins <lehneman@gmail.com>, 2014
 # LucasPPires <lucaspylespires@hotmail.com>, 2014
 # LucasPPires <lucaspylespires@hotmail.com>, 2014
 # Lulatini <lulatini@gmail.com>, 2014
@@ -38,6 +39,7 @@
 # brk0_0, 2013
 # brunojm <brunojm@gmail.com>, 2014
 # Daniel Linhares <danielinhares@gmail.com>, 2014
+# Leonardo Lehnemann Agostinho Martins <lehneman@gmail.com>, 2014
 # LucasPPires <lucaspylespires@hotmail.com>, 2014
 # niels006 <niels006@gmail.com>, 2014
 # niels006 <niels006@gmail.com>, 2014
@@ -58,14 +60,15 @@
 # 
 # Translators:
 # Jefferson Floyd Conz <jefferson@conz.com.br>, 2014
+# Leonardo Lehnemann Agostinho Martins <lehneman@gmail.com>, 2014
 # mmauryx <matheus_w_dias@hotmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
 "POT-Creation-Date: 2014-07-07 10:28-0400\n"
-"PO-Revision-Date: 2014-07-07 14:30+0000\n"
-"Last-Translator: Sarina Canelake <sarina@edx.org>\n"
+"PO-Revision-Date: 2014-07-08 01:53+0000\n"
+"Last-Translator: Leonardo Lehnemann Agostinho Martins <lehneman@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/edx-platform/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -88,16 +91,23 @@ msgstr "OK"
 #: cms/static/js/views/modals/base_modal.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
+#: cms/templates/js/add-xblock-component-menu-problem.underscore
+#: cms/templates/js/add-xblock-component-menu.underscore
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/section-name-edit.underscore
 msgid "Cancel"
 msgstr "Cancelar"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
+#: cms/templates/js/checklist.underscore
 msgid "This link will open in a new browser window/tab"
 msgstr "Este link será aberto em uma nova janela/guia do navegador"
 
 #: cms/static/js/views/asset.js cms/static/js/views/show_textbook.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
+#: cms/templates/js/course_grade_policy.underscore
+#: cms/templates/js/show-textbook.underscore
 msgid "Delete"
 msgstr "Excluir"
 
@@ -327,6 +337,8 @@ msgstr "Máximo"
 msgid ""
 "VideoPlayer: Element corresponding to the given selector was not found."
 msgstr ""
+"Player de Vídeo: O elemento correspondente ao seletor dado não foi "
+"encontrado"
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "This browser cannot play .mp4, .ogg, or .webm files."
@@ -406,7 +418,7 @@ msgstr "Desativar legenda"
 
 #: common/lib/xmodule/xmodule/public/js/split_test_author_view.js
 msgid "Creating missing groups&hellip;"
-msgstr ""
+msgstr "Criando grupos faltantes&hellip;"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 #: common/static/coffee/src/discussion/discussion_module_view.js
@@ -470,6 +482,7 @@ msgstr "…"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
+#: common/templates/js/image-modal.underscore
 msgid "Close"
 msgstr "Fechar"
 
@@ -519,7 +532,7 @@ msgstr[1] "%(unread_count)s novos comentários"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Search Results"
-msgstr ""
+msgstr "Resultados da Pesquisa"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Loading thread list"
@@ -530,14 +543,16 @@ msgid ""
 "No results found for %(original_query)s. Showing results for "
 "%(suggested_query)s."
 msgstr ""
+"Não há resultados para %(original_query)s. Exibindo resultados para "
+"%(suggested_query)s."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "No threads matched your query."
-msgstr ""
+msgstr "Nenhuma thread corresponde a sua seleção"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Show posts by %(username)s."
-msgstr ""
+msgstr "Mostre posts  %(username)s."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Click to remove report"
@@ -808,6 +823,15 @@ msgstr "Texto da anotação"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
+#: cms/templates/js/metadata-dict-entry.underscore
+#: cms/templates/js/metadata-file-uploader-entry.underscore
+#: cms/templates/js/metadata-list-entry.underscore
+#: cms/templates/js/metadata-number-entry.underscore
+#: cms/templates/js/metadata-option-entry.underscore
+#: cms/templates/js/metadata-string-entry.underscore
+#: cms/templates/js/mock/mock-xmodule-editor.underscore
+#: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
+#: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear"
 msgstr "Limpar"
 
@@ -828,6 +852,8 @@ msgid "Reply"
 msgstr "Responder"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
+#: cms/templates/js/show-textbook.underscore
+#: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
 msgstr "Editar"
 
@@ -869,6 +895,7 @@ msgid "Choose"
 msgstr "Escolher"
 
 #: lms/static/admin/js/SelectFilter2.js
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "Remover"
 
@@ -1004,6 +1031,7 @@ msgid "Close Calculator"
 msgstr "Fechar calculadora"
 
 #: lms/static/coffee/src/customwmd.js
+#: cms/templates/js/asset-library.underscore
 msgid "Preview"
 msgstr "Pré-visualizar"
 
@@ -1657,7 +1685,7 @@ msgstr "Cabeçalho"
 
 #: lms/static/js/ajax-error.js
 msgid "You have been logged out of your edX account. "
-msgstr ""
+msgstr "Você saiu da sua conta edX."
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Unknown Error Occurred."
@@ -1695,20 +1723,20 @@ msgstr "Não foi possível recuperar dados. Tente novamente mais tarde."
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student opened Subsection"
 msgid_plural "%(num_students)s students opened Subsection"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_students)s estudante abriu Subseção"
+msgstr[1] "%(num_students)s estudantes abriram Subseção"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student"
 msgid_plural "%(num_students)s students"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_students)s estudante"
+msgstr[1] "%(num_students)s estudantes"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_questions)s question"
 msgid_plural "%(num_questions)s questions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_questions)s questão"
+msgstr[1] "%(num_questions)s questões"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "Number of Students"
@@ -1719,10 +1747,13 @@ msgid ""
 "This may be happening because of an error with our server or your internet "
 "connection. Try refreshing the page or making sure you are online."
 msgstr ""
+"Isso pode estar acontecendo por causa de um erro com o nosso servidor ou por"
+" causa da sua conexão de internet. Tente atualizar a página ou certificar-se"
+" de que você realmente esteja online."
 
 #: cms/static/coffee/src/main.js
 msgid "Studio's having trouble saving your work"
-msgstr ""
+msgstr "O Studio está tendo problemas para salvar o seu trabalho."
 
 #: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/tabs.js
 #: cms/static/coffee/src/views/unit.js
@@ -1733,16 +1764,18 @@ msgstr ""
 #: cms/static/js/views/course_info_update.js cms/static/js/views/overview.js
 #: cms/static/js/views/xblock_editor.js
 msgid "Saving&hellip;"
-msgstr ""
+msgstr "Salvando&hellip;"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid "Delete Page Confirmation"
-msgstr ""
+msgstr "Confirmar Exclusão da Página"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid ""
 "Are you sure you want to delete this page? This action cannot be undone."
 msgstr ""
+"Você tem certeza que quer excluir esta página? Esta ação não pode ser "
+"desfeita."
 
 #: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/unit.js
 #: cms/static/js/base.js cms/static/js/views/course_info_update.js
@@ -1752,23 +1785,23 @@ msgstr "Excluindo&hellip; "
 
 #: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Duplicating&hellip;"
-msgstr ""
+msgstr "Duplicando&hellip;"
 
 #: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Delete this component?"
-msgstr ""
+msgstr "Excluir este componente?"
 
 #: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Deleting this component is permanent and cannot be undone."
-msgstr ""
+msgstr "A exclusão deste componente é permanente e não pode ser desfeita."
 
 #: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Yes, delete this component"
-msgstr ""
+msgstr "Sim, exclua este componente"
 
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 msgid "OpenAssessment Save Error"
-msgstr ""
+msgstr "Erro de Gravação da Função OpenAssessment"
 
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
@@ -1776,75 +1809,84 @@ msgstr "Este link irá abrir em uma janela modal"
 
 #: cms/static/js/base.js
 msgid "Delete this "
-msgstr ""
+msgstr "Excluir isso"
 
 #: cms/static/js/base.js
 msgid "Deleting this "
-msgstr ""
+msgstr "Excluindo isso"
 
 #: cms/static/js/base.js
 msgid "Yes, delete this "
-msgstr ""
+msgstr "Sim, excluir isso"
 
 #: cms/static/js/index.js
 msgid "Please do not use any spaces in this field."
-msgstr ""
+msgstr "Por favor, não utilize espaços neste campo."
 
 #: cms/static/js/index.js
 msgid "Please do not use any spaces or special characters in this field."
-msgstr ""
+msgstr "Por favor, não utilize espaço ou caracteres especiais neste campo. "
 
 #: cms/static/js/index.js
 msgid ""
 "The combined length of the organization, course number, and course run "
 "fields cannot be more than 65 characters."
 msgstr ""
+"O comprimento combinado dos campos de organização, número e período do curso"
+" não pode ultrapassar 65 caracteres. "
 
 #: cms/static/js/index.js
 msgid "Required field."
-msgstr ""
+msgstr "Campo obrigatório."
 
 #: cms/static/js/sock.js
 msgid "Hide Studio Help"
-msgstr ""
+msgstr "Ocultar ajuda do Studio"
 
 #: cms/static/js/sock.js
 msgid "Looking for Help with Studio?"
-msgstr ""
+msgstr "Precisa de ajuda com o Studio? "
 
 #: cms/static/js/models/course.js cms/static/js/models/section.js
 msgid "You must specify a name"
-msgstr ""
+msgstr "Você deve especificar um nome "
 
 #: cms/static/js/models/uploads.js
 msgid ""
 "Only <%= fileTypes %> files can be uploaded. Please select a file ending in "
 "<%= fileExtensions %> to upload."
 msgstr ""
+"Apenas arquivos <%= fileTypes %> podem ser subidos. Por favor selecione uma "
+"extensão de arquivo com um final <%= fileExtensions %> para subi-lo."
 
 #: cms/static/js/models/uploads.js
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course must have an assigned start date."
-msgstr ""
+msgstr "O curso deve ter uma data de início designada."
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course end date cannot be before the course start date."
-msgstr ""
+msgstr "A data do final do curso não pode ser anterior à data de início. "
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course start date cannot be before the enrollment start date."
 msgstr ""
+"A data de início do curso não pode ser anterior à data de início da "
+"matrícula. "
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The enrollment start date cannot be after the enrollment end date."
 msgstr ""
+"A data de início da matrícula não pode ser posterior à data final para a "
+"matrícula. "
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The enrollment end date cannot be after the course end date."
 msgstr ""
+"A data final de matrícula não pode ser posterior à data do final do curso. "
 
 #: cms/static/js/models/settings/course_details.js
 msgid "Key should only contain letters, numbers, _, or -"
@@ -1852,15 +1894,15 @@ msgstr "A chave deve conter apenas letras, números, _, ou -"
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "There's already another assignment type with this name."
-msgstr ""
+msgstr "Já existe um outro tipo de tarefa com este nome."
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Please enter an integer between 0 and 100."
-msgstr ""
+msgstr "Insira um número inteiro entre 0 e 100."
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Please enter an integer greater than 0."
-msgstr ""
+msgstr "Insira um número inteiro maior do que 0."
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Please enter non-negative integer."
@@ -1868,15 +1910,15 @@ msgstr "Insira um número inteiro não negativo."
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Cannot drop more <% attrs.types %> than will assigned."
-msgstr ""
+msgstr "Não é possível arrastar mais <% attrs.types %> do que os assinalados."
 
 #: cms/static/js/models/settings/course_grading_policy.js
 msgid "Grace period must be specified in HH:MM format."
-msgstr ""
+msgstr "O prazo de tolerância deve ser especificado no formato HH:MM. "
 
 #: cms/static/js/views/asset.js
 msgid "Delete File Confirmation"
-msgstr ""
+msgstr "Confirmar que o arquivo será excluído"
 
 #: cms/static/js/views/asset.js
 msgid ""
@@ -1891,92 +1933,94 @@ msgstr ""
 
 #: cms/static/js/views/asset.js
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "O seu arquivo foi excluído."
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
-msgstr ""
+msgstr "Data adicionada"
 
 #: cms/static/js/views/assets.js
 msgid "Uploading…"
-msgstr ""
+msgstr "Fazendo o upload..."
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Choose File"
-msgstr ""
+msgstr "Escolher arquivo"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Upload New File"
-msgstr ""
+msgstr "Subir um Novo Arquivo"
 
 #: cms/static/js/views/assets.js
 msgid "Load Another File"
-msgstr ""
+msgstr "Carregar outro arquivo"
 
 #: cms/static/js/views/course_info_update.js
 msgid "Are you sure you want to delete this update?"
-msgstr ""
+msgstr "Você tem certeza de que deseja excluir essa atualização?"
 
 #: cms/static/js/views/course_info_update.js
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "Esta ação não pode ser desfeita."
 
 #: cms/static/js/views/edit_chapter.js
 msgid "Upload a new PDF to “<%= name %>”"
-msgstr ""
+msgstr "Enviar um novo PDF em “<%= name %>”"
 
 #: cms/static/js/views/edit_chapter.js
 msgid "Please select a PDF file to upload."
-msgstr ""
+msgstr "Por favor, selecione um arquivo PDF para fazer upload."
 
 #: cms/static/js/views/edit_textbook.js
 #: cms/static/js/views/overview_assignment_grader.js
 msgid "Saving"
-msgstr ""
+msgstr "Salvando"
 
 #: cms/static/js/views/import.js
 msgid "There was an error with the upload"
-msgstr ""
+msgstr "Houve um erro durante o envio do arquivo"
 
 #: cms/static/js/views/import.js
 msgid ""
 "File format not supported. Please upload a file with a <code>tar.gz</code> "
 "extension."
 msgstr ""
+"Não há suporte para esse formato de arquivo. Por favor, envie um arquivo com"
+" uma extensão <code>tar.gz</code>."
 
 #: cms/static/js/views/metadata.js
 msgid "Upload File"
-msgstr ""
+msgstr "Subir Arquivo"
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
-msgstr ""
+msgstr "Contrair todas as seções"
 
 #: cms/static/js/views/overview.js
 msgid "Expand All Sections"
-msgstr ""
+msgstr "Expandir todas as seções"
 
 #: cms/static/js/views/overview.js
 msgid "Release date:"
-msgstr ""
+msgstr "Data de lançamento:"
 
 #: cms/static/js/views/overview.js
 msgid "{month}/{day}/{year} at {hour}:{minute} UTC"
-msgstr ""
+msgstr "{day}/{month}/{year} às {hour}:{minute} UTC"
 
 #: cms/static/js/views/overview.js
 msgid "Edit section release date"
-msgstr ""
+msgstr "Editar a seção com a data de lançamento"
 
 #: cms/static/js/views/overview_assignment_grader.js
 msgid "Not Graded"
-msgstr ""
+msgstr "Não corrigido"
 
 #. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
 #. Added ascending"
@@ -1985,6 +2029,8 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s ascending"
 msgstr ""
+"Mostrando %(current_item_range)s out of %(total_items_count)s, sorted by "
+"%(sort_name)s crescente"
 
 #. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
 #. Added descending"
@@ -1993,44 +2039,49 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s descending"
 msgstr ""
+"Mostrando %(current_item_range)s out of %(total_items_count)s, sorted by "
+"%(sort_name)s decrescente"
 
 #. Translators: turns into "25 total" to be used in other sentences, e.g.
 #. "Showing 0-9 out of 25 total".
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
-msgstr ""
+msgstr "%(total_items)s total"
 
 #: cms/static/js/views/section_edit.js
 msgid "Your change could not be saved"
-msgstr ""
+msgstr "As alterações não foram salvas"
 
 #: cms/static/js/views/section_edit.js
 msgid "Return and resolve this issue"
-msgstr ""
+msgstr "Voltar e resolver este problema"
 
 #: cms/static/js/views/show_textbook.js
 msgid "Delete “<%= name %>”?"
-msgstr ""
+msgstr "Excluir “<%= name %>”?"
 
 #: cms/static/js/views/show_textbook.js
 msgid ""
 "Deleting a textbook cannot be undone and once deleted any reference to it in"
 " your courseware's navigation will also be removed."
 msgstr ""
+"A exclusão de um livro didático não pode ser desfeita. Uma vez que o livro é"
+" excluído qualquer referência a ele ao longo do material didático também "
+"será removida."
 
 #: cms/static/js/views/show_textbook.js
 msgid "Deleting"
-msgstr ""
+msgstr "Excluindo"
 
 #: cms/static/js/views/uploads.js
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Upload"
-msgstr ""
+msgstr "Fazer upload"
 
 #: cms/static/js/views/uploads.js
 msgid "We're sorry, there was an error"
-msgstr ""
+msgstr "Desculpe, ocorreu um erro"
 
 #: cms/static/js/views/validation.js
 msgid "You've made some changes"
@@ -2038,7 +2089,7 @@ msgstr "Você fez algumas alterações"
 
 #: cms/static/js/views/validation.js
 msgid "Your changes will not take effect until you save your progress."
-msgstr ""
+msgstr "As alterações não terão efeito até que você salve o seu progresso."
 
 #: cms/static/js/views/validation.js
 msgid "You've made some changes, but there are some errors"
@@ -2053,7 +2104,7 @@ msgstr ""
 
 #: cms/static/js/views/validation.js
 msgid "Save Changes"
-msgstr ""
+msgstr "Salvar alterações"
 
 #: cms/static/js/views/validation.js
 msgid "Your changes have been saved."
@@ -2061,35 +2112,37 @@ msgstr "Suas alterações foram salvas."
 
 #: cms/static/js/views/xblock_editor.js
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: cms/static/js/views/xblock_editor.js
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: cms/static/js/views/components/add_xblock.js
 msgid "Adding&hellip;"
-msgstr ""
+msgstr "Adicionando&hellip;"
 
 #: cms/static/js/views/modals/base_modal.js
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/section-name-edit.underscore
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Component"
-msgstr ""
+msgstr "Componente"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Editing: %(title)s"
-msgstr ""
+msgstr "Editando: %(title)s"
 
 #: cms/static/js/views/settings/advanced.js
 msgid ""
 "Your changes will not take effect until you save your progress. Take care "
 "with key and value formatting, as validation is not implemented."
 msgstr ""
+"As alterações não terão efeito até que você salve seu progresso. Verifique a"
+" formatação da chave e valor, pois a validação não está implementada."
 
 #: cms/static/js/views/settings/advanced.js
 msgid "Your policy changes have been saved."
@@ -2101,10 +2154,13 @@ msgid ""
 "currently in place yet. If you are having difficulties, please review your "
 "policy pairs."
 msgstr ""
+"Por favor note que a validação dos pares de chave e valor da política ainda "
+"não está implementada. Se você tiver problemas, por favor revise seus pares "
+"referentes à política. "
 
 #: cms/static/js/views/settings/main.js
 msgid "Upload your course image."
-msgstr ""
+msgstr "Suba a foto do seu curso."
 
 #: cms/static/js/views/settings/main.js
 msgid "Files must be in JPEG or PNG format."
@@ -2115,213 +2171,222 @@ msgid ""
 "Sorry, there was an error parsing the subtitles that you uploaded. Please "
 "check the format and try again."
 msgstr ""
+"Desculpe, houve um erro ao processar as legendas que você enviou. Por favor,"
+" cheque o formato e tente novamente."
 
 #: cms/static/js/views/video/translations_editor.js
 msgid "Upload translation"
-msgstr ""
+msgstr "Fazer upload da tradução"
 
 #: common/templates/js/image-modal.underscore
 msgid "Fullscreen"
-msgstr ""
+msgstr "Tela cheia"
 
 #: common/templates/js/image-modal.underscore
 msgid "Large"
-msgstr ""
+msgstr "Largo"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom In"
-msgstr ""
+msgstr "Aumentar o zoom"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom Out"
-msgstr ""
+msgstr "Diminuir o zoom"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problem Types"
-msgstr ""
+msgstr "Tipos comuns de questões"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Advanced"
-msgstr ""
+msgstr "Avançado"
 
 #: cms/templates/js/add-xblock-component.underscore
 msgid "Add New Component"
-msgstr ""
+msgstr "Adicionar novo componente"
 
 #: cms/templates/js/advanced_entry.underscore
 msgid "Deprecated"
-msgstr ""
+msgstr "Obsoleto"
 
 #: cms/templates/js/asset-library.underscore
 msgid "List of uploaded files and assets in this course"
-msgstr ""
+msgstr "Lista de arquivos e recursos enviados neste curso"
 
 #: cms/templates/js/asset-library.underscore
 msgid "Embed URL"
-msgstr ""
+msgstr "URL embutida"
 
 #: cms/templates/js/asset-library.underscore
 msgid "External URL"
-msgstr ""
+msgstr "URL externa"
 
 #: cms/templates/js/asset-library.underscore
 #: cms/templates/js/basic-modal.underscore
 msgid "Actions"
-msgstr ""
+msgstr "Ações"
 
 #: cms/templates/js/asset-library.underscore
 msgid "You haven't added any assets to this course yet."
-msgstr ""
+msgstr "Você não adicionou nenhum ativo a este curso ainda"
 
 #: cms/templates/js/asset-library.underscore
 msgid "Upload your first asset"
-msgstr ""
+msgstr "Faça o upload do seu primeiro ativo"
 
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "close"
-msgstr ""
+msgstr "fechar"
 
 #: cms/templates/js/asset.underscore
 msgid "Open/download this file"
-msgstr ""
+msgstr "Download e Abra este arquivo"
 
 #: cms/templates/js/asset.underscore
 msgid "Delete this asset"
-msgstr ""
+msgstr "Excluir este objeto"
 
 #: cms/templates/js/asset.underscore
 msgid "Lock this asset"
-msgstr ""
+msgstr "Trave este arquivo "
 
 #: cms/templates/js/asset.underscore
 msgid "Lock/unlock file"
-msgstr ""
+msgstr "Travar/Destravar arquivo"
 
 #: cms/templates/js/checklist.underscore
 msgid "{number}% of checklists completed"
-msgstr ""
+msgstr "{number}% of checklists completados"
 
 #: cms/templates/js/checklist.underscore
 msgid "Tasks Completed:"
-msgstr ""
+msgstr "Tarefas Completadas:"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Assignment Type Name"
-msgstr ""
+msgstr "Nome do Tipo de Tarefa"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. Homework, Midterm Exams"
-msgstr ""
+msgstr "e.g. Tarefas de Casa, Exames intermediários"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Abbreviation"
-msgstr ""
+msgstr "Abreviação"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. HW, Midterm"
-msgstr ""
+msgstr "por exemplo HW, Meio Período"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Weight of Total Grade"
-msgstr ""
+msgstr "Peso na Nota Final"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "as a percent, e.g. 40"
-msgstr ""
+msgstr "como um percentual, e.g. 40"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Total Number"
-msgstr ""
+msgstr "Número Total"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises assigned"
-msgstr ""
+msgstr "total de exercícios atribuídos"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Number of Droppable"
-msgstr ""
+msgstr "Número de canceláveis"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises that won't be graded"
-msgstr ""
+msgstr "total de exercícios que não serão avaliados"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid "You have no handouts defined"
-msgstr ""
+msgstr "Você não tem comunicados definidos"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid ""
 "There is invalid code in your content. Please check to make sure it is valid"
 " HTML."
 msgstr ""
+"Existe um código inválido em seu conteúdo. Por favor verifique para "
+"certificar-se que é um HTML válido."
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter Name"
-msgstr ""
+msgstr "Nome do Capítulo"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter %s"
-msgstr ""
+msgstr "Capítulo %s"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "provide the title/name of the chapter that will be used in navigating"
 msgstr ""
+"fornecer o título / nome do capítulo que irá ser utilizado para navegar"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter Asset"
-msgstr ""
+msgstr "Ativo do Capítulo"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "path/to/introductionToCookieBaking-CH%d.pdf"
-msgstr ""
+msgstr "path/para/introduçãoParaReceitaDeCookies-CH%d.pdf"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "upload a PDF file or provide the path to a Studio asset file"
 msgstr ""
+"faça upload de um arquivo PDF ou forneça o caminho para um arquivo de ativo "
+"de Studio"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Upload PDF"
-msgstr ""
+msgstr "Enviar PDF"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "delete chapter"
-msgstr ""
+msgstr "Deletar capítulo"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "error.message"
-msgstr ""
+msgstr "erro.mensagem"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook information"
-msgstr ""
+msgstr "Informação do livro"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook Name"
-msgstr ""
+msgstr "Nome do Livro-texto"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Introduction to Cookie Baking"
-msgstr ""
+msgstr "Introdução a manufatura de Cookies"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid ""
 "provide the title/name of the text book as you would like your students to "
 "see it"
 msgstr ""
+"forneça o título/nome do livro-texto como você deseja que apareça para os "
+"alunos"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Chapter information"
-msgstr ""
+msgstr "Informação do Capítulo."
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Add a Chapter"
-msgstr ""
+msgstr "Adicionar um Capítulo"
 
 #: cms/templates/js/metadata-dict-entry.underscore
 #: cms/templates/js/metadata-list-entry.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: cms/templates/js/metadata-dict-entry.underscore
 #: cms/templates/js/metadata-file-uploader-entry.underscore
@@ -2333,51 +2398,51 @@ msgstr ""
 #: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear Value"
-msgstr ""
+msgstr "Valor Limpo"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
-msgstr ""
+msgstr "Substituir"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Download"
-msgstr ""
+msgstr "Baixar"
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "You haven't added any textbooks to this course yet."
-msgstr ""
+msgstr "Você ainda não adicionou nenhum livro de texto a este curso."
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "Add your first textbook"
-msgstr ""
+msgstr "Acrescente seu primeiro livro de texto"
 
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: cms/templates/js/paging-footer.underscore
 msgid "Page number"
-msgstr ""
+msgstr "Número da página"
 
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Next"
-msgstr ""
+msgstr "Próximo"
 
 #: cms/templates/js/show-textbook.underscore
 msgid "View Live"
-msgstr ""
+msgstr "Visualizar no ar"
 
 #: cms/templates/js/upload-dialog.underscore
 msgid "File upload succeeded"
-msgstr ""
+msgstr "Arquivo enviado com sucesso"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Add URLs for additional versions"
-msgstr ""
+msgstr "Adicione URLs para versões adicionais"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid ""
@@ -2386,25 +2451,32 @@ msgid ""
 "another version. These URLs cannot be YouTube URLs. The first listed video "
 "that\\'s compatible with the student\\'s computer will play."
 msgstr ""
+"Para garantir que todos os estudantes poderão ter acesso ao vídeo, nós "
+"recomendamos providenciar versões em .mp4 e .webm do vídeo. Clique abaixo "
+"para adicionar um URL  para outra versão. Esses URLs não podem ser do "
+"YouTube. Primeiro vídeo que for compatível com o computador dos alunos vai "
+"funcionar."
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Default Timed Transcript"
-msgstr ""
+msgstr "Transcrição sincronizada definida por padrão"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Timed Transcript Conflict"
-msgstr ""
+msgstr "Conflito de transcrição cronometrado"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid ""
 "The timed transcript for the first video file does not appear to be the same"
 " as the timed transcript for the second video file."
 msgstr ""
+"A transcrição cronometrada do primeiro arquivo de vídeo não parece ser a "
+"mesma transcrição do segundo arquivo de vídeo"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid "Which timed transcript would you like to use?"
-msgstr ""
+msgstr "Qual transcrição cronometrada você gostaria de utilizar?"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
@@ -2414,15 +2486,15 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Error."
-msgstr ""
+msgstr "Erro."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid "Timed Transcript from"
-msgstr ""
+msgstr "Transcrição cronometrada de"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 msgid "Timed Transcript Found"
-msgstr ""
+msgstr "Transcrição cronometrada encontrada"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 msgid ""
@@ -2430,6 +2502,10 @@ msgid ""
 "transcript, you can download, edit, and re-upload the existing transcript. "
 "If you want to replace this transcript, upload a new .srt transcript file."
 msgstr ""
+"O EDX tem uma transcrição cronometrada para este vídeo. Se você deseja "
+"editar esta transcrição, você pode baixar, editar e re-enviar a transcrição "
+"existente. Se você quiser substituir essa transcrição, faça upload de um "
+"novo arquivo de transcrição srt.."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
@@ -2443,12 +2519,12 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Upload New Transcript"
-msgstr ""
+msgstr "Faça upload de uma nova transcrição"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "Upload New .srt Transcript"
-msgstr ""
+msgstr "Faça upload do novo .srt"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
@@ -2457,11 +2533,11 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid "Download Transcript for Editing"
-msgstr ""
+msgstr "Baixe a transcrição para editar"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "No EdX Timed Transcript"
-msgstr ""
+msgstr "Nenhuma transcrição cronometrada EdX"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid ""
@@ -2469,41 +2545,48 @@ msgid ""
 " a transcript on YouTube. You can import the YouTube transcript or upload "
 "your own .srt transcript file."
 msgstr ""
+"EdX não possui uma transcrição cronometrada para este vídeo no Studio, mas "
+"encontramos uma transcrição no YouTube. Você pode importar a transcrição "
+"presente no YouTube ou realizar o upload do seu próprio arquivo ,srt."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "Import YouTube Transcript"
-msgstr ""
+msgstr "Importar transcrição do YouTube"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
 msgid "No Timed Transcript"
-msgstr ""
+msgstr "Sem transcrição"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
 msgid ""
 "EdX doesn\\'t have a timed transcript for this video. Please upload an .srt "
 "file."
 msgstr ""
+"O EdX não possui uma transcrição para este vídeo. Por gentileza, faça upload"
+" de um arquivo .srt"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid ""
 "The timed transcript for this video on edX is out of date, but YouTube has a"
 " current timed transcript for this video."
 msgstr ""
+"A transcrição programado para este vídeo do EDX está desatualizado, mas o "
+"YouTube tem uma transcrição cronometrada atual para este vídeo."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Do you want to replace the edX transcript with the YouTube transcript?"
-msgstr ""
+msgstr "Você deseja trocar a transcrição do EdX com a do YouTube?"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Yes, replace the edX transcript with the YouTube transcript"
-msgstr ""
+msgstr "Sim, troque a transcrição do edX com a do Youtube"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid "Timed Transcript Uploaded Successfully"
-msgstr ""
+msgstr "Transcrição carregada com sucesso"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid ""
@@ -2511,10 +2594,13 @@ msgid ""
 "transcript, upload a new .srt transcript file. If you want to edit this "
 "transcript, you can download, edit, and re-upload the existing transcript."
 msgstr ""
+"o EdX tem uma transcrição para este vídeo. Se você deseja trocar esta "
+"transcrição, faça o upload de um novo arquivo .srt. Se você deseja editar "
+"esta transcrição, você pode baixar, editar e recarregar o arquivo existente."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Confirm Timed Transcript"
-msgstr ""
+msgstr "Confirme a transcrição"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid ""
@@ -2522,9 +2608,12 @@ msgid ""
 "you want to use the current timed transcript or upload a new .srt transcript"
 " file?"
 msgstr ""
+"Você alterou a URL do vídeos, mas não modificou o arquivo de transcrição. "
+"Você deseja utilizar a transcrição corrente ou fazer o upload de um novo "
+"arquivo .srt?"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
-msgstr ""
+msgstr "Utilizar a Transcrição Corrente"

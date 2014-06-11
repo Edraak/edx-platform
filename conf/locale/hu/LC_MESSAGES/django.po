@@ -77,7 +77,7 @@ msgstr ""
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
 msgid "Problem"
-msgstr ""
+msgstr "Probléma"
 
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/video_module/video_module.py
@@ -132,11 +132,11 @@ msgstr ""
 
 #: common/djangoapps/student/models.py
 msgid "Male"
-msgstr ""
+msgstr "Férfi"
 
 #: common/djangoapps/student/models.py
 msgid "Female"
-msgstr ""
+msgstr "Nő"
 
 #. Translators: 'Other' refers to the student's gender
 #. Translators: 'Other' refers to the student's level of education
@@ -179,11 +179,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
-msgstr ""
+msgstr "A kurzus azonosító kitöltetlen"
 
 #: common/djangoapps/student/views.py
 msgid "Course id is invalid"
-msgstr ""
+msgstr "A kurzus azonosító hibás"
 
 #: common/djangoapps/student/views.py
 #: lms/templates/courseware/course_about.html
@@ -196,7 +196,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "Nem iratkoztál be erre a kurzusra"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
@@ -231,11 +231,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Too many failed login attempts. Try again later."
-msgstr ""
+msgstr "Túl sok bejelentkezési kísérlet. Próbáld meg később."
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "Az e-mail cím vagy a jelszó hibás."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -277,7 +277,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Error (401 {field}). E-mail us."
-msgstr ""
+msgstr "(401 {field})-es hiba. Jelezd nekünk e-mailben!"
 
 #: common/djangoapps/student/views.py
 msgid "To enroll, you must follow the honor code."
@@ -341,31 +341,32 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Username cannot be more than {0} characters long"
-msgstr ""
+msgstr "A felhasználói név nem lehet hosszabb {0} karakternél"
 
 #: common/djangoapps/student/views.py
 msgid "Email cannot be more than {0} characters long"
-msgstr ""
+msgstr "Az e-mail nem lehet hosszabb {0} karakternél"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail is required."
-msgstr ""
+msgstr "Érvényes e-mail cím szükséges."
 
 #: common/djangoapps/student/views.py
 msgid "Username should only consist of A-Z and 0-9, with no spaces."
 msgstr ""
+"A felhasználói név csak A-Z és 0-9 karakterekből állhat szóköz nélkül."
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Password: "
-msgstr ""
+msgstr "Jelszó:"
 
 #: common/djangoapps/student/views.py
 msgid "Could not send activation e-mail."
-msgstr ""
+msgstr "Az aktiváló e-mail küldése meghiúsult."
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
-msgstr ""
+msgstr "Ismeretlen hiba. Kérünk írd meg e-mailen, hogy hogyan következett be."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -393,27 +394,27 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "No inactive user with this e-mail exists"
-msgstr ""
+msgstr "Nincs inaktív felhasználó ezzel az e-mail címmel"
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send reactivation email"
-msgstr ""
+msgstr "Az újra aktiváló e-mail küldése sikertelen"
 
 #: common/djangoapps/student/views.py
 msgid "Invalid password"
-msgstr ""
+msgstr "Hibás jelszó"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
-msgstr ""
+msgstr "Létező e-mail cím megadása szükséges."
 
 #: common/djangoapps/student/views.py
 msgid "An account with this e-mail already exists."
-msgstr ""
+msgstr "Egy felhasználói fiók már létezik ezzel az e-mail címmel."
 
 #: common/djangoapps/student/views.py
 msgid "Old email is the same as the new email."
-msgstr ""
+msgstr "A régi és az új e-mail cím megegyezik."
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send email activation link. Please try again later."
@@ -421,11 +422,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
-msgstr ""
+msgstr "Név megadása szükséges"
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Invalid ID"
-msgstr ""
+msgstr "Hibás azonosító"
 
 #. Translators: the translation for "LONG_DATE_FORMAT" must be a format
 #. string for formatting dates in a long form.  For example, the
@@ -592,7 +593,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Jan"
-msgstr ""
+msgstr "jan."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Feb 10, 2014". It is used for the %b
@@ -600,7 +601,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Feb"
-msgstr ""
+msgstr "feb."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Mar 10, 2014". It is used for the %b
@@ -608,7 +609,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Mar"
-msgstr ""
+msgstr "márc."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Apr 10, 2014". It is used for the %b
@@ -616,7 +617,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Apr"
-msgstr ""
+msgstr "ápr."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "May 10, 2014". It is used for the %b
@@ -624,7 +625,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "May"
-msgstr ""
+msgstr "máj."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Jun 10, 2014". It is used for the %b
@@ -632,7 +633,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Jun"
-msgstr ""
+msgstr "jún."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Jul 10, 2014". It is used for the %b
@@ -640,7 +641,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Jul"
-msgstr ""
+msgstr "júl."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Aug 10, 2014". It is used for the %b
@@ -648,7 +649,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Aug"
-msgstr ""
+msgstr "aug."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Sep 10, 2014". It is used for the %b
@@ -656,7 +657,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Sep"
-msgstr ""
+msgstr "szept."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Oct 10, 2014". It is used for the %b
@@ -664,7 +665,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Oct"
-msgstr ""
+msgstr "okt."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Nov 10, 2014". It is used for the %b
@@ -672,7 +673,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Nov"
-msgstr ""
+msgstr "nov."
 
 #. Translators: this is an abbreviated month name that will be used when
 #. displaying dates, as in "Dec 10, 2014". It is used for the %b
@@ -680,7 +681,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "abbreviated month name"
 msgid "Dec"
-msgstr ""
+msgstr "dec."
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "January 10, 2014". It is used for the %B directive in
@@ -688,7 +689,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "January"
-msgstr ""
+msgstr "január"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "February 10, 2014". It is used for the %B directive in
@@ -696,7 +697,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "February"
-msgstr ""
+msgstr "február"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "March 10, 2014". It is used for the %B directive in
@@ -704,7 +705,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "March"
-msgstr ""
+msgstr "március"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "April 10, 2014". It is used for the %B directive in
@@ -712,7 +713,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "April"
-msgstr ""
+msgstr "április"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "May 10, 2014". It is used for the %B directive in
@@ -720,7 +721,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "May"
-msgstr ""
+msgstr "május"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "June 10, 2014". It is used for the %B directive in
@@ -728,7 +729,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "June"
-msgstr ""
+msgstr "Június"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "July 10, 2014". It is used for the %B directive in
@@ -736,7 +737,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "July"
-msgstr ""
+msgstr "Július"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "August 10, 2014". It is used for the %B directive in
@@ -744,7 +745,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "August"
-msgstr ""
+msgstr "augusztus"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "September 10, 2014". It is used for the %B directive in
@@ -752,7 +753,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "September"
-msgstr ""
+msgstr "szeptember"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "October 10, 2014". It is used for the %B directive in
@@ -760,7 +761,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "October"
-msgstr ""
+msgstr "október"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "November 10, 2014". It is used for the %B directive in
@@ -768,7 +769,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "November"
-msgstr ""
+msgstr "november"
 
 #. Translators: this is a month name that will be used when displaying
 #. dates, as in "December 10, 2014". It is used for the %B directive in
@@ -776,7 +777,7 @@ msgstr ""
 #: common/djangoapps/util/date_utils.py
 msgctxt "month name"
 msgid "December"
-msgstr ""
+msgstr "december"
 
 #: common/djangoapps/util/password_policy_validators.py
 msgid "Invalid Length ({0})"
@@ -828,11 +829,11 @@ msgstr ""
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "correct"
-msgstr ""
+msgstr "helyes"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "incorrect"
-msgstr ""
+msgstr "nem helyes"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "incomplete"
@@ -985,7 +986,7 @@ msgstr ""
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error"
-msgstr ""
+msgstr "hiba"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: Separator used in StringResponse to display multiple answers.
@@ -993,7 +994,7 @@ msgstr ""
 #: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 msgid "or"
-msgstr ""
+msgstr "vagy"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error getting student answer from {student_answers}"
@@ -1357,15 +1358,15 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_hour} hour"
-msgstr ""
+msgstr "{num_hour} óra"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_minute} minute"
-msgstr ""
+msgstr "{num_minute} perc"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_second} second"
-msgstr ""
+msgstr "{num_second} másodperc"
 
 #. Translators: 'rescoring' refers to the act of re-submitting a student's
 #. solution so it can get a new score.
@@ -1434,7 +1435,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Graded"
-msgstr ""
+msgstr "Értékelt"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -2132,7 +2133,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
-msgstr ""
+msgstr "Szöveg"
 
 #: common/lib/xmodule/xmodule/html_module.py
 #: common/lib/xmodule/xmodule/html_module.py
@@ -2423,7 +2424,7 @@ msgstr ""
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
-msgstr ""
+msgstr "Hiba"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Not Selected"
@@ -2515,12 +2516,12 @@ msgstr ""
 #: common/lib/xmodule/xmodule/tabs.py lms/djangoapps/course_wiki/views.py
 #: lms/templates/wiki/base.html
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: common/lib/xmodule/xmodule/tabs.py cms/templates/textbooks.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
 msgid "Textbooks"
-msgstr ""
+msgstr "Tankönyv"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: "Staff grading" appears on a tab that allows
@@ -2541,7 +2542,7 @@ msgstr ""
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
-msgstr ""
+msgstr "Tanterv"
 
 #. Translators: 'Instructor' appears on the tab that leads to the instructor
 #. dashboard, which is
@@ -2549,7 +2550,7 @@ msgstr ""
 #. their course
 #: common/lib/xmodule/xmodule/tabs.py
 msgid "Instructor"
-msgstr ""
+msgstr "Oktató"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Text Annotation"
@@ -3187,27 +3188,27 @@ msgstr ""
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Navigation"
-msgstr ""
+msgstr "Navigáció"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "About these documents"
-msgstr ""
+msgstr "A dokumentumokról."
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/wiki/plugins/attachments/index.html
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Search"
-msgstr ""
+msgstr "Keresés"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/static_templates/copyright.html
 #: lms/templates/static_templates/copyright.html
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3217,7 +3218,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/open_ended_problems/open_ended_flagged_problems.html
 msgid "Name"
-msgstr ""
+msgstr "Név"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3230,7 +3231,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Username"
-msgstr ""
+msgstr "Felhasználói név"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
@@ -3305,11 +3306,11 @@ msgstr ""
 
 #: lms/djangoapps/courseware/views.py
 msgid "User {username} does not exist."
-msgstr ""
+msgstr "{username} nevű felhasználó nem létezik."
 
 #: lms/djangoapps/courseware/views.py
 msgid "User {username} has never accessed problem {location}"
-msgstr ""
+msgstr "{username} nevű felhasználó nem dolgozott {location} problémán"
 
 #: lms/djangoapps/courseware/features/video.py
 msgid "ERROR: No playable video sources found!"
@@ -3365,7 +3366,7 @@ msgstr ""
 #: lms/djangoapps/dashboard/support.py
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Course ID"
-msgstr ""
+msgstr "Kurzus azonosító"
 
 #: lms/djangoapps/dashboard/support.py
 msgid "User not found"
@@ -3488,7 +3489,7 @@ msgstr ""
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 #: lms/templates/tracking_log.html
 msgid "username"
-msgstr ""
+msgstr "felhasználói név"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 msgid "email"
@@ -3649,16 +3650,18 @@ msgstr ""
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "allowed file types are '%(file_types)s'"
-msgstr ""
+msgstr "'%(file_types)s' fájltípusok engedélyezettek"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "maximum upload file size is %(file_size)sK"
-msgstr ""
+msgstr "%(file_size)sK a maximális feltölthető fájlméret"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid ""
 "Error uploading file. Please contact the site administrator. Thank you."
 msgstr ""
+"Fájl feltöltési hiba. Kérjük lépj kapcsolatba az oldal adminisztrátorával. "
+"Köszönjük!"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "Good"
@@ -3666,11 +3669,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User does not exist."
-msgstr ""
+msgstr "A felhasználó nem létezik."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Task is already running."
-msgstr ""
+msgstr "A feladat már fut."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User ID"
@@ -3681,24 +3684,24 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
-msgstr ""
+msgstr "Nyelv"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Location"
-msgstr ""
+msgstr "Hely"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Birth Year"
-msgstr ""
+msgstr "Születési év"
 
 #: lms/djangoapps/instructor/views/api.py lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "Gender"
-msgstr ""
+msgstr "Nem"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
@@ -3707,7 +3710,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py lms/templates/register.html
 msgid "Mailing Address"
-msgstr ""
+msgstr "Levelezési cím"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Goals"
@@ -3715,7 +3718,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Module does not exist."
-msgstr ""
+msgstr "A modul nem létezik."
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor/views/legacy.py
@@ -3754,11 +3757,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Membership"
-msgstr ""
+msgstr "Tagság"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Student Admin"
-msgstr ""
+msgstr "Tanuló adminiszrátor"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Extensions"
@@ -3897,11 +3900,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Staff"
-msgstr ""
+msgstr "A közreműködők listája"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Instructors"
-msgstr ""
+msgstr "Az oktatók listája"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Student profile data for course {course_id}"
@@ -3956,7 +3959,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Error: {err}"
-msgstr ""
+msgstr "Hiba: {err}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Remote gradebook response for {action}"
@@ -3965,11 +3968,11 @@ msgstr ""
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Full name"
-msgstr ""
+msgstr "Teljes név"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Roles"
-msgstr ""
+msgstr "Szerep"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Forum {name}s in course {id}"
@@ -4014,7 +4017,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "ID"
-msgstr ""
+msgstr "Azonosító"
 
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/tools.py cms/templates/register.html
@@ -4028,7 +4031,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "edX email"
-msgstr ""
+msgstr "edX email"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Enrollment of students"
@@ -4093,7 +4096,7 @@ msgstr ""
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/templates/wiki/plugins/attachments/index.html wiki/models/article.py
 msgid "deleted"
-msgstr ""
+msgstr "törölt"
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
@@ -4232,6 +4235,8 @@ msgid ""
 "      Dear %(student_name)s,\n"
 "    "
 msgstr ""
+"\n"
+"Kedves %(student_name)s!"
 
 #: lms/djangoapps/linkedin/templates/linkedin_email.html
 msgid ""
@@ -4957,7 +4962,7 @@ msgstr ""
 #: lms/templates/registration/password_reset_complete.html
 #: lms/templates/registration/password_reset_complete.html
 msgid "Your Password Reset is Complete"
-msgstr ""
+msgstr "A jelszó megváltoztatása kész"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid ""
@@ -4997,11 +5002,11 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "You must complete all fields."
-msgstr ""
+msgstr "Ki kell töltened minden mezőt."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The two password fields didn't match."
-msgstr ""
+msgstr "A két jelszó mező nem egyezik meg."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5022,28 +5027,31 @@ msgid ""
 "correctly. <br /> Required fields are noted by <strong "
 "class=\"indicator\">bold text and an asterisk (*)</strong>."
 msgstr ""
+"Be kell írnod kétszer a jelszót így ellenőrizhető, hogy megegyeznek-e? <br "
+"/> A kötelező mezők <strong class=\"indicator\"> vastagon szedve és egy "
+"csillaggal (*)</strong> jelölve."
 
 #: lms/templates/registration/password_reset_confirm.html
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 #: lms/templates/register-shib.html lms/templates/register.html
 msgid "Required Information"
-msgstr ""
+msgstr "Szükséges információk"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password"
-msgstr ""
+msgstr "Az új jelszavad"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your New Password Again"
-msgstr ""
+msgstr "Az új jelszavad ismét"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Change My Password"
-msgstr ""
+msgstr "Jelszavam cseréje"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your Password Reset Was Unsuccessful"
-msgstr ""
+msgstr "A jelszó cseréje sikertelen"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -5074,10 +5082,12 @@ msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at edx.org."
 msgstr ""
+"Ezt az e-mailt azért kaptad, mert a jelszavad cseréjét kezdeményezted az edx"
+".org-on lévő felhasználói nevedről."
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Please go to the following page and choose a new password:"
-msgstr ""
+msgstr "Kérjük látogasd meg a következő oldalt és válassz egy új jelszót:"
 
 #: lms/templates/registration/password_reset_email.html
 msgid ""
@@ -5087,15 +5097,15 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Thanks for using our site!"
-msgstr ""
+msgstr "Köszönjük, hogy használtad oldalunkat!"
 
 #: lms/templates/registration/password_reset_email.html
 msgid "The edX Team"
-msgstr ""
+msgstr "Az edX Csapat"
 
 #: lms/templates/wiki/article.html
 msgid "Last modified:"
-msgstr ""
+msgstr "Utoljára módosítva:"
 
 #: lms/templates/wiki/article.html
 msgid "See all children"
@@ -5103,25 +5113,25 @@ msgstr ""
 
 #: lms/templates/wiki/article.html
 msgid "This article was last modified:"
-msgstr ""
+msgstr "Ez a cikk utoljára módosítva:"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/create.html.py
 msgid "Add new article"
-msgstr ""
+msgstr "Adj hozzá egy új cikket"
 
 #: lms/templates/wiki/create.html
 msgid "Create article"
-msgstr ""
+msgstr "Cikk létrehozása"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/delete.html
 #: lms/templates/wiki/delete.html.py
 msgid "Go back"
-msgstr ""
+msgstr "Vissza"
 
 #: lms/templates/wiki/delete.html lms/templates/wiki/delete.html.py
 #: lms/templates/wiki/edit.html
 msgid "Delete article"
-msgstr ""
+msgstr "Cikk törlése"
 
 #: lms/templates/wiki/delete.html
 #: lms/templates/wiki/plugins/attachments/index.html
@@ -5133,17 +5143,20 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "Törlés"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
-msgstr ""
+msgstr "Nem tudod törölni a kezdő cikket."
 
 #: lms/templates/wiki/delete.html
 msgid ""
 "You cannot delete this article because you do not have permission to delete "
 "articles with children. Try to remove the children manually one-by-one."
 msgstr ""
+"A cikket nem törölheted, mert nincs jogod olyan cikket törölni, amelyek "
+"tartalmaznak további cikkeket. Próbáld meg a befoglalt cikkeket törölni "
+"egyesével."
 
 #: lms/templates/wiki/delete.html
 msgid ""
@@ -5153,15 +5166,15 @@ msgstr ""
 
 #: lms/templates/wiki/delete.html
 msgid "Articles that will be deleted"
-msgstr ""
+msgstr "Cikkek, amelyek törlésre kerülnek"
 
 #: lms/templates/wiki/delete.html
 msgid "...and more!"
-msgstr ""
+msgstr "... és továbbiak!"
 
 #: lms/templates/wiki/delete.html
 msgid "You are deleting an article. Please confirm."
-msgstr ""
+msgstr "Törölsz egy cikket. Kérjük erősítsd meg!"
 
 #: lms/templates/wiki/edit.html cms/templates/component.html
 #: cms/templates/container.html cms/templates/container_xblock_component.html
@@ -5173,15 +5186,15 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Edit"
-msgstr ""
+msgstr "Szerkesztés"
 
 #: lms/templates/wiki/edit.html lms/templates/wiki/edit.html.py
 msgid "Save changes"
-msgstr ""
+msgstr "Változások mentése"
 
 #: lms/templates/wiki/edit.html cms/templates/unit.html
 msgid "Preview"
-msgstr ""
+msgstr "Előnézet"
 
 #. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a control to allow users to exit out of this modal
@@ -5200,7 +5213,7 @@ msgstr ""
 #: lms/templates/modal/_modal-settings-language.html
 #: lms/templates/modal/accessible_confirm.html
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: lms/templates/wiki/edit.html
 msgid "Wiki Preview"
@@ -5220,11 +5233,11 @@ msgstr ""
 
 #: lms/templates/wiki/edit.html
 msgid "Back to editor"
-msgstr ""
+msgstr "Vissza a szerkesztőhöz"
 
 #: lms/templates/wiki/history.html
 msgid "History"
-msgstr ""
+msgstr "Történet"
 
 #: lms/templates/wiki/history.html
 msgid ""
@@ -5240,7 +5253,7 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Preview this revision"
-msgstr ""
+msgstr "A változat előnézete"
 
 #: lms/templates/wiki/history.html
 msgid "Auto log:"
@@ -5248,15 +5261,15 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Change"
-msgstr ""
+msgstr "Változtat"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Merge selected with current..."
-msgstr ""
+msgstr "A kivlálasztott összefésülése az aktuálissal..."
 
 #: lms/templates/wiki/history.html
 msgid "Switch to selected version"
-msgstr ""
+msgstr "Válts a kiválasztott verzióra"
 
 #: lms/templates/wiki/history.html
 msgid "Wiki Revision Preview"
@@ -5264,11 +5277,11 @@ msgstr ""
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Back to history view"
-msgstr ""
+msgstr "Vissza a történet nézetre"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Switch to this version"
-msgstr ""
+msgstr "Válts erre a változatra"
 
 #: lms/templates/wiki/history.html
 msgid "Merge Revision"
@@ -5276,7 +5289,7 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Merge with current"
-msgstr ""
+msgstr "Összefésülés az aktuálissal"
 
 #: lms/templates/wiki/history.html
 msgid ""
@@ -5290,7 +5303,7 @@ msgstr ""
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Create new merged version"
-msgstr ""
+msgstr "Új összefésült verzió létrehozása"
 
 #: lms/templates/wiki/preview_inline.html
 msgid "Previewing revision:"
@@ -5317,7 +5330,7 @@ msgstr ""
 
 #: lms/templates/wiki/includes/anonymous_blocked.html
 msgid "You need to log in or sign up to use this function."
-msgstr ""
+msgstr "Be kell jelentkezned vagy regisztrálnod e funkció használatához."
 
 #: lms/templates/wiki/includes/cheatsheet.html
 msgid "Wiki Cheatsheet"
@@ -5428,11 +5441,11 @@ msgstr ""
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "Attachments"
-msgstr ""
+msgstr "Csatolmány"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload new file"
-msgstr ""
+msgstr "Új fájl feltöltése"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search and add file"
@@ -5440,15 +5453,15 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload File"
-msgstr ""
+msgstr "Fájl feltöltése"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload file"
-msgstr ""
+msgstr "Fájl feltöltése"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search files and articles"
-msgstr ""
+msgstr "Fájlok és cikkek keresése"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid ""
@@ -5472,7 +5485,7 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Size"
-msgstr ""
+msgstr "Méret"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File History"
@@ -5584,7 +5597,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/utils.py lms/templates/notes.html
 msgid "My Notes"
-msgstr ""
+msgstr "Jegyzeteim"
 
 #: cms/djangoapps/contentstore/management/commands/git_export.py
 msgid ""
@@ -5594,7 +5607,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/assets.py
 msgid "Upload completed"
-msgstr ""
+msgstr "Feltöltés befejezve"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
@@ -5620,12 +5633,17 @@ msgid ""
 " and course run. Please change either organization or course number to be "
 "unique."
 msgstr ""
+"Már létezik kurzus megegyező szervezettel azonosító számmal és futási "
+"idővel. Kérjük változtassa meg a szervezetet vagy a kurzus számát, hogy a "
+"kurzus egyedi legyen."
 
 #: cms/djangoapps/contentstore/views/course.py
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
 "Please change either the organization or course number so that it is unique."
 msgstr ""
+"Kérjük változtassa meg a szervezetet vagy a kurzus számát, hogy a kurzus "
+"egyedi legyen."
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -5633,6 +5651,9 @@ msgid ""
 "\n"
 "{err}"
 msgstr ""
+"A '{name}' kurzus létrehozása sikertelen.\n"
+"\n"
+"{err}"
 
 #: cms/djangoapps/contentstore/views/export_git.py
 msgid "Course successfully exported to git repository"
@@ -5640,15 +5661,15 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "We only support uploading a .tar.gz file."
-msgstr ""
+msgstr "Csak .tar.gz típusú fájlok feltöltését támogatjuk."
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "File upload corrupted. Please try again"
-msgstr ""
+msgstr "A fájl feltöltése során hiba történt. Kérjük, próbálja újra."
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "Could not find the course.xml file in the package."
-msgstr ""
+msgstr "A csomagban nem található meg a course.xml fájl."
 
 #: cms/djangoapps/contentstore/views/item.py
 msgid "Duplicate of {0}"
@@ -5656,7 +5677,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/item.py
 msgid "Duplicate of '{0}'"
-msgstr ""
+msgstr "'{0}' duplán szerepel."
 
 #: cms/djangoapps/contentstore/views/transcripts_ajax.py
 msgid "Incoming video data is empty."
@@ -5672,15 +5693,15 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Insufficient permissions"
-msgstr ""
+msgstr "Nincs elegendő engedély."
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Could not find user by email address '{email}'."
-msgstr ""
+msgstr "Nem található felhasználó '{email}' e-mail címmel."
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "User {email} has registered but has not yet activated his/her account."
-msgstr ""
+msgstr "{email} felhasználó regisztrált, de még nem erősítette meg a fiókját."
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "`role` is required"
@@ -6012,7 +6033,7 @@ msgstr ""
 
 #: lms/templates/admin_dashboard.html
 msgid "{platform_name}-wide Summary"
-msgstr ""
+msgstr "{platform_name} összegzés."
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
@@ -6022,43 +6043,43 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "Utasítások"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "Utasítások összecsukása"
 
 #: lms/templates/annotatable.html
 msgid "Guided Discussion"
-msgstr ""
+msgstr "Irányított megbeszélés"
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Magyarázatok elrejtése"
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
 msgid "Vision"
-msgstr ""
+msgstr "Jövőkép"
 
 #: lms/templates/contact.html
 msgid "Faq"
-msgstr ""
+msgstr "GY. I. K."
 
 #: lms/templates/contact.html lms/templates/footer.html
 msgid "Press"
-msgstr ""
+msgstr "Sajtó"
 
 #: lms/templates/contact.html lms/templates/footer.html
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "Kapcsolat"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
-msgstr ""
+msgstr "Visszajelzés az osztályról"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6067,10 +6088,14 @@ msgid ""
 " issues specific to a particular class, please post on the discussion forums"
 " of that&nbsp;class."
 msgstr ""
+"Folyamatosan várjuk a visszajelzéseket,  hogy minél jobbak legyenek a "
+"kurzusaink. Ha már regisztrált tanuló vagy egy bizonyos kurzusra, és "
+"bármilyen kérdésed, visszajelzésed vagy javaslatod  van ezzel a bizonyos "
+"kurzussal kapcsolatban, kérjük kérdésedet a kurzus fórumán tedd fel. "
 
 #: lms/templates/contact.html
 msgid "General Inquiries and Feedback"
-msgstr ""
+msgstr "Általános kérdések és visszajelzés"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6083,7 +6108,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Technical Inquiries and Feedback"
-msgstr ""
+msgstr "Technikai kérdések és visszajelzés"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6098,7 +6123,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Media"
-msgstr ""
+msgstr "Média"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6108,7 +6133,7 @@ msgstr ""
 
 #: lms/templates/contact.html
 msgid "Universities"
-msgstr ""
+msgstr "Egytemek"
 
 #: lms/templates/contact.html
 msgid ""
@@ -6118,11 +6143,11 @@ msgstr ""
 
 #: lms/templates/course.html
 msgid "New"
-msgstr ""
+msgstr "Új"
 
 #: lms/templates/dashboard.html
 msgid "Dashboard"
-msgstr ""
+msgstr "Irányítópult"
 
 #: lms/templates/dashboard.html lms/templates/courseware/course_about.html
 #: lms/templates/courseware/course_about.html
@@ -6157,7 +6182,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
-msgstr ""
+msgstr "szerkesztés"
 
 #. Translators: this section lists all the third-party authentication
 #. providers
@@ -6183,19 +6208,19 @@ msgstr ""
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Reset Password"
-msgstr ""
+msgstr "Elfelejtett jelszó"
 
 #: lms/templates/dashboard.html
 msgid "Current Courses"
-msgstr ""
+msgstr "Aktuális kurzusok"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't registered for any courses yet."
-msgstr ""
+msgstr "Úgy tűnik, még egyetlen kurzusra sem regisztráltál."
 
 #: lms/templates/dashboard.html
 msgid "Find courses now!"
-msgstr ""
+msgstr "Kurzus keresése most!"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't been enrolled in any courses yet."
@@ -6203,7 +6228,7 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Course-loading errors"
-msgstr ""
+msgstr "Kurzus - betöltési hiba."
 
 #: lms/templates/dashboard.html
 msgid "Email Settings for {course_number}"
@@ -6219,25 +6244,27 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Password Reset Email Sent"
-msgstr ""
+msgstr "Jelszó emlékeztető e-mail elküldve."
 
 #: lms/templates/dashboard.html
 msgid ""
 "An email has been sent to {email}. Follow the link in the email to change "
 "your password."
 msgstr ""
+"A jelszavad megváloztatáshoz kérlek kövesd az e-mailben megjelölt "
+"utasításokat, amit az imént küldtünk a következő címre: {email}. "
 
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 msgid "Change Email"
-msgstr ""
+msgstr "E-mail cím megváltoztatása"
 
 #: lms/templates/dashboard.html
 msgid "Please enter your new email address:"
-msgstr ""
+msgstr "Kérlek, add meg az új e-mail címed:"
 
 #: lms/templates/dashboard.html
 msgid "Please confirm your password:"
-msgstr ""
+msgstr "Kérlek, erősítsd meg a jelszavad:"
 
 #: lms/templates/dashboard.html
 msgid ""
@@ -6247,7 +6274,7 @@ msgstr ""
 
 #: lms/templates/dashboard.html
 msgid "Change your name"
-msgstr ""
+msgstr "Név megváltoztatása"
 
 #. Translators: note that {platform} {cert_name_short} will look something
 #. like: "edX certificate". Please do not change the order of these
@@ -6270,11 +6297,11 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Reason for name change:"
-msgstr ""
+msgstr "A névváltoztatás oka:"
 
 #: lms/templates/dashboard.html
 msgid "Change My Name"
-msgstr ""
+msgstr "Cseréld a nevem"
 
 #: lms/templates/dashboard.html
 msgid ""
@@ -6287,7 +6314,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Unregister"
-msgstr ""
+msgstr "Regisztráció visszavonása"
 
 #: lms/templates/edit_unit_link.html
 msgid "View Unit in Studio"
@@ -6295,21 +6322,21 @@ msgstr ""
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 msgid "E-mail change failed"
-msgstr ""
+msgstr "Az e-mail cím változtatás sikertelen"
 
 #: lms/templates/email_change_failed.html
 msgid "We were unable to send a confirmation email to {email}"
-msgstr ""
+msgstr "Nem tudtuk elküldeni a visszaigazoló levelet {email} címre"
 
 #: lms/templates/email_change_failed.html lms/templates/email_exists.html
 #: lms/templates/invalid_email_key.html
 msgid "Go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Menj a {link_start} lapra {liink_end}."
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
 msgid "E-mail change successful!"
-msgstr ""
+msgstr "Az e-mail cím megváltoztatása sikerült!"
 
 #: lms/templates/email_change_successful.html
 #: lms/templates/emails_change_successful.html
@@ -6318,7 +6345,7 @@ msgstr ""
 
 #: lms/templates/email_exists.html
 msgid "An account with the new e-mail address already exists."
-msgstr ""
+msgstr "Egy felhasználói fiók az új e-mail címmel már létezik."
 
 #: lms/templates/enroll_students.html
 msgid "Student Enrollment Form"
@@ -6326,11 +6353,11 @@ msgstr ""
 
 #: lms/templates/enroll_students.html
 msgid "Course: "
-msgstr ""
+msgstr "Kurzus:"
 
 #: lms/templates/enroll_students.html
 msgid "Add new students"
-msgstr ""
+msgstr "Új tanuló hozzáadása"
 
 #: lms/templates/enroll_students.html
 msgid "Existing students:"
@@ -6338,7 +6365,7 @@ msgstr ""
 
 #: lms/templates/enroll_students.html
 msgid "New students added: "
-msgstr ""
+msgstr "Új tanulók hozzáadva:"
 
 #: lms/templates/enroll_students.html
 msgid "Students rejected: "
@@ -6346,11 +6373,11 @@ msgstr ""
 
 #: lms/templates/enroll_students.html
 msgid "Debug: "
-msgstr ""
+msgstr "Hibakeresés:"
 
 #: lms/templates/extauth_failure.html lms/templates/extauth_failure.html
 msgid "External Authentication failed"
-msgstr ""
+msgstr "A külső azonosítás sikertelen"
 
 #: lms/templates/folditbasic.html
 msgid "Due:"
@@ -6358,7 +6385,7 @@ msgstr ""
 
 #: lms/templates/folditbasic.html
 msgid "Status:"
-msgstr ""
+msgstr "Státusz:"
 
 #: lms/templates/folditbasic.html
 msgid "You have successfully gotten to level {goal_level}."
@@ -6374,12 +6401,12 @@ msgstr ""
 
 #: lms/templates/folditbasic.html
 msgid "Level"
-msgstr ""
+msgstr "Szint"
 
 #: lms/templates/folditbasic.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Submitted"
-msgstr ""
+msgstr "Elküldve"
 
 #: lms/templates/folditchallenge.html
 msgid "Puzzle Leaderboard"
@@ -6387,7 +6414,7 @@ msgstr ""
 
 #: lms/templates/folditchallenge.html
 msgid "User"
-msgstr ""
+msgstr "Felhasználó"
 
 #: lms/templates/footer.html
 msgid "About"
@@ -6396,12 +6423,12 @@ msgstr ""
 #: lms/templates/footer.html lms/templates/static_templates/jobs.html
 #: lms/templates/static_templates/jobs.html
 msgid "Jobs"
-msgstr ""
+msgstr "Munkák"
 
 #: lms/templates/footer.html lms/templates/static_templates/faq.html
 #: lms/templates/static_templates/faq.html
 msgid "FAQ"
-msgstr ""
+msgstr "Gy. I. K."
 
 #: lms/templates/footer.html
 msgid "{platform_name} Logo"
@@ -6434,10 +6461,12 @@ msgid ""
 "Please enter your e-mail address below, and we will e-mail instructions for "
 "setting a new password."
 msgstr ""
+"Kérünk írd be az e-mail címed és elküldjük az e-mailes segítségünket az új "
+"jelszó beállításához."
 
 #: lms/templates/forgot_password_modal.html
 msgid "Your E-mail Address"
-msgstr ""
+msgstr "E-mail címed"
 
 #: lms/templates/forgot_password_modal.html lms/templates/login.html
 msgid "This is the e-mail address you used to register with {platform}"
@@ -6449,7 +6478,7 @@ msgstr ""
 
 #: lms/templates/forgot_password_modal.html
 msgid "Email is incorrect."
-msgstr ""
+msgstr "Az e-mail cím hibás"
 
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 msgid "{platform_name} Help"
@@ -6477,15 +6506,15 @@ msgstr ""
 
 #: lms/templates/help_modal.html
 msgid "Report a problem"
-msgstr ""
+msgstr "Probléma jelentése"
 
 #: lms/templates/help_modal.html
 msgid "Make a suggestion"
-msgstr ""
+msgstr "Készíts egy javaslatot"
 
 #: lms/templates/help_modal.html
 msgid "Ask a question"
-msgstr ""
+msgstr "Kérdezz"
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -6500,7 +6529,7 @@ msgstr ""
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/signup_modal.html
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 #: lms/templates/help_modal.html
 msgid "Briefly describe your issue"
@@ -6530,7 +6559,7 @@ msgstr ""
 
 #: lms/templates/help_modal.html
 msgid "Thank You!"
-msgstr ""
+msgstr "Köszönjük!"
 
 #: lms/templates/help_modal.html
 msgid ""
@@ -6575,7 +6604,7 @@ msgstr ""
 #: lms/templates/help_modal.html lms/templates/help_modal.html
 #: lms/templates/module-error.html
 msgid "Details"
-msgstr ""
+msgstr "Részletek"
 
 #: lms/templates/help_modal.html
 msgid "question"
@@ -6611,7 +6640,7 @@ msgstr ""
 
 #: lms/templates/index.html
 msgid "The Future of Online Education"
-msgstr ""
+msgstr "Az online oktatás jövője"
 
 #: lms/templates/index.html
 msgid "For anyone, anywhere, anytime"
@@ -6627,7 +6656,7 @@ msgstr ""
 
 #: lms/templates/invalid_email_key.html
 msgid "This e-mail key is not valid. Please check:"
-msgstr ""
+msgstr "Ez az e-mail kulcs érvénytelen. Kérjük ellenőrizd:"
 
 #: lms/templates/invalid_email_key.html
 msgid ""
@@ -6645,11 +6674,11 @@ msgstr ""
 
 #: lms/templates/login-sidebar.html
 msgid "Helpful Information"
-msgstr ""
+msgstr "Hasznos Információk"
 
 #: lms/templates/login-sidebar.html lms/templates/login-sidebar.html
 msgid "Login via OpenID"
-msgstr ""
+msgstr "Bejelentkezés OpenID-val"
 
 #: lms/templates/login-sidebar.html
 msgid ""
@@ -6683,7 +6712,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Access My Courses"
-msgstr ""
+msgstr "Hozzáférés kurzusaimhoz"
 
 #: lms/templates/login.html lms/templates/register.html
 msgid "Processing your account information…"
@@ -6707,7 +6736,7 @@ msgstr ""
 
 #: lms/templates/login.html
 msgid "Your email or password is incorrect"
-msgstr ""
+msgstr "Az e-mail cím vagy a jelszó hibás"
 
 #: lms/templates/login.html
 msgid ""
@@ -6719,7 +6748,7 @@ msgstr ""
 #: lms/templates/login.html lms/templates/register-shib.html
 #: lms/templates/register.html lms/templates/register.html
 msgid "example: username@domain.com"
-msgstr ""
+msgstr "példa: username@domain.com"
 
 #: lms/templates/login.html
 msgid "Account Preferences"
@@ -6835,23 +6864,23 @@ msgstr ""
 
 #: lms/templates/module-error.html
 msgid "Raw data:"
-msgstr ""
+msgstr "Nyers adatok:"
 
 #: lms/templates/name_changes.html
 msgid "Accepted"
-msgstr ""
+msgstr "Elfogadva"
 
 #: lms/templates/name_changes.html
 msgid "Rejected"
-msgstr ""
+msgstr "Visszautasítva"
 
 #: lms/templates/name_changes.html
 msgid "Pending name changes"
-msgstr ""
+msgstr "Függőben lévő névváltoztatás"
 
 #: lms/templates/name_changes.html lms/templates/modal/accessible_confirm.html
 msgid "Confirm"
-msgstr ""
+msgstr "Jóváhagyás"
 
 #: lms/templates/name_changes.html
 msgid "[Reject]"
@@ -6863,7 +6892,7 @@ msgstr ""
 
 #: lms/templates/navigation.html
 msgid "Find Courses"
-msgstr ""
+msgstr "Kurzusok tallózása"
 
 #: lms/templates/navigation.html
 msgid "Dashboard for:"
@@ -6875,7 +6904,7 @@ msgstr ""
 
 #: lms/templates/navigation.html
 msgid "Log Out"
-msgstr ""
+msgstr "Kijelentkezés"
 
 #: lms/templates/navigation.html
 msgid "Shopping Cart"
@@ -6883,25 +6912,25 @@ msgstr ""
 
 #: lms/templates/navigation.html
 msgid "How it Works"
-msgstr ""
+msgstr "Hogyan működik"
 
 #: lms/templates/navigation.html lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 #: lms/templates/courseware/courses.html
 msgid "Courses"
-msgstr ""
+msgstr "Kurzusok"
 
 #: lms/templates/navigation.html
 msgid "Schools"
-msgstr ""
+msgstr "Iskolák"
 
 #: lms/templates/navigation.html lms/templates/navigation.html
 msgid "Register Now"
-msgstr ""
+msgstr "Regisztrálj most"
 
 #: lms/templates/navigation.html lms/templates/navigation.html
 msgid "Log in"
-msgstr ""
+msgstr "Bejelentkezés"
 
 #: lms/templates/navigation.html
 msgid ""
@@ -6909,15 +6938,18 @@ msgid ""
 "recommend using {chrome_link_start}Chrome{chrome_link_end} or "
 "{ff_link_start}Firefox{ff_link_end}."
 msgstr ""
+"<strong>Figyelem!</strong> A böngésződ nem teljesen támogatott. Javasoljuk "
+"használd a {chrome_link_start}Chromeot{chrome_link_end} vagy a "
+"{ff_link_start}Firefoxot{ff_link_end}."
 
 #: lms/templates/notes.html lms/templates/textannotation.html
 #: lms/templates/videoannotation.html
 msgid "You do not have any notes."
-msgstr ""
+msgstr "Nincs megjegyzésed."
 
 #: lms/templates/problem.html
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: lms/templates/problem.html
 msgid "Reveal Answer"
@@ -6929,7 +6961,7 @@ msgstr ""
 
 #: lms/templates/provider_login.html
 msgid "Log In"
-msgstr ""
+msgstr "Bejelentkezés"
 
 #: lms/templates/provider_login.html
 msgid ""
@@ -6940,7 +6972,7 @@ msgstr ""
 
 #: lms/templates/provider_login.html
 msgid "Return To %s"
-msgstr ""
+msgstr "Visza a %s-re"
 
 #: lms/templates/register-shib.html
 msgid "Preferences for {platform_name}"
@@ -6972,15 +7004,17 @@ msgid ""
 "Required fields are noted by <strong class=\"indicator\">bold text and an "
 "asterisk (*)</strong>."
 msgstr ""
+"A kötelező mezők <strong class=\"indicator\">félkövéren szedve és csillaggal"
+" (*)</strong> jelölve."
 
 #: lms/templates/register-shib.html lms/templates/signup_modal.html
 msgid "Enter a public username:"
-msgstr ""
+msgstr "Írd be a nyilvános felhasználói neved:"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/register.html
 msgid "example: JaneDoe"
-msgstr ""
+msgstr "példa: KisZsuzsa"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/register.html
@@ -7015,7 +7049,7 @@ msgstr ""
 
 #: lms/templates/register-sidebar.html
 msgid "Click here to log in."
-msgstr ""
+msgstr "Kattints a bejelentkezéshez."
 
 #: lms/templates/register-sidebar.html
 msgid "Welcome to {platform_name}"
@@ -7030,7 +7064,7 @@ msgstr ""
 
 #: lms/templates/register-sidebar.html
 msgid "Next Steps"
-msgstr ""
+msgstr "Következő lépések"
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -7039,6 +7073,10 @@ msgid ""
 "mark emails from class.stanford.edu as 'not spam', since you'll want to be "
 "able to receive email from your courses."
 msgstr ""
+"Egy aktiváló e-mailt fogsz kapni. Az aktiváló linkre kell kattintani, hogy a"
+" regisztrálásod befejeződjön. Nem kaptad meg a levelet? Nézd meg a spam "
+"gyűjtődet és jelölt a class.stanford.edu címről érkező leveleket hogy nem "
+"spamek, így meg fogod kapni a kurzusaidról érkező leveleket."
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -7047,20 +7085,27 @@ msgid ""
 "the email?  Check your spam folder and mark {platform_name} emails as 'not "
 "spam'.  At {platform_name}, we communicate mostly through email."
 msgstr ""
+"A {platform_name}-hoz való csatlakozás részeként egy aktiváló e-mailt fogsz "
+"kapni. Az aktiváló linkre kell kattintani, hogy a regisztrálásod "
+"befejeződjön. Nem kaptad meg a levelet? Nézd meg a spam gyűjtődet és jelölt "
+"a {platform_name}-ről érkező leveleket hogy nem spamek. A "
+"{platform_name}-ről legtöbbször e-mailen keresztül kapsz információkat."
 
 #: lms/templates/register-sidebar.html
 msgid "Need help in registering with {platform_name}?"
-msgstr ""
+msgstr "A {platform_name}-re regisztráláshoz segítségre van szükséged?"
 
 #: lms/templates/register-sidebar.html
 msgid "View our FAQs for answers to commonly asked questions."
-msgstr ""
+msgstr "Az általában feltett kérdések kapcsán nézd megy a Gy. I. K.-ot. "
 
 #: lms/templates/register-sidebar.html
 msgid ""
 "Once registered, most questions can be answered in the course specific "
 "discussion forums or through the FAQs."
 msgstr ""
+"Regisztrációt követően a kérdések többségét megtalálok a kurzushoz tartozó "
+"vitafórumon vagy a Gy. I. K.-ben."
 
 #: lms/templates/register.html
 msgid "Register for {platform_name}"
@@ -7101,6 +7146,7 @@ msgstr ""
 #: lms/templates/register.html
 msgid "Please complete the following fields to register for an account. "
 msgstr ""
+"Kérjük töltsd ki a következő mezőket, hogy regisztrálj egy azonosítóért."
 
 #: lms/templates/register.html lms/templates/register.html
 msgid "cannot be changed later"
@@ -7108,7 +7154,7 @@ msgstr ""
 
 #: lms/templates/register.html lms/templates/verify_student/face_upload.html
 msgid "example: Jane Doe"
-msgstr ""
+msgstr "példa: Kis Zsuzsa"
 
 #: lms/templates/register.html lms/templates/register.html
 msgid "Needed for any certificates you may earn"
@@ -7116,7 +7162,7 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Welcome {username}"
-msgstr ""
+msgstr "Üdvözlünk {username}"
 
 #: lms/templates/register.html
 msgid "Enter a Public Display Name:"
@@ -7149,7 +7195,7 @@ msgstr ""
 #: lms/templates/register.html
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
 msgid "Year of Birth"
-msgstr ""
+msgstr "Születési év"
 
 #: lms/templates/register.html
 msgid "Please share with us your reasons for registering with {platform_name}"
@@ -7157,7 +7203,7 @@ msgstr ""
 
 #: lms/templates/register.html
 msgid "Register"
-msgstr ""
+msgstr "Regisztráció"
 
 #: lms/templates/register.html lms/templates/signup_modal.html
 msgid "Create My Account"
@@ -7176,7 +7222,7 @@ msgstr ""
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "Previous"
-msgstr ""
+msgstr "Elózó"
 
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 msgid "Section Navigation"
@@ -7185,7 +7231,7 @@ msgstr ""
 #: lms/templates/seq_module.html lms/templates/seq_module.html
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "Next"
-msgstr ""
+msgstr "Következő"
 
 #: lms/templates/signup_modal.html
 msgid "Sign Up for {platform_name}"
@@ -7193,7 +7239,7 @@ msgstr ""
 
 #: lms/templates/signup_modal.html lms/templates/signup_modal.html
 msgid "e.g. yourname@domain.com"
-msgstr ""
+msgstr "például yourname@domain.com"
 
 #: lms/templates/signup_modal.html lms/templates/signup_modal.html
 msgid "e.g. yourname (shown on forums)"
@@ -7209,7 +7255,7 @@ msgstr ""
 
 #: lms/templates/signup_modal.html
 msgid "Full Name *"
-msgstr ""
+msgstr "Teljes név *"
 
 #: lms/templates/signup_modal.html
 msgid "Ed. Completed"
@@ -7217,11 +7263,11 @@ msgstr ""
 
 #: lms/templates/signup_modal.html
 msgid "Year of birth"
-msgstr ""
+msgstr "Születési év"
 
 #: lms/templates/signup_modal.html
 msgid "Mailing address"
-msgstr ""
+msgstr "Levelezési cím"
 
 #: lms/templates/signup_modal.html
 msgid "Goals in signing up for {platform_name}"
@@ -7229,11 +7275,11 @@ msgstr ""
 
 #: lms/templates/signup_modal.html
 msgid "Already have an account?"
-msgstr ""
+msgstr "Már létezik egy felhasználói fiókod?"
 
 #: lms/templates/signup_modal.html
 msgid "Login."
-msgstr ""
+msgstr "Bejelentkezés."
 
 #: lms/templates/split_test_author_view.html
 msgid "This content experiment uses group configuration '{experiment_name}'."
@@ -7271,11 +7317,11 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "Comment"
-msgstr ""
+msgstr "Megjegyzés"
 
 #: lms/templates/staff_problem_info.html
 msgid "comment"
-msgstr ""
+msgstr "megjegyzés"
 
 #: lms/templates/staff_problem_info.html
 msgid "Tag"
@@ -7291,7 +7337,7 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "Add comment"
-msgstr ""
+msgstr "Megjegyzés hozzáadása"
 
 #: lms/templates/staff_problem_info.html
 msgid "Staff Debug"
@@ -7329,7 +7375,7 @@ msgstr ""
 
 #: lms/templates/staff_problem_info.html
 msgid "User:"
-msgstr ""
+msgstr "Felhasználó:"
 
 #: lms/templates/staff_problem_info.html
 msgid "View History"
@@ -7347,11 +7393,11 @@ msgstr ""
 
 #: lms/templates/staticbook.html
 msgid "Previous page"
-msgstr ""
+msgstr "Előző oldal"
 
 #: lms/templates/staticbook.html
 msgid "Next page"
-msgstr ""
+msgstr "Következő oldal"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -7361,7 +7407,7 @@ msgstr ""
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Users"
-msgstr ""
+msgstr "Felhasználók"
 
 #: lms/templates/sysadmin_dashboard.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
@@ -7478,15 +7524,15 @@ msgstr ""
 
 #: lms/templates/tracking_log.html
 msgid "ipaddr"
-msgstr ""
+msgstr "ip cím"
 
 #: lms/templates/tracking_log.html
 msgid "source"
-msgstr ""
+msgstr "forrás"
 
 #: lms/templates/tracking_log.html
 msgid "type"
-msgstr ""
+msgstr "típus"
 
 #: lms/templates/unsubscribe.html
 msgid "Unsubscribe Successful!"
@@ -7572,7 +7618,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "HD off"
-msgstr ""
+msgstr "HD ki"
 
 #: lms/templates/video.html lms/templates/video.html
 msgid "Turn off captions"
@@ -7594,7 +7640,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Download video"
-msgstr ""
+msgstr "Videó letöltése"
 
 #: lms/templates/video.html lms/templates/video.html
 msgid "Download transcript"
@@ -7606,7 +7652,7 @@ msgstr ""
 
 #: lms/templates/word_cloud.html
 msgid "Your words:"
-msgstr ""
+msgstr "Szavaid:"
 
 #: lms/templates/word_cloud.html
 msgid "Total number of words:"
@@ -7631,7 +7677,7 @@ msgstr ""
 
 #: lms/templates/combinedopenended/combined_open_ended.html
 msgid "Next Step"
-msgstr ""
+msgstr "Következő lépés"
 
 #: lms/templates/combinedopenended/combined_open_ended.html
 msgid ""
@@ -7644,7 +7690,7 @@ msgstr ""
 
 #: lms/templates/combinedopenended/combined_open_ended_legend.html
 msgid "Legend"
-msgstr ""
+msgstr "Jelmagyarázat"
 
 #: lms/templates/combinedopenended/combined_open_ended_results.html
 msgid "Submitted Rubric"
@@ -7693,12 +7739,12 @@ msgstr ""
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
 msgid "Correct"
-msgstr ""
+msgstr "Helyes"
 
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
 msgid "Partially Correct"
-msgstr ""
+msgstr "Részben helyes"
 
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
@@ -7708,17 +7754,17 @@ msgstr ""
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
 msgid "Partially Incorrect"
-msgstr ""
+msgstr "Részben helytelen"
 
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
 msgid "Incorrect"
-msgstr ""
+msgstr "Helytelen"
 
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
 msgid "Additional comments:"
-msgstr ""
+msgstr "További megjegyzések:"
 
 #: lms/templates/combinedopenended/open_ended_result_table.html
 #: lms/templates/combinedopenended/openended/open_ended_evaluation.html
@@ -7921,7 +7967,7 @@ msgstr ""
 
 #: lms/templates/courseware/courseware.html
 msgid "Return to Exam"
-msgstr ""
+msgstr "Vissza a vizsgához"
 
 #: lms/templates/courseware/courseware.html
 msgid "Course Navigation"
@@ -8383,11 +8429,11 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Day"
-msgstr ""
+msgstr "Nap"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Students"
-msgstr ""
+msgstr "Tanuló"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Score distribution for problems"
@@ -8395,7 +8441,7 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Max"
-msgstr ""
+msgstr "Maximum"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Points Earned (Num Students)"
@@ -8432,7 +8478,7 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Number of students"
-msgstr ""
+msgstr "A tanulók száma"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid ""
@@ -8446,7 +8492,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/send_email.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Pending Instructor Tasks"
-msgstr ""
+msgstr "Függőben lévő oktatói feladatok"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Task Type"
@@ -8572,10 +8618,12 @@ msgid ""
 "Final course details are being wrapped up at this time. Your final standing "
 "will be available shortly."
 msgstr ""
+"A részletes kurzus információk véglegesítése folyamatban van. A "
+"végeredményed hamarosan elérhető lesz."
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your final grade:"
-msgstr ""
+msgstr "A végső minősítésed:"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Grade required for a {cert_name_short}:"
@@ -8607,7 +8655,7 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "This link will open/download a PDF document"
-msgstr ""
+msgstr "Ez a link megnyit/letölt egy PDF fájlt."
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 #: lms/templates/dashboard/_dashboard_certificate_information.html
@@ -8633,12 +8681,12 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Complete our course feedback survey"
-msgstr ""
+msgstr "A kurzus felmérés kitöltése"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "{course_number} {course_name} Cover Image"
-msgstr ""
+msgstr "{course_number} {course_name} Borítókép"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You're enrolled as a verified student"
@@ -8674,11 +8722,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Completed - {end_date}"
-msgstr ""
+msgstr "Kurzus befejezve - {end_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Started - {start_date}"
-msgstr ""
+msgstr "Kurzus elkezdődött - {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course has not yet started"
@@ -8686,7 +8734,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course Starts - {start_date}"
-msgstr ""
+msgstr "Kurzus kezdődik - {start_date}"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Document your accomplishment!"
@@ -8714,11 +8762,11 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Archived Course"
-msgstr ""
+msgstr "Arhív kurzusok megjelenítése"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Course"
-msgstr ""
+msgstr "Kurzus megjelenítése"
 
 #. Translators: The course's name will be added to the end of this sentence.
 #: lms/templates/dashboard/_dashboard_course_listing.html
@@ -8991,7 +9039,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html wiki/forms.py
 #: wiki/forms.py wiki/forms.py
 msgid "Title"
-msgstr ""
+msgstr "Cím"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Update post"
@@ -9169,7 +9217,7 @@ msgstr ""
 
 #: lms/templates/discussion/_user_profile.html
 msgid ", "
-msgstr ""
+msgstr ","
 
 #: lms/templates/discussion/_user_profile.html
 msgid "%s discussion started"
@@ -10288,11 +10336,11 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Problem Name"
-msgstr ""
+msgstr "Feladat neve"
 
 #: lms/templates/open_ended_problems/open_ended_problems.html
 msgid "Grader Type"
-msgstr ""
+msgstr "Értékelő típusa"
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid ""
@@ -10311,7 +10359,7 @@ msgstr ""
 #: lms/templates/peer_grading/peer_grading_closed.html
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Peer Grading"
-msgstr ""
+msgstr "Kölcsönös értékelés"
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid ""
@@ -10320,7 +10368,7 @@ msgstr ""
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Due date"
-msgstr ""
+msgstr "Leadási határidő"
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Available"
@@ -10378,7 +10426,7 @@ msgstr ""
 
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Start Grading!"
-msgstr ""
+msgstr "Az értékelés megkezése!"
 
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Learning to grade"
@@ -10440,11 +10488,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "Aktiválás sikerül!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "A felhasználói fiók már aktív."
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -10452,7 +10500,7 @@ msgstr ""
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Activation Invalid"
-msgstr ""
+msgstr "Aktiválás érvénytelen"
 
 #: lms/templates/registration/activation_invalid.html
 msgid ""
@@ -10460,10 +10508,13 @@ msgid ""
 "e-mail programs will sometimes split it into two lines. If you still have "
 "issues, e-mail us to let us know what happened at {email}."
 msgstr ""
+"Hiba történt. Ellenőrizd kérlek, hogy az URL amire kattintottál helyes "
+"volt-e - előfordulhat, hogy az e-mail program két sorba tördelte a címet. Ha"
+" ezután is problémád van, értesíts minket a következő e-mail címen: {email}."
 
 #: lms/templates/registration/activation_invalid.html
 msgid "Or you can go back to the {link_start}home page{link_end}."
-msgstr ""
+msgstr "Vagy visszamehetsz a  {link_start}honlapra{link_end}."
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"
@@ -13982,15 +14033,15 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "Ez egy kulcs karaktersorozat."
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
-msgstr ""
+msgstr "létrehozva"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
-msgstr ""
+msgstr "Csak a helyi gép... hahaha"
 
 #: wiki/forms.py
 msgid "Initial title of the article. May be overridden with revision titles."
@@ -14009,11 +14060,11 @@ msgstr ""
 
 #: wiki/forms.py wiki/forms.py
 msgid "Contents"
-msgstr ""
+msgstr "Tartalom"
 
 #: wiki/forms.py wiki/forms.py
 msgid "Summary"
-msgstr ""
+msgstr "Összefoglalás"
 
 #: wiki/forms.py
 msgid ""
@@ -14033,7 +14084,7 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Select an option"
-msgstr ""
+msgstr "Válassz egy lehetőséget"
 
 #: wiki/forms.py
 msgid "Slug"
@@ -14100,7 +14151,7 @@ msgstr ""
 
 #: wiki/forms.py
 msgid "Owner"
-msgstr ""
+msgstr "Felhasználó"
 
 #: wiki/forms.py
 msgid "Enter the username of the owner."
@@ -14169,7 +14220,7 @@ msgstr ""
 
 #: wiki/models/article.py
 msgid "owner"
-msgstr ""
+msgstr "tulajdonos"
 
 #: wiki/models/article.py
 msgid ""
@@ -14179,7 +14230,7 @@ msgstr ""
 
 #: wiki/models/article.py
 msgid "group"
-msgstr ""
+msgstr "csoport"
 
 #: wiki/models/article.py
 msgid ""

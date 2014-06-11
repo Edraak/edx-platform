@@ -3492,7 +3492,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 msgid "email"
-msgstr ""
+msgstr "Ebost"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Repair Results"
@@ -3681,7 +3681,7 @@ msgstr ""
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Email"
-msgstr ""
+msgstr "Ebost"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
@@ -6022,7 +6022,7 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Instructions"
-msgstr ""
+msgstr "Cyfarwyddiadau"
 
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
@@ -6054,7 +6054,7 @@ msgstr ""
 #: lms/templates/static_templates/contact.html
 #: lms/templates/static_templates/contact.html
 msgid "Contact"
-msgstr ""
+msgstr "Cysylltu"
 
 #: lms/templates/contact.html
 msgid "Class Feedback"
@@ -6118,7 +6118,7 @@ msgstr ""
 
 #: lms/templates/course.html
 msgid "New"
-msgstr ""
+msgstr "Newydd"
 
 #: lms/templates/dashboard.html
 msgid "Dashboard"
@@ -6157,7 +6157,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
-msgstr ""
+msgstr "golygu"
 
 #. Translators: this section lists all the third-party authentication
 #. providers
@@ -6500,7 +6500,7 @@ msgstr ""
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/signup_modal.html
 msgid "E-mail"
-msgstr ""
+msgstr "Ebost"
 
 #: lms/templates/help_modal.html
 msgid "Briefly describe your issue"
@@ -12639,7 +12639,7 @@ msgstr ""
 
 #: cms/templates/import.html
 msgid "Success"
-msgstr ""
+msgstr "Llwyddiant"
 
 #: cms/templates/import.html
 msgid "Your imported content has now been integrated into this course"
@@ -12958,7 +12958,7 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "Need help?"
-msgstr ""
+msgstr "Angen cymorth?"
 
 #: cms/templates/index.html
 msgid ""
@@ -13044,7 +13044,7 @@ msgstr ""
 
 #: cms/templates/manage_users.html
 msgid "Staff"
-msgstr ""
+msgstr "Staff"
 
 #: cms/templates/manage_users.html
 msgid "send an email message to {email}"

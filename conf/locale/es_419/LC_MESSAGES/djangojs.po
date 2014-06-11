@@ -326,6 +326,8 @@ msgstr "Máximo"
 msgid ""
 "VideoPlayer: Element corresponding to the given selector was not found."
 msgstr ""
+"VideoPlayer: El elemento correspondiente al selector dado no ha sido "
+"encontrado."
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "This browser cannot play .mp4, .ogg, or .webm files."
@@ -404,7 +406,7 @@ msgstr "Desactivar subtítulos"
 
 #: common/lib/xmodule/xmodule/public/js/split_test_author_view.js
 msgid "Creating missing groups&hellip;"
-msgstr ""
+msgstr "Creando grupos faltantes&hellip;"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 #: common/static/coffee/src/discussion/discussion_module_view.js
@@ -533,11 +535,11 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "No threads matched your query."
-msgstr ""
+msgstr "Ninguna discusión coincide con los criterios dados."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Show posts by %(username)s."
-msgstr ""
+msgstr "Mostrar las publicaciones de %(username)s."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Click to remove report"
@@ -1725,20 +1727,20 @@ msgstr ""
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student opened Subsection"
 msgid_plural "%(num_students)s students opened Subsection"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_students)s estudiante abrió la subsección"
+msgstr[1] "%(num_students)s estudiantes abrieron la subsección"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_students)s student"
 msgid_plural "%(num_students)s students"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_students)s estudiante"
+msgstr[1] "%(num_students)s estudiantes"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "%(num_questions)s question"
 msgid_plural "%(num_questions)s questions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_questions)s pregunta"
+msgstr[1] "%(num_questions)s preguntas"
 
 #: lms/templates/class_dashboard/d3_stacked_bar_graph.js
 msgid "Number of Students"
@@ -1804,7 +1806,7 @@ msgstr "Si, deseo borrar el componente"
 
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 msgid "OpenAssessment Save Error"
-msgstr ""
+msgstr "Error al guardar en el servidor OpenAssessment"
 
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
@@ -2377,7 +2379,7 @@ msgstr ""
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Chapter information"
-msgstr ""
+msgstr "Información del capítulo"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Add a Chapter"

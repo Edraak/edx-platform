@@ -94,6 +94,8 @@ msgstr "ओपन एन्डेड पैनल"
 msgid "Discussion"
 msgstr "चर्चा"
 
+#: cms/djangoapps/contentstore/views/component.py
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/analytics.html
@@ -866,15 +868,15 @@ msgstr "संभव फ़ाइल प्रस्तुतियों के
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "correct"
-msgstr ""
+msgstr "सही "
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "incorrect"
-msgstr ""
+msgstr "गलत "
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "incomplete"
-msgstr ""
+msgstr "अधूरा"
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "unanswered"
@@ -1030,6 +1032,10 @@ msgstr "इस समस्या के लिए स्टाफ़ के ज
 msgid "error"
 msgstr ""
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
+#. Translators: Separator used in StringResponse to display multiple answers.
+#. Example: "Answer: Answer_1 or Answer_2 or Answer_3".
+#: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 msgid "or"
 msgstr "या"
@@ -1211,6 +1217,8 @@ msgstr ""
 msgid "Amount of time after the due date that submissions will be accepted"
 msgstr ""
 
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/modulestore/inheritance.py
 #: lms/templates/problem.html
 msgid "Show Answer"
 msgstr "जवाब देखें"
@@ -1487,6 +1495,8 @@ msgstr ""
 msgid "Which step within the current task that the student is on."
 msgstr ""
 
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Graded"
 msgstr "श्रेणी या ग्रेड दी जा चुके हैं"
@@ -2209,11 +2219,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "संपादक"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
-msgstr ""
+msgstr "दृश्य"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Raw"
@@ -2470,6 +2480,11 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
+#. Translators: This message will be added to the front of messages of type
+#. error,
+#. e.g. "Error: required field is missing".
+#: common/lib/xmodule/xmodule/split_test_module.py
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
@@ -3338,6 +3353,7 @@ msgstr ""
 msgid "Percent of Students"
 msgstr ""
 
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
 msgid "Score"
 msgstr "कुल स्कोर"
@@ -3435,6 +3451,7 @@ msgstr "निर्दिष्ट शाखा पर स्विच कर�
 msgid "Email Address"
 msgstr ""
 
+#: lms/djangoapps/dashboard/support.py
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Course ID"
 msgstr "पाठ्यक्रम आईडी"
@@ -3774,7 +3791,7 @@ msgstr "ई-मेल"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Language"
-msgstr ""
+msgstr "भाषा "
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Location"
@@ -3782,7 +3799,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Birth Year"
-msgstr ""
+msgstr "जन्म वर्ष "
 
 #: lms/djangoapps/instructor/views/api.py lms/templates/register.html
 #: lms/templates/signup_modal.html
@@ -3868,6 +3885,7 @@ msgstr "डेटा डाउनलोड"
 msgid "Analytics"
 msgstr "एनेलिटिक्स"
 
+#: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Metrics"
 msgstr "मेट्रिक्स"
@@ -4061,7 +4079,7 @@ msgstr ""
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Full name"
-msgstr ""
+msgstr "पूरा नाम "
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Roles"
@@ -5901,7 +5919,7 @@ msgstr "अपलोड पूरा हुआ"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
-msgstr ""
+msgstr "एच टी एम एल"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Video"
@@ -7164,7 +7182,7 @@ msgstr ""
 
 #: lms/templates/lti_form.html
 msgid "Press to Launch"
-msgstr ""
+msgstr "लांच करने के लिये दबाइए "
 
 #: lms/templates/manage_user_standing.html
 msgid "Disable or Reenable student accounts"
@@ -8337,7 +8355,7 @@ msgstr "अतिरिक्त संसाधन"
 #. notification image that indicates the tab "needs attention".
 #: lms/templates/courseware/course_navigation.html
 msgid "needs attention"
-msgstr ""
+msgstr "ध्यान कि आवश्यकता हैं "
 
 #: lms/templates/courseware/course_navigation.html
 #: lms/templates/courseware/course_navigation.html
@@ -8473,6 +8491,9 @@ msgid ""
 " fix it as soon as possible. Please email us at {link_to_support_email} to "
 "report any problems or downtime."
 msgstr ""
+"हमें खेद हैं, यह मॉड्यूल अस्थायी रूप से अनुपलब्ध हैं। हमारे कर्मचारी  इस "
+"समस्या को जल्द से जल्द  हल करने के लिये कार्य कर रहा हैं।  हमें {लिंक "
+"_टू_सपोर्ट_ईमेल} पर कोइ  समस्या के विषय पर रिपोर्ट करने के लिये ईमेल करे।  "
 
 #: lms/templates/courseware/grade_summary.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -9800,7 +9821,7 @@ msgstr ""
 #: lms/templates/emails/remove_beta_tester_email_message.txt
 #: lms/templates/emails/unenroll_email_enrolledmessage.txt
 msgid "Dear {full_name}"
-msgstr ""
+msgstr "प्रिय {पूरा_ नाम }"
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 msgid ""
@@ -9865,7 +9886,7 @@ msgstr ""
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid "Dear student,"
-msgstr ""
+msgstr "प्रिय छात्र "
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid ""
@@ -9922,11 +9943,11 @@ msgstr ""
 
 #: lms/templates/emails/enroll_email_enrolledsubject.txt
 msgid "You have been enrolled in {course_name}"
-msgstr ""
+msgstr "आप {कोर्स_नाम } कोर्स में भर्ती हुए  हैं "
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "Hi {name}"
-msgstr ""
+msgstr "नमस्ते {नाम}"
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid ""
@@ -9956,7 +9977,7 @@ msgstr ""
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "Your order number is: {order_number}"
-msgstr ""
+msgstr "आपका आर्डर नंबर {आर्डर_नंबर} हैं "
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "The items in your order are:"
@@ -10007,7 +10028,7 @@ msgstr ""
 
 #: lms/templates/emails/unenroll_email_allowedmessage.txt
 msgid "Dear Student,"
-msgstr ""
+msgstr "प्रिय छात्र "
 
 #: lms/templates/emails/unenroll_email_allowedmessage.txt
 msgid ""
@@ -10702,7 +10723,7 @@ msgstr "ई-मेल भेजें"
 
 #: lms/templates/instructor/instructor_dashboard_2/send_email.html
 msgid "Message:"
-msgstr ""
+msgstr "सन्देश "
 
 #: lms/templates/instructor/instructor_dashboard_2/send_email.html
 msgid ""
@@ -11509,6 +11530,8 @@ msgid ""
 "Please wait a few seconds and then reload the page. If the problem persists,"
 " please email us at {email}."
 msgstr ""
+"कृपया थोड़ी देर रुक कर पेज वापस रीलोड करे। अगर तब भी यह समस्या बानी रहती है "
+"तो हमे {ईमेल} पर ईमेल करे। "
 
 #: lms/templates/static_templates/server-overloaded.html
 msgid "Currently the {platform_name} servers are overloaded"
@@ -12547,6 +12570,8 @@ msgid ""
 "An error occurred in Studio and the page could not be loaded. Please try "
 "again in a few moments."
 msgstr ""
+"स्टूडियो में एक त्रुटि हो गई हैं और वह पेज अभि लोड नहीं हो सकता हैं।  कृपया "
+"थोड़ी देर बाद कोशिश करे।"
 
 #: cms/templates/500.html
 msgid ""
@@ -12565,7 +12590,7 @@ msgstr ""
 
 #: cms/templates/activation_active.html
 msgid "Your account is already active"
-msgstr ""
+msgstr "आपका खाता अभी चालू हैं "
 
 #: cms/templates/activation_active.html
 msgid ""
@@ -12628,7 +12653,7 @@ msgstr ""
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 msgid "Upload New File"
-msgstr ""
+msgstr "नई फाइल अपलोड किजिये  "
 
 #: cms/templates/asset_index.html
 msgid "Loading&hellip;"
@@ -12665,7 +12690,7 @@ msgstr ""
 #: cms/templates/asset_index.html cms/templates/container.html
 #: cms/templates/overview.html cms/templates/settings_graders.html
 msgid "What can I do on this page?"
-msgstr ""
+msgstr "इस पेज पे में क्या कर सकता हुँ  ??"
 
 #: cms/templates/asset_index.html
 msgid ""
@@ -12789,7 +12814,7 @@ msgstr ""
 
 #: cms/templates/course_info.html
 msgid "New Update"
-msgstr ""
+msgstr "नई अपडेट"
 
 #: cms/templates/course_info.html
 msgid ""
@@ -12803,7 +12828,7 @@ msgstr ""
 #: cms/templates/edit-tabs.html cms/templates/edit-tabs.html
 #: cms/templates/export.html cms/templates/widgets/header.html
 msgid "Pages"
-msgstr ""
+msgstr "पन्ने"
 
 #: cms/templates/edit-tabs.html
 msgid "New Page"
@@ -12824,7 +12849,7 @@ msgstr ""
 
 #: cms/templates/edit-tabs.html
 msgid "Show this page"
-msgstr ""
+msgstr "यह पेज दिखाए "
 
 #: cms/templates/edit-tabs.html cms/templates/edit-tabs.html
 msgid "Show/hide page"
@@ -12840,11 +12865,11 @@ msgstr ""
 
 #: cms/templates/edit-tabs.html
 msgid "Add a New Page"
-msgstr ""
+msgstr "एक नया पेज डालिये "
 
 #: cms/templates/edit-tabs.html
 msgid "What are pages?"
-msgstr ""
+msgstr "पेजेज़ क्या होते हैं "
 
 #: cms/templates/edit-tabs.html
 msgid ""
@@ -12876,7 +12901,7 @@ msgstr ""
 
 #: cms/templates/edit-tabs.html
 msgid "See an example"
-msgstr ""
+msgstr "एक उदहारण देखिये  "
 
 #: cms/templates/edit-tabs.html
 msgid "Pages in Your Course"
@@ -12962,7 +12987,7 @@ msgstr "अंतिम समय"
 
 #: cms/templates/edit_subsection.html
 msgid "Remove due date"
-msgstr ""
+msgstr "अंतिम तिथि निकालिये "
 
 #: cms/templates/edit_subsection.html
 msgid "Preview Drafts"
@@ -14295,7 +14320,7 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Requirements"
-msgstr ""
+msgstr "आवश्यकताएं"
 
 #: cms/templates/settings.html
 msgid "Expectations of the students taking this course"
@@ -14526,7 +14551,7 @@ msgstr ""
 
 #: cms/templates/unit.html
 msgid "Visibility:"
-msgstr ""
+msgstr "दिखावा"
 
 #: cms/templates/unit.html
 msgid "Public"
@@ -14657,7 +14682,7 @@ msgstr ""
 
 #: cms/templates/widgets/header.html
 msgid "Updates"
-msgstr ""
+msgstr "अपडेट्स"
 
 #: cms/templates/widgets/header.html
 msgid "Schedule &amp; Details"
@@ -14784,7 +14809,7 @@ msgstr ""
 
 #: cms/templates/widgets/tabs-aggregator.html
 msgid "name"
-msgstr ""
+msgstr "नाम "
 
 #: cms/templates/widgets/units.html
 msgid "Delete this unit"

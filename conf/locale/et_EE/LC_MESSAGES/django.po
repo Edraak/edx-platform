@@ -88,7 +88,7 @@ msgstr ""
 
 #: common/djangoapps/course_modes/views.py common/djangoapps/student/views.py
 msgid "Enrollment is closed"
-msgstr ""
+msgstr "Registreerumine on lõppenud"
 
 #: common/djangoapps/course_modes/views.py
 msgid "Enrollment mode not supported"
@@ -194,11 +194,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "Sa pole registreerunud sellele kursusele"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
-msgstr ""
+msgstr "Registreerumine pole lubatud"
 
 #. Translators: provider_name is the name of an external, third-party user
 #. authentication service (like
@@ -233,7 +233,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "Vale e-posti aadress või parool."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -347,7 +347,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail is required."
-msgstr ""
+msgstr "Vajalik on kehtiv e-posti aadress."
 
 #: common/djangoapps/student/views.py
 msgid "Username should only consist of A-Z and 0-9, with no spaces."
@@ -399,7 +399,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Invalid password"
-msgstr ""
+msgstr "Lubamatu parool"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
@@ -419,7 +419,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
-msgstr ""
+msgstr "Nimi on kohustuslik"
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Invalid ID"
@@ -838,7 +838,7 @@ msgstr ""
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "unanswered"
-msgstr ""
+msgstr "vastamata"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "processing"
@@ -2152,7 +2152,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "Redigeerija"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
@@ -3193,13 +3193,13 @@ msgstr ""
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Index"
-msgstr ""
+msgstr "Indeks"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/wiki/plugins/attachments/index.html
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Search"
-msgstr ""
+msgstr "Otsing"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/static_templates/copyright.html
@@ -4091,7 +4091,7 @@ msgstr ""
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/templates/wiki/plugins/attachments/index.html wiki/models/article.py
 msgid "deleted"
-msgstr ""
+msgstr "kustutatud"
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
@@ -5131,7 +5131,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "Kustuta"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
@@ -5155,7 +5155,7 @@ msgstr ""
 
 #: lms/templates/wiki/delete.html
 msgid "...and more!"
-msgstr ""
+msgstr "... ja rohkem!"
 
 #: lms/templates/wiki/delete.html
 msgid "You are deleting an article. Please confirm."
@@ -5171,7 +5171,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Edit"
-msgstr ""
+msgstr "Redigeeri"
 
 #: lms/templates/wiki/edit.html lms/templates/wiki/edit.html.py
 msgid "Save changes"
@@ -5179,7 +5179,7 @@ msgstr ""
 
 #: lms/templates/wiki/edit.html cms/templates/unit.html
 msgid "Preview"
-msgstr ""
+msgstr "Eelvaade"
 
 #. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a control to allow users to exit out of this modal
@@ -5198,7 +5198,7 @@ msgstr ""
 #: lms/templates/modal/_modal-settings-language.html
 #: lms/templates/modal/accessible_confirm.html
 msgid "Close"
-msgstr ""
+msgstr "Sulge"
 
 #: lms/templates/wiki/edit.html
 msgid "Wiki Preview"
@@ -5426,15 +5426,15 @@ msgstr ""
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "Attachments"
-msgstr ""
+msgstr "Manused"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload new file"
-msgstr ""
+msgstr "Laadu uus fail"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search and add file"
-msgstr ""
+msgstr "Otsi ja lisa fail"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload File"
@@ -5442,7 +5442,7 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload file"
-msgstr ""
+msgstr "Laadi fail"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search files and articles"
@@ -5470,7 +5470,7 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Size"
-msgstr ""
+msgstr "Suurus"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File History"
@@ -5482,19 +5482,19 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Replace"
-msgstr ""
+msgstr "Asenda"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Restore"
-msgstr ""
+msgstr "Taasta"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "anonymous (IP logged)"
-msgstr ""
+msgstr "anonüümne (IP logitud)"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File history"
-msgstr ""
+msgstr "Faili ajalugu"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "revisions"
@@ -5582,7 +5582,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/utils.py lms/templates/notes.html
 msgid "My Notes"
-msgstr ""
+msgstr "Minu märkmed"
 
 #: cms/djangoapps/contentstore/management/commands/git_export.py
 msgid ""
@@ -5674,7 +5674,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Could not find user by email address '{email}'."
-msgstr ""
+msgstr "Kasutajat e-posti aadressiga '{email}' ei leitud."
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "User {email} has registered but has not yet activated his/her account."
@@ -5698,7 +5698,7 @@ msgstr ""
 
 #: cms/djangoapps/course_creators/models.py
 msgid "pending"
-msgstr ""
+msgstr "ootel"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "granted"
@@ -5706,7 +5706,7 @@ msgstr ""
 
 #: cms/djangoapps/course_creators/models.py
 msgid "denied"
-msgstr ""
+msgstr "tagasi lükatud"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "Studio user"
@@ -5733,11 +5733,11 @@ msgstr ""
 #: cms/templates/404.html cms/templates/error.html
 #: lms/templates/static_templates/404.html
 msgid "Page Not Found"
-msgstr ""
+msgstr "Lehekülge ei leitud"
 
 #: cms/templates/404.html lms/templates/static_templates/404.html
 msgid "Page not found"
-msgstr ""
+msgstr "Lehekülge ei leitud"
 
 #: cms/templates/asset_index.html lms/templates/courseware/courseware.html
 #: lms/templates/verify_student/_modal_editname.html
@@ -5776,7 +5776,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Cancel"
-msgstr ""
+msgstr "Katkesta"
 
 #: cms/templates/index.html
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
@@ -5804,14 +5804,14 @@ msgstr ""
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/sysadmin_dashboard.html
 msgid "Password"
-msgstr ""
+msgstr "Parool"
 
 #: cms/templates/manage_users.html cms/templates/settings.html
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
 #: cms/templates/widgets/header.html
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Settings"
-msgstr ""
+msgstr "Sätted"
 
 #: cms/templates/manage_users.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -5825,7 +5825,7 @@ msgstr ""
 #: lms/templates/combinedopenended/selfassessment/self_assessment_prompt.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Save"
-msgstr ""
+msgstr "Salvesta"
 
 #: cms/templates/register.html cms/templates/widgets/header.html
 #: lms/templates/index.html
@@ -5851,7 +5851,7 @@ msgstr ""
 #: cms/templates/registration/activation_complete.html
 #: lms/templates/registration/activation_complete.html
 msgid "This account has already been activated."
-msgstr ""
+msgstr "Kasutajakonto on juba aktiveeritud."
 
 #: cms/templates/registration/activation_complete.html
 #: lms/templates/registration/activation_complete.html
@@ -6025,7 +6025,7 @@ msgstr ""
 #: lms/templates/annotatable.html lms/templates/imageannotation.html
 #: lms/templates/textannotation.html lms/templates/videoannotation.html
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "Tõmba juhised kokku"
 
 #: lms/templates/annotatable.html
 msgid "Guided Discussion"
@@ -6033,7 +6033,7 @@ msgstr ""
 
 #: lms/templates/annotatable.html
 msgid "Hide Annotations"
-msgstr ""
+msgstr "Peida kommentaarid"
 
 #: lms/templates/contact.html lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
@@ -7540,11 +7540,11 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Video position"
-msgstr ""
+msgstr "Video asukoht"
 
 #: lms/templates/video.html
 msgid "Play"
-msgstr ""
+msgstr "Esita"
 
 #: lms/templates/video.html
 msgid "Speeds"
@@ -7556,7 +7556,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Volume"
-msgstr ""
+msgstr "Heli tugevus"
 
 #: lms/templates/video.html
 msgid ""
@@ -7566,15 +7566,15 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Fill browser"
-msgstr ""
+msgstr "Täida ekraan"
 
 #: lms/templates/video.html
 msgid "HD off"
-msgstr ""
+msgstr "HD välja"
 
 #: lms/templates/video.html lms/templates/video.html
 msgid "Turn off captions"
-msgstr ""
+msgstr "Peida subtiitrid"
 
 #: lms/templates/video.html
 msgid "Skip to end of transcript."
@@ -7621,7 +7621,7 @@ msgstr ""
 #: lms/templates/combinedopenended/combined_open_ended.html
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Hide Question"
-msgstr ""
+msgstr "Peida küsimus"
 
 #: lms/templates/combinedopenended/combined_open_ended.html
 msgid "New Submission"
@@ -8847,7 +8847,7 @@ msgstr ""
 
 #: lms/templates/discussion/_discussion_module.html
 msgid "Show Discussion"
-msgstr ""
+msgstr "Näita arutelu"
 
 #: lms/templates/discussion/_discussion_module_studio.html
 msgid "To view live discussions, click Preview or View Live in Unit Settings."
@@ -8885,7 +8885,7 @@ msgstr ""
 
 #: lms/templates/discussion/_similar_posts.html
 msgid "Hide"
-msgstr ""
+msgstr "Peida"
 
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Discussion topics; current selection is: "
@@ -8942,7 +8942,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "anonüümne"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."
@@ -8961,7 +8961,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Report Misuse"
-msgstr ""
+msgstr "Teata väärkasutusest"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Pin Thread"
@@ -9217,7 +9217,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_pagination.mustache
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "…"
-msgstr ""
+msgstr "…"
 
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "View discussion"
@@ -9518,7 +9518,7 @@ msgstr ""
 
 #: lms/templates/instructor/staff_grading.html
 msgid "(Hide)"
-msgstr ""
+msgstr "(Peida)"
 
 #: lms/templates/instructor/staff_grading.html
 #: lms/templates/peer_grading/peer_grading_problem.html
@@ -10438,11 +10438,11 @@ msgstr ""
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
-msgstr ""
+msgstr "Aktiveeritud!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "Account already active!"
-msgstr ""
+msgstr "Kasutajakonto on juba aktiivne!"
 
 #: lms/templates/registration/activation_complete.html
 msgid "You can now {link_start}log in{link_end}."
@@ -11702,7 +11702,7 @@ msgstr ""
 
 #: cms/templates/404.html
 msgid "The page that you were looking for was not found."
-msgstr ""
+msgstr "Otsitud lehekülge ei leitud"
 
 #: cms/templates/404.html
 msgid ""
@@ -11793,7 +11793,7 @@ msgstr ""
 #: cms/templates/edit-tabs.html cms/templates/overview.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
 msgid "Content"
-msgstr ""
+msgstr "Sisu"
 
 #: cms/templates/asset_index.html cms/templates/container.html
 #: cms/templates/course_info.html cms/templates/edit-tabs.html
@@ -11804,7 +11804,7 @@ msgstr ""
 
 #: cms/templates/asset_index.html cms/templates/asset_index.html
 msgid "Upload New File"
-msgstr ""
+msgstr "Laadi uud fail"
 
 #: cms/templates/asset_index.html
 msgid "Loading&hellip;"
@@ -11856,11 +11856,11 @@ msgstr ""
 
 #: cms/templates/asset_index.html
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "Sinu fail on kustutatud."
 
 #: cms/templates/asset_index.html
 msgid "close alert"
-msgstr ""
+msgstr "sulge alarm"
 
 #: cms/templates/checklists.html cms/templates/checklists.html
 msgid "Course Checklists"
@@ -11870,7 +11870,7 @@ msgstr ""
 #: cms/templates/export_git.html cms/templates/import.html
 #: cms/templates/widgets/header.html
 msgid "Tools"
-msgstr ""
+msgstr "Tööriistad"
 
 #: cms/templates/checklists.html
 msgid "Current Checklists"
@@ -11961,11 +11961,11 @@ msgstr ""
 
 #: cms/templates/course_info.html cms/templates/course_info.html
 msgid "Course Updates"
-msgstr ""
+msgstr "Kursuse uuendused"
 
 #: cms/templates/course_info.html
 msgid "New Update"
-msgstr ""
+msgstr "Uus täiendus"
 
 #: cms/templates/course_info.html
 msgid ""
@@ -11983,7 +11983,7 @@ msgstr ""
 
 #: cms/templates/edit-tabs.html
 msgid "New Page"
-msgstr ""
+msgstr "Uus lehekülg"
 
 #: cms/templates/edit-tabs.html cms/templates/edit_subsection.html
 #: cms/templates/index.html cms/templates/overview.html
@@ -12105,7 +12105,7 @@ msgstr ""
 
 #: cms/templates/edit_subsection.html
 msgid "UTC"
-msgstr ""
+msgstr "UTC"
 
 #: cms/templates/edit_subsection.html
 msgid ""

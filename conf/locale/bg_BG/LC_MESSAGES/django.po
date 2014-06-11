@@ -85,7 +85,7 @@ msgstr ""
 
 #: common/djangoapps/course_modes/views.py common/djangoapps/student/views.py
 msgid "Enrollment is closed"
-msgstr ""
+msgstr "Записването приключи."
 
 #: common/djangoapps/course_modes/views.py
 msgid "Enrollment mode not supported"
@@ -174,11 +174,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
-msgstr ""
+msgstr "Идентификационният номер на курса не е посочен."
 
 #: common/djangoapps/student/views.py
 msgid "Course id is invalid"
-msgstr ""
+msgstr "Идентификационният номер на курса не е валиден."
 
 #: common/djangoapps/student/views.py
 #: lms/templates/courseware/course_about.html
@@ -191,7 +191,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "Вие не сте записан/а за този курс"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
@@ -210,6 +210,7 @@ msgstr ""
 #: common/djangoapps/student/views.py
 msgid "There was an error receiving your login information. Please email us."
 msgstr ""
+"Грешка при получаване на Вашата логин информация. Моля, изпратете ни емайл."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -230,13 +231,15 @@ msgstr ""
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "Посоченият емайл или парола е невалиден."
 
 #: common/djangoapps/student/views.py
 msgid ""
 "This account has not been activated. We have sent another activation "
 "message. Please check your e-mail for the activation instructions."
 msgstr ""
+"Акаунтът все още не е активиран. Изпратихме ви още едно съобщение за "
+"активация. Моля проверете емайла си за инструкции."
 
 #: common/djangoapps/student/views.py
 msgid "Please enter a username"
@@ -264,23 +267,23 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Public Username '{username}' already exists."
-msgstr ""
+msgstr "Акаунт с публично потребителско име '{username}' вече съществува."
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
-msgstr ""
+msgstr "Акаунт с емайл '{email}' вече съществува."
 
 #: common/djangoapps/student/views.py
 msgid "Error (401 {field}). E-mail us."
-msgstr ""
+msgstr "Грешка (401 {field}). Изпратете ни емайл."
 
 #: common/djangoapps/student/views.py
 msgid "To enroll, you must follow the honor code."
-msgstr ""
+msgstr "За да се зашишете трябва "
 
 #: common/djangoapps/student/views.py
 msgid "You must accept the terms of service."
-msgstr ""
+msgstr "Трябва да се съгласите с условията за ползване."
 
 #: common/djangoapps/student/views.py
 msgid "Username must be minimum of two characters long"
@@ -344,11 +347,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail is required."
-msgstr ""
+msgstr "Изисква се валиден емайл."
 
 #: common/djangoapps/student/views.py
 msgid "Username should only consist of A-Z and 0-9, with no spaces."
-msgstr ""
+msgstr "Потребителското трябва да включва само A-Z и 0-9, без интервали."
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Password: "
@@ -356,11 +359,13 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Could not send activation e-mail."
-msgstr ""
+msgstr "Не успяхме да изпратим емайл с инструкции за активация."
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
 msgstr ""
+"Непозната грешка. Моля, свържете се с нас по емайл и ни разкажете какво се "
+"случи."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -388,27 +393,27 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "No inactive user with this e-mail exists"
-msgstr ""
+msgstr "Няма неактивни потребители с такъв емайл."
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send reactivation email"
-msgstr ""
+msgstr "Не успяхме да изпратим емайл с инструкции за реактивация."
 
 #: common/djangoapps/student/views.py
 msgid "Invalid password"
-msgstr ""
+msgstr "Невалидна парола."
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
-msgstr ""
+msgstr "Изисква се валиден емайл."
 
 #: common/djangoapps/student/views.py
 msgid "An account with this e-mail already exists."
-msgstr ""
+msgstr "Акаунт с такъв емайл вече съществува."
 
 #: common/djangoapps/student/views.py
 msgid "Old email is the same as the new email."
-msgstr ""
+msgstr "Стария емайл съвпада с новия."
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send email activation link. Please try again later."
@@ -416,11 +421,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
-msgstr ""
+msgstr "Изисква се име"
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Invalid ID"
-msgstr ""
+msgstr "Невалиден идентификационен номер."
 
 #. Translators: the translation for "LONG_DATE_FORMAT" must be a format
 #. string for formatting dates in a long form.  For example, the
@@ -848,12 +853,12 @@ msgstr ""
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "Answer received."
-msgstr ""
+msgstr "Получен отговор."
 
 #. Translators: '<choice>' is a tag name and should not be translated.
 #: common/lib/capa/capa/inputtypes.py
 msgid "Expected a <choice> tag; got {given_tag} instead"
-msgstr ""
+msgstr "Expected a <choice> tag; got {given_tag} instead"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid ""
@@ -1064,6 +1069,8 @@ msgstr ""
 #: common/lib/capa/capa/responsetypes.py
 msgid "Error in problem specification! Cannot parse rectangle in {sr_coords}"
 msgstr ""
+"Грешка при описаниято на проблема. Не може да се направи разбор на "
+"правоъгълник с координати {sr_coords}"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "Answer not provided for {input_type}"
@@ -1113,7 +1120,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 msgid "Annotation"
-msgstr ""
+msgstr "Анотация"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -1883,7 +1890,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enroll in edX 101"
-msgstr ""
+msgstr "Запиши се в edX 101"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Register for edX 101, edX's primer for course creation."
@@ -2127,7 +2134,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
-msgstr ""
+msgstr "Текст"
 
 #: common/lib/xmodule/xmodule/html_module.py
 #: common/lib/xmodule/xmodule/html_module.py
@@ -2153,7 +2160,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
-msgstr ""
+msgstr "Визуално"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Raw"
@@ -2169,7 +2176,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/imageannotation_module.py
 msgid "Image Annotation"
-msgstr ""
+msgstr "Анотация с изображение"
 
 #: common/lib/xmodule/xmodule/imageannotation_module.py
 #: common/lib/xmodule/xmodule/textannotation_module.py
@@ -2548,7 +2555,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Text Annotation"
-msgstr ""
+msgstr "Текстова анотация"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Source/Citation"
@@ -2572,7 +2579,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 msgid "Video Annotation"
-msgstr ""
+msgstr "Видео анотация"
 
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 msgid "The external source URL for the video."
@@ -3053,7 +3060,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Download Video"
-msgstr ""
+msgstr "Свали видео"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3064,7 +3071,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Video Download Allowed"
-msgstr ""
+msgstr "Разреши сваляне на видео"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3182,21 +3189,21 @@ msgstr ""
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Navigation"
-msgstr ""
+msgstr "Навигация"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "About these documents"
-msgstr ""
+msgstr "Относно тези документи"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Index"
-msgstr ""
+msgstr "Индекс"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/wiki/plugins/attachments/index.html
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Search"
-msgstr ""
+msgstr "Търсене"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/static_templates/copyright.html
@@ -3261,7 +3268,7 @@ msgstr ""
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Percent of Students"
-msgstr ""
+msgstr "Процент от студентите"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
@@ -3644,16 +3651,18 @@ msgstr ""
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "allowed file types are '%(file_types)s'"
-msgstr ""
+msgstr "разрешените файлове типове са '%(file_types)s'"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "maximum upload file size is %(file_size)sK"
-msgstr ""
+msgstr "максималният размер за качване е %(file_size)sK"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid ""
 "Error uploading file. Please contact the site administrator. Thank you."
 msgstr ""
+"Грешка при качване на файл. Моля, свържете се с администратора на сайта. "
+"Благодарим Ви."
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "Good"
@@ -4005,7 +4014,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "{title} in course {course_key}"
-msgstr ""
+msgstr "{title} от курса {course_key}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "ID"
@@ -4213,7 +4222,7 @@ msgstr ""
 #. progress status messages.
 #: lms/djangoapps/instructor_task/views.py
 msgid " (skipping {skipped})"
-msgstr ""
+msgstr "(пропуска {skipped})"
 
 #. Translators: {total} is a count.  This message is appended to task progress
 #. status messages.
@@ -5090,7 +5099,7 @@ msgstr ""
 
 #: lms/templates/wiki/article.html
 msgid "Last modified:"
-msgstr ""
+msgstr "Последно променен:"
 
 #: lms/templates/wiki/article.html
 msgid "See all children"
@@ -5098,25 +5107,25 @@ msgstr ""
 
 #: lms/templates/wiki/article.html
 msgid "This article was last modified:"
-msgstr ""
+msgstr "Тази статия бе променена последно на:"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/create.html.py
 msgid "Add new article"
-msgstr ""
+msgstr "Добави нова статия"
 
 #: lms/templates/wiki/create.html
 msgid "Create article"
-msgstr ""
+msgstr "Създай статия"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/delete.html
 #: lms/templates/wiki/delete.html.py
 msgid "Go back"
-msgstr ""
+msgstr "Върни се"
 
 #: lms/templates/wiki/delete.html lms/templates/wiki/delete.html.py
 #: lms/templates/wiki/edit.html
 msgid "Delete article"
-msgstr ""
+msgstr "Изтрий статия"
 
 #: lms/templates/wiki/delete.html
 #: lms/templates/wiki/plugins/attachments/index.html
@@ -5128,7 +5137,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "Изтрий"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
@@ -5152,7 +5161,7 @@ msgstr ""
 
 #: lms/templates/wiki/delete.html
 msgid "...and more!"
-msgstr ""
+msgstr "... и още!"
 
 #: lms/templates/wiki/delete.html
 msgid "You are deleting an article. Please confirm."
@@ -5168,15 +5177,15 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Edit"
-msgstr ""
+msgstr "Редактирай"
 
 #: lms/templates/wiki/edit.html lms/templates/wiki/edit.html.py
 msgid "Save changes"
-msgstr ""
+msgstr "Запази промените"
 
 #: lms/templates/wiki/edit.html cms/templates/unit.html
 msgid "Preview"
-msgstr ""
+msgstr "Прегледай"
 
 #. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a control to allow users to exit out of this modal
@@ -5215,11 +5224,11 @@ msgstr ""
 
 #: lms/templates/wiki/edit.html
 msgid "Back to editor"
-msgstr ""
+msgstr "Обратно към редактора"
 
 #: lms/templates/wiki/history.html
 msgid "History"
-msgstr ""
+msgstr "История"
 
 #: lms/templates/wiki/history.html
 msgid ""
@@ -5243,7 +5252,7 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Change"
-msgstr ""
+msgstr "Промени"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Merge selected with current..."

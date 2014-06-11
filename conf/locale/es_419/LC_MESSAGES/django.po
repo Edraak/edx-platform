@@ -307,6 +307,9 @@ msgid ""
 "reset your password before you can log in again. Please click the \"Forgot "
 "Password\" link on this page to reset your password before logging in again."
 msgstr ""
+"Su contraseña ha expirado de acuerdo con las políticas establecidas al "
+"respecto. Para poder reingresar, elija una nueva contraseña presionando el "
+"vínculo \"Olvidé mi contraseña\" en esta misma página."
 
 #: common/djangoapps/student/views.py
 msgid "Too many failed login attempts. Try again later."
@@ -463,7 +466,11 @@ msgid_plural ""
 "You are re-using a password that you have used recently. You must have {num}"
 " distinct passwords before reusing a previous password."
 msgstr[0] ""
+"Está reutilizando una contraseña usada recientemente. Debe utilizar {num} "
+"contraseña diferente antes de reutilizar la misma."
 msgstr[1] ""
+"Está reutilizando una contraseña usada recientemente. Debe utilizar al menos"
+" {num} contraseñas diferentes antes de reutilizar la misma."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -473,7 +480,13 @@ msgid_plural ""
 "You are resetting passwords too frequently. Due to security policies, {num} "
 "days must elapse between password resets."
 msgstr[0] ""
+"Está solicitando cambiar de contraseña con demasiada frecuencia. Por "
+"políticas de seguridad, debe dejar transcurrir al menos {num} día antes de "
+"hacer otra solicitud."
 msgstr[1] ""
+"Está solicitando cambiar de contraseña con demasiada frecuencia. Por "
+"políticas de seguridad, debe dejar transcurrir al menos {num} días antes de "
+"hacer otra solicitud."
 
 #: common/djangoapps/student/views.py
 msgid "Password reset unsuccessful"
@@ -960,6 +973,8 @@ msgid ""
 "Your files have been submitted. As soon as your submission is graded, this "
 "message will be replaced with the grader's feedback."
 msgstr ""
+"Sus archivos o ficheros han sido enviados. Una vez evaluados, los "
+"comentarios del evaluador sustituirán este mensaje."
 
 #: common/lib/capa/capa/inputtypes.py
 msgid ""
@@ -985,32 +1000,33 @@ msgstr ""
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "Cannot connect to the queue"
-msgstr ""
+msgstr "No puedo conectarme a la cola o \"queue\""
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "No formula specified."
-msgstr ""
+msgstr "No se especificó una fórmula"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "Couldn't parse formula: {error_msg}"
-msgstr ""
+msgstr "No pude analizar la fórmula: {error_msg}"
 
 #: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
 msgid "Error while rendering preview"
-msgstr ""
+msgstr "Error al renderizar la vista previa"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "Sorry, couldn't parse formula"
-msgstr ""
+msgstr "Lo siento, no pude analizar la fórmula."
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "{input_type}: unexpected tag {tag_name}"
-msgstr ""
+msgstr "{input_type}: no esperaba etiqueta {tag_name}"
 
 #. Translators: a "tag" is an XML element, such as "<b>" in HTML
 #: common/lib/capa/capa/inputtypes.py
 msgid "Expected a {expected_tag} tag; got {given_tag} instead"
 msgstr ""
+"Esperaba una etiqueta {expected_tag} pero recibí una de tipo {given_tag}"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "Error {err} in evaluating hint function {hintfn}."
@@ -2478,7 +2494,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/textannotation_module.py
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 msgid "Mode for Annotation Tool"
-msgstr ""
+msgstr "Modo para Herramienta de anotación"
 
 #: common/lib/xmodule/xmodule/imageannotation_module.py
 #: common/lib/xmodule/xmodule/textannotation_module.py
@@ -2511,13 +2527,16 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "LTI URL"
-msgstr ""
+msgstr "LTI URL"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
 "Enter the URL of the external tool that this component launches. This "
 "setting is only used when Hide External Tool is set to False.<br />See "
 msgstr ""
+"Ingrese el URL de la herramienta externa que inicia este componente. Esta "
+"configuración es utilizada cuando la opción OCULTAR LA HERRAMIENTA EXTERNA  "
+"está en FALSO.<br />Ver"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Custom Parameters"
@@ -2528,6 +2547,9 @@ msgid ""
 "Add the key/value pair for any custom parameters, such as the page your "
 "e-book should open to or the background color for this component.<br />See "
 msgstr ""
+"Añada el par clave / valor para los parámetros personalizados, como la "
+"página de su libro electrónico debe abrir o el color de fondo para este "
+"componente. <br /> Ver"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Open in New Page"
@@ -2540,6 +2562,11 @@ msgid ""
 "in the current page. This setting is only used when Hide External Tool is "
 "set to False.  "
 msgstr ""
+"Seleccione Verdadero si desea que los estudiantes hagan clic en un vínculo "
+"que abre la herramienta de LTI en una nueva ventana. Seleccione Falso si "
+"desea que el contenido de LTI se abra en un iframe en la página actual. Esta"
+" opción sólo se utiliza cuando herramienta externa Hide se establece en "
+"False."
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Scored"
@@ -2571,10 +2598,12 @@ msgid ""
 "The score kept in the xblock KVS -- duplicate of the published score in "
 "django DB"
 msgstr ""
+"La calificación almacenada en xblock KVS -- un duplicado de la calificación "
+"publicada en django DB"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Comment as returned from grader, LTI2.0 spec"
-msgstr ""
+msgstr "El comentario tal y como fue enviado por el evaluador, LTI2.0 spec"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid "Hide External Tool"
@@ -2623,24 +2652,28 @@ msgid ""
 "The location of the problem being graded. Only used when \"Show Single "
 "Problem\" is True."
 msgstr ""
+"La ubicación del problema que está siendo evaluado. Utilizado únicamente "
+"cuando \"Mostrar Único Problema\" es Verdadero"
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid ""
 "Defines whether the student gets credit for grading this problem. Only used "
 "when \"Show Single Problem\" is True."
 msgstr ""
+"Define si el estudiante obtiene puntos por evaluar este problema. Sólo se "
+"emplea cuando \"Mostrar un solo problema\" aparece como Verdadero."
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Due date that should be displayed."
-msgstr ""
+msgstr "La fecha límite de entrega a mostrar."
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Amount of grace to give on the due date."
-msgstr ""
+msgstr "Período de gracia de otorgar en las fechas de entrega."
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Student data for a given peer grading problem."
-msgstr ""
+msgstr "Data del estudiante para un problema específico evaluado entre pares"
 
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid "Peer Grading Interface"
@@ -2649,7 +2682,7 @@ msgstr "Interface de calificación por pares"
 #: common/lib/xmodule/xmodule/seq_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Due Date"
-msgstr ""
+msgstr "Fecha límite de entrega"
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Enter the date by which problems are due."
@@ -2681,10 +2714,12 @@ msgid ""
 "This name is used for organizing your course content, but is not shown to "
 "students."
 msgstr ""
+"Este nombre sirve para organizar su contenido de curso, pero no se le "
+"muestra a los estudiantes."
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Content Experiment"
-msgstr ""
+msgstr "Experimento de contenido"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid ""
@@ -2698,10 +2733,13 @@ msgid ""
 " Caution: Changing the group configuration of a student-visible experiment "
 "will impact the experiment data."
 msgstr ""
+"La configuración define cómo se agruparán los usuarios en este experimento "
+"de contenido. Tenga precaución: si cambia la configuración de grupos de un "
+"experimento visible para los estudiantes afectará los datos del experimento."
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Group Configuration"
-msgstr ""
+msgstr "Configuración de Grupo"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Which child module students in a particular group_id should see"
@@ -2709,32 +2747,39 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "The experiment is not associated with a group configuration."
-msgstr ""
+msgstr "El experimento no está asociado a una configuración de grupos."
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Select a Group Configuration"
-msgstr ""
+msgstr "Seleccione una configuración de grupo"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid ""
 "The experiment uses a deleted group configuration. Select a valid group "
 "configuration or delete this experiment."
 msgstr ""
+"El experimento hace uso de una configuración de grupos que ha sido "
+"eliminada. Elija una configuración de grupos válida o elimine este "
+"experimento."
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid ""
 "The experiment does not contain all of the groups in the configuration."
 msgstr ""
+"El experimento no contiene todos los grupos especificados en la "
+"configuración."
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Add Missing Groups"
-msgstr ""
+msgstr "Agregar los grupos faltantes"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid ""
 "The experiment has an inactive group. Move content into active groups, then "
 "delete the inactive group."
 msgstr ""
+"El experimento tiene un grupo inactivo. Traslade el contenido hacia los "
+"grupos activos y luego elimine el grupo inactivo."
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: 'Courseware' refers to the tab in the courseware that leads to
@@ -2811,6 +2856,9 @@ msgid ""
 "Optional for citing source of any material used. Automatic citation can be "
 "done using <a href=\"http://easybib.com\">EasyBib</a>"
 msgstr ""
+"Opcional para citar la fuente de cualquier material utilizado. El citado "
+"automático puede realizarse por medio de <a "
+"href=\"http://easybib.com\">EasyBib</a>"
 
 #: common/lib/xmodule/xmodule/textannotation_module.py
 msgid "Diacritic Marks"
@@ -3671,37 +3719,40 @@ msgstr ""
 "No fue posible cambiar la la rama especificada. Por favor verifique el "
 "nombre de la misma."
 
-#: cms/templates/login.html cms/templates/register.html
+#: lms/djangoapps/dashboard/support.py cms/templates/login.html
+#: cms/templates/register.html
 msgid "Email Address"
 msgstr "Dirección de correo electrónico"
 
+#: lms/djangoapps/dashboard/support.py
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Course ID"
 msgstr "Id de Curso"
 
 #: lms/djangoapps/dashboard/support.py
 msgid "User not found"
-msgstr ""
+msgstr "Usuario no encontrado"
 
 #: lms/djangoapps/dashboard/support.py
 msgid "Invalid course id"
-msgstr ""
+msgstr "La ID del curso no es válida"
 
 #: lms/djangoapps/dashboard/support.py
 msgid "Course {course_id} not past the refund window."
-msgstr ""
+msgstr "Todavía se pueden tramitar devoluciones en el curso {course_id}."
 
 #: lms/djangoapps/dashboard/support.py
 msgid "No order found for {user} in course {course_id}"
 msgstr ""
+"No se encontró alguna orden del usuario {user} en el curso {course_id} "
 
 #: lms/djangoapps/dashboard/support.py
 msgid "Unenrolled {user} from {course_id}"
-msgstr ""
+msgstr "Desmatriculé a {user} de {course_id}"
 
 #: lms/djangoapps/dashboard/support.py
 msgid "Refunded {cost} for order id {order_id}"
-msgstr ""
+msgstr "Devolví {cost} por la orden {order_id}"
 
 #. Translators: This message means that the user could not be authenticated
 #. (that is, we could
@@ -3709,7 +3760,7 @@ msgstr ""
 #. their password was wrong)
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Failed in authenticating {username}, error {error}\n"
-msgstr ""
+msgstr "No se autorizó el ingreso de {username}, error: {error}\n"
 
 #. Translators: This message means that the user could not be authenticated
 #. (that is, we could
@@ -3717,7 +3768,7 @@ msgstr ""
 #. their password was wrong)
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Failed in authenticating {username}\n"
-msgstr ""
+msgstr "No se autorizó el ingreso de {username}\n"
 
 #. Translators: this means that the password has been corrected (sometimes the
 #. database needs to be resynchronized)
@@ -3743,11 +3794,12 @@ msgstr "Debe ingresar su nombre completo"
 #. Translators: Domain is an email domain, such as "@gmail.com"
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Email address must end in {domain}"
-msgstr ""
+msgstr "La dirección de correo electrónico debe terminar en {domain}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Failed - email {email_addr} already exists as {external_id}"
 msgstr ""
+"Error: La dirección de correo {email_addr} ya existe como {external_id}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Password must be supplied if not using certificates"
@@ -3759,23 +3811,23 @@ msgstr "correo electrónico requerido (no el nombre de usuario)"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Oops, failed to create user {user}, {error}"
-msgstr ""
+msgstr "No pude crear el usuario {user}: {error}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "User {user} created successfully!"
-msgstr ""
+msgstr "Usuario {user} creado exitosamente."
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Cannot find user with email address {email_addr}"
-msgstr ""
+msgstr "No encontré usuarios con la dirección de correo {email_addr}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Cannot find user with username {username} - {error}"
-msgstr ""
+msgstr "No encontré usuarios con el nombre de {username}: {error}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Deleted user {username}"
-msgstr ""
+msgstr "Eliminé al usuario {username}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Statistic"
@@ -3869,7 +3921,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Failed to clone repository to {directory_name}"
-msgstr ""
+msgstr "No pude clonar el repositorio en {directory_name}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Successfully switched to branch: {branch_name}"
@@ -3877,7 +3929,7 @@ msgstr "Se cambió exitosamente la rama: {branch_name}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Loaded course {course_name}<br/>Errors:"
-msgstr ""
+msgstr "Curso cargado {course_name}<br/>Errores:"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 #: cms/templates/index.html
@@ -4110,6 +4162,7 @@ msgstr "Descarga de Datos"
 msgid "Analytics"
 msgstr "Analíticas"
 
+#: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Metrics"
 msgstr "Métricas"
@@ -5434,31 +5487,31 @@ msgstr "Saltar a los contenidos de esta vista"
 #: lms/templates/dashboard/_dashboard_refund.html
 #: lms/templates/dashboard/support.html
 msgid "Manual Refund"
-msgstr ""
+msgstr "Devolución manual"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "About to refund this order:"
-msgstr ""
+msgstr "A punto de realizar la devolución de esta orden:"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "Order Id:"
-msgstr ""
+msgstr "Clave de identificación de la orden:"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "Enrollment:"
-msgstr ""
+msgstr "Inscripción:"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "enrolled"
-msgstr ""
+msgstr "inscritos"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "unenrolled"
-msgstr ""
+msgstr "no inscritos"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "Cost:"
-msgstr ""
+msgstr "Costo"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "CertificateItem Status:"
@@ -5466,7 +5519,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "Order Status:"
-msgstr ""
+msgstr "Estado de la orden:"
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "Fulfilled Time:"
@@ -5474,7 +5527,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_refund.html
 msgid "Refund Request Time:"
-msgstr ""
+msgstr "Tiempo transcurrido desde que se solicitó la devolución:"
 
 #: lms/templates/registration/password_reset_complete.html
 #: lms/templates/registration/password_reset_complete.html
@@ -6528,6 +6581,8 @@ msgstr "):"
 #: common/templates/course_modes/choose.html
 msgid "Why do I have to pay? What if I want a free honor code certificate?"
 msgstr ""
+"¿Por que debo pagar? ¿Que pasa si solo necesito un certificado de código de "
+"honor?"
 
 #: common/templates/course_modes/choose.html
 msgid "Why do I have to pay?"
@@ -6570,6 +6625,9 @@ msgid ""
 "If you can't afford the minimum fee or don't meet the requirements, you can "
 "audit the course or elect to pursue an honor code certificate at no cost."
 msgstr ""
+"Si usted no puede costear la tarifa mínima, o no cumple con los requisitos, "
+"puede solo participar del curso o elegir obtener un certificado de código de"
+" honor, el cual no tiene ningún costo."
 
 #: common/templates/course_modes/choose.html
 msgid ""
@@ -6577,6 +6635,9 @@ msgid ""
 "honor code certificate box and then click the 'Select Certificate' button to"
 " complete your registration."
 msgstr ""
+"Si desea aplicar para el certificado de código de honor, por favor marque la"
+" opción de Certificado de código de honor y después haga clic en el botón "
+"'Seleccionar certificado' para completar su proceso de registro."
 
 #: common/templates/course_modes/choose.html
 msgid "Select Honor Code Certificate"
@@ -6795,6 +6856,9 @@ msgid ""
 "You'll receive a confirmation in your inbox. Please click the link in the "
 "email to confirm the email change."
 msgstr ""
+"Recibirá una confirmación en su buzón de correo. Por favor haga clic en el "
+"vínculo que aparecerá en el correo electrónico para confirmar el cambio de "
+"su dirección de correo."
 
 #. Translators: this message is displayed when a user tries to link their
 #. account with a third-party authentication provider (for example, Google or
@@ -8003,19 +8067,20 @@ msgstr "Iniciar Sesión"
 
 #: lms/templates/split_test_author_view.html
 msgid "This content experiment uses group configuration '{experiment_name}'."
-msgstr ""
+msgstr "Este contenido utiliza la configuración de grupo '{experiment_name}'."
 
 #: lms/templates/split_test_author_view.html
 msgid "This content experiment has issues that affect content visibility."
 msgstr ""
+"Este contenido tiene algunos inconvenientes que afectan su visibilidad."
 
 #: lms/templates/split_test_author_view.html
 msgid "Active Groups"
-msgstr ""
+msgstr "Grupos activos"
 
 #: lms/templates/split_test_author_view.html
 msgid "Inactive Groups"
-msgstr ""
+msgstr "Grupos inactivos"
 
 #. Translators: The 'Group' here refers to the group of users that has been
 #. sorted into group_id
@@ -9310,6 +9375,8 @@ msgid ""
 "Student distribution per country, all courses, Sep 12 to Oct 17, 1 server "
 "(shown here as an example):"
 msgstr ""
+"Distribución de estudiantes por país para todos los cursos. (Se muestra como"
+" ejemplo del 12 de Septiembre al 17 de octubre, 1 servidor)."
 
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
@@ -11763,6 +11830,7 @@ msgstr "Cant."
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 msgid "Note: items with strikethough like <del>this</del> have been refunded."
 msgstr ""
+"Nota: Los artículos tachados <del>de esta forma</del> han sido reembolsados."
 
 #: lms/templates/shoppingcart/receipt.html
 msgid "Billed To:"

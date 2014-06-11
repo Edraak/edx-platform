@@ -987,7 +987,7 @@ msgstr ""
 #: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 msgid "or"
-msgstr ""
+msgstr "ឬ"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error getting student answer from {student_answers}"
@@ -2148,7 +2148,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "អ្នកកែសម្រួល"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
@@ -3211,7 +3211,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/open_ended_problems/open_ended_flagged_problems.html
 msgid "Name"
-msgstr ""
+msgstr "ឈ្មោះ"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -5127,7 +5127,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "លុបចោល"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
@@ -5434,7 +5434,7 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload File"
-msgstr ""
+msgstr "ផ្ទុកឯកសារឡើង"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload file"
@@ -5807,7 +5807,7 @@ msgstr ""
 #: cms/templates/widgets/header.html
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Settings"
-msgstr ""
+msgstr "ការរៀបចំ"
 
 #: cms/templates/manage_users.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -5821,7 +5821,7 @@ msgstr ""
 #: lms/templates/combinedopenended/selfassessment/self_assessment_prompt.html
 #: lms/templates/verify_student/face_upload.html
 msgid "Save"
-msgstr ""
+msgstr "រក្សាទុក"
 
 #: cms/templates/register.html cms/templates/widgets/header.html
 #: lms/templates/index.html
@@ -8983,7 +8983,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html wiki/forms.py
 #: wiki/forms.py wiki/forms.py
 msgid "Title"
-msgstr ""
+msgstr "ចំនង​ជើង"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Update post"
@@ -11694,21 +11694,23 @@ msgstr ""
 
 #: cms/templates/404.html
 msgid "The page that you were looking for was not found."
-msgstr ""
+msgstr "មិនអាចរកឃើញទំព័រដែលអ្នកកំពុងស្វែងរក។"
 
 #: cms/templates/404.html
 msgid ""
 "Go back to the {homepage} or let us know about any pages that may have been "
 "moved at {email}."
 msgstr ""
+"ត្រលប់ទៅទំព័រដើម {homepage} ឬ បញ្ចាក់យើងនូវទំព័រដែលប្រហែលជាត្រូវបានលុបចោល "
+"តាមរយៈ {email}។"
 
 #: cms/templates/500.html
 msgid "Studio Server Error"
-msgstr ""
+msgstr "ប្រព័ន្ធគ្រប់គ្រងស្ទូឌីយោមានបញ្ហា"
 
 #: cms/templates/500.html
 msgid "The <em>Studio</em> servers encountered an error"
-msgstr ""
+msgstr "ប្រព័ន្ធគ្រប់គ្រង <em>ស្ទូឌីយោ</em> ជួបប្រទះបញ្ហា"
 
 #: cms/templates/500.html
 msgid ""
@@ -11848,7 +11850,7 @@ msgstr ""
 
 #: cms/templates/asset_index.html
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "ឯកសាររបស់អ្នកត្រូវបានលុប។"
 
 #: cms/templates/asset_index.html
 msgid "close alert"
@@ -13132,7 +13134,7 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Collapse All Sections"
-msgstr ""
+msgstr "គ្រប់ផ្នែកបរាជ័យ"
 
 #: cms/templates/overview.html
 msgid "New Section"
@@ -13148,11 +13150,11 @@ msgstr ""
 
 #: cms/templates/overview.html
 msgid "Release date:"
-msgstr ""
+msgstr "កាលបរិច្ឆេទបញ្ចេញ"
 
 #: cms/templates/overview.html
 msgid "Edit section release date"
-msgstr ""
+msgstr "កាលបរិច្ឆេទបញ្ចេញផ្នែកដែលបានកែសម្រួល"
 
 #: cms/templates/overview.html
 msgid "Delete section"
@@ -13521,7 +13523,7 @@ msgstr ""
 
 #: cms/templates/settings_advanced.html
 msgid "Your policy changes have been saved."
-msgstr ""
+msgstr "ប្រតិបត្តិការផ្លាស់ប្តូររបស់អ្នកត្រូវបានរក្សាទុក។"
 
 #: cms/templates/settings_advanced.html
 msgid "There was an error saving your information. Please see below."
@@ -13976,19 +13978,19 @@ msgstr ""
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
-msgstr ""
+msgstr "ត្រូវ​បាន​បង្កើត"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
-msgstr ""
+msgstr "សំរាប់​តែ​ localhost"
 
 #: wiki/forms.py
 msgid "Initial title of the article. May be overridden with revision titles."
-msgstr ""
+msgstr "ចំនងជើង​អត្ថបទ​អាច​ត្រូវ​បាន​កែ​ដោយ​ចំនង​ជើង​របស់ revision"
 
 #: wiki/forms.py
 msgid "Type in some contents"
-msgstr ""
+msgstr "សូម​វាយ​បញ្ចូល​អត្ថបទ​ខ្លះ"
 
 #: wiki/forms.py
 msgid ""
@@ -13996,19 +13998,24 @@ msgid ""
 "can use more complex features like adding plugins, meta data, related "
 "articles etc..."
 msgstr ""
+"នេះ​គ្រាន់​តែ​ខ្លឹម​សារ​ដំបូង​បំផុត​របស់​អត្ថបទ​អ្នក។ ក្រោយ​ពី​បាន​បង្កើត "
+"អ្នក​អាច​ប្រើ​ប្រាស់​​ឧបករណ៍​បន្ថែម​ផ្សេង​ទៀត​ដូច​ជា plugins, metadata, "
+"related articles ..."
 
 #: wiki/forms.py wiki/forms.py
 msgid "Contents"
-msgstr ""
+msgstr "ខ្លឹម​សារ, អត្ថបទ"
 
 #: wiki/forms.py wiki/forms.py
 msgid "Summary"
-msgstr ""
+msgstr "សង្ខេប"
 
 #: wiki/forms.py
 msgid ""
 "Give a short reason for your edit, which will be stated in the revision log."
 msgstr ""
+"សូម​ផ្ដល់​មូលហេតុ​សង្ខេប​នៃ​ការ​កែ​ប្រែ​របស់​អ្នក "
+"ដើម្បី​កត់​ទុក​ក្នុង​កំនត់​ត្រា revision"
 
 #: wiki/forms.py
 msgid ""
@@ -14016,18 +14023,21 @@ msgid ""
 "have been automatically merged with the new contents. Please review the text"
 " below."
 msgstr ""
+"នៅ​ពេល​អ្នក​កំពុង​កែ មាន​នរណា​ម្នាក់​ទៀត​បាន​ផ្លាស់​ប្ដូរ​ revision។ "
+"អត្ថបទ​របស់​អ្នក​ត្រូវ​បាន​រួម​បញ្ចូល​ដោយ​ស្វ័យ​ប្រវត្តិ​ជាមួយ​​អត្ថបទ​ថ្មី។"
+" សូម​​ផ្ទៀង​ផ្ទាត់​អត្ថបទ​ខាង​ក្រោម។"
 
 #: wiki/forms.py
 msgid "No changes made. Nothing to save."
-msgstr ""
+msgstr "មិន​មាន​ការ​កែប្រែ មិន​មាន​អ្វី​ត្រូវ​រក្សា​ទុក"
 
 #: wiki/forms.py
 msgid "Select an option"
-msgstr ""
+msgstr "ចូរ​ជ្រើស​រើស"
 
 #: wiki/forms.py
 msgid "Slug"
-msgstr ""
+msgstr "slug"
 
 #: wiki/forms.py
 msgid ""
@@ -14035,14 +14045,17 @@ msgid ""
 "alphanumeric characters and - or _. Note that you cannot change the slug "
 "after creating the article."
 msgstr ""
+"នេះ​នឹង​ក្លាយ​ជា​​ address របស់​អត្ថបទ​អ្នក។ សូម​ប្រើ​ alphanumeric "
+"characters, -, ឬ _។ សូម​សំគាល់​ថា​អ្នក​មិន​អាច​កែ slug "
+"បន្ទាប់​ពី​បង្កើត​​អត្ថបទ​រួច​ទេ។"
 
 #: wiki/forms.py
 msgid "Write a brief message for the article's history log."
-msgstr ""
+msgstr "សូម​សរសេរ​​សារ​សង្ខេម​សំរាប់​​កំនត់​ត្រា​ប្រវត្តិ​របស់​អត្ថបទ"
 
 #: wiki/forms.py
 msgid "A slug may not begin with an underscore."
-msgstr ""
+msgstr "Slug មិន​អាច​ចាប់​ផ្ដើម​ដោយ underscore បាន​ទេ។"
 
 #: wiki/forms.py
 msgid "A deleted article with slug \"%s\" already exists."

@@ -66,7 +66,7 @@ msgstr ""
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/tabs.py common/lib/xmodule/xmodule/tabs.py
 msgid "Discussion"
-msgstr ""
+msgstr "আলোচনা"
 
 #: cms/djangoapps/contentstore/views/component.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -87,7 +87,7 @@ msgstr ""
 
 #: common/djangoapps/course_modes/views.py common/djangoapps/student/views.py
 msgid "Enrollment is closed"
-msgstr ""
+msgstr "নিবন্ধন বন্ধ"
 
 #: common/djangoapps/course_modes/views.py
 msgid "Enrollment mode not supported"
@@ -111,7 +111,7 @@ msgstr ""
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Community TA"
-msgstr ""
+msgstr "কমিউনিটি শিক্ষক সহকারী"
 
 #: common/djangoapps/django_comment_common/models.py
 msgid "Student"
@@ -176,11 +176,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
-msgstr ""
+msgstr "কোর্স আইডি উল্লেখ করা হয়নি"
 
 #: common/djangoapps/student/views.py
 msgid "Course id is invalid"
-msgstr ""
+msgstr "কোর্স  আইডি টি বৈধ নয়"
 
 #: common/djangoapps/student/views.py
 #: lms/templates/courseware/course_about.html
@@ -193,11 +193,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "আপনি এই কোর্সে নিবন্ধিত নন।"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
-msgstr ""
+msgstr "নিবন্ধন টি বৈধ নয়"
 
 #. Translators: provider_name is the name of an external, third-party user
 #. authentication service (like
@@ -232,7 +232,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
-msgstr ""
+msgstr "ইমেইল অথবা পাসওয়ার্ড ভুল।"
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -270,11 +270,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
-msgstr ""
+msgstr "'{email}' এই ইমেইল এড্রেস দিয়ে ইতিমধ্যে একটি একাউন্ট তৈরী করা হয়েছে।"
 
 #: common/djangoapps/student/views.py
 msgid "Error (401 {field}). E-mail us."
-msgstr ""
+msgstr "এরর (401 {field}). আমাদের ইমেইল করুন।"
 
 #: common/djangoapps/student/views.py
 msgid "To enroll, you must follow the honor code."
@@ -346,7 +346,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail is required."
-msgstr ""
+msgstr "বৈধ ইমেইল প্রয়োজনীয়।"
 
 #: common/djangoapps/student/views.py
 msgid "Username should only consist of A-Z and 0-9, with no spaces."
@@ -358,7 +358,7 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Could not send activation e-mail."
-msgstr ""
+msgstr "এক্টিভেশন ইমেইল পাঠানো যায় নি।"
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
@@ -394,15 +394,15 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send reactivation email"
-msgstr ""
+msgstr "রিএক্টিভেশন ইমেইলা পাঠানো সম্ভব হয় নি"
 
 #: common/djangoapps/student/views.py
 msgid "Invalid password"
-msgstr ""
+msgstr "পাসওয়ার্ড বৈধ নয়"
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
-msgstr ""
+msgstr "বৈধ ইমেইল এড্রেস প্রয়োজনীয়।"
 
 #: common/djangoapps/student/views.py
 msgid "An account with this e-mail already exists."
@@ -418,11 +418,11 @@ msgstr ""
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
-msgstr ""
+msgstr "নাম প্রয়োজনীয়"
 
 #: common/djangoapps/student/views.py common/djangoapps/student/views.py
 msgid "Invalid ID"
-msgstr ""
+msgstr "অবৈধ আইডি"
 
 #. Translators: the translation for "LONG_DATE_FORMAT" must be a format
 #. string for formatting dates in a long form.  For example, the
@@ -2499,20 +2499,20 @@ msgstr ""
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Course Info"
-msgstr ""
+msgstr "কোর্স সংক্রান্ত তথ্য"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: "Progress" is the name of the student's course progress page
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Progress"
-msgstr ""
+msgstr "অগ্রগতি"
 
 #. Translators: "Wiki" is the name of the course's wiki page
 #: common/lib/xmodule/xmodule/tabs.py lms/djangoapps/course_wiki/views.py
 #: lms/templates/wiki/base.html
 msgid "Wiki"
-msgstr ""
+msgstr "উইকি"
 
 #: common/lib/xmodule/xmodule/tabs.py cms/templates/textbooks.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
@@ -3192,19 +3192,19 @@ msgstr ""
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Index"
-msgstr ""
+msgstr "ইনডেক্স"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/wiki/plugins/attachments/index.html
 #: lms/templates/discussion/_thread_list_template.html
 msgid "Search"
-msgstr ""
+msgstr "খুঁজুন"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 #: lms/templates/static_templates/copyright.html
 #: lms/templates/static_templates/copyright.html
 msgid "Copyright"
-msgstr ""
+msgstr "কপিরাইট"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -3929,7 +3929,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Your email was successfully queued for sending."
-msgstr ""
+msgstr "আপনার ইমেইলটি পাঠানোর জন্য সফলভাবে কিউতে যুক্ত করা হয়েছে।"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Grades from {course_id}"
@@ -4090,7 +4090,7 @@ msgstr ""
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/templates/wiki/plugins/attachments/index.html wiki/models/article.py
 msgid "deleted"
-msgstr ""
+msgstr "মুছে ফেলা হয়েছে"
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
@@ -5084,15 +5084,15 @@ msgstr ""
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Thanks for using our site!"
-msgstr ""
+msgstr "আমাদের সাইট ব্যবহারের জন্য ধন্যবাদ!"
 
 #: lms/templates/registration/password_reset_email.html
 msgid "The edX Team"
-msgstr ""
+msgstr "edX টিম"
 
 #: lms/templates/wiki/article.html
 msgid "Last modified:"
-msgstr ""
+msgstr "সর্বশেষ পরিবর্তন:"
 
 #: lms/templates/wiki/article.html
 msgid "See all children"
@@ -5100,25 +5100,25 @@ msgstr ""
 
 #: lms/templates/wiki/article.html
 msgid "This article was last modified:"
-msgstr ""
+msgstr "এই আর্টিকেলরি সর্বশেষ পরিবর্তিত হয়েছে:"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/create.html.py
 msgid "Add new article"
-msgstr ""
+msgstr "নতুন আর্টিকেল যোগ করুন"
 
 #: lms/templates/wiki/create.html
 msgid "Create article"
-msgstr ""
+msgstr "আর্টিকেল তৈরী"
 
 #: lms/templates/wiki/create.html lms/templates/wiki/delete.html
 #: lms/templates/wiki/delete.html.py
 msgid "Go back"
-msgstr ""
+msgstr "পিছনে"
 
 #: lms/templates/wiki/delete.html lms/templates/wiki/delete.html.py
 #: lms/templates/wiki/edit.html
 msgid "Delete article"
-msgstr ""
+msgstr "আর্টিকেল মুছুন"
 
 #: lms/templates/wiki/delete.html
 #: lms/templates/wiki/plugins/attachments/index.html
@@ -5130,11 +5130,11 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 msgid "Delete"
-msgstr ""
+msgstr "মুছুন"
 
 #: lms/templates/wiki/delete.html
 msgid "You cannot delete a root article."
-msgstr ""
+msgstr "আপনি রুট আর্টিকেল মুছতে পারেন না।"
 
 #: lms/templates/wiki/delete.html
 msgid ""
@@ -5154,11 +5154,11 @@ msgstr ""
 
 #: lms/templates/wiki/delete.html
 msgid "...and more!"
-msgstr ""
+msgstr "...আরো যোগ করুন!"
 
 #: lms/templates/wiki/delete.html
 msgid "You are deleting an article. Please confirm."
-msgstr ""
+msgstr "আপনি একটি আর্টিকেল মুছে ফেলছেন। নিশ্চিত করুন।"
 
 #: lms/templates/wiki/edit.html cms/templates/component.html
 #: cms/templates/container.html cms/templates/container_xblock_component.html
@@ -5170,15 +5170,15 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/wiki/includes/article_menu.html
 msgid "Edit"
-msgstr ""
+msgstr "সম্পাদনা"
 
 #: lms/templates/wiki/edit.html lms/templates/wiki/edit.html.py
 msgid "Save changes"
-msgstr ""
+msgstr "পরিবর্তনগুলো সেইভ করুন"
 
 #: lms/templates/wiki/edit.html cms/templates/unit.html
 msgid "Preview"
-msgstr ""
+msgstr "প্রিভিউ"
 
 #. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a control to allow users to exit out of this modal
@@ -5197,7 +5197,7 @@ msgstr ""
 #: lms/templates/modal/_modal-settings-language.html
 #: lms/templates/modal/accessible_confirm.html
 msgid "Close"
-msgstr ""
+msgstr "বন্ধ"
 
 #: lms/templates/wiki/edit.html
 msgid "Wiki Preview"
@@ -5217,11 +5217,11 @@ msgstr ""
 
 #: lms/templates/wiki/edit.html
 msgid "Back to editor"
-msgstr ""
+msgstr "এডিটরে ফেরত"
 
 #: lms/templates/wiki/history.html
 msgid "History"
-msgstr ""
+msgstr "হিস্টরি"
 
 #: lms/templates/wiki/history.html
 msgid ""
@@ -5245,7 +5245,7 @@ msgstr ""
 
 #: lms/templates/wiki/history.html
 msgid "Change"
-msgstr ""
+msgstr "পরিবর্তন"
 
 #: lms/templates/wiki/history.html lms/templates/wiki/history.html
 msgid "Merge selected with current..."
@@ -5425,23 +5425,23 @@ msgstr ""
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
 msgid "Attachments"
-msgstr ""
+msgstr "সংযুক্তি"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload new file"
-msgstr ""
+msgstr "নতুন ফাইল আপ্লোড"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search and add file"
-msgstr ""
+msgstr "ফাইল খুঁজুন ও যোগ করুন"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload File"
-msgstr ""
+msgstr "ফাইল আপলোড"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Upload file"
-msgstr ""
+msgstr "ফাইল আপলোড"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Search files and articles"
@@ -5465,15 +5465,15 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Uploaded by"
-msgstr ""
+msgstr "আপলোড করেছেন"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Size"
-msgstr ""
+msgstr "সাইজ"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File History"
-msgstr ""
+msgstr "ফাইল হিস্টরি"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "Detach"
@@ -5489,19 +5489,19 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "anonymous (IP logged)"
-msgstr ""
+msgstr "জনৈক (আইপি লগকৃত)"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "File history"
-msgstr ""
+msgstr "ফাইল হিস্টরি"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "revisions"
-msgstr ""
+msgstr "সংস্করণসমূহ"
 
 #: lms/templates/wiki/plugins/attachments/index.html
 msgid "There are no attachments for this article."
-msgstr ""
+msgstr "এই আর্টিকেলের জন্য কোন সংযুক্তি নেই।"
 
 #: cms/djangoapps/contentstore/course_info_model.py
 #: cms/djangoapps/contentstore/course_info_model.py
@@ -5581,7 +5581,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/utils.py lms/templates/notes.html
 msgid "My Notes"
-msgstr ""
+msgstr "আমার নোটসমূহ"
 
 #: cms/djangoapps/contentstore/management/commands/git_export.py
 msgid ""
@@ -5591,7 +5591,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/assets.py
 msgid "Upload completed"
-msgstr ""
+msgstr "আপ্লোড সম্পূর্ন হয়েছে"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
@@ -5630,6 +5630,9 @@ msgid ""
 "\n"
 "{err}"
 msgstr ""
+"'{name}' কোর্সটি তৈরী করা যায় নি।\n"
+"\n"
+"{err}"
 
 #: cms/djangoapps/contentstore/views/export_git.py
 msgid "Course successfully exported to git repository"
@@ -5637,15 +5640,15 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "We only support uploading a .tar.gz file."
-msgstr ""
+msgstr "আমরা শুধুমাত্র .tar.gz ফাইল আপ্লোড করা সমর্থন করি।"
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "File upload corrupted. Please try again"
-msgstr ""
+msgstr "ত্রুটিপূর্ণ ফাইল আপ্লোড। অনুগ্রহ করে আবার চেস্টা করুন"
 
 #: cms/djangoapps/contentstore/views/import_export.py
 msgid "Could not find the course.xml file in the package."
-msgstr ""
+msgstr "প্যাকেজের ভিতরে course.xml ফাইলটি খুঁজে পাওয়া যায় নি।"
 
 #: cms/djangoapps/contentstore/views/item.py
 msgid "Duplicate of {0}"
@@ -5669,7 +5672,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Insufficient permissions"
-msgstr ""
+msgstr "যথোপযুক্ত অনুমতি নেই"
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Could not find user by email address '{email}'."
@@ -5681,7 +5684,7 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "`role` is required"
-msgstr ""
+msgstr "`role` প্রয়োজনীয়"
 
 #: cms/djangoapps/contentstore/views/user.py
 msgid "Only instructors may create other instructors"
@@ -5709,7 +5712,7 @@ msgstr ""
 
 #: cms/djangoapps/course_creators/models.py
 msgid "Studio user"
-msgstr ""
+msgstr "স্টুডিও ব্যবহারকারী"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "The date when state was last updated"
@@ -5748,7 +5751,7 @@ msgstr ""
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Loading..."
-msgstr ""
+msgstr "লোড হচ্ছে"
 
 #. Translators: this is a verb describing the action of viewing more details
 #: cms/templates/container_xblock_component.html
@@ -6523,7 +6526,7 @@ msgstr ""
 #: lms/templates/instructor/staff_grading.html
 #: lms/templates/peer_grading/peer_grading_problem.html
 msgid "Submit"
-msgstr ""
+msgstr "জমা"
 
 #: lms/templates/help_modal.html
 msgid "Thank You!"
@@ -7543,7 +7546,7 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "Play"
-msgstr ""
+msgstr "চালাও"
 
 #: lms/templates/video.html
 msgid "Speeds"
@@ -7569,11 +7572,11 @@ msgstr ""
 
 #: lms/templates/video.html
 msgid "HD off"
-msgstr ""
+msgstr "এইচ ডি অফ"
 
 #: lms/templates/video.html lms/templates/video.html
 msgid "Turn off captions"
-msgstr ""
+msgstr "ক্যাপশন বন্ধ করো"
 
 #: lms/templates/video.html
 msgid "Skip to end of transcript."
@@ -7930,7 +7933,7 @@ msgstr ""
 
 #: lms/templates/courseware/courseware.html
 msgid "Open Calculator"
-msgstr ""
+msgstr "ক্যালকুলেটর খোলো"
 
 #: lms/templates/courseware/courseware.html
 msgid "Calculator Input Field"
@@ -8941,7 +8944,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_inline_thread_show.mustache
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "anonymous"
-msgstr ""
+msgstr "জনৈক"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "&bull; This thread is closed."
@@ -8960,7 +8963,7 @@ msgstr ""
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Report Misuse"
-msgstr ""
+msgstr "অপব্যবহার রিপোর্ট করা হয়েছ"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Pin Thread"
@@ -9216,7 +9219,7 @@ msgstr ""
 #: lms/templates/discussion/mustache/_pagination.mustache
 #: lms/templates/discussion/mustache/_pagination.mustache
 msgid "…"
-msgstr ""
+msgstr "..."
 
 #: lms/templates/discussion/mustache/_profile_thread.mustache
 msgid "View discussion"
@@ -10285,7 +10288,7 @@ msgstr ""
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Problem Name"
-msgstr ""
+msgstr "সমস্যার নাম"
 
 #: lms/templates/open_ended_problems/open_ended_problems.html
 msgid "Grader Type"
@@ -10325,7 +10328,7 @@ msgstr ""
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Required"
-msgstr ""
+msgstr "দরকারী"
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "No due date"
@@ -13979,7 +13982,7 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "এটি একটি কি (চাবি) স্ট্রিং।"
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
