@@ -34,6 +34,11 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
       checkbox_element = event.target
       tab_element = $(checkbox_element).parents(".course-tab")[0]
 
+      analytics.track "Page: Visibility",
+        course: course_location_analytics
+        tab_id: $(tab_element).data('tab-id')
+        is_hidden: $(checkbox_element).is(':checked')
+
       saving = new NotificationView.Mini({title: gettext("Saving&hellip;")})
       saving.show()
 
