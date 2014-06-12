@@ -1,0 +1,9 @@
+/* CSS for CrosswordXBlock */
+
+.crossword_block .count {
+    font-weight: bold;
+}
+
+.crossword_block p {
+    cursor: pointer;
+}
