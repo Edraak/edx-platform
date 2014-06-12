@@ -873,6 +873,11 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
             path='/', secure=None, httponly=None,
         )
 
+        response.set_cookie(
+            settings.EDXMKTG_COOKIE_USER_ID, user.id, max_age=max_age,
+            expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
+            path='/', secure=None, httponly=None,
+        )
         return response
 
     if settings.FEATURES['SQUELCH_PII_IN_LOGS']:
@@ -906,6 +911,10 @@ def logout_user(request):
     response.delete_cookie(
         settings.EDXMKTG_COOKIE_NAME,
         path='/', domain=settings.SESSION_COOKIE_DOMAIN,
+    )
+    response.delete_cookie(
+       settings.EDXMKTG_COOKIE_USER_ID,
+       path='/', domain=settings.SESSION_COOKIE_DOMAIN,
     )
     return response
 
@@ -1313,6 +1322,13 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
 
     response.set_cookie(settings.EDXMKTG_COOKIE_NAME,
                         'true', max_age=max_age,
+                        expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
+                        path='/',
+                        secure=None,
+                        httponly=None)
+
+    response.set_cookie(settings.EDXMKTG_COOKIE_USER_ID,
+                        login_user.id, max_age=max_age,
                         expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
                         path='/',
                         secure=None,

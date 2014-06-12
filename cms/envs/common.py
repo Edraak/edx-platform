@@ -534,6 +534,7 @@ INSTALLED_APPS = (
 ################# EDX MARKETING SITE ##################################
 
 EDXMKTG_COOKIE_NAME = 'edxloggedin'
+EDXMKTG_COOKIE_USER_ID = 'edxloggedinuserid'
 MKTG_URLS = {}
 MKTG_URL_LINK_MAP = {
 
