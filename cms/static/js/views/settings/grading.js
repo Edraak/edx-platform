@@ -83,6 +83,12 @@ var GradingView = ValidatingView.extend({
     },
     addAssignmentType : function(e) {
         e.preventDefault();
+
+        analytics.track('Grading: New Assignment Type', {
+            'course': course_location_analytics,
+            'types_count': this.model.get('graders').length + 1
+        });
+
         this.model.get('graders').push({});
     },
     fieldToSelectorMap : {
