@@ -61,7 +61,7 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
           )
       )
 
-      analytics.track "Reordered Pages",
+      analytics.track "Page: Reorder",
         course: course_location_analytics
 
       saving = new NotificationView.Mini({title: gettext("Saving&hellip;")})
@@ -96,7 +96,7 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
         {category: 'static_tab'}
       )
 
-      analytics.track "Added Page",
+      analytics.track "Page: Add",
         course: course_location_analytics
 
     deleteTab: (event) =>
@@ -110,7 +110,7 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
               view.hide()
               $component = $(event.currentTarget).parents('.component')
 
-              analytics.track "Deleted Page",
+              analytics.track "Page: Delete",
                 course: course_location_analytics
                 id: $component.data('locator')
               deleting = new NotificationView.Mini
