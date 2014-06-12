@@ -257,9 +257,10 @@
         require(["jquery"], function($) {
             $('.analytics-course-click-event').click(
                 function() {
-                    var analyticsEventName = $(this).data('analytics-course-event-name');
+                    var analyticsEventName = $(this).data('analytics-event-name');
                     analytics.track(analyticsEventName, {
-                        'course': course_location_analytics
+                        'course': course_location_analytics,
+                        'link': $(this).attr('href')
                     });
                 }
             );
