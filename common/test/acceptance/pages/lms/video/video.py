@@ -2,11 +2,13 @@
 Video player in the courseware.
 """
 
+import json
+import sys
 import time
 import requests
 from selenium.webdriver.common.action_chains import ActionChains
 from bok_choy.page_object import PageObject
-from bok_choy.promise import EmptyPromise, Promise
+from bok_choy.promise import EmptyPromise, Promise, BrokenPromise
 from bok_choy.javascript import wait_for_js, js_defined
 
 
@@ -86,6 +88,28 @@ class VideoPage(PageObject):
 
         EmptyPromise(_is_element_present, promise_desc, timeout=200).fulfill()
 
+    def _wait_for_element_visibility(self, element_selector, promise_desc):
+        """
+        Wait for an element to be visible.
+
+        Arguments:
+            element_selector (str): css selector of the element.
+            promise_desc (str): Description of the Promise, used in log messages.
+
+        """
+
+        def _is_element_visible():
+            """
+            Check if a web-element is visible.
+
+            Returns:
+                bool: Tells element visibility status.
+
+            """
+            return self.q(css=element_selector).visible
+
+        EmptyPromise(_is_element_visible, promise_desc, timeout=200).fulfill()
+
     @wait_for_js
     def wait_for_video_class(self):
         """
@@ -106,6 +130,10 @@ class VideoPage(PageObject):
         self.wait_for_video_class()
         self._wait_for_element(CSS_CLASS_NAMES['video_init'], 'Video Player Initialized')
         self._wait_for_element(CSS_CLASS_NAMES['video_time'], 'Video Player Initialized')
+
+        video_player_buttons = ['volume', 'play', 'fullscreen', 'speed']
+        for button in video_player_buttons:
+            self._wait_for_element_visibility(VIDEO_BUTTONS[button], '{} button is visible'.format(button.title()))
 
         def _is_finished_loading():
             """
@@ -385,12 +413,12 @@ class VideoPage(PageObject):
 
         if button in button_states:
             self.wait_for_state(button_states[button], video_display_name)
-        #
-        # if button == 'play':
-        #     # wait for video buffering
-        #     self._wait_for_video_play(video_display_name)
 
         self.wait_for_ajax()
+
+        if button == 'pause':
+            time.sleep(10)
+            print >> sys.stderr, 'position after pause is ', self.position(video_display_name)
 
     def _wait_for_video_play(self, video_display_name=None):
         """
@@ -744,8 +772,14 @@ class VideoPage(PageObject):
             video_display_name (str or None): Display name of a Video.
 
         """
+
+        def _current_state():
+            cstate = self.state(video_display_name)
+            print >> sys.stderr, 'current state is {} '.format(cstate)
+            return cstate == state
+
         self._wait_for(
-            lambda: self.state(video_display_name) == state,
+            _current_state,
             'State is {state}'.format(state=state)
         )
 
@@ -791,8 +825,12 @@ class VideoPage(PageObject):
         """
         Reload/Refresh the current video page.
         """
+        self.send_request()
         self.browser.refresh()
         self.wait_for_video_player_render()
+
+        print >> sys.stderr, '\nposition after reload is ', self.position()
+
 
     def duration(self, video_display_name=None):
         """
@@ -827,3 +865,40 @@ class VideoPage(PageObject):
             lambda: self.position(video_display_name) == position,
             'Position is {position}'.format(position=position)
         )
+
+
+    def send_request(self):
+        hid = self.q(css='.video').attrs('id')[0].split('-')
+
+        url = 'http://localhost:8003/courses/test_org/{cid}/test_run/xblock/i4x:;_;_test_org;_{cid};_video;_{hid}/handler/xmodule_handler/save_user_state'.format(cid=hid[-3], hid=hid[-1])
+
+        # , 'referer': self.q(css='.active > a').attrs('href')[-1]
+
+        headers = {'Accept': 'application/json', 'X-CSRFToken': self.browser.get_cookie('csrftoken')['value']}
+
+        params = {'saved_video_position': '00:00:12'}
+
+        from  nose.tools import set_trace; set_trace()
+
+        response = requests.post(url, data=json.dumps(params), headers=headers)
+
+
+        s = requests.Session()
+        r = s.get('http://localhost:8003')
+        response = s.post(url, data=json.dumps(params))
+
+
+        #######################
+        # session = requests.Session()
+        # session_cookies = {key: val for key, val in session.cookies.items()}
+        # headers = {
+        #         'Accept': 'application/json',
+        #         'X-CSRFToken': session_cookies.get('csrftoken', '')
+        # }
+        # response = session.post(url, data=json.dumps(params), headers=headers)
+
+
+
+
+
+        response.status_code
