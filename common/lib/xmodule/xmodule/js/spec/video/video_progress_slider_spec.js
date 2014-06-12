@@ -1,4 +1,5 @@
 (function (undefined) {
+    'use strict';
     describe('VideoProgressSlider', function () {
         var state, oldOTBD;
 
@@ -26,15 +27,13 @@
                     expect(state.videoProgressSlider.slider).toBe('.slider');
                     expect($.fn.slider).toHaveBeenCalledWith({
                         range: 'min',
-                        change: state.videoProgressSlider.onChange,
-                        slide: state.videoProgressSlider.onSlide,
-                        stop: state.videoProgressSlider.onStop
+                        slide: jasmine.any(Function),
+                        stop: jasmine.any(Function)
                     });
                 });
 
                 it('build the seek handle', function () {
-                    expect(state.videoProgressSlider.handle)
-                        .toBe('.slider .ui-slider-handle');
+                    expect($('.slider .ui-slider-handle')).toExist();
                 });
             });
 
@@ -62,34 +61,12 @@
             });
         });
 
-        describe('play', function () {
-            beforeEach(function () {
-                state = jasmine.initializePlayer();
-            });
-
-            describe('when the slider was already built', function () {
-                var spy;
-
-                beforeEach(function () {
-                    spy = spyOn(state.videoProgressSlider, 'buildSlider');
-                    spy.andCallThrough();
-                    state.videoPlayer.play();
-                });
-
-                it('does not build the slider', function () {
-                    expect(spy.callCount).toEqual(0);
-                });
-            });
-
-            // Currently, the slider is not rebuilt if it does not exist.
-        });
-
         describe('updatePlayTime', function () {
             beforeEach(function () {
                 state = jasmine.initializePlayer();
             });
 
-            describe('when frozen', function () {
+            xdescribe('when frozen', function () {
                 beforeEach(function () {
                     spyOn($.fn, 'slider').andCallThrough();
                     state.videoProgressSlider.frozen = true;
@@ -104,23 +81,15 @@
             describe('when not frozen', function () {
                 beforeEach(function () {
                     spyOn($.fn, 'slider').andCallThrough();
-                    state.videoProgressSlider.frozen = false;
-                    state.videoProgressSlider.updatePlayTime({
-                        time: 20,
-                        duration: 120
+                    state.videoProgressSlider.updatePlayTime(20, 120);
+                });
+
+                it('update the max and current values of the slider', function () {
+                    expect($.fn.slider).toHaveBeenCalledWith(
+                        'option', {
+                            'max': 120,
+                            'value': 20
                     });
-                });
-
-                it('update the max value of the slider', function () {
-                    expect($.fn.slider).toHaveBeenCalledWith(
-                        'option', 'max', 120
-                    );
-                });
-
-                it('update current value of the slider', function () {
-                    expect($.fn.slider).toHaveBeenCalledWith(
-                        'option', 'value', 20
-                    );
                 });
             });
         });
@@ -232,71 +201,106 @@
         describe('notifyThroughHandleEnd', function () {
             beforeEach(function () {
                 state = jasmine.initializePlayer();
-
-                spyOnEvent(state.videoProgressSlider.handle, 'focus');
-                spyOn(state.videoProgressSlider, 'notifyThroughHandleEnd')
-                    .andCallThrough();
-            });
-
-            it('params.end = true', function () {
-                state.videoProgressSlider.notifyThroughHandleEnd({end: true});
-
-                expect(state.videoProgressSlider.handle.attr('title'))
-                    .toBe('Video ended');
-
-                expect('focus').toHaveBeenTriggeredOn(
-                    state.videoProgressSlider.handle
-                );
-            });
-
-            it('params.end = false', function () {
-                state.videoProgressSlider.notifyThroughHandleEnd({end: false});
-
-                expect(state.videoProgressSlider.handle.attr('title'))
-                    .toBe('Video position');
-
-                expect('focus').not.toHaveBeenTriggeredOn(
-                    state.videoProgressSlider.handle
-                );
-            });
-
-            it('is called when video plays', function () {
-                state.videoPlayer.play();
-
-                waitsFor(function () {
-                    return state.videoPlayer.isPlaying();
-                }, 'duration is set, video is playing', 5000);
-
-                runs(function () {
-                    expect(state.videoProgressSlider.notifyThroughHandleEnd)
-                        .toHaveBeenCalledWith({end: false});
+                this.handle = $('.ui-slider-handle');
+                this.handle.css({
+                    'display': 'block',
+                    'height': 10,
+                    'width': 10
                 });
             });
-        });
 
-        it('getTimeDescription', function () {
-            var cases = {
-                    '0': '0 seconds',
-                    '1': '1 second',
-                    '10': '10 seconds',
+            it('we see \'Video ended\' if video is ended', function () {
+                state.el.trigger('ended', [10]);
+                expect(this.handle).toHaveAttr('title', 'Video ended');
+                expect(this.handle).toBeFocused();
+            });
 
-                    '60': '1 minute 0 seconds',
-                    '121': '2 minutes 1 second',
-
-                    '3670': '1 hour 1 minute 10 seconds',
-                    '21541': '5 hours 59 minutes 1 second',
-                },
-                getTimeDescription;
-
-            state = jasmine.initializePlayer();
-
-            getTimeDescription = state.videoProgressSlider.getTimeDescription;
-
-            $.each(cases, function(input, output) {
-                expect(getTimeDescription(input)).toBe(output);
+            it('we see \'Video position\' if video plays', function () {
+                state.el.trigger('progress', [10]);
+                expect(this.handle).toHaveAttr('title', 'Video position');
+                expect(this.handle).not.toBeFocused();
             });
         });
 
+        describe('getTimeDescription', function () {
+            beforeEach(function () {
+                var el;
+
+                spyOn(_, 'debounce').andCallFake(function (f) { return f; });
+                state = jasmine.initializePlayer();
+                el = state.videoProgressSlider.el;
+                this.slider = el.find('.ui-slider-handle');
+            });
+
+            it('0 seconds on initialization', function () {
+                var expected = '0 seconds';
+
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('0 seconds to be 0 seconds', function () {
+                var expected = '0 seconds';
+
+                state.videoProgressSlider.rewind(0);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('1 second to be 1 second', function () {
+                var expected = '1 second';
+
+                state.videoProgressSlider.rewind(1);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('10 seconds to be 10 seconds', function () {
+                var expected = '10 seconds';
+
+                state.videoProgressSlider.rewind(10);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('60 seconds to be 1 minute', function () {
+                var expected = '1 minute';
+
+                state.videoProgressSlider.rewind(60);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('121 seconds to be 2 minutes 1 second', function () {
+                var expected = '2 minutes 1 second';
+
+                state.videoProgressSlider.rewind(121);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('3600 seconds to be 1 hour', function () {
+                var expected = '1 hour';
+
+                state.videoProgressSlider.rewind(3600);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('3610 seconds to be 1 hour 10 seconds', function () {
+                var expected = '1 hour 10 seconds';
+
+                state.videoProgressSlider.rewind(3610);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('3670 seconds to be 1 hour 1 minute 10 seconds', function () {
+                var expected = '1 hour 1 minute 10 seconds';
+
+                state.videoProgressSlider.rewind(3670);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+
+            it('21541 seconds to be 5 hours 59 minutes 1 second', function () {
+                var expected = '5 hours 59 minutes 1 second';
+
+                state.videoProgressSlider.rewind(21541);
+                expect(this.slider).toHaveAttr('aria-valuetext', expected);
+            });
+        });
     });
 
 }).call(this);

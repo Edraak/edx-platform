@@ -69,9 +69,16 @@ function() {
                     this.a11y.notifyThroughHandleEnd(false);
                 }.bind(this),
                 'controls:update_time': this.onUpdateTimeHandler.bind(this),
-                'progress.progres_control': this.onUpdateTimeHandler.bind(this),
+                'progress.progres_control': function (event, time) {
+                    this.onUpdateTimeHandler(time);
+                    this.a11y.update(time);
+                }.bind(this),
                 'seek': this.onUpdateTimeHandler.bind(this)
             });
+
+            this.state.el.on('seek', _.debounce(function (event, time) {
+                this.a11y.update(time);
+            }.bind(this), 100));
         },
 
         /**
@@ -159,7 +166,6 @@ function() {
 
         rewind: function (time) {
             this.updatePlayTime(time, this.duration);
-            this.a11y.update(this.state.videoPlayer.currentTime);
             this.state.el.trigger('seek', [time, this.duration]);
         },
 
@@ -175,17 +181,19 @@ function() {
             this.rewind(time);
         },
 
+        lazyUpdateTimeHandler: _.debounce(function () {
+            this.state.el.on(
+                'progress.progres_control',
+                this.onUpdateTimeHandler.bind(this)
+            );
+        }, 500),
+
         /**
          * Keyup event handler for the video container.
          * @param {jquery Event} event
          */
         keyUpHandler: function(event) {
-            setTimeout(function () {
-                this.state.el.on(
-                    'progress.progres_control',
-                    this.onUpdateTimeHandler.bind(this)
-                );
-            }.bind(this), 500);
+            this.lazyUpdateTimeHandler();
         },
 
         /**
@@ -313,7 +321,7 @@ function() {
          * @return {String}
          */
         getTimeDescription: function (time) {
-            if (!_.isNumber(time)) {
+            if (!_.isNumber(Number(time))) {
                 time = 0;
             }
 
@@ -325,7 +333,7 @@ function() {
                 this.getTextForTime(hours, 'Hours'),
                 this.getTextForTime(minutes % 60, 'Minutes'),
                 this.getTextForTime(seconds % 60, 'Seconds')
-            ]).join(' ');
+            ]).join(' ') || '0 seconds';
         }
     };
 

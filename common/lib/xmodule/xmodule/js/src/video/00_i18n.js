@@ -10,12 +10,10 @@ function() {
      * @return {object}
      */
 
-    var getTextForHMS = function (text, value) {
-        var msg = ngettext(
-            text, value
-        );
+    var getTextForHMS = function (singular, plural, value) {
+        var message = ngettext(singular, plural, value);
 
-        return interpolate(msg, {'value': value}, true);
+        return interpolate(message, {'value': value}, true);
     };
 
     return {
@@ -34,6 +32,9 @@ function() {
         'Very loud': gettext('Very loud'),
         // Translators: Volume level equals 100%.
         'Maximum': gettext('Maximum'),
+
+        'Video ended': gettext('Video ended'),
+        'Video position': gettext('Video position'),
 
         getTextForSeconds: _.partial(
             getTextForHMS, '%(value)s second', '%(value)s seconds'
