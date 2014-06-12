@@ -112,7 +112,7 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
 
               analytics.track "Page: Delete",
                 course: course_location_analytics
-                id: $component.data('locator')
+                tab_id: $component.data('locator')
               deleting = new NotificationView.Mini
                 title: gettext('Deleting&hellip;')
               deleting.show()

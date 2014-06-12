@@ -274,7 +274,7 @@ function _deleteItem($el, type) {
 
                     analytics.track(type + ': Delete', {
                         'course': course_location_analytics,
-                        'id': locator
+                        'item_id': locator
                     });
 
                     var deleting = new NotificationView.Mini({

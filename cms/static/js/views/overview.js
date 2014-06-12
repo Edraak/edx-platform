@@ -70,7 +70,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
 
             analytics.track('Section: Edit Release Date', {
                 'course': course_location_analytics,
-                'id': locator,
+                'section_id': locator,
                 'start': datetime
             });
 
