@@ -1,0 +1,106 @@
+## mako
+<%! from django.core.urlresolvers import reverse %>
+<%! from django.utils.translation import ugettext as _ %>
+<%namespace name='static' file='/static_content.html'/>
+<%! from microsite_configuration.templatetags.microsite import platform_name %>
+
+<style>
+
+/* all I did here was change .references to .colophon and commented out the
+   text-align: right */
+
+.wrapper-footer footer .colophon .copyright {
+    margin: -2px 0 8px 0;
+    font-size: 0.6875em;
+    color: #c4c5c7;
+    /*text-align: right;*/
+}
+
+.wrapper-footer footer .colophon .nav-legal {
+    *zoom: 1;
+    /*text-align: right*/
+}
+
+.wrapper-footer footer .colophon .nav-legal:before, .wrapper-footer footer .colophon .nav-legal:after {
+    content: " ";
+    display: table
+}
+
+.wrapper-footer footer .colophon .nav-legal:after {
+    clear: both
+}
+
+.wrapper-footer footer .colophon .nav-legal li {
+    display: inline-block;
+    font-size: 0.6875em
+}
+
+.wrapper-footer footer .colophon .nav-legal li a {
+    display: block
+}
+
+.wrapper-footer footer .colophon .nav-legal .nav-legal-01 a:after {
+    margin-left: 5px;
+    content: "-"
+}
+
+/* powered-by is a new class */
+
+.wrapper-footer footer .powered-by {
+    text-align: right;
+}
+.wrapper-footer footer .powered-by a:hover {
+    border-bottom: none;
+}
+</style>
+
+<div class="wrapper wrapper-footer">
+  <footer>
+    <div class="colophon">
+      <nav class="nav-colophon">
+      <ol>
+          <li class="nav-colophon-01">
+          <a id="about" href="${marketing_link('ABOUT')}">
+              ${_("About")}
+          </a>
+          </li>
+          <li class="nav-colophon-02">
+          <a id="jobs" href="${marketing_link('JOBS')}">
+              ${_("Jobs")}
+          </a>
+          </li>
+          <li class="nav-colophon-03">
+          <a id="press" href="${marketing_link('PRESS')}">
+              ${_("Press")}
+          </a>
+          </li>
+          <li class="nav-colophon-04">
+          <a id="faq" href="${marketing_link('FAQ')}">
+              ${_("FAQ")}
+          </a>
+          </li>
+          <li class="nav-colophon-05">
+          <a id="contact" href="${marketing_link('CONTACT')}">
+              ${_("Contact")}
+          </a>
+          </li>
+      </ol>
+      </nav>
+      <p class="copyright">${_("&copy; 2014 {platform_name}, some rights reserved").format(platform_name=settings.PLATFORM_NAME)}</p>
+        <nav class="nav-legal">
+          <ul>
+            <li class="nav-legal-01">
+              <a href="${marketing_link('TOS')}">${_("Terms of Service and Honor Code")}</a>
+            </li>
+            <li class="nav-legal-02">
+              <a href="${marketing_link('PRIVACY')}">${_("Privacy Policy")}</a>
+            </li>
+          </ul>
+        </nav>
+    </div>
+
+    <div class="powered-by">
+      <a href="http://openedx.org/"><img src="${static.url('images/edx-openedx-logo-tag.png')}" alt="Powered by Open edX" /></a>
+    </div>
+  </footer>
+</div>

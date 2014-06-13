@@ -71,6 +71,8 @@ FEATURES['AUTOMATIC_VERIFY_STUDENT_IDENTITY_FOR_TESTING'] = True
 FEATURES['ENABLE_PAYMENT_FAKE'] = True
 CC_PROCESSOR['CyberSource']['PURCHASE_ENDPOINT'] = '/shoppingcart/payment_fake/'
 
+# THEME_NAME = "openedx"
+
 #####################################################################
 # Lastly, see if the developer has any local overrides.
 try:

@@ -4,38 +4,43 @@
 <!--[if IE 9]><html class="ie ie9 lte9" lang="${LANGUAGE_CODE}"><![endif]-->
 <!--[if gt IE 9]><!--><html lang="${LANGUAGE_CODE}"><!--<![endif]-->
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<%! from django.utils.translation import ugettext as _ %>
-<%! from microsite_configuration import microsite %>
-<%! from microsite_configuration import page_title_breadcrumbs %>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <%! from django.utils.translation import ugettext as _ %>
+  <%! from microsite_configuration import microsite %>
+  <%! from microsite_configuration import page_title_breadcrumbs %>
 
-<%namespace name='static' file='static_content.html'/>
-<%! from django.utils import html %>
+  <%namespace name='static' file='static_content.html'/>
+  <%! from django.utils import html %>
 
-## Define a couple of helper functions to make life easier when
-## embedding theme conditionals into templates. All inheriting
-## templates have access to these functions, and we can import these
-## into non-inheriting templates via the %namespace tag.
-<%def name="theme_enabled()">
-  <% return settings.FEATURES.get("USE_CUSTOM_THEME", False) %>
-</%def>
+  ## @@@ This is temporarily still here because it's used elsewhere and I need
+  ## to refactor those places to rely on alternative template includes rather
+  ## than conditionals based on this setting
+  <%def name="theme_enabled()">
+    <% return settings.FEATURES.get("USE_CUSTOM_THEME", False) %>
+  </%def>
 
-<%def name="stanford_theme_enabled()">
-  <%
-    if not theme_enabled():
-      return False
+  ## A helper function to make life easier when embedding Stanford theme
+  ## conditionals into templates. All inheriting templates have access to these
+  ## functions, and we can import these into non-inheriting templates via the
+  ## %namespace tag.
+  <%def name="stanford_theme_enabled()">
+    <%
+      if (settings.FEATURES.get("USE_CUSTOM_THEME", False) and
+          getattr(settings, "THEME_NAME", None) == "stanford"):
+        return True
+      else:
+        return False
+    %>
+  </%def>
 
-    return getattr(settings, "THEME_NAME", None) == "stanford"
-  %>
-</%def>
-
-## this needs to be here to prevent the title from mysteriously appearing in the body, in one case
-<%def name="pagetitle()" />
+  ## this needs to be here to prevent the title from mysteriously appearing in
+  ## the body, in one case
+  <%def name="pagetitle()" />
   <%block name="title">
-      <title>
-       ${page_title_breadcrumbs(self.pagetitle())}
-      </title>
+    <title>
+      ${page_title_breadcrumbs(self.pagetitle())}
+    </title>
   </%block>
 
   <script type="text/javascript">
@@ -60,27 +65,21 @@
 
   <%block name="headextra"/>
 
-<%
-  if theme_enabled():
-    header_extra_file = 'theme-head-extra.html'
-    header_file = 'theme-header.html'
-    google_analytics_file = 'theme-google-analytics.html'
-    footer_file = 'theme-footer.html'
+  ## @@@ This will eventually be moved out but is just defined here for now
+  <%def name="theme_include(file)">
+    <%
+      theme_name = getattr(settings, "THEME_NAME", None)
+      if theme_name:
+        theme_template_name = "themes/{}/{}".format(theme_name, file)
+      else:
+        theme_template_name = microsite.get_template_path(file)
+    %>
+    % if theme_template_name:
+      <%include file="${theme_template_name}" />
+    % endif
+  </%def>
 
-    style_overrides_file = None
-
-  else:
-    header_extra_file = None
-    header_file = microsite.get_template_path('navigation.html')
-    google_analytics_file = microsite.get_template_path('google_analytics.html')
-    footer_file = microsite.get_template_path('footer.html')
-
-    style_overrides_file = microsite.get_value('css_overrides_file')
-%>
-
-  % if header_extra_file:
-    <%include file="${header_extra_file}" />
-  % endif
+  <%self:theme_include file="head_extra.html" />
 
   <!--[if lt IE 9]>
     <script src="${static.url('js/html5shiv.js')}"></script>
@@ -90,16 +89,18 @@
   <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
 
   % if not course:
-    <%include file="${google_analytics_file}" />
+    <%self:theme_include file="google_analytics.html" />
   % endif
 
   <%include file="widgets/segment-io.html" />
 
+  <%
+    style_overrides_file = microsite.get_value('css_overrides_file')
+  %>
 
-% if style_overrides_file:
+  % if style_overrides_file:
   <link rel="stylesheet" type="text/css" href="${static.url(style_overrides_file)}" />
-% endif
-
+  % endif
 </head>
 
 <body class="<%block name='bodyclass'/> lang_${LANGUAGE_CODE}">
@@ -107,18 +108,18 @@
 
   <%include file="mathjax_accessible.html" />
 
-% if not suppress_toplevel_navigation:
-  <%include file="${header_file}" />
-%endif
+  % if not suppress_toplevel_navigation:
+    <%self:theme_include file="navigation.html" />
+  %endif
 
   <div class="content-wrapper" id="content">
     ${self.body()}
     <%block name="bodyextra"/>
   </div>
 
-% if not suppress_toplevel_navigation:
-  <%include file="${footer_file}" />
-% endif
+  % if not suppress_toplevel_navigation:
+    <%self:theme_include file="footer.html" />
+  % endif
 
   <script>window.baseUrl = "${settings.STATIC_URL}";</script>
   <%static:js group='application'/>
@@ -134,5 +135,3 @@
     html.escape(enrollment_action)
   ) if course_id and enrollment_action else ""
 }</%def>
-
-
