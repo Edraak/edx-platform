@@ -41,7 +41,7 @@ if (document.getElementById("waitmessage") != null)
 	AnswerHash = Word.map(HashWord);
 	WordX = {self.wordx};
 	WordY = {self.wordy};
-	LastHorizontalWord = 16;
+	LastHorizontalWord = {last_horizontal};
 	OnlyCheckOnce = false;
 	// End of non-copyrighted section.  The rest of this script block is (C) Green Eclipse.
 
@@ -396,7 +396,10 @@ function HashWord(Word)
 }
 
 //-->
-</script><tbody><tr>
+</script><tbody>
+{table}
+<!--
+<tr>
 <td></td><td id="c001000" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td></td><td></td><td id="c006000" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr>
 <td id="c000001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c001001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c002001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c003001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td id="c006001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td id="c008001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c009001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c010001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c011001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c012001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c013001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td id="c014001" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -449,6 +452,7 @@ function HashWord(Word)
 <tr>
 <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td id="c013025" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 
+-->
 
 </tbody></table></td>
 

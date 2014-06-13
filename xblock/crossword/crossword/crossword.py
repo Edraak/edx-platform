@@ -167,23 +167,44 @@ class CrosswordXBlock(XBlock):
         elif not studio_view:
             crossword = Crossword.from_json(self.student_crossword)
 
-        words = len(crossword.current_word_list)
-        word_length = 'new Array(' + ','.join([str(word.length) for word in crossword.current_word_list]) + ')'
-        word = 'new Array("' + '","'.join([word.word for word in crossword.current_word_list]) + '")'
-        clue = 'new Array("' + '","'.join([word.clue for word in crossword.current_word_list]) + '")'
-        wordx = 'new Array(' + ','.join([str(word.col - 1) for word in crossword.current_word_list]) + ')'
-        wordy = 'new Array(' + ','.join([str(word.row - 1) for word in crossword.current_word_list]) + ')'
+        sorted_words = [word for word in crossword.current_word_list if not word.vertical]
+        last_horizontal = len(sorted_words)
+        sorted_words += [word for word in crossword.current_word_list if word.vertical]
+
+        words = len(sorted_words)
+        word_length = 'new Array(' + ','.join([str(word.length) for word in sorted_words]) + ')'
+        word_arr = 'new Array("' + '","'.join([word.word for word in sorted_words]) + '")'
+        clue = 'new Array("' + '","'.join([word.clue for word in sorted_words]) + '")'
+        wordx = 'new Array(' + ','.join([str(word.col - 1) for word in sorted_words]) + ')'
+        wordy = 'new Array(' + ','.join([str(word.row - 1) for word in sorted_words]) + ')'
+
+        table = ""
+        row = col = 0
+        for line in self.crossword.splitlines():
+            table += "<tr>"
+            for char in line:
+                if char == ' ':
+                    continue
+                elif char == '-':
+                    table += "<td></td>"
+                else:
+                    table += '<td id="c' + ("%03d" % col) + ("%03d" % row) + '" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td>'
+                col += 1
+            table += "</tr>"
+            row += 1
 
         html = self.resource_string("static/html/crossword.html")
         # for some reason the templates weren't working, so I'm doing it manually
-        frag = Fragment(html.replace("{self.width}", str(self.width))
-                         .replace("{self.height}", str(self.height))
-                         .replace("{self.words}", self.words)
-                         .replace("{self.word_length}", self.word_length)
-                         .replace("{self.word}", self.word)
-                         .replace("{self.clue}", self.clue)
-                         .replace("{self.wordx}", self.wordx)
-                         .replace("{self.wordy}", self.wordy))
+        frag = Fragment(html.replace("{self.width}", str(width))
+                         .replace("{self.height}", str(height))
+                         .replace("{self.words}", str(words))
+                         .replace("{self.word_length}", word_length)
+                         .replace("{self.word}", word_arr)
+                         .replace("{self.clue}", clue)
+                         .replace("{self.wordx}", wordx)
+                         .replace("{self.wordy}", wordy)
+                         .replace("{last_horizontal}", str(last_horizontal))
+                         .replace("{table}", table))
         frag.add_css(self.resource_string("static/css/crossword.css"))
         frag.add_javascript(self.resource_string("static/js/src/crossword.js"))
         frag.initialize_js('CrosswordXBlock')
