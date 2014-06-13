@@ -368,77 +368,77 @@ PIPELINE_JS = {
     },
     'main-js': {
         'source_filenames': (
-            PROJECT_ROOT / 'static' / 'coffee' / 'src' / 'main.coffee',
+            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/main.coffee')
         ),
         'output_filename': 'coffee/main.js',
         'test_order': 2,
     },
     'module_edit-js': {
         'source_filenames': (
-            PROJECT_ROOT / 'static' / 'coffee' / 'src' / 'views' / 'module_edit.coffee',
+            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/views/module_edit.coffee')
         ),
         'output_filename': 'coffee/views/module_edit.js',
         'test_order': 3,
     },
     'tabs-js': {
         'source_filenames': (
-            PROJECT_ROOT / 'static' / 'coffee' / 'src' / 'views' / 'tabs.coffee',
+            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/views/tabs.coffee')
         ),
         'output_filename': 'coffee/views/tabs.js',
         'test_order': 4,
     },
     'unit-js': {
         'source_filenames': (
-            PROJECT_ROOT / 'static' / 'coffee' / 'src' / 'views' / 'unit.coffee',
+            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/views/unit.coffee')
         ),
         'output_filename': 'coffee/views/unit.js',
         'test_order': 5,
     },
     'cms.runtime.v1-js': {
         'source_filenames': (
-            PROJECT_ROOT / 'static' / 'coffee' / 'src' / 'xblock' / 'cms.runtime.v1.coffee',
+            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/xblock/cms.runtime.v1.coffee')
         ),
         'output_filename': 'coffee/xblock/cms.runtime.v1.js',
         'test_order': 6,
     },
     'ajax_prefix-js': {
         'source_filenames': (
-            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'ajax_prefix.coffee',
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/ajax_prefix.coffee')
         ),
         'output_filename': 'coffee/ajax_prefix.js',
         'test_order': 7,
     },
     'jquery.immediateDescendents-js': {
         'source_filenames': (
-            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'jquery.immediateDescendents.coffee',
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/jquery.immediateDescendents.coffee')
         ),
         'output_filename': 'coffee/jquery.immediateDescendents.js',
         'test_order': 8,
     },
     'logger-js': {
         'source_filenames': (
-            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'logger.coffee',
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/logger.coffee')
         ),
         'output_filename': 'coffee/logger.js',
         'test_order': 9,
     },
     'core-js': {
         'source_filenames': (
-            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xblock' / 'core.coffee',
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/xblock/core..coffee')
         ),
         'output_filename': 'coffee/xblock/core.js',
         'test_order': 10,
     },
     'runtime.v1-js': {
         'source_filenames': (
-            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xblock' / 'runtime.v1.coffee',
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/xblock/runtime.v1.coffee')
         ),
         'output_filename': 'coffee/xblock/runtime.v1.js',
         'test_order': 11,
     },
     'xproblem-js': {
         'source_filenames': (
-            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xproblem.coffee',
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/xproblem.coffee')
         ),
         'output_filename': 'coffee/xproblem.coffee',
         'test_order': 12,
