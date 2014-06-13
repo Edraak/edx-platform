@@ -3,7 +3,7 @@
 import pkg_resources
 
 from xblock.core import XBlock
-from xblock.fields import Scope, Integer, List, Float, Dict, String
+from xblock.fields import Scope, Integer, List, Float, Dict, String, Boolean
 from xblock.fragment import Fragment
 import json
 
@@ -18,37 +18,65 @@ class CrosswordXBlock(XBlock):
 
     display_name = String(
         scope=Scope.settings,
-        display_name="Display Name",
+        display_name="A Display Name",
         help="Display name for the crossword",
         default="Crossword",
     )
 
+    width = Integer(
+        scope=Scope.settings,
+        display_name="Table Width",
+        help="Width of the crossword puzzle table",
+        default=20
+    )
+
+    height = Integer(
+        scope=Scope.settings,
+        display_name="Table Height",
+        help="Height of the crossword puzzle table",
+        default=20
+    )
+
+    time_to_generate_crossword = Float(
+        scope=Scope.settings,
+        display_name="Time to Generate",
+        help="Amount of time, in seconds, to generate the crossword puzzle",
+        default=2.0
+    )
+
+    only_check_once = Boolean(
+        scope=Scope.settings,
+        display_name="Only Check Once",
+        help="Whether or not the student can check their answer only once",
+        default=2.0
+    )
+
     words = Dict(
         scope=Scope.settings,
-        display_name="Words",
+        display_name="Clues and Words",
         help="The words for the crossword with clues and answers",
         default={
             "saffron2": "The dried, orange yellow plant used to as dye and as a cooking spice.",
             "pumpernickel": "Dark, sour bread made from coarse ground rye.",
             "leaven": "An agent, such as yeast, that cause batter or dough to rise..",
             "coda": "Musical conclusion of a movement or composition.",
-            # "paladin": "A heroic champion or paragon of chivalry.",
-            # "syncopation": "Shifting the emphasis of a beat to the normally weak beat.",
-            # "albatross": "A large bird of the ocean having a hooked beek and long, narrow wings.",
-            # "harp": "Musical instrument with 46 or more open strings played by plucking.",
-            # "piston": "A solid cylinder or disk that fits snugly in a larger cylinder and moves \
-            #     under pressure as in an engine.",
-            # "caramel": "A smooth chery candy made from suger, butter, cream or milk with flavoring.",
-            # "coral": "A rock-like deposit of organism skeletons that make up reefs.",
-            # "dawn": "The time of each morning at which daylight begins.",
-            # "pitch": "A resin derived from the sap of various pine trees.",
-            # "fjord": "A long, narrow, deep inlet of the sea between steep slopes.",
-            # "lip": "Either of two fleshy folds surrounding the mouth.",
-            # "lime": "The egg-shaped citrus fruit having a green coloring and acidic juice.",
-            # "mist": "A mass of fine water droplets in the air near or in contact with the ground.",
-            # "plague": "A widespread affliction or calamity.",
-            # "yarn": "A strand of twisted threads or a long elaborate narrative.",
-            # "snicker": "A snide, slightly stifled laugh."
+            "paladin": "A heroic champion or paragon of chivalry.",
+            "syncopation": "Shifting the emphasis of a beat to the normally weak beat.",
+            "albatross": "A large bird of the ocean having a hooked beek and long, narrow wings.",
+            "harp": "Musical instrument with 46 or more open strings played by plucking.",
+            "piston": "A solid cylinder or disk that fits snugly in a larger cylinder and moves \
+                under pressure as in an engine.",
+            "caramel": "A smooth chery candy made from suger, butter, cream or milk with flavoring.",
+            "coral": "A rock-like deposit of organism skeletons that make up reefs.",
+            "dawn": "The time of each morning at which daylight begins.",
+            "pitch": "A resin derived from the sap of various pine trees.",
+            "fjord": "A long, narrow, deep inlet of the sea between steep slopes.",
+            "lip": "Either of two fleshy folds surrounding the mouth.",
+            "lime": "The egg-shaped citrus fruit having a green coloring and acidic juice.",
+            "mist": "A mass of fine water droplets in the air near or in contact with the ground.",
+            "plague": "A widespread affliction or calamity.",
+            "yarn": "A strand of twisted threads or a long elaborate narrative.",
+            "snicker": "A snide, slightly stifled laugh."
         }
     )
 
@@ -154,12 +182,9 @@ class CrosswordXBlock(XBlock):
         """
         studio_view = self.is_studio_view(context)
 
-        width = 13
-        height = 13
-
         if studio_view or self.student_crossword is None:
-            crossword = Crossword(width, height, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
-            crossword.compute_crossword(1)
+            crossword = Crossword(self.width, self.height, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
+            crossword.compute_crossword(self.time_to_generate_crossword)
             if not studio_view:
                 # store the generated crossword for the student so they get the same one each time
                 self.student_crossword = crossword.to_json()
@@ -195,16 +220,19 @@ class CrosswordXBlock(XBlock):
 
         html = self.resource_string("static/html/crossword.html")
         # for some reason the templates weren't working, so I'm doing it manually
-        frag = Fragment(html.replace("{self.width}", str(width))
-                         .replace("{self.height}", str(height))
-                         .replace("{self.words}", str(words))
-                         .replace("{self.word_length}", word_length)
-                         .replace("{self.word}", word_arr)
-                         .replace("{self.clue}", clue)
-                         .replace("{self.wordx}", wordx)
-                         .replace("{self.wordy}", wordy)
-                         .replace("{last_horizontal}", str(last_horizontal)))
-                         #.replace("{table}", table))
+        frag = Fragment(
+            html.replace("{self.width}", str(self.width))
+            .replace("{self.height}", str(self.height))
+            .replace("{self.words}", str(words))
+            .replace("{self.word_length}", word_length)
+            .replace("{self.word}", word_arr)
+            .replace("{self.clue}", clue)
+            .replace("{self.wordx}", wordx)
+            .replace("{self.wordy}", wordy)
+            .replace("{self.only_check_once}", "true" if self.only_check_once else "false")
+            .replace("{self.location}", unicode(self.location).replace('+', '_').replace(':', '_'))
+            .replace("{last_horizontal}", str(last_horizontal))
+        )
         frag.add_css(self.resource_string("static/css/crossword.css"))
         frag.add_javascript(self.resource_string("static/js/src/crossword.js"))
         frag.initialize_js('CrosswordXBlock')
@@ -301,8 +329,7 @@ class Crossword(object):
                     if word not in copy.current_word_list:
                         copy.fit_and_add(word)
                 x += 1
-            #print copy.solution()
-            #print len(copy.current_word_list), len(self.current_word_list), self.debug
+
             # buffer the best crossword by comparing placed words
             if len(copy.current_word_list) > len(self.current_word_list):
                 self.current_word_list = copy.current_word_list

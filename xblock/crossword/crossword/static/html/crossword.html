@@ -17,10 +17,11 @@ var BadChars = "`~!@^*()_={[}]\|:;\"',<.>/?";
 var CrosswordWidth, CrosswordHeight;
 var TableAcrossWord, TableDownWord;
 var Words, Word, Clue, AnswerHash, WordX, WordY, LastHorizontalWord;
-var OnlyCheckOnce;
+var OnlyCheckOnce = "{self.only_check_once}";
 
 var CurrentWord, PrevWordHorizontal, x, y, i, j;
-var CrosswordFinished, Initialized;
+var Initialized;
+var CrosswordFinished = false;
 
 // Check the user's browser and then initialize the puzzle.
 if (document.getElementById("waitmessage") != null)
@@ -374,6 +375,11 @@ function CheckClick()
 	document.getElementById("welcomemessage").style.display = "none";
 }
 
+function OnCrosswordFinished()
+{
+    CrosswordFinished = true;
+}
+
 // Called when the "cheat" link is clicked.
 function CheatClick()
 {
@@ -474,10 +480,7 @@ function HashWord(Word)
 
 </div>
 
-<br>
 <div style="width: 350px;">
-<span style="font-size: 12px;">For best results, be sure this window is maximized.</span><br>
-
 <p style="color: #ff0000;font-size: 14px;padding: 12px 0px 2px 0px; margin: 0px; border-bottom: 1px solid #ccc;"><b>Instructions:</b></p>
 
 <span style="font-size: 12px;">
