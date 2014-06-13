@@ -820,7 +820,7 @@ class VideoPage(PageObject):
         Reload/Refresh the current video page.
         """
 
-        self.send_request()
+        #self.send_request()
 
         self.browser.refresh()
         self.wait_for_video_player_render()

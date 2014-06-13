@@ -703,7 +703,7 @@ class YouTubeVideoTest(VideoBaseTest):
         self.video.seek('0:10')
         # from  nose.tools import set_trace; set_trace()
         self.video.click_player_button('pause')
-        # from  nose.tools import set_trace; set_trace()
+        from  nose.tools import set_trace; set_trace()
         self.video.reload_page()
         self.video.click_player_button('play')
         self.video.click_player_button('pause')
