@@ -184,6 +184,8 @@ filterwarnings('ignore', message='No request passed to the backend, unable to ra
 
 ######### Third-party auth ##########
 FEATURES['ENABLE_THIRD_PARTY_AUTH'] = True
+if FEATURES.get('ENABLE_THIRD_PARTY_AUTH', False):
+    INSTALLED_APPS += ('social.apps.django_app.default',)
 
 ################################## OPENID #####################################
 FEATURES['AUTH_USE_OPENID'] = True

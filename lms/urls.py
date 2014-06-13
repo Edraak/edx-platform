@@ -127,7 +127,7 @@ if not settings.FEATURES["USE_CUSTOM_THEME"]:
         url(r'^press/([_a-zA-Z0-9-]+)$', 'static_template_view.views.render_press_release', name='press_release'),
 
         # Favicon
-        (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'}),
+        (r'^favicon\.ico$', 'django.views.generic.base.RedirectView', {'url': '/static/images/favicon.ico'}),
     )
 
 # Only enable URLs for those marketing links actually enabled in the
