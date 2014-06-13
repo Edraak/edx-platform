@@ -866,39 +866,15 @@ class VideoPage(PageObject):
             'Position is {position}'.format(position=position)
         )
 
-
     def send_request(self):
         hid = self.q(css='.video').attrs('id')[0].split('-')
 
         url = 'http://localhost:8003/courses/test_org/{cid}/test_run/xblock/i4x:;_;_test_org;_{cid};_video;_{hid}/handler/xmodule_handler/save_user_state'.format(cid=hid[-3], hid=hid[-1])
 
-        # , 'referer': self.q(css='.active > a').attrs('href')[-1]
-
         headers = {'Accept': 'application/json', 'X-CSRFToken': self.browser.get_cookie('csrftoken')['value']}
 
         params = {'saved_video_position': '00:00:12'}
+        cookies = {i['name']: i['value'] for i in self.browser.get_cookies() if i['name'] in (u'sessionid', u'csrftoken')}
+        headers = {'Accept': 'application/json', 'X-CSRFToken': cookies['csrftoken']}
 
-        from  nose.tools import set_trace; set_trace()
-
-        response = requests.post(url, data=json.dumps(params), headers=headers)
-
-
-        s = requests.Session()
-        r = s.get('http://localhost:8003')
-        response = s.post(url, data=json.dumps(params))
-
-
-        #######################
-        # session = requests.Session()
-        # session_cookies = {key: val for key, val in session.cookies.items()}
-        # headers = {
-        #         'Accept': 'application/json',
-        #         'X-CSRFToken': session_cookies.get('csrftoken', '')
-        # }
-        # response = session.post(url, data=json.dumps(params), headers=headers)
-
-
-
-
-
-        response.status_code
+        requests.post(url, data=params, headers=headers, cookies=cookies)
