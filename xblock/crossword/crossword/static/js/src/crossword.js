@@ -8,10 +8,6 @@ function CrosswordXBlock(runtime, element) {
         $('.count', element).text(result.count);
     }
 
-    CrosswordXBlock.prototype.setMetadataEditor = function(metadataEditor) {
-        this.metadataEditor = metadataEditor;
-    }
-
     CrosswordXBlock.prototype.save = function() {
         return false;
     }
@@ -25,23 +21,7 @@ function CrosswordXBlock(runtime, element) {
         });
     });
 
-    $('.crossword-save-button', element).click(function(eventObject) {
-        runtime.notify('save', {state: 'start'});
-        $.ajax({
-            type: "POST",
-            url: saveUrl,
-            data: metadataEditor.getModifiedMetadataValues(),
-            success: runtime.notify('save', {state: 'end'})
-        });
-    });
-
-    $('.crossword-cancel-button', element).click(function(eventObject) {
-        runtime.notify('cancel', {});
-    });
-
     $(function ($) {
         /* Here's where you'd do things on page load. */
     });
 }
-
-

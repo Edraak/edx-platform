@@ -58,9 +58,6 @@ class CrosswordXBlock(XBlock):
         }
     )
 
-    def save(self):
-        pass
-
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
