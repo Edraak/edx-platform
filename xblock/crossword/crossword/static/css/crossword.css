@@ -12,10 +12,11 @@
 /*<link rel="stylesheet" href="http://www.accountingcoach.com/wp-content/themes/accounting-coach/css/crossword.css">*/
 
 #crossword_area {
-	width:1144px;
+	/*width:1144px;*/
 	margin-left:auto;
 	margin-right:auto;
 	margin-top:40px;
+    min-height: 400px;
 }
 
 #crossword_area > table {
