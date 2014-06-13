@@ -772,14 +772,8 @@ class VideoPage(PageObject):
             video_display_name (str or None): Display name of a Video.
 
         """
-
-        def _current_state():
-            cstate = self.state(video_display_name)
-            print >> sys.stderr, 'current state is {} '.format(cstate)
-            return cstate == state
-
         self._wait_for(
-            _current_state,
+            lambda: self.state(video_display_name) == state,
             'State is {state}'.format(state=state)
         )
 
@@ -825,7 +819,9 @@ class VideoPage(PageObject):
         """
         Reload/Refresh the current video page.
         """
+
         self.send_request()
+
         self.browser.refresh()
         self.wait_for_video_player_render()
 
