@@ -16,12 +16,6 @@ class CrosswordXBlock(XBlock):
     # Fields are defined on the class.  You can access them in your code as
     # self.<fieldname>.
 
-    # TO-DO: delete count, and define your own fields.
-    count = Integer(
-        default=0, scope=Scope.user_state,
-        help="A simple counter, to show something happening",
-    )
-
     display_name = String(
         scope=Scope.settings,
         display_name="Display Name",
@@ -34,7 +28,7 @@ class CrosswordXBlock(XBlock):
         display_name="Words",
         help="The words for the crossword with clues and answers",
         default={
-            "saffron": "The dried, orange yellow plant used to as dye and as a cooking spice.",
+            "saffron2": "The dried, orange yellow plant used to as dye and as a cooking spice.",
             "pumpernickel": "Dark, sour bread made from coarse ground rye.",
             "leaven": "An agent, such as yeast, that cause batter or dough to rise..",
             "coda": "Musical conclusion of a movement or composition.",
@@ -160,35 +154,41 @@ class CrosswordXBlock(XBlock):
         """
         studio_view = self.is_studio_view(context)
 
+        width = 13
+        height = 13
+
         if studio_view or self.student_crossword is None:
-            a = Crossword(13, 13, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
-            a.compute_crossword(1)
-            self.crossword = a.solution()
+            crossword = Crossword(width, height, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
+            crossword.compute_crossword(1)
+            self.crossword = crossword.solution()
             if not studio_view:
                 self.student_crossword = self.crossword # store the generated crossword for the student so they get the same one each time
                 self.save()
         elif not studio_view:
             self.crossword = self.student_crossword
 
+        words = len(crossword.current_word_list)
+        word_length = 'new Array(' + ','.join([str(word.length) for word in crossword.current_word_list]) + ')'
+        word = 'new Array("' + '","'.join([word.word for word in crossword.current_word_list]) + '")'
+        clue = 'new Array("' + '","'.join([word.clue for word in crossword.current_word_list]) + '")'
+        wordx = 'new Array(' + ','.join([str(word.col - 1) for word in crossword.current_word_list]) + ')'
+        wordy = 'new Array(' + ','.join([str(word.row - 1) for word in crossword.current_word_list]) + ')'
+
         html = self.resource_string("static/html/crossword.html")
-        frag = Fragment(html.format(self=self))
+        # for some reason the templates weren't working, so I'm doing it manually
+        frag = Fragment(html.replace("{self.width}", str(self.width))
+                         .replace("{self.height}", str(self.height))
+                         .replace("{self.words}", self.words)
+                         .replace("{self.word_length}", self.word_length)
+                         .replace("{self.word}", self.word)
+                         .replace("{self.clue}", self.clue)
+                         .replace("{self.wordx}", self.wordx)
+                         .replace("{self.wordy}", self.wordy))
         frag.add_css(self.resource_string("static/css/crossword.css"))
         frag.add_javascript(self.resource_string("static/js/src/crossword.js"))
         frag.initialize_js('CrosswordXBlock')
         return frag
 
-    # TO-DO: change this handler to perform your own actions.  You may need more
-    # than one handler, or you may not need any handlers at all.
-    @XBlock.json_handler
-    def increment_count(self, data, suffix=''):
-        """
-        An example handler, which increments the data.
-        """
-        # Just to show data coming in...
-        assert data['hello'] == 'world'
-
-        self.count += 1
-        return {"count": self.count}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
@@ -198,8 +198,6 @@ class CrosswordXBlock(XBlock):
         return [
             ("CrosswordXBlock",
              """<vertical_demo>
-                <crossword/>
-                <crossword/>
                 <crossword/>
                 </vertical_demo>
              """),
