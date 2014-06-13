@@ -823,13 +823,12 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 from rooted_paths import rooted_glob
 
-courseware_js = (
+courseware_coffee = (
     [
         'coffee/src/' + pth + '.coffee'
         for pth in ['courseware', 'histogram', 'navigation', 'time']
     ] +
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.coffee')) +
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.js'))
+    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.coffee'))
 )
 
 main_vendor_js = [
@@ -862,26 +861,11 @@ main_vendor_js = [
     'js/vendor/URI.min.js',
 ]
 
-discussion_js = (
-    sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.coffee')) +
-    sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
-)
-staff_grading_js = (
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.coffee')) +
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.js'))
-)
-open_ended_js = (
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/open_ended/**/*.coffee')) +
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/open_ended/**/*.js'))
-)
-notes_js = (
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/notes/**/*.coffee')) +
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/notes/**/*.js'))
-)
-instructor_dash_js = (
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/instructor_dashboard/**/*.coffee')) +
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/instructor_dashboard/**/*.js'))
-)
+discussion_coffee = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.coffee'))
+staff_grading_coffee = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.coffee'))
+open_ended_coffee = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/open_ended/**/*.coffee'))
+notes_coffee = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/notes/**/*.coffee'))
+instructor_dash_coffee = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/instructor_dashboard/**/*.coffee'))
 
 PIPELINE_CSS = {
     'style-vendor': {
@@ -953,16 +937,10 @@ PIPELINE_CSS = {
 }
 
 
-common_js = (
-    rooted_glob(COMMON_ROOT / 'static', 'coffee/src/**/*.coffee') +
-    rooted_glob(COMMON_ROOT / 'static', 'coffee/src/**/*.js')
-)
-common_js = set(common_js) - set(courseware_js + discussion_js + staff_grading_js + open_ended_js + notes_js + instructor_dash_js)
-project_js = (
-    rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/**/*.coffee') +
-    rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/**/*.js')
-)
-project_js = set(project_js) - set(courseware_js + discussion_js + staff_grading_js + open_ended_js + notes_js + instructor_dash_js)
+common_coffee = rooted_glob(COMMON_ROOT / 'static', 'coffee/src/**/*.coffee')
+common_coffee = set(common_coffee) - set(courseware_coffee + discussion_coffee + staff_grading_coffee + open_ended_coffee + notes_coffee + instructor_dash_coffee)
+project_coffee = rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/**/*.coffee')
+project_coffee = set(project_coffee) - set(courseware_coffee + discussion_coffee + staff_grading_coffee + open_ended_coffee + notes_coffee + instructor_dash_coffee)
 
 
 # test_order: Determines the position of this chunk of javascript on
@@ -975,8 +953,8 @@ PIPELINE_JS = {
     },
     'application': {
 
-        # Application will contain all paths not in courseware_only_js
-        'source_filenames': sorted(common_js) + sorted(project_js) + [
+        # Application will contain all paths not in courseware_coffee
+        'source_filenames': sorted(common_coffee) + sorted(project_coffee) + [
             'js/form.ext.js',
             'js/my_courses_dropdown.js',
             'js/toggle_login_modal.js',
@@ -990,7 +968,7 @@ PIPELINE_JS = {
         'test_order': 1,
     },
     'courseware': {
-        'source_filenames': courseware_js,
+        'source_filenames': courseware_coffee,
         'output_filename': 'js/lms-courseware.js',
         'test_order': 2,
     },
@@ -1000,22 +978,22 @@ PIPELINE_JS = {
         'test_order': 3,
     },
     'discussion': {
-        'source_filenames': discussion_js,
+        'source_filenames': discussion_coffee,
         'output_filename': 'js/discussion.js',
         'test_order': 4,
     },
     'staff_grading': {
-        'source_filenames': staff_grading_js,
+        'source_filenames': staff_grading_coffee,
         'output_filename': 'js/staff_grading.js',
         'test_order': 5,
     },
     'open_ended': {
-        'source_filenames': open_ended_js,
+        'source_filenames': open_ended_coffee,
         'output_filename': 'js/open_ended.js',
         'test_order': 6,
     },
     'notes': {
-        'source_filenames': notes_js,
+        'source_filenames': notes_coffee,
         'output_filename': 'js/notes.js',
         'test_order': 7
     },
@@ -1025,7 +1003,7 @@ PIPELINE_JS = {
         'test_order': 8,
     },
     'instructor_dash': {
-        'source_filenames': instructor_dash_js,
+        'source_filenames': instructor_dash_coffee,
         'output_filename': 'js/instructor_dash.js',
         'test_order': 9,
     },
