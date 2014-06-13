@@ -52,7 +52,7 @@ class CrosswordXBlock(XBlock):
         }
     )
 
-    student_crossword = String(
+    student_crossword = Dict(
         scope=Scope.user_state,
         help="Crossword generated for this user",
         default=None,
@@ -160,12 +160,12 @@ class CrosswordXBlock(XBlock):
         if studio_view or self.student_crossword is None:
             crossword = Crossword(width, height, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
             crossword.compute_crossword(1)
-            self.crossword = crossword.solution()
             if not studio_view:
-                self.student_crossword = self.crossword # store the generated crossword for the student so they get the same one each time
+                # store the generated crossword for the student so they get the same one each time
+                self.student_crossword = crossword.to_json()
                 self.save()
         elif not studio_view:
-            self.crossword = self.student_crossword
+            crossword = Crossword.from_json(self.student_crossword)
 
         words = len(crossword.current_word_list)
         word_length = 'new Array(' + ','.join([str(word.length) for word in crossword.current_word_list]) + ')'
@@ -217,6 +217,31 @@ class Crossword(object):
         self.current_word_list = []
         self.debug = 0
         self.clear_grid()
+
+    SERIALIZED_FIELDS = ['cols', 'rows']
+    def to_json(self):
+        json_value = {
+            attribute: getattr(self, attribute)
+            for attribute in self.SERIALIZED_FIELDS
+        }
+        json_value.update(
+            {'current_word_list': [word.to_json() for word in self.current_word_list]}
+        )
+        return json_value
+
+    @staticmethod
+    def from_json(json_value):
+        crossword = Crossword(0, 0)
+        for key in json_value:
+            if key in crossword.SERIALIZED_FIELDS:
+                setattr(crossword, key, json_value[key])
+        if 'current_word_list' in json_value:
+            word_json_list = json_value['current_word_list']
+            crossword.current_word_list = [
+                Word.from_json(word_json)
+                for word_json in word_json_list
+            ]
+        return crossword
 
     def clear_grid(self): # initialize grid and fill with empty character
         self.grid = []
@@ -505,7 +530,7 @@ class Crossword(object):
 
 class Word(object):
     def __init__(self, word=None, clue=None):
-        self.word = re.sub(r'\s', '', word.lower())
+        self.word = re.sub(r'\s', '', word.lower() if word else '')
         self.clue = clue
         self.length = len(self.word)
         # the below are set when placed on board
@@ -522,3 +547,18 @@ class Word(object):
 
     def __repr__(self):
         return self.word
+
+    SERIALIZED_FIELDS = ['word', 'clue', 'length', 'row', 'col', 'vertical', 'number']
+    def to_json(self):
+        return {
+            attribute: getattr(self, attribute)
+            for attribute in self.SERIALIZED_FIELDS
+        }
+
+    @staticmethod
+    def from_json(json_value):
+        word = Word()
+        for key in json_value:
+            if key in word.SERIALIZED_FIELDS:
+                setattr(word, key, json_value[key])
+        return word
