@@ -275,8 +275,8 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATIC_ROOT = ENV_ROOT / "staticfiles" / git.revision
 
 STATICFILES_DIRS = [
-    COMMON_ROOT / "static",
     PROJECT_ROOT / "static",
+    COMMON_ROOT / "static",
     LMS_ROOT / "static",
 
     # This is how you would use the textbook images locally
