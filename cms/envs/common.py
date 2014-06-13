@@ -401,6 +401,48 @@ PIPELINE_JS = {
         'output_filename': 'coffee/xblock/cms.runtime.v1.js',
         'test_order': 6,
     },
+    'ajax_prefix-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'ajax_prefix.coffee',
+        ),
+        'output_filename': 'coffee/ajax_prefix.js',
+        'test_order': 7,
+    },
+    'jquery.immediateDescendents-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'jquery.immediateDescendents.coffee',
+        ),
+        'output_filename': 'coffee/jquery.immediateDescendents.js',
+        'test_order': 8,
+    },
+    'logger-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'logger.coffee',
+        ),
+        'output_filename': 'coffee/logger.js',
+        'test_order': 9,
+    },
+    'core-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xblock' / 'core.coffee',
+        ),
+        'output_filename': 'coffee/xblock/core.js',
+        'test_order': 10,
+    },
+    'runtime.v1-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xblock' / 'runtime.v1.coffee',
+        ),
+        'output_filename': 'coffee/xblock/runtime.v1.js',
+        'test_order': 11,
+    },
+    'xproblem-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xproblem.coffee',
+        ),
+        'output_filename': 'coffee/xproblem.coffee',
+        'test_order': 12,
+    },
 }
 
 # Setting that will only affect the edX version of django-pipeline until our changes are merged upstream
