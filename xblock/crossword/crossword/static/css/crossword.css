@@ -7,3 +7,376 @@
 .crossword_block p {
     cursor: pointer;
 }
+
+/* ================================ Crosswords */
+/*<link rel="stylesheet" href="http://www.accountingcoach.com/wp-content/themes/accounting-coach/css/crossword.css">*/
+
+#crossword_area {
+	width:1144px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:40px;
+}
+
+#crossword_area > table {
+	width:100%;
+	max-width:1144px;
+}
+
+
+#welcomemessage {
+	border-color:#edecd7!important;
+	background:#fffeca!important;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	width:350px;
+}
+#wordentry {
+	width:100%;
+}
+
+.answerboxstyle
+{
+	padding:18px 22px 18px 22px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	-webkit-transition:background .2s linear;
+	-moz-transition:background .2s linear;
+	-o-transition:background .2s linear;
+	transition:background .2s linear;
+	position:relative;
+	border-color:#edecd7!important;
+	background:#fffeca!important;
+	display: block;
+	width: 350px;
+	margin-bottom:20px;
+}
+	.answerboxstyle button {
+		display:inline-block;
+		font-size:14px;
+		padding:5px 8px;
+		text-decoration:none;
+		-moz-border-radius:4px;
+		-webkit-border-radius:4px;
+		border-radius:4px;
+		-webkit-transition:background .2s linear;
+		-moz-transition:background .2s linear;
+		-o-transition:background .2s linear;
+		transition:background .2s linear;
+		border:0;
+		cursor:pointer;
+		color:#fff;
+		background:#256589;
+		font-family: Arial, sans-serif;
+	}
+	#cheatbutton {
+		background:#ccc;
+		color:#353535;
+	}
+
+#crossword .box
+{
+	border-style: solid;
+	border-width: 1px;
+	padding:0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	height: 18px;
+	overflow: hidden;
+	text-align: center;
+	width: 21px;
+	-webkit-border-radius:0;
+	border-radius:none;
+	border-radius:0;
+	margin:0;
+	font-family:sans-serif;
+}
+
+.boxcheated_sel
+{
+	background-color: #f0f5fa;
+	border-color: #4185b1;
+	color: #256589;
+}
+
+.boxcheated_unsel
+{
+	background-color: #ffffff;
+	border-color: #252525;
+	color: #256589;
+}
+
+.boxerror_sel
+{
+	background-color: #f0f5fa;
+	border-color: #4185b1;
+	color: #BF0000;
+}
+
+.boxerror_unsel
+{
+	background-color: #FFF0F0;
+	border-color: #252525;
+	color: #BF0000;
+}
+
+.boxnormal_sel
+{
+	background-color: #f0f5fa;
+	border-color: #4185b1;
+	color: #000000;
+}
+
+.boxnormal_unsel
+{
+	background-color: #ffffff;
+	border-color: #252525;
+	color: #000000;
+}
+
+.cluebox
+{
+	border-bottom-width: 1px;
+	border-color: #c0c0c0;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-style: solid;
+	border-top-width: 1px;
+	margin-top: 1em;
+	padding-bottom: .5em;
+	padding-left: 0pt;
+	padding-right: 0pt;
+	padding-top: .5em;
+}
+
+
+.crosswordarea {
+	width:50%;
+	vertical-align:top;
+	padding-right:2%;
+}
+
+
+#crossword_area > table > tbody > tr > td:first-child {
+
+}
+
+#crossword {
+	background:#353535;
+	display:table!important;
+	border:10px solid #353535;
+	padding:10px;
+
+}
+
+#crossword > tbody {
+	margin:10px;
+}
+#crossword > tbody > tr {
+}
+#crossword > tbody > tr > td {
+
+}
+
+#crossword_area > table > tbody > tr >  td:last-child {
+	padding-left:0!important;
+	position:absolute;
+}
+
+#crossword_area > table > tbody > tr >  td:last-child div span ol {
+	padding-left:0!important;
+}
+
+.ecw-copyright
+{
+	margin-bottom: 1em;
+	font-size: x-small;
+	font-family: "Arial, sans-serif";
+}
+
+.ecw-input
+{
+	font-family: "Arial, sans-serif";
+}
+
+.ecw-wordlabel
+{
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.ecw-wordinfo
+{
+	font-size: 8pt;
+	color: #808080;
+}
+
+.ecw-worderror
+{
+	color: #c00000;
+	font-weight: bold;
+	display: none;
+	margin-top: 1em;
+}
+
+#checkbutton {
+	display:inline-block;
+	padding:12px 16px 12px 16px;
+	font-size:18px;
+	text-decoration:none;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	-webkit-transition:background .2s linear;
+	-moz-transition:background .2s linear;
+	-o-transition:background .2s linear;
+	transition:background .2s linear;
+	border:0;
+	cursor:pointer;
+	color:#fff;
+	background:#256589;
+}
+#checkbutton:hover,
+#checkbutton:focus {
+		background:#87b2ce;
+
+}
+
+
+#okbutton {
+	background:#256589;
+	font-weight:normal!important;
+	color:#fff;
+}
+.ecw-answerbox
+{
+	color: black;
+	background-color: #FFFAF0;
+	border-color: #808080;
+	border-style: solid;
+	border-width: 1px;
+	display: block;
+	padding: .75em;
+	width: 240pt;
+}
+
+.ecw-box
+{
+	border-style: solid;
+	border-width: 1pt;
+	cursor: pointer;
+	font-size: .12in;
+	font-weight: bold;
+	height: .18in;
+	overflow: hidden;
+	text-align: center;
+	width: 21px;
+}
+
+.ecw-boxcheated_sel
+{
+	background-color: #FFF1D7;
+	border-color: #C00000;
+	color: #2080D0;
+}
+
+.ecw-boxcheated_unsel
+{
+	background-color: #ffffff;
+	border-color: #606060;
+	color: #2080D0;
+}
+
+.ecw-boxerror_sel
+{
+	background-color: #FFF1D7;
+	border-color: #C00000;
+	color: #BF0000;
+}
+
+.ecw-boxerror_unsel
+{
+	background-color: #FFF0F0;
+	border-color: #606060;
+	color: #BF0000;
+}
+
+.ecw-boxnormal_sel
+{
+	background-color: #FFF1D7;
+	border-color: #C00000;
+	color: #000000;
+}
+
+.ecw-boxnormal_unsel
+{
+	background-color: #ffffff;
+	border-color: #606060;
+	color: #000000;
+}
+
+.ecw-button
+{
+	width: 64pt;
+}
+
+.ecw-cluebox
+{
+	border-bottom-width: 1px;
+	border-color: #c0c0c0;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-style: solid;
+	border-top-width: 1px;
+	margin-top: 1em;
+	padding-bottom: .5em;
+	padding-left: 0pt;
+	padding-right: 0pt;
+	padding-top: .5em;
+}
+
+.ecw-crosswordarea
+{
+	background-color: #D0D8E0;
+	border-color: #808080;
+	border-style: solid;
+	border-width: 2px;
+	padding: .5em;
+	font-family: Segoe UI, Verdana, Arial, sans-serif;
+	font-size: small;
+}
+
+.ecw-copyright
+{
+	margin-bottom: 1em;
+	font-size: x-small;
+	font-family: Segoe UI, Franklin Gothic Medium, Arial, sans-serif;
+}
+
+.ecw-input
+{
+	font-family: Segoe UI, Franklin Gothic Medium, Arial, sans-serif;
+}
+
+.ecw-wordlabel
+{
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.ecw-wordinfo
+{
+	font-size: 8pt;
+	color: #808080;
+}
+
+.ecw-worderror
+{
+	color: #c00000;
+	font-weight: bold;
+	display: none;
+	margin-top: 1em;
+}
