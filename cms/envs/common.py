@@ -361,12 +361,45 @@ PIPELINE_JS = {
         'source_filenames': (
             rooted_glob(COMMON_ROOT / 'static/', 'xmodule/descriptors/js/*.js') +
             rooted_glob(COMMON_ROOT / 'static/', 'xmodule/modules/js/*.js') +
-            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/discussion/*.coffee') +
-            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/*.coffee') +
-            rooted_glob(PROJECT_ROOT / 'static/', 'coffee/src/**/*.coffee')
+            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/discussion/*.coffee')
         ),
         'output_filename': 'js/cms-modules.js',
-        'test_order': 1
+        'test_order': 1,
+    },
+    'main-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'main.coffee',
+        ),
+        'output_filename': 'coffee/main.js',
+        'test_order': 2,
+    },
+    'module_edit-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'views' / 'module_edit.coffee',
+        ),
+        'output_filename': 'coffee/views/module_edit.js',
+        'test_order': 3,
+    },
+    'tabs-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'views' / 'tabs.coffee',
+        ),
+        'output_filename': 'coffee/views/tabs.js',
+        'test_order': 4,
+    },
+    'unit-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'views' / 'unit.coffee',
+        ),
+        'output_filename': 'coffee/views/unit.js',
+        'test_order': 5,
+    },
+    'cms.runtime.v1-js': {
+        'source_filenames': (
+            COMMON_ROOT / 'static' / 'coffee' / 'src' / 'xblock' / 'cms.runtime.v1.coffee',
+        ),
+        'output_filename': 'coffee/xblock/cms.runtime.v1.js',
+        'test_order': 6,
     },
 }
 
