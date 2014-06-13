@@ -58,6 +58,12 @@ class CrosswordXBlock(XBlock):
         }
     )
 
+    student_crossword = String(
+        scope=Scope.user_state,
+        help="Crossword generated for this user",
+        default=None,
+    )
+
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
@@ -134,8 +140,6 @@ class CrosswordXBlock(XBlock):
         return metadata_fields
 
     def studio_view(self, context):
-        self.student_view = False
-
         # html = self.resource_string("static/html/crossword_studio.html")
         fields_dump = json.dumps(self.editable_metadata_fields)
         html = u'<div class="wrapper-comp-settings metadata_edit" data-metadata=\'' + fields_dump + '\'></div>'
@@ -146,17 +150,25 @@ class CrosswordXBlock(XBlock):
         frag.initialize_js('CrosswordXBlock')
         return frag
 
+    def is_studio_view(self, context):
+        return (context is not None) and ('runtime_type' in context) and (context['runtime_type'] == 'studio')
+
     def student_view(self, context=None):
         """
         The primary view of the CrosswordXBlock, shown to students
         when viewing courses.
         """
+        studio_view = self.is_studio_view(context)
 
-        self.student_view = True
-
-        a = Crossword(13, 13, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
-        a.compute_crossword(1)
-        self.crossword = a.solution()
+        if studio_view or self.student_crossword is None:
+            a = Crossword(13, 13, '-', 5000, [(key, value) for key, value in self.words.iteritems()])
+            a.compute_crossword(1)
+            self.crossword = a.solution()
+            if not studio_view:
+                self.student_crossword = self.crossword # store the generated crossword for the student so they get the same one each time
+                self.save()
+        elif not studio_view:
+            self.crossword = self.student_crossword
 
         html = self.resource_string("static/html/crossword.html")
         frag = Fragment(html.format(self=self))
@@ -164,10 +176,6 @@ class CrosswordXBlock(XBlock):
         frag.add_javascript(self.resource_string("static/js/src/crossword.js"))
         frag.initialize_js('CrosswordXBlock')
         return frag
-
-    @XBlock.json_handler
-    def save_settings(self, data, suffix=''):
-        pass
 
     # TO-DO: change this handler to perform your own actions.  You may need more
     # than one handler, or you may not need any handlers at all.
