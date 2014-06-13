@@ -32,13 +32,16 @@ class @Logger
     else
       listeners[event_type][element].push callback
 
-  @bind: ->
+  @bind: (event_type = 'page_close', event = '') ->
     window.onunload = ->
+      if $.isFunction(event)
+        event = event()
+
       $.ajaxWithPrefix
         url: "/event"
         data:
-          event_type: 'page_close'
-          event: ''
+          event_type: event_type
+          event: JSON.stringify(event)
           page: window.location.href
         async: false
 

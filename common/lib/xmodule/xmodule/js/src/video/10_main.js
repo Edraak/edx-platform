@@ -37,6 +37,7 @@
         [
             'video/01_initialize.js',
             'video/025_focus_grabber.js',
+            'video/031_video_logger.js',
             'video/035_video_accessible_menu.js',
             'video/04_video_control.js',
             'video/05_video_quality_control.js',
@@ -48,6 +49,7 @@
         function (
             initialize,
             FocusGrabber,
+            VideoLogger,
             VideoAccessibleMenu,
             VideoControl,
             VideoQualityControl,
@@ -81,6 +83,7 @@
 
                 state.modules = [
                     FocusGrabber,
+                    VideoLogger,
                     VideoAccessibleMenu,
                     VideoControl,
                     VideoQualityControl,

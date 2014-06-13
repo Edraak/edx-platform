@@ -330,6 +330,7 @@ function (HTML5Video, Resizer) {
         this.videoPlayer.currentTime = time || this.videoPlayer.player.getCurrentTime();
 
         if (isFinite(this.videoPlayer.currentTime)) {
+            this.el.trigger('progress', [this.videoPlayer.currentTime]);
             this.videoPlayer.updatePlayTime(this.videoPlayer.currentTime);
 
             // We need to pause the video if current time is smaller (or equal)
@@ -525,35 +526,20 @@ function (HTML5Video, Resizer) {
     }
 
     function onPause() {
-        this.videoPlayer.log(
-            'pause_video',
-            {
-                currentTime: this.videoPlayer.currentTime
-            }
-        );
-
         this.videoPlayer.stopTimer();
-
         this.trigger('videoControl.pause', null);
         this.saveState(true);
-        this.el.trigger('pause', arguments);
+        this.el.trigger('pause', [this.videoPlayer.currentTime]);
     }
 
     function onPlay() {
-        this.videoPlayer.log(
-            'play_video',
-            {
-                currentTime: this.videoPlayer.currentTime
-            }
-        );
-
         this.videoPlayer.runTimer();
         this.trigger('videoControl.play', null);
         this.trigger('videoProgressSlider.notifyThroughHandleEnd', {
             end: false
         });
         this.videoPlayer.ready();
-        this.el.trigger('play', arguments);
+        this.el.trigger('play', [this.videoPlayer.currentTime]);
     }
 
     function onUnstarted() { }
@@ -586,8 +572,6 @@ function (HTML5Video, Resizer) {
         this.el.on('volumechange volumechange:silent', function (event, volume) {
             _this.videoPlayer.onVolumeChange(volume);
         });
-
-        this.videoPlayer.log('load_video');
 
         availablePlaybackRates = this.videoPlayer.player
                                     .getAvailablePlaybackRates();

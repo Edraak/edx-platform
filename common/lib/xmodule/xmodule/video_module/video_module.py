@@ -65,8 +65,16 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
     # To make sure that js files are called in proper order we use numerical
     # index. We do that to avoid issues that occurs in tests.
     module = __name__.replace('.video_module', '', 2)
+    loggers = [
+        resource_string(module, 'js/src/video/loggers/load_video.js'),
+        resource_string(module, 'js/src/video/loggers/pause_video.js'),
+        resource_string(module, 'js/src/video/loggers/play_video.js'),
+        resource_string(module, 'js/src/video/loggers/watch_video.js'),
+    ]
     js = {
-        'js': [
+        'js': loggers + [
+            resource_string(module, 'js/src/video/00_component.js'),
+            resource_string(module, 'js/src/video/00_abstarct_logger.js'),
             resource_string(module, 'js/src/video/00_video_storage.js'),
             resource_string(module, 'js/src/video/00_resizer.js'),
             resource_string(module, 'js/src/video/00_async_process.js'),
@@ -77,6 +85,7 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
             resource_string(module, 'js/src/video/025_focus_grabber.js'),
             resource_string(module, 'js/src/video/02_html5_video.js'),
             resource_string(module, 'js/src/video/03_video_player.js'),
+            resource_string(module, 'js/src/video/031_video_logger.js'),
             resource_string(module, 'js/src/video/035_video_accessible_menu.js'),
             resource_string(module, 'js/src/video/04_video_control.js'),
             resource_string(module, 'js/src/video/05_video_quality_control.js'),
