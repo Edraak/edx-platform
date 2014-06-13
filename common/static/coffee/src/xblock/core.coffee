@@ -11,7 +11,7 @@
     if runtime? and version? and initFnName?
       runtime = new window[runtime]["v#{version}"]
       initFn = window[initFnName]
-      block = initFn(runtime, element) ? {}
+      block = new initFn(runtime, element) ? {}
       block.runtime = runtime
     else
       elementTag = $('<div>').append($element.clone()).html();

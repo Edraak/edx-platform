@@ -118,6 +118,9 @@ define(["jquery", "underscore", "gettext", "js/views/feedback_notification", "js
                 if (xblock.save) {
                     data = xblock.save();
                     if (metadataEditor) {
+                        if (!data) {
+                            data = _.extend(data.metadata || {}, this.getChangedMetadata());
+                        }
                         data.metadata = _.extend(data.metadata || {}, this.getChangedMetadata());
                     }
                 } else {

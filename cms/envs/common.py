@@ -55,7 +55,7 @@ FEATURES = {
     'STUDIO_REQUEST_EMAIL': '',
 
     # Segment.io - must explicitly turn it on for production
-    'SEGMENT_IO': True,
+    'SEGMENT_IO': False,
 
     # Enable URL that shows information about the status of various services
     'ENABLE_SERVICE_STATUS': False,

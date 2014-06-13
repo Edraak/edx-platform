@@ -252,6 +252,17 @@
       <%static:include path="js/system-feedback.underscore" />
     </script>
 
+    <script id="metadata-editor-tpl" type="text/template">
+        <%static:include path="js/metadata-editor.underscore" />
+    </script>
+
+    % for template_name in ["metadata-number-entry", "metadata-string-entry", "metadata-option-entry", "metadata-list-entry", "metadata-dict-entry", "metadata-file-uploader-entry", "metadata-file-uploader-item"]:
+        <script id="${template_name}" type="text/template">
+            <%static:include path="js/${template_name}.underscore" />
+        </script>
+    % endfor
+
+
     <script type="text/javascript">
         // event handler for all click events that are to be tracked through analytics
         require(["jquery"], function($) {
