@@ -82,13 +82,14 @@ if (document.getElementById("waitmessage") != null)
 	// Now, insert the row HTML into the table.
 	for (var y = 0; y < CrosswordHeight; y++)
 	{
-		$("#crossword_tbody").append('<tr id="' + y + 'crosswordRow">');
+        var salt = Math.floor(Math.random() * 1000);
+		$("#crossword_tbody").append('<tr id="' + y + 'crosswordRow' + salt + '">');
 		for (var x = 0; x < CrosswordWidth; x++)
 		{
 			if (TableAcrossWord[x][y] >= 0 || TableDownWord[x][y] >= 0)
-				$("#" + y + 'crosswordRow').append("<td id=\"c" + PadNumber(x) + PadNumber(y) + "\" class=\"box boxnormal_unsel\" onclick=\"SelectThisWord(event);\">&nbsp;</td>");
+				$("#" + y + 'crosswordRow' + salt).append("<td id=\"c" + PadNumber(x) + PadNumber(y) + "\" class=\"box boxnormal_unsel\" onclick=\"SelectThisWord(event);\">&nbsp;</td>");
 			else
-				$("#" + y + 'crosswordRow').append("<td></td>");
+				$("#" + y + 'crosswordRow' + salt).append("<td></td>");
 		}
 	}
 
