@@ -82,15 +82,14 @@ if (document.getElementById("waitmessage") != null)
 	// Now, insert the row HTML into the table.
 	for (var y = 0; y < CrosswordHeight; y++)
 	{
-		document.writeln("<tr>");
+		$("#crossword_tbody").append('<tr id="' + y + 'crosswordRow">');
 		for (var x = 0; x < CrosswordWidth; x++)
 		{
 			if (TableAcrossWord[x][y] >= 0 || TableDownWord[x][y] >= 0)
-				document.write("<td id=\"c" + PadNumber(x) + PadNumber(y) + "\" class=\"box boxnormal_unsel\" onclick=\"SelectThisWord(event);\">&nbsp;</td>");
+				$("#" + y + 'crosswordRow').append("<td id=\"c" + PadNumber(x) + PadNumber(y) + "\" class=\"box boxnormal_unsel\" onclick=\"SelectThisWord(event);\">&nbsp;</td>");
 			else
-				document.write("<td></td>");
+				$("#" + y + 'crosswordRow').append("<td></td>");
 		}
-		document.writeln("</tr>");
 	}
 
 	// Finally, show the crossword and hide the wait message.
@@ -396,8 +395,7 @@ function HashWord(Word)
 }
 
 //-->
-</script><tbody>
-{table}
+</script><tbody id="crossword_tbody">
 <!--
 <tr>
 <td></td><td id="c001000" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td></td><td></td><td id="c006000" class="box boxnormal_unsel" onclick="SelectThisWord(event);">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -497,8 +495,6 @@ Don't know the answer to a question? Click <b>Solve</b> and the answer will appe
 <br>
 <div id="congratulations" class="answerboxstyle" style="display:none;">
 <h3>Congratulations!</h3>
-<p>You have completed this <a href="http://www.eclipsecrossword.com" style="color: black; text-decoration:none;">crossword puzzle</a>, powered by <a href="http://www.eclipsecrossword.com" target="_blank">EclipseCrossword</a> from Green Eclipse.</p>
-
 </div>
 
 </td></tr></tbody></table>
