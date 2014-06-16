@@ -733,6 +733,57 @@ class YouTubeHtml5VideoTest(VideoBaseTest):
         # Verify that the video has rendered in "Youtube" mode
         self.assertTrue(self.video.is_video_rendered('youtube'))
 
+    def test_video_transcripts_for_non_youtube_countries(self):
+        """
+        Scenario: Verify that each video in each sub-section includes a transcript for non-Youtube countries
+        Given youtube server is up and response time is 2 seconds
+        And I have a "subs_OEoXaMPEzfM.srt.sjson" transcript file in assets
+        And I have a "subs_b7xgknqkQk8.srt.sjson" transcript file in assets
+        And I have a "chinese_transcripts.srt" transcript file in assets
+
+        And it has videos "A, B" in "Youtube_HTML5" mode in position "1" of sequential:
+          | sub         |
+          | OEoXaMPEzfM |
+          | b7xgknqkQk8 |
+        And a video "C" in "Youtube_HTML5" mode in position "2" of sequential:
+          | transcripts                       |
+          | {"zh": "chinese_transcripts.srt"} |
+        And a video "D" in "Youtube_HTML5" mode in position "3" of sequential
+        And I open the section with videos
+        Then videos have rendered in "HTML5" mode
+        And I see text in the captions:
+          | text                |
+          | Hi, welcome to Edx. |
+          | Equal transcripts   |
+        When I open video "C"
+        Then the video has rendered in "HTML5" mode
+        And I make sure captions are opened
+        And I see "好 <90><84><8D><90><8C>学" text in the captions
+        When I open video "D"
+        Then the video has rendered in "HTML5" mode
+        And the video does not show the captions
+
+        """
+        self.assets.extend(['subs_OEoXaMPEzfM.srt.sjson', 'subs_b7xgknqkQk8.srt.sjson', 'chinese_transcripts.srt'])
+
+        video_a_metadata = {'youtube_id_1_0': 'OEoXaMPEzfM', 'sub': 'OEoXaMPEzfM', 'html5_sources': HTML5_SOURCES}
+        video_b_metadata = {'youtube_id_1_0': 'b7xgknqkQk8', 'sub': 'b7xgknqkQk8', 'html5_sources': HTML5_SOURCES}
+
+        # data_c = {'transcripts': {'zh': 'chinese_transcripts.srt'}}
+        # video_c_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_c)
+        #
+        # video_d_metadata = self.metadata_for_mode('youtube_html5')
+
+        self.verticals = [
+            [{'display_name': 'A', 'metadata': video_a_metadata}, {'display_name': 'B', 'metadata': video_b_metadata}],
+            # [{'display_name': 'C', 'metadata': video_c_metadata}],
+            # [{'display_name': 'D', 'metadata': video_d_metadata}]
+        ]
+
+        self.navigate_to_video()
+
+        from nose.tools import set_trace; set_trace()
+
 
 class Html5VideoTest(VideoBaseTest):
     """ Test HTML5 Video Player """
