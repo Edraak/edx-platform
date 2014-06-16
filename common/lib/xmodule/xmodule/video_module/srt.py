@@ -33,7 +33,7 @@ class Srt(TranscriptFormat):
         return pysrt_obj
 
     def _convert_to_sjson(self, pysrt_obj):
-        """=
+        """
         Convert transcript from SRT SubRip to SJSON format.
 
         Args:
