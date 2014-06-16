@@ -244,7 +244,7 @@
                 loadFixtures('video_html5.html');
                 state = new Video('#example');
                 spyOn(Logger, 'log');
-                state.videoPlayer.log('someEvent', {
+                state.log('someEvent', {
                     currentTime: 25,
                     speed: '1.0'
                 });

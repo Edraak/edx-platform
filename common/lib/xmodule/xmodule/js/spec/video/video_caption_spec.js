@@ -1039,7 +1039,7 @@
         describe('toggle', function () {
             beforeEach(function () {
                 state = jasmine.initializePlayer();
-                spyOn(state.videoPlayer, 'log');
+                spyOn(state, 'log');
                 $('.subtitles li[data-index=1]').addClass('current');
             });
 
@@ -1050,7 +1050,7 @@
                 });
 
                 it('log the hide_transcript event', function () {
-                    expect(state.videoPlayer.log).toHaveBeenCalledWith(
+                    expect(state.log).toHaveBeenCalledWith(
                         'hide_transcript',
                         {
                             currentTime: state.videoPlayer.currentTime
@@ -1076,7 +1076,7 @@
                 });
 
                 it('log the show_transcript event', function () {
-                    expect(state.videoPlayer.log).toHaveBeenCalledWith(
+                    expect(state.log).toHaveBeenCalledWith(
                         'show_transcript',
                         {
                             currentTime: state.videoPlayer.currentTime

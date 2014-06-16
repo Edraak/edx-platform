@@ -239,8 +239,10 @@ function() {
             return true;
         },
 
-        onUpdateRegionHandler: function (event, startTime, endTime, duration) {
-            this.updateStartEndTimeRegion(startTime, endTime, duration);
+        onUpdateRegionHandler: function (event, options) {
+            this.updateStartEndTimeRegion(
+                options.startTime, options.endTime, options.duration
+            );
         },
 
         onUpdateTimeHandler: function (event, time, duration) {

@@ -378,9 +378,11 @@ function (HTML5Video, Resizer) {
                     this.config.startTime, this.config.endTime, duration
                 );
 
-                this.el('controls:update_region', [
-                    timeRange.startTime, timeRange.endTime, duration
-                ]);
+                this.el.trigger('controls:update_region', [{
+                    startTime: timeRange.startTime,
+                    endTime: timeRange.endTime,
+                    duration: duration
+                }]);
             }
         }
     }
