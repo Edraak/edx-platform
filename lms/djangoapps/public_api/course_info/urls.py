@@ -6,10 +6,12 @@ from django.conf.urls import patterns, url, include
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import VideoSummaryList
+from .views import CourseUpdatesList, CourseHandoutsList
 
-urlpatterns = patterns('public_api.course_updates.views',
-    url(r'^(?P<course_id>[^/]*)$', VideoSummaryList.as_view(), name='video-summary-list'),
+urlpatterns = patterns('public_api.course_info.views',
+    url(r'^(?P<course_id>[^/]*)/updates$', CourseUpdatesList.as_view(), name='course-updates-list'),
+    url(r'^(?P<course_id>[^/]*)/handouts$', CourseHandoutsList.as_view(), name='course-handouts-list'),
+
 #    url(
 #        r'^(?P<username>\w+)/course_enrollments/$',
 #        UserCourseEnrollmentsList.as_view(),

@@ -7,5 +7,7 @@ urlpatterns = patterns('',
 
     url(r'^video_outlines/', include('public_api.video_outlines.urls')),
 
+    url(r'^course_info/', include('public_api.course_info.urls')),
+
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
