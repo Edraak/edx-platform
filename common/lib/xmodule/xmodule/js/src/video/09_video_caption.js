@@ -776,12 +776,10 @@ function (Sjson, AsyncProcess) {
             }
 
             if (hide_captions) {
-                type = 'hide_transcript';
                 state.captionsHidden = true;
                 state.el.addClass('closed');
                 text = gettext('Turn on captions');
             } else {
-                type = 'show_transcript';
                 state.captionsHidden = false;
                 state.el.removeClass('closed');
                 this.scrollCaption();
@@ -792,11 +790,9 @@ function (Sjson, AsyncProcess) {
                 .attr('title', text)
                 .text(gettext(text));
 
-            if (state.videoPlayer) {
-                state.videoPlayer.log(type, {
-                    currentTime: state.videoPlayer.currentTime
-                });
-            }
+            state.el.trigger('captions:visibilitychange', [{
+                visible: !state.captionsHidden
+            }]);
 
             if (state.resizer) {
                 if (state.isFullScreen) {

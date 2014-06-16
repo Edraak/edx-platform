@@ -411,16 +411,6 @@ function (HTML5Video, Resizer) {
         }
 
         newSpeed = parseFloat(newSpeed).toFixed(2).replace(/\.00$/, '.0');
-
-        this.videoPlayer.log(
-            'speed_change_video',
-            {
-                current_time: time,
-                old_speed: this.speed,
-                new_speed: newSpeed
-            }
-        );
-
         this.setSpeed(newSpeed, true);
         this.videoPlayer.setPlaybackRate(newSpeed);
         this.saveState(true, { speed: newSpeed });
@@ -432,8 +422,7 @@ function (HTML5Video, Resizer) {
     // Reinitialized on a onSeek event.
     function onSeek(params) {
         var time = params.time,
-            type = params.type,
-            oldTime = this.videoPlayer.currentTime;
+            type = params.type;
 
         // After the user seeks, the video will start playing from
         // the sought point, and stop playing at the end.
@@ -443,14 +432,6 @@ function (HTML5Video, Resizer) {
         }
 
         this.videoPlayer.seekTo(time);
-        this.videoPlayer.log(
-            'seek_video',
-            {
-                old_time: oldTime,
-                new_time: time,
-                type: type
-            }
-        );
     }
 
     function seekTo(time) {

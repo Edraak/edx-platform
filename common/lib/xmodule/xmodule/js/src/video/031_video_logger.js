@@ -2,20 +2,21 @@
 'use strict';
 define('video/031_video_logger.js',
     [
-        'video/00_abstarct_logger.js', 'video/loggers/load_video.js',
-        'video/loggers/pause_video.js', 'video/loggers/play_video.js',
-        'video/loggers/watch_video.js'
+        'video/loggers/load_video.js', 'video/loggers/pause_video.js',
+        'video/loggers/play_video.js', 'video/loggers/watch_video.js',
+        'video/loggers/transcript_video.js', 'video/loggers/speed_video.js',
+        'video/loggers/seek_video.js'
     ],
 function(
-    AbstractLogger, LoadVideoLogger, PauseVideoLogger, PlayVideoLogger,
-    WatchVideoLogger
+    LoadVideoLogger, PauseVideoLogger, PlayVideoLogger, WatchVideoLogger,
+    TranscriptVideoLogger, SpeedVideoLogger, SeekVideoLogger
 ) {
     var VideoLogger = function(state, i18n) {
         if (!(this instanceof VideoLogger)) {
             return new VideoLogger(state, i18n);
         }
 
-        this.initialize(state, i18n);
+        this.initialize(state);
 
         return $.Deferred().resolve().promise();
     };
@@ -34,10 +35,9 @@ function(
     };
 
     VideoLogger.prototype = {
-        initialize: function(state, i18n) {
+        initialize: function(state) {
             this.state = state;
             this.state.VideoLogger = this;
-            this.i18n = i18n;
             this.activeLoggers = $.map(this.getLoggers(), function(Logger) {
                 return new Logger(state);
             });
@@ -53,7 +53,8 @@ function(
     };
 
     VideoLogger.addLoggers([
-        LoadVideoLogger, PauseVideoLogger, PlayVideoLogger, WatchVideoLogger
+        LoadVideoLogger, PauseVideoLogger, PlayVideoLogger, WatchVideoLogger,
+        TranscriptVideoLogger, SpeedVideoLogger//, SeekVideoLogger
     ]);
 
     return VideoLogger;

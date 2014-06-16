@@ -19,6 +19,10 @@ function (Component) {
             });
         },
 
+        getCurrentTime: function () {
+            return this.state.videoPlayer.currentTime;
+        },
+
         log: function (eventName, data) {
             data = this.getData(data);
             this.logger.log(eventName, data);
