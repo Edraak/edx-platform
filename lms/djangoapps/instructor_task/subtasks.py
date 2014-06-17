@@ -56,6 +56,7 @@ def _generate_items_for_subtask(
     item_sublist_generator,
     item_fields,
     total_num_items,
+    total_num_subtasks,
     items_per_query,
     items_per_task
 ):

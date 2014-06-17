@@ -41,7 +41,11 @@ from courseware.courses import get_course, course_image_url
 from student.roles import CourseStaffRole, CourseInstructorRole
 from instructor_task.models import InstructorTask
 from instructor_task.subtasks import (
-    SubtaskStatus, queue_subtasks_for_query, check_subtask_is_valid, update_subtask_status
+    SubtaskStatus,
+    queue_subtasks_for_query,
+    check_subtask_is_valid,
+    update_subtask_status,
+    _get_number_of_subtasks
 )
 from util.query import use_read_replica_if_available
 
@@ -97,23 +101,20 @@ def _get_recipient_querysets_generator(user_id, to_option, course_id, recipient_
     Recipients who are in more than one category (e.g. enrolled in the course and are staff or self)
     will be properly deduped.
     """
-    if to_option not in TO_OPTIONS:
-        log.error("Unexpected bulk email TO_OPTION found: %s", to_option)
-        raise Exception("Unexpected bulk email TO_OPTION found: {0}".format(to_option))
 
     if to_option in [SEND_TO_MYSELF, SEND_TO_STAFF]:
         # for these options, _get_querysets_for_to_option only returns one queryset
         recipient_qset = _get_querysets_for_to_option(to_option, course_id, user_id)[0]
-        yield list(recipient_qset)
+        yield list(recipient_qset.values(*recipient_fields))
 
     elif to_option == SEND_TO_ALL:
         unenrolled_staff_instr_qset, enrollment_qset = _get_querysets_for_to_option(
             to_option, course_id, user_id
         )
-        yield list(unenrolled_staff_instr_qset)
+        yield list(unenrolled_staff_instr_qset.values(*recipient_fields))
 
         for item_sublist in _get_chunks_from_queryset(
-            enrollment_qset.select_related('courseenrollment'),
+            enrollment_qset.select_related('courseenrollment__id'),
             settings.BULK_EMAIL_EMAILS_PER_QUERY,
             'courseenrollment__id',
             recipient_fields
@@ -164,26 +165,30 @@ def _get_num_subtasks_for_to_option(to_option, course_id, user_id):
     num_subtasks = 0
     recipient_qsets = _get_querysets_for_to_option(to_option, course_id, user_id)
     for recipient_qset in recipient_qsets:
-        num_subtasks += _get_number_of_subtasks(total_num_items, items_per_query, items_per_task)
+        num_subtasks += _get_number_of_subtasks(
+            recipient_qset.count(),
+            settings.BULK_EMAIL_EMAILS_PER_QUERY,
+            settings.BULK_EMAIL_EMAILS_PER_TASK
+        )
+    return num_subtasks
 
 def _get_chunks_from_queryset(queryset, items_per_query, ordering_key, all_item_fields):
     """
     Chunks up a query and generates the chunks.
     """
     total_num_items = queryset.count()
+    queryset = queryset.order_by(ordering_key).values(*all_item_fields)
     num_queries = int(math.ceil(float(total_num_items) / float(items_per_query)))
-    last_key = getattr(queryset.order_by(ordering_key)[0], ordering_key) - 1
+    last_key = queryset[0][ordering_key] - 1
     if ordering_key not in all_item_fields:
         all_item_fields.append(ordering_key)
 
     for query_number in range(num_queries):
-        item_sublist = queryset.order_by(ordering_key).filter(
-            **{ordering_key + "__gt": last_key}
-        ).values(*all_item_fields)
+        item_sublist = queryset.filter(**{ordering_key + "__gt": last_key})
         if query_number < num_queries - 1:
             item_sublist = list(item_sublist[:items_per_query])
         else:
-            item_sublist = list(items_per_query)
+            item_sublist = list(item_sublist)
 
         yield item_sublist
         last_key = item_sublist[-1][ordering_key]
@@ -283,8 +288,12 @@ def perform_delegate_email_batches(entry_id, course_id, task_input, action_name)
         )
         return new_subtask
 
+    recipient_fields = ['pk', 'profile__name', 'email', 'courseenrollment__id']
 
-    recipient_fields = ['profile__name', 'email', 'courseenrollment__id']
+    if to_option not in TO_OPTIONS:
+        log.error("Unexpected bulk email TO_OPTION found: %s", to_option)
+        raise Exception("Unexpected bulk email TO_OPTION found: {0}".format(to_option))
+
     recipient_qsets_generator = _get_recipient_querysets_generator(
         user_id, to_option, course_id, recipient_fields
     )
@@ -378,6 +387,8 @@ def send_course_email(entry_id, email_id, to_list, global_email_context, subtask
                 global_email_context,
                 subtask_status,
             )
+
+
     except Exception:
         # Unexpected exception. Try to write out the failure to the entry before failing.
         log.exception("Send-email task %s for email %s: failed unexpectedly!", current_task_id, email_id)
