@@ -180,6 +180,12 @@ class UserTagsService(object):
         return user_service.set_course_tag(self._get_current_user(),
                                            self.runtime.course_id, key, value)
 
+class UserInformationService(object):
+    def __init__(self, runtime):
+        self.runtime = runtime
+
+    def location_by_ip(self):
+        return getattr(runtime.user, 'location', None)
 
 class LmsModuleSystem(LmsHandlerUrls, ModuleSystem):  # pylint: disable=abstract-method
     """
