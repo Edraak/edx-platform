@@ -256,7 +256,7 @@ msgstr "المساق ممتلئ بالكامل"
 
 #: common/djangoapps/student/views.py
 msgid "Student is already enrolled"
-msgstr ""
+msgstr "الطالب مُسجل مسبقاََ"
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
@@ -1726,17 +1726,19 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "LTI Passports"
-msgstr ""
+msgstr "رمز الدخول LTI"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Enter the passports for course LTI tools in the following format: "
 "\"id\":\"client_key:client_secret\"."
 msgstr ""
+"أدخل رمز الدخول لأدوات المقرر LTI بإتباع الطريقة "
+"\"id\":\"client_key:client_secret\""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Course Advertised Start Date"
-msgstr ""
+msgstr "بداية تاريخ إعلان المقرر التعليمي"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -1747,7 +1749,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Show Calculator"
-msgstr ""
+msgstr "إظهار الآلة الحاسبة"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -2677,7 +2679,7 @@ msgstr "واجهة تقييم النظراء"
 #: common/lib/xmodule/xmodule/seq_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Due Date"
-msgstr ""
+msgstr "التاريخ النهائي للتسليم"
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Enter the date by which problems are due."
@@ -6391,7 +6393,7 @@ msgstr ""
 
 #: cms/djangoapps/models/settings/course_metadata.py
 msgid "Incorrect format for field '{name}'. {detailed_message}"
-msgstr ""
+msgstr "يوجد خطأ في الإدخال '{name}'. {detailed_message}"
 
 #: cms/templates/404.html cms/templates/error.html
 #: lms/templates/static_templates/404.html

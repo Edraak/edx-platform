@@ -571,7 +571,7 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
-msgstr ""
+msgstr "بے نام٬ گمنام٬ غیر معروف"
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js
@@ -789,68 +789,76 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Available %s"
-msgstr ""
+msgstr "میسر %s "
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of available %s. You may choose some by selecting them in "
 "the box below and then clicking the \"Choose\" arrow between the two boxes."
 msgstr ""
+"یہ دستیاب کی فہرست ہے %s.  آپ نیچے دیئے گئے خانے میں ان کے انتخاب اور اس کے "
+"بعد دو خانوں کے درمیان \"کا انتخاب کریں\" تیر پر کلک کرنے سے کچھ منتخب کر "
+"سکتے ہیں."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Type into this box to filter down the list of available %s."
-msgstr ""
+msgstr "دستیاب کی فہرست مختصر کرنے کے لئے اس کے خانے میں ٹائپ کریں %s."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Filter"
-msgstr ""
+msgstr "مختصر "
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose all"
-msgstr ""
+msgstr "تمام منتخب کریں"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to choose all %s at once."
-msgstr ""
+msgstr "ایک بار میں تمام %s کو منتخب کرنے کے لئے کلک کریں."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose"
-msgstr ""
+msgstr "انتخاب کریں"
 
 #: lms/static/admin/js/SelectFilter2.js
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
-msgstr ""
+msgstr "ہٹا دیں "
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Chosen %s"
-msgstr ""
+msgstr "منتخب کیا %s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of chosen %s. You may remove some by selecting them in the "
 "box below and then clicking the \"Remove\" arrow between the two boxes."
 msgstr ""
+"یہ منتخب کردہ فہرست ہے %s.  آپ نیچے دیئے گئے خانے میں ان کے انتخاب اور اس کے"
+" بعد دو خانوں کے درمیان \"کو ہٹا دیں\" تیر پر کلک کرنے  سے کچھ نکال سکتے "
+"ہیں."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr ""
+msgstr "تمام ہٹا دیں"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to remove all chosen %s at once."
-msgstr ""
+msgstr "ایک بار میں تمام منتخب کردہ %s کو ہٹانے کے لئے کلک کریں."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid "%(sel)s of %(cnt)s selected"
 msgid_plural "%(sel)s of %(cnt)s selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " %(sel)s کے %(cnt)s منتخب"
+msgstr[1] "%(sel)s کے %(cnt)s منتخب "
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
 "You have unsaved changes on individual editable fields. If you run an "
 "action, your unsaved changes will be lost."
 msgstr ""
+"آپکی قابل تدوین شعبوں پر غیر محفوظ شدہ تبدیلیاں ہیں.  آپ ایک کارروائی چلاتے "
+"ہیں تو، آپکی غیر محفوظ شدہ تبدیلیاں ضائع ہو جایں گی."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
@@ -858,6 +866,9 @@ msgid ""
 "individual fields yet. Please click OK to save. You'll need to re-run the "
 "action."
 msgstr ""
+"آپ نے ایک کارروائی کو منتخب کیا ہے، لیکن ابھی تک آپ نے انفرادی شعبوں پر اپنی"
+" تبدیلیوں کو محفوظ نہیں کیا. برائے مہربانی محفوظ کرنے کیلے OK پر کلک کریں. "
+"آپ کو کارروائی دوبارہ چلانے کی ضرورت ہو گی."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""

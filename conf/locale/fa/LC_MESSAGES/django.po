@@ -13972,7 +13972,7 @@ msgstr ""
 
 # empty
 msgid "This is a key string."
-msgstr ""
+msgstr "این یک رشته کلیدی می باشد."
 
 #: wiki/admin.py wiki/models/article.py
 msgid "created"
