@@ -51,13 +51,11 @@ def _get_number_of_subtasks(total_num_items, items_per_query, items_per_task):
 
     return total_num_tasks
 
-
 def _generate_items_for_subtask(
     item_sublist_generator,
     item_fields,
     total_num_items,
     total_num_subtasks,
-    items_per_query,
     items_per_task
 ):
     """
@@ -69,7 +67,6 @@ def _generate_items_for_subtask(
             These are in addition to the 'pk' field.
         `total_num_items` : the result of item_queryset.count().
         `total_num_subtasks` : total amount of subtasks to be created
-        `items_per_query` : size of chunks to break the query operation into.
         `items_per_task` : maximum size of chunks to break each query chunk into for use by a subtask.
 
     Returns:  yields a list of dicts, where each dict contains the fields in `item_fields`, plus the 'pk' field.
@@ -81,11 +78,9 @@ def _generate_items_for_subtask(
 
     for item_sublist in item_sublist_generator:
         num_items_this_query = len(item_sublist)
-        if num_items_this_query == 0:
-            continue
 
-        # In case total_num_items has increased since it was initially calculated just distribute the extra
-        # items among the available subtasks.
+        # In case total_num_items has increased since it was initially calculated,
+        # just distribute the extra items among the available subtasks.
         num_tasks_this_query = min(
             available_num_subtasks,
             int(math.ceil(float(num_items_this_query) / float(items_per_task)))
@@ -265,7 +260,6 @@ def queue_subtasks_for_query(
     total_num_items,
     total_num_subtasks,
     item_fields,
-    items_per_query,
     items_per_task
 ):
     """
@@ -280,7 +274,6 @@ def queue_subtasks_for_query(
         `recipient_qsets_generator` : a generator that generates chunked queries.
         `item_fields` : the fields that should be included in the dict that is returned.
             These are in addition to the 'pk' field.
-        `items_per_query` : size of chunks to break the query operation into.
         `items_per_task` : maximum size of chunks to break each query chunk into for use by a subtask.
 
     Returns:  the task progress as stored in the InstructorTask object.
@@ -295,6 +288,8 @@ def queue_subtasks_for_query(
              task_id, entry.id, total_num_subtasks, total_num_items)  # pylint: disable=E1101
     progress = initialize_subtask_info(entry, action_name, total_num_items, subtask_id_list)
 
+    if item_fields is None:
+        item_fields = ['pk']
     # Construct a generator that will return the recipients to use for each subtask.
     # Pass in the desired fields to fetch for each recipient.
     item_generator = _generate_items_for_subtask(
@@ -302,7 +297,6 @@ def queue_subtasks_for_query(
         item_fields,
         total_num_items,
         total_num_subtasks,
-        items_per_query,
         items_per_task
     )
 

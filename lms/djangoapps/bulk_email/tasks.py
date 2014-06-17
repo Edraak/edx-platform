@@ -111,7 +111,8 @@ def _get_recipient_querysets_generator(user_id, to_option, course_id, recipient_
         unenrolled_staff_instr_qset, enrollment_qset = _get_querysets_for_to_option(
             to_option, course_id, user_id
         )
-        yield list(unenrolled_staff_instr_qset.values(*recipient_fields))
+        if unenrolled_staff_instr_qset.exists():
+            yield list(unenrolled_staff_instr_qset.values(*recipient_fields))
 
         for item_sublist in _get_chunks_from_queryset(
             enrollment_qset.select_related('courseenrollment__id'),
@@ -177,11 +178,11 @@ def _get_chunks_from_queryset(queryset, items_per_query, ordering_key, all_item_
     Chunks up a query and generates the chunks.
     """
     total_num_items = queryset.count()
-    queryset = queryset.order_by(ordering_key).values(*all_item_fields)
     num_queries = int(math.ceil(float(total_num_items) / float(items_per_query)))
-    last_key = queryset[0][ordering_key] - 1
     if ordering_key not in all_item_fields:
         all_item_fields.append(ordering_key)
+    queryset = queryset.order_by(ordering_key).values(*all_item_fields)
+    last_key = queryset[0][ordering_key] - 1
 
     for query_number in range(num_queries):
         item_sublist = queryset.filter(**{ordering_key + "__gt": last_key})
@@ -311,7 +312,6 @@ def perform_delegate_email_batches(entry_id, course_id, task_input, action_name)
         total_num_items,
         total_num_subtasks,
         recipient_fields,
-        settings.BULK_EMAIL_EMAILS_PER_QUERY,
         settings.BULK_EMAIL_EMAILS_PER_TASK
     )
 

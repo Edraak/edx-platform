@@ -7,7 +7,8 @@ from mock import Mock, patch
 
 from student.models import CourseEnrollment
 
-from instructor_task.subtasks import queue_subtasks_for_query
+from instructor_task.subtasks import queue_subtasks_for_query, _get_number_of_subtasks
+from bulk_email.tasks import _get_chunks_from_queryset
 from instructor_task.tests.factories import InstructorTaskFactory
 from instructor_task.tests.test_base import InstructorTaskCourseTestCase
 
@@ -39,6 +40,12 @@ class TestSubtasks(InstructorTaskCourseTestCase):
 
         self._enroll_students_in_course(self.course.id, initial_count)
         task_queryset = CourseEnrollment.objects.filter(course_id=self.course.id)
+        total_num_items = task_queryset.count()
+        total_num_subtasks = _get_number_of_subtasks(total_num_items, items_per_query, items_per_task)
+
+        task_queryset_generator = _get_chunks_from_queryset(
+            task_queryset, items_per_query, 'pk', ['pk']
+        )
 
         def initialize_subtask_info(*args):  # pylint: disable=unused-argument
             """Instead of initializing subtask info enroll some more students into course."""
@@ -51,14 +58,18 @@ class TestSubtasks(InstructorTaskCourseTestCase):
                 entry=instructor_task,
                 action_name='action_name',
                 create_subtask_fcn=create_subtask_fcn,
-                item_queryset=task_queryset,
-                item_fields=[],
-                items_per_query=items_per_query,
+                recipient_qsets_generator=task_queryset_generator,
+                total_num_items=total_num_items,
+                total_num_subtasks=total_num_subtasks,
+                item_fields=None,
                 items_per_task=items_per_task,
             )
 
-    def test_queue_subtasks_for_query1(self):
-        """Test queue_subtasks_for_query() if in last query the subtasks only need to accommodate < items_per_tasks items."""
+    def _test_queue_subtasks_for_query1(self):
+        """
+        Test queue_subtasks_for_query() if in last query the subtasks
+        only need to accommodate < items_per_tasks items.
+        """
 
         mock_create_subtask_fcn = Mock()
         self._queue_subtasks(mock_create_subtask_fcn, 6, 3, 8, 1)
@@ -69,8 +80,11 @@ class TestSubtasks(InstructorTaskCourseTestCase):
         self.assertEqual(len(mock_create_subtask_fcn_args[1][0][0]), 3)
         self.assertEqual(len(mock_create_subtask_fcn_args[2][0][0]), 3)
 
-    def test_queue_subtasks_for_query2(self):
-        """Test queue_subtasks_for_query() if in last query the subtasks need to accommodate > items_per_task items."""
+    def _test_queue_subtasks_for_query2(self):
+        """
+        Test queue_subtasks_for_query() if in last query the subtasks
+        need to accommodate > items_per_task items.
+        """
 
         mock_create_subtask_fcn = Mock()
         self._queue_subtasks(mock_create_subtask_fcn, 6, 3, 8, 3)
@@ -82,9 +96,13 @@ class TestSubtasks(InstructorTaskCourseTestCase):
         self.assertEqual(len(mock_create_subtask_fcn_args[2][0][0]), 5)
 
     def test_queue_subtasks_for_query3(self):
-        """Test queue_subtasks_for_query() if in last query the number of items available > items_per_query."""
+        """
+        Test queue_subtasks_for_query() if in last query the number of items
+        available > items_per_query.
+        """
 
         mock_create_subtask_fcn = Mock()
+
         self._queue_subtasks(mock_create_subtask_fcn, 6, 3, 11, 3)
 
         # Check number of items for each subtask
