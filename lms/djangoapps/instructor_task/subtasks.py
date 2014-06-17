@@ -67,7 +67,7 @@ def _generate_items_for_subtask(
         `item_fields` : the fields that should be included in the dict that is returned.
             These are in addition to the 'pk' field.
         `total_num_items` : the result of item_queryset.count().
-        `total_num_subtasks`: 
+        `total_num_subtasks` : total amount of subtasks to be created
         `items_per_query` : size of chunks to break the query operation into.
         `items_per_task` : maximum size of chunks to break each query chunk into for use by a subtask.
 
@@ -76,7 +76,6 @@ def _generate_items_for_subtask(
     Warning:  if the algorithm here changes, the _get_number_of_subtasks() method should similarly be changed.
     """
     num_items_queued = 0
-    total_num_subtasks = total_num_items / settings.BULK_EMAIL_EMAILS_PER_TASK
     available_num_subtasks = total_num_subtasks
 
     for item_sublist in item_sublist_generator:
@@ -92,10 +91,7 @@ def _generate_items_for_subtask(
         )
         available_num_subtasks -= num_tasks_this_query
 
-        try:
-            chunk = int(math.ceil(float(num_items_this_query) / float(num_tasks_this_query)))
-        except ZeroDivisionError:
-            from nose.tools import set_trace; set_trace()
+        chunk = int(math.ceil(float(num_items_this_query) / float(num_tasks_this_query)))
         for i in range(num_tasks_this_query):
             items_for_task = item_sublist[i * chunk:i * chunk + chunk]
             yield items_for_task
@@ -266,6 +262,7 @@ def queue_subtasks_for_query(
     create_subtask_fcn,
     recipient_qsets_generator,
     total_num_items,
+    total_num_subtasks,
     item_fields,
     items_per_query,
     items_per_task
@@ -279,7 +276,7 @@ def queue_subtasks_for_query(
         `create_subtask_fcn` : a function of two arguments that constructs the desired kind of subtask object.
             Arguments are the list of items to be processed by this subtask, and a SubtaskStatus
             object reflecting initial status (and containing the subtask's id).
-        `item_queryset` : a query set that defines the "items" that should be passed to subtasks.
+        `recipient_qsets_generator` : a generator that generates chunked queries.
         `item_fields` : the fields that should be included in the dict that is returned.
             These are in addition to the 'pk' field.
         `items_per_query` : size of chunks to break the query operation into.
@@ -290,8 +287,6 @@ def queue_subtasks_for_query(
     """
     task_id = entry.task_id
 
-    # Calculate the number of tasks that will be created, and create a list of ids for each task.
-    total_num_subtasks = _get_number_of_subtasks(total_num_items, items_per_query, items_per_task)
     subtask_id_list = [str(uuid4()) for _ in range(total_num_subtasks)]
 
     # Update the InstructorTask  with information about the subtasks we've defined.

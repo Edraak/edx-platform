@@ -289,6 +289,7 @@ def perform_delegate_email_batches(entry_id, course_id, task_input, action_name)
         user_id, to_option, course_id, recipient_fields
     )
     total_num_items = _get_num_items_for_to_option(to_option, course_id, user_id)
+    total_num_subtasks = _get_num_subtasks_for_to_option(to_option, course_id, user_id)
 
     log.info(u"Task %s: Preparing to queue subtasks for sending emails for course %s, email %s, to_option %s",
              task_id, course_id, email_id, to_option)
@@ -299,6 +300,7 @@ def perform_delegate_email_batches(entry_id, course_id, task_input, action_name)
         _create_send_email_subtask,
         recipient_qsets_generator,
         total_num_items,
+        total_num_subtasks,
         recipient_fields,
         settings.BULK_EMAIL_EMAILS_PER_QUERY,
         settings.BULK_EMAIL_EMAILS_PER_TASK
