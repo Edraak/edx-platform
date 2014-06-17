@@ -102,7 +102,9 @@ def _get_recipient_querysets_generator(user_id, to_option, course_id, recipient_
         raise Exception("Unexpected bulk email TO_OPTION found: {0}".format(to_option))
 
     if to_option in [SEND_TO_MYSELF, SEND_TO_STAFF]:
-        yield list(_get_querysets_for_to_option(to_option, course_id, user_id)[0])
+        # for these options, _get_querysets_for_to_option only returns one queryset
+        recipient_qset = _get_querysets_for_to_option(to_option, course_id, user_id)[0]
+        yield list(recipient_qset)
 
     elif to_option == SEND_TO_ALL:
         unenrolled_staff_instr_qset, enrollment_qset = _get_querysets_for_to_option(
@@ -111,7 +113,7 @@ def _get_recipient_querysets_generator(user_id, to_option, course_id, recipient_
         yield list(unenrolled_staff_instr_qset)
 
         for item_sublist in _get_chunks_from_queryset(
-            enrollment_qset,
+            enrollment_qset.select_related('courseenrollment'),
             settings.BULK_EMAIL_EMAILS_PER_QUERY,
             'courseenrollment__id',
             recipient_fields
@@ -119,6 +121,9 @@ def _get_recipient_querysets_generator(user_id, to_option, course_id, recipient_
             yield item_sublist
 
 def _get_querysets_for_to_option(to_option, course_id, user_id):
+    """
+    Returns a list of querysets corresponding for each to_option
+    """
     if to_option == SEND_TO_MYSELF:
         return [use_read_replica_if_available(User.objects.filter(id=user_id)[:1])]
     else:
@@ -148,11 +153,23 @@ def _get_querysets_for_to_option(to_option, course_id, user_id):
             return [unenrolled_staff_instr_qset, enrollment_qset]
 
 def _get_num_items_for_to_option(to_option, course_id, user_id):
+    """
+    Returns the amount of recipients for a given `to_option`
+    """
     return sum(
         [queryset.count() for queryset in _get_querysets_for_to_option(to_option, course_id, user_id)]
     )
 
+def _get_num_subtasks_for_to_option(to_option, course_id, user_id):
+    num_subtasks = 0
+    recipient_qsets = _get_querysets_for_to_option(to_option, course_id, user_id)
+    for recipient_qset in recipient_qsets:
+        num_subtasks += _get_number_of_subtasks(total_num_items, items_per_query, items_per_task)
+
 def _get_chunks_from_queryset(queryset, items_per_query, ordering_key, all_item_fields):
+    """
+    Chunks up a query and generates the chunks.
+    """
     total_num_items = queryset.count()
     num_queries = int(math.ceil(float(total_num_items) / float(items_per_query)))
     last_key = getattr(queryset.order_by(ordering_key)[0], ordering_key) - 1
@@ -169,7 +186,7 @@ def _get_chunks_from_queryset(queryset, items_per_query, ordering_key, all_item_
             item_sublist = list(items_per_query)
 
         yield item_sublist
-        last_key = getattr(item_sublist[-1], ordering_key)
+        last_key = item_sublist[-1][ordering_key]
 
 def _get_course_email_context(course):
     """

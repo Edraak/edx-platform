@@ -12,6 +12,7 @@ from dogapi import dog_stats_api
 
 from django.db import transaction, DatabaseError
 from django.core.cache import cache
+from django.conf import settings
 
 from instructor_task.models import InstructorTask, PROGRESS, QUEUING
 
@@ -51,10 +52,10 @@ def _get_number_of_subtasks(total_num_items, items_per_query, items_per_task):
     return total_num_tasks
 
 
-def _generate_items_for_subtask(item_sublist_generator,
+def _generate_items_for_subtask(
+    item_sublist_generator,
     item_fields,
     total_num_items,
-    total_num_subtasks,
     items_per_query,
     items_per_task
 ):
@@ -66,6 +67,7 @@ def _generate_items_for_subtask(item_sublist_generator,
         `item_fields` : the fields that should be included in the dict that is returned.
             These are in addition to the 'pk' field.
         `total_num_items` : the result of item_queryset.count().
+        `total_num_subtasks`: 
         `items_per_query` : size of chunks to break the query operation into.
         `items_per_task` : maximum size of chunks to break each query chunk into for use by a subtask.
 
@@ -74,6 +76,7 @@ def _generate_items_for_subtask(item_sublist_generator,
     Warning:  if the algorithm here changes, the _get_number_of_subtasks() method should similarly be changed.
     """
     num_items_queued = 0
+    total_num_subtasks = total_num_items / settings.BULK_EMAIL_EMAILS_PER_TASK
     available_num_subtasks = total_num_subtasks
 
     for item_sublist in item_sublist_generator:
