@@ -764,20 +764,30 @@ class YouTubeHtml5VideoTest(VideoBaseTest):
         And the video does not show the captions
 
         """
+
+        # configure youtube server
+        self.youtube_configuration.update({
+            'time_to_response': 2.0
+        })
+
         self.assets.extend(['subs_OEoXaMPEzfM.srt.sjson', 'subs_b7xgknqkQk8.srt.sjson', 'chinese_transcripts.srt'])
 
-        video_a_metadata = {'youtube_id_1_0': 'OEoXaMPEzfM', 'sub': 'OEoXaMPEzfM', 'html5_sources': HTML5_SOURCES}
-        video_b_metadata = {'youtube_id_1_0': 'b7xgknqkQk8', 'sub': 'b7xgknqkQk8', 'html5_sources': HTML5_SOURCES}
+        data_a = {'youtube_id_1_0': 'OEoXaMPEzfM', 'sub': 'OEoXaMPEzfM'}
+        video_a_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_a)
 
-        # data_c = {'transcripts': {'zh': 'chinese_transcripts.srt'}}
-        # video_c_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_c)
-        #
-        # video_d_metadata = self.metadata_for_mode('youtube_html5')
+        data_b = {'youtube_id_1_0': 'b7xgknqkQk8', 'sub': 'b7xgknqkQk8'}
+        video_b_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_b)
+
+        data_c = {'youtube_id_1_0': 'AKqURZnYqpk', 'transcripts': {'zh': 'chinese_transcripts.srt'}}
+        video_c_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_c)
+
+        data_d = {'youtube_id_1_0': 'DYpADpL7jAY'}
+        video_d_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_d)
 
         self.verticals = [
             [{'display_name': 'A', 'metadata': video_a_metadata}, {'display_name': 'B', 'metadata': video_b_metadata}],
-            # [{'display_name': 'C', 'metadata': video_c_metadata}],
-            # [{'display_name': 'D', 'metadata': video_d_metadata}]
+            [{'display_name': 'C', 'metadata': video_c_metadata}],
+            [{'display_name': 'D', 'metadata': video_d_metadata}]
         ]
 
         self.navigate_to_video()
