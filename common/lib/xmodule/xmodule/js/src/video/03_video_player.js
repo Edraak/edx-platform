@@ -431,10 +431,15 @@ function (HTML5Video, Resizer) {
             this.videoPlayer.stopAtEndTime = false;
         }
 
-        this.videoPlayer.seekTo(time);
+        this.videoPlayer.seekTo(time, {
+            time: this.videoPlayer.currentTime,
+            suggestedTime: time,
+            type: type,
+            sendLogs: true
+        });
     }
 
-    function seekTo(time) {
+    function seekTo(time, options) {
         var duration = this.videoPlayer.duration();
 
         if ((typeof time !== 'number') || (time > duration) || (time < 0)) {
@@ -468,7 +473,7 @@ function (HTML5Video, Resizer) {
         }
 
         this.videoPlayer.updatePlayTime(time, true);
-        this.el.trigger('seek', arguments);
+        this.el.trigger('seek', [options || time]);
     }
 
     function runTimer() {
@@ -510,7 +515,9 @@ function (HTML5Video, Resizer) {
         this.videoPlayer.stopTimer();
         this.trigger('videoControl.pause', null);
         this.saveState(true);
-        this.el.trigger('pause', [this.videoPlayer.currentTime]);
+        this.el.trigger('pause', [{
+            time: this.videoPlayer.currentTime
+        }]);
     }
 
     function onPlay() {
@@ -520,7 +527,9 @@ function (HTML5Video, Resizer) {
             end: false
         });
         this.videoPlayer.ready();
-        this.el.trigger('play', [this.videoPlayer.currentTime]);
+        this.el.trigger('play', [{
+            time: this.videoPlayer.currentTime
+        }]);
     }
 
     function onUnstarted() { }
@@ -546,8 +555,8 @@ function (HTML5Video, Resizer) {
 
         dfd.resolve();
 
-        this.el.on('speedchange', function (event, speed) {
-            _this.videoPlayer.onSpeedChange(speed);
+        this.el.on('speedchange', function (event, options) {
+            _this.videoPlayer.onSpeedChange(options.speed);
         });
 
         this.el.on('volumechange volumechange:silent', function (event, volume) {
@@ -748,10 +757,8 @@ function (HTML5Video, Resizer) {
         return time;
     }
 
-    function updatePlayTime(time, skip_seek) {
-        var videoPlayer = this.videoPlayer,
-            duration = this.videoPlayer.duration(),
-            youTubeId;
+    function updatePlayTime(time) {
+        var duration = this.videoPlayer.duration();
 
         this.trigger(
             'videoProgressSlider.updatePlayTime',

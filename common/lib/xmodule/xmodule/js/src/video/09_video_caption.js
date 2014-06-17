@@ -696,13 +696,11 @@ function (Sjson, AsyncProcess) {
                 time = Math.round(Time.convert(time, '1.0', state.speed));
             }
 
-            state.trigger(
-                'videoPlayer.onCaptionSeek',
-                {
-                    'type': 'onCaptionSeek',
-                    'time': time/1000
-                }
-            );
+            state.trigger('videoPlayer.onCaptionSeek', {
+                type: 'onCaptionSeek',
+                time: time/1000,
+                sendLogs: true
+            });
 
             event.preventDefault();
         },
@@ -750,32 +748,27 @@ function (Sjson, AsyncProcess) {
         */
         toggle: function (event) {
             event.preventDefault();
-
-            if (this.state.el.hasClass('closed')) {
-                this.hideCaptions(false);
-            } else {
-                this.hideCaptions(true);
-            }
+            this.hideCaptions(!this.state.el.hasClass('closed'), false, true);
         },
 
         /**
         * @desc Shows/Hides captions and updates the cookie.
         *
-        * @param {boolean} hide_captions if `true` hides the caption,
+        * @param {boolean} hideCaptions if `true` hides the caption,
         *     otherwise - show.
         * @param {boolean} update_cookie Flag to update or not the cookie.
         *
         */
-        hideCaptions: function (hide_captions, update_cookie) {
+        hideCaptions: function (hideCaptions, updateCookie, sendLogs) {
             var hideSubtitlesEl = this.hideSubtitlesEl,
                 state = this.state,
                 type, text;
 
-            if (typeof update_cookie === 'undefined') {
-                update_cookie = true;
+            if (typeof updateCookie === 'undefined') {
+                updateCookie = true;
             }
 
-            if (hide_captions) {
+            if (hideCaptions) {
                 state.captionsHidden = true;
                 state.el.addClass('closed');
                 text = gettext('Turn on captions');
@@ -791,7 +784,8 @@ function (Sjson, AsyncProcess) {
                 .text(gettext(text));
 
             state.el.trigger('captions:visibilitychange', [{
-                visible: !state.captionsHidden
+                visible: !state.captionsHidden,
+                sendLogs: sendLogs || false
             }]);
 
             if (state.resizer) {
@@ -803,8 +797,8 @@ function (Sjson, AsyncProcess) {
             }
 
             this.setSubtitlesHeight();
-            if (update_cookie) {
-                $.cookie('hide_captions', hide_captions, {
+            if (updateCookie) {
+                $.cookie('hide_captions', hideCaptions, {
                     expires: 3650,
                     path: '/'
                 });

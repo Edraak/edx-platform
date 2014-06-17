@@ -1,6 +1,6 @@
 (function (define) {
 'use strict';
-define('video/loggers/load_video.js', ['video/00_abstarct_logger.js'],
+define('video/00_loggers/load_video.js', ['video/00_abstarct_logger.js'],
 function (AbstractLogger) {
     var LoadVideoLogger = AbstractLogger.extend({
         watch: function (element) {

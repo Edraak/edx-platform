@@ -66,10 +66,13 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
     # index. We do that to avoid issues that occurs in tests.
     module = __name__.replace('.video_module', '', 2)
     loggers = [
-        resource_string(module, 'js/src/video/loggers/load_video.js'),
-        resource_string(module, 'js/src/video/loggers/pause_video.js'),
-        resource_string(module, 'js/src/video/loggers/play_video.js'),
-        resource_string(module, 'js/src/video/loggers/watch_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/load_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/pause_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/play_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/watch_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/speed_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/seek_video.js'),
+        resource_string(module, 'js/src/video/00_loggers/transcript_video.js'),
     ]
     js = {
         'js': loggers + [

@@ -1,12 +1,13 @@
 (function (define) {
 'use strict';
-define('video/loggers/watch_video.js', ['video/00_abstarct_logger.js'],
+define('video/00_loggers/watch_video.js', ['video/00_abstarct_logger.js'],
 function (AbstractLogger) {
     var WatchVideoLogger = AbstractLogger.extend({
         size: 100,
         watch: function (element) {
             this.coef = 1;
             element.on('play', _.once(this.onPlayHandler.bind(this)));
+            element.on('seek', function () { });
         },
 
         getWatchedProgress: function () {
@@ -36,11 +37,9 @@ function (AbstractLogger) {
         },
 
         getData: function () {
-            return {
-                id: this.id,
-                code: this.getCode(),
+            return this.__super__.getData({
                 percent: this.getWatchedProgress()
-            };
+            });
         },
 
         bindOnProgressHandler: function () {

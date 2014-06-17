@@ -175,7 +175,10 @@ function (Iterator) {
                 this.currentSpeed = speed;
 
                 if (!silent) {
-                    this.el.trigger('speedchange', [speed]);
+                    this.el.trigger('speedchange', [{
+                        speed: speed,
+                        sendLogs: true
+                    }]);
                 }
             }
         },

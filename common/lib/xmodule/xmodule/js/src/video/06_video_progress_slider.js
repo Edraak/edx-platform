@@ -194,10 +194,11 @@ function () {
             }
         );
 
-        this.trigger(
-            'videoPlayer.onSlideSeek',
-            {'type': 'onSlideSeek', 'time': time}
-        );
+        this.trigger('videoPlayer.onSlideSeek', {
+            type: 'onSlideSeek',
+            time: time,
+            sendLogs: true
+        });
 
         // ARIA
         this.videoProgressSlider.handle.attr(
@@ -215,10 +216,11 @@ function () {
         // dragging it, then only one seek is made, even when a 'slide' and a 'stop'
         // events are triggered on the slider.
         if (this.videoProgressSlider.lastSeekValue !== ui.value) {
-            this.trigger(
-                'videoPlayer.onSlideSeek',
-                {'type': 'onSlideSeek', 'time': ui.value}
-            );
+            this.trigger('videoPlayer.onSlideSeek', {
+                type: 'onSlideSeek',
+                time: ui.value,
+                sendLogs: true
+            });
         }
 
         // ARIA
