@@ -3,97 +3,142 @@
 define('video/00_loggers/watch_video.js', ['video/00_abstarct_logger.js'],
 function (AbstractLogger) {
     var WatchVideoLogger = AbstractLogger.extend({
-        size: 100,
         watch: function (element) {
-            this.coef = 1;
-            element.on('play', _.once(this.onPlayHandler.bind(this)));
-            element.on('seek', function () { });
-        },
-
-        getWatchedProgress: function () {
-            var timeline = this.getTimeline();
-
-            return _.compact(timeline).length * this.coef;
-        },
-
-        createTimeline: function () {
-            return [];
-        },
-
-        getTimeline: function () {
-            return this.timeline || this.createTimeline();
-        },
-
-        isPositionWatched: function (position) {
-            var timeline = this.getTimeline();
-
-            return timeline[position];
-        },
-
-        markPositionAsWatched: function (position) {
-            var timeline = this.getTimeline();
-
-            timeline[position] = 1;
-        },
-
-        getData: function () {
-            return this.__super__.getData({
-                percent: this.getWatchedProgress()
+            this.createSegmentsList();
+            element.on({
+                'play': this.onPlayHandler.bind(this),
+                'pause': this.onPauseHandler.bind(this),
+                'ended': this.onEndedHandler.bind(this),
+                'seek': this.onSeekHandler.bind(this),
+                'progress': this.onProgressHandler.bind(this)
             });
+            this.bindLoggerOnUnload();
         },
 
-        bindOnProgressHandler: function () {
-            this.element.on('progress.watched_logger', _.throttle(
-                this.onProgressHandler.bind(this), this.waitTime,
-                { leading: true, trailing: true }
-            ));
+        createSegmentsList: function () {
+            this.segmentsList = new SegmentsList();
+            return this.segmentsList;
         },
 
-        unBindOnProgressHandler: function () {
-            this.element.off('progress.watched_logger');
+        getSegmentsList: function () {
+            return this.segmentsList || this.createSegmentsList();
         },
 
-        onPlayHandler: function () {
-            setTimeout(function () {
-                var interval;
+        createSegment: function (time) {
+            var segment = this.getSegmentsList().getLast();
 
-                this.range = this.getStartEndTimes();
-                interval = 1000 * this.range.size;
-                // event `progress` triggers with interval 200 ms.
-                this.waitTime = Math.max(interval/this.size, 200);
+            if (!segment || segment.isDone()) {
+                this.getSegmentsList().add(new Segment(time || 0));
+            }
 
-                // We're going to receive 1-2 events `progress` for each
-                // timeline position for the small videos to be more precise and
-                // to avoid some issues with invoking of timers.
-                if (this.waitTime <= 1000) {
-                    this.size = interval / 1000;
-                    this.coef = 100 / this.size;
-                }
+            return this;
+        },
 
-                this.timeline = this.getTimeline();
-                this.bindOnProgressHandler();
-                this.bindLoggerOnUnload();
-            }.bind(this), 0);
+        finishSegment: function (value) {
+            var segment = this.getSegmentsList().getLast();
+
+            return segment ? segment.end(value) : null;
+        },
+
+        extraData: function () {
+            this.finishSegment(this.getCurrentTime());
+            return {
+                percent: this.getSegmentsList().toArray()
+            };
+        },
+
+        onPlayHandler: function (event, options) {
+            this.createSegment(options.time);
         },
 
         onProgressHandler: function (event, time) {
-            var seconds = Math.floor(time);
+            // do nothing right now
+        },
 
-            if (this.range.start <= seconds && seconds <= this.range.end) {
-                var position = Math.floor(
-                    (time - this.range.start) * this.size / this.range.size
-                );
-
-                if (!this.isPositionWatched(position)) {
-                    this.markPositionAsWatched(position);
-                }
+        onSeekHandler: function (event, options) {
+            if (options.sendLogs) {
+                this.finishSegment(options.oldTime);
+                this.createSegment(options.time);
             }
         },
 
+        onPauseHandler: function (event, options) {
+            this.finishSegment(options.time);
+        },
+
+        onEndedHandler: function (event, options) {
+            this.finishSegment(options.time);
+        },
+
         bindLoggerOnUnload: function () {
-            this.bind('edx.video.watched', this.getData.bind(this));
+            this.state.el.on('play', _.once(function () {
+                this.bind('edx.video.watched', this.getData.bind(this));
+            }.bind(this)));
         }
     });
+
+
+    var SegmentsList = function () {
+        this.list = [];
+    };
+
+    SegmentsList.prototype = {
+        add: function (segment) {
+            if (segment instanceof Segment) {
+                this.list.push(segment);
+            }
+
+            return this;
+        },
+
+        getLast: function () {
+            return _.last(this.list);
+        },
+
+        toArray: function () {
+            return $.map(this.list, function (segment) {
+                return segment.toArray();
+            });
+        }
+    };
+
+
+    var Segment = function (start, end) {
+        this.segment = [];
+
+        if (start) {
+            this.start(start);
+        }
+        if (end) {
+            this.end(end);
+        }
+    };
+
+    Segment.prototype = {
+        isDone: function () {
+            return _.isNumber(this.segment[0]) && _.isNumber(this.segment[1]);
+        },
+
+        updatePosition: function (index, value) {
+            if (!_.isNumber(this.segment[index])) {
+                this.segment[index] = value;
+            }
+
+            return this;
+        },
+
+        start: function (value) {
+            return this.updatePosition(0, value);
+        },
+
+        end: function (value) {
+            return this.updatePosition(1, value);
+        },
+
+        toArray: function () {
+            return [this.segment];
+        }
+    };
 
     return WatchVideoLogger;
 });

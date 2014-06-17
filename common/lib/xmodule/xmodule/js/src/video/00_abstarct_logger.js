@@ -13,10 +13,12 @@ function (Component) {
         },
 
         getData: function (data) {
+            var extra = _.isFunction(this.extraData) ? this.extraData() : null;
+
             return $.extend(true, {}, data, {
                 id: this.id,
                 code: this.getCode()
-            });
+            }, extra);
         },
 
         getCurrentTime: function () {

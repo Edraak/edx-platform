@@ -10,8 +10,8 @@ function (AbstractLogger) {
         onSeekHandler: function (event, options) {
             if (options.sendLogs) {
                 this.log('seek_video', {
-                    old_time: options.time,
-                    new_time: options.suggestedTime,
+                    old_time: options.oldTime,
+                    new_time: options.time,
                     type: options.type
                 });
             }

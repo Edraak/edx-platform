@@ -432,8 +432,8 @@ function (HTML5Video, Resizer) {
         }
 
         this.videoPlayer.seekTo(time, {
-            time: this.videoPlayer.currentTime,
-            suggestedTime: time,
+            oldTime: this.videoPlayer.currentTime,
+            time: time,
             type: type,
             sendLogs: true
         });
@@ -508,7 +508,9 @@ function (HTML5Video, Resizer) {
         // timeline.
         this.videoPlayer.updatePlayTime(time);
 
-        this.el.trigger('ended', arguments);
+        this.el.trigger('ended', [{
+            time: time
+        }]);
     }
 
     function onPause() {
