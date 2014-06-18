@@ -33,7 +33,6 @@ from django.utils.translation import ugettext as _
 __all__ = ['OPEN_ENDED_COMPONENT_TYPES',
            'ADVANCED_COMPONENT_POLICY_KEY',
            'subsection_handler',
-           'unit_handler',
            'container_handler',
            'component_handler'
            ]
@@ -154,84 +153,6 @@ def _load_mixed_class(category):
     return mixologist.mix(component_class)
 
 
-@require_GET
-@login_required
-def unit_handler(request, usage_key_string):
-    """
-    The restful handler for unit-specific requests.
-
-    GET
-        html: return html page for editing a unit
-        json: not currently supported
-    """
-    if 'text/html' in request.META.get('HTTP_ACCEPT', 'text/html'):
-        usage_key = UsageKey.from_string(usage_key_string)
-        try:
-            course, item, lms_link = _get_item_in_course(request, usage_key)
-        except ItemNotFoundError:
-            return HttpResponseBadRequest()
-
-        component_templates = get_component_templates(course)
-
-        xblocks = item.get_children()
-
-        # TODO (cpennington): If we share units between courses,
-        # this will need to change to check permissions correctly so as
-        # to pick the correct parent subsection
-        containing_subsection = get_parent_xblock(item)
-        containing_section = get_parent_xblock(containing_subsection)
-
-        # cdodge hack. We're having trouble previewing drafts via jump_to redirect
-        # so let's generate the link url here
-
-        # need to figure out where this item is in the list of children as the
-        # preview will need this
-        index = 1
-        for child in containing_subsection.get_children():
-            if child.location == item.location:
-                break
-            index = index + 1
-
-        preview_lms_base = settings.FEATURES.get('PREVIEW_LMS_BASE')
-
-        preview_lms_link = (
-            u'//{preview_lms_base}/courses/{org}/{course}/{course_name}/courseware/{section}/{subsection}/{index}'
-        ).format(
-            preview_lms_base=preview_lms_base,
-            lms_base=settings.LMS_BASE,
-            org=course.location.org,
-            course=course.location.course,
-            course_name=course.location.name,
-            section=containing_section.location.name,
-            subsection=containing_subsection.location.name,
-            index=index
-        )
-
-        return render_to_response('unit.html', {
-            'context_course': course,
-            'unit': item,
-            'unit_usage_key': usage_key,
-            'child_usage_keys': [block.scope_ids.usage_id for block in xblocks],
-            'component_templates': json.dumps(component_templates),
-            'draft_preview_link': preview_lms_link,
-            'published_preview_link': lms_link,
-            'subsection': containing_subsection,
-            'release_date': (
-                get_default_time_display(containing_subsection.start)
-                if containing_subsection.start is not None else None
-            ),
-            'section': containing_section,
-            'new_unit_category': 'vertical',
-            'unit_state': compute_publish_state(item),
-            'published_date': (
-                get_default_time_display(item.published_date)
-                if item.published_date is not None else None
-            ),
-        })
-    else:
-        return HttpResponseBadRequest("Only supports html requests")
-
-
 # pylint: disable=unused-argument
 @require_GET
 @login_required
@@ -254,19 +175,21 @@ def container_handler(request, usage_key_string):
         component_templates = get_component_templates(course)
         ancestor_xblocks = []
         parent = get_parent_xblock(xblock)
-        while parent and parent.category != 'sequential':
-            ancestor_xblocks.append(parent)
-            parent = get_parent_xblock(parent)
-        ancestor_xblocks.reverse()
 
         is_unit_page = is_unit(xblock)
+        unit = None
         if is_unit_page:
             unit = xblock
-        else:
-            unit = ancestor_xblocks[0] if ancestor_xblocks else None
         subsection = get_parent_xblock(unit) if unit else None
         section = get_parent_xblock(subsection) if subsection else None
         unit_publish_state = compute_publish_state(unit) if unit else None
+
+        while parent and parent.category != 'course':
+            if is_unit(parent):
+                unit = parent
+            ancestor_xblocks.append(parent)
+            parent = get_parent_xblock(parent)
+        ancestor_xblocks.reverse()
 
         return render_to_response('container.html', {
             'context_course': course,  # Needed only for display of menus at top of page.
@@ -282,7 +205,7 @@ def container_handler(request, usage_key_string):
             'component_templates': json.dumps(component_templates),
         })
     else:
-        return HttpResponseBadRequest("Only supports html requests")
+        return HttpResponseBadRequest("Only supports HTML requests")
 
 
 def get_component_templates(course):

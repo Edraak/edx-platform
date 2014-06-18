@@ -70,8 +70,11 @@ main_xblock_info = {
                 ancestor_url = xblock_studio_url(ancestor)
                 %>
                 % if ancestor_url:
-                <a href="${ancestor_url}"
-                   class="navigation-link navigation-parent">${ancestor.display_name_with_default | h}</a>
+                    <a href="${ancestor_url}" class="navigation-link navigation-parent">
+                        ${ancestor.display_name_with_default | h}
+                    </a>
+                % else:
+                    <span class="navigation-parent">${ancestor.display_name_with_default | h}</span>
                 % endif
                 % endfor
                 <a href="#" class="navigation-link navigation-current">${xblock.display_name_with_default | h}</a>
