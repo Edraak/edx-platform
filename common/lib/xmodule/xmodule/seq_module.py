@@ -60,7 +60,7 @@ class SequenceModule(SequenceFields, XModule):
         #   http://en.wikipedia.org/wiki/Robustness_principle
 
         position = getattr(self.system, 'position', None)
-        if position != None:
+        if position is not None:
             try: 
                 self.position = int(self.system.position)
             except ValueError, TypeError:
