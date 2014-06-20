@@ -1,8 +1,8 @@
 define [
-    "backbone", "js/models/group_configuration", "js/collections/group_configuration",
+    "backbone", "js/models/group_experiment", "js/collections/group_experiment",
     "js/models/group", "js/collections/group", "coffee/src/main"
 ],
-(Backbone, GroupConfiguration, GroupConfigurationSet, Group, GroupSet, main) ->
+(Backbone, GroupExperiment, GroupExperimentSet, Group, GroupSet, main) ->
 
   beforeEach ->
     @addMatchers
@@ -10,14 +10,14 @@ define [
         return @actual instanceof expected
 
 
-  describe "GroupConfiguration model", ->
+  describe "GroupExperiment model", ->
     beforeEach ->
       main()
-      @model = new GroupConfiguration()
-      CMS.URL.TEXTBOOKS = "/textbooks"
+      @model = new GroupExperiment()
+      CMS.URL.GROUP_EXPERIMENTS = "/group-experiments"
 
     afterEach ->
-      delete CMS.URL.TEXTBOOKS
+      delete CMS.URL.GROUP_EXPERIMENTS
 
     describe "Basic", ->
       it "should have an empty name by default", ->
@@ -78,7 +78,7 @@ define [
       it "should match server model to client model", ->
         serverModelSpec = {
             "id": 10,
-            "tab_title": "My GroupConfiguration",
+            "tab_title": "My GroupExperiment",
             "tab_description": "Some description",
             "groups": [
                 {"title": "Group 1"},
@@ -87,7 +87,7 @@ define [
         }
         clientModelSpec = {
             "id": 10,
-            "name": "My GroupConfiguration",
+            "name": "My GroupExperiment",
             "description": "Some description",
             "showGroups": false,
             "groups": [{
@@ -100,24 +100,24 @@ define [
             ]
         }
 
-        model = new GroupConfiguration(serverModelSpec, {parse: true})
+        model = new GroupExperiment(serverModelSpec, {parse: true})
         expect(deepAttributes(model)).toEqual(clientModelSpec)
         expect(model.toJSON()).toEqual(serverModelSpec)
 
     describe "Validation", ->
       it "requires a name", ->
-        model = new GroupConfiguration({name: ""})
+        model = new GroupExperiment({name: ""})
         expect(model.isValid()).toBeFalsy()
 
       it "requires at least one group", ->
-        model = new GroupConfiguration({name: "foo"})
+        model = new GroupExperiment({name: "foo"})
         model.get("groups").reset()
         expect(model.isValid()).toBeFalsy()
 
       it "requires a valid group", ->
         group = new Group()
         group.isValid = -> false
-        model = new GroupConfiguration({name: "foo"})
+        model = new GroupExperiment({name: "foo"})
         model.get("groups").reset([group])
         expect(model.isValid()).toBeFalsy()
 
@@ -126,29 +126,29 @@ define [
         group1.isValid = -> true
         group2 = new Group()
         group2.isValid = -> false
-        model = new GroupConfiguration({name: "foo"})
+        model = new GroupExperiment({name: "foo"})
         model.get("groups").reset([group1, group2])
         expect(model.isValid()).toBeFalsy()
 
       it "can pass validation", ->
         group = new Group()
         group.isValid = -> true
-        model = new GroupConfiguration({name: "foo"})
+        model = new GroupExperiment({name: "foo"})
         model.get("groups").reset([group])
         expect(model.isValid()).toBeTruthy()
 
 
-  describe "GroupConfiguration collection", ->
+  describe "GroupExperiment collection", ->
     beforeEach ->
-      CMS.URL.TEXTBOOKS = "/textbooks"
-      @collection = new GroupConfigurationSet()
+      CMS.URL.GROUP_EXPERIMENTS = "/group-experiments"
+      @collection = new GroupExperimentSet()
 
     afterEach ->
-      delete CMS.URL.TEXTBOOKS
+      delete CMS.URL.GROUP_EXPERIMENTS
 
     it "should have a url set", ->
       url = _.result(@collection, 'url')
-      expect(url).toEqual("/textbooks")
+      expect(url).toEqual("/group-experiments")
 
 
   describe "Group model", ->

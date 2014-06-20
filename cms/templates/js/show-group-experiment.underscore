@@ -1,7 +1,7 @@
-<div class="view-group-configuration">
-  <div class="wrap-group-configuration">
+<div class="view-group-experiment">
+  <div class="wrap-group-experiment">
     <header>
-      <h3 class="group-configuration-title">
+      <h3 class="group-experiment-title">
         <a href="#" class="group-toggle <% if(showGroups){ print('hide'); } else { print('show'); } %>-groups">
           <i class="ui-toggle-expansion icon-caret-<% if(showGroups){ print('down'); } else { print('right'); } %>"></i>
           <%= name %>
@@ -9,19 +9,19 @@
       </h3>
     </header>
 
-    <ol class="group-configuration-info group-configuration-info-<% if(showGroups){ print('block'); } else { print('inline'); } %>">
+    <ol class="group-experiment-info group-experiment-info-<% if(showGroups){ print('block'); } else { print('inline'); } %>">
       <% if (_.isNumber(id)) { %>
-      <li class="group-configuration-id">
-        <span class="group-configuration-label">Id</span>
-        <span class="group-configuration-value"><%= id %></span>
-      </li>
+      <li class="group-experiment-id"
+        ><span class="group-experiment-label">Id: </span
+        ><span class="group-experiment-value"><%= id %></span
+      ></li>
       <% } %>
       <% if (showGroups) { %>
-      <li class="group-configuration-description">
+      <li class="group-experiment-description">
         <%= description %>
       </li>
       <% } else { %>
-      <li class="group-configuration-groups-count">
+      <li class="group-experiment-groups-count">
         <%= groupsCountMessage %>
       </li>
       <% } %>

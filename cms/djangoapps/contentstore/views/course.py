@@ -66,7 +66,7 @@ __all__ = ['course_info_handler', 'course_handler', 'course_info_update_handler'
            'grading_handler',
            'advanced_settings_handler',
            'textbooks_list_handler', 'textbooks_detail_handler',
-           'split_tests_list_handler']
+           'group_experiments_list_handler']
 
 
 class AccessListFallback(Exception):
@@ -858,7 +858,7 @@ def textbooks_detail_handler(request, course_key_string, textbook_id):
 @require_http_methods(("GET"))
 @login_required
 @ensure_csrf_cookie
-def split_tests_list_handler(request, course_key_string):
+def group_experiments_list_handler(request, course_key_string):
     """
     A RESTful handler for textbook collections.
 
@@ -871,13 +871,13 @@ def split_tests_list_handler(request, course_key_string):
 
     if not "application/json" in request.META.get('HTTP_ACCEPT', 'text/html'):
         # return HTML page
-        split_test_url = reverse_course_url('split_tests_list_handler', course_key)
+        group_experiment_url = reverse_course_url('group_experiments_list_handler', course_key)
         user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
 
-        return render_to_response('split_tests.html', {
+        return render_to_response('group-experiments.html', {
             'context_course': course,
-            'split_tests': user_partitions,
-            'split_test_url': split_test_url,
+            'experiments': user_partitions,
+            'group_experiment_url': group_experiment_url,
         })
 
 

@@ -201,14 +201,14 @@ define([
     "coffee/spec/models/settings_course_grader_spec",
     "coffee/spec/models/settings_grading_spec", "coffee/spec/models/textbook_spec",
     "coffee/spec/models/upload_spec",
-    "coffee/spec/models/group_configuration_spec",
+    "coffee/spec/models/group_experiment_spec",
 
     "coffee/spec/views/section_spec",
     "coffee/spec/views/course_info_spec", "coffee/spec/views/feedback_spec",
     "coffee/spec/views/metadata_edit_spec", "coffee/spec/views/module_edit_spec",
     "coffee/spec/views/overview_spec",
     "coffee/spec/views/textbook_spec", "coffee/spec/views/upload_spec",
-    "coffee/spec/views/group_configuration_spec",
+    "coffee/spec/views/group_experiment_spec",
 
     "js/spec/video/transcripts/utils_spec", "js/spec/video/transcripts/editor_spec",
     "js/spec/video/transcripts/videolist_spec", "js/spec/video/transcripts/message_manager_spec",

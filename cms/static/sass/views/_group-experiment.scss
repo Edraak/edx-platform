@@ -1,6 +1,6 @@
-// studio - views - group-configurations
+// studio - views - group-experiments
 // ====================
-.view-group-configurations {
+.view-group-experiment {
 
   .content-primary, .content-supplementary {
     @include box-sizing(border-box);
@@ -11,7 +11,7 @@
     width: flex-grid(9, 12);
     margin-right: flex-gutter();
 
-    .no-group-configurations-content {
+    .no-group-experiments-content {
       @extend %ui-well;
       padding: ($baseline*2);
       background-color: $gray-l4;
@@ -19,11 +19,11 @@
       color: $gray;
     }
 
-    .group-configuration {
+    .group-experiment {
       @extend %ui-window;
       position: relative;
 
-      .view-group-configuration {
+      .view-group-experiment {
         padding: $baseline ($baseline*1.5);
 
         header {
@@ -31,7 +31,7 @@
           border-bottom: 0;
         }
 
-        .group-configuration-title {
+        .group-experiment-title {
           @extend %t-title4;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -44,11 +44,11 @@
           }
         }
 
-        .group-configuration-info {
+        .group-experiment-info {
           color: $gray-l2;
           margin-left: $baseline;
 
-          &.group-configuration-info-inline {
+          &.group-experiment-info-inline {
             display: table;
             width: 70%;
             margin: ($baseline/4) 0 ($baseline/2) $baseline;
@@ -60,17 +60,17 @@
             }
           }
 
-          &.group-configuration-info-block {
+          &.group-experiment-info-block {
             li {
               padding: ($baseline/4) 0;
             }
           }
 
-          .group-configuration-label {
+          .group-experiment-label {
             text-transform: uppercase;
           }
 
-          .group-configuration-description {
+          .group-experiment-description {
             overflow: hidden;
             text-overflow: ellipsis;
           }

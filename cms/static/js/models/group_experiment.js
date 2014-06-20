@@ -3,7 +3,7 @@ define([
     'backbone.associations', 'coffee/src/main'],
 function(Backbone, _, GroupModel, GroupCollection) {
     'use strict';
-    var GroupConfiguration = Backbone.AssociatedModel.extend({
+    var GroupExperiment = Backbone.AssociatedModel.extend({
         defaults: function() {
             return {
                 id: null,
@@ -44,7 +44,7 @@ function(Backbone, _, GroupModel, GroupCollection) {
             return !this.get('name') && this.get('groups').isEmpty();
         },
 
-        urlRoot: function() { return CMS.URL.TEXTBOOKS; },
+        urlRoot: function() { return CMS.URL.GROUP_EXPERIMENTS; },
 
         parse: function(response) {
             var ret = $.extend(true, {}, response);
@@ -107,5 +107,5 @@ function(Backbone, _, GroupModel, GroupCollection) {
             }
         }
     });
-    return GroupConfiguration;
+    return GroupExperiment;
 });

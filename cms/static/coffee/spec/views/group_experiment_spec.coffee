@@ -1,10 +1,10 @@
 define [
-    "js/models/group_configuration", "js/models/course",
-    "js/collections/group_configuration", "js/views/show_group_configurations",
-    "js/views/list_group_configurations", "jasmine-stealth"
+    "js/models/group_experiment", "js/models/course",
+    "js/collections/group_experiment", "js/views/show_group_experiment",
+    "js/views/list_group_experiments", "jasmine-stealth"
 ], (
-    GroupConfigurationModel, Course, GroupConfigurationSet,
-    ShowGroupConfigurations, ListGroupConfigurations
+    GroupExperimentModel, Course, GroupExperimentSet,
+    ShowGroupExperiment, ListGroupExperiments
 ) ->
     beforeEach ->
       window.course = new Course({
@@ -28,22 +28,22 @@ define [
     afterEach ->
       delete window.course
 
-    describe "ShowGroupConfigurations", ->
-      tpl = readFixtures('show-group-configurations.underscore')
+    describe "ShowGroupExperiment", ->
+      tpl = readFixtures('show-group-experiment.underscore')
 
       beforeEach ->
         setFixtures($("<script>", {
-            id: "show-group-configurations-tpl",
+            id: "show-group-experiment-tpl",
             type: "text/template"}).text(tpl)
         )
-        @model = new GroupConfigurationModel({
+        @model = new GroupExperimentModel({
           name: "Experiment",
           description: "Experiment Description",
           id: 0
         })
         spyOn(@model, "destroy").andCallThrough()
-        @collection = new GroupConfigurationSet([@model])
-        @view = new ShowGroupConfigurations({model: @model})
+        @collection = new GroupExperimentSet([@model])
+        @view = new ShowGroupExperiment({model: @model})
 
       describe "Basic", ->
         it "should render properly", ->
@@ -57,9 +57,9 @@ define [
           @view.render().$(".show-groups").click()
           expect(@model.get('showGroups')).toBeTruthy()
           expect(@view.$el.find('.group').length).toBe(4)
-          expect(@view.$el.find('.group-configuration-groups-count'))
+          expect(@view.$el.find('.group-experiment-groups-count'))
             .not.toExist()
-          expect(@view.$el.find('.group-configuration-description'))
+          expect(@view.$el.find('.group-experiment-description'))
             .toContainText('Experiment Description')
 
         it "should hide groups appropriately", ->
@@ -68,35 +68,35 @@ define [
           @view.render().$(".hide-groups").click()
           expect(@model.get('showGroups')).toBeFalsy()
           expect(@view.$el.find('.group').length).toBe(0)
-          expect(@view.$el.find('.group-configuration-groups-count'))
+          expect(@view.$el.find('.group-experiment-groups-count'))
             .toContainText('Contains 4 groups')
-          expect(@view.$el.find('.group-configuration-description'))
+          expect(@view.$el.find('.group-experiment-description'))
             .not.toExist()
 
 
-    describe "ListGroupConfigurations", ->
-      noGroupConfigurationsTpl = readFixtures("no-group-configurations.underscore")
+    describe "ListGroupExperiments", ->
+      noGroupConfigurationsTpl = readFixtures("no-group-experiments.underscore")
 
       beforeEach ->
-        setFixtures($("<script>", {id: "no-group-configurations-tpl", type: "text/template"}).text(noGroupConfigurationsTpl))
-        @showSpies = spyOnConstructor(window, "ShowGroupConfigurations", ["render"])
+        setFixtures($("<script>", {id: "no-group-experiments-tpl", type: "text/template"}).text(noGroupConfigurationsTpl))
+        @showSpies = spyOnConstructor(window, "ShowGroupExperiment", ["render"])
         @showSpies.render.andReturn(@showSpies) # equivalent of `return this`
         showEl = $("<li>")
         @showSpies.$el = showEl
         @showSpies.el = showEl.get(0)
-        @collection = new GroupConfigurationSet()
-        @view = new ListGroupConfigurations({collection: @collection})
+        @collection = new GroupExperimentSet()
+        @view = new ListGroupExperiments({collection: @collection})
         @view.render()
 
-      it "should render the empty template if there are no group configurations", ->
+      it "should render the empty template if there are no group experiments", ->
         expect(@view.$el).toContainText(
           "You haven't created any group configurations yet."
         )
         expect(@view.$el).not.toContain(".new-button")
         expect(@showSpies.constructor).not.toHaveBeenCalled()
 
-      it "should render ShowGroupConfigurations views by default", ->
-        # add three empty group configurations to the collection
+      it "should render ShowGroupExperiment views by default", ->
+        # add three empty group experiments to the collection
         @collection.add([{}, {}, {}])
         # render once and test
         @view.render()
@@ -104,4 +104,4 @@ define [
         expect(@view.$el).not.toContainText(
           "You haven't created any group configurations yet."
         )
-        expect(@view.$el.find('.group-configuration').length).toBe(3);
+        expect(@view.$el.find('.group-experiment').length).toBe(3);

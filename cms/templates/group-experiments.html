@@ -1,14 +1,14 @@
 <%inherit file="base.html" />
-<%def name="online_help_token()"><% return "split-tests" %></%def>
+<%def name="online_help_token()"><% return "group-experiments" %></%def>
 <%namespace name='static' file='static_content.html'/>
 <%! import json %>
 <%! from django.utils.translation import ugettext as _ %>
 
 <%block name="title">${_("Group Configurations")}</%block>
-<%block name="bodyclass">is-signedin course view-group-configurations</%block>
+<%block name="bodyclass">is-signedin course view-group-experiment</%block>
 
 <%block name="header_extras">
-% for template_name in ["show-group-configurations", "no-group-configurations", "basic-modal", "modal-button"]:
+% for template_name in ["show-group-experiment", "no-group-experiments", "basic-modal", "modal-button"]:
   <script type="text/template" id="${template_name}-tpl">
     <%static:include path="js/${template_name}.underscore" />
   </script>
@@ -19,20 +19,17 @@
 <script type="text/javascript">
 window.CMS = window.CMS || {};
 CMS.URL = CMS.URL || {};
-CMS.URL.TEXTBOOKS = "${split_test_url}"
+CMS.URL.GROUP_EXPERIMENTS = "${group_experiment_url}"
 CMS.URL.LMS_BASE = "${settings.LMS_BASE}"
-require(["js/models/section", "js/collections/group_configuration", "js/views/list_group_configurations"],
-        function(Section, GroupConfigurationCollection, ListConfigurationsView) {
-  var split_tests = new GroupConfigurationCollection(${json.dumps(split_tests)}, {parse: true});
-  var tbView = new ListConfigurationsView({collection: split_tests});
+require(["js/models/section", "js/collections/group_experiment", "js/views/list_group_experiments"],
+function(Section, GroupExperimentCollection, ListExperimentsView) {
+  var experiments = new GroupExperimentCollection(${json.dumps(experiments)}, {parse: true});
+  var expView = new ListExperimentsView({collection: experiments});
 
   $(function() {
-      $(".content-primary").append(tbView.render().el);
-      $(".nav-actions .new-button").click(function(e) {
-          tbView.addOne(e);
-      })
+      $(".content-primary").append(expView.render().el);
       $(window).on("beforeunload", function() {
-          var dirty = split_tests.find(function(split_test) { return split_test.isDirty(); });
+          var dirty = experiments.find(function(experiment) { return experiment.isDirty(); });
           if(dirty) {
               return "${_('You have unsaved changes. Do you really want to leave this page?')}";
           }
@@ -49,15 +46,6 @@ require(["js/models/section", "js/collections/group_configuration", "js/views/li
         <small class="subtitle">${_("Content")}</small>
         <span class="sr">&gt; </span>${_("Group Configurations")}
       </h1>
-
-      <nav class="nav-actions">
-        <h3 class="sr">${_("Page Actions")}</h3>
-        <ul>
-          <li class="nav-item">
-            <a href="#" class="button new-button"><i class="icon-plus"></i> ${_("New Group Configuration")}</a>
-          </li>
-        </ul>
-      </nav>
     </header>
   </div>
 
