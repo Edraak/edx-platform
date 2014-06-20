@@ -1,0 +1,42 @@
+<div class="view-group-configuration">
+  <div class="wrap-group-configuration">
+    <header>
+      <h3 class="group-configuration-title">
+        <a href="#" class="group-toggle <% if(showGroups){ print('hide'); } else { print('show'); } %>-groups">
+          <i class="ui-toggle-expansion icon-caret-<% if(showGroups){ print('down'); } else { print('right'); } %>"></i>
+          <%= name %>
+        </a>
+      </h3>
+    </header>
+
+    <ol class="group-configuration-info group-configuration-info-<% if(showGroups){ print('block'); } else { print('inline'); } %>">
+      <% if (_.isNumber(id)) { %>
+      <li class="group-configuration-id">
+        <span class="group-configuration-label">Id</span>
+        <span class="group-configuration-value"><%= id %></span>
+      </li>
+      <% } %>
+      <% if (showGroups) { %>
+      <li class="group-configuration-description">
+        <%= description %>
+      </li>
+      <% } else { %>
+      <li class="group-configuration-groups-count">
+        <%= groupsCountMessage %>
+      </li>
+      <% } %>
+    </ol>
+
+    <% if(showGroups) { %>
+    <% percent = Math.floor(100 / groups.length) %>
+    <ol class="groups">
+      <% groups.each(function(group) { %>
+      <li class="group"
+        ><span class="group-name"><%= group.get('name') %></span
+        ><span class="group-percent"><%= percent %>%</span
+      ></li>
+      <% }) %>
+    </ol>
+    <% } %>
+  </div>
+</div>

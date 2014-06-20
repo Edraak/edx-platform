@@ -65,7 +65,8 @@ __all__ = ['course_info_handler', 'course_handler', 'course_info_update_handler'
            'settings_handler',
            'grading_handler',
            'advanced_settings_handler',
-           'textbooks_list_handler', 'textbooks_detail_handler']
+           'textbooks_list_handler', 'textbooks_detail_handler',
+           'split_tests_list_handler']
 
 
 class AccessListFallback(Exception):
@@ -852,6 +853,32 @@ def textbooks_detail_handler(request, course_key_string, textbook_id):
         course_module.pdf_textbooks = remaining_textbooks
         store.update_item(course_module, request.user.id)
         return JsonResponse()
+
+
+@require_http_methods(("GET"))
+@login_required
+@ensure_csrf_cookie
+def split_tests_list_handler(request, course_key_string):
+    """
+    A RESTful handler for textbook collections.
+
+    GET
+        html: return textbook list page (Backbone application)
+        json: return JSON representation of all textbooks in this course
+    """
+    course_key = CourseKey.from_string(course_key_string)
+    course = _get_course_module(course_key, request.user)
+
+    if not "application/json" in request.META.get('HTTP_ACCEPT', 'text/html'):
+        # return HTML page
+        split_test_url = reverse_course_url('split_tests_list_handler', course_key)
+        user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
+
+        return render_to_response('split_tests.html', {
+            'context_course': course,
+            'split_tests': user_partitions,
+            'split_test_url': split_test_url,
+        })
 
 
 def _get_course_creator_status(user):
