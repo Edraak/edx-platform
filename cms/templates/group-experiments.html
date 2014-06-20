@@ -1,5 +1,5 @@
 <%inherit file="base.html" />
-<%def name="online_help_token()"><% return "group-experiments" %></%def>
+<%def name="online_help_token()"><% return "group_experiments" %></%def>
 <%namespace name='static' file='static_content.html'/>
 <%! import json %>
 <%! from django.utils.translation import ugettext as _ %>
@@ -43,7 +43,7 @@ function(Section, GroupExperimentCollection, ListExperimentsView) {
   <div class="wrapper-mast wrapper">
     <header class="mast has-actions has-subtitle">
       <h1 class="page-header">
-        <small class="subtitle">${_("Content")}</small>
+        <small class="subtitle">${_("Settings")}</small>
         <span class="sr">&gt; </span>${_("Group Configurations")}
       </h1>
     </header>
@@ -56,12 +56,12 @@ function(Section, GroupExperimentCollection, ListExperimentsView) {
       </article>
       <aside class="content-supplementary" role="complimentary">
         <div class="bit">
-          <h3 class="title-3">${_("Why should I break my group configuration into groups?")}</h3>
-          <p>${_("Breaking your group configuration into multiple groups reduces loading times for students, especially those with slow Internet connections. Breaking up group configurations into groups can also help students more easily find topic-based information.")}</p>
+          <h3 class="title-3">${_("Some text.")}</h3>
+          <p>${_("Some text.")}</p>
         </div>
         <div class="bit">
-          <h3 class="title-3">${_("What if my book isn't divided into groups?")}</h3>
-          <p>${_("If your group configuration doesn't have individual groups, you can upload the entire text as a single chapter and enter a name of your choice in the Group Name field.")}</p>
+          <h3 class="title-3">${_("Some text.")}</h3>
+          <p>${_("Some text.")}</p>
           <p><a href="${get_online_help_info(online_help_token())['doc_url']}" target="_blank">${_("Learn More")}</a></p>
         </div>
       </aside>
