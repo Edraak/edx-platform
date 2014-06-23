@@ -74,7 +74,7 @@ class GroupExperimentsTest(UniqueCourseTest):
     """
 
     def setUp(self):
-        super(SettingsMenuTest, self).setUp()
+        super(GroupExperimentsTest, self).setUp()
 
         course_fix = CourseFixture(**self.course_info)
         course_fix.install()
@@ -88,13 +88,89 @@ class GroupExperimentsTest(UniqueCourseTest):
         )
         self.auth_page.visit()
 
+        self.advanced_settings = AdvancedSettingsPage(
+            self.browser,
+            self.course_info['org'],
+            self.course_info['number'],
+            self.course_info['run']
+        )
+
         self.page = ExperimentsPage(
             self.browser,
             self.course_info['org'],
             self.course_info['number'],
             self.course_info['run']
         )
+
+        self.advanced_settings.visit()
+        self._enable_split_test()
+        self.page.visit()
+
+    def _enable_split_test(self):
+        """
+        Enables "split_test" module in advanced settings.
+        """
+        self.advanced_settings.set('advanced_modules', '["split_test"]')
+
+    def _set_advanced_settings(self, values):
+        """
+        Sets advanced settings to the course.
+
+        Arguments:
+            values (dict): dictionary where key is setting name and value is value
+            that needs to be set.
+        """
+        self.advanced_settings.visit()
+        for key, value in values.items():
+            self.advanced_settings.set(key, value)
         self.page.visit()
 
     def test_is_empty(self):
-        pass
+        """
+        Ensure that message telling me to create a new group configuration is
+        shown when group configurations were not added.
+        """
+        css = ".wrapper-content .no-group-experiments-content"
+        self.assertTrue(self.page.q(css=css).present)
+        self.assertIn(
+            "You haven't created any group configurations yet.",
+            self.page.q(css=css).text[0]
+        )
+
+    def test_configuration_exist(self):
+        """
+        Ensure that the group configuration is rendered correctly in
+        expanded/collapsed mode.
+        """
+        self._set_advanced_settings({
+            'user_partitions': '''[
+                {
+                    "description": "Description of the group configuration.",
+                    "version": 1,
+                    "id": 0,
+                    "groups": [
+                        {
+                            "version": 1,
+                            "id": 0,
+                            "name": "Group 1"
+                        },
+                        {
+                            "version": 1,
+                            "id": 1,
+                            "name": "Group 2"
+                        }
+                    ],
+                    "name": "Name of the Group Configuration"
+                }
+            ]''',
+        })
+
+        config = self.page.group_configurations()[0]
+
+        self.assertIn("Name of the Group Configuration", config.name)
+        self.assertEqual(config.id, '0')
+
+        config.toggle()
+
+        self.assertIn("Description of the group configuration.", config.description)
+        self.assertEqual(len(config.groups), 2)
