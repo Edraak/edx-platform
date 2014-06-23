@@ -979,8 +979,14 @@ class TestEditSplitModule(ItemTest):
         split_test = self._assert_children(3)
         self.assertEqual(group_id_to_child, split_test.group_id_to_child)
 
-    def test_view_index(self):
-        "Basic check that the groups index page responds correctly"
+    def test_view_index_ok(self):
+        """
+        Basic check that the groups index page responds correctly.
+        """
+        if "split_test" not in self.course.advanced_modules:
+            self.course.advanced_modules.append("split_test")
+            self.store.update_item(self.course, self.user.id)
+
         url = reverse_course_url('group_experiments_list_handler', self.course.id)
         resp = self.client.get(url)
         self.assertContains(resp, self.course.display_name)
@@ -988,6 +994,18 @@ class TestEditSplitModule(ItemTest):
         self.assertContains(resp, 'alpha')
         self.assertContains(resp, 'Second Partition')
         self.assertContains(resp, 'Group 1')
+
+    def test_view_index_404(self):
+        """
+        Check that group manipulation page is not displayed when preffed off.
+        """
+        if "split_test" in self.course.advanced_modules:
+            self.course.advanced_modules.remove("split_test")
+            self.store.update_item(self.course, self.user.id)
+
+        url = reverse_course_url('group_experiments_list_handler', self.course.id)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
 
 
 @ddt.ddt

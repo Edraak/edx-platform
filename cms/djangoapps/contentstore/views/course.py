@@ -12,7 +12,7 @@ from django.conf import settings
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponseNotFound, Http404
 from util.json_request import JsonResponse
 from edxmako.shortcuts import render_to_response
 
@@ -867,6 +867,8 @@ def group_experiments_list_handler(request, course_key_string):
     """
     course_key = CourseKey.from_string(course_key_string)
     course = _get_course_module(course_key, request.user)
+    if "split_test" not in course.advanced_modules:
+        raise Http404
     group_experiment_url = reverse_course_url('group_experiments_list_handler', course_key)
     user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
 
