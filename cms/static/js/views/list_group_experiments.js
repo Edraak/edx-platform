@@ -17,14 +17,17 @@ function(BaseView, $, ShowGroupExperimentView) {
             if(experiments.length === 0) {
                 this.$el.html(this.emptyTemplate());
             } else {
-                this.$el.empty();
-                var that = this;
+                var frag = document.createDocumentFragment();
+
                 experiments.each(function(experiment) {
                     var view = new ShowGroupExperimentView({
                         model: experiment
                     });
-                    that.$el.append(view.render().el);
+
+                    frag.appendChild(view.render().el);
                 });
+
+                this.$el.html([frag]);
             }
             return this;
         },

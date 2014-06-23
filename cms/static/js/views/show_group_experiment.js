@@ -18,7 +18,6 @@ function(BaseView, _, gettext) {
 
         render: function() {
             var attrs = $.extend({}, this.model.attributes, {
-                course: window.course.attributes,
                 groupsCountMessage: this.getGroupsCountTitle()
             });
 

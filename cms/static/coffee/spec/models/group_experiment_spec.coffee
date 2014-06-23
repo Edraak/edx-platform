@@ -32,8 +32,9 @@ define [
       it "should have a GroupSet with one group by default", ->
         groups = @model.get("groups")
         expect(groups).toBeInstanceOf(GroupSet)
-        expect(groups.length).toEqual(1)
+        expect(groups.length).toEqual(2)
         expect(groups.at(0).isEmpty()).toBeTruthy()
+        expect(groups.at(1).isEmpty()).toBeTruthy()
 
       it "should be empty by default", ->
         expect(@model.isEmpty()).toBeTruthy()
@@ -78,11 +79,11 @@ define [
       it "should match server model to client model", ->
         serverModelSpec = {
             "id": 10,
-            "tab_title": "My GroupExperiment",
-            "tab_description": "Some description",
+            "name": "My GroupExperiment",
+            "description": "Some description",
             "groups": [
-                {"title": "Group 1"},
-                {"title": "Group 2"},
+                {"name": "Group 1"},
+                {"name": "Group 2"},
             ]
         }
         clientModelSpec = {

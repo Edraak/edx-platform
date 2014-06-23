@@ -56,7 +56,7 @@ define [
           @model.set('showGroups', false)
           @view.render().$(".show-groups").click()
           expect(@model.get('showGroups')).toBeTruthy()
-          expect(@view.$el.find('.group').length).toBe(4)
+          expect(@view.$el.find('.group').length).toBe(5)
           expect(@view.$el.find('.group-experiment-groups-count'))
             .not.toExist()
           expect(@view.$el.find('.group-experiment-description'))
@@ -69,7 +69,7 @@ define [
           expect(@model.get('showGroups')).toBeFalsy()
           expect(@view.$el.find('.group').length).toBe(0)
           expect(@view.$el.find('.group-experiment-groups-count'))
-            .toContainText('Contains 4 groups')
+            .toContainText('Contains 5 groups')
           expect(@view.$el.find('.group-experiment-description'))
             .not.toExist()
 

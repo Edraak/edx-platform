@@ -9,7 +9,7 @@ function(Backbone, _, GroupModel, GroupCollection) {
                 id: null,
                 name: '',
                 description: '',
-                groups: new GroupCollection([{}]),
+                groups: new GroupCollection([{}, {}]),
                 showGroups: false
             };
         },
@@ -48,29 +48,19 @@ function(Backbone, _, GroupModel, GroupCollection) {
 
         parse: function(response) {
             var ret = $.extend(true, {}, response);
-            if('id' in ret && !('id' in ret)) {
-                ret.id = ret.id;
-                delete ret.id;
-            }
-            if('tab_title' in ret && !('name' in ret)) {
-                ret.name = ret.tab_title;
-                delete ret.tab_title;
-            }
-            if('tab_description' in ret && !('description' in ret)) {
-                ret.description = ret.tab_description;
-                delete ret.tab_description;
-            }
+
             _.each(ret.groups, function(group, i) {
                 group.order = group.order || i+1;
             });
+
             return ret;
         },
 
         toJSON: function() {
             return {
                 id: this.get('id'),
-                tab_title: this.get('name'),
-                tab_description: this.get('description'),
+                name: this.get('name'),
+                description: this.get('description'),
                 groups: this.get('groups').toJSON()
             };
         },

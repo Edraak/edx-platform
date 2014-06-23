@@ -12,18 +12,9 @@ define(['backbone', 'backbone.associations'], function(Backbone) {
             return !this.get('name');
         },
 
-        parse: function(response) {
-            if('title' in response && !('name' in response)) {
-                response.name = response.title;
-                delete response.title;
-            }
-
-            return response;
-        },
-
         toJSON: function() {
             return {
-                title: this.get('name')
+                name: this.get('name')
             };
         },
 
