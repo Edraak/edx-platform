@@ -14,7 +14,7 @@ from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
 from contentstore.utils import reverse_usage_url
 
-from contentstore.views.component import component_handler
+from contentstore.views.component import component_handler, get_component_templates
 
 from contentstore.tests.utils import CourseTestCase
 from contentstore.utils import compute_publish_state, PublishState
@@ -22,8 +22,10 @@ from student.tests.factories import UserFactory
 from xmodule.capa_module import CapaDescriptor
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.modulestore.keys import UsageKey
-from xmodule.modulestore.locations import Location
+from xmodule.x_module import STUDIO_VIEW, STUDENT_VIEW
+from opaque_keys.edx.keys import UsageKey
+from opaque_keys.edx.locations import Location
+from xmodule.partitions.partitions import Group, UserPartition
 
 
 class ItemTest(CourseTestCase):
@@ -62,10 +64,6 @@ class ItemTest(CourseTestCase):
             data['boilerplate'] = boilerplate
         return self.client.ajax_post(reverse('contentstore.views.xblock_handler'), json.dumps(data))
 
-
-class GetItem(ItemTest):
-    """Tests for '/xblock' GET url."""
-
     def _create_vertical(self, parent_usage_key=None):
         """
         Creates a vertical, returning its UsageKey.
@@ -73,6 +71,10 @@ class GetItem(ItemTest):
         resp = self.create_xblock(category='vertical', parent_usage_key=parent_usage_key)
         self.assertEqual(resp.status_code, 200)
         return self.response_usage_key(resp)
+
+
+class GetItem(ItemTest):
+    """Tests for '/xblock' GET url."""
 
     def _get_container_preview(self, usage_key):
         """
@@ -105,7 +107,7 @@ class GetItem(ItemTest):
         self.assertNotIn('wrapper-xblock', html)
 
         # Verify that the header and article tags are still added
-        self.assertIn('<header class="xblock-header">', html)
+        self.assertIn('<header class="xblock-header xblock-header-vertical">', html)
         self.assertIn('<article class="xblock-render">', html)
 
     def test_get_container_fragment(self):
@@ -121,7 +123,7 @@ class GetItem(ItemTest):
 
         # Verify that the Studio nesting wrapper has been added
         self.assertIn('level-nesting', html)
-        self.assertIn('<header class="xblock-header">', html)
+        self.assertIn('<header class="xblock-header xblock-header-vertical">', html)
         self.assertIn('<article class="xblock-render">', html)
 
         # Verify that the Studio element wrapper has been added
@@ -645,7 +647,6 @@ class TestEditItem(ItemTest):
         self.assertIsNotNone(draft_2)
         self.assertEqual(draft_1, draft_2)
 
-
     def test_make_private_with_multiple_requests(self):
         """
         Make private requests gets proper response even if xmodule is already made private.
@@ -685,7 +686,6 @@ class TestEditItem(ItemTest):
         self.assertIsNotNone(draft_2)
         self.assertEqual(draft_1, draft_2)
 
-
     def test_published_and_draft_contents_with_update(self):
         """ Create a draft and publish it then modify the draft and check that published content is not modified """
 
@@ -713,12 +713,12 @@ class TestEditItem(ItemTest):
         self.assertNotEqual(draft.data, published.data)
 
         # Get problem by 'xblock_handler'
-        view_url = reverse_usage_url("xblock_view_handler", self.problem_usage_key, {"view_name": "student_view"})
+        view_url = reverse_usage_url("xblock_view_handler", self.problem_usage_key, {"view_name": STUDENT_VIEW})
         resp = self.client.get(view_url, HTTP_ACCEPT='application/json')
         self.assertEqual(resp.status_code, 200)
 
         # Activate the editing view
-        view_url = reverse_usage_url("xblock_view_handler", self.problem_usage_key, {"view_name": "studio_view"})
+        view_url = reverse_usage_url("xblock_view_handler", self.problem_usage_key, {"view_name": STUDIO_VIEW})
         resp = self.client.get(view_url, HTTP_ACCEPT='application/json')
         self.assertEqual(resp.status_code, 200)
 
@@ -771,6 +771,215 @@ class TestEditItem(ItemTest):
         self.assertEqual(compute_publish_state(html), PublishState.draft)
 
 
+class TestEditSplitModule(ItemTest):
+    """
+    Tests around editing instances of the split_test module.
+    """
+    def setUp(self):
+        super(TestEditSplitModule, self).setUp()
+        self.course.user_partitions = [
+            UserPartition(
+                0, 'first_partition', 'First Partition',
+                [Group("0", 'alpha'), Group("1", 'beta')]
+            ),
+            UserPartition(
+                1, 'second_partition', 'Second Partition',
+                [Group("0", 'Group 0'), Group("1", 'Group 1'), Group("2", 'Group 2')]
+            )
+        ]
+        self.store.update_item(self.course, self.user.id)
+        root_usage_key = self._create_vertical()
+        resp = self.create_xblock(category='split_test', parent_usage_key=root_usage_key)
+        self.split_test_usage_key = self.response_usage_key(resp)
+        self.split_test_update_url = reverse_usage_url("xblock_handler", self.split_test_usage_key)
+
+    def _update_partition_id(self, partition_id):
+        """
+        Helper method that sets the user_partition_id to the supplied value.
+
+        The updated split_test instance is returned.
+        """
+        self.client.ajax_post(
+            self.split_test_update_url,
+            # Even though user_partition_id is Scope.content, it will get saved by the Studio editor as
+            # metadata. The code in item.py will update the field correctly, even though it is not the
+            # expected scope.
+            data={'metadata': {'user_partition_id': str(partition_id)}}
+        )
+
+        # Verify the partition_id was saved.
+        split_test = self.get_item_from_modulestore(self.split_test_usage_key, True)
+        self.assertEqual(partition_id, split_test.user_partition_id)
+        return split_test
+
+    def _assert_children(self, expected_number):
+        """
+        Verifies the number of children of the split_test instance.
+        """
+        split_test = self.get_item_from_modulestore(self.split_test_usage_key, True)
+        self.assertEqual(expected_number, len(split_test.children))
+        return split_test
+
+    def test_create_groups(self):
+        """
+        Test that verticals are created for the experiment groups when
+        a spit test module is edited.
+        """
+        split_test = self.get_item_from_modulestore(self.split_test_usage_key, True)
+        # Initially, no user_partition_id is set, and the split_test has no children.
+        self.assertEqual(-1, split_test.user_partition_id)
+        self.assertEqual(0, len(split_test.children))
+
+        # Set the user_partition_id to 0.
+        split_test = self._update_partition_id(0)
+
+        # Verify that child verticals have been set to match the groups
+        self.assertEqual(2, len(split_test.children))
+        vertical_0 = self.get_item_from_modulestore(split_test.children[0], True)
+        vertical_1 = self.get_item_from_modulestore(split_test.children[1], True)
+        self.assertEqual("vertical", vertical_0.category)
+        self.assertEqual("vertical", vertical_1.category)
+        self.assertEqual("alpha", vertical_0.display_name)
+        self.assertEqual("beta", vertical_1.display_name)
+
+        # Verify that the group_id_to_child mapping is correct.
+        self.assertEqual(2, len(split_test.group_id_to_child))
+        self.assertEqual(vertical_0.location, split_test.group_id_to_child['0'])
+        self.assertEqual(vertical_1.location, split_test.group_id_to_child['1'])
+
+    def test_change_user_partition_id(self):
+        """
+        Test what happens when the user_partition_id is changed to a different experiment.
+        """
+        # Set to first experiment.
+        split_test = self._update_partition_id(0)
+        self.assertEqual(2, len(split_test.children))
+        initial_vertical_0_location = split_test.children[0]
+        initial_vertical_1_location = split_test.children[1]
+
+        # Set to second experiment
+        split_test = self._update_partition_id(1)
+        # We don't remove existing children.
+        self.assertEqual(5, len(split_test.children))
+        self.assertEqual(initial_vertical_0_location, split_test.children[0])
+        self.assertEqual(initial_vertical_1_location, split_test.children[1])
+        vertical_0 = self.get_item_from_modulestore(split_test.children[2], True)
+        vertical_1 = self.get_item_from_modulestore(split_test.children[3], True)
+        vertical_2 = self.get_item_from_modulestore(split_test.children[4], True)
+
+        # Verify that the group_id_to child mapping is correct.
+        self.assertEqual(3, len(split_test.group_id_to_child))
+        self.assertEqual(vertical_0.location, split_test.group_id_to_child['0'])
+        self.assertEqual(vertical_1.location, split_test.group_id_to_child['1'])
+        self.assertEqual(vertical_2.location, split_test.group_id_to_child['2'])
+        self.assertNotEqual(initial_vertical_0_location, vertical_0.location)
+        self.assertNotEqual(initial_vertical_1_location, vertical_1.location)
+
+    def test_change_same_user_partition_id(self):
+        """
+        Test that nothing happens when the user_partition_id is set to the same value twice.
+        """
+        # Set to first experiment.
+        split_test = self._update_partition_id(0)
+        self.assertEqual(2, len(split_test.children))
+        initial_group_id_to_child = split_test.group_id_to_child
+
+        # Set again to first experiment.
+        split_test = self._update_partition_id(0)
+        self.assertEqual(2, len(split_test.children))
+        self.assertEqual(initial_group_id_to_child, split_test.group_id_to_child)
+
+    def test_change_non_existent_user_partition_id(self):
+        """
+        Test that nothing happens when the user_partition_id is set to a value that doesn't exist.
+
+        The user_partition_id will be updated, but children and group_id_to_child map will not change.
+        """
+        # Set to first experiment.
+        split_test = self._update_partition_id(0)
+        self.assertEqual(2, len(split_test.children))
+        initial_group_id_to_child = split_test.group_id_to_child
+
+        # Set to an experiment that doesn't exist.
+        split_test = self._update_partition_id(-50)
+        self.assertEqual(2, len(split_test.children))
+        self.assertEqual(initial_group_id_to_child, split_test.group_id_to_child)
+
+    def test_delete_children(self):
+        """
+        Test that deleting a child in the group_id_to_child map updates the map.
+
+        Also test that deleting a child not in the group_id_to_child_map behaves properly.
+        """
+        # Set to first experiment.
+        self._update_partition_id(0)
+        split_test = self._assert_children(2)
+        vertical_1_usage_key = split_test.children[1]
+
+        # Add an extra child to the split_test
+        resp = self.create_xblock(category='html', parent_usage_key=self.split_test_usage_key)
+        extra_child_usage_key = self.response_usage_key(resp)
+        self._assert_children(3)
+
+        # Remove the first child (which is part of the group configuration).
+        resp = self.client.ajax_post(
+            self.split_test_update_url,
+            data={'children': [unicode(vertical_1_usage_key), unicode(extra_child_usage_key)]}
+        )
+        self.assertEqual(resp.status_code, 200)
+        split_test = self._assert_children(2)
+
+        # Check that group_id_to_child was updated appropriately
+        group_id_to_child = split_test.group_id_to_child
+        self.assertEqual(1, len(group_id_to_child))
+        self.assertEqual(vertical_1_usage_key, group_id_to_child['1'])
+
+        # Remove the "extra" child and make sure that group_id_to_child did not change.
+        resp = self.client.ajax_post(
+            self.split_test_update_url,
+            data={'children': [unicode(vertical_1_usage_key)]}
+        )
+        self.assertEqual(resp.status_code, 200)
+        split_test = self._assert_children(1)
+        self.assertEqual(group_id_to_child, split_test.group_id_to_child)
+
+    def test_add_groups(self):
+        """
+        Test the "fix up behavior" when groups are missing (after a group is added to a group configuration).
+
+        This test actually belongs over in common, but it relies on a mutable modulestore.
+        TODO: move tests that can go over to common after the mixed modulestore work is done.  # pylint: disable=fixme
+        """
+        # Set to first group configuration.
+        split_test = self._update_partition_id(0)
+
+        # Add a group to the first group configuration.
+        split_test.user_partitions = [
+            UserPartition(
+                0, 'first_partition', 'First Partition',
+                [Group("0", 'alpha'), Group("1", 'beta'), Group("2", 'pie')]
+            )
+        ]
+        self.store.update_item(split_test, self.user.id)
+
+        # group_id_to_child and children have not changed yet.
+        split_test = self._assert_children(2)
+        group_id_to_child = split_test.group_id_to_child
+        self.assertEqual(2, len(group_id_to_child))
+
+        # Call add_missing_groups method to add the missing group.
+        split_test.add_missing_groups(None)
+        split_test = self._assert_children(3)
+        self.assertNotEqual(group_id_to_child, split_test.group_id_to_child)
+        group_id_to_child = split_test.group_id_to_child
+        self.assertEqual(split_test.children[2], group_id_to_child["2"])
+
+        # Call add_missing_groups again -- it should be a no-op.
+        split_test.add_missing_groups(None)
+        split_test = self._assert_children(3)
+        self.assertEqual(group_id_to_child, split_test.group_id_to_child)
+
+
 @ddt.ddt
 class TestComponentHandler(TestCase):
     def setUp(self):
@@ -821,3 +1030,69 @@ class TestComponentHandler(TestCase):
         self.descriptor.handle = create_response
 
         self.assertEquals(component_handler(self.request, self.usage_key_string, 'dummy_handler').status_code, status_code)
+
+
+class TestComponentTemplates(CourseTestCase):
+    """
+    Unit tests for the generation of the component templates for a course.
+    """
+
+    def setUp(self):
+        super(TestComponentTemplates, self).setUp()
+        self.templates = get_component_templates(self.course)
+
+    def get_templates_of_type(self, template_type):
+        """
+        Returns the templates for the specified type, or None if none is found.
+        """
+        template_dict = next((template for template in self.templates if template.get('type') == template_type), None)
+        return template_dict.get('templates') if template_dict else None
+
+    def get_template(self, templates, display_name):
+        """
+        Returns the template which has the specified display name.
+        """
+        return next((template for template in templates if template.get('display_name') == display_name), None)
+
+    def test_basic_components(self):
+        """
+        Test the handling of the basic component templates.
+        """
+        self.assertIsNotNone(self.get_templates_of_type('discussion'))
+        self.assertIsNotNone(self.get_templates_of_type('html'))
+        self.assertIsNotNone(self.get_templates_of_type('problem'))
+        self.assertIsNotNone(self.get_templates_of_type('video'))
+        self.assertIsNone(self.get_templates_of_type('advanced'))
+
+    def test_advanced_components(self):
+        """
+        Test the handling of advanced component templates.
+        """
+        self.course.advanced_modules.append('word_cloud')
+        self.templates = get_component_templates(self.course)
+        advanced_templates = self.get_templates_of_type('advanced')
+        self.assertEqual(len(advanced_templates), 1)
+        world_cloud_template = advanced_templates[0]
+        self.assertEqual(world_cloud_template.get('category'), 'word_cloud')
+        self.assertEqual(world_cloud_template.get('display_name'), u'Word cloud')
+        self.assertIsNone(world_cloud_template.get('boilerplate_name', None))
+
+        # Verify that non-advanced components are not added twice
+        self.course.advanced_modules.append('video')
+        self.course.advanced_modules.append('openassessment')
+        self.templates = get_component_templates(self.course)
+        advanced_templates = self.get_templates_of_type('advanced')
+        self.assertEqual(len(advanced_templates), 1)
+        only_template = advanced_templates[0]
+        self.assertNotEqual(only_template.get('category'), 'video')
+        self.assertNotEqual(only_template.get('category'), 'openassessment')
+
+    def test_advanced_problems(self):
+        """
+        Test the handling of advanced problem templates.
+        """
+        problem_templates = self.get_templates_of_type('problem')
+        ora_template = self.get_template(problem_templates, u'Peer Assessment')
+        self.assertIsNotNone(ora_template)
+        self.assertEqual(ora_template.get('category'), 'openassessment')
+        self.assertIsNone(ora_template.get('boilerplate_name', None))

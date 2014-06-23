@@ -11,8 +11,8 @@ from webob import Request
 
 from xmodule.contentstore.content import StaticContent
 from xmodule.contentstore.django import contentstore
-from xmodule.modulestore import Location
 from xmodule.modulestore.django import editable_modulestore
+from xmodule.x_module import STUDENT_VIEW
 from . import BaseTestXmodule
 from .test_video_xml import SOURCE_XML
 from cache_toolbox.core import del_cached_content
@@ -22,7 +22,7 @@ from xmodule.video_module.transcripts_utils import (
     TranscriptException,
     TranscriptsGenerationException,
 )
-from xmodule.modulestore.locations import AssetLocation
+from opaque_keys.edx.locations import AssetLocation
 
 SRT_content = textwrap.dedent("""
         0
@@ -67,8 +67,7 @@ def _clear_assets(location):
     for asset in assets:
         asset_location = AssetLocation._from_deprecated_son(asset["_id"], location.course_key.run)
         del_cached_content(asset_location)
-        mongo_id = asset_location.to_deprecated_son()
-        store.delete(mongo_id)
+        store.delete(asset_location)
 
 
 def _get_subs_id(filename):
@@ -177,7 +176,7 @@ class TestTranscriptAvailableTranslationsDispatch(TestVideo):
 
     def setUp(self):
         super(TestTranscriptAvailableTranslationsDispatch, self).setUp()
-        self.item_descriptor.render('student_view')
+        self.item_descriptor.render(STUDENT_VIEW)
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
         self.subs = {"start": [10], "end": [100], "text": ["Hi, welcome to Edx."]}
 
@@ -236,7 +235,7 @@ class TestTranscriptDownloadDispatch(TestVideo):
 
     def setUp(self):
         super(TestTranscriptDownloadDispatch, self).setUp()
-        self.item_descriptor.render('student_view')
+        self.item_descriptor.render(STUDENT_VIEW)
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
 
     def test_download_transcript_not_exist(self):
@@ -301,7 +300,7 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
 
     def setUp(self):
         super(TestTranscriptTranslationGetDispatch, self).setUp()
-        self.item_descriptor.render('student_view')
+        self.item_descriptor.render(STUDENT_VIEW)
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
 
     def test_translation_fails(self):
@@ -611,7 +610,7 @@ class TestGetTranscript(TestVideo):
 
     def setUp(self):
         super(TestGetTranscript, self).setUp()
-        self.item_descriptor.render('student_view')
+        self.item_descriptor.render(STUDENT_VIEW)
         self.item = self.item_descriptor.xmodule_runtime.xmodule_instance
 
     def test_good_transcript(self):

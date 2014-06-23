@@ -23,7 +23,7 @@ import xmodule
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError, DuplicateItemError
 from xmodule.modulestore.inheritance import own_metadata
-from xmodule.video_module import manage_video_subtitles_save
+from xmodule.x_module import PREVIEW_VIEWS, STUDIO_VIEW
 
 from util.json_request import expect_json, JsonResponse
 from util.string_utils import str_to_bool
@@ -38,7 +38,7 @@ from contentstore.views.preview import get_preview_fragment
 from edxmako.shortcuts import render_to_string
 from models.settings.course_grading import CourseGradingModel
 from cms.lib.xblock.runtime import handler_url, local_resource_url
-from xmodule.modulestore.keys import UsageKey, CourseKey
+from opaque_keys.edx.keys import UsageKey, CourseKey
 
 __all__ = ['orphan_handler', 'xblock_handler', 'xblock_view_handler']
 
@@ -181,15 +181,15 @@ def xblock_view_handler(request, usage_key_string, view_name):
         xblock = store.get_item(usage_key)
         is_read_only = _is_xblock_read_only(xblock)
         container_views = ['container_preview', 'reorderable_container_child_preview']
-        unit_views = ['student_view']
+        unit_views = PREVIEW_VIEWS
 
         # wrap the generated fragment in the xmodule_editor div so that the javascript
         # can bind to it correctly
         xblock.runtime.wrappers.append(partial(wrap_xblock, 'StudioRuntime', usage_id_serializer=unicode))
 
-        if view_name == 'studio_view':
+        if view_name == STUDIO_VIEW:
             try:
-                fragment = xblock.render('studio_view')
+                fragment = xblock.render(STUDIO_VIEW)
             # catch exceptions indiscriminately, since after this point they escape the
             # dungeon and surface as uneditable, unsaveable, and undeletable
             # component-goblins.
@@ -199,25 +199,6 @@ def xblock_view_handler(request, usage_key_string, view_name):
 
             # change not authored by requestor but by xblocks.
             store.update_item(xblock, None)
-
-        elif view_name == 'student_view' and xblock_has_own_studio_page(xblock):
-            context = {
-                'runtime_type': 'studio',
-                'container_view': False,
-                'read_only': is_read_only,
-                'root_xblock': xblock,
-            }
-            # For non-leaf xblocks on the unit page, show the special rendering
-            # which links to the new container page.
-            html = render_to_string('container_xblock_component.html', {
-                'xblock_context': context,
-                'xblock': xblock,
-                'locator': usage_key,
-            })
-            return JsonResponse({
-                'html': html,
-                'resources': [],
-            })
         elif view_name in (unit_views + container_views):
             is_container_view = (view_name in container_views)
 
@@ -233,7 +214,6 @@ def xblock_view_handler(request, usage_key_string, view_name):
             # Note: this special case logic can be removed once the unit page is replaced
             # with the new container view.
             context = {
-                'runtime_type': 'studio',
                 'container_view': is_container_view,
                 'read_only': is_read_only,
                 'root_xblock': xblock if (view_name == 'container_preview') else None,
@@ -245,8 +225,15 @@ def xblock_view_handler(request, usage_key_string, view_name):
             # the component div. Note that the container view recursively adds headers
             # into the preview fragment, so we don't want to add another header here.
             if not is_container_view:
-                fragment.content = render_to_string('component.html', {
+                # For non-leaf xblocks, show the special rendering which links to the new container page.
+                if xblock_has_own_studio_page(xblock):
+                    template = 'container_xblock_component.html'
+                else:
+                    template = 'component.html'
+                fragment.content = render_to_string(template, {
                     'xblock_context': context,
+                    'xblock': xblock,
+                    'locator': usage_key,
                     'preview': fragment.content,
                     'label': xblock.display_name or xblock.scope_ids.block_type,
                 })
@@ -301,6 +288,7 @@ def _save_item(request, usage_key, data=None, children=None, metadata=None, null
         return JsonResponse({"error": "Can't find item by location: " + unicode(usage_key)}, 404)
 
     old_metadata = own_metadata(existing_item)
+    old_content = existing_item.get_explicitly_set_fields_by_scope(Scope.content)
 
     if publish:
         if publish == 'make_private':
@@ -322,7 +310,7 @@ def _save_item(request, usage_key, data=None, children=None, metadata=None, null
         # TODO Allow any scope.content fields not just "data" (exactly like the get below this)
         existing_item.data = data
     else:
-        data = existing_item.get_explicitly_set_fields_by_scope(Scope.content)
+        data = old_content['data'] if 'data' in old_content else None
 
     if children is not None:
         children_usage_keys = [
@@ -357,8 +345,8 @@ def _save_item(request, usage_key, data=None, children=None, metadata=None, null
                         return JsonResponse({"error": "Invalid data"}, 400)
                     field.write_to(existing_item, value)
 
-        if existing_item.category == 'video':
-            manage_video_subtitles_save(existing_item, request.user, old_metadata, generate_translation=True)
+    if callable(getattr(existing_item, "editor_saved", None)):
+        existing_item.editor_saved(request.user, old_metadata, old_content)
 
     # commit to datastore
     store.update_item(existing_item, request.user.id)
@@ -381,8 +369,7 @@ def _save_item(request, usage_key, data=None, children=None, metadata=None, null
             # interface for publishing. However, as of now, only the DraftMongoModulestore
             # does, so we have to check for the attribute explicitly.
             store = get_modulestore(block.location)
-            if hasattr(store, 'publish'):
-                store.publish(block.location, request.user.id)
+            store.publish(block.location, request.user.id)
 
         _xmodule_recurse(
             existing_item,
@@ -539,7 +526,7 @@ def orphan_handler(request, course_key_string):
             for itemloc in items:
                 # get_orphans returns the deprecated string format
                 usage_key = course_usage_key.make_usage_key_from_deprecated_string(itemloc)
-                modulestore('draft').delete_item(usage_key, delete_all_versions=True)
+                modulestore().delete_item(usage_key, delete_all_versions=True)
             return JsonResponse({'deleted': items})
         else:
             raise PermissionDenied()

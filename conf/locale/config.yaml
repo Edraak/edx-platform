@@ -30,6 +30,7 @@ locales:
     - fi_FI  # Finnish (Finland)
     - fr  # French
     - gl  # Galician
+    - gu  # Gujarati
     - he  # Hebrew
     - hi  # Hindi
     - hr  # Croatian
@@ -49,6 +50,7 @@ locales:
     - nb  # Norwegian Bokmål
     - ne  # Nepali
     - nl_NL  # Dutch (Netherlands)
+    - or  # Oriya
     - pl  # Polish
     - pt_BR  # Portuguese (Brazil)
     - pt_PT  # Portuguese (Portugal)
@@ -63,6 +65,7 @@ locales:
     - ur  # Urdu
     - vi  # Vietnamese
     - zh_CN  # Chinese (China)
+    - zh_HK  # Chinese (Hong Kong)
     - zh_TW  # Chinese (Taiwan)
 
 
@@ -106,6 +109,9 @@ segment:
     mako.po:
         mako-studio.po:
             - cms/*
+    underscore.po:
+        underscore-studio.po:
+            - cms/*
 
 # How should the generate step merge files?
 generate_merge:
@@ -119,3 +125,5 @@ generate_merge:
     djangojs.po:
         - djangojs-partial.po
         - djangojs-studio.po
+        - underscore.po
+        - underscore-studio.po

@@ -37,8 +37,10 @@ from lms.lib.xblock.mixin import LmsBlockMixin
 
 ################################### FEATURES ###################################
 # The display name of the platform to be used in templates/emails/etc.
-PLATFORM_NAME = "edX"
+PLATFORM_NAME = "Your Platform Name Here"
 CC_MERCHANT_NAME = PLATFORM_NAME
+PLATFORM_TWITTER_ACCOUNT = "@YourPlatformTwitterAccount"
+PLATFORM_FACEBOOK_ACCOUNT = "http://www.facebook.com/YourPlatformFacebookAccount"
 
 COURSEWARE_ENABLED = True
 ENABLE_JASMINE = False
@@ -523,7 +525,7 @@ CMS_BASE = 'localhost:8001'
 
 # Site info
 SITE_ID = 1
-SITE_NAME = "edx.org"
+SITE_NAME = "example.com"
 HTTPS = 'on'
 ROOT_URLCONF = 'lms.urls'
 # NOTE: Please set ALLOWED_HOSTS to some sane value, as we do not allow the default '*'
@@ -536,6 +538,8 @@ SERVER_EMAIL = 'devops@example.com'
 TECH_SUPPORT_EMAIL = 'technical@example.com'
 CONTACT_EMAIL = 'info@example.com'
 BUGS_EMAIL = 'bugs@example.com'
+UNIVERSITY_EMAIL = 'university@example.com'
+PRESS_EMAIL = 'press@example.com'
 ADMINS = ()
 MANAGERS = ADMINS
 
@@ -589,6 +593,7 @@ LANGUAGES = (
     ('fi-fi', u'Suomi (Suomi)'),  # Finnish (Finland)
     ('fr', u'Français'),  # French
     ('gl', u'Galego'),  # Galician
+    ('gu', u'ગુજરાતી'),  # Gujarati
     ('he', u'עברית'),  # Hebrew
     ('hi', u'हिन्दी'),  # Hindi
     ('hr', u'hrvatski'),  # Croatian
@@ -596,11 +601,11 @@ LANGUAGES = (
     ('hy-am', u'Հայերեն (Հայաստան)'),  # Armenian (Armenia)
     ('id', u'Bahasa Indonesia'),  # Indonesian
     ('it-it', u'Italiano (Italia)'),  # Italian (Italy)
-    ('ja-jp', u'日本語(日本)'),  # Japanese (Japan)
+    ('ja-jp', u'日本語 (日本)'),  # Japanese (Japan)
     ('kk-kz', u'қазақ тілі (Қазақстан)'),  # Kazakh (Kazakhstan)
     ('km-kh', u'ភាសាខ្មែរ (កម្ពុជា)'),  # Khmer (Cambodia)
     ('kn', u'ಕನ್ನಡ'),  # Kannada
-    ('ko-kr', u'한국어(대한민국)'),  # Korean (Korea)
+    ('ko-kr', u'한국어 (대한민국)'),  # Korean (Korea)
     ('lt-lt', u'Lietuvių (Lietuva)'),  # Lithuanian (Lithuania)
     ('ml', u'മലയാളം'),  # Malayalam
     ('mn', u'Монгол хэл'),  # Mongolian
@@ -608,6 +613,7 @@ LANGUAGES = (
     ('nb', u'Norsk bokmål'),  # Norwegian Bokmål
     ('ne', u'नेपाली'),  # Nepali
     ('nl-nl', u'Nederlands (Nederland)'),  # Dutch (Netherlands)
+    ('or', u'ଓଡ଼ିଆ'),  # Oriya
     ('pl', u'Polski'),  # Polish
     ('pt-br', u'Português (Brasil)'),  # Portuguese (Brazil)
     ('pt-pt', u'Português (Portugal)'),  # Portuguese (Portugal)
@@ -621,8 +627,9 @@ LANGUAGES = (
     ('uk', u'Українська'),  # Ukranian
     ('ur', u'اردو'),  # Urdu
     ('vi', u'Tiếng Việt'),  # Vietnamese
-    ('zh-cn', u'中文(简体)'),  # Chinese (China)
-    ('zh-tw', u'中文(台灣)'),  # Chinese (Taiwan)
+    ('zh-cn', u'中文 (简体)'),  # Chinese (China)
+    ('zh-hk', u'中文 (香港)'),  # Chinese (Hong Kong)
+    ('zh-tw', u'中文 (台灣)'),  # Chinese (Taiwan)
 )
 
 LANGUAGE_DICT = dict(LANGUAGES)
@@ -844,6 +851,7 @@ main_vendor_js = [
     'js/vendor/ova/reply-annotator.js',
     'js/vendor/ova/tags-annotator.js',
     'js/vendor/ova/flagging-annotator.js',
+    'js/vendor/ova/diacritic-annotator.js',
     'js/vendor/ova/jquery-Watch.js',
     'js/vendor/ova/openseadragon.js',
     'js/vendor/ova/OpenSeaDragonAnnotation.js',
@@ -866,14 +874,15 @@ PIPELINE_CSS = {
             'css/vendor/jquery.qtip.min.css',
             'css/vendor/responsive-carousel/responsive-carousel.css',
             'css/vendor/responsive-carousel/responsive-carousel.slide.css',
-            'css/vendor/ova/edx-annotator.css',
             'css/vendor/ova/annotator.css',
+            'css/vendor/ova/edx-annotator.css',
             'css/vendor/ova/video-js.min.css',
             'css/vendor/ova/rangeslider.css',
             'css/vendor/ova/share-annotator.css',
             'css/vendor/ova/richText-annotator.css',
             'css/vendor/ova/tags-annotator.css',
             'css/vendor/ova/flagging-annotator.css',
+            'css/vendor/ova/diacritic-annotator.css',
             'css/vendor/ova/ova.css',
             'js/vendor/ova/catch/css/main.css'
         ],
@@ -1096,7 +1105,6 @@ BULK_EMAIL_DEFAULT_FROM_EMAIL = 'no-reply@example.com'
 
 # Parameters for breaking down course enrollment into subtasks.
 BULK_EMAIL_EMAILS_PER_TASK = 100
-BULK_EMAIL_EMAILS_PER_QUERY = 1000
 
 # Initial delay used for retrying tasks.  Additional retries use
 # longer delays.  Value is in seconds.
@@ -1350,6 +1358,18 @@ INSTALLED_APPS += ('linkedin',)
 LINKEDIN_API = {
     'EMAIL_WHITELIST': [],
     'COMPANY_ID': '2746406',
+}
+
+
+############################ ORA 2 ############################################
+
+# By default, don't use a file prefix
+ORA2_FILE_PREFIX = None
+
+# AI algorithm configuration
+ORA2_AI_ALGORITHMS = {
+    'fake': 'openassessment.assessment.worker.algorithm.FakeAIAlgorithm',
+    'ease': 'openassessment.assessment.worker.algorithm.EaseAIAlgorithm'
 }
 
 

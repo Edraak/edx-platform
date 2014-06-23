@@ -5,7 +5,7 @@ import json
 
 from contentstore.tests.test_course_settings import CourseTestCase
 from contentstore.utils import reverse_course_url, reverse_usage_url
-from xmodule.modulestore.locations import Location, SlashSeparatedCourseKey
+from opaque_keys.edx.locations import Location, SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
 
 
@@ -135,7 +135,7 @@ class CourseUpdateTest(CourseTestCase):
         update_content = u"Hello world!"
         update_data = u"<ol><li><h2>" + update_date + "</h2>" + update_content + "</li></ol>"
         course_updates.data = update_data
-        modulestore('direct').update_item(course_updates, self.user)
+        modulestore('direct').update_item(course_updates, self.user.id)
 
         # test getting all updates list
         course_update_url = self.create_update_url()

@@ -15,8 +15,7 @@ from xblock.fragment import Fragment
 
 from xmodule.seq_module import SequenceModule
 from xmodule.vertical_module import VerticalModule
-from xmodule.x_module import shim_xmodule_js, XModuleDescriptor, XModule
-from lms.lib.xblock.runtime import quote_slashes
+from xmodule.x_module import shim_xmodule_js, XModuleDescriptor, XModule, PREVIEW_VIEWS, STUDIO_VIEW
 from xmodule.modulestore import MONGO_MODULESTORE_TYPE
 from xmodule.modulestore.django import modulestore
 
@@ -60,10 +59,10 @@ def wrap_xblock(runtime_class, block, view, frag, context, usage_id_serializer, 
     css_classes = ['xblock', 'xblock-' + view]
 
     if isinstance(block, (XModule, XModuleDescriptor)):
-        if view == 'student_view':
+        if view in PREVIEW_VIEWS:
             # The block is acting as an XModule
             css_classes.append('xmodule_display')
-        elif view == 'studio_view':
+        elif view == STUDIO_VIEW:
             # The block is acting as an XModuleDescriptor
             css_classes.append('xmodule_edit')
 
@@ -157,7 +156,7 @@ def grade_histogram(module_id):
     return grades
 
 
-def add_staff_markup(user, block, view, frag, context):  # pylint: disable=unused-argument
+def add_staff_markup(user, has_instructor_access, block, view, frag, context):  # pylint: disable=unused-argument
     """
     Updates the supplied module with a new get_html function that wraps
     the output of the old get_html function with additional information
@@ -245,5 +244,6 @@ def add_staff_markup(user, block, view, frag, context):  # pylint: disable=unuse
                      'render_histogram': render_histogram,
                      'block_content': frag.content,
                      'is_released': is_released,
+                     'has_instructor_access': has_instructor_access,
                      }
     return wrap_fragment(frag, render_to_string("staff_problem_info.html", staff_context))
