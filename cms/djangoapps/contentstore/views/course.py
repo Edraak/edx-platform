@@ -867,17 +867,14 @@ def group_experiments_list_handler(request, course_key_string):
     """
     course_key = CourseKey.from_string(course_key_string)
     course = _get_course_module(course_key, request.user)
+    group_experiment_url = reverse_course_url('group_experiments_list_handler', course_key)
+    user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
 
-    if not "application/json" in request.META.get('HTTP_ACCEPT', 'text/html'):
-        # return HTML page
-        group_experiment_url = reverse_course_url('group_experiments_list_handler', course_key)
-        user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
-
-        return render_to_response('group_experiments.html', {
-            'context_course': course,
-            'experiments': user_partitions,
-            'group_experiment_url': group_experiment_url,
-        })
+    return render_to_response('group_experiments.html', {
+        'context_course': course,
+        'experiments': user_partitions,
+        'group_experiment_url': group_experiment_url,
+    })
 
 
 def _get_course_creator_status(user):
