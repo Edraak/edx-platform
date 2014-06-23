@@ -12,7 +12,7 @@ from django.http import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
-from contentstore.utils import reverse_usage_url
+from contentstore.utils import reverse_usage_url, reverse_course_url
 
 from contentstore.views.component import component_handler, get_component_templates
 
@@ -978,6 +978,14 @@ class TestEditSplitModule(ItemTest):
         split_test.add_missing_groups(None)
         split_test = self._assert_children(3)
         self.assertEqual(group_id_to_child, split_test.group_id_to_child)
+
+    def test_view_index(self):
+        "Basic check that the groups index page responds correctly"
+        url = reverse_course_url('group_experiments_list_handler', self.course.id)
+        resp = self.client.get(url)
+        self.assertContains(resp, self.course.display_name)
+        self.assertContains(resp, 'First Partition')
+        self.assertContains(resp, 'alpha')
 
 
 @ddt.ddt
