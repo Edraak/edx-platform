@@ -860,11 +860,10 @@ def textbooks_detail_handler(request, course_key_string, textbook_id):
 @ensure_csrf_cookie
 def group_experiments_list_handler(request, course_key_string):
     """
-    A RESTful handler for textbook collections.
+    A RESTful handler for Group Experiments
 
     GET
-        html: return textbook list page (Backbone application)
-        json: return JSON representation of all textbooks in this course
+        html: return Group Experiments list page (Backbone application)
     """
     course_key = CourseKey.from_string(course_key_string)
     course = _get_course_module(course_key, request.user)
