@@ -770,7 +770,11 @@ class YouTubeHtml5VideoTest(VideoBaseTest):
             'time_to_response': 2.0
         })
 
-        self.assets.extend(['subs_OEoXaMPEzfM.srt.sjson', 'subs_b7xgknqkQk8.srt.sjson', 'chinese_transcripts.srt'])
+        self.assets.extend([
+            'subs_OEoXaMPEzfM.srt.sjson',
+            'subs_b7xgknqkQk8.srt.sjson',
+            'chinese_transcripts.srt'
+        ])
 
         data_a = {'youtube_id_1_0': 'OEoXaMPEzfM', 'sub': 'OEoXaMPEzfM'}
         video_a_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_a)
@@ -785,14 +789,17 @@ class YouTubeHtml5VideoTest(VideoBaseTest):
         video_d_metadata = self.metadata_for_mode('youtube_html5', additional_data=data_d)
 
         self.verticals = [
-            [{'display_name': 'A', 'metadata': video_a_metadata}, {'display_name': 'B', 'metadata': video_b_metadata}],
+            [
+                {'display_name': 'A', 'metadata': video_a_metadata},
+                {'display_name': 'B', 'metadata': video_b_metadata}
+            ],
             [{'display_name': 'C', 'metadata': video_c_metadata}],
             [{'display_name': 'D', 'metadata': video_d_metadata}]
         ]
 
         self.navigate_to_video()
 
-        from nose.tools import set_trace; set_trace()
+        import ipdb; ipdb.set_trace()
 
 
 class Html5VideoTest(VideoBaseTest):
