@@ -75,7 +75,9 @@ urlpatterns = ('',  # nopep8
 if settings.FEATURES["ENABLE_PUBLIC_REST_API"]:
     urlpatterns += (
         url(r'^public_api/', include('public_api.urls')),
+        url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
     )
+
 
 # if settings.FEATURES.get("MULTIPLE_ENROLLMENT_ROLES"):
 urlpatterns += (

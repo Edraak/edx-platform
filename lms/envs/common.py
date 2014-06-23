@@ -1263,6 +1263,10 @@ INSTALLED_APPS = (
     # edX Public API
     'public_api',
     'public_api.users',
+
+    # OAuth2
+    'provider',
+    'provider.oauth2',
 )
 
 ######################### MARKETING SITE ###############################

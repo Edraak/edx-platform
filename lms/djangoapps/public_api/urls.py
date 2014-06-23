@@ -9,5 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^course_info/', include('public_api.course_info.urls')),
 
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )
