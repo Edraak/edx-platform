@@ -986,6 +986,8 @@ class TestEditSplitModule(ItemTest):
         self.assertContains(resp, self.course.display_name)
         self.assertContains(resp, 'First Partition')
         self.assertContains(resp, 'alpha')
+        self.assertContains(resp, 'Second Partition')
+        self.assertContains(resp, 'Group 1')
 
 
 @ddt.ddt
