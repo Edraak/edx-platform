@@ -63,7 +63,7 @@ class SequenceModule(SequenceFields, XModule):
         if position is not None:
             try: 
                 self.position = int(self.system.position)
-            except ValueError, TypeError:
+            except (ValueError, TypeError):
                 warnings.warn("Sequential position is an invalid type.", RuntimeWarning) 
 
     def get_progress(self):
