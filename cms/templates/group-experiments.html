@@ -2,7 +2,10 @@
 <%def name="online_help_token()"><% return "group_experiments" %></%def>
 <%namespace name='static' file='static_content.html'/>
 <%! import json %>
-<%! from django.utils.translation import ugettext as _ %>
+<%!
+  from contentstore import utils
+  from django.utils.translation import ugettext as _
+%>
 
 <%block name="title">${_("Group Configurations")}</%block>
 <%block name="bodyclass">is-signedin course view-group-experiment</%block>
@@ -56,14 +59,24 @@ function(Section, GroupExperimentCollection, ListExperimentsView) {
       </article>
       <aside class="content-supplementary" role="complimentary">
         <div class="bit">
-          <h3 class="title-3">${_("Some text.")}</h3>
-          <p>${_("Some text.")}</p>
-        </div>
-        <div class="bit">
-          <h3 class="title-3">${_("Some text.")}</h3>
-          <p>${_("Some text.")}</p>
-          <p><a href="${get_online_help_info(online_help_token())['doc_url']}" target="_blank">${_("Learn More")}</a></p>
-        </div>
+      % if context_course:
+        <%
+          details_url = utils.reverse_course_url('settings_handler', context_course.id)
+          grading_url = utils.reverse_course_url('grading_handler', context_course.id)
+          course_team_url = utils.reverse_course_url('course_team_handler', context_course.id)
+          advanced_settings_url = utils.reverse_course_url('advanced_settings_handler', context_course.id)
+        %>
+      <h3 class="title-3">${_("Other Course Settings")}</h3>
+        <nav class="nav-related">
+          <ul>
+            <li class="nav-item"><a href="${details_url}">${_("Details &amp; Schedule")}</a></li>
+            <li class="nav-item"><a href="${grading_url}">${_("Grading")}</a></li>
+            <li class="nav-item"><a href="${course_team_url}">${_("Course Team")}</a></li>
+            <li class="nav-item"><a href="${advanced_settings_url}">${_("Advanced Settings")}</a></li>
+          </ul>
+        </nav>
+      % endif
+      </div>
       </aside>
     </section>
   </div>
