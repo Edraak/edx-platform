@@ -37,8 +37,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-05-19 08:30-0400\n"
-"PO-Revision-Date: 2014-05-19 12:30:24.577686\n"
+"POT-Creation-Date: 2014-06-13 09:24-0400\n"
+"PO-Revision-Date: 2014-06-13 13:24:28.573689\n"
 "Last-Translator: \n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -55,6 +55,27 @@ msgstr ""
 #: cms/djangoapps/contentstore/utils.py common/lib/xmodule/xmodule/tabs.py
 msgid "Open Ended Panel"
 msgstr "Öpén Éndéd Pänél Ⱡ'σ#"
+
+#. Translators: "Discussion" is the title of the course forum page
+#. Translators: 'Discussion' refers to the tab in the courseware that leads to
+#. the discussion forums
+#: cms/djangoapps/contentstore/views/component.py
+#: common/lib/xmodule/xmodule/tabs.py common/lib/xmodule/xmodule/tabs.py
+msgid "Discussion"
+msgstr "Dïsçüssïön Ⱡ#"
+
+#: cms/djangoapps/contentstore/views/component.py
+#: lms/djangoapps/class_dashboard/dashboard_data.py
+#: lms/templates/courseware/instructor_dashboard.html
+#: lms/templates/courseware/instructor_dashboard.html
+#: lms/templates/instructor/instructor_dashboard_2/analytics.html
+msgid "Problem"
+msgstr "Prößlém #"
+
+#: cms/djangoapps/contentstore/views/component.py
+#: common/lib/xmodule/xmodule/video_module/video_module.py
+msgid "Advanced"
+msgstr "Àdvänçéd #"
 
 #: common/djangoapps/course_modes/models.py
 msgid "Honor Code Certificate"
@@ -203,11 +224,11 @@ msgstr ""
 #: common/djangoapps/student/views.py
 msgid ""
 "Your password has expired due to password policy on this account. You must "
-"reset your password before you can log in again. Please click the Forgot "
+"reset your password before you can log in again. Please click the \"Forgot "
 "Password\" link on this page to reset your password before logging in again."
 msgstr ""
 "Ýöür pässwörd häs éxpïréd düé tö pässwörd pölïçý ön thïs äççöünt. Ýöü müst "
-"rését ýöür pässwörd ßéföré ýöü çän lög ïn ägäïn. Pléäsé çlïçk thé Förgöt "
+"rését ýöür pässwörd ßéföré ýöü çän lög ïn ägäïn. Pléäsé çlïçk thé \"Förgöt "
 "Pässwörd\" lïnk ön thïs pägé tö rését ýöür pässwörd ßéföré löggïng ïn ägäïn."
 " Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕм#"
 
@@ -404,6 +425,12 @@ msgstr "Àn äççöünt wïth thïs é-mäïl älréädý éxïsts. Ⱡ'σяє�
 #: common/djangoapps/student/views.py
 msgid "Old email is the same as the new email."
 msgstr "Öld émäïl ïs thé sämé äs thé néw émäïl. Ⱡ'σяєм ιρѕ#"
+
+#: common/djangoapps/student/views.py
+msgid "Unable to send email activation link. Please try again later."
+msgstr ""
+"Ûnäßlé tö sénd émäïl äçtïvätïön lïnk. Pléäsé trý ägäïn lätér. Ⱡ'σяєм ιρѕυм "
+"∂σłσя#"
 
 #: common/djangoapps/student/views.py
 msgid "Name required"
@@ -833,6 +860,20 @@ msgstr "ünänswéréd Ⱡ#"
 msgid "processing"
 msgstr "pröçéssïng Ⱡ#"
 
+#. Translators: 'ChoiceGroup' is an input type and should not be translated.
+#: common/lib/capa/capa/inputtypes.py
+msgid "ChoiceGroup: unexpected tag {tag_name}"
+msgstr "ÇhöïçéGröüp: ünéxpéçtéd täg {tag_name} Ⱡ'σяєм ι#"
+
+#: common/lib/capa/capa/inputtypes.py common/lib/capa/capa/inputtypes.py
+msgid "Answer received."
+msgstr "Ànswér réçéïvéd. Ⱡ'σ#"
+
+#. Translators: '<choice>' is a tag name and should not be translated.
+#: common/lib/capa/capa/inputtypes.py
+msgid "Expected a <choice> tag; got {given_tag} instead"
+msgstr "Éxpéçtéd ä <choice> täg; göt {given_tag} ïnstéäd Ⱡ'σяєм ιρ#"
+
 #: common/lib/capa/capa/inputtypes.py
 msgid ""
 "Your file(s) have been submitted. As soon as your submission is graded, this"
@@ -865,6 +906,15 @@ msgstr ""
 "Nö réspönsé fröm Xqüéüé wïthïn {xqueue_timeout} séçönds. Àßörtéd. Ⱡ'σяєм "
 "ιρѕυм ∂σ#"
 
+#: common/lib/capa/capa/inputtypes.py
+msgid "{input_type}: unexpected tag {tag_name}"
+msgstr "{input_type}: ünéxpéçtéd täg {tag_name} Ⱡ'σяє#"
+
+#. Translators: a "tag" is an XML element, such as "<b>" in HTML
+#: common/lib/capa/capa/inputtypes.py
+msgid "Expected a {expected_tag} tag; got {given_tag} instead"
+msgstr "Éxpéçtéd ä {expected_tag} täg; göt {given_tag} ïnstéäd Ⱡ'σяєм ιρ#"
+
 #: common/lib/capa/capa/responsetypes.py
 msgid "Error {err} in evaluating hint function {hintfn}."
 msgstr "Érrör {err} ïn évälüätïng hïnt fünçtïön {hintfn}. Ⱡ'σяєм ιρѕυ#"
@@ -876,6 +926,10 @@ msgstr "(Söürçé çödé lïné ünäväïläßlé) Ⱡ'σяєм #"
 #: common/lib/capa/capa/responsetypes.py
 msgid "See XML source line {sourcenum}."
 msgstr "Séé XML söürçé lïné {sourcenum}. Ⱡ'σяє#"
+
+#: common/lib/capa/capa/responsetypes.py
+msgid "Execution of unsafe Javascript code is not allowed."
+msgstr "Éxéçütïön öf ünsäfé Jäväsçrïpt çödé ïs nöt ällöwéd. Ⱡ'σяєм ιρѕυм ∂#"
 
 #. Translators: 'unmask_name' is a method name and should not be translated.
 #: common/lib/capa/capa/responsetypes.py
@@ -951,18 +1005,17 @@ msgstr ""
 msgid "error"
 msgstr "érrör Ⱡ'σяєм ι#"
 
+#. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
+#. Translators: Separator used in StringResponse to display multiple answers.
+#. Example: "Answer: Answer_1 or Answer_2 or Answer_3".
 #: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 msgid "or"
 msgstr "ör Ⱡ'#"
 
 #: common/lib/capa/capa/responsetypes.py
-msgid ""
-"[courseware.capa.responsetypes.customresponse] error getting student answer from {student_answers}\n"
-" idset = {idset}, error = {err}"
-msgstr ""
-"[çöürséwäré.çäpä.réspönsétýpés.çüstömréspönsé] érrör géttïng stüdént änswér fröm {student_answers}\n"
-" ïdsét = {idset}, érrör = {err} Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє#"
+msgid "error getting student answer from {student_answers}"
+msgstr "érrör géttïng stüdént änswér fröm {student_answers} Ⱡ'σяєм ιρѕ#"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "No answer entered!"
@@ -987,10 +1040,8 @@ msgid "No answer provided."
 msgstr "Nö änswér prövïdéd. Ⱡ'σя#"
 
 #: common/lib/capa/capa/responsetypes.py
-msgid "Error checking problem: no external queueing server is configured."
-msgstr ""
-"Érrör çhéçkïng prößlém: nö éxtérnäl qüéüéïng sérvér ïs çönfïgüréd. Ⱡ'σяєм "
-"ιρѕυм ∂σłσя #"
+msgid "Error: No grader has been set up for this problem."
+msgstr "Érrör: Nö grädér häs ßéén sét üp för thïs prößlém. Ⱡ'σяєм ιρѕυм ∂#"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid ""
@@ -1042,6 +1093,21 @@ msgstr ""
 "ιρѕυм ∂σł#"
 
 #: common/lib/capa/capa/responsetypes.py
+msgid "error grading {image_input_id} (input={user_input})"
+msgstr "érrör grädïng {image_input_id} (ïnpüt={user_input}) Ⱡ'σяєм #"
+
+#. Translators: {sr_coords} are the coordinates of a rectangle
+#: common/lib/capa/capa/responsetypes.py
+msgid "Error in problem specification! Cannot parse rectangle in {sr_coords}"
+msgstr ""
+"Érrör ïn prößlém spéçïfïçätïön! Çännöt pärsé réçtänglé ïn {sr_coords} Ⱡ'σяєм"
+" ιρѕυм ∂σłσя#"
+
+#: common/lib/capa/capa/responsetypes.py
+msgid "Answer not provided for {input_type}"
+msgstr "Ànswér nöt prövïdéd för {input_type} Ⱡ'σяєм#"
+
+#: common/lib/capa/capa/responsetypes.py
 msgid "The Staff answer could not be interpreted as a number."
 msgstr ""
 "Thé Stäff änswér çöüld nöt ßé ïntérprétéd äs ä nümßér. Ⱡ'σяєм ιρѕυм ∂σ#"
@@ -1049,6 +1115,251 @@ msgstr ""
 #: common/lib/capa/capa/responsetypes.py
 msgid "Could not interpret '{given_answer}' as a number."
 msgstr "Çöüld nöt ïntérprét '{given_answer}' äs ä nümßér. Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "XML data for the annotation"
+msgstr "XML dätä för thé ännötätïön Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/discussion_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/lti_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+#: common/lib/xmodule/xmodule/split_test_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Display Name"
+msgstr "Dïspläý Nämé Ⱡ#"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py
+#: common/lib/xmodule/xmodule/discussion_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Display name for this module"
+msgstr "Dïspläý nämé för thïs mödülé Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py
+msgid "Annotation"
+msgstr "Ànnötätïön Ⱡ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "This name appears in the horizontal navigation at the top of the page."
+msgstr ""
+"Thïs nämé äppéärs ïn thé hörïzöntäl nävïgätïön ät thé töp öf thé pägé. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Number of attempts taken by the student on this problem"
+msgstr ""
+"Nümßér öf ättémpts täkén ßý thé stüdént ön thïs prößlém Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Maximum Attempts"
+msgstr "Mäxïmüm Àttémpts Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid ""
+"Defines the number of times a student can try to answer this problem. If the"
+" value is not set, infinite attempts are allowed."
+msgstr ""
+"Défïnés thé nümßér öf tïmés ä stüdént çän trý tö änswér thïs prößlém. Ìf thé"
+" välüé ïs nöt sét, ïnfïnïté ättémpts äré ällöwéd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєтυ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Date that this problem is due by"
+msgstr "Däté thät thïs prößlém ïs düé ßý Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid ""
+"Date that this problem is due by for a particular student. This can be set "
+"by an instructor, and will override the global due date if it is set to a "
+"date that is later than the global due date."
+msgstr ""
+"Däté thät thïs prößlém ïs düé ßý för ä pärtïçülär stüdént. Thïs çän ßé sét "
+"ßý än ïnstrüçtör, änd wïll övérrïdé thé glößäl düé däté ïf ït ïs sét tö ä "
+"däté thät ïs lätér thän thé glößäl düé däté. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Amount of time after the due date that submissions will be accepted"
+msgstr ""
+"Àmöünt öf tïmé äftér thé düé däté thät süßmïssïöns wïll ßé äççéptéd Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py lms/templates/problem.html
+msgid "Show Answer"
+msgstr "Shöw Ànswér Ⱡ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid ""
+"Defines when to show the answer to the problem. A default value can be set "
+"in Advanced Settings."
+msgstr ""
+"Défïnés whén tö shöw thé änswér tö thé prößlém. À défäült välüé çän ßé sét "
+"ïn Àdvänçéd Séttïngs. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Always"
+msgstr "Àlwäýs Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Answered"
+msgstr "Ànswéréd #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Attempted"
+msgstr "Àttémptéd #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Closed"
+msgstr "Çlöséd Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Finished"
+msgstr "Fïnïshéd #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Past Due"
+msgstr "Päst Düé #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Never"
+msgstr "Névér Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Whether to force the save button to appear on the page"
+msgstr ""
+"Whéthér tö förçé thé sävé ßüttön tö äppéär ön thé pägé Ⱡ'σяєм ιρѕυм ∂σ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Randomization"
+msgstr "Rändömïzätïön Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid ""
+"Defines how often inputs are randomized when a student loads the problem. "
+"This setting only applies to problems that can have randomly generated "
+"numeric values. A default value can be set in Advanced Settings."
+msgstr ""
+"Défïnés höw öftén ïnpüts äré rändömïzéd whén ä stüdént löäds thé prößlém. "
+"Thïs séttïng önlý äpplïés tö prößléms thät çän hävé rändömlý générätéd "
+"nümérïç välüés. À défäült välüé çän ßé sét ïn Àdvänçéd Séttïngs. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "On Reset"
+msgstr "Ön Rését #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Per Student"
+msgstr "Pér Stüdént Ⱡ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid "XML data for the problem"
+msgstr "XML dätä för thé prößlém Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Dictionary with the correctness of current student answers"
+msgstr ""
+"Dïçtïönärý wïth thé çörréçtnéss öf çürrént stüdént änswérs Ⱡ'σяєм ιρѕυм "
+"∂σłσ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Dictionary for maintaining the state of inputtypes"
+msgstr "Dïçtïönärý för mäïntäïnïng thé stäté öf ïnpüttýpés Ⱡ'σяєм ιρѕυм ∂#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Dictionary with the current student responses"
+msgstr "Dïçtïönärý wïth thé çürrént stüdént réspönsés Ⱡ'σяєм ιρѕυм#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Whether the student has answered the problem"
+msgstr "Whéthér thé stüdént häs änswéréd thé prößlém Ⱡ'σяєм ιρѕυм#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Random seed for this student"
+msgstr "Rändöm sééd för thïs stüdént Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Last submission time"
+msgstr "Läst süßmïssïön tïmé Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Timer Between Attempts"
+msgstr "Tïmér Bétwéén Àttémpts Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid ""
+"Seconds a student must wait between submissions for a problem with multiple "
+"attempts."
+msgstr ""
+"Séçönds ä stüdént müst wäït ßétwéén süßmïssïöns för ä prößlém wïth mültïplé "
+"ättémpts. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмє#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Problem Weight"
+msgstr "Prößlém Wéïght Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid ""
+"Defines the number of points each problem is worth. If the value is not set,"
+" each response field in the problem is worth one point."
+msgstr ""
+"Défïnés thé nümßér öf pöïnts éäçh prößlém ïs wörth. Ìf thé välüé ïs nöt sét,"
+" éäçh réspönsé fïéld ïn thé prößlém ïs wörth öné pöïnt. Ⱡ'σяєм ιρѕυм ∂σłσя "
+"ѕιт αмєт, ¢σηѕє¢тєтυя #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Markdown source of this module"
+msgstr "Märkdöwn söürçé öf thïs mödülé Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid ""
+"Source code for LaTeX and Word problems. This feature is not well-supported."
+msgstr ""
+"Söürçé çödé för LäTéX änd Wörd prößléms. Thïs féätüré ïs nöt wéll-süppörtéd."
+" Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "String customization substitutions for particular locations"
+msgstr ""
+"Strïng çüstömïzätïön süßstïtütïöns för pärtïçülär löçätïöns Ⱡ'σяєм ιρѕυм "
+"∂σłσ#"
+
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "Enable LaTeX templates?"
+msgstr "Énäßlé LäTéX témplätés? Ⱡ'σяє#"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Check"
@@ -1172,6 +1483,428 @@ msgstr ""
 "Thé stäté öf thïs prößlém häs çhängéd sïnçé ýöü löädéd thïs pägé. Pléäsé "
 "réfrésh ýöür pägé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
 
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Open Response Assessment"
+msgstr "Öpén Réspönsé Àsséssmént Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Current task that the student is on."
+msgstr "Çürrént täsk thät thé stüdént ïs ön. Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"A list of lists of state dictionaries for student states that are saved.This"
+" field is only populated if the instructor changes tasks afterthe module is "
+"created and students have attempted it (for example changes a self assessed "
+"problem to self and peer assessed."
+msgstr ""
+"À lïst öf lïsts öf stäté dïçtïönärïés för stüdént stätés thät äré sävéd.Thïs"
+" fïéld ïs önlý pöpülätéd ïf thé ïnstrüçtör çhängés täsks äftérthé mödülé ïs "
+"çréätéd änd stüdénts hävé ättémptéd ït (för éxämplé çhängés ä sélf ässésséd "
+"prößlém tö sélf änd péér ässésséd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "List of state dictionaries of each task within this module."
+msgstr ""
+"Lïst öf stäté dïçtïönärïés öf éäçh täsk wïthïn thïs mödülé. Ⱡ'σяєм ιρѕυм "
+"∂σłσ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Which step within the current task that the student is on."
+msgstr ""
+"Whïçh stép wïthïn thé çürrént täsk thät thé stüdént ïs ön. Ⱡ'σяєм ιρѕυм "
+"∂σłσ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+#: lms/templates/peer_grading/peer_grading.html
+msgid "Graded"
+msgstr "Grädéd Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"Defines whether the student gets credit for this problem. Credit is based on"
+" peer grades of this problem."
+msgstr ""
+"Défïnés whéthér thé stüdént géts çrédït för thïs prößlém. Çrédït ïs ßäséd ön"
+" péér grädés öf thïs prößlém. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢ση#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "If the problem is ready to be reset or not."
+msgstr "Ìf thé prößlém ïs réädý tö ßé rését ör nöt. Ⱡ'σяєм ιρѕυм#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "The number of times the student can try to answer this problem."
+msgstr ""
+"Thé nümßér öf tïmés thé stüdént çän trý tö änswér thïs prößlém. Ⱡ'σяєм ιρѕυм"
+" ∂σłσя#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Allow File Uploads"
+msgstr "Àllöw Fïlé Ûplöäds Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Whether or not the student can submit files as a response."
+msgstr ""
+"Whéthér ör nöt thé stüdént çän süßmït fïlés äs ä réspönsé. Ⱡ'σяєм ιρѕυм "
+"∂σłσ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Disable Quality Filter"
+msgstr "Dïsäßlé Qüälïtý Fïltér Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"If False, the Quality Filter is enabled and submissions with poor spelling, "
+"short length, or poor grammar will not be peer reviewed."
+msgstr ""
+"Ìf Fälsé, thé Qüälïtý Fïltér ïs énäßléd änd süßmïssïöns wïth pöör spéllïng, "
+"shört léngth, ör pöör grämmär wïll nöt ßé péér révïéwéd. Ⱡ'σяєм ιρѕυм ∂σłσя "
+"ѕιт αмєт, ¢σηѕє¢тєтυя #"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Current version number"
+msgstr "Çürrént vérsïön nümßér Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid ""
+"Defines the number of points each problem is worth. If the value is not set,"
+" each problem is worth one point."
+msgstr ""
+"Défïnés thé nümßér öf pöïnts éäçh prößlém ïs wörth. Ìf thé välüé ïs nöt sét,"
+" éäçh prößlém ïs wörth öné pöïnt. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Minimum Peer Grading Calibrations"
+msgstr "Mïnïmüm Péér Grädïng Çälïßrätïöns Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"The minimum number of calibration essays each student will need to complete "
+"for peer grading."
+msgstr ""
+"Thé mïnïmüm nümßér öf çälïßrätïön éssäýs éäçh stüdént wïll nééd tö çömplété "
+"för péér grädïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Maximum Peer Grading Calibrations"
+msgstr "Mäxïmüm Péér Grädïng Çälïßrätïöns Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"The maximum number of calibration essays each student will need to complete "
+"for peer grading."
+msgstr ""
+"Thé mäxïmüm nümßér öf çälïßrätïön éssäýs éäçh stüdént wïll nééd tö çömplété "
+"för péér grädïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Peer Graders per Response"
+msgstr "Péér Grädérs pér Réspönsé Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "The number of peers who will grade each submission."
+msgstr "Thé nümßér öf péérs whö wïll grädé éäçh süßmïssïön. Ⱡ'σяєм ιρѕυм ∂#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Required Peer Grading"
+msgstr "Réqüïréd Péér Grädïng Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"The number of other students each student making a submission will have to "
+"grade."
+msgstr ""
+"Thé nümßér öf öthér stüdénts éäçh stüdént mäkïng ä süßmïssïön wïll hävé tö "
+"grädé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid "Allow \"overgrading\" of peer submissions"
+msgstr "Àllöw \"övérgrädïng\" öf péér süßmïssïöns Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+msgid ""
+"EXPERIMENTAL FEATURE.  Allow students to peer grade submissions that already"
+" have the requisite number of graders, but ONLY WHEN all submissions they "
+"are eligible to grade already have enough graders.  This is intended for use"
+" when settings for `Required Peer Grading` > `Peer Graders per Response`"
+msgstr ""
+"ÉXPÉRÌMÉNTÀL FÉÀTÛRÉ.  Àllöw stüdénts tö péér grädé süßmïssïöns thät älréädý"
+" hävé thé réqüïsïté nümßér öf grädérs, ßüt ÖNLÝ WHÉN äll süßmïssïöns théý "
+"äré élïgïßlé tö grädé älréädý hävé énöügh grädérs.  Thïs ïs ïnténdéd för üsé"
+" whén séttïngs för `Réqüïréd Péér Grädïng` > `Péér Grädérs pér Réspönsé` "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ "
+"тємρσя ιη¢ι∂ι∂υηт υт ł#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Getting Started With Studio"
+msgstr "Géttïng Stärtéd Wïth Stüdïö Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Add Course Team Members"
+msgstr "Àdd Çöürsé Téäm Mémßérs Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Grant your collaborators permission to edit your course so you can work "
+"together."
+msgstr ""
+"Gränt ýöür çölläßörätörs pérmïssïön tö édït ýöür çöürsé sö ýöü çän wörk "
+"tögéthér. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Edit Course Team"
+msgstr "Édït Çöürsé Téäm Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Set Important Dates for Your Course"
+msgstr "Sét Ìmpörtänt Dätés för Ýöür Çöürsé Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Establish your course's student enrollment and launch dates on the Schedule "
+"and Details page."
+msgstr ""
+"Éstäßlïsh ýöür çöürsé's stüdént énröllmént änd läünçh dätés ön thé Sçhédülé "
+"änd Détäïls pägé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Edit Course Details &amp; Schedule"
+msgstr "Édït Çöürsé Détäïls &amp; Sçhédülé Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Draft Your Course's Grading Policy"
+msgstr "Dräft Ýöür Çöürsé's Grädïng Pölïçý Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Set up your assignment types and grading policy even if you haven't created "
+"all your assignments."
+msgstr ""
+"Sét üp ýöür ässïgnmént týpés änd grädïng pölïçý évén ïf ýöü hävén't çréätéd "
+"äll ýöür ässïgnménts. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Edit Grading Settings"
+msgstr "Édït Grädïng Séttïngs Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Explore the Other Studio Checklists"
+msgstr "Éxplöré thé Öthér Stüdïö Çhéçklïsts Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Discover other available course authoring tools, and find help when you need"
+" it."
+msgstr ""
+"Dïsçövér öthér äväïläßlé çöürsé äüthörïng tööls, änd fïnd hélp whén ýöü nééd"
+" ït. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Draft a Rough Course Outline"
+msgstr "Dräft ä Röügh Çöürsé Öütlïné Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Create Your First Section and Subsection"
+msgstr "Çréäté Ýöür Fïrst Séçtïön änd Süßséçtïön Ⱡ'σяєм ιρѕυ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Use your course outline to build your first Section and Subsection."
+msgstr ""
+"Ûsé ýöür çöürsé öütlïné tö ßüïld ýöür fïrst Séçtïön änd Süßséçtïön. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Edit Course Outline"
+msgstr "Édït Çöürsé Öütlïné Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Set Section Release Dates"
+msgstr "Sét Séçtïön Réléäsé Dätés Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Specify the release dates for each Section in your course. Sections become "
+"visible to students on their release dates."
+msgstr ""
+"Spéçïfý thé réléäsé dätés för éäçh Séçtïön ïn ýöür çöürsé. Séçtïöns ßéçömé "
+"vïsïßlé tö stüdénts ön théïr réléäsé dätés. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢т#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Designate a Subsection as Graded"
+msgstr "Désïgnäté ä Süßséçtïön äs Grädéd Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Set a Subsection to be graded as a specific assignment type. Assignments "
+"within graded Subsections count toward a student's final grade."
+msgstr ""
+"Sét ä Süßséçtïön tö ßé grädéd äs ä spéçïfïç ässïgnmént týpé. Àssïgnménts "
+"wïthïn grädéd Süßséçtïöns çöünt töwärd ä stüdént's fïnäl grädé. Ⱡ'σяєм ιρѕυм"
+" ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Reordering Course Content"
+msgstr "Réördérïng Çöürsé Çöntént Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Use drag and drop to reorder the content in your course."
+msgstr ""
+"Ûsé dräg änd dröp tö réördér thé çöntént ïn ýöür çöürsé. Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Renaming Sections"
+msgstr "Rénämïng Séçtïöns Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Rename Sections by clicking the Section name from the Course Outline."
+msgstr ""
+"Rénämé Séçtïöns ßý çlïçkïng thé Séçtïön nämé fröm thé Çöürsé Öütlïné. Ⱡ'σяєм"
+" ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Deleting Course Content"
+msgstr "Délétïng Çöürsé Çöntént Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Delete Sections, Subsections, or Units you don't need anymore. Be careful, "
+"as there is no Undo function."
+msgstr ""
+"Délété Séçtïöns, Süßséçtïöns, ör Ûnïts ýöü dön't nééd änýmöré. Bé çäréfül, "
+"äs théré ïs nö Ûndö fünçtïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢ση#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Add an Instructor-Only Section to Your Outline"
+msgstr "Àdd än Ìnstrüçtör-Önlý Séçtïön tö Ýöür Öütlïné Ⱡ'σяєм ιρѕυм #"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Some course authors find using a section for unsorted, in-progress work "
+"useful. To do this, create a section and set the release date to the distant"
+" future."
+msgstr ""
+"Sömé çöürsé äüthörs fïnd üsïng ä séçtïön för ünsörtéd, ïn-prögréss wörk "
+"üséfül. Tö dö thïs, çréäté ä séçtïön änd sét thé réléäsé däté tö thé dïstänt"
+" fütüré. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Explore edX's Support Tools"
+msgstr "Éxplöré édX's Süppört Tööls Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Explore the Studio Help Forum"
+msgstr "Éxplöré thé Stüdïö Hélp Förüm Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Access the Studio Help forum from the menu that appears when you click your "
+"user name in the top right corner of Studio."
+msgstr ""
+"Àççéss thé Stüdïö Hélp förüm fröm thé ménü thät äppéärs whén ýöü çlïçk ýöür "
+"üsér nämé ïn thé töp rïght çörnér öf Stüdïö. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тє#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Visit Studio Help"
+msgstr "Vïsït Stüdïö Hélp Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Enroll in edX 101"
+msgstr "Énröll ïn édX 101 Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Register for edX 101, edX's primer for course creation."
+msgstr ""
+"Régïstér för édX 101, édX's prïmér för çöürsé çréätïön. Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Register for edX 101"
+msgstr "Régïstér för édX 101 Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Download the Studio Documentation"
+msgstr "Döwnlöäd thé Stüdïö Döçüméntätïön Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Download the searchable Studio reference documentation in PDF form."
+msgstr ""
+"Döwnlöäd thé séärçhäßlé Stüdïö référénçé döçüméntätïön ïn PDF förm. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Download Documentation"
+msgstr "Döwnlöäd Döçüméntätïön Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Draft Your Course About Page"
+msgstr "Dräft Ýöür Çöürsé Àßöüt Pägé Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Draft a Course Description"
+msgstr "Dräft ä Çöürsé Désçrïptïön Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Courses on edX have an About page that includes a course video, description,"
+" and more. Draft the text students will read before deciding to enroll in "
+"your course."
+msgstr ""
+"Çöürsés ön édX hävé än Àßöüt pägé thät ïnçlüdés ä çöürsé vïdéö, désçrïptïön,"
+" änd möré. Dräft thé téxt stüdénts wïll réäd ßéföré déçïdïng tö énröll ïn "
+"ýöür çöürsé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιη#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Edit Course Schedule &amp; Details"
+msgstr "Édït Çöürsé Sçhédülé &amp; Détäïls Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Add Staff Bios"
+msgstr "Àdd Stäff Bïös Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Showing prospective students who their instructor will be is helpful. "
+"Include staff bios on the course About page."
+msgstr ""
+"Shöwïng pröspéçtïvé stüdénts whö théïr ïnstrüçtör wïll ßé ïs hélpfül. "
+"Ìnçlüdé stäff ßïös ön thé çöürsé Àßöüt pägé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Add Course FAQs"
+msgstr "Àdd Çöürsé FÀQs Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Include a short list of frequently asked questions about your course."
+msgstr ""
+"Ìnçlüdé ä shört lïst öf fréqüéntlý äskéd qüéstïöns äßöüt ýöür çöürsé. Ⱡ'σяєм"
+" ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Add Course Prerequisites"
+msgstr "Àdd Çöürsé Préréqüïsïtés Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Let students know what knowledge and/or skills they should have before they "
+"enroll in your course."
+msgstr ""
+"Lét stüdénts knöw whät knöwlédgé änd/ör skïlls théý shöüld hävé ßéföré théý "
+"énröll ïn ýöür çöürsé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "General"
 msgstr "Généräl #"
@@ -1181,6 +1914,287 @@ msgstr "Généräl #"
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "TBD"
 msgstr "TBD Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid "Category"
+msgstr "Çätégörý #"
+
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid ""
+"A category name for the discussion. This name appears in the left pane of "
+"the discussion forum for the course."
+msgstr ""
+"À çätégörý nämé för thé dïsçüssïön. Thïs nämé äppéärs ïn thé léft päné öf "
+"thé dïsçüssïön förüm för thé çöürsé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє#"
+
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid "Subcategory"
+msgstr "Süßçätégörý Ⱡ#"
+
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid ""
+"A subcategory name for the discussion. This name appears in the left pane of"
+" the discussion forum for the course."
+msgstr ""
+"À süßçätégörý nämé för thé dïsçüssïön. Thïs nämé äppéärs ïn thé léft päné öf"
+" thé dïsçüssïön förüm för thé çöürsé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "Text"
+msgstr "Téxt Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/html_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Html contents to display for this module"
+msgstr "Html çönténts tö dïspläý för thïs mödülé Ⱡ'σяєм ιρѕυ#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "Source code for LaTeX documents. This feature is not well-supported."
+msgstr ""
+"Söürçé çödé för LäTéX döçüménts. Thïs féätüré ïs nöt wéll-süppörtéd. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid ""
+"Select Visual to enter content and have the editor automatically create the "
+"HTML. Select Raw to edit HTML directly. If you change this setting, you must"
+" save the component and then re-open it for editing."
+msgstr ""
+"Séléçt Vïsüäl tö éntér çöntént änd hävé thé édïtör äütömätïçällý çréäté thé "
+"HTML. Séléçt Räw tö édït HTML dïréçtlý. Ìf ýöü çhängé thïs séttïng, ýöü müst"
+" sävé thé çömpönént änd thén ré-öpén ït för édïtïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "Editor"
+msgstr "Édïtör Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "Visual"
+msgstr "Vïsüäl Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "Raw"
+msgstr "Räw Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "HTML for the additional pages"
+msgstr "HTML för thé äddïtïönäl pägés Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/html_module.py
+msgid "List of course update items"
+msgstr "Lïst öf çöürsé üpdäté ïtéms Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+msgid "Image Annotation"
+msgstr "Ìmägé Ànnötätïön Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid "Tags for Assignments"
+msgstr "Tägs för Àssïgnménts Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid ""
+"Add tags that automatically highlight in a certain color using the comma-"
+"separated form, i.e. imagery:red,parallelism:blue"
+msgstr ""
+"Àdd tägs thät äütömätïçällý hïghlïght ïn ä çértäïn çölör üsïng thé çömmä-"
+"sépärätéd förm, ï.é. ïmägérý:réd,pärällélïsm:ßlüé Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєт#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Location of Annotation backend"
+msgstr "Löçätïön öf Ànnötätïön ßäçkénd Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Url for Annotation Storage"
+msgstr "Ûrl för Ànnötätïön Störägé Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Secret string for annotation storage"
+msgstr "Séçrét strïng för ännötätïön störägé Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Secret Token String for Annotation"
+msgstr "Séçrét Tökén Strïng för Ànnötätïön Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Default Annotations Tab"
+msgstr "Défäült Ànnötätïöns Täß Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid ""
+"Select which tab will be the default in the annotations table: myNotes, "
+"Instructor, or Public."
+msgstr ""
+"Séléçt whïçh täß wïll ßé thé défäült ïn thé ännötätïöns täßlé: mýNötés, "
+"Ìnstrüçtör, ör Püßlïç. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Email for 'Instructor' Annotations"
+msgstr "Émäïl för 'Ìnstrüçtör' Ànnötätïöns Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid ""
+"Email of the user that will be attached to all annotations that will be "
+"found in 'Instructor' tab."
+msgstr ""
+"Émäïl öf thé üsér thät wïll ßé ättäçhéd tö äll ännötätïöns thät wïll ßé "
+"föünd ïn 'Ìnstrüçtör' täß. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Mode for Annotation Tool"
+msgstr "Mödé för Ànnötätïön Tööl Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py
+#: common/lib/xmodule/xmodule/textannotation_module.py
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid ""
+"Type in number corresponding to following modes:  'instructor' or 'everyone'"
+msgstr ""
+"Týpé ïn nümßér çörréspöndïng tö föllöwïng mödés:  'ïnstrüçtör' ör 'évérýöné'"
+" Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Enter the name that students see for this component.  Analytics reports may "
+"also use the display name to identify this component."
+msgstr ""
+"Éntér thé nämé thät stüdénts séé för thïs çömpönént.  Ànälýtïçs répörts mäý "
+"älsö üsé thé dïspläý nämé tö ïdéntïfý thïs çömpönént. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт"
+" αмєт, ¢σηѕє¢тєтυя#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "LTI ID"
+msgstr "LTÌ ÌD Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Enter the LTI ID for the external LTI provider.  This value must be the same"
+" LTI ID that you entered in the LTI Passports setting on the Advanced "
+"Settings page.<br />See "
+msgstr ""
+"Éntér thé LTÌ ÌD för thé éxtérnäl LTÌ prövïdér.  Thïs välüé müst ßé thé sämé"
+" LTÌ ÌD thät ýöü éntéréd ïn thé LTÌ Pässpörts séttïng ön thé Àdvänçéd "
+"Séttïngs pägé.<br />Séé  Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg #"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "LTI URL"
+msgstr "LTÌ ÛRL #"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Enter the URL of the external tool that this component launches. This "
+"setting is only used when Hide External Tool is set to False.<br />See "
+msgstr ""
+"Éntér thé ÛRL öf thé éxtérnäl tööl thät thïs çömpönént läünçhés. Thïs "
+"séttïng ïs önlý üséd whén Hïdé Éxtérnäl Tööl ïs sét tö Fälsé.<br />Séé  "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Custom Parameters"
+msgstr "Çüstöm Pärämétérs Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Add the key/value pair for any custom parameters, such as the page your "
+"e-book should open to or the background color for this component.<br />See "
+msgstr ""
+"Àdd thé kéý/välüé päïr för äný çüstöm pärämétérs, süçh äs thé pägé ýöür "
+"é-ßöök shöüld öpén tö ör thé ßäçkgröünd çölör för thïs çömpönént.<br />Séé  "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιρ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Open in New Page"
+msgstr "Öpén ïn Néw Pägé Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Select True if you want students to click a link that opens the LTI tool in "
+"a new window. Select False if you want the LTI content to open in an IFrame "
+"in the current page. This setting is only used when Hide External Tool is "
+"set to False.  "
+msgstr ""
+"Séléçt Trüé ïf ýöü wänt stüdénts tö çlïçk ä lïnk thät öpéns thé LTÌ tööl ïn "
+"ä néw wïndöw. Séléçt Fälsé ïf ýöü wänt thé LTÌ çöntént tö öpén ïn än ÌFrämé "
+"ïn thé çürrént pägé. Thïs séttïng ïs önlý üséd whén Hïdé Éxtérnäl Tööl ïs "
+"sét tö Fälsé.   Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, "
+"ѕє∂ ∂σ єιυѕмσ∂ тєм#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Scored"
+msgstr "Sçöréd Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Select True if this component will receive a numerical score from the "
+"external LTI system."
+msgstr ""
+"Séléçt Trüé ïf thïs çömpönént wïll réçéïvé ä nümérïçäl sçöré fröm thé "
+"éxtérnäl LTÌ sýstém. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Weight"
+msgstr "Wéïght Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Enter the number of points possible for this component.  The default value "
+"is 1.0.  This setting is only used when Scored is set to True."
+msgstr ""
+"Éntér thé nümßér öf pöïnts pössïßlé för thïs çömpönént.  Thé défäült välüé "
+"ïs 1.0.  Thïs séttïng ïs önlý üséd whén Sçöréd ïs sét tö Trüé. Ⱡ'σяєм ιρѕυм "
+"∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"The score kept in the xblock KVS -- duplicate of the published score in "
+"django DB"
+msgstr ""
+"Thé sçöré képt ïn thé xßlöçk KVS -- düplïçäté öf thé püßlïshéd sçöré ïn "
+"djängö DB Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Comment as returned from grader, LTI2.0 spec"
+msgstr "Çömmént äs rétürnéd fröm grädér, LTÌ2.0 spéç Ⱡ'σяєм ιρѕυм#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Hide External Tool"
+msgstr "Hïdé Éxtérnäl Tööl Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Select True if you want to use this component as a placeholder for syncing "
+"with an external grading  system rather than launch an external tool.  This "
+"setting hides the Launch button and any IFrames for this component."
+msgstr ""
+"Séléçt Trüé ïf ýöü wänt tö üsé thïs çömpönént äs ä pläçéhöldér för sýnçïng "
+"wïth än éxtérnäl grädïng  sýstém räthér thän läünçh än éxtérnäl tööl.  Thïs "
+"séttïng hïdés thé Läünçh ßüttön änd äný ÌFrämés för thïs çömpönént. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυ#"
 
 #: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
@@ -1197,6 +2211,150 @@ msgid ""
 msgstr ""
 "Çöüld nöt pärsé LTÌ pässpört: {lti_passport}. Shöüld ßé \"ïd:kéý:séçrét\" "
 "strïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Show Single Problem"
+msgstr "Shöw Sïnglé Prößlém Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid ""
+"When True, only the single problem specified by \"Link to Problem Location\""
+" is shown. When False, a panel is displayed with all problems available for "
+"peer grading."
+msgstr ""
+"Whén Trüé, önlý thé sïnglé prößlém spéçïfïéd ßý \"Lïnk tö Prößlém Löçätïön\""
+" ïs shöwn. Whén Fälsé, ä pänél ïs dïspläýéd wïth äll prößléms äväïläßlé för "
+"péér grädïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιη#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Link to Problem Location"
+msgstr "Lïnk tö Prößlém Löçätïön Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid ""
+"The location of the problem being graded. Only used when \"Show Single "
+"Problem\" is True."
+msgstr ""
+"Thé löçätïön öf thé prößlém ßéïng grädéd. Önlý üséd whén \"Shöw Sïnglé "
+"Prößlém\" ïs Trüé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмє#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid ""
+"Defines whether the student gets credit for grading this problem. Only used "
+"when \"Show Single Problem\" is True."
+msgstr ""
+"Défïnés whéthér thé stüdént géts çrédït för grädïng thïs prößlém. Önlý üséd "
+"whén \"Shöw Sïnglé Prößlém\" ïs Trüé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Due date that should be displayed."
+msgstr "Düé däté thät shöüld ßé dïspläýéd. Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Amount of grace to give on the due date."
+msgstr "Àmöünt öf gräçé tö gïvé ön thé düé däté. Ⱡ'σяєм ιρѕυ#"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Student data for a given peer grading problem."
+msgstr "Stüdént dätä för ä gïvén péér grädïng prößlém. Ⱡ'σяєм ιρѕυм #"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py
+msgid "Peer Grading Interface"
+msgstr "Péér Grädïng Ìntérfäçé Ⱡ'σяє#"
+
+#. Translators: This message will be added to the front of messages of type
+#. warning,
+#. e.g. "Warning: this component has not been configured yet".
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid "Warning"
+msgstr "Wärnïng #"
+
+#. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
+#. Translators: This message will be added to the front of messages of type
+#. error,
+#. e.g. "Error: required field is missing".
+#: common/lib/xmodule/xmodule/split_test_module.py
+#: lms/templates/name_changes.html lms/templates/name_changes.html
+#: lms/templates/sysadmin_dashboard_gitlogs.html
+msgid "Error"
+msgstr "Érrör Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid "Not Selected"
+msgstr "Nöt Séléçtéd Ⱡ#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid ""
+"This name is used for organizing your course content, but is not shown to "
+"students."
+msgstr ""
+"Thïs nämé ïs üséd för örgänïzïng ýöür çöürsé çöntént, ßüt ïs nöt shöwn tö "
+"stüdénts. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid "Content Experiment"
+msgstr "Çöntént Éxpérïmént Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid ""
+"The list of group configurations for partitioning students in content "
+"experiments."
+msgstr ""
+"Thé lïst öf gröüp çönfïgürätïöns för pärtïtïönïng stüdénts ïn çöntént "
+"éxpérïménts. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid ""
+"The configuration for how users are grouped for this content experiment. "
+"After you select the group configuration and save the content experiment, "
+"you cannot change this setting."
+msgstr ""
+"Thé çönfïgürätïön för höw üsérs äré gröüpéd för thïs çöntént éxpérïmént. "
+"Àftér ýöü séléçt thé gröüp çönfïgürätïön änd sävé thé çöntént éxpérïmént, "
+"ýöü çännöt çhängé thïs séttïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg єłι#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid "Group Configuration"
+msgstr "Gröüp Çönfïgürätïön Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid "Which child module students in a particular group_id should see"
+msgstr ""
+"Whïçh çhïld mödülé stüdénts ïn ä pärtïçülär gröüp_ïd shöüld séé Ⱡ'σяєм ιρѕυм"
+" ∂σłσя#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+#: lms/templates/split_test_studio_header.html
+msgid "You must select a group configuration for this content experiment."
+msgstr ""
+"Ýöü müst séléçt ä gröüp çönfïgürätïön för thïs çöntént éxpérïmént. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя #"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid ""
+"This content experiment will not be shown to students because it refers to a"
+" group configuration that has been deleted. You can delete this experiment "
+"or reinstate the group configuration to repair it."
+msgstr ""
+"Thïs çöntént éxpérïmént wïll nöt ßé shöwn tö stüdénts ßéçäüsé ït référs tö ä"
+" gröüp çönfïgürätïön thät häs ßéén délétéd. Ýöü çän délété thïs éxpérïmént "
+"ör réïnstäté thé gröüp çönfïgürätïön tö répäïr ït. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid ""
+"This content experiment is in an invalid state and cannot be repaired. "
+"Please delete and recreate."
+msgstr ""
+"Thïs çöntént éxpérïmént ïs ïn än ïnvälïd stäté änd çännöt ßé répäïréd. "
+"Pléäsé délété änd réçréäté. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: common/lib/xmodule/xmodule/split_test_module.py
+msgid "This content experiment uses group configuration '{experiment_name}'."
+msgstr ""
+"Thïs çöntént éxpérïmént üsés gröüp çönfïgürätïön '{experiment_name}'. Ⱡ'σяєм"
+" ιρѕυм ∂σł#"
 
 #. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
 #. Translators: 'Courseware' refers to the tab in the courseware that leads to
@@ -1225,13 +2383,6 @@ msgstr "Prögréss #"
 #: lms/templates/wiki/base.html
 msgid "Wiki"
 msgstr "Wïkï Ⱡ'σяєм#"
-
-#. Translators: "Discussion" is the title of the course forum page
-#. Translators: 'Discussion' refers to the tab in the courseware that leads to
-#. the discussion forums
-#: common/lib/xmodule/xmodule/tabs.py common/lib/xmodule/xmodule/tabs.py
-msgid "Discussion"
-msgstr "Dïsçüssïön Ⱡ#"
 
 #: common/lib/xmodule/xmodule/tabs.py cms/templates/textbooks.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
@@ -1266,6 +2417,101 @@ msgstr "Sýlläßüs #"
 #: common/lib/xmodule/xmodule/tabs.py
 msgid "Instructor"
 msgstr "Ìnstrüçtör Ⱡ#"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid "Text Annotation"
+msgstr "Téxt Ànnötätïön Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid "Source/Citation"
+msgstr "Söürçé/Çïtätïön Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid ""
+"Optional for citing source of any material used. Automatic citation can be "
+"done using <a href=\"http://easybib.com\">EasyBib</a>"
+msgstr ""
+"Öptïönäl för çïtïng söürçé öf äný mätérïäl üséd. Àütömätïç çïtätïön çän ßé "
+"döné üsïng <a href=\"http://easybib.com\">ÉäsýBïß</a> Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт"
+" αмєт, ¢#"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid "Diacritic Marks"
+msgstr "Dïäçrïtïç Märks Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py
+msgid ""
+"Add diacritic marks to be added to a text using the comma-separated form, "
+"i.e. markname;urltomark;baseline,markname2;urltomark2;baseline2"
+msgstr ""
+"Àdd dïäçrïtïç märks tö ßé äddéd tö ä téxt üsïng thé çömmä-sépärätéd förm, "
+"ï.é. märknämé;ürltömärk;ßäsélïné,märknämé2;ürltömärk2;ßäsélïné2 Ⱡ'σяєм ιρѕυм"
+" ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂#"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Video Annotation"
+msgstr "Vïdéö Ànnötätïön Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "The external source URL for the video."
+msgstr "Thé éxtérnäl söürçé ÛRL för thé vïdéö. Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Source URL"
+msgstr "Söürçé ÛRL Ⱡ#"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Poster Image URL"
+msgstr "Pöstér Ìmägé ÛRL Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py
+msgid "Poster URL"
+msgstr "Pöstér ÛRL Ⱡ#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Inputs"
+msgstr "Ìnpüts Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Number of text boxes available for students to input words/sentences."
+msgstr ""
+"Nümßér öf téxt ßöxés äväïläßlé för stüdénts tö ïnpüt wörds/sénténçés. Ⱡ'σяєм"
+" ιρѕυм ∂σłσя ѕ#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Maximum Words"
+msgstr "Mäxïmüm Wörds Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Maximum number of words to be displayed in generated word cloud."
+msgstr ""
+"Mäxïmüm nümßér öf wörds tö ßé dïspläýéd ïn générätéd wörd çlöüd. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя #"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Show Percents"
+msgstr "Shöw Pérçénts Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Statistics are shown for entered words near that word."
+msgstr ""
+"Stätïstïçs äré shöwn för éntéréd wörds néär thät wörd. Ⱡ'σяєм ιρѕυм ∂σ#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Whether this student has posted words to the cloud."
+msgstr "Whéthér thïs stüdént häs pöstéd wörds tö thé çlöüd. Ⱡ'σяєм ιρѕυм ∂#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Student answer."
+msgstr "Stüdént änswér. Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "All possible words from all students."
+msgstr "Àll pössïßlé wörds fröm äll stüdénts. Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py
+msgid "Top num_top_words words for word cloud."
+msgstr "Töp nüm_töp_wörds wörds för wörd çlöüd. Ⱡ'σяєм ιρѕ#"
 
 #. Translators: "Self" is used to denote an openended response that is self-
 #. graded
@@ -1515,6 +2761,10 @@ msgstr ""
 " ιρѕυ#"
 
 #: common/lib/xmodule/xmodule/video_module/video_module.py
+msgid "Basic"
+msgstr "Bäsïç Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid ""
 "The URL for your video. This can be a YouTube URL or a link to an .mp4, "
 ".ogg, or .webm video file hosted elsewhere on the Internet."
@@ -1522,6 +2772,230 @@ msgstr ""
 "Thé ÛRL för ýöür vïdéö. Thïs çän ßé ä ÝöüTüßé ÛRL ör ä lïnk tö än .mp4, "
 ".ögg, ör .wéßm vïdéö fïlé höstéd élséwhéré ön thé Ìntérnét. Ⱡ'σяєм ιρѕυм "
 "∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя #"
+
+#: common/lib/xmodule/xmodule/video_module/video_module.py
+msgid "Default Video URL"
+msgstr "Défäült Vïdéö ÛRL Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"The name students see. This name appears in the course ribbon and as a "
+"header for the video."
+msgstr ""
+"Thé nämé stüdénts séé. Thïs nämé äppéärs ïn thé çöürsé rïßßön änd äs ä "
+"héädér för thé vïdéö. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Component Display Name"
+msgstr "Çömpönént Dïspläý Nämé Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Current position in the video."
+msgstr "Çürrént pösïtïön ïn thé vïdéö. Ⱡ'σяєм #"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Optional, for older browsers: the YouTube ID for the normal speed video."
+msgstr ""
+"Öptïönäl, för öldér ßröwsérs: thé ÝöüTüßé ÌD för thé nörmäl spééd vïdéö. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "YouTube ID"
+msgstr "ÝöüTüßé ÌD Ⱡ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Optional, for older browsers: the YouTube ID for the .75x speed video."
+msgstr ""
+"Öptïönäl, för öldér ßröwsérs: thé ÝöüTüßé ÌD för thé .75x spééd vïdéö. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "YouTube ID for .75x speed"
+msgstr "ÝöüTüßé ÌD för .75x spééd Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Optional, for older browsers: the YouTube ID for the 1.25x speed video."
+msgstr ""
+"Öptïönäl, för öldér ßröwsérs: thé ÝöüTüßé ÌD för thé 1.25x spééd vïdéö. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "YouTube ID for 1.25x speed"
+msgstr "ÝöüTüßé ÌD för 1.25x spééd Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Optional, for older browsers: the YouTube ID for the 1.5x speed video."
+msgstr ""
+"Öptïönäl, för öldér ßröwsérs: thé ÝöüTüßé ÌD för thé 1.5x spééd vïdéö. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "YouTube ID for 1.5x speed"
+msgstr "ÝöüTüßé ÌD för 1.5x spééd Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Time you want the video to start if you don't want the entire video to play."
+" Formatted as HH:MM:SS. The maximum value is 23:59:59."
+msgstr ""
+"Tïmé ýöü wänt thé vïdéö tö stärt ïf ýöü dön't wänt thé éntïré vïdéö tö pläý."
+" Förmättéd äs HH:MM:SS. Thé mäxïmüm välüé ïs 23:59:59. Ⱡ'σяєм ιρѕυм ∂σłσя "
+"ѕιт αмєт, ¢σηѕє¢тєтυя#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Video Start Time"
+msgstr "Vïdéö Stärt Tïmé Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Time you want the video to stop if you don't want the entire video to play. "
+"Formatted as HH:MM:SS. The maximum value is 23:59:59."
+msgstr ""
+"Tïmé ýöü wänt thé vïdéö tö stöp ïf ýöü dön't wänt thé éntïré vïdéö tö pläý. "
+"Förmättéd äs HH:MM:SS. Thé mäxïmüm välüé ïs 23:59:59. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт"
+" αмєт, ¢σηѕє¢тєтυя#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Video Stop Time"
+msgstr "Vïdéö Stöp Tïmé Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "The external URL to download the video."
+msgstr "Thé éxtérnäl ÛRL tö döwnlöäd thé vïdéö. Ⱡ'σяєм ιρѕ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Download Video"
+msgstr "Döwnlöäd Vïdéö Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Allow students to download versions of this video in different formats if "
+"they cannot use the edX video player or do not have access to YouTube. You "
+"must add at least one non-YouTube URL in the Video File URLs field."
+msgstr ""
+"Àllöw stüdénts tö döwnlöäd vérsïöns öf thïs vïdéö ïn dïfférént förmäts ïf "
+"théý çännöt üsé thé édX vïdéö pläýér ör dö nöt hävé äççéss tö ÝöüTüßé. Ýöü "
+"müst ädd ät léäst öné nön-ÝöüTüßé ÛRL ïn thé Vïdéö Fïlé ÛRLs fïéld. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Video Download Allowed"
+msgstr "Vïdéö Döwnlöäd Àllöwéd Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"The URL or URLs where you've posted non-YouTube versions of the video. Each "
+"URL must end in .mpeg, .mp4, .ogg, or .webm and cannot be a YouTube URL. "
+"(For browser compatibility, we strongly recommend .mp4 and .webm format.) "
+"Students will be able to view the first listed video that's compatible with "
+"the student's computer. To allow students to download these videos, set "
+"Video Download Allowed to True."
+msgstr ""
+"Thé ÛRL ör ÛRLs whéré ýöü'vé pöstéd nön-ÝöüTüßé vérsïöns öf thé vïdéö. Éäçh "
+"ÛRL müst énd ïn .mpég, .mp4, .ögg, ör .wéßm änd çännöt ßé ä ÝöüTüßé ÛRL. "
+"(För ßröwsér çömpätïßïlïtý, wé strönglý réçömménd .mp4 änd .wéßm förmät.) "
+"Stüdénts wïll ßé äßlé tö vïéw thé fïrst lïstéd vïdéö thät's çömpätïßlé wïth "
+"thé stüdént's çömpütér. Tö ällöw stüdénts tö döwnlöäd thésé vïdéös, sét "
+"Vïdéö Döwnlöäd Àllöwéd tö Trüé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢ι∂ι∂υηт υт łαвσяє єт ∂σłσяє мαgηα"
+" αłιqυα. υт є#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Video File URLs"
+msgstr "Vïdéö Fïlé ÛRLs Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"By default, students can download an .srt or .txt transcript when you set "
+"Download Transcript Allowed to True. If you want to provide a downloadable "
+"transcript in a different format, we recommend that you upload a handout by "
+"using the Upload a Handout field. If this isn't possible, you can post a "
+"transcript file on the Files & Uploads page or on the Internet, and then add"
+" the URL for the transcript here. Students see a link to download that "
+"transcript below the video."
+msgstr ""
+"Bý défäült, stüdénts çän döwnlöäd än .srt ör .txt tränsçrïpt whén ýöü sét "
+"Döwnlöäd Tränsçrïpt Àllöwéd tö Trüé. Ìf ýöü wänt tö prövïdé ä döwnlöädäßlé "
+"tränsçrïpt ïn ä dïfférént förmät, wé réçömménd thät ýöü üplöäd ä händöüt ßý "
+"üsïng thé Ûplöäd ä Händöüt fïéld. Ìf thïs ïsn't pössïßlé, ýöü çän pöst ä "
+"tränsçrïpt fïlé ön thé Fïlés & Ûplöäds pägé ör ön thé Ìntérnét, änd thén ädd"
+" thé ÛRL för thé tränsçrïpt héré. Stüdénts séé ä lïnk tö döwnlöäd thät "
+"tränsçrïpt ßélöw thé vïdéö. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢ι∂ι∂υηт υт łαвσяє єт ∂σłσяє мαgηα"
+" αłιqυα. υт єηιм α∂ мιηιм νєηιαм, qυ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Downloadable Transcript URL"
+msgstr "Döwnlöädäßlé Tränsçrïpt ÛRL Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Allow students to download the timed transcript. A link to download the file"
+" appears below the video. By default, the transcript is an .srt or .txt "
+"file. If you want to provide the transcript for download in a different "
+"format, upload a file by using the Upload Handout field."
+msgstr ""
+"Àllöw stüdénts tö döwnlöäd thé tïméd tränsçrïpt. À lïnk tö döwnlöäd thé fïlé"
+" äppéärs ßélöw thé vïdéö. Bý défäült, thé tränsçrïpt ïs än .srt ör .txt "
+"fïlé. Ìf ýöü wänt tö prövïdé thé tränsçrïpt för döwnlöäd ïn ä dïfférént "
+"förmät, üplöäd ä fïlé ßý üsïng thé Ûplöäd Händöüt fïéld. Ⱡ'σяєм ιρѕυм ∂σłσя "
+"ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢ι∂ι∂υ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Download Transcript Allowed"
+msgstr "Döwnlöäd Tränsçrïpt Àllöwéd Ⱡ'σяєм#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"The default transcript for the video, from the Default Timed Transcript "
+"field on the Basic tab. This transcript should be in English. You don't have"
+" to change this setting."
+msgstr ""
+"Thé défäült tränsçrïpt för thé vïdéö, fröm thé Défäült Tïméd Tränsçrïpt "
+"fïéld ön thé Bäsïç täß. Thïs tränsçrïpt shöüld ßé ïn Énglïsh. Ýöü dön't hävé"
+" tö çhängé thïs séttïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg є#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Default Timed Transcript"
+msgstr "Défäült Tïméd Tränsçrïpt Ⱡ'σяє#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Specify whether the transcripts appear with the video by default."
+msgstr ""
+"Spéçïfý whéthér thé tränsçrïpts äppéär wïth thé vïdéö ßý défäült. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя #"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Show Transcript"
+msgstr "Shöw Tränsçrïpt Ⱡ'#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Add transcripts in different languages. Click below to specify a language "
+"and upload an .srt transcript file for that language."
+msgstr ""
+"Àdd tränsçrïpts ïn dïfférént längüägés. Çlïçk ßélöw tö spéçïfý ä längüägé "
+"änd üplöäd än .srt tränsçrïpt fïlé för thät längüägé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт"
+" αмєт, ¢σηѕє¢тєтυ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Transcript Languages"
+msgstr "Tränsçrïpt Längüägés Ⱡ'σя#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Preferred language for transcript."
+msgstr "Préférréd längüägé för tränsçrïpt. Ⱡ'σяєм ιρ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Preferred language for transcript"
+msgstr "Préférréd längüägé för tränsçrïpt Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Transcript file format to download by user."
+msgstr "Tränsçrïpt fïlé förmät tö döwnlöäd ßý üsér. Ⱡ'σяєм ιρѕυм#"
 
 #. Translators: This is a type of file used for captioning in the video
 #. player.
@@ -1532,6 +3006,32 @@ msgstr "SüßRïp (.srt) fïlé Ⱡ'σ#"
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Text (.txt) file"
 msgstr "Téxt (.txt) fïlé Ⱡ'σ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "The last speed that the user specified for the video."
+msgstr ""
+"Thé läst spééd thät thé üsér spéçïfïéd för thé vïdéö. Ⱡ'σяєм ιρѕυм ∂σ#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "The default speed for the video."
+msgstr "Thé défäült spééd för thé vïdéö. Ⱡ'σяєм ι#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Specify whether YouTube is available for the user."
+msgstr "Spéçïfý whéthér ÝöüTüßé ïs äväïläßlé för thé üsér. Ⱡ'σяєм ιρѕυм ∂#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid ""
+"Upload a handout to accompany this video. Students can download the handout "
+"by clicking Download Handout under the video."
+msgstr ""
+"Ûplöäd ä händöüt tö äççömpäný thïs vïdéö. Stüdénts çän döwnlöäd thé händöüt "
+"ßý çlïçkïng Döwnlöäd Händöüt ündér thé vïdéö. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тє#"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py
+msgid "Upload Handout"
+msgstr "Ûplöäd Händöüt Ⱡ'#"
 
 #: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html
 msgid "Navigation"
@@ -1609,19 +3109,12 @@ msgid "subsections"
 msgstr "süßséçtïöns Ⱡ#"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
-#: lms/templates/courseware/instructor_dashboard.html
-#: lms/templates/courseware/instructor_dashboard.html
-#: lms/templates/instructor/instructor_dashboard_2/analytics.html
-msgid "Problem"
-msgstr "Prößlém #"
-
-#: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Count of Students"
 msgstr "Çöünt öf Stüdénts Ⱡ'σ#"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
-msgid "% of Students"
-msgstr "% öf Stüdénts Ⱡ'#"
+msgid "Percent of Students"
+msgstr "Pérçént öf Stüdénts Ⱡ'σя#"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
@@ -1652,6 +3145,14 @@ msgid "Visit a course wiki to add an article."
 msgstr "Vïsït ä çöürsé wïkï tö ädd än ärtïçlé. Ⱡ'σяєм ιρѕ#"
 
 #: lms/djangoapps/courseware/views.py
+msgid "Invalid course id."
+msgstr "Ìnvälïd çöürsé ïd. Ⱡ'σ#"
+
+#: lms/djangoapps/courseware/views.py
+msgid "Invalid location."
+msgstr "Ìnvälïd löçätïön. Ⱡ'σ#"
+
+#: lms/djangoapps/courseware/views.py
 msgid "User {username} does not exist."
 msgstr "Ûsér {username} döés nöt éxïst. Ⱡ'σяє#"
 
@@ -1659,7 +3160,7 @@ msgstr "Ûsér {username} döés nöt éxïst. Ⱡ'σяє#"
 msgid "User {username} has never accessed problem {location}"
 msgstr "Ûsér {username} häs névér äççésséd prößlém {location} Ⱡ'σяєм ιρѕ#"
 
-#: lms/djangoapps/courseware/features/video.py lms/templates/video.html
+#: lms/djangoapps/courseware/features/video.py
 msgid "ERROR: No playable video sources found!"
 msgstr "ÉRRÖR: Nö pläýäßlé vïdéö söürçés föünd! Ⱡ'σяєм ιρѕ#"
 
@@ -1724,23 +3225,18 @@ msgstr ""
 " Ⱡ'σяєм #\n"
 
 #: lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "fixed password"
 msgstr "fïxéd pässwörd Ⱡ'#"
 
 #: lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "All ok!"
 msgstr "Àll ök! #"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "Must provide username"
 msgstr "Müst prövïdé üsérnämé Ⱡ'σя#"
 
 #: lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "Must provide full name"
 msgstr "Müst prövïdé füll nämé Ⱡ'σяє#"
 
@@ -1801,13 +3297,11 @@ msgid "Courses loaded in the modulestore"
 msgstr "Çöürsés löädéd ïn thé mödüléstöré Ⱡ'σяєм ι#"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 #: lms/templates/tracking_log.html
 msgid "username"
 msgstr "üsérnämé #"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "email"
 msgstr "émäïl Ⱡ'σяєм ι#"
 
@@ -1913,7 +3407,6 @@ msgid "Deleted"
 msgstr "Délétéd #"
 
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "course_id"
 msgstr "çöürsé_ïd #"
 
@@ -1934,12 +3427,10 @@ msgid "Enrollment information for all courses"
 msgstr "Énröllmént ïnförmätïön för äll çöürsés Ⱡ'σяєм ιρѕ#"
 
 #: lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "role"
 msgstr "rölé Ⱡ'σяєм#"
 
 #: lms/djangoapps/dashboard/sysadmin.py
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
 msgid "full_name"
 msgstr "füll_nämé #"
 
@@ -1950,26 +3441,6 @@ msgid ""
 msgstr ""
 "Ìmpört thé spéçïfïéd gït répösïtörý änd öptïönäl ßränçh ïntö thé mödüléstöré"
 " änd öptïönällý spéçïfïéd dïréçtörý. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє#"
-
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
-msgid "Cannot find user with email address"
-msgstr "Çännöt fïnd üsér wïth émäïl äddréss Ⱡ'σяєм ιρ#"
-
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
-msgid "Cannot find user with username"
-msgstr "Çännöt fïnd üsér wïth üsérnämé Ⱡ'σяєм #"
-
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
-msgid "Failed in authenticating"
-msgstr "Fäïléd ïn äüthéntïçätïng Ⱡ'σяє#"
-
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
-msgid "Unable to clone or pull repository"
-msgstr "Ûnäßlé tö çlöné ör püll répösïtörý Ⱡ'σяєм ιρ#"
-
-#: lms/djangoapps/dashboard/tests/test_sysadmin.py
-msgid "Error - cannot get course with ID"
-msgstr "Érrör - çännöt gét çöürsé wïth ÌD Ⱡ'σяєм ι#"
 
 #: lms/djangoapps/django_comment_client/mustache_helpers.py
 msgid "Re-open thread"
@@ -2030,10 +3501,13 @@ msgid "Task is already running."
 msgstr "Täsk ïs älréädý rünnïng. Ⱡ'σяє#"
 
 #: lms/djangoapps/instructor/views/api.py
+msgid "User ID"
+msgstr "Ûsér ÌD #"
+
+#: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
-#: lms/templates/university_profile/edge.html
 msgid "Email"
 msgstr "Émäïl Ⱡ'σяєм ι#"
 
@@ -2152,16 +3626,16 @@ msgid "Couldn't find student with that email or username."
 msgstr "Çöüldn't fïnd stüdént wïth thät émäïl ör üsérnämé. Ⱡ'σяєм ιρѕυм ∂#"
 
 #: lms/djangoapps/instructor/views/legacy.py
-msgid "List of students enrolled in {course_id}"
-msgstr "Lïst öf stüdénts énrölléd ïn {course_id} Ⱡ'σяєм ι#"
+msgid "List of students enrolled in {course_key}"
+msgstr "Lïst öf stüdénts énrölléd ïn {course_key} Ⱡ'σяєм ι#"
 
 #: lms/djangoapps/instructor/views/legacy.py
-msgid "Summary Grades of students enrolled in {course_id}"
-msgstr "Sümmärý Grädés öf stüdénts énrölléd ïn {course_id} Ⱡ'σяєм ιρѕυ#"
+msgid "Summary Grades of students enrolled in {course_key}"
+msgstr "Sümmärý Grädés öf stüdénts énrölléd ïn {course_key} Ⱡ'σяєм ιρѕυ#"
 
 #: lms/djangoapps/instructor/views/legacy.py
-msgid "Raw Grades of students enrolled in {course_id}"
-msgstr "Räw Grädés öf stüdénts énrölléd ïn {course_id} Ⱡ'σяєм ιρѕ#"
+msgid "Raw Grades of students enrolled in {course_key}"
+msgstr "Räw Grädés öf stüdénts énrölléd ïn {course_key} Ⱡ'σяєм ιρѕ#"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for rescoring \"{problem_url}\"."
@@ -2202,6 +3676,12 @@ msgid "Failed to create a background task for resetting \"{url}\": {message}."
 msgstr ""
 "Fäïléd tö çréäté ä ßäçkgröünd täsk för réséttïng \"{url}\": {message}. "
 "Ⱡ'σяєм ιρѕυм ∂σłσ#"
+
+#: lms/djangoapps/instructor/views/legacy.py
+#: lms/djangoapps/instructor/views/legacy.py
+#: lms/djangoapps/instructor/views/legacy.py
+msgid "Could not find problem location \"{url}\"."
+msgstr "Çöüld nöt fïnd prößlém löçätïön \"{url}\". Ⱡ'σяєм ιρѕ#"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Found module.  "
@@ -2395,8 +3875,8 @@ msgid "Added \"{username}\" to \"{course_id}\" forum role = \"{rolename}\""
 msgstr "Àddéd \"{username}\" tö \"{course_id}\" förüm rölé = \"{rolename}\" Ⱡ'σяєм ιρѕ#"
 
 #: lms/djangoapps/instructor/views/legacy.py
-msgid "{title} in course {course_id}"
-msgstr "{title} ïn çöürsé {course_id} Ⱡ'σ#"
+msgid "{title} in course {course_key}"
+msgstr "{title} ïn çöürsé {course_key} Ⱡ'σ#"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "ID"
@@ -2980,12 +4460,10 @@ msgid "The course you requested does not exist."
 msgstr "Thé çöürsé ýöü réqüéstéd döés nöt éxïst. Ⱡ'σяєм ιρѕυ#"
 
 #: lms/djangoapps/shoppingcart/views.py
-#: lms/djangoapps/shoppingcart/tests/test_views.py
 msgid "The course {0} is already in your cart."
 msgstr "Thé çöürsé {0} ïs älréädý ïn ýöür çärt. Ⱡ'σяєм ιρѕ#"
 
 #: lms/djangoapps/shoppingcart/views.py
-#: lms/djangoapps/shoppingcart/tests/test_views.py
 msgid "You are already registered in course {0}."
 msgstr "Ýöü äré älréädý régïstéréd ïn çöürsé {0}. Ⱡ'σяєм ιρѕυ#"
 
@@ -3645,7 +5123,9 @@ msgstr "Délété ärtïçlé Ⱡ'#"
 
 #: lms/templates/wiki/delete.html
 #: lms/templates/wiki/plugins/attachments/index.html
-#: cms/templates/component.html cms/templates/studio_xblock_wrapper.html
+#: cms/templates/component.html cms/templates/container_xblock_component.html
+#: cms/templates/container_xblock_component.html
+#: cms/templates/studio_xblock_wrapper.html
 #: cms/templates/studio_xblock_wrapper.html
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/_underscore_templates.html
@@ -3688,6 +5168,7 @@ msgid "You are deleting an article. Please confirm."
 msgstr "Ýöü äré délétïng än ärtïçlé. Pléäsé çönfïrm. Ⱡ'σяєм ιρѕυм#"
 
 #: lms/templates/wiki/edit.html cms/templates/component.html
+#: cms/templates/container.html cms/templates/container_xblock_component.html
 #: cms/templates/studio_xblock_wrapper.html
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/_underscore_templates.html
@@ -4163,6 +5644,19 @@ msgstr ""
 msgid "Upload completed"
 msgstr "Ûplöäd çömplétéd Ⱡ'σ#"
 
+#: cms/djangoapps/contentstore/views/component.py
+msgid "HTML"
+msgstr "HTML Ⱡ'σяєм#"
+
+#: cms/djangoapps/contentstore/views/component.py
+msgid "Video"
+msgstr "Vïdéö Ⱡ'σяєм ι#"
+
+#: cms/djangoapps/contentstore/views/component.py
+#: cms/djangoapps/contentstore/views/component.py
+msgid "Blank"
+msgstr "Blänk Ⱡ'σяєм ι#"
+
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
 "Special characters not allowed in organization, course number, and course "
@@ -4170,16 +5664,6 @@ msgid ""
 msgstr ""
 "Spéçïäl çhäräçtérs nöt ällöwéd ïn örgänïzätïön, çöürsé nümßér, änd çöürsé "
 "rün. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
-
-#: cms/djangoapps/contentstore/views/course.py
-msgid ""
-"Unable to create course '{name}'.\n"
-"\n"
-"{err}"
-msgstr ""
-"Ûnäßlé tö çréäté çöürsé '{name}'.\n"
-"\n"
-"{err} Ⱡ'σяєм ιρ#"
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -4193,8 +5677,6 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/course.py
 #: cms/djangoapps/contentstore/views/course.py
-#: cms/djangoapps/contentstore/views/course.py
-#: cms/djangoapps/contentstore/views/course.py
 msgid ""
 "Please change either the organization or course number so that it is unique."
 msgstr ""
@@ -4203,12 +5685,13 @@ msgstr ""
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
-"There is already a course defined with the same organization and course "
-"number. Please change at least one field to be unique."
+"Unable to create course '{name}'.\n"
+"\n"
+"{err}"
 msgstr ""
-"Théré ïs älréädý ä çöürsé défïnéd wïth thé sämé örgänïzätïön änd çöürsé "
-"nümßér. Pléäsé çhängé ät léäst öné fïéld tö ßé ünïqüé. Ⱡ'σяєм ιρѕυм ∂σłσя "
-"ѕιт αмєт, ¢σηѕє¢тєтυ#"
+"Ûnäßlé tö çréäté çöürsé '{name}'.\n"
+"\n"
+"{err} Ⱡ'σяєм ιρ#"
 
 #: cms/djangoapps/contentstore/views/export_git.py
 msgid "Course successfully exported to git repository"
@@ -4322,13 +5805,6 @@ msgstr "Pägé nöt föünd Ⱡ'#"
 msgid "close"
 msgstr "çlösé Ⱡ'σяєм ι#"
 
-#: cms/templates/component.html cms/templates/container_xblock_component.html
-#: cms/templates/edit-tabs.html cms/templates/edit-tabs.html
-#: cms/templates/overview.html cms/templates/overview.html
-#: lms/templates/vert_module_studio_view.html
-msgid "Drag to reorder"
-msgstr "Dräg tö réördér Ⱡ'#"
-
 #: cms/templates/container.html
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -4338,6 +5814,7 @@ msgstr "Löädïng... Ⱡ#"
 
 #. Translators: this is a verb describing the action of viewing more details
 #: cms/templates/container_xblock_component.html
+#: cms/templates/studio_xblock_wrapper.html
 #: lms/templates/wiki/includes/article_menu.html
 msgid "View"
 msgstr "Vïéw Ⱡ'σяєм#"
@@ -4381,7 +5858,6 @@ msgid "Pending"
 msgstr "Péndïng #"
 
 #: cms/templates/login.html lms/templates/login.html
-#: lms/templates/university_profile/edge.html
 msgid "Forgot password?"
 msgstr "Förgöt pässwörd? Ⱡ'σ#"
 
@@ -4390,7 +5866,6 @@ msgstr "Förgöt pässwörd? Ⱡ'σ#"
 #: lms/templates/provider_login.html lms/templates/register.html
 #: lms/templates/register.html lms/templates/signup_modal.html
 #: lms/templates/sysadmin_dashboard.html
-#: lms/templates/university_profile/edge.html
 msgid "Password"
 msgstr "Pässwörd #"
 
@@ -4459,8 +5934,9 @@ msgstr "Térms öf Sérvïçé Ⱡ'σ#"
 msgid "Privacy Policy"
 msgstr "Prïväçý Pölïçý Ⱡ'#"
 
-#: cms/templates/widgets/header.html lms/templates/help_modal.html
-#: lms/templates/navigation.html lms/templates/static_templates/help.html
+#: cms/templates/widgets/header.html cms/templates/widgets/header.html
+#: lms/templates/help_modal.html lms/templates/navigation.html
+#: lms/templates/static_templates/help.html
 #: lms/templates/static_templates/help.html wiki/plugins/help/wiki_plugin.py
 msgid "Help"
 msgstr "Hélp Ⱡ'σяєм#"
@@ -4648,8 +6124,8 @@ msgstr "Séléçt Àüdït Ⱡ#"
 msgid "{platform_name}-wide Summary"
 msgstr "{platform_name}-wïdé Sümmärý Ⱡ'σ#"
 
-#: lms/templates/annotatable.html lms/templates/textannotation.html
-#: lms/templates/videoannotation.html
+#: lms/templates/annotatable.html lms/templates/imageannotation.html
+#: lms/templates/textannotation.html lms/templates/videoannotation.html
 #: lms/templates/instructor/staff_grading.html
 #: lms/templates/open_ended_problems/combined_notifications.html
 #: lms/templates/open_ended_problems/open_ended_flagged_problems.html
@@ -4658,8 +6134,8 @@ msgstr "{platform_name}-wïdé Sümmärý Ⱡ'σ#"
 msgid "Instructions"
 msgstr "Ìnstrüçtïöns Ⱡ#"
 
-#: lms/templates/annotatable.html lms/templates/textannotation.html
-#: lms/templates/videoannotation.html
+#: lms/templates/annotatable.html lms/templates/imageannotation.html
+#: lms/templates/textannotation.html lms/templates/videoannotation.html
 msgid "Collapse Instructions"
 msgstr "Çölläpsé Ìnstrüçtïöns Ⱡ'σя#"
 
@@ -5307,6 +6783,10 @@ msgstr "Pléäsé {link_start}sénd üs é-mäïl{link_end}. Ⱡ'σяєм #"
 msgid "Please try again later."
 msgstr "Pléäsé trý ägäïn lätér. Ⱡ'σяє#"
 
+#: lms/templates/imageannotation.html
+msgid "Note: only instructors may annotate."
+msgstr "Nöté: önlý ïnstrüçtörs mäý ännötäté. Ⱡ'σяєм ιρ#"
+
 #: lms/templates/index.html
 msgid "Free courses from <strong>{university_name}</strong>"
 msgstr "Fréé çöürsés fröm <strong>{university_name}</strong> Ⱡ'σяєм#"
@@ -5575,11 +7055,6 @@ msgstr "Räw dätä: #"
 msgid "Accepted"
 msgstr "Àççéptéd #"
 
-#: lms/templates/name_changes.html lms/templates/name_changes.html
-#: lms/templates/sysadmin_dashboard_gitlogs.html
-msgid "Error"
-msgstr "Érrör Ⱡ'σяєм ι#"
-
 #: lms/templates/name_changes.html
 msgid "Rejected"
 msgstr "Réjéçtéd #"
@@ -5662,10 +7137,6 @@ msgid "Reset"
 msgstr "Rését Ⱡ'σяєм ι#"
 
 #: lms/templates/problem.html
-msgid "Show Answer"
-msgstr "Shöw Ànswér Ⱡ#"
-
-#: lms/templates/problem.html
 msgid "Reveal Answer"
 msgstr "Révéäl Ànswér Ⱡ'#"
 
@@ -5674,7 +7145,6 @@ msgid "You have used {num_used} of {num_total} submissions"
 msgstr "Ýöü hävé üséd {num_used} öf {num_total} süßmïssïöns Ⱡ'σяєм ιρ#"
 
 #: lms/templates/provider_login.html
-#: lms/templates/university_profile/edge.html
 msgid "Log In"
 msgstr "Lög Ìn Ⱡ'σяєм ιρѕ#"
 
@@ -5938,7 +7408,7 @@ msgstr ""
 "Pléäsé shäré wïth üs ýöür réäsöns för régïstérïng wïth {platform_name} "
 "Ⱡ'σяєм ιρѕυм ∂σłσ#"
 
-#: lms/templates/register.html lms/templates/university_profile/edge.html
+#: lms/templates/register.html
 msgid "Register"
 msgstr "Régïstér #"
 
@@ -6026,6 +7496,10 @@ msgstr "Lögïn. Ⱡ'σяєм ιρѕ#"
 #: lms/templates/split_test_staff_view.html
 msgid "Group {group_id}"
 msgstr "Gröüp {group_id} #"
+
+#: lms/templates/split_test_studio_header.html
+msgid "Select a Group Configuration"
+msgstr "Séléçt ä Gröüp Çönfïgürätïön Ⱡ'σяєм #"
 
 #: lms/templates/staff_problem_info.html
 msgid "Staff Debug Info"
@@ -6331,6 +7805,10 @@ msgid "Play video"
 msgstr "Pläý vïdéö Ⱡ#"
 
 #: lms/templates/video.html
+msgid "No playable video sources found."
+msgstr "Nö pläýäßlé vïdéö söürçés föünd. Ⱡ'σяєм ι#"
+
+#: lms/templates/video.html
 msgid "Video position"
 msgstr "Vïdéö pösïtïön Ⱡ'#"
 
@@ -6349,6 +7827,15 @@ msgstr "Spééd Ⱡ'σяєм ι#"
 #: lms/templates/video.html
 msgid "Volume"
 msgstr "Völümé Ⱡ'σяєм ιρѕ#"
+
+#: lms/templates/video.html
+msgid ""
+"Click on this button to mute or unmute this video or press UP or DOWN "
+"buttons to increase or decrease volume level."
+msgstr ""
+"Çlïçk ön thïs ßüttön tö müté ör ünmüté thïs vïdéö ör préss ÛP ör DÖWN "
+"ßüttöns tö ïnçréäsé ör déçréäsé völümé lévél. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢#"
 
 #: lms/templates/video.html
 msgid "Fill browser"
@@ -6743,6 +8230,10 @@ msgid "Course Navigation"
 msgstr "Çöürsé Nävïgätïön Ⱡ'σ#"
 
 #: lms/templates/courseware/courseware.html
+msgid "No content has been added to this course"
+msgstr "Nö çöntént häs ßéén äddéd tö thïs çöürsé Ⱡ'σяєм ιρѕυ#"
+
+#: lms/templates/courseware/courseware.html
 msgid "Open Calculator"
 msgstr "Öpén Çälçülätör Ⱡ'#"
 
@@ -6991,28 +8482,22 @@ msgstr "Çöürsé-spéçïfïç grädé ädjüstmént Ⱡ'σяєм ι#"
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid "Specify a particular problem in the course here by its url:"
+msgid "Specify a problem in the course here with its complete location:"
 msgstr ""
-"Spéçïfý ä pärtïçülär prößlém ïn thé çöürsé héré ßý ïts ürl: Ⱡ'σяєм ιρѕυм "
-"∂σłσ#"
+"Spéçïfý ä prößlém ïn thé çöürsé héré wïth ïts çömplété löçätïön: Ⱡ'σяєм "
+"ιρѕυм ∂σłσя #"
 
+#. Translators: A location (string of text) follows this sentence.
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
+#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
+#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid ""
-"You may use just the \"urlname\" if a problem, or \"modulename/urlname\" if "
-"not. (For example, if the location is "
-"<tt>i4x://university/course/problem/problemname</tt>, then just provide the "
-"<tt>problemname</tt>. If the location is "
-"<tt>i4x://university/course/notaproblem/someothername</tt>, then provide "
-"<tt>notaproblem/someothername</tt>.)"
+"You must provide the complete location of the problem. In the Staff Debug "
+"viewer, the location looks like this:"
 msgstr ""
-"Ýöü mäý üsé jüst thé \"ürlnämé\" ïf ä prößlém, ör \"mödülénämé/ürlnämé\" ïf "
-"nöt. (För éxämplé, ïf thé löçätïön ïs "
-"<tt>ï4x://ünïvérsïtý/çöürsé/prößlém/prößlémnämé</tt>, thén jüst prövïdé thé "
-"<tt>prößlémnämé</tt>. Ìf thé löçätïön ïs "
-"<tt>ï4x://ünïvérsïtý/çöürsé/nötäprößlém/söméöthérnämé</tt>, thén prövïdé "
-"<tt>nötäprößlém/söméöthérnämé</tt>.) Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
-"¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢ι∂ι∂υηт υт łαвσяє єт#"
+"Ýöü müst prövïdé thé çömplété löçätïön öf thé prößlém. Ìn thé Stäff Déßüg "
+"vïéwér, thé löçätïön lööks lïké thïs: Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє#"
 
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -7654,16 +9139,6 @@ msgid ""
 msgstr ""
 "Àré ýöü süré ýöü wänt tö ünrégïstér fröm thé vérïfïéd {cert_name_long} träçk"
 " öf Ⱡ'σяєм ιρѕυм ∂σłσя #"
-
-#: lms/templates/dashboard/_dashboard_course_listing.html
-msgid ""
-"In order to request a refund for the amount you paid, you will need to send "
-"an email to {billing_email}.  Be sure to include your email and the course "
-"name."
-msgstr ""
-"Ìn ördér tö réqüést ä réfünd för thé ämöünt ýöü päïd, ýöü wïll nééd tö sénd "
-"än émäïl tö {billing_email}.  Bé süré tö ïnçlüdé ýöür émäïl änd thé çöürsé "
-"nämé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιρ#"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Email Settings"
@@ -9341,20 +10816,9 @@ msgid "Student-specific grade adjustment"
 msgstr "Stüdént-spéçïfïç grädé ädjüstmént Ⱡ'σяєм ι#"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid "Problem urlname"
-msgstr "Prößlém ürlnämé Ⱡ'#"
-
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid ""
-"You may use just the \"urlname\" if a problem, or \"modulename/urlname\" if "
-"not. (For example, if the location is {location1}, then just provide the "
-"{urlname1}. If the location is {location2}, then provide {urlname2}.)"
-msgstr ""
-"Ýöü mäý üsé jüst thé \"ürlnämé\" ïf ä prößlém, ör \"mödülénämé/ürlnämé\" ïf "
-"nöt. (För éxämplé, ïf thé löçätïön ïs {location1}, thén jüst prövïdé thé "
-"{urlname1}. Ìf thé löçätïön ïs {location2}, thén prövïdé {urlname2}.) Ⱡ'σяєм"
-" ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт,#"
+msgid "Problem location"
+msgstr "Prößlém löçätïön Ⱡ'σ#"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Next, select an action to perform for the given user and problem:"
@@ -9557,10 +11021,6 @@ msgstr ""
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Due date"
 msgstr "Düé däté #"
-
-#: lms/templates/peer_grading/peer_grading.html
-msgid "Graded"
-msgstr "Grädéd Ⱡ'σяєм ιρѕ#"
 
 #: lms/templates/peer_grading/peer_grading.html
 msgid "Available"
@@ -10130,25 +11590,6 @@ msgstr ""
 msgid "Currently the {platform_name} servers are overloaded"
 msgstr "Çürréntlý thé {platform_name} sérvérs äré övérlöädéd Ⱡ'σяєм ιρѕυ#"
 
-#: lms/templates/university_profile/edge.html
-#: lms/templates/university_profile/edge.html
-msgid "edX edge"
-msgstr "édX édgé #"
-
-#: lms/templates/university_profile/edge.html
-msgid "Log in to your courses"
-msgstr "Lög ïn tö ýöür çöürsés Ⱡ'σяє#"
-
-#: lms/templates/university_profile/edge.html
-msgid "Register for classes"
-msgstr "Régïstér för çlässés Ⱡ'σя#"
-
-#: lms/templates/university_profile/edge.html
-msgid "Take free online courses from today's leading universities."
-msgstr ""
-"Täké fréé önlïné çöürsés fröm tödäý's léädïng ünïvérsïtïés. Ⱡ'σяєм ιρѕυм "
-"∂σłσ#"
-
 #: lms/templates/verify_student/_modal_editname.html
 msgid "Edit Your Name"
 msgstr "Édït Ýöür Nämé Ⱡ'#"
@@ -10268,16 +11709,16 @@ msgstr "Téçhnïçäl Réqüïréménts Ⱡ'σяє#"
 
 #: lms/templates/verify_student/_verification_support.html
 msgid ""
-"Please make sure your browser is updated to the <strong>{a_start}most recent"
-" version possible{a_end}</strong>. Also, please make sure your <strong>web "
-"cam is plugged in, turned on, and allowed to function in your web browser "
-"(commonly adjustable in your browser settings).</strong>"
+"Please make sure your browser is updated to the {a_start}most recent version"
+" possible{a_end}. Also, please make sure your <strong>web cam is plugged in,"
+" turned on, and allowed to function in your web browser (commonly adjustable"
+" in your browser settings).</strong>"
 msgstr ""
-"Pléäsé mäké süré ýöür ßröwsér ïs üpdätéd tö thé <strong>{a_start}möst réçént"
-" vérsïön pössïßlé{a_end}</strong>. Àlsö, pléäsé mäké süré ýöür <strong>wéß "
-"çäm ïs plüggéd ïn, türnéd ön, änd ällöwéd tö fünçtïön ïn ýöür wéß ßröwsér "
-"(çömmönlý ädjüstäßlé ïn ýöür ßröwsér séttïngs).</strong> Ⱡ'σяєм ιρѕυм ∂σłσя "
-"ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя#"
+"Pléäsé mäké süré ýöür ßröwsér ïs üpdätéd tö thé {a_start}möst réçént vérsïön"
+" pössïßlé{a_end}. Àlsö, pléäsé mäké süré ýöür <strong>wéß çäm ïs plüggéd ïn,"
+" türnéd ön, änd ällöwéd tö fünçtïön ïn ýöür wéß ßröwsér (çömmönlý ädjüstäßlé"
+" ïn ýöür ßröwsér séttïngs).</strong> Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρ#"
 
 #: lms/templates/verify_student/face_upload.html
 msgid "Edit Your Full Name"
@@ -10580,6 +12021,11 @@ msgstr ""
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 msgid "Re-verify by {date}"
 msgstr "Ré-vérïfý ßý {date} Ⱡ'σ#"
+
+#: lms/templates/verify_student/midcourse_reverify_dash.html
+#: lms/templates/verify_student/midcourse_reverify_dash.html
+msgid "Re-verify for {course_number}"
+msgstr "Ré-vérïfý för {course_number} Ⱡ'σ#"
 
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 msgid "You currently need to re-verify for the following course:"
@@ -11296,23 +12742,6 @@ msgstr "Çöntäçt édX Süppört Ⱡ'σя#"
 msgid "Files &amp; Uploads"
 msgstr "Fïlés &amp; Ûplöäds Ⱡ'σ#"
 
-#: cms/templates/asset_index.html
-msgid "Uploading…"
-msgstr "Ûplöädïng… Ⱡ#"
-
-#: cms/templates/asset_index.html cms/templates/asset_index.html
-msgid "Choose File"
-msgstr "Çhöösé Fïlé Ⱡ#"
-
-#: cms/templates/asset_index.html cms/templates/asset_index.html
-#: cms/templates/asset_index.html
-msgid "Upload New File"
-msgstr "Ûplöäd Néw Fïlé Ⱡ'#"
-
-#: cms/templates/asset_index.html
-msgid "Load Another File"
-msgstr "Löäd Ànöthér Fïlé Ⱡ'σ#"
-
 #: cms/templates/asset_index.html cms/templates/course_info.html
 #: cms/templates/edit-tabs.html cms/templates/overview.html
 #: cms/templates/textbooks.html cms/templates/widgets/header.html
@@ -11325,6 +12754,10 @@ msgstr "Çöntént #"
 #: cms/templates/overview.html cms/templates/textbooks.html
 msgid "Page Actions"
 msgstr "Pägé Àçtïöns Ⱡ#"
+
+#: cms/templates/asset_index.html cms/templates/asset_index.html
+msgid "Upload New File"
+msgstr "Ûplöäd Néw Fïlé Ⱡ'#"
 
 #: cms/templates/asset_index.html
 msgid "Loading&hellip;"
@@ -11383,6 +12816,10 @@ msgstr ""
 "äççéss thät fïlé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg#"
 
 #: cms/templates/asset_index.html
+msgid "Choose File"
+msgstr "Çhöösé Fïlé Ⱡ#"
+
+#: cms/templates/asset_index.html
 msgid "Your file has been deleted."
 msgstr "Ýöür fïlé häs ßéén délétéd. Ⱡ'σяєм#"
 
@@ -11390,15 +12827,15 @@ msgstr "Ýöür fïlé häs ßéén délétéd. Ⱡ'σяєм#"
 msgid "close alert"
 msgstr "çlösé älért Ⱡ#"
 
+#: cms/templates/checklists.html cms/templates/checklists.html
+msgid "Course Checklists"
+msgstr "Çöürsé Çhéçklïsts Ⱡ'σ#"
+
 #: cms/templates/checklists.html cms/templates/export.html
 #: cms/templates/export_git.html cms/templates/import.html
 #: cms/templates/widgets/header.html
 msgid "Tools"
 msgstr "Tööls Ⱡ'σяєм ι#"
-
-#: cms/templates/checklists.html
-msgid "Course Checklists"
-msgstr "Çöürsé Çhéçklïsts Ⱡ'σ#"
 
 #: cms/templates/checklists.html
 msgid "Current Checklists"
@@ -11426,7 +12863,13 @@ msgstr ""
 "ïmmédïätélý vïsïßlé tö öthér çöürsé téäm mémßérs. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
 "αмєт, ¢σηѕє¢тєт#"
 
-#: cms/templates/component.html cms/templates/studio_xblock_wrapper.html
+#: cms/templates/checklists.html
+msgid "Studio checklists"
+msgstr "Stüdïö çhéçklïsts Ⱡ'σ#"
+
+#: cms/templates/component.html cms/templates/container_xblock_component.html
+#: cms/templates/container_xblock_component.html
+#: cms/templates/studio_xblock_wrapper.html
 #: cms/templates/studio_xblock_wrapper.html
 msgid "Duplicate"
 msgstr "Düplïçäté #"
@@ -11439,13 +12882,16 @@ msgstr "Düplïçäté thïs çömpönént Ⱡ'σяє#"
 msgid "Delete this component"
 msgstr "Délété thïs çömpönént Ⱡ'σя#"
 
+#: cms/templates/component.html cms/templates/container_xblock_component.html
+#: cms/templates/edit-tabs.html cms/templates/edit-tabs.html
+#: cms/templates/overview.html cms/templates/overview.html
+#: cms/templates/studio_xblock_wrapper.html
+msgid "Drag to reorder"
+msgstr "Dräg tö réördér Ⱡ'#"
+
 #: cms/templates/container.html
 msgid "Container"
 msgstr "Çöntäïnér #"
-
-#: cms/templates/container.html
-msgid "This page has no content yet."
-msgstr "Thïs pägé häs nö çöntént ýét. Ⱡ'σяєм #"
 
 #: cms/templates/container.html cms/templates/container.html
 msgid "Publishing Status"
@@ -11487,6 +12933,11 @@ msgstr ""
 " ýöü hävé pröpérlý çönfïgüréd ýöür éxpérïmént gröüps änd mäké çhängés tö "
 "éxïstïng çöntént. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт,"
 " ѕє∂ ∂σ єιυѕмσ∂ тє#"
+
+#: cms/templates/container_xblock_component.html
+#: cms/templates/studio_xblock_wrapper.html
+msgid "This block contains multiple components."
+msgstr "Thïs ßlöçk çöntäïns mültïplé çömpönénts. Ⱡ'σяєм ιρѕυ#"
 
 #: cms/templates/course_info.html cms/templates/course_info.html
 msgid "Course Updates"
@@ -11938,9 +13389,9 @@ msgstr "Wélçömé tö Ⱡ#"
 
 #: cms/templates/howitworks.html
 msgid ""
-"Studio helps manage your courses online, so you can focus on teaching them"
+"Studio helps manage your online courses, so you can focus on teaching them"
 msgstr ""
-"Stüdïö hélps mänägé ýöür çöürsés önlïné, sö ýöü çän föçüs ön téäçhïng thém "
+"Stüdïö hélps mänägé ýöür önlïné çöürsés, sö ýöü çän föçüs ön téäçhïng thém "
 "Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт#"
 
 #: cms/templates/howitworks.html
@@ -11986,10 +13437,10 @@ msgstr "Çhängé Ýöür Mïnd Ànýtïmé Ⱡ'σяє#"
 #: cms/templates/howitworks.html
 msgid ""
 "Draft your outline and build content anywhere. Simple drag and drop tools "
-"let your reorganize quickly."
+"let you reorganize quickly."
 msgstr ""
 "Dräft ýöür öütlïné änd ßüïld çöntént änýwhéré. Sïmplé dräg änd dröp tööls "
-"lét ýöür réörgänïzé qüïçklý. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σ#"
+"lét ýöü réörgänïzé qüïçklý. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σ#"
 
 #: cms/templates/howitworks.html
 msgid "Go A Week Or A Semester At A Time"
@@ -12012,15 +13463,12 @@ msgstr "Léärnïng ïs Möré thän Jüst Léçtürés Ⱡ'σяєм ιρ#"
 #: cms/templates/howitworks.html
 msgid ""
 "Studio lets you weave your content together in a way that reinforces "
-"learning &mdash; short video lectures interleaved with exercises and more. "
-"Insert videos and author a wide variety of exercise types with just a few "
-"clicks."
+"learning. Insert videos, discussions, and a wide variety of exercises with "
+"just a few clicks."
 msgstr ""
 "Stüdïö léts ýöü wéävé ýöür çöntént tögéthér ïn ä wäý thät réïnförçés "
-"léärnïng &mdash; shört vïdéö léçtürés ïntérléävéd wïth éxérçïsés änd möré. "
-"Ìnsért vïdéös änd äüthör ä wïdé värïétý öf éxérçïsé týpés wïth jüst ä féw "
-"çlïçks. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ "
-"єιυѕ#"
+"léärnïng. Ìnsért vïdéös, dïsçüssïöns, änd ä wïdé värïétý öf éxérçïsés wïth "
+"jüst ä féw çlïçks. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιη#"
 
 #: cms/templates/howitworks.html
 msgid "Create Learning Pathways"
@@ -12028,11 +13476,11 @@ msgstr "Çréäté Léärnïng Päthwäýs Ⱡ'σяє#"
 
 #: cms/templates/howitworks.html
 msgid ""
-"Help your students understand a small interactive piece at a time with "
-"multimedia, HTML, and exercises."
+"Help your students understand one concept at a time with multimedia, HTML, "
+"and exercises."
 msgstr ""
-"Hélp ýöür stüdénts ündérständ ä smäll ïntéräçtïvé pïéçé ät ä tïmé wïth "
-"mültïmédïä, HTML, änd éxérçïsés. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σ#"
+"Hélp ýöür stüdénts ündérständ öné çönçépt ät ä tïmé wïth mültïmédïä, HTML, "
+"änd éxérçïsés. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
 
 #: cms/templates/howitworks.html
 msgid "Work Visually, Organize Quickly"
@@ -12052,11 +13500,12 @@ msgstr "À Bröäd Lïßrärý öf Prößlém Týpés Ⱡ'σяєм ι#"
 
 #: cms/templates/howitworks.html
 msgid ""
-"It's more than just multiple choice. Studio has nearly a dozen types of "
-"problems to challenge your learners."
+"It's more than just multiple choice. Studio supports more than a dozen types"
+" of problems to challenge your learners."
 msgstr ""
-"Ìt's möré thän jüst mültïplé çhöïçé. Stüdïö häs néärlý ä dözén týpés öf "
-"prößléms tö çhälléngé ýöür léärnérs. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
+"Ìt's möré thän jüst mültïplé çhöïçé. Stüdïö süppörts möré thän ä dözén týpés"
+" öf prößléms tö çhälléngé ýöür léärnérs. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢т#"
 
 #: cms/templates/howitworks.html cms/templates/howitworks.html
 msgid ""
@@ -12089,11 +13538,11 @@ msgstr "Ìnstänt Çhängés Ⱡ'#"
 
 #: cms/templates/howitworks.html
 msgid ""
-"Caught a bug? No problem. When you want, your changes to live when you hit "
-"Save."
+"Caught a bug? No problem. When you want, your changes go live when you click"
+" Save."
 msgstr ""
-"Çäüght ä ßüg? Nö prößlém. Whén ýöü wänt, ýöür çhängés tö lïvé whén ýöü hït "
-"Sävé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+"Çäüght ä ßüg? Nö prößlém. Whén ýöü wänt, ýöür çhängés gö lïvé whén ýöü çlïçk"
+" Sävé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
 
 #: cms/templates/howitworks.html
 msgid "Release-On Date Publishing"
@@ -12608,16 +14057,16 @@ msgstr "Néw tö édX Stüdïö? Ⱡ'σ#"
 
 #: cms/templates/index.html
 msgid ""
-"Click Help in the upper-right corner to get more more information about the "
+"Click Help in the upper-right corner to get more information about the "
 "Studio page you are viewing. You can also use the links at the bottom of the"
 " page to access our continously updated documentation and other Studio "
 "resources."
 msgstr ""
-"Çlïçk Hélp ïn thé üppér-rïght çörnér tö gét möré möré ïnförmätïön äßöüt thé "
+"Çlïçk Hélp ïn thé üppér-rïght çörnér tö gét möré ïnförmätïön äßöüt thé "
 "Stüdïö pägé ýöü äré vïéwïng. Ýöü çän älsö üsé thé lïnks ät thé ßöttöm öf thé"
 " pägé tö äççéss öür çöntïnöüslý üpdätéd döçüméntätïön änd öthér Stüdïö "
 "résöürçés. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ"
-" єιυѕмσ∂ #"
+" єιυѕмσ∂#"
 
 #: cms/templates/index.html
 msgid "Getting Started with edX Studio"
@@ -13193,17 +14642,14 @@ msgid ""
 "they are <strong>not the dates shown on your course summary page</strong>.  "
 "To provide the course start and registration dates as shown on your course "
 "summary page, follow the instructions provided by your <abbr title=\"Program"
-" Manager\">PM</abbr> or Conrad Warre <a rel=\"email\" class=\"action action-"
-"email\" href=\"mailto:conrad@edx.org\">(conrad@edx.org)</a>."
+" Manager\">PM</abbr>."
 msgstr ""
 "Thésé dätés ïmpäçt <strong>whén ýöür çöürséwäré çän ßé vïéwéd</strong>, ßüt "
 "théý äré <strong>nöt thé dätés shöwn ön ýöür çöürsé sümmärý pägé</strong>.  "
 "Tö prövïdé thé çöürsé stärt änd régïsträtïön dätés äs shöwn ön ýöür çöürsé "
 "sümmärý pägé, föllöw thé ïnstrüçtïöns prövïdéd ßý ýöür <abbr title=\"Program"
-" Manager\">PM</abbr> ör Çönräd Wärré <a rel=\"email\" class=\"action action-"
-"email\" href=\"mailto:conrad@edx.org\">(çönräd@édx.örg)</a>. Ⱡ'σяєм ιρѕυм "
-"∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя "
-"ιη¢ι∂ι∂υηт υт łαвσ#"
+" Manager\">PM</abbr>. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg "
+"єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢ι∂#"
 
 #: cms/templates/settings.html
 msgid "Introducing Your Course"
@@ -13481,6 +14927,8 @@ msgstr ""
 
 #: cms/templates/studio_vertical_wrapper.html
 #: cms/templates/studio_vertical_wrapper.html
+#: cms/templates/studio_xblock_wrapper.html
+#: cms/templates/studio_xblock_wrapper.html
 msgid "Expand or Collapse"
 msgstr "Éxpänd ör Çölläpsé Ⱡ'σ#"
 
@@ -13548,18 +14996,6 @@ msgstr "Thïs ünït wäs örïgïnällý püßlïshéd ön {date}. Ⱡ'σяєм
 #: cms/templates/unit.html
 msgid "View the Live Version"
 msgstr "Vïéw thé Lïvé Vérsïön Ⱡ'σя#"
-
-#: cms/templates/unit.html
-msgid "Add New Component"
-msgstr "Àdd Néw Çömpönént Ⱡ'σ#"
-
-#: cms/templates/unit.html
-msgid "Common Problem Types"
-msgstr "Çömmön Prößlém Týpés Ⱡ'σя#"
-
-#: cms/templates/unit.html
-msgid "Advanced"
-msgstr "Àdvänçéd #"
 
 #: cms/templates/unit.html
 msgid "Unit Settings"
@@ -13752,7 +15188,7 @@ msgstr "Éxpört Ⱡ'σяєм ιρѕ#"
 msgid "Help &amp; Account Navigation"
 msgstr "Hélp &amp; Àççöünt Nävïgätïön Ⱡ'σяєм#"
 
-#: cms/templates/widgets/header.html
+#: cms/templates/widgets/header.html cms/templates/widgets/header.html
 msgid "Contextual Online Help"
 msgstr "Çöntéxtüäl Önlïné Hélp Ⱡ'σяє#"
 
@@ -13767,14 +15203,6 @@ msgstr "Sïgn Öüt #"
 #: cms/templates/widgets/header.html
 msgid "You're not currently signed in"
 msgstr "Ýöü'ré nöt çürréntlý sïgnéd ïn Ⱡ'σяєм #"
-
-#: cms/templates/widgets/header.html
-msgid "How Studio Works"
-msgstr "Höw Stüdïö Wörks Ⱡ'σ#"
-
-#: cms/templates/widgets/header.html
-msgid "Studio Help"
-msgstr "Stüdïö Hélp Ⱡ#"
 
 #: cms/templates/widgets/metadata-edit.html
 msgid "Launch Latex Source Compiler"
@@ -13869,6 +15297,27 @@ msgid "Have problems, questions, or suggestions about edX Studio?"
 msgstr ""
 "Hävé prößléms, qüéstïöns, ör süggéstïöns äßöüt édX Stüdïö? Ⱡ'σяєм ιρѕυм "
 "∂σłσ#"
+
+#: cms/templates/widgets/split-edit.html
+msgid ""
+"This content experiment refers to a group configuration that has been "
+"deleted."
+msgstr ""
+"Thïs çöntént éxpérïmént référs tö ä gröüp çönfïgürätïön thät häs ßéén "
+"délétéd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
+
+#: cms/templates/widgets/split-edit.html
+msgid "This content experiment uses group configuration '{0}'."
+msgstr ""
+"Thïs çöntént éxpérïmént üsés gröüp çönfïgürätïön '{0}'. Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: cms/templates/widgets/split-edit.html
+msgid ""
+"After you select the group configuration and save the content experiment, "
+"you cannot change this setting."
+msgstr ""
+"Àftér ýöü séléçt thé gröüp çönfïgürätïön änd sävé thé çöntént éxpérïmént, "
+"ýöü çännöt çhängé thïs séttïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢ση#"
 
 #: cms/templates/widgets/tabs-aggregator.html
 msgid "name"

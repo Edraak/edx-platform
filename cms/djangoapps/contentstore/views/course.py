@@ -23,7 +23,7 @@ from xmodule.tabs import PDFTextbookTabs
 
 from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError
 from opaque_keys import InvalidKeyError
-from xmodule.modulestore.locations import Location, SlashSeparatedCourseKey
+from opaque_keys.edx.locations import Location, SlashSeparatedCourseKey
 
 from contentstore.course_info_model import get_course_updates, update_course_updates, delete_course_update
 from contentstore.utils import (
@@ -53,8 +53,7 @@ from django_comment_common.utils import seed_permissions_roles
 from student.models import CourseEnrollment
 from student.roles import CourseRole, UserBasedRole
 
-from xmodule.html_module import AboutDescriptor
-from xmodule.modulestore.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey
 from course_creators.views import get_course_creator_status, add_user_with_status_unrequested
 from contentstore import utils
 from student.roles import CourseInstructorRole, CourseStaffRole, CourseCreatorRole, GlobalStaff
@@ -67,6 +66,14 @@ __all__ = ['course_info_handler', 'course_handler', 'course_info_update_handler'
            'grading_handler',
            'advanced_settings_handler',
            'textbooks_list_handler', 'textbooks_detail_handler']
+
+
+class AccessListFallback(Exception):
+    """
+    An exception that is raised whenever we need to `fall back` to fetching *all* courses
+    available to a user, rather than using a shorter method (i.e. fetching by group)
+    """
+    pass
 
 
 def _get_course_module(course_key, user, depth=0):
@@ -164,6 +171,9 @@ def _accessible_courses_list(request):
         """
         Get courses to which this user has access
         """
+        if isinstance(course, ErrorDescriptor):
+            return False
+
         if GlobalStaff().has_user(request.user):
             return course.location.course != 'templates'
 
@@ -188,10 +198,16 @@ def _accessible_courses_list_from_groups(request):
 
     for course_access in all_courses:
         course_key = course_access.course_id
-        if course_key not in courses_list:
+        if course_key is None:
+            # If the course_access does not have a course_id, it's an org-based role, so we fall back
+            raise AccessListFallback
+        try:
             course = modulestore('direct').get_course(course_key)
-            if course is None:
-                raise ItemNotFoundError(course_key)
+        except ItemNotFoundError:
+            # If a user has access to a course that doesn't exist, don't do anything with that course
+            pass
+        if course is not None and not isinstance(course, ErrorDescriptor):
+            # ignore deleted or errored courses
             courses_list[course_key] = course
 
     return courses_list.values()
@@ -211,7 +227,7 @@ def course_listing(request):
     else:
         try:
             courses = _accessible_courses_list_from_groups(request)
-        except ItemNotFoundError:
+        except AccessListFallback:
             # user have some old groups or there was some error getting courses from django groups
             # so fallback to iterating through all courses
             courses = _accessible_courses_list(request)

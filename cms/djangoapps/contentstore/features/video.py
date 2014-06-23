@@ -1,8 +1,6 @@
 # pylint: disable=C0111
 
 from lettuce import world, step
-from nose.tools import assert_less
-from xmodule.modulestore import Location
 from contentstore.utils import get_modulestore
 from selenium.webdriver.common.keys import Keys
 
@@ -22,7 +20,6 @@ SELECTORS = {
 # We should wait 300 ms for event handler invocation + 200ms for safety.
 DELAY = 0.5
 
-
 @step('youtube stub server (.*) YouTube API')
 def configure_youtube_api(_step, action):
     action=action.strip()
@@ -32,7 +29,6 @@ def configure_youtube_api(_step, action):
         world.youtube.config['youtube_api_blocked'] = True
     else:
         raise ValueError('Parameter `action` should be one of "proxies" or "blocks".')
-
 
 @step('I have created a Video component$')
 def i_created_a_video_component(_step):
@@ -154,7 +150,8 @@ def xml_only_video(step):
     world.ItemFactory.create(
         parent_location=parent_location,
         category='video',
-        data='<video youtube="1.00:%s"></video>' % youtube_id
+        data='<video youtube="1.00:%s"></video>' % youtube_id,
+        modulestore=store,
     )
 
 
@@ -169,7 +166,7 @@ def set_captions_visibility_state(_step, captions_state):
     SELECTOR = '.closed .subtitles'
     world.wait_for_visible('.hide-subtitles')
     if captions_state == 'closed':
-        if not world.is_css_present(SELECTOR):
+        if world.is_css_not_present(SELECTOR):
             world.css_find('.hide-subtitles').click()
     else:
         if world.is_css_present(SELECTOR):

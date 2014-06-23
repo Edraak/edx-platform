@@ -14,10 +14,10 @@ from xblock.plugin import default_select
 
 from .exceptions import InvalidLocationError, InsufficientSpecificationError
 from xmodule.errortracker import make_error_tracker
-from xmodule.modulestore.keys import CourseKey, UsageKey
-from xmodule.modulestore.locations import Location  # For import backwards compatibility
+from opaque_keys.edx.keys import CourseKey, UsageKey
+from opaque_keys.edx.locations import Location  # For import backwards compatibility
 from opaque_keys import InvalidKeyError
-from xmodule.modulestore.locations import SlashSeparatedCourseKey
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xblock.runtime import Mixologist
 from xblock.core import XBlock
 import datetime
@@ -165,7 +165,7 @@ class ModuleStoreRead(object):
         pass
 
     @abstractmethod
-    def get_course(self, course_id, depth=None):
+    def get_course(self, course_id, depth=0):
         '''
         Look for a specific course by its id (:class:`CourseKey`).
         Returns the course descriptor, or None if not found.
@@ -332,7 +332,7 @@ class ModuleStoreReadBase(ModuleStoreRead):
         """
         return {}
 
-    def get_course(self, course_id, depth=None):
+    def get_course(self, course_id, depth=0):
         """
         See ModuleStoreRead.get_course
 
@@ -362,6 +362,12 @@ class ModuleStoreReadBase(ModuleStoreRead):
         else:
             return any(c.id == course_id for c in self.get_courses())
 
+    def heartbeat(self):
+        """
+        Is this modulestore ready?
+        """
+        # default is to say yes by not raising an exception
+        return {'default_impl': True}
 
 class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
     '''

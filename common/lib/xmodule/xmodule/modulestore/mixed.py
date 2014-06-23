@@ -11,13 +11,15 @@ from opaque_keys import InvalidKeyError
 
 from . import ModuleStoreWriteBase
 from xmodule.modulestore.django import create_modulestore_instance, loc_mapper
-from xmodule.modulestore import Location, XML_MODULESTORE_TYPE
-from xmodule.modulestore.locator import CourseLocator, Locator, BlockUsageLocator
+from opaque_keys.edx.locations import Location
+from xmodule.modulestore import XML_MODULESTORE_TYPE
+from opaque_keys.edx.locator import CourseLocator, Locator, BlockUsageLocator
 from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.modulestore.keys import CourseKey, UsageKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 from xmodule.modulestore.mongo.base import MongoModuleStore
 from xmodule.modulestore.split_mongo.split import SplitMongoModuleStore
-from xmodule.modulestore.locations import SlashSeparatedCourseKey
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
+import itertools
 
 log = logging.getLogger(__name__)
 
@@ -157,7 +159,7 @@ class MixedModuleStore(ModuleStoreWriteBase):
 
         return courses.values()
 
-    def get_course(self, course_key, depth=None):
+    def get_course(self, course_key, depth=0):
         """
         returns the course module associated with the course_id. If no such course exists,
         it returns None
@@ -330,6 +332,18 @@ class MixedModuleStore(ModuleStoreWriteBase):
         for modulestore in self.modulestores.values():
             courses.extend(modulestore.get_courses_for_wiki(wiki_slug))
         return courses
+
+    def heartbeat(self):
+        """
+        Delegate to each modulestore and package the results for the caller.
+        """
+        # could be done in parallel threads if needed
+        return dict(
+            itertools.chain.from_iterable(
+                store.heartbeat().iteritems()
+                for store in self.modulestores.itervalues()
+            )
+        )
 
 
 def _compare_stores(left, right):

@@ -21,6 +21,8 @@ import re
 from bson.son import SON
 from fs.osfs import OSFS
 from path import path
+from datetime import datetime
+from pytz import UTC
 
 from importlib import import_module
 from xmodule.errortracker import null_error_tracker, exc_info_to_str
@@ -31,12 +33,14 @@ from xblock.runtime import KvsFieldData
 from xblock.exceptions import InvalidScopeError
 from xblock.fields import Scope, ScopeIds, Reference, ReferenceList, ReferenceValueDict
 
-from xmodule.modulestore import ModuleStoreWriteBase, Location, MONGO_MODULESTORE_TYPE
+from xmodule.modulestore import ModuleStoreWriteBase, MONGO_MODULESTORE_TYPE
+from opaque_keys.edx.locations import Location
 from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError
 from xmodule.modulestore.inheritance import own_metadata, InheritanceMixin, inherit_metadata, InheritanceKeyValueStore
 from xmodule.tabs import StaticTab, CourseTabList
 from xblock.core import XBlock
-from xmodule.modulestore.locations import SlashSeparatedCourseKey
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from xmodule.exceptions import HeartbeatFailure
 
 log = logging.getLogger(__name__)
 
@@ -184,7 +188,8 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
                 if isinstance(data, basestring):
                     data = {'data': data}
                 mixed_class = self.mixologist.mix(class_)
-                data = self._convert_reference_fields_to_keys(mixed_class, location.course_key, data)
+                if data is not None:
+                    data = self._convert_reference_fields_to_keys(mixed_class, location.course_key, data)
                 metadata = self._convert_reference_fields_to_keys(mixed_class, location.course_key, metadata)
                 kvs = MongoKeyValueStore(
                     data,
@@ -204,11 +209,28 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
                     # to python values
                     metadata_to_inherit = self.cached_metadata.get(non_draft_loc.to_deprecated_string(), {})
                     inherit_metadata(module, metadata_to_inherit)
+
+                edit_info = json_data.get('edit_info')
+
+                # migrate published_by and published_date if edit_info isn't present
+                if not edit_info:
+                    module.edited_by = module.edited_on = module.published_date = None
+                    # published_date was previously stored as a list of time components instead of a datetime
+                    if metadata.get('published_date'):
+                        module.published_date = datetime(*metadata.get('published_date')[0:6]).replace(tzinfo=UTC)
+                    module.published_by = metadata.get('published_by')
+                # otherwise restore the stored editing information
+                else:
+                    module.edited_by = edit_info.get('edited_by')
+                    module.edited_on = edit_info.get('edited_on')
+                    module.published_date = edit_info.get('published_date')
+                    module.published_by = edit_info.get('published_by')
+
                 # decache any computed pending field settings
                 module.save()
                 return module
             except:
-                log.warning("Failed to load descriptor", exc_info=True)
+                log.warning("Failed to load descriptor from %s", json_data, exc_info=True)
                 return ErrorDescriptor.from_json(
                     json_data,
                     self,
@@ -294,8 +316,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
                     host=host,
                     port=port,
                     tz_aware=tz_aware,
-                    # deserialize dicts as SONs
-                    document_class=SON,
+                    document_class=dict,
                     **kwargs
                 ),
                 db
@@ -350,7 +371,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
         # call out to the DB
         resultset = self.collection.find(query, record_filter)
 
-        # it's ok to keep these as urls b/c the overall cache is indexed by course_key and this
+        # it's ok to keep these as deprecated strings b/c the overall cache is indexed by course_key and this
         # is a dictionary relative to that course
         results_by_url = {}
         root = None
@@ -411,7 +432,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
 
             # then look in any caching subsystem (e.g. memcached)
             if self.metadata_inheritance_cache_subsystem is not None:
-                tree = self.metadata_inheritance_cache_subsystem.get(course_id, {})
+                tree = self.metadata_inheritance_cache_subsystem.get(unicode(course_id), {})
             else:
                 logging.warning('Running MongoModuleStore without a metadata_inheritance_cache_subsystem. This is OK in localdev and testing environment. Not OK in production.')
 
@@ -421,7 +442,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
 
             # now write out computed tree to caching subsystem (e.g. memcached), if available
             if self.metadata_inheritance_cache_subsystem is not None:
-                self.metadata_inheritance_cache_subsystem.set(course_id, tree)
+                self.metadata_inheritance_cache_subsystem.set(unicode(course_id), tree)
 
         # now populate a request_cache, if available. NOTE, we are outside of the
         # scope of the above if: statement so that after a memcache hit, it'll get
@@ -557,7 +578,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
         '''
         Returns a list of course descriptors.
         '''
-        return sum(
+        base_list = sum(
             [
                 self._load_items(
                     SlashSeparatedCourseKey(course['_id']['org'], course['_id']['course'], course['_id']['name']),
@@ -574,6 +595,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
             ],
             []
         )
+        return [course for course in base_list if not isinstance(course, ErrorDescriptor)]
 
     def _find_one(self, location):
         '''Look for a given location in the collection.  If revision is not
@@ -589,7 +611,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
             raise ItemNotFoundError(location)
         return item
 
-    def get_course(self, course_key, depth=None):
+    def get_course(self, course_key, depth=0):
         """
         Get the course with the given courseid (org/course/run)
         """
@@ -824,7 +846,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
         return xmodule
 
     def create_and_save_xmodule(self, location, definition_data=None, metadata=None, system=None,
-                                fields={}):
+                                fields={}, user_id=None):
         """
         Create the new xmodule and save it. Does not return the new module because if the caller
         will insert it as a child, it's inherited metadata will completely change. The difference
@@ -835,12 +857,13 @@ class MongoModuleStore(ModuleStoreWriteBase):
         :param definition_data: can be empty. The initial definition_data for the kvs
         :param metadata: can be empty, the initial metadata for the kvs
         :param system: if you already have an xblock from the course, the xblock.runtime value
+        :param user_id: the user that created the xblock
         """
         # differs from split mongo in that I believe most of this logic should be above the persistence
         # layer but added it here to enable quick conversion. I'll need to reconcile these.
         new_object = self.create_xmodule(location, definition_data, metadata, system, fields)
         location = new_object.scope_ids.usage_id
-        self.update_item(new_object, allow_not_found=True)
+        self.update_item(new_object, allow_not_found=True, user_id=user_id)
 
         # VS[compat] cdodge: This is a hack because static_tabs also have references from the course module, so
         # if we add one then we need to also add it to the policy information (i.e. metadata)
@@ -854,7 +877,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
                     url_slug=new_object.scope_ids.usage_id.name,
                 )
             )
-            self.update_item(course)
+            self.update_item(course, user_id=user_id)
 
         return new_object
 
@@ -886,7 +909,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
         if result['n'] == 0:
             raise ItemNotFoundError(location)
 
-    def update_item(self, xblock, user_id=None, allow_not_found=False, force=False):
+    def update_item(self, xblock, user_id=None, allow_not_found=False, force=False, isPublish=False):
         """
         Update the persisted version of xblock to reflect its current values.
 
@@ -900,7 +923,16 @@ class MongoModuleStore(ModuleStoreWriteBase):
             payload = {
                 'definition.data': definition_data,
                 'metadata': self._convert_reference_fields_to_strings(xblock, own_metadata(xblock)),
+                'edit_info': {
+                    'edited_on': datetime.now(UTC),
+                    'edited_by': user_id,
+                }
             }
+
+            if isPublish:
+                payload['edit_info']['published_date'] = datetime.now(UTC)
+                payload['edit_info']['published_by'] = user_id
+
             if xblock.has_children:
                 children = self._convert_reference_fields_to_strings(xblock, {'children': xblock.children})
                 payload.update({'definition.children': children['children']})
@@ -1016,7 +1048,7 @@ class MongoModuleStore(ModuleStoreWriteBase):
         :param wiki_slug: the course wiki root slug
         :return: list of course locations
         """
-        courses = self.collection.find({'definition.data.wiki_slug': wiki_slug})
+        courses = self.collection.find({'_id.category': 'course', 'definition.data.wiki_slug': wiki_slug})
         # the course's run == its name. It's the only xblock for which that's necessarily true.
         return [Location._from_deprecated_son(course['_id'], course['_id']['name']) for course in courses]
 
@@ -1032,3 +1064,12 @@ class MongoModuleStore(ModuleStoreWriteBase):
 
         field_data = KvsFieldData(kvs)
         return field_data
+
+    def heartbeat(self):
+        """
+        Check that the db is reachable.
+        """
+        if self.database.connection.alive():
+            return {MONGO_MODULESTORE_TYPE: True}
+        else:
+            raise HeartbeatFailure("Can't connect to {}".format(self.database.name), 'mongo')

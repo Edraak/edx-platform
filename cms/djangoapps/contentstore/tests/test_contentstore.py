@@ -33,8 +33,8 @@ from xmodule.modulestore import mongo
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from xmodule.modulestore.inheritance import own_metadata
-from xmodule.modulestore.keys import UsageKey
-from xmodule.modulestore.locations import SlashSeparatedCourseKey, AssetLocation
+from opaque_keys.edx.keys import UsageKey
+from opaque_keys.edx.locations import SlashSeparatedCourseKey, AssetLocation
 from xmodule.modulestore.store_utilities import clone_course, delete_course
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
@@ -140,7 +140,7 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         self.check_components_on_page(
             ADVANCED_COMPONENT_TYPES,
             ['Word cloud', 'Annotation', 'Text Annotation', 'Video Annotation', 'Image Annotation',
-             'Open Response Assessment', 'Peer Grading Interface', 'openassessment'],
+             'Open Response Assessment', 'Peer Grading Interface', 'split_test'],
         )
 
     def test_advanced_components_require_two_clicks(self):
@@ -741,22 +741,21 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
 
     def test_illegal_draft_crud_ops(self):
         draft_store = modulestore('draft')
-        direct_store = modulestore('direct')
 
         course = CourseFactory.create(org='MITx', course='999', display_name='Robot Super Course')
 
         location = course.id.make_usage_key('chapter', 'neuvo')
-        # Ensure draft mongo store does not allow us to create chapters either directly or via convert to draft
-        with self.assertRaises(InvalidVersionError):
-            draft_store.create_and_save_xmodule(location)
-        direct_store.create_and_save_xmodule(location)
+        # Ensure draft mongo store does not create drafts for things that shouldn't be draft
+        newobject = draft_store.create_and_save_xmodule(location)
+        self.assertFalse(getattr(newobject, 'is_draft', False))
         with self.assertRaises(InvalidVersionError):
             draft_store.convert_to_draft(location)
         chapter = draft_store.get_item(location)
         chapter.data = 'chapter data'
 
-        with self.assertRaises(InvalidVersionError):
-            draft_store.update_item(chapter, self.user.id)
+        draft_store.update_item(chapter, self.user.id)
+        newobject = draft_store.get_item(chapter.location)
+        self.assertFalse(getattr(newobject, 'is_draft', False))
 
         with self.assertRaises(InvalidVersionError):
             draft_store.unpublish(location)
