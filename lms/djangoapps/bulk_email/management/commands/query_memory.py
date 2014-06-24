@@ -45,7 +45,7 @@ class Command(BaseCommand):
         make_option('--user_id',
                     action='store',
                     default='',
-                    dest='user_id'
+                    dest='user_id',
                     help='user_id'),
     )
 

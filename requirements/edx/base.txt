@@ -127,6 +127,7 @@ selenium==2.39.0
 splinter==0.5.4
 testtools==0.9.34
 flaky==0.2.0
+memory_profiler
 
 git+https://github.com/mfogel/django-settings-context-processor.git
 
