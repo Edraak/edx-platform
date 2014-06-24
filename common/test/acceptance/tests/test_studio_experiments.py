@@ -65,7 +65,11 @@ class SettingsMenuTest(UniqueCourseTest):
         Ensure that the link to the "Group Configurations" page does not exist
         in the Settings menu.
         """
-        pass
+        link_css = 'li.nav-course-settings-experiments a'
+        self.advanced_settings.set('advanced_modules', '[]')
+        self.browser.refresh()
+        self.advanced_settings.wait_for_page()
+        self.assertFalse(self.advanced_settings.q(css=link_css).present)
 
 
 class GroupExperimentsTest(UniqueCourseTest):
@@ -161,16 +165,44 @@ class GroupExperimentsTest(UniqueCourseTest):
                         }
                     ],
                     "name": "Name of the Group Configuration"
+                },
+                {
+                    "description": "Second group configuration.",
+                    "version": 1,
+                    "id": 1,
+                    "groups": [
+                        {
+                            "version": 1,
+                            "id": 2,
+                            "name": "Alpha"
+                        },
+                        {
+                            "version": 1,
+                            "id": 3,
+                            "name": "Beta"
+                        },
+                        {
+                            "version": 1,
+                            "id": 4,
+                            "name": "Gamma"
+                        }
+
+                    ],
+                    "name": "Name of second Group Configuration"
                 }
+
             ]''',
         })
-
         config = self.page.group_configurations()[0]
-
         self.assertIn("Name of the Group Configuration", config.name)
         self.assertEqual(config.id, '0')
-
         config.toggle()
-
         self.assertIn("Description of the group configuration.", config.description)
         self.assertEqual(len(config.groups), 2)
+
+        config = self.page.group_configurations()[1]
+        self.assertIn("Name of second Group Configuration", config.name)
+        self.assertEqual(len(config.groups), 0)  # no groups when the partition is collapsed
+        config.toggle()
+        self.assertEqual(len(config.groups), 3)
+        self.assertEqual("Beta", config.groups[1].name)

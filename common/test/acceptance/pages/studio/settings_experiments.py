@@ -90,6 +90,9 @@ class GroupConfiguration(object):
         css = '.group'
         return [Group(group) for group in self.find_css(css)]
 
+    def __repr__(self):
+        return "<%s:%s>" % (self.__class__.__name__, self.name)
+
 
 class Group(object):
     """
@@ -121,3 +124,6 @@ class Group(object):
         """
         css = '.group-percent'
         return self.find_css(css)[0].text
+
+    def __repr__(self):
+        return "<%s:%s>" % (self.__class__.__name__, self.name)
