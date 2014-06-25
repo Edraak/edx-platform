@@ -8,10 +8,10 @@
 %>
 
 <%block name="title">${_("Group Configurations")}</%block>
-<%block name="bodyclass">is-signedin course group-configurations</%block>
+<%block name="bodyclass">is-signedin course view-group-configurations</%block>
 
 <%block name="header_extras">
-% for template_name in ["show-group-configuration", "no-group-configurations", "basic-modal", "modal-button"]:
+% for template_name in ["group-configuration-details", "no-group-configurations", "basic-modal", "modal-button"]:
   <script type="text/template" id="${template_name}-tpl">
     <%static:include path="js/${template_name}.underscore" />
   </script>
@@ -22,11 +22,9 @@
 <script type="text/javascript">
 window.CMS = window.CMS || {};
 CMS.URL = CMS.URL || {};
-CMS.URL.GROUP_CONFIGURATIONS = "${group_configuration_url}"
-CMS.URL.LMS_BASE = "${settings.LMS_BASE}"
 require(["js/models/section", "js/collections/group_configuration", "js/views/list_group_configurations"],
 function(Section, GroupConfigurationCollection, ListConfigurationsView) {
-  var configurations = new GroupConfigurationCollection(${json.dumps(configurations)}, {parse: true});
+  var configurations = new GroupConfigurationCollection(${json.dumps(configurations)}, { url: "${group_configuration_url}" });
   var expView = new ListConfigurationsView({collection: configurations});
 
   $(function() {

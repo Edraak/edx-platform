@@ -14,10 +14,6 @@ define [
     beforeEach ->
       main()
       @model = new GroupConfiguration()
-      CMS.URL.GROUP_CONFIGURATIONS = "/group-configurations"
-
-    afterEach ->
-      delete CMS.URL.GROUP_CONFIGURATIONS
 
     describe "Basic", ->
       it "should have an empty name by default", ->
@@ -38,10 +34,6 @@ define [
 
       it "should be empty by default", ->
         expect(@model.isEmpty()).toBeTruthy()
-
-      it "should have a URL root", ->
-        urlRoot = _.result(@model, 'urlRoot')
-        expect(urlRoot).toBeTruthy()
 
       it "should be able to reset itself", ->
         @model.set("name", "foobar")
@@ -92,11 +84,9 @@ define [
             "description": "Some description",
             "showGroups": false,
             "groups": [{
-                    "name": "Group 1",
-                    "order": 1
+                    "name": "Group 1"
                 }, {
-                    "name": "Group 2",
-                    "order": 2
+                    "name": "Group 2"
                 }
             ]
         }
@@ -139,19 +129,6 @@ define [
         expect(model.isValid()).toBeTruthy()
 
 
-  describe "GroupConfiguration collection", ->
-    beforeEach ->
-      CMS.URL.GROUP_CONFIGURATIONS = "/group-configurations"
-      @collection = new GroupConfigurationSet()
-
-    afterEach ->
-      delete CMS.URL.GROUP_CONFIGURATIONS
-
-    it "should have a url set", ->
-      url = _.result(@collection, 'url')
-      expect(url).toEqual("/group-configurations")
-
-
   describe "Group model", ->
     beforeEach ->
       @model = new Group()
@@ -159,9 +136,6 @@ define [
     describe "Basic", ->
       it "should have a name by default", ->
         expect(@model.get("name")).toEqual("")
-
-      it "should have an order by default", ->
-        expect(@model.get("order")).toEqual(1)
 
       it "should be empty by default", ->
         expect(@model.isEmpty()).toBeTruthy()
@@ -190,15 +164,3 @@ define [
     it "is not empty if a group is not empty", ->
       @collection.add([{}, {name: "full"}, {}])
       expect(@collection.isEmpty()).toBeFalsy()
-
-    it "should have a nextOrder function", ->
-      expect(@collection.nextOrder()).toEqual(1)
-      @collection.add([{}])
-      expect(@collection.nextOrder()).toEqual(2)
-      @collection.add([{}])
-      expect(@collection.nextOrder()).toEqual(3)
-      # verify that it doesn't just return an incrementing value each time
-      expect(@collection.nextOrder()).toEqual(3)
-      # try going back one
-      @collection.remove(@collection.last())
-      expect(@collection.nextOrder()).toEqual(2)

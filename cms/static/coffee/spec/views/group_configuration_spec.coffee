@@ -29,11 +29,11 @@ define [
       delete window.course
 
     describe "ShowGroupConfiguration", ->
-      tpl = readFixtures('show-group-configuration.underscore')
+      tpl = readFixtures('group-configuration-details.underscore')
 
       beforeEach ->
         setFixtures($("<script>", {
-            id: "show-group-configuration-tpl",
+            id: "group-configuration-details-tpl",
             type: "text/template"}).text(tpl)
         )
         @model = new GroupConfigurationModel({

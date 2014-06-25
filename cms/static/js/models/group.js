@@ -3,8 +3,7 @@ define(['backbone', 'backbone.associations'], function(Backbone) {
     var Group = Backbone.AssociatedModel.extend({
         defaults: function() {
             return {
-                name: '',
-                order: this.collection ? this.collection.nextOrder() : 1
+                name: ''
             };
         },
 

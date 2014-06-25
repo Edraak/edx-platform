@@ -27,33 +27,21 @@ function(Backbone, _, GroupModel, GroupCollection) {
         },
 
         setOriginalAttributes: function() {
-            this._originalAttributes = this.parse(this.toJSON());
+            this._originalAttributes = this.toJSON();
         },
 
         reset: function() {
-            this.set(this._originalAttributes, {parse: true});
+            this.set(this._originalAttributes);
         },
 
         isDirty: function() {
             return !_.isEqual(
-                this._originalAttributes, this.parse(this.toJSON())
+                this._originalAttributes, this.toJSON()
             );
         },
 
         isEmpty: function() {
             return !this.get('name') && this.get('groups').isEmpty();
-        },
-
-        urlRoot: function() { return CMS.URL.GROUP_CONFIGURATIONS; },
-
-        parse: function(response) {
-            var ret = $.extend(true, {}, response);
-
-            _.each(ret.groups, function(group, i) {
-                group.order = group.order || i+1;
-            });
-
-            return ret;
         },
 
         toJSON: function() {
@@ -88,7 +76,7 @@ function(Backbone, _, GroupModel, GroupCollection) {
                         invalidGroups.push(group);
                     }
                 });
-                if(!_.isEmpty(invalidGroups)) {
+                if (!_.isEmpty(invalidGroups)) {
                     return {
                         message: 'All groups must have a name',
                         attributes: {groups: invalidGroups}

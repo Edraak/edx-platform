@@ -11,7 +11,7 @@ function(BaseView, _, gettext) {
 
         initialize: function() {
             this.template = _.template(
-                $('#show-group-configuration-tpl').text()
+                $('#group-configuration-details-tpl').text()
             );
             this.listenTo(this.model, 'change', this.render);
         },

@@ -11,32 +11,32 @@
 
     <ol class="group-configuration-info group-configuration-info-<% if(showGroups){ print('block'); } else { print('inline'); } %>">
       <% if (_.isNumber(id)) { %>
-      <li class="group-configuration-id"
-        ><span class="group-configuration-label">Id: </span
-        ><span class="group-configuration-value"><%= id %></span
-      ></li>
+        <li class="group-configuration-id"
+          ><span class="group-configuration-label">Id: </span
+          ><span class="group-configuration-value"><%= id %></span
+        ></li>
       <% } %>
       <% if (showGroups) { %>
-      <li class="group-configuration-description">
-        <%= description %>
-      </li>
+        <li class="group-configuration-description">
+          <%= description %>
+        </li>
       <% } else { %>
-      <li class="group-configuration-groups-count">
-        <%= groupsCountMessage %>
-      </li>
+        <li class="group-configuration-groups-count">
+          <%= groupsCountMessage %>
+        </li>
       <% } %>
     </ol>
 
     <% if(showGroups) { %>
-    <% allocation = Math.floor(100 / groups.length) %>
-    <ol class="groups">
-      <% groups.each(function(group) { %>
-      <li class="group"
-        ><span class="group-name"><%= group.get('name') %></span
-        ><span class="group-allocation"><%= allocation %>%</span
-      ></li>
-      <% }) %>
-    </ol>
+      <% allocation = Math.floor(100 / groups.length) %>
+      <ol class="groups">
+        <% groups.each(function(group) { %>
+          <li class="group"
+            ><span class="group-name"><%= group.get('name') %></span
+            ><span class="group-allocation"><%= allocation %>%</span
+          ></li>
+        <% }) %>
+      </ol>
     <% } %>
   </div>
 </div>
