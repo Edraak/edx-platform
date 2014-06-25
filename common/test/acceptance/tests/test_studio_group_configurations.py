@@ -8,6 +8,7 @@ from ..pages.studio.auto_auth import AutoAuthPage
 from ..pages.studio.settings_advanced import AdvancedSettingsPage
 from ..pages.studio.settings_group_configurations import GroupConfigurationsPage
 from ..fixtures.course import CourseFixture
+from xmodule.partitions.partitions import Group, UserPartition
 
 from .helpers import UniqueCourseTest
 
@@ -72,44 +73,6 @@ class SettingsMenuTest(UniqueCourseTest):
         self.assertFalse(self.advanced_settings.q(css=link_css).present)
 
 
-class GroupConfigurationsEmptyTest(UniqueCourseTest):
-    """
-    Tests that Group Configurations page works correctly without previously
-    added configurations in Studio
-    """
-
-    def setUp(self):
-        super(GroupConfigurationsEmptyTest, self).setUp()
-
-        course_fix = CourseFixture(**self.course_info)
-        course_fix.add_advanced_settings({
-            u"advanced_modules": ["split_test"],
-        })
-
-        course_fix.install()
-
-        self.page = GroupConfigurationsPage(
-            self.browser,
-            self.course_info['org'],
-            self.course_info['number'],
-            self.course_info['run']
-        )
-
-        self.page.visit()
-
-    def test_is_empty(self):
-        """
-        Ensure that message telling me to create a new group configuration is
-        shown when group configurations were not added.
-        """
-        css = ".wrapper-content .no-group-configurations-content"
-        self.assertTrue(self.page.q(css=css).present)
-        self.assertIn(
-            "You haven't created any group configurations yet.",
-            self.page.q(css=css).text[0]
-        )
-
-
 class GroupConfigurationsTest(UniqueCourseTest):
     """
     Tests that Group Configurations page works correctly with previously
@@ -122,54 +85,20 @@ class GroupConfigurationsTest(UniqueCourseTest):
         course_fix = CourseFixture(**self.course_info)
         course_fix.add_advanced_settings({
             u"advanced_modules": ["split_test"],
-            u"user_partitions": """[
-                {
-                    "description": "Description of the group configuration.",
-                    "version": 1,
-                    "id": 0,
-                    "groups": [
-                        {
-                            "version": 1,
-                            "id": 0,
-                            "name": "Group 1"
-                        },
-                        {
-                            "version": 1,
-                            "id": 1,
-                            "name": "Group 2"
-                        }
-                    ],
-                    "name": "Name of the Group Configuration"
-                },
-                {
-                    "description": "Second group configuration.",
-                    "version": 1,
-                    "id": 1,
-                    "groups": [
-                        {
-                            "version": 1,
-                            "id": 2,
-                            "name": "Alpha"
-                        },
-                        {
-                            "version": 1,
-                            "id": 3,
-                            "name": "Beta"
-                        },
-                        {
-                            "version": 1,
-                            "id": 4,
-                            "name": "Gamma"
-                        }
-
-                    ],
-                    "name": "Name of second Group Configuration"
-                }
-
-            ]""",
         })
 
         course_fix.install()
+        self.course_fix = course_fix
+        self.user = course_fix.user
+
+        self.auth_page = AutoAuthPage(
+            self.browser,
+            staff=False,
+            username=course_fix.user.get('username'),
+            email=course_fix.user.get('email'),
+            password=course_fix.user.get('password')
+        )
+        self.auth_page.visit()
 
         self.page = GroupConfigurationsPage(
             self.browser,
@@ -178,13 +107,34 @@ class GroupConfigurationsTest(UniqueCourseTest):
             self.course_info['run']
         )
 
+    def test_is_empty(self):
+        """
+        Ensure that message telling me to create a new group configuration is
+        shown when group configurations were not added.
+        """
         self.page.visit()
+        css = ".wrapper-content .no-group-configurations-content"
+        self.assertTrue(self.page.q(css=css).present)
+        self.assertIn(
+            "You haven't created any group configurations yet.",
+            self.page.q(css=css).text[0]
+        )
 
     def test_configuration_exist(self):
         """
         Ensure that the group configuration is rendered correctly in
         expanded/collapsed mode.
         """
+        self.course_fix.add_advanced_settings({
+            u"user_partitions": [
+                UserPartition(0, 'Name of the Group Configuration', 'Description of the group configuration.', [Group("0", 'Group 0'), Group("1", 'Group 1')]).to_json(),
+                UserPartition(1, 'Name of second Group Configuration', 'Second group configuration.', [Group("0", 'Alpha'), Group("1", 'Beta'), Group("2", 'Gamma')]).to_json()
+            ],
+        })
+        self.course_fix._add_advanced_settings()
+
+        self.page.visit()
+
         config = self.page.group_configurations()[0]
         self.assertIn("Name of the Group Configuration", config.name)
         self.assertEqual(config.id, '0')

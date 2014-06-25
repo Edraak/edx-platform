@@ -3,14 +3,13 @@ Course Advanced Settings page
 """
 
 from .course_page import CoursePage
-from ...mixins.codemirror import CodeMirrorMixin
-from ...mixins.studio_notifications import StudioNotificationsMixin
+from .utils import press_the_notification_button, type_in_codemirror, get_codemirror_value
 
 
 KEY_CSS = '.key input.policy-key'
 
 
-class AdvancedSettingsPage(CoursePage, CodeMirrorMixin, StudioNotificationsMixin):
+class AdvancedSettingsPage(CoursePage):
     """
     Course Advanced Settings page.
     """
@@ -30,16 +29,16 @@ class AdvancedSettingsPage(CoursePage, CodeMirrorMixin, StudioNotificationsMixin
         return -1
 
     def save(self):
-        self.press_the_notification_button("Save")
+        press_the_notification_button(self, "Save")
 
     def cancel(self):
-        self.press_the_notification_button("Cancel")
+        press_the_notification_button(self, "Cancel")
 
     def set(self, key, new_value):
         index = self._get_index_of(key)
-        self.type_in_codemirror(index, new_value)
+        type_in_codemirror(self, index, new_value)
         self.save()
 
     def get(self, key):
         index = self._get_index_of(key)
-        return self.get_codemirror_value(index)
+        return get_codemirror_value(self, index)

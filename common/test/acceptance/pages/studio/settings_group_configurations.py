@@ -13,14 +13,14 @@ class GroupConfigurationsPage(CoursePage):
     url_path = "group_configurations"
 
     def is_browser_on_page(self):
-        return self.q(css='body.group-configurations').present
+        return self.q(css='body.view-group-configurations').present
 
     def group_configurations(self):
         """
         Returns list of the group configurations for the course.
         """
         css = '.wrap-group-configuration'
-        parent = self.q(css='body.group-configurations')[0]
+        parent = self.q(css='body.view-group-configurations')[0]
         return [GroupConfiguration(parent, index) for index in xrange(len(self.q(css=css)))]
 
 
