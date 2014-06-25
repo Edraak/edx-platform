@@ -161,17 +161,19 @@ class VideoStudentViewHandlers(object):
 
             data = Transcript.asset(self.location, transcript_name, lang).data
             filename = u'{}.{}'.format(transcript_name, transcript_format)
-            content = Transcript.convert(data, 'sjson', transcript_format)
+            transcript = Transcript('sjson')
         else:
             data = Transcript.asset(self.location, None, None, self.transcripts[lang]).data
             filename = u'{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
-            content = Transcript.convert(data, 'srt', transcript_format)
+            transcript = Transcript('srt')
+
+        content = transcript.set_content(data).convert_to(transcript_format)
 
         if not content:
             log.debug('no subtitles produced in get_transcript')
             raise ValueError
 
-        return content, filename, Transcript.mime_types[transcript_format]
+        return content, filename, transcript.mime_type
 
     def get_static_transcript(self, request):
         """

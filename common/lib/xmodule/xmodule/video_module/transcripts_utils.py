@@ -214,35 +214,6 @@ def generate_subs_from_source(speed_subs, subs_type, subs_filedata, item, langua
 
     return subs
 
-
-def generate_srt_from_sjson(sjson_subs, speed):
-    """Generate transcripts with speed = 1.0 from sjson to SubRip (*.srt).
-
-    :param sjson_subs: "sjson" subs.
-    :param speed: speed of `sjson_subs`.
-    :returns: "srt" subs.
-    """
-
-    output = ''
-
-    equal_len = len(sjson_subs['start']) == len(sjson_subs['end']) == len(sjson_subs['text'])
-    if not equal_len:
-        return output
-
-    sjson_speed_1 = generate_subs(speed, 1, sjson_subs)
-
-    for i in range(len(sjson_speed_1['start'])):
-        item = SubRipItem(
-            index=i,
-            start=SubRipTime(milliseconds=sjson_speed_1['start'][i]),
-            end=SubRipTime(milliseconds=sjson_speed_1['end'][i]),
-            text=sjson_speed_1['text'][i]
-        )
-        output += (unicode(item))
-        output += '\n'
-    return output
-
-
 def copy_or_rename_transcript(new_name, old_name, item, delete_old=False, user=None):
     """
     Renames `old_name` transcript file in storage to `new_name`.
@@ -404,7 +375,6 @@ def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
         lang
     )
 
-
 def get_or_create_sjson(item):
     """
     Get sjson if already exists, otherwise generate it.
@@ -427,83 +397,3 @@ def get_or_create_sjson(item):
         generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, item.transcript_language)
     sjson_transcript = Transcript.asset(item.location, source_subs_id, item.transcript_language).data
     return sjson_transcript
-
-class Transcript(object):
-    """
-    Container for transcript methods.
-    """
-    mime_types = {
-        'srt': 'application/x-subrip; charset=utf-8',
-        'txt': 'text/plain; charset=utf-8',
-        'sjson': 'application/json',
-    }
-
-    @staticmethod
-    def convert(content, input_format, output_format):
-        """
-        Convert transcript `content` from `input_format` to `output_format`.
-
-        Accepted input formats: sjson, srt.
-        Accepted output format: srt, txt.
-        """
-        assert input_format in ('srt', 'sjson')
-        assert output_format in ('txt', 'srt', 'sjson')
-
-        if input_format == output_format:
-            return content
-
-        if input_format == 'srt':
-
-            if output_format == 'txt':
-                text = SubRipFile.from_string(content.decode('utf8')).text
-                return HTMLParser().unescape(text)
-
-            elif output_format == 'sjson':
-                raise NotImplementedError
-
-        if input_format == 'sjson':
-
-            if output_format == 'txt':
-                text = json.loads(content)['text']
-                return HTMLParser().unescape("\n".join(text))
-
-            elif output_format == 'srt':
-                return generate_srt_from_sjson(json.loads(content), speed=1.0)
-
-    @staticmethod
-    def asset(location, subs_id, lang='en', filename=None):
-        """
-        Get asset from contentstore, asset location is built from subs_id and lang.
-
-        `location` is module location.
-        """
-        asset_filename = subs_filename(subs_id, lang) if not filename else filename
-        return Transcript.get_asset(location, asset_filename)
-
-    @staticmethod
-    def get_asset(location, filename):
-        """
-        Return asset by location and filename.
-        """
-        return contentstore().find(Transcript.asset_location(location, filename))
-
-    @staticmethod
-    def asset_location(location, filename):
-        """
-        Return asset location. `location` is module location.
-        """
-        return StaticContent.compute_location(location.course_key, filename)
-
-    @staticmethod
-    def delete_asset(location, filename):
-        """
-        Delete asset by location and filename.
-        """
-        try:
-            content = Transcript.get_asset(location, filename)
-            contentstore().delete(content.get_id())
-            log.info("Transcript asset %s was removed from store.", filename)
-        except NotFoundError:
-            pass
-        return StaticContent.compute_location(location.course_key, filename)
-

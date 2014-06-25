@@ -16,6 +16,13 @@ class Sjson(TranscriptFormat):
     def mime_type():
         return Sjson.MIME_TYPE
 
+    def set_content(content):
+        """
+        Add content for future work
+        """
+        self._content = content
+        return self
+
     def _prepare_content(content):
         return json.loads(content)
 
@@ -36,7 +43,7 @@ class Sjson(TranscriptFormat):
 
         equal_len = len(content['start']) == len(content['end']) == len(content['text'])
         if not equal_len:
-            raise TranscriptConvertEx(self._("Sjson transcript format are empty or incorrectly formed."))
+            raise TranscriptConvertEx(self._("Sjson transcript format is empty or incorrectly formed."))
 
         for i in range(len(content['start'])):
             item = SubRipItem(

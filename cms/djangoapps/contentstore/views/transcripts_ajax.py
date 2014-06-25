@@ -30,13 +30,15 @@ from util.json_request import JsonResponse
 
 from xmodule.video_module.transcripts_utils import (
     generate_subs_from_source,
-    generate_srt_from_sjson, remove_subs_from_store,
-    download_youtube_subs, get_transcripts_from_youtube,
+    remove_subs_from_store,
+    download_youtube_subs,
+    get_transcripts_from_youtube,
     copy_or_rename_transcript,
     manage_video_subtitles_save,
     GetTranscriptsFromYouTubeException,
     TranscriptsRequestValidationException
 )
+from xmodule.video_module.transcript import Transcript
 
 from .access import has_course_access
 
@@ -168,11 +170,12 @@ def download_transcripts(request):
     try:
         sjson_transcripts = contentstore().find(content_location)
         log.debug("Downloading subs for %s id", subs_id)
-        str_subs = generate_srt_from_sjson(json.loads(sjson_transcripts.data), speed=1.0)
+        transcript = Transcript('sjson')
+        str_subs = transcript.set_content(sjson_transcripts.data).convert_to('srt')
         if not str_subs:
-            log.debug('generate_srt_from_sjson produces no subtitles')
+            log.debug('Converstion from SJSON to SRT produces no subtitles')
             raise Http404
-        response = HttpResponse(str_subs, content_type='application/x-subrip')
+        response = HttpResponse(str_subs, content_type=transcript.mime_type)
         response['Content-Disposition'] = 'attachment; filename="{0}.srt"'.format(subs_id)
         return response
     except NotFoundError:

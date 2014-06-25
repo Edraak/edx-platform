@@ -8,20 +8,30 @@ from HTMLParser import HTMLParser
 from .transcript import TranscriptFormat, TranscriptConvertEx
 
 
-class Srt(TranscriptFormat):
+class Srt(object):
+    """
+    Container 'srt' methods.
+    """
 
-    MIME_TYPE = 'application/x-subrip'
+    MIME_TYPE =     'application/x-subrip'
 
     @property
     def mime_type():
         return Srt.MIME_TYPE
 
-    def _prepare_content(self, content):
+    def set_content(content):
+        """
+        Add content for future work
+        """
+        self._content = content
+        return self
+
+    def _prepare_content(self):
         """
         Convert content to PySrt object.
         """
         try:
-            pysrt_obj = SubRipFile.from_string(content.decode('utf8'))
+            pysrt_obj = SubRipFile.from_string(self._content.decode('utf8'))
         except Exception as ex:
             msg = self._("SubRip transcripts file parsing error. Inner message is {error_message}").format(
                 error_message=ex.message
