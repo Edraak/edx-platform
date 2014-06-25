@@ -12,7 +12,7 @@
     <ol class="group-configuration-info group-configuration-info-<% if(showGroups){ print('block'); } else { print('inline'); } %>">
       <% if (_.isNumber(id)) { %>
         <li class="group-configuration-id"
-          ><span class="group-configuration-label">Id: </span
+          ><span class="group-configuration-label"><%= gettext('Id') %>: </span
           ><span class="group-configuration-value"><%= id %></span
         ></li>
       <% } %>
