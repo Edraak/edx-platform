@@ -81,23 +81,11 @@ class GroupConfigurationsTest(UniqueCourseTest):
         super(GroupConfigurationsTest, self).setUp()
 
         course_fix = CourseFixture(**self.course_info)
+        course_fix.add_advanced_settings({
+            u"advanced_modules": ["split_test"],
+        })
+
         course_fix.install()
-
-        self.auth_page = AutoAuthPage(
-            self.browser,
-            staff=False,
-            username=course_fix.user.get('username'),
-            email=course_fix.user.get('email'),
-            password=course_fix.user.get('password')
-        )
-        self.auth_page.visit()
-
-        self.advanced_settings = AdvancedSettingsPage(
-            self.browser,
-            self.course_info['org'],
-            self.course_info['number'],
-            self.course_info['run']
-        )
 
         self.page = GroupConfigurationsPage(
             self.browser,
@@ -106,15 +94,7 @@ class GroupConfigurationsTest(UniqueCourseTest):
             self.course_info['run']
         )
 
-        self.advanced_settings.visit()
-        self._enable_split_test()
         self.page.visit()
-
-    def _enable_split_test(self):
-        """
-        Enables "split_test" module in advanced settings.
-        """
-        self.advanced_settings.set('advanced_modules', '["split_test"]')
 
     def _set_advanced_settings(self, values):
         """
