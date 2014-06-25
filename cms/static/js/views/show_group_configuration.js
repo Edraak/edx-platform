@@ -1,4 +1,6 @@
-define(['js/views/baseview', 'underscore', 'gettext'],
+define([
+    'js/views/baseview', 'underscore', 'gettext'
+],
 function(BaseView, _, gettext) {
     'use strict';
     var ShowGroupConfiguration = BaseView.extend({

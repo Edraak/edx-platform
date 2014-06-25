@@ -15,5 +15,6 @@ function (Backbone, GroupModel) {
             });
         }
     });
+
     return GroupCollection;
 });

@@ -1,7 +1,8 @@
 define([
-    'backbone', 'underscore', 'js/models/group', 'js/collections/group',
-    'backbone.associations', 'coffee/src/main'],
-function(Backbone, _, GroupModel, GroupCollection) {
+    'backbone', 'underscore', 'gettext', 'js/models/group',
+    'js/collections/group', 'backbone.associations', 'coffee/src/main'
+],
+function(Backbone, _, gettext, GroupModel, GroupCollection) {
     'use strict';
     var GroupConfiguration = Backbone.AssociatedModel.extend({
         defaults: function() {
@@ -53,19 +54,16 @@ function(Backbone, _, GroupModel, GroupCollection) {
             };
         },
 
-        // NOTE: validation functions should return non-internationalized error
-        // messages. The messages will be passed through gettext in the
-        // template.
         validate: function(attrs) {
             if (!attrs.name) {
                 return {
-                    message: 'Group Configuration name is required',
+                    message: gettext('Group Configuration name is required'),
                     attributes: {name: true}
                 };
             }
             if (attrs.groups.length === 0) {
                 return {
-                    message: 'Please add at least one group',
+                    message: gettext('Please add at least one group'),
                     attributes: {groups: true}
                 };
             } else {
@@ -78,7 +76,7 @@ function(Backbone, _, GroupModel, GroupCollection) {
                 });
                 if (!_.isEmpty(invalidGroups)) {
                     return {
-                        message: 'All groups must have a name',
+                        message: gettext('All groups must have a name'),
                         attributes: {groups: invalidGroups}
                     };
                 }

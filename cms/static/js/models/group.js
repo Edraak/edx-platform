@@ -1,10 +1,10 @@
-define(['backbone', 'backbone.associations'], function(Backbone) {
+define([
+    'backbone', 'gettext', 'backbone.associations'
+], function(Backbone, gettext) {
     'use strict';
     var Group = Backbone.AssociatedModel.extend({
         defaults: function() {
-            return {
-                name: ''
-            };
+            return { name: '' };
         },
 
         isEmpty: function() {
@@ -12,22 +12,18 @@ define(['backbone', 'backbone.associations'], function(Backbone) {
         },
 
         toJSON: function() {
-            return {
-                name: this.get('name')
-            };
+            return { name: this.get('name') };
         },
 
-        // NOTE: validation functions should return non-internationalized error
-        // messages. The messages will be passed through gettext in the
-        // template.
         validate: function(attrs) {
             if (!attrs.name) {
                 return {
-                    message: 'Group name is required',
-                    attributes: {name: true}
+                    message: gettext('Group name is required'),
+                    attributes: { name: true }
                 };
             }
         }
     });
+
     return Group;
 });

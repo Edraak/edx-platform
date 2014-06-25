@@ -36,5 +36,6 @@ function(BaseView, $, ShowGroupConfigurationView) {
             collection.remove(model);
         }
     });
+
     return ListGroupConfigurations;
 });
