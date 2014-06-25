@@ -1,10 +1,10 @@
 define([
   'js/models/group_configuration', 'js/models/course',
-  'js/collections/group_configuration', 'js/views/show_group_configuration',
-  'js/views/list_group_configurations', 'jasmine-stealth'
+  'js/collections/group_configuration', 'js/views/group_configuration_details',
+  'js/views/group_configurations_list', 'jasmine-stealth'
 ], function(
   GroupConfigurationModel, Course, GroupConfigurationSet,
-  ShowGroupConfiguration, ListGroupConfigurations
+  GroupConfigurationDetails, GroupConfigurationsList
 ) {
   'use strict';
   beforeEach(function() {
@@ -34,7 +34,7 @@ define([
     delete window.course;
   });
 
-  describe('ShowGroupConfiguration', function() {
+  describe('GroupConfigurationDetails', function() {
     var tpl = readFixtures('group-configuration-details.underscore');
 
     beforeEach(function() {
@@ -51,7 +51,7 @@ define([
 
       spyOn(this.model, 'destroy').andCallThrough();
       this.collection = new GroupConfigurationSet([ this.model ]);
-      this.view = new ShowGroupConfiguration({
+      this.view = new GroupConfigurationDetails({
         model: this.model
       });
     });
@@ -92,7 +92,7 @@ define([
     });
   });
 
-  describe('ListGroupConfigurations', function() {
+  describe('GroupConfigurationsList', function() {
     var noGroupConfigurationsTpl = readFixtures(
       'no-group-configurations.underscore'
     );
@@ -106,13 +106,13 @@ define([
       }).text(noGroupConfigurationsTpl));
 
       this.showSpies = spyOnConstructor(
-        window, 'ShowGroupConfiguration', [ 'render' ]
+        window, 'GroupConfigurationDetails', [ 'render' ]
       );
       this.showSpies.render.andReturn(this.showSpies);
       this.showSpies.$el = showEl;
       this.showSpies.el = showEl.get(0);
       this.collection = new GroupConfigurationSet();
-      this.view = new ListGroupConfigurations({
+      this.view = new GroupConfigurationsList({
         collection: this.collection
       });
       this.view.render();
@@ -128,7 +128,7 @@ define([
       expect(this.showSpies.constructor).not.toHaveBeenCalled();
     });
 
-    it('should render ShowGroupConfiguration views by default', function() {
+    it('should render GroupConfigurationDetails views by default', function() {
       this.collection.add([{}, {}, {}]);
       this.view.render();
 

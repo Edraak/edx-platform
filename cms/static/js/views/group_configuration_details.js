@@ -3,7 +3,7 @@ define([
 ],
 function(BaseView, _, gettext) {
     'use strict';
-    var ShowGroupConfiguration = BaseView.extend({
+    var GroupConfigurationDetails = BaseView.extend({
         tagName: 'section',
         className: 'group-configuration',
         events: {
@@ -48,5 +48,5 @@ function(BaseView, _, gettext) {
         }
     });
 
-    return ShowGroupConfiguration;
+    return GroupConfigurationDetails;
 });

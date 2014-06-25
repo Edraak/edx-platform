@@ -1,7 +1,7 @@
-define(['js/views/baseview', 'jquery', 'js/views/show_group_configuration'],
-function(BaseView, $, ShowGroupConfigurationView) {
+define(['js/views/baseview', 'jquery', 'js/views/group_configuration_details'],
+function(BaseView, $, GroupConfigurationDetailsView) {
     'use strict';
-    var ListGroupConfigurations = BaseView.extend({
+    var GroupConfigurationsList = BaseView.extend({
         tagName: 'div',
         className: 'group-configurations-list',
         events: { },
@@ -20,7 +20,7 @@ function(BaseView, $, ShowGroupConfigurationView) {
                 var frag = document.createDocumentFragment();
 
                 configurations.each(function(configuration) {
-                    var view = new ShowGroupConfigurationView({
+                    var view = new GroupConfigurationDetailsView({
                         model: configuration
                     });
 
@@ -37,5 +37,5 @@ function(BaseView, $, ShowGroupConfigurationView) {
         }
     });
 
-    return ListGroupConfigurations;
+    return GroupConfigurationsList;
 });

@@ -20,22 +20,15 @@
 
 <%block name="jsextra">
 <script type="text/javascript">
-window.CMS = window.CMS || {};
-CMS.URL = CMS.URL || {};
-require(["js/models/section", "js/collections/group_configuration", "js/views/list_group_configurations"],
-function(Section, GroupConfigurationCollection, ListConfigurationsView) {
-  var configurations = new GroupConfigurationCollection(${json.dumps(configurations)}, { url: "${group_configuration_url}" });
-  var expView = new ListConfigurationsView({collection: configurations});
-
-  $(function() {
-      $(".content-primary").append(expView.render().el);
-      $(window).on("beforeunload", function() {
-          var dirty = configurations.find(function(configuration) { return configuration.isDirty(); });
-          if(dirty) {
-              return "${_('You have unsaved changes. Do you really want to leave this page?')}";
-          }
-      })
-  })
+require(["js/collections/group_configuration", "js/views/pages/group_configurations", "xmodule"],
+function(GroupConfigurationCollection, GroupConfigurationsPage, xmoduleLoader) {
+  xmoduleLoader.done(function () {
+    var view = new GroupConfigurationsPage({
+        el: $('.content-primary'),
+        collection: new GroupConfigurationCollection(${json.dumps(configurations)}, { url: "${group_configuration_url}" })
+    });
+    view.render();
+  });
 });
 </script>
 </%block>
@@ -53,7 +46,9 @@ function(Section, GroupConfigurationCollection, ListConfigurationsView) {
   <div class="wrapper-content wrapper">
     <section class="content">
       <article class="content-primary" role="main">
-
+        <div class="ui-loading">
+            <p><span class="spin"><i class="icon-refresh"></i></span> <span class="copy">${_("Loading...")}</span></p>
+        </div>
       </article>
       <aside class="content-supplementary" role="complimentary">
         <div class="bit">

@@ -230,6 +230,7 @@ define([
     "js/spec/views/xblock_editor_spec",
 
     "js/spec/views/pages/container_spec",
+    "js/spec/views/pages/group_configurations_spec",
 
     "js/spec/views/modals/base_modal_spec",
     "js/spec/views/modals/edit_xblock_spec",
