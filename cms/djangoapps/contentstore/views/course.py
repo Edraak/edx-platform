@@ -868,16 +868,17 @@ def group_configurations_list_handler(request, course_key_string):
     """
     course_key = CourseKey.from_string(course_key_string)
     course = _get_course_module(course_key, request.user)
-    if SPLIT_TEST_COMPONENT_TYPE not in course.advanced_modules:
-        raise Http404
     group_configuration_url = reverse_course_url('group_configurations_list_handler', course_key)
-    user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
-
-    return render_to_response('group_configurations.html', {
+    res = {
         'context_course': course,
-        'configurations': user_partitions,
         'group_configuration_url': group_configuration_url,
-    })
+    }
+    if SPLIT_TEST_COMPONENT_TYPE not in course.advanced_modules:
+       res['configurations'] = None
+    else:
+        user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
+        res['configurations'] = user_partitions
+    return render_to_response('group_configurations.html', res)
 
 
 def _get_course_creator_status(user):
