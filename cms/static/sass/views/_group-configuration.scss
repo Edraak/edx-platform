@@ -1,6 +1,6 @@
-// studio - views - group-experiments
+// studio - views - group-configurations
 // ====================
-.group-experiments {
+.group-configurations {
 
   .content-primary, .content-supplementary {
     @include box-sizing(border-box);
@@ -11,7 +11,7 @@
     width: flex-grid(9, 12);
     margin-right: flex-gutter();
 
-    .no-group-experiments-content {
+    .no-group-configurations-content {
       @extend %ui-well;
       padding: ($baseline*2);
       background-color: $gray-l4;
@@ -19,11 +19,11 @@
       color: $gray;
     }
 
-    .group-experiment {
+    .group-configuration {
       @extend %ui-window;
       position: relative;
 
-      .view-group-experiment {
+      .view-group-configuration {
         padding: $baseline ($baseline*1.5);
 
         header {
@@ -31,7 +31,7 @@
           border-bottom: 0;
         }
 
-        .group-experiment-title {
+        .group-configuration-title {
           @extend %t-title4;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -44,11 +44,11 @@
           }
         }
 
-        .group-experiment-info {
+        .group-configuration-info {
           color: $gray-l1;
           margin-left: $baseline;
 
-          &.group-experiment-info-inline {
+          &.group-configuration-info-inline {
             display: table;
             width: 70%;
             margin: ($baseline/4) 0 ($baseline/2) $baseline;
@@ -60,17 +60,17 @@
             }
           }
 
-          &.group-experiment-info-block {
+          &.group-configuration-info-block {
             li {
               padding: ($baseline/4) 0;
             }
           }
 
-          .group-experiment-label {
+          .group-configuration-label {
             text-transform: uppercase;
           }
 
-          .group-experiment-description {
+          .group-configuration-description {
             overflow: hidden;
             text-overflow: ellipsis;
           }
@@ -122,7 +122,7 @@
               margin-right: 5%;
             }
 
-            .group-percent {
+            .group-allocation {
               display: inline-block;
               vertical-align: middle;
               width: 20%;

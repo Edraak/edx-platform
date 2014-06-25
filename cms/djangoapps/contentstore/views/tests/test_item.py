@@ -822,7 +822,7 @@ class TestEditSplitModule(ItemTest):
 
     def test_create_groups(self):
         """
-        Test that verticals are created for the experiment groups when
+        Test that verticals are created for the configuration groups when
         a spit test module is edited.
         """
         split_test = self.get_item_from_modulestore(self.split_test_usage_key, True)
@@ -849,15 +849,16 @@ class TestEditSplitModule(ItemTest):
 
     def test_change_user_partition_id(self):
         """
-        Test what happens when the user_partition_id is changed to a different experiment.
+        Test what happens when the user_partition_id is changed to a different groups
+        group configuration.
         """
-        # Set to first experiment.
+        # Set to first group configuration.
         split_test = self._update_partition_id(0)
         self.assertEqual(2, len(split_test.children))
         initial_vertical_0_location = split_test.children[0]
         initial_vertical_1_location = split_test.children[1]
 
-        # Set to second experiment
+        # Set to second group configuration
         split_test = self._update_partition_id(1)
         # We don't remove existing children.
         self.assertEqual(5, len(split_test.children))
@@ -879,12 +880,12 @@ class TestEditSplitModule(ItemTest):
         """
         Test that nothing happens when the user_partition_id is set to the same value twice.
         """
-        # Set to first experiment.
+        # Set to first group configuration.
         split_test = self._update_partition_id(0)
         self.assertEqual(2, len(split_test.children))
         initial_group_id_to_child = split_test.group_id_to_child
 
-        # Set again to first experiment.
+        # Set again to first group configuration.
         split_test = self._update_partition_id(0)
         self.assertEqual(2, len(split_test.children))
         self.assertEqual(initial_group_id_to_child, split_test.group_id_to_child)
@@ -895,12 +896,12 @@ class TestEditSplitModule(ItemTest):
 
         The user_partition_id will be updated, but children and group_id_to_child map will not change.
         """
-        # Set to first experiment.
+        # Set to first group configuration.
         split_test = self._update_partition_id(0)
         self.assertEqual(2, len(split_test.children))
         initial_group_id_to_child = split_test.group_id_to_child
 
-        # Set to an experiment that doesn't exist.
+        # Set to an group configuration that doesn't exist.
         split_test = self._update_partition_id(-50)
         self.assertEqual(2, len(split_test.children))
         self.assertEqual(initial_group_id_to_child, split_test.group_id_to_child)
@@ -911,7 +912,7 @@ class TestEditSplitModule(ItemTest):
 
         Also test that deleting a child not in the group_id_to_child_map behaves properly.
         """
-        # Set to first experiment.
+        # Set to first group configuration.
         self._update_partition_id(0)
         split_test = self._assert_children(2)
         vertical_1_usage_key = split_test.children[1]
@@ -987,7 +988,7 @@ class TestEditSplitModule(ItemTest):
             self.course.advanced_modules.append("split_test")
             self.store.update_item(self.course, self.user.id)
 
-        url = reverse_course_url('group_experiments_list_handler', self.course.id)
+        url = reverse_course_url('group_configurations_list_handler', self.course.id)
         resp = self.client.get(url)
         self.assertContains(resp, self.course.display_name)
         self.assertContains(resp, 'First Partition')
@@ -1003,7 +1004,7 @@ class TestEditSplitModule(ItemTest):
             self.course.advanced_modules.remove("split_test")
             self.store.update_item(self.course, self.user.id)
 
-        url = reverse_course_url('group_experiments_list_handler', self.course.id)
+        url = reverse_course_url('group_configurations_list_handler', self.course.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 

@@ -5,22 +5,22 @@ Course Group Configurations page.
 from .course_page import CoursePage
 
 
-class ExperimentsPage(CoursePage):
+class GroupConfigurationsPage(CoursePage):
     """
     Course Group Configurations page.
     """
 
-    url_path = "group_experiments"
+    url_path = "group_configurations"
 
     def is_browser_on_page(self):
-        return self.q(css='body.group-experiments').present
+        return self.q(css='body.group-configurations').present
 
     def group_configurations(self):
         """
         Returns list of the group configurations for the course.
         """
-        css = '.wrap-group-experiment'
-        parent = self.q(css='body.group-experiments')[0]
+        css = '.wrap-group-configuration'
+        parent = self.q(css='body.group-configurations')[0]
         return [GroupConfiguration(parent, index) for index in xrange(len(self.q(css=css)))]
 
 
@@ -28,7 +28,7 @@ class GroupConfiguration(object):
     """
     Group Configuration wrapper.
     """
-    SELECTOR = '.wrap-group-experiment'
+    SELECTOR = '.wrap-group-configuration'
 
     def __init__(self, parent, index):
         self.index = index
@@ -63,7 +63,7 @@ class GroupConfiguration(object):
         """
         Returns group configuration id.
         """
-        css = '.group-experiment-id .group-experiment-value'
+        css = '.group-configuration-id .group-configuration-value'
         return self.find_css(css)[0].text
 
     @property
@@ -71,7 +71,7 @@ class GroupConfiguration(object):
         """
         Returns group configuration name.
         """
-        css = '.group-experiment-title'
+        css = '.group-configuration-title'
         return self.find_css(css)[0].text
 
     @property
@@ -79,7 +79,7 @@ class GroupConfiguration(object):
         """
         Returns group configuration description.
         """
-        css = '.group-experiment-description'
+        css = '.group-configuration-description'
         return self.find_css(css)[0].text
 
     @property
@@ -118,11 +118,11 @@ class Group(object):
         return self.find_css(css)[0].text
 
     @property
-    def percent(self):
+    def allocation(self):
         """
-        Returns percent for the group.
+        Returns allocation for the group.
         """
-        css = '.group-percent'
+        css = '.group-allocation'
         return self.find_css(css)[0].text
 
     def __repr__(self):

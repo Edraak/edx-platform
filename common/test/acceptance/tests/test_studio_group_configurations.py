@@ -6,7 +6,7 @@ import json
 
 from ..pages.studio.auto_auth import AutoAuthPage
 from ..pages.studio.settings_advanced import AdvancedSettingsPage
-from ..pages.studio.settings_experiments import ExperimentsPage
+from ..pages.studio.settings_group_configurations import GroupConfigurationsPage
 from ..fixtures.course import CourseFixture
 
 from .helpers import UniqueCourseTest
@@ -45,7 +45,7 @@ class SettingsMenuTest(UniqueCourseTest):
         Ensure that the link to the "Group Configurations" page is shown in the
         Settings menu.
         """
-        link_css = 'li.nav-course-settings-experiments a'
+        link_css = 'li.nav-course-settings-group-configurations a'
         self.assertFalse(self.advanced_settings.q(css=link_css).present)
 
         self.advanced_settings.set('advanced_modules', '["split_test"]')
@@ -65,20 +65,20 @@ class SettingsMenuTest(UniqueCourseTest):
         Ensure that the link to the "Group Configurations" page does not exist
         in the Settings menu.
         """
-        link_css = 'li.nav-course-settings-experiments a'
+        link_css = 'li.nav-course-settings-group-configurations a'
         self.advanced_settings.set('advanced_modules', '[]')
         self.browser.refresh()
         self.advanced_settings.wait_for_page()
         self.assertFalse(self.advanced_settings.q(css=link_css).present)
 
 
-class GroupExperimentsTest(UniqueCourseTest):
+class GroupConfigurationsTest(UniqueCourseTest):
     """
     Tests that Group Configurations page works correctly in Studio
     """
 
     def setUp(self):
-        super(GroupExperimentsTest, self).setUp()
+        super(GroupConfigurationsTest, self).setUp()
 
         course_fix = CourseFixture(**self.course_info)
         course_fix.install()
@@ -99,7 +99,7 @@ class GroupExperimentsTest(UniqueCourseTest):
             self.course_info['run']
         )
 
-        self.page = ExperimentsPage(
+        self.page = GroupConfigurationsPage(
             self.browser,
             self.course_info['org'],
             self.course_info['number'],
@@ -134,7 +134,7 @@ class GroupExperimentsTest(UniqueCourseTest):
         Ensure that message telling me to create a new group configuration is
         shown when group configurations were not added.
         """
-        css = ".wrapper-content .no-group-experiments-content"
+        css = ".wrapper-content .no-group-configurations-content"
         self.assertTrue(self.page.q(css=css).present)
         self.assertIn(
             "You haven't created any group configurations yet.",

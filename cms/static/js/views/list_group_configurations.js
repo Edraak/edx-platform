@@ -1,27 +1,27 @@
-define(['js/views/baseview', 'jquery', 'js/views/show_group_experiment'],
-function(BaseView, $, ShowGroupExperimentView) {
+define(['js/views/baseview', 'jquery', 'js/views/show_group_configuration'],
+function(BaseView, $, ShowGroupConfigurationView) {
     'use strict';
-    var ListGroupExperiments = BaseView.extend({
+    var ListGroupConfigurations = BaseView.extend({
         tagName: 'div',
-        className: 'group-experiments-list',
+        className: 'group-configurations-list',
         events: { },
 
         initialize: function() {
-            this.emptyTemplate = this.loadTemplate('no-group-experiments');
+            this.emptyTemplate = this.loadTemplate('no-group-configurations');
             this.listenTo(this.collection, 'all', this.render);
             this.listenTo(this.collection, 'destroy', this.handleDestroy);
         },
 
         render: function() {
-            var experiments = this.collection;
-            if(experiments.length === 0) {
+            var configurations = this.collection;
+            if(configurations.length === 0) {
                 this.$el.html(this.emptyTemplate());
             } else {
                 var frag = document.createDocumentFragment();
 
-                experiments.each(function(experiment) {
-                    var view = new ShowGroupExperimentView({
-                        model: experiment
+                configurations.each(function(configuration) {
+                    var view = new ShowGroupConfigurationView({
+                        model: configuration
                     });
 
                     frag.appendChild(view.render().el);
@@ -36,5 +36,5 @@ function(BaseView, $, ShowGroupExperimentView) {
             collection.remove(model);
         }
     });
-    return ListGroupExperiments;
+    return ListGroupConfigurations;
 });

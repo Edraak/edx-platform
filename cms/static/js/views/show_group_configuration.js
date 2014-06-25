@@ -1,9 +1,9 @@
 define(['js/views/baseview', 'underscore', 'gettext'],
 function(BaseView, _, gettext) {
     'use strict';
-    var ShowGroupExperiment = BaseView.extend({
+    var ShowGroupConfiguration = BaseView.extend({
         tagName: 'section',
-        className: 'group-experiment',
+        className: 'group-configuration',
         events: {
             'click .show-groups': 'showGroups',
             'click .hide-groups': 'hideGroups'
@@ -11,7 +11,7 @@ function(BaseView, _, gettext) {
 
         initialize: function() {
             this.template = _.template(
-                $('#show-group-experiment-tpl').text()
+                $('#show-group-configuration-tpl').text()
             );
             this.listenTo(this.model, 'change', this.render);
         },
@@ -46,5 +46,5 @@ function(BaseView, _, gettext) {
         }
     });
 
-    return ShowGroupExperiment;
+    return ShowGroupConfiguration;
 });
