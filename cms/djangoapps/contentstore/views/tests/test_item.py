@@ -14,7 +14,10 @@ from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
 from contentstore.utils import reverse_usage_url, reverse_course_url
 
-from contentstore.views.component import component_handler, get_component_templates
+from contentstore.views.component import (
+    component_handler, get_component_templates,
+    SPLIT_TEST_COMPONENT_TYPE
+    )
 
 from contentstore.tests.utils import CourseTestCase
 from contentstore.utils import compute_publish_state, PublishState
@@ -982,10 +985,10 @@ class TestEditSplitModule(ItemTest):
 
     def test_view_index_ok(self):
         """
-        Basic check that the groups index page responds correctly.
+        Basic check that the groups configuration page responds correctly.
         """
-        if "split_test" not in self.course.advanced_modules:
-            self.course.advanced_modules.append("split_test")
+        if SPLIT_TEST_COMPONENT_TYPE not in self.course.advanced_modules:
+            self.course.advanced_modules.append(SPLIT_TEST_COMPONENT_TYPE)
             self.store.update_item(self.course, self.user.id)
 
         url = reverse_course_url('group_configurations_list_handler', self.course.id)
@@ -998,10 +1001,10 @@ class TestEditSplitModule(ItemTest):
 
     def test_view_index_disabled(self):
         """
-        Check that group manipulation page is not displayed when preffed off.
+        Check that group configuration page is not displayed when turned off.
         """
-        if "split_test" in self.course.advanced_modules:
-            self.course.advanced_modules.remove("split_test")
+        if SPLIT_TEST_COMPONENT_TYPE in self.course.advanced_modules:
+            self.course.advanced_modules.remove(SPLIT_TEST_COMPONENT_TYPE)
             self.store.update_item(self.course, self.user.id)
 
         url = reverse_course_url('group_configurations_list_handler', self.course.id)
