@@ -72,13 +72,14 @@ class SettingsMenuTest(UniqueCourseTest):
         self.assertFalse(self.advanced_settings.q(css=link_css).present)
 
 
-class GroupConfigurationsTest(UniqueCourseTest):
+class GroupConfigurationsEmptyTest(UniqueCourseTest):
     """
-    Tests that Group Configurations page works correctly in Studio
+    Tests that Group Configurations page works correctly without previously
+    added configurations in Studio
     """
 
     def setUp(self):
-        super(GroupConfigurationsTest, self).setUp()
+        super(GroupConfigurationsEmptyTest, self).setUp()
 
         course_fix = CourseFixture(**self.course_info)
         course_fix.add_advanced_settings({
@@ -96,19 +97,6 @@ class GroupConfigurationsTest(UniqueCourseTest):
 
         self.page.visit()
 
-    def _set_advanced_settings(self, values):
-        """
-        Sets advanced settings to the course.
-
-        Arguments:
-            values (dict): dictionary where key is setting name and value is value
-            that needs to be set.
-        """
-        self.advanced_settings.visit()
-        for key, value in values.items():
-            self.advanced_settings.set(key, value)
-        self.page.visit()
-
     def test_is_empty(self):
         """
         Ensure that message telling me to create a new group configuration is
@@ -121,13 +109,20 @@ class GroupConfigurationsTest(UniqueCourseTest):
             self.page.q(css=css).text[0]
         )
 
-    def test_configuration_exist(self):
-        """
-        Ensure that the group configuration is rendered correctly in
-        expanded/collapsed mode.
-        """
-        self._set_advanced_settings({
-            'user_partitions': '''[
+
+class GroupConfigurationsTest(UniqueCourseTest):
+    """
+    Tests that Group Configurations page works correctly with previously
+    added configurations in Studio
+    """
+
+    def setUp(self):
+        super(GroupConfigurationsTest, self).setUp()
+
+        course_fix = CourseFixture(**self.course_info)
+        course_fix.add_advanced_settings({
+            u"advanced_modules": ["split_test"],
+            u"user_partitions": """[
                 {
                     "description": "Description of the group configuration.",
                     "version": 1,
@@ -171,8 +166,25 @@ class GroupConfigurationsTest(UniqueCourseTest):
                     "name": "Name of second Group Configuration"
                 }
 
-            ]''',
+            ]""",
         })
+
+        course_fix.install()
+
+        self.page = GroupConfigurationsPage(
+            self.browser,
+            self.course_info['org'],
+            self.course_info['number'],
+            self.course_info['run']
+        )
+
+        self.page.visit()
+
+    def test_configuration_exist(self):
+        """
+        Ensure that the group configuration is rendered correctly in
+        expanded/collapsed mode.
+        """
         config = self.page.group_configurations()[0]
         self.assertIn("Name of the Group Configuration", config.name)
         self.assertEqual(config.id, '0')
