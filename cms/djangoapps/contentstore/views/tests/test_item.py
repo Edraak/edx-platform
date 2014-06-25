@@ -996,7 +996,7 @@ class TestEditSplitModule(ItemTest):
         self.assertContains(resp, 'Second Partition')
         self.assertContains(resp, 'Group 1')
 
-    def test_view_index_404(self):
+    def test_view_index_disabled(self):
         """
         Check that group manipulation page is not displayed when preffed off.
         """
@@ -1005,8 +1005,8 @@ class TestEditSplitModule(ItemTest):
             self.store.update_item(self.course, self.user.id)
 
         url = reverse_course_url('group_configurations_list_handler', self.course.id)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        resp = self.client.get(url)
+        self.assertContains(resp, "module is disabled")
 
 
 @ddt.ddt
