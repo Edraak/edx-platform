@@ -47,15 +47,20 @@ class Command(BaseCommand):
                     default='',
                     dest='user_id',
                     help='user_id'),
+        make_option('--accumulate',
+                    action='store',
+                    default='false',
+                    dest='accumulate',
+                    help='accumulate')
     )
 
 
     def handle(self, *args, **options):
-        self.simulate_query_iterator(options['course'], options['user_id'])
+        self.simulate_query_iterator(options['course'], options['user_id'], options['accumulate'])
 
 
     @profile
-    def simulate_query_iterator(self, course_id, user_id):
+    def simulate_query_iterator(self, course_id, user_id, accumulate):
         to_option = 'all'
         course_id = self.course_key_from_arg(course_id)
         user_id = user_id
@@ -63,11 +68,18 @@ class Command(BaseCommand):
         item_generator = recipient_generator(user_id, to_option, course_id, recipient_fields)
         total_num_items = _get_num_items_for_to_option(to_option, course_id, user_id)
         total_num_subtasks = _get_num_subtasks_for_to_option(to_option, course_id, user_id)
+        if accumulate == 'false':
+            accumulate = False
+        else:
+            accumulate = True
 
         item_list = []
 
         for items in _generate_items_for_subtask(item_generator, recipient_fields, total_num_items, total_num_subtasks, settings.BULK_EMAIL_EMAILS_PER_QUERY, settings.BULK_EMAIL_EMAILS_PER_TASK,):
             for item in items:
-                item_list.append(item)  # accumulate these items to get memory profile to report on size of accumulated list
+                if accumulate:
+                    item_list.append(item)  # accumulate these items to get memory profile to report on size of accumulated list
+                else:
+                    item
 
         print(len(item_list))
