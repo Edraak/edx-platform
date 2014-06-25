@@ -22,13 +22,15 @@
 <script type="text/javascript">
 require(["js/collections/group_configuration", "js/views/pages/group_configurations", "xmodule"],
 function(GroupConfigurationCollection, GroupConfigurationsPage, xmoduleLoader) {
-  xmoduleLoader.done(function () {
-    var view = new GroupConfigurationsPage({
-        el: $('.content-primary'),
-        collection: new GroupConfigurationCollection(${json.dumps(configurations)}, { url: "${group_configuration_url}" })
+  % if configurations is not None:
+    xmoduleLoader.done(function () {
+      var view = new GroupConfigurationsPage({
+          el: $('.content-primary'),
+          collection: new GroupConfigurationCollection(${json.dumps(configurations)}, { url: "${group_configuration_url}" })
+      });
+      view.render();
     });
-    view.render();
-  });
+  % endif
 });
 </script>
 </%block>
@@ -47,7 +49,7 @@ function(GroupConfigurationCollection, GroupConfigurationsPage, xmoduleLoader) {
     <section class="content">
       <article class="content-primary" role="main">
       % if configurations is None:
-        <div class="notice-incontext">
+        <div class="notice notice-incontext">
             <p class="copy">
                 ${_("This module is disabled at the moment.")}
             </p>
