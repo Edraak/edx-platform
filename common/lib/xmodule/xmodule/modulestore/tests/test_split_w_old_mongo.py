@@ -9,6 +9,7 @@ from opaque_keys.edx.locator import CourseLocator, BlockUsageLocator
 from xmodule.modulestore.split_mongo.split import SplitMongoModuleStore
 from xmodule.modulestore.mongo import MongoModuleStore, DraftMongoModuleStore
 from xmodule.modulestore.mongo.draft import DIRECT_ONLY_CATEGORIES
+from mock import Mock
 
 
 class SplitWMongoCourseBoostrapper(unittest.TestCase):
@@ -57,6 +58,12 @@ class SplitWMongoCourseBoostrapper(unittest.TestCase):
         self.addCleanup(self.tear_down_mongo)
         self.old_course_key = None
         self.runtime = None
+        # setup mocks for counting accesses
+        # can't use @patch.object b/c can't access self in annotation
+        # send_msg is called for insert, update, and remove
+        self.send_msg_wrap = Mock(wraps=self.draft_mongo.database.connection._send_message)
+        # find is called for reading (incl for find_one)
+        self.find_wrap = Mock(wraps=self.draft_mongo.collection.find)
         self._create_course()
 
     def tear_down_split(self):

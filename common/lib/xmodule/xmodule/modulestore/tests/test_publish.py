@@ -3,6 +3,7 @@ Test the publish code (mostly testing that publishing doesn't result in orphans)
 """
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from xmodule.modulestore.tests.test_split_w_old_mongo import SplitWMongoCourseBoostrapper
+from mock import patch
 
 
 class TestPublish(SplitWMongoCourseBoostrapper):
@@ -14,41 +15,55 @@ class TestPublish(SplitWMongoCourseBoostrapper):
         Create the course, publish all verticals
         * some detached items
         """
-        super(TestPublish, self)._create_course(split=False)
+        with patch.object(self.draft_mongo.database.connection, '_send_message', self.send_msg_wrap):
+            with patch.object(self.draft_mongo.collection, 'find', self.find_wrap):
+                # TODO uses_mixed_modulestore can delete the next 2 lines as old_mongo == draft_mongo in that
+                with patch.object(self.old_mongo.database.connection, '_send_message', self.send_msg_wrap):
+                    with patch.object(self.old_mongo.collection, 'find', self.find_wrap):
+                        super(TestPublish, self)._create_course(split=False)
 
-        self._create_item('chapter', 'Chapter1', {}, {'display_name': 'Chapter 1'}, 'course', 'runid', split=False)
-        self._create_item('chapter', 'Chapter2', {}, {'display_name': 'Chapter 2'}, 'course', 'runid', split=False)
-        self._create_item('vertical', 'Vert1', {}, {'display_name': 'Vertical 1'}, 'chapter', 'Chapter1', split=False)
-        self._create_item('vertical', 'Vert2', {}, {'display_name': 'Vertical 2'}, 'chapter', 'Chapter1', split=False)
-        self._create_item('html', 'Html1', "<p>Goodbye</p>", {'display_name': 'Parented Html'}, 'vertical', 'Vert1', split=False)
-        self._create_item(
-            'discussion', 'Discussion1',
-            "discussion discussion_category=\"Lecture 1\" discussion_id=\"a08bfd89b2aa40fa81f2c650a9332846\" discussion_target=\"Lecture 1\"/>\n",
-            {
-                "discussion_category": "Lecture 1",
-                "discussion_target": "Lecture 1",
-                "display_name": "Lecture 1 Discussion",
-                "discussion_id": "a08bfd89b2aa40fa81f2c650a9332846"
-            },
-            'vertical', 'Vert1',
-            split=False
-        )
-        self._create_item('html', 'Html2', "<p>Hellow</p>", {'display_name': 'Hollow Html'}, 'vertical', 'Vert1', split=False)
-        self._create_item(
-            'discussion', 'Discussion2',
-            "discussion discussion_category=\"Lecture 2\" discussion_id=\"b08bfd89b2aa40fa81f2c650a9332846\" discussion_target=\"Lecture 2\"/>\n",
-            {
-                "discussion_category": "Lecture 2",
-                "discussion_target": "Lecture 2",
-                "display_name": "Lecture 2 Discussion",
-                "discussion_id": "b08bfd89b2aa40fa81f2c650a9332846"
-            },
-            'vertical', 'Vert2',
-            split=False
-        )
-        self._create_item('static_tab', 'staticuno', "<p>tab</p>", {'display_name': 'Tab uno'}, None, None, split=False)
-        self._create_item('about', 'overview', "<p>overview</p>", {}, None, None, split=False)
-        self._create_item('course_info', 'updates', "<ol><li><h2>Sep 22</h2><p>test</p></li></ol>", {}, None, None, split=False)
+                        self._create_item('chapter', 'Chapter1', {}, {'display_name': 'Chapter 1'}, 'course', 'runid', split=False)
+                        self._create_item('chapter', 'Chapter2', {}, {'display_name': 'Chapter 2'}, 'course', 'runid', split=False)
+                        self._create_item('vertical', 'Vert1', {}, {'display_name': 'Vertical 1'}, 'chapter', 'Chapter1', split=False)
+                        self._create_item('vertical', 'Vert2', {}, {'display_name': 'Vertical 2'}, 'chapter', 'Chapter1', split=False)
+                        self._create_item('html', 'Html1', "<p>Goodbye</p>", {'display_name': 'Parented Html'}, 'vertical', 'Vert1', split=False)
+                        self._create_item(
+                            'discussion', 'Discussion1',
+                            "discussion discussion_category=\"Lecture 1\" discussion_id=\"a08bfd89b2aa40fa81f2c650a9332846\" discussion_target=\"Lecture 1\"/>\n",
+                            {
+                                "discussion_category": "Lecture 1",
+                                "discussion_target": "Lecture 1",
+                                "display_name": "Lecture 1 Discussion",
+                                "discussion_id": "a08bfd89b2aa40fa81f2c650a9332846"
+                            },
+                            'vertical', 'Vert1',
+                            split=False
+                        )
+                        self._create_item('html', 'Html2', "<p>Hellow</p>", {'display_name': 'Hollow Html'}, 'vertical', 'Vert1', split=False)
+                        self._create_item(
+                            'discussion', 'Discussion2',
+                            "discussion discussion_category=\"Lecture 2\" discussion_id=\"b08bfd89b2aa40fa81f2c650a9332846\" discussion_target=\"Lecture 2\"/>\n",
+                            {
+                                "discussion_category": "Lecture 2",
+                                "discussion_target": "Lecture 2",
+                                "display_name": "Lecture 2 Discussion",
+                                "discussion_id": "b08bfd89b2aa40fa81f2c650a9332846"
+                            },
+                            'vertical', 'Vert2',
+                            split=False
+                        )
+                        self._create_item('static_tab', 'staticuno', "<p>tab</p>", {'display_name': 'Tab uno'}, None, None, split=False)
+                        self._create_item('about', 'overview', "<p>overview</p>", {}, None, None, split=False)
+                        self._create_item('course_info', 'updates', "<ol><li><h2>Sep 22</h2><p>test</p></li></ol>", {}, None, None, split=False)
+
+                        # There should be 12 inserts and 11 updates
+                        self.assertLessEqual(self.send_msg_wrap.call_count, 23)
+                        # Should be 1 to verify course unique, 11 parent fetches,
+                        # and n per _create_item where n is the size of the course tree non-leaf nodes
+                        # for inheritance computation (which is 7*4 + sum(1..4) = 38)
+                        self.assertLessEqual(self.find_wrap.call_count, 55)
+        self.send_msg_wrap.reset_mock()
+        self.find_wrap.reset_mock()
 
     def _xmodule_recurse(self, item, action):
         """
@@ -69,10 +84,19 @@ class TestPublish(SplitWMongoCourseBoostrapper):
         """
         location = self.old_course_key.make_usage_key('vertical', name='Vert1')
         item = self.draft_mongo.get_item(location, 2)
-        self._xmodule_recurse(
-            item,
-            lambda i: self.draft_mongo.publish(i.location, self.userid)
-        )
+        with patch.object(self.draft_mongo.database.connection, '_send_message', self.send_msg_wrap):
+            with patch.object(self.draft_mongo.collection, 'find', self.find_wrap):
+                self._xmodule_recurse(
+                    item,
+                    lambda i: self.draft_mongo.publish(i.location, self.userid)
+                )
+                # Vert1 has 3 children; so, publishes 4 nodes which may mean 4 inserts & removes?
+                self.assertLessEqual(self.send_msg_wrap.call_count, 8)
+                # 25-June-2014 find calls are 26. Probably due to inheritance recomputation?
+                self.assertLessEqual(self.find_wrap.call_count, 26)
+        self.send_msg_wrap.reset_mock()
+        self.find_wrap.reset_mock()
+
         # verify status
         item = self.draft_mongo.get_item(location, 0)
         self.assertFalse(getattr(item, 'is_draft', False), "Item was published. Draft should not exist")

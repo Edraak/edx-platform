@@ -15,7 +15,6 @@ from xmodule.modulestore.tests.test_location_mapper import LocMapperSetupSansDja
 # before importing the module
 from django.conf import settings
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
-import bson.son
 if not settings.configured:
     settings.configure()
 from xmodule.modulestore.mixed import MixedModuleStore

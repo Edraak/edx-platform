@@ -23,7 +23,6 @@ from opaque_keys.edx.locations import Location
 from xmodule.modulestore import MONGO_MODULESTORE_TYPE
 from xmodule.modulestore.mongo import MongoModuleStore, MongoKeyValueStore
 from xmodule.modulestore.draft import DraftModuleStore
-from xmodule.modulestore.mongo.draft import as_draft
 from opaque_keys.edx.locations import SlashSeparatedCourseKey, AssetLocation
 from xmodule.modulestore.xml_exporter import export_to_xml
 from xmodule.modulestore.xml_importer import import_from_xml, perform_xlint
@@ -34,6 +33,8 @@ from nose.tools import assert_in
 from xmodule.exceptions import NotFoundError
 from git.test.lib.asserts import assert_not_none
 from xmodule.x_module import XModuleMixin
+from mock import Mock, patch
+from xmodule.modulestore.mongo.draft import as_draft
 
 
 log = logging.getLogger(__name__)
@@ -234,7 +235,12 @@ class TestMongoModuleStore(unittest.TestCase):
 
     def test_path_to_location(self):
         '''Make sure that path_to_location works'''
-        check_path_to_location(self.store)
+        # setup mocks for counting accesses
+        # find is called for reading (incl for find_one)
+        find_wrap = Mock(wraps=self.draft_store.collection.find)
+        with patch.object(self.draft_store.collection, 'find', find_wrap):
+            check_path_to_location(self.draft_store)
+            self.assertLessEqual(find_wrap.call_count, 9)
 
     def test_xlinter(self):
         '''
