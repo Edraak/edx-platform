@@ -44,7 +44,8 @@ from .access import has_course_access
 from .component import (
     OPEN_ENDED_COMPONENT_TYPES,
     NOTE_COMPONENT_TYPES,
-    ADVANCED_COMPONENT_POLICY_KEY
+    ADVANCED_COMPONENT_POLICY_KEY,
+    SPLIT_TEST_COMPONENT_TYPE
 )
 
 from django_comment_common.models import assign_default_role
@@ -867,7 +868,7 @@ def group_configurations_list_handler(request, course_key_string):
     """
     course_key = CourseKey.from_string(course_key_string)
     course = _get_course_module(course_key, request.user)
-    if "split_test" not in course.advanced_modules:
+    if SPLIT_TEST_COMPONENT_TYPE not in course.advanced_modules:
         raise Http404
     group_configuration_url = reverse_course_url('group_configurations_list_handler', course_key)
     user_partitions = [user_partition.to_json() for user_partition in course.user_partitions]
