@@ -3,6 +3,8 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
 
         urlRoot: ModuleUtils.urlRoot,
 
+        // NOTE: 'publish' is not an attribute on XBlockInfo, but it is used to signal the publish
+        // and discard changes actions. Therefore 'publish' cannot be introduced as an attribute.
         defaults: {
             "id": null,
             "display_name": null,
@@ -49,10 +51,24 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
              * this will either be the parent subsection or the grandparent section.
              */
             "release_date_from":null
-        }
-        // NOTE: 'publish' is not an attribute on XBlockInfo, but it used to signal the publish
-        // and discard changes actions. Therefore 'publish' cannot be introduced as an attribute.
+        },
 
+        parse: function(response) {
+            var i, rawChildren, children;
+            rawChildren = response.children;
+            children = [];
+            if (rawChildren) {
+                for (i=0; i < rawChildren.length; i++) {
+                    children.push(this.createChild(rawChildren[i]));
+                }
+            }
+            response.children = children;
+            return response;
+        },
+
+        createChild: function(response) {
+            return new XBlockInfo(response, { parse: true });
+        }
     });
     return XBlockInfo;
 });

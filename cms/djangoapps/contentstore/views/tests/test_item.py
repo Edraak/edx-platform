@@ -22,6 +22,7 @@ from xmodule.capa_module import CapaDescriptor
 from xmodule.modulestore import PublishState
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.x_module import STUDIO_VIEW, STUDENT_VIEW
 from xblock.exceptions import NoSuchHandlerError
 from opaque_keys.edx.keys import UsageKey
@@ -980,3 +981,56 @@ class TestComponentTemplates(CourseTestCase):
         self.assertIsNotNone(ora_template)
         self.assertEqual(ora_template.get('category'), 'openassessment')
         self.assertIsNone(ora_template.get('boilerplate_name', None))
+
+
+class TestXBlockOutline(ItemTest):
+    """
+    Unit tests for XBlock's outline handling.
+    """
+    def test_json_responses(self):
+        chapter = ItemFactory.create(parent_location=self.course.location, category='chapter', display_name="Week 1")
+        lesson = ItemFactory.create(parent_location=chapter.location, category='sequential', display_name="Lesson 1")
+        subsection = ItemFactory.create(parent_location=lesson.location, category='vertical', display_name='Subsection 1')
+        ItemFactory.create(parent_location=subsection.location, category="video", display_name="My Video")
+
+        outline_url = reverse_usage_url('xblock_outline_handler', self.usage_key)
+        resp = self.client.get(outline_url, HTTP_ACCEPT='application/json')
+        json_response = json.loads(resp.content)
+
+        # First spot check some values in the root response
+        self.assertEqual(json_response['category'], 'course')
+        self.assertEqual(json_response['id'], 'location:MITx+999+Robot_Super_Course+course+Robot_Super_Course')
+        self.assertEqual(json_response['display_name'], 'Robot Super Course')
+        self.assertTrue(json_response['is_container'])
+        self.assertFalse(json_response['is_draft'])
+
+        # Now verify the first child
+        children = json_response['children']
+        self.assertTrue(len(children) > 0)
+        first_child_response = children[0]
+        self.assertEqual(first_child_response['category'], 'chapter')
+        self.assertEqual(first_child_response['id'], 'location:MITx+999+Robot_Super_Course+chapter+Week_1')
+        self.assertEqual(first_child_response['display_name'], 'Week 1')
+        self.assertTrue(first_child_response['is_container'])
+        self.assertFalse(first_child_response['is_draft'])
+        self.assertTrue(len(first_child_response['children']) > 0)
+
+        # Finally, validate the entire response for consistency
+        self.assert_correct_json_response(json_response)
+
+    def assert_correct_json_response(self, json_response):
+        """
+        Asserts that the JSON response is syntactically consistent
+        """
+        self.assertIsNotNone(json_response['display_name'])
+        self.assertIsNotNone(json_response['id'])
+        self.assertIsNotNone(json_response['category'])
+        self.assertIsNotNone(json_response['is_draft'])
+        self.assertIsNotNone(json_response['is_container'])
+        if json_response['is_container']:
+            for child_response in json_response['children']:
+                self.assert_correct_json_response(child_response)
+        else:
+            self.assertFalse('children' in json_response)
+
+

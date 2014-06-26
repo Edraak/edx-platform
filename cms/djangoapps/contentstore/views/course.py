@@ -46,6 +46,7 @@ from .component import (
     NOTE_COMPONENT_TYPES,
     ADVANCED_COMPONENT_POLICY_KEY
 )
+from .item import xblock_outline_json
 
 from django_comment_common.models import assign_default_role
 from django_comment_common.utils import seed_permissions_roles
@@ -114,7 +115,7 @@ def course_handler(request, course_key_string=None):
     response_format = request.REQUEST.get('format', 'html')
     if response_format == 'json' or 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json'):
         if request.method == 'GET':
-            return JsonResponse(_course_json(request, CourseKey.from_string(course_key_string)))
+            return JsonResponse(course_outline_json(request, CourseKey.from_string(course_key_string)))
         elif request.method == 'POST':  # not sure if this is only post. If one will have ids, it goes after access
             return create_new_course(request)
         elif not has_course_access(request.user, CourseKey.from_string(course_key_string)):
@@ -135,29 +136,12 @@ def course_handler(request, course_key_string=None):
 
 
 @login_required
-def _course_json(request, course_key):
+def course_outline_json(request, course_key):
     """
-    Returns a JSON overview of a course
+    Returns a JSON representation of the course module and recursively all of its children.
     """
     course_module = _get_course_module(course_key, request.user, depth=None)
-    return _xmodule_json(course_module, course_module.id)
-
-
-def _xmodule_json(xmodule, course_id):
-    """
-    Returns a JSON overview of an XModule
-    """
-    is_container = xmodule.has_children
-    result = {
-        'display_name': xmodule.display_name,
-        'id': unicode(xmodule.location),
-        'category': xmodule.category,
-        'is_draft': getattr(xmodule, 'is_draft', False),
-        'is_container': is_container,
-    }
-    if is_container:
-        result['children'] = [_xmodule_json(child, course_id) for child in xmodule.get_children()]
-    return result
+    return xblock_outline_json(course_module)
 
 
 def _accessible_courses_list(request):
@@ -266,12 +250,13 @@ def course_index(request, course_key):
     course_module = _get_course_module(course_key, request.user, depth=3)
     lms_link = get_lms_link_for_item(course_module.location)
     sections = course_module.get_children()
+    course_structure = course_outline_json(request, course_key)
 
-
-    return render_to_response('overview.html', {
+    return render_to_response('course_outline.html', {
         'context_course': course_module,
         'lms_link': lms_link,
         'sections': sections,
+        'course_structure': course_structure,
         'course_graders': json.dumps(
             CourseGradingModel.fetch(course_key).graders
         ),

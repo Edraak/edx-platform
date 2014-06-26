@@ -229,6 +229,7 @@ define([
 
     "js/spec/views/pages/container_spec",
     "js/spec/views/pages/container_subviews_spec",
+    "js/spec/views/pages/course_outline_spec",
 
     "js/spec/views/modals/base_modal_spec",
     "js/spec/views/modals/edit_xblock_spec",

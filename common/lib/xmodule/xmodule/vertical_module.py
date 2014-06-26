@@ -1,3 +1,4 @@
+from xblock.fields import Scope, String
 from xblock.fragment import Fragment
 from xmodule.x_module import XModule, STUDENT_VIEW
 from xmodule.seq_module import SequenceDescriptor
@@ -10,9 +11,19 @@ from copy import copy
 # OBSOLETE: This obsoletes 'type'
 class_priority = ['video', 'problem']
 
+# Make '_' a no-op so we can scrape strings
+_ = lambda text: text
+
 
 class VerticalFields(object):
     has_children = True
+
+    display_name = String(
+        display_name=_("Display Name"),
+        help=_("This name is used for organizing your course content, but is not shown to students."),
+        scope=Scope.settings,
+        default=_("Unit")
+    )
 
 
 class VerticalModule(VerticalFields, XModule, StudioEditableModule):

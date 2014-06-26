@@ -34,14 +34,15 @@ from util.date_utils import get_default_time_display
 from util.json_request import expect_json, JsonResponse
 
 from .access import has_course_access
-from contentstore.views.helpers import is_unit
+from contentstore.views.helpers import is_unit, xblock_studio_url, xblock_primary_child_category, \
+    xblock_type_display_name
 from contentstore.views.preview import get_preview_fragment
 from edxmako.shortcuts import render_to_string
 from models.settings.course_grading import CourseGradingModel
 from cms.lib.xblock.runtime import handler_url, local_resource_url
 from opaque_keys.edx.keys import UsageKey, CourseKey
 
-__all__ = ['orphan_handler', 'xblock_handler', 'xblock_view_handler']
+__all__ = ['orphan_handler', 'xblock_handler', 'xblock_view_handler', 'xblock_outline_handler']
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ def hash_resource(resource):
 
 
 # pylint: disable=unused-argument
-@require_http_methods(("DELETE", "GET", "PUT", "POST"))
+@require_http_methods(("DELETE", "GET", "PUT", "POST", "PATCH"))
 @login_required
 @expect_json
 def xblock_handler(request, usage_key_string):
@@ -78,7 +79,7 @@ def xblock_handler(request, usage_key_string):
         json: returns representation of the xblock (locator id, data, and metadata).
               if ?fields=graderType, it returns the graderType for the unit instead of the above.
         html: returns HTML for rendering the xblock (which includes both the "preview" view and the "editor" view)
-    PUT or POST
+    PUT or POST or PATCH
         json: if xblock locator is specified, update the xblock instance. The json payload can contain
               these fields, all optional:
                 :data: the new value for the data.
@@ -134,7 +135,7 @@ def xblock_handler(request, usage_key_string):
                 grader_type=request.json.get('graderType'),
                 publish=request.json.get('publish'),
             )
-    elif request.method in ('PUT', 'POST'):
+    elif request.method in ('PUT', 'POST', 'PATCH'):
         if 'duplicate_source_locator' in request.json:
             parent_usage_key = UsageKey.from_string(request.json['parent_locator'])
             duplicate_source_usage_key = UsageKey.from_string(request.json['duplicate_source_locator'])
@@ -238,6 +239,32 @@ def xblock_view_handler(request, usage_key_string, view_name):
             'resources': hashed_resources.items()
         })
 
+    else:
+        return HttpResponse(status=406)
+
+
+# pylint: disable=unused-argument
+@require_http_methods(("GET"))
+@login_required
+@expect_json
+def xblock_outline_handler(request, usage_key_string):
+    """
+    The restful handler for requests for rendered xblock views.
+
+    Returns a json object containing two keys:
+        html: The rendered html of the view
+        resources: A list of tuples where the first element is the resource hash, and
+            the second is the resource description
+    """
+    usage_key = UsageKey.from_string(usage_key_string)
+    if not has_course_access(request.user, usage_key.course_key):
+        raise PermissionDenied()
+
+    response_format = request.REQUEST.get('format', 'html')
+    if response_format == 'json' or 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json'):
+        store = modulestore()
+        xblock = store.get_item(usage_key)
+        return JsonResponse(xblock_outline_json(xblock))
     else:
         return HttpResponse(status=406)
 
@@ -552,3 +579,29 @@ def create_xblock_info(usage_key, xblock, data=None, metadata=None):
         xblock_info["metadata"] = metadata
 
     return xblock_info
+
+
+# TODO: merge with create_xblock_info
+def xblock_outline_json(xblock):
+    """
+    Returns a JSON representation of an xblock and recursively all of its children.
+    """
+    is_container = xblock.has_children
+    child_category = xblock_primary_child_category(xblock)
+    result = {
+        'display_name': xblock.display_name,
+        'id': unicode(xblock.location),
+        'category': xblock.category,
+        'is_draft': getattr(xblock, 'is_draft', False),
+        'is_container': is_container,
+        'studio_url': xblock_studio_url(xblock),
+        'release_date': u'Jan 01, 2030 at 00:00 UTC' if xblock.category == 'chapter' else None,
+    }
+    if child_category:
+        result['child_info'] = {
+            'category': child_category,
+            'display_name': xblock_type_display_name(child_category, default_display_name=child_category),
+        }
+    if is_container:
+        result['children'] = [xblock_outline_json(child) for child in xblock.get_children()]
+    return result

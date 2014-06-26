@@ -3,7 +3,7 @@ import logging
 
 from lxml import etree
 
-from xblock.fields import Integer, Scope
+from xblock.fields import Integer, Scope, String
 from xblock.fragment import Fragment
 from pkg_resources import resource_string
 
@@ -43,6 +43,15 @@ class SequenceFields(object):
         default=None,
         scope=Scope.user_state,
     )
+
+    display_name = String(
+        display_name=_("Display Name"),
+        help=_("This name is used for organizing your course content, but is not shown to students."),
+        scope=Scope.settings,
+        default=_("Sequence")
+    )
+
+
 
 
 class SequenceModule(SequenceFields, XModule):

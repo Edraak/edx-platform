@@ -2,23 +2,27 @@
  * XBlockContainerPage is used to display Studio's container page for an xblock which has children.
  * This page allows the user to understand and manipulate the xblock and its children.
  */
-define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/container",
-        "js/views/xblock", "js/views/components/add_xblock", "js/views/modals/edit_xblock", "js/models/xblock_info",
-        "js/views/xblock_string_field_editor", "js/views/pages/container_subviews"],
-    function ($, _, gettext, BaseView, ContainerView, XBlockView, AddXBlockComponent, EditXBlockModal, XBlockInfo,
-                XBlockStringFieldEditor, ContainerSubviews) {
-        var XBlockContainerPage = BaseView.extend({
+define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views/utils/view_utils",
+        "js/views/container", "js/views/xblock", "js/views/components/add_xblock", "js/views/modals/edit_xblock",
+        "js/models/xblock_info", "js/views/xblock_string_field_editor", "js/views/pages/container_subviews"],
+    function ($, _, gettext, BasePage, ViewUtils, ContainerView, XBlockView, AddXBlockComponent,
+              EditXBlockModal, XBlockInfo, XBlockStringFieldEditor, ContainerSubviews) {
+        var XBlockContainerPage = BasePage.extend({
             // takes XBlockInfo as a model
 
             view: 'container_preview',
 
             initialize: function(options) {
-                BaseView.prototype.initialize.call(this);
+                BasePage.prototype.initialize.call(this, options);
                 this.nameEditor = new XBlockStringFieldEditor({
                     el: this.$('.wrapper-xblock-field'),
                     model: this.model
                 });
                 this.nameEditor.render();
+                if (this.shouldEditName()) {
+                    this.nameEditor.$('.xblock-field-value').click();
+                }
+                this.model.on('sync', this.onSync, this);
                 this.xblockView = new ContainerView({
                     el: this.$('.wrapper-xblock'),
                     model: this.model,
@@ -46,6 +50,17 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/contai
                     });
                     this.previewActions.render();
                 }
+            },
+
+            onSync: function(event) {
+                if (_.indexOf(event.changedAttributes(), 'display_name') >= 0) {
+                    this.render();
+                }
+            },
+
+            shouldEditName: function() {
+                // TODO: is there a better way to determine that the name needs changing?
+                return this.model.get('display_name') === 'New Unit';
             },
 
             render: function(options) {
@@ -147,7 +162,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/contai
                     parentLocator = parentElement.data('locator'),
                     buttonPanel = target.closest('.add-xblock-component'),
                     listPanel = buttonPanel.prev(),
-                    scrollOffset = this.getScrollOffset(buttonPanel),
+                    scrollOffset = ViewUtils.getScrollOffset(buttonPanel),
                     placeholderElement = $('<div class="studio-xblock-wrapper"></div>').appendTo(listPanel),
                     requestData = _.extend(template, {
                         parent_locator: parentLocator
@@ -166,9 +181,9 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/contai
                 // for xblocks that can't be replaced inline, the entire parent will be refreshed.
                 var self = this,
                     parent = xblockElement.parent();
-                this.runOperationShowingMessage(gettext('Duplicating&hellip;'),
+                ViewUtils.runOperationShowingMessage(gettext('Duplicating&hellip;'),
                     function() {
-                        var scrollOffset = self.getScrollOffset(xblockElement),
+                        var scrollOffset = ViewUtils.getScrollOffset(xblockElement),
                             placeholderElement = $('<div class="studio-xblock-wrapper"></div>').insertAfter(xblockElement),
                             parentElement = self.findXBlockElement(parent),
                             requestData = {
@@ -186,11 +201,11 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/contai
 
             deleteComponent: function(xblockElement) {
                 var self = this;
-                this.confirmThenRunOperation(gettext('Delete this component?'),
+                ViewUtils.confirmThenRunOperation(gettext('Delete this component?'),
                     gettext('Deleting this component is permanent and cannot be undone.'),
                     gettext('Yes, delete this component'),
                     function() {
-                        self.runOperationShowingMessage(gettext('Deleting&hellip;'),
+                        ViewUtils.runOperationShowingMessage(gettext('Deleting&hellip;'),
                             function() {
                                 return $.ajax({
                                     type: 'DELETE',
@@ -214,7 +229,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/contai
             },
 
             onNewXBlock: function(xblockElement, scrollOffset, data) {
-                this.setScrollOffset(xblockElement, scrollOffset);
+                ViewUtils.setScrollOffset(xblockElement, scrollOffset);
                 xblockElement.data('locator', data.locator);
                 return this.refreshXBlock(xblockElement);
             },
