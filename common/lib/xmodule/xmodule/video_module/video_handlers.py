@@ -21,10 +21,11 @@ from .transcripts_utils import (
     TranscriptsGenerationException,
     generate_sjson_for_all_speeds,
     youtube_speed_dict,
-    Transcript,
     save_to_store,
     subs_filename
 )
+
+from .transcript import Transcript
 
 
 log = logging.getLogger(__name__)

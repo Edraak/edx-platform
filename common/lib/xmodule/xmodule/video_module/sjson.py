@@ -1,70 +1,62 @@
 """
 Functions specific to SRT transcript format.
+
+MIME_TYPE = 'application/json'
 """
 import json
 from pysrt import SubRipItem, SubRipTime
 from HTMLParser import HTMLParser
 
-from .transcript import TranscriptFormat, TranscriptConvertEx
+from .transcript import TranscriptConvertEx
 
 
-class Sjson(TranscriptFormat):
+def _prepare_content(content):
+    return json.loads(content)
 
-    MIME_TYPE = 'application/json'
 
-    @property
-    def mime_type():
-        return Sjson.MIME_TYPE
+def convert_to_srt(content, translate=lambda x: x):
+    """
+    Convert SJSON transcrit to SRT SubRip transcript.
 
-    def set_content(content):
-        """
-        Add content for future work
-        """
-        self._content = content
-        return self
+    Args:
+        content: dict, sjson subs.
 
-    def _prepare_content(content):
-        return json.loads(content)
+    Raises:
+        TranscriptConvertEx if SJSON transcript is broken.
 
-    def _convert_to_srt(self, content):
-        """
-        Convert SJSON transcrit to SRT SubRip transcript.
+    Returns:
+        output, unicode.
+    """
+    content = _prepare_content(content)
 
-        Args:
-            content: dict, sjson subs.
+    output = ''
 
-        Raises:
-            TranscriptConvertEx if SJSON transcript is broken.
+    equal_len = len(content['start']) == len(content['end']) == len(content['text'])
+    if not equal_len:
+        raise TranscriptConvertEx(translate("Sjson transcript format is empty or incorrectly formed."))
 
-        Returns:
-            output, unicode.
-        """
-        output = ''
+    for i in range(len(content['start'])):
+        item = SubRipItem(
+            index=i,
+            start=SubRipTime(milliseconds=content['start'][i]),
+            end=SubRipTime(milliseconds=content['end'][i]),
+            text=content['text'][i]
+        )
+        output += (unicode(item))
+        output += '\n'
+    return output
 
-        equal_len = len(content['start']) == len(content['end']) == len(content['text'])
-        if not equal_len:
-            raise TranscriptConvertEx(self._("Sjson transcript format is empty or incorrectly formed."))
 
-        for i in range(len(content['start'])):
-            item = SubRipItem(
-                index=i,
-                start=SubRipTime(milliseconds=content['start'][i]),
-                end=SubRipTime(milliseconds=content['end'][i]),
-                text=content['text'][i]
-            )
-            output += (unicode(item))
-            output += '\n'
-        return output
+def convert_to_txt(content):
+    """
+    Convert SJSON transcript to TXT transcript.
 
-    def _convert_to_txt(self, content):
-        """
-        Convert SJSON transcript to TXT transcript.
+    Args:
+        content: list, "sjson" subs.
 
-        Args:
-            content: list, "sjson" subs.
-
-        Returns:
-            output, str.
-        """
-        text = content['text']
-        return HTMLParser().unescape("\n".join(text))
+    Returns:
+        output, str.
+    """
+    content = _prepare_content(content)
+    text = content['text']
+    return HTMLParser().unescape("\n".join(text))

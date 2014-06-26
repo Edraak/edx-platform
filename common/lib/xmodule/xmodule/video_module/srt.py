@@ -1,83 +1,73 @@
 """
 Functions specific to SRT transcript format.
+
+MIME_TYPE = 'application/x-subrip'
 """
 import json
 from pysrt import SubRipFile
 from HTMLParser import HTMLParser
 
-from .transcript import TranscriptFormat, TranscriptConvertEx
+from .transcript import TranscriptConvertEx
 
 
-class Srt(object):
+def _prepare_content(content, translate):
     """
-    Container 'srt' methods.
+    Convert content to PySrt object.
+
+    Args:
+        content, str, utf8 encoded string
     """
+    try:
+        pysrt_obj = SubRipFile.from_string(content.decode('utf8'))
+    except Exception as ex:
+        msg = translate("SubRip transcripts file parsing error. Inner message: {error_message}").format(
+            error_message=unicode(ex)
+        )
+        raise TranscriptConvertEx(msg)
+    if not pysrt_obj:
+        raise TranscriptConvertEx(translate("Empty SubRip transcript after decoding."))
 
-    MIME_TYPE = 'application/x-subrip'
+    return pysrt_obj
 
-    @property
-    def mime_type():
-        return Srt.MIME_TYPE
+def convert_to_sjson(content, translate=lambda x: x):
+    """
+    Convert content to SRT SubRip then to SJSON format.
 
-    def set_content(content):
-        """
-        Add content for future work
-        """
-        self._content = content
-        return self
+    Args:
+        `content` str, srt transcript
 
-    def _prepare_content(self):
-        """
-        Convert content to PySrt object.
-        """
-        try:
-            pysrt_obj = SubRipFile.from_string(self._content.decode('utf8'))
-        except Exception as ex:
-            msg = self._("SubRip transcripts file parsing error. Inner message is {error_message}").format(
-                error_message=ex.message
-            )
-            raise TranscriptConvertEx(msg)
-        if not pysrt_obj:
-            raise TranscriptConvertEx(self._("Empty SubRip transcript after decoding."))
+    Returns:
+        subs: dict, if all subs are generated and saved successfully.
+    """
+    pysrt_obj = _prepare_content(content, translate)
 
-        return pysrt_obj
+    sub_starts = []
+    sub_ends = []
+    sub_texts = []
 
-    def _convert_to_sjson(self, pysrt_obj):
-        """
-        Convert transcript from SRT SubRip to SJSON format.
+    for sub in pysrt_obj:
+        sub_starts.append(sub.start.ordinal)
+        sub_ends.append(sub.end.ordinal)
+        sub_texts.append(sub.text.replace('\n', ' '))
 
-        Args:
-            `pysrt_obj` decoded srt transcript.
+    subs =  {
+        'start': sub_starts,
+        'end': sub_ends,
+        'text': sub_texts
+    }
 
-        Returns:
-            subs: dict, if all subs are generated and saved successfully.
-        """
-        sub_starts = []
-        sub_ends = []
-        sub_texts = []
-
-        for sub in pysrt_obj:
-            sub_starts.append(sub.start.ordinal)
-            sub_ends.append(sub.end.ordinal)
-            sub_texts.append(sub.text.replace('\n', ' '))
-
-        subs =  {
-            'start': sub_starts,
-            'end': sub_ends,
-            'text': sub_texts
-        }
-
-        return json.dumps(subs)
+    return json.dumps(subs)
 
 
-    def _convert_to_txt(self, pysrt_obj):
-        """
-        Convert SRT transcrit to TXT transcript.
+def convert_to_txt(content, translate=lambda x: x):
+    """
+    Convert content to SRT SubRip then to TXT format.
 
-        Args:
-            `pysrt_obj` decoded srt transcript.
+    Args:
+        `content` str, srt transcript
 
-        Returns:
-            output, srt.
-        """
-        return HTMLParser().unescape(pysrt_obj.text)
+    Returns:
+        output, str.
+    """
+    pysrt_obj = _prepare_content(content, translate)
+    return HTMLParser().unescape(pysrt_obj.text)

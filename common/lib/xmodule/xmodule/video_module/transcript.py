@@ -1,8 +1,8 @@
 """
 Abstractions for trancripts.
 """
-from srt import Srt
-from sjson import Sjson
+# from srt import Srt
+# from sjson import Sjson
 
 
 class TranscriptConvertEx(Exception):
@@ -26,7 +26,7 @@ class TranscriptRequestValidationEx(Exception):
     pass
 
 
-class TranscriptAsset(obect):
+class TranscriptAsset(object):
     """
     Container for asset methods
     """
@@ -85,23 +85,28 @@ class Transcript(TranscriptAsset):
             For example, item.runtime.service(item, "i18n").ugettext
             transcript_type, str: type of transcript format class: 'srt' or 'sjson'
         """
-        self._ = translation
         self.format_container = getattr(module, transcript_format)()
+        self.format_container._ = translation
 
-    def convert_to(output_format, content):
+    def convert_to(output_format):
         """
-        Convert content from current format to output format
+        Convert content of `self.format_container` to output format
         """
-        return getattr(
+        result = getattr(
             self.format_container,
-            'convert_to' + output_format.lower(),
-            lambda x: raise TranscriptConvertEx(
-                self._("Transcript convertion from {} to {} format is not supported").format(
+            '_convert_to' + output_format.lower(),
+            lambda x: 'Not supported'
+        )(self.format_container._content)
+
+        if result == 'Not supported':
+            raise TranscriptConvertEx(
+                self.format_container._("Transcript convertion from {} to {} format is not supported").format(
                     self.transcript_class.__name__,
                     output_format
                 )
             )
-        )(self._prepare_content(self._content))
+
+        return result
 
     @property
     def mime_type(self):
@@ -110,3 +115,9 @@ class Transcript(TranscriptAsset):
         """
         return self.format_container.mime_type
 
+    def set_content(self, content):
+        """
+        Set content for format container
+        """
+        self.format_container._prepare_content(content)
+        return self.format_container
