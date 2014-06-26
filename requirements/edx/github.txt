@@ -33,3 +33,6 @@
 
 # Prototype XBlocks for limited roll-outs and user testing. These are not for general use.
 -e git+https://github.com/pmitros/ConceptXBlock.git@2376fde9ebdd83684b78dde77ef96361c3bd1aa0#egg=concept-xblock
+
+# OAuth2 Provider
+-e git+https://github.com/edx/django-oauth2-provider.git@455b37ad8690cbb3db96cc19784350162a6ce9d6#egg=django-oauth2-provider
