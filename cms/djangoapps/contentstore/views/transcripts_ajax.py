@@ -102,7 +102,7 @@ def upload_transcripts(request):
     except ValueError:
         return error_response(response, 'Invalid video_list JSON.')
 
-    source_subs_filedata = request.FILES['transcript-file'].read().decode('utf8')
+    source_subs_filedata = request.FILES['transcript-file'].read()
     source_subs_filename = request.FILES['transcript-file'].name
 
     if '.' not in source_subs_filename:

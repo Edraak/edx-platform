@@ -13,7 +13,7 @@ class Srt(object):
     Container 'srt' methods.
     """
 
-    MIME_TYPE =     'application/x-subrip'
+    MIME_TYPE = 'application/x-subrip'
 
     @property
     def mime_type():

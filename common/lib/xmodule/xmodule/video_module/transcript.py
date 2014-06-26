@@ -86,7 +86,7 @@ class Transcript(TranscriptAsset):
             transcript_type, str: type of transcript format class: 'srt' or 'sjson'
         """
         self._ = translation
-        self.format_container = getattr(modul, transcript_format)()
+        self.format_container = getattr(module, transcript_format)()
 
     def convert_to(output_format, content):
         """

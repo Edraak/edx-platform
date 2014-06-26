@@ -180,29 +180,8 @@ def generate_subs_from_source(speed_subs, subs_type, subs_filedata, item, langua
     _ = item.runtime.service(item, "i18n").ugettext
     if subs_type.lower() != 'srt':
         raise TranscriptsGenerationException(_("We support only SubRip (*.srt) transcripts format."))
-    try:
-        srt_subs_obj = SubRipFile.from_string(subs_filedata)
-    except Exception as ex:
-        msg = _("Something wrong with SubRip transcripts file during parsing. Inner message is {error_message}").format(
-            error_message=ex.message
-        )
-        raise TranscriptsGenerationException(msg)
-    if not srt_subs_obj:
-        raise TranscriptsGenerationException(_("Something wrong with SubRip transcripts file during parsing."))
 
-    sub_starts = []
-    sub_ends = []
-    sub_texts = []
-
-    for sub in srt_subs_obj:
-        sub_starts.append(sub.start.ordinal)
-        sub_ends.append(sub.end.ordinal)
-        sub_texts.append(sub.text.replace('\n', ' '))
-
-    subs = {
-        'start': sub_starts,
-        'end': sub_ends,
-        'text': sub_texts}
+    subs = json.loads(Transcript('srt', translation=_).set_content(subs_filedata).convert_to('sjson'))
 
     for speed, subs_id in speed_subs.iteritems():
         save_subs_to_store(
@@ -370,7 +349,7 @@ def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):
     generate_subs_from_source(
         result_subs_dict,
         os.path.splitext(user_filename)[1][1:],
-        srt_transcripts.data.decode('utf8'),
+        srt_transcripts.data,
         item,
         lang
     )
