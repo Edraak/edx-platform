@@ -122,6 +122,14 @@ class GroupConfiguration(object):
         css = '.group-configuration-name-input'
         self.find_css(css).first.fill(value)
 
+    @name.setter
+    def name(self, value):
+        """
+        Sets group configuration name.
+        """
+        css = '.group-configuration-name-input'
+        self.find_css(css).first.fill(value)
+
     @property
     def description(self):
         """
@@ -133,6 +141,14 @@ class GroupConfiguration(object):
     def description(self, value):
         """
         Set group configuration description.
+        """
+        css = '.group-configuration-description-input'
+        self.find_css(css).first.fill(value)
+
+    @description.setter
+    def description(self, value):
+        """
+        Sets group configuration description.
         """
         css = '.group-configuration-description-input'
         self.find_css(css).first.fill(value)

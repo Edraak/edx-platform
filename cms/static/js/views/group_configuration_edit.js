@@ -1,8 +1,8 @@
 define([
-    'js/views/baseview', 'underscore', 'jquery',
+    'js/views/baseview', 'underscore', 'jquery', 'js/views/group_edit',
     'js/views/feedback_notification'
 ],
-function(BaseView, _, $, NotificationView) {
+function(BaseView, _, $, GroupEditView, NotificationView) {
     'use strict';
     var GroupConfigurationEdit = BaseView.extend({
         tagName: 'div',
@@ -25,8 +25,14 @@ function(BaseView, _, $, NotificationView) {
         },
 
         initialize: function() {
+            var groups;
+
             this.template = this.loadTemplate('group-configuration-edit');
             this.listenTo(this.model, 'invalid', this.render);
+            groups = this.model.get('groups');
+            this.listenTo(groups, 'add', this.addOne);
+            this.listenTo(groups, 'reset', this.addAll);
+            this.listenTo(groups, 'all', this.render);
         },
 
         render: function() {
@@ -38,8 +44,20 @@ function(BaseView, _, $, NotificationView) {
                 isNew: this.model.isNew(),
                 error: this.model.validationError
             }));
+            this.addAll();
 
             return this;
+        },
+
+        addOne: function(group) {
+            var view = new GroupEditView({ model: group });
+            this.$('ol.groups').append(view.render().el);
+
+            return this;
+        },
+
+        addAll: function() {
+            this.model.get('groups').each(this.addOne, this);
         },
 
         setName: function(event) {
@@ -62,6 +80,15 @@ function(BaseView, _, $, NotificationView) {
         setValues: function() {
             this.setName();
             this.setDescription();
+            _.each(this.$('.groups li'), function(li, i) {
+                var group = this.model.get('groups').at(i);
+
+                if(group) {
+                    group.set({
+                        'name': $('.group-name', li).val()
+                    });
+                }
+            }.bind(this));
 
             return this;
         },

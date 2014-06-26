@@ -24,6 +24,12 @@
                 <textarea id="group-configuration-description-<%= uniqueId %>" class="group-configuration-description-input text input-text" name="group-configuration-description" placeholder="<%= gettext("This is the Description of the Experiment") %>"><%= description %></textarea>
             </div>
         </fieldset>
+        <fieldset class="groups-fields">
+            <legend class="sr"><%= gettext("Group information") %></legend>
+            <label class="groups-fields-label required"><%= gettext("Groups") %></label>
+            <span class="tip tip-stacked"><%= gettext("Name of the groups that students will be assigned to, e.g. Control, Video, Problems") %></span>
+            <ol class="groups list-input enum"></ol>
+        </fieldset>
     </div>
     <div class="actions">
         <button class="action action-primary" type="submit"><% if (isNew) { print(gettext("Create")) } else { print(gettext("Save")) } %></button>

@@ -37,7 +37,9 @@ define([
                 var groups = this.model.get('groups');
 
                 expect(groups).toBeInstanceOf(GroupSet);
-                expect(this.model.isEmpty()).toBeTruthy();
+                expect(groups.length).toEqual(2);
+                expect(groups.at(0).get('name')).toBe('Group A');
+                expect(groups.at(1).get('name')).toBe('Group B');
             });
 
             it('should be able to reset itself', function() {

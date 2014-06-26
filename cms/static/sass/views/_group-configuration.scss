@@ -249,6 +249,7 @@
         }
       }
 
+      .groups-fields,
       .group-configuration-fields {
         @extend %cont-no-list;
 
@@ -332,7 +333,6 @@
           }
 
           &.add-group-configuration-name label {
-            @extend %t-title5;
             display: inline-block;
             width: 70%;
             overflow: hidden;
@@ -355,6 +355,14 @@
             .group-configuration-value {
               font-weight: bold;
             }
+
+          &.group-allocation,
+          &.add-group-configuration-name label {
+            @extend %t-title5;
+          }
+
+          &.group-allocation {
+            color: $gray-l1;
           }
         }
 
@@ -366,10 +374,56 @@
             content: "*";
           }
         }
+
+        .field-group {
+          @include clearfix();
+          margin: 0 0 ($baseline/2) 0;
+
+          .field {
+            display: inline-block;
+            vertical-align: middle;
+            border-bottom: none;
+            margin: 0 ($baseline*1.5) 0 0;
+            padding: ($baseline/4) 0 0 0;
+            position: relative;
+
+            &.long {
+              width: 80%;
+            }
+
+            &.short {
+              width: 10%;
+            }
+
+            input, textarea {
+              width: 100%;
+            }
+          }
+
+          .action-close {
+            @include transition(color 0.25s ease-in-out);
+            @include font-size(22);
+            display: inline-block;
+            float: right;
+            margin-top: ($baseline*2);
+            border: 0;
+            padding: 0;
+            background: transparent;
+            color: $blue-l3;
+
+            &:hover {
+              color: $blue;
+            }
+          }
+        }
       }
 
       .group-configuration-fields {
         margin-bottom: $baseline;
+      }
+
+      .groups-fields-label {
+        @extend %t-title5;
       }
     }
   }

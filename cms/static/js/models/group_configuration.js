@@ -10,7 +10,9 @@ function(Backbone, _, str, gettext, GroupModel, GroupCollection) {
             return {
                 name: '',
                 description: '',
-                groups: new GroupCollection([]),
+                groups: new GroupCollection([
+                    { name: 'Group A' }, { name: 'Group B' }
+                ]),
                 showGroups: false,
                 editing: false
             };

@@ -3,12 +3,15 @@ define([
     'js/collections/group_configuration',
     'js/views/group_configuration_details',
     'js/views/group_configurations_list', 'js/views/group_configuration_edit',
-    'js/views/group_configuration_item', 'js/views/feedback_notification',
+    'js/views/group_configuration_item', 'js/models/group',
+    'js/collections/group', 'js/views/group_edit',
+    'js/views/feedback_notification',
     'js/spec_helpers/create_sinon', 'jasmine-stealth'
 ], function(
     GroupConfigurationModel, Course, GroupConfigurationSet,
     GroupConfigurationDetails, GroupConfigurationsList, GroupConfigurationEdit,
-    GroupConfigurationItem, Notification, create_sinon
+    GroupConfigurationItem, GroupModel, GroupSet, GroupEdit, Notification,
+    create_sinon
 ) {
     'use strict';
     beforeEach(function() {
@@ -101,13 +104,19 @@ define([
     });
 
     describe('GroupConfigurationEdit', function() {
-        var tpl = readFixtures('group-configuration-edit.underscore');
+        var groupTpl = readFixtures('group-edit.underscore'),
+            tpl = readFixtures('group-configuration-edit.underscore');
 
         beforeEach(function() {
             setFixtures($('<script>', {
                 id: 'group-configuration-edit-tpl',
                 type: 'text/template'
             }).text(tpl));
+
+            appendSetFixtures($('<script>', {
+                id: 'group-edit-tpl',
+                type: 'text/template'
+            }).text(groupTpl));
 
             appendSetFixtures(sandbox({
                 id: 'page-notification'
@@ -220,6 +229,31 @@ define([
                 expect(parent).toHaveClass('is-focused');
                 element.blur();
                 expect(parent).not.toHaveClass('is-focused');
+
+            var message = 'removes all empty groups on cancel if the model ' +
+                        'has a non-empty group';
+            it(message, function() {
+                var groups = this.model.get('groups');
+
+                groups.at(0).set('name', 'non-empty');
+                this.model.setOriginalAttributes();
+                this.view.render();
+                groups.add([{}, {}, {}]);
+                expect(groups.length).toEqual(5);
+                this.view.$('.action-cancel').click();
+                expect(groups.length).toEqual(2);
+                expect(groups.first().get('name')).toEqual('non-empty');
+            });
+
+            message = 'removes all empty groups on cancel except two if the ' +
+                    'model has no non-empty groups';
+            it(message, function() {
+                var groups = this.model.get('groups');
+                this.view.render();
+                groups.add([{}, {}, {}]);
+                expect(groups.length).toEqual(5);
+                this.view.$('.action-cancel').click();
+                expect(groups.length).toEqual(2);
             });
         });
 
@@ -362,6 +396,77 @@ define([
             expect(
                 this.view.$('.view-group-configuration-details').length
             ).toBe(0);
+        });
+    });
+
+    describe('GroupConfigurationsItem', function() {
+        var groupConfigurationEditTpl = readFixtures(
+            'group-configuration-edit.underscore'
+        ), message;
+
+        beforeEach(function() {
+            setFixtures($('<script>', {
+                id: 'group-configuration-edit-tpl',
+                type: 'text/template'
+            }).text(groupConfigurationEditTpl));
+            this.collection = new GroupConfigurationSet();
+            this.view = new GroupConfigurationsList({
+                collection: this.collection
+            });
+            this.view.render();
+        });
+
+        message = 'should render GroupConfigurationDetails view by default';
+        it(message, function() {
+            this.collection.add([{}, {}, {}]);
+            this.view.render();
+
+            expect(
+                this.view.$el.find('.view-group-configuration-details').length
+            ).toBe(3);
+        });
+    });
+
+    describe('GroupEdit', function() {
+        var tpl = readFixtures('group-edit.underscore');
+
+        beforeEach(function() {
+            appendSetFixtures($('<script>', {
+                id: 'group-edit-tpl',
+                type: 'text/template'
+            }).text(tpl));
+
+            this.model = new GroupModel({
+                name: 'Group A'
+            });
+
+            this.collection = new GroupSet([this.model]);
+
+            this.view = new GroupEdit({
+                model: this.model
+            });
+            spyOn(this.view, 'remove').andCallThrough();
+        });
+
+        describe('Basic', function () {
+            it('can render', function() {
+                this.view.render();
+                expect(this.view.$('.group-name').val()).toBe('Group A');
+                expect(this.view.$('.group-allocation')).toContainText('100%');
+            });
+        });
+
+        describe('getGroupId', function () {
+            it('returns correct ids', function () {
+                expect(this.view.getGroupId(0)).toBe('A');
+                expect(this.view.getGroupId(1)).toBe('B');
+                expect(this.view.getGroupId(25)).toBe('Z');
+                expect(this.view.getGroupId(702)).toBe('AAA');
+                expect(this.view.getGroupId(704)).toBe('AAC');
+                expect(this.view.getGroupId(475253)).toBe('ZZZZ');
+                expect(this.view.getGroupId(475254)).toBe('AAAAA');
+                expect(this.view.getGroupId(475279)).toBe('AAAAZ');
+            });
         });
     });
 });
