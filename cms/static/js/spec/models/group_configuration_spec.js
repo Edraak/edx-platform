@@ -33,16 +33,10 @@ define([
                 expect(this.model.get('showGroups')).toBeFalsy();
             });
 
-            it('should have a GroupSet with two groups by default', function() {
+            it('should be empty by default', function() {
                 var groups = this.model.get('groups');
 
                 expect(groups).toBeInstanceOf(GroupSet);
-                expect(groups.length).toEqual(2);
-                expect(groups.at(0).isEmpty()).toBeTruthy();
-                expect(groups.at(1).isEmpty()).toBeTruthy();
-            });
-
-            it('should be empty by default', function() {
                 expect(this.model.isEmpty()).toBeTruthy();
             });
 
@@ -63,7 +57,9 @@ define([
                 expect(this.model.isDirty()).toBeTruthy();
             });
 
-            it('should not be dirty after calling setOriginalAttributes', function() {
+            var message = 'should not be dirty after calling ' +
+                        'setOriginalAttributes';
+            it(message, function() {
                 this.model.set('name', 'foobar');
                 this.model.setOriginalAttributes();
 
@@ -111,6 +107,7 @@ define([
                       'name': 'My GroupConfiguration',
                       'description': 'Some description',
                       'showGroups': false,
+                      'editing': false,
                       'groups': [
                         {
                           'name': 'Group 1'
@@ -133,41 +130,8 @@ define([
                 expect(model.isValid()).toBeFalsy();
             });
 
-            it('requires at least one group', function() {
-                var model = new GroupConfiguration({ name: 'foo' });
-                model.get('groups').reset();
-
-                expect(model.isValid()).toBeFalsy();
-            });
-
-            it('requires a valid group', function() {
-                var group = new Group(),
-                    model = new GroupConfiguration({ name: 'foo' });
-
-                group.isValid = function() { return false; };
-                model.get('groups').reset([group]);
-
-                expect(model.isValid()).toBeFalsy();
-            });
-
-            it('requires all groups to be valid', function() {
-                var group1 = new Group(),
-                    group2 = new Group(),
-                    model = new GroupConfiguration({ name: 'foo' });
-
-                group1.isValid = function() { return true; };
-                group2.isValid = function() { return false; };
-                model.get('groups').reset([group1, group2]);
-
-                expect(model.isValid()).toBeFalsy();
-            });
-
             it('can pass validation', function() {
-                var group = new Group(),
-                    model = new GroupConfiguration({ name: 'foo' });
-
-                group.isValid = function() { return true; };
-                model.get('groups').reset([group]);
+                var model = new GroupConfiguration({ name: 'foo' });
 
                 expect(model.isValid()).toBeTruthy();
             });

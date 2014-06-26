@@ -14,11 +14,18 @@ function ($, _, gettext, BaseView, ConfigurationsListView) {
 
         render: function() {
             this.hideLoadingIndicator();
-            this.$el.append(this.listView.render().el);
-            this.addGlobalActions();
+            this.$('.content-primary').append(this.listView.render().el);
+            this.addButtonActions();
+            this.addWindowActions();
         },
 
-        addGlobalActions: function () {
+        addButtonActions: function () {
+            this.$('.nav-actions .new-button').click(function (event) {
+                this.listView.addOne(event);
+            }.bind(this));
+        },
+
+        addWindowActions: function () {
             $(window).on('beforeunload', this.onBeforeUnload.bind(this));
         },
 

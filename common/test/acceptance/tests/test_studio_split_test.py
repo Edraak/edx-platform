@@ -289,6 +289,7 @@ class GroupConfigurationsTest(UniqueCourseTest):
         config = self.page.group_configurations()[0]
         self.assertIn("Name of the Group Configuration", config.name)
         self.assertEqual(config.id, '0')
+        # Expand the configuration
         config.toggle()
         self.assertIn("Description of the group configuration.", config.description)
         self.assertEqual(len(config.groups), 2)
@@ -299,8 +300,88 @@ class GroupConfigurationsTest(UniqueCourseTest):
         config = self.page.group_configurations()[1]
         self.assertIn("Name of second Group Configuration", config.name)
         self.assertEqual(len(config.groups), 0)  # no groups when the partition is collapsed
+        # Expand the configuration
         config.toggle()
         self.assertEqual(len(config.groups), 3)
 
         self.assertEqual("Beta", config.groups[1].name)
         self.assertEqual("33%", config.groups[1].allocation)
+
+    def test_can_create_group_configuration(self):
+        """
+        Ensure that the group configuration can be created correctly.
+        """
+        self.page.visit()
+
+        self.assertEqual(len(self.page.group_configurations()), 0)
+        # Create new group configuration
+        self.page.create()
+
+        config = self.page.group_configurations()[0]
+        config.name = "New Group Configuration Name"
+        config.description = "New Description of the group configuration."
+        # Save the configuration
+        config.save()
+
+        self.assertEqual(config.mode, 'details')
+        self.assertIn("New Group Configuration Name", config.name)
+        self.assertTrue(config.id)
+        # Expand the configuration
+        config.toggle()
+        self.assertIn("New Description of the group configuration.", config.description)
+        self.assertEqual(len(config.groups), 2)
+
+        self.assertEqual("Group A", config.groups[0].name)
+        self.assertEqual("Group B", config.groups[1].name)
+        self.assertEqual("50%", config.groups[0].allocation)
+
+    def test_can_cancel_creation_of_group_configuration(self):
+        """
+        Ensure that creation of the group configuration can be canceled correctly.
+        """
+        self.page.visit()
+
+        self.assertEqual(len(self.page.group_configurations()), 0)
+        # Create new group configuration
+        self.page.create()
+
+        config = self.page.group_configurations()[0]
+        config.name = "Name of the Group Configuration"
+        config.description = "Description of the group configuration."
+        # Cancel the configuration
+        config.cancel()
+
+        self.assertEqual(len(self.page.group_configurations()), 0)
+
+    def test_group_configuration_validation(self):
+        """
+        Ensure that validation of the group configuration works correctly.
+        """
+        self.page.visit()
+
+        # Create new group configuration
+        self.page.create()
+        # Leave empty required field
+        config = self.page.group_configurations()[0]
+        config.description = "Description of the group configuration."
+        # Try to save
+        config.save()
+        # Verify that configuration is still in editing mode
+        self.assertEqual(config.mode, 'edit')
+        # Verify error message
+        self.assertEqual(
+            "Group Configuration name is required",
+            config.validation_message
+        )
+        # Set required field
+        config.name = "Name of the Group Configuration"
+        # Save the configuration
+        config.save()
+        # Verify the configuration is saved and it is shown in `details` mode.
+        self.assertEqual(config.mode, 'details')
+        # Verify the configuration for the data correctness
+        self.assertIn("Name of the Group Configuration", config.name)
+        self.assertTrue(config.id)
+        # Expand the configuration
+        config.toggle()
+        self.assertIn("Description of the group configuration.", config.description)
