@@ -26,6 +26,7 @@ from .transcripts_utils import (
 )
 
 from .transcript import Transcript
+from . import srt, sjson
 
 
 log = logging.getLogger(__name__)
@@ -162,19 +163,17 @@ class VideoStudentViewHandlers(object):
 
             data = Transcript.asset(self.location, transcript_name, lang).data
             filename = u'{}.{}'.format(transcript_name, transcript_format)
-            transcript = Transcript('sjson')
+            content = getattr(sjson, 'convert_to_' + transcript_format)(data)
         else:
             data = Transcript.asset(self.location, None, None, self.transcripts[lang]).data
             filename = u'{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
-            transcript = Transcript('srt')
-
-        content = transcript.set_content(data).convert_to(transcript_format)
+            content = getattr(srt, 'convert_to_' + transcript_format, lambda x: x)(data)
 
         if not content:
             log.debug('no subtitles produced in get_transcript')
             raise ValueError
 
-        return content, filename, transcript.mime_type
+        return content, filename, Transcrip.mime_types[transcript_format]
 
     def get_static_transcript(self, request):
         """

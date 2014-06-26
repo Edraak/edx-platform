@@ -181,7 +181,7 @@ def generate_subs_from_source(speed_subs, subs_type, subs_filedata, item, langua
     if subs_type.lower() != 'srt':
         raise TranscriptsGenerationException(_("We support only SubRip (*.srt) transcripts format."))
 
-    subs = json.loads(Transcript('srt', translation=_).set_content(subs_filedata).convert_to('sjson'))
+    subs = json.loads(srt.convert_to_sjson(subs_filedata))
 
     for speed, subs_id in speed_subs.iteritems():
         save_subs_to_store(
