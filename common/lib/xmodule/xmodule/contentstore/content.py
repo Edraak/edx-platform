@@ -111,6 +111,7 @@ class StaticContent(object):
         """
         Generate an AssetKey for the given path (old c4x/org/course/asset/name syntax)
         """
+        # DHMTODO
         return AssetLocation.from_deprecated_string(path)
 
     @staticmethod
