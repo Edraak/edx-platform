@@ -2,7 +2,6 @@ import pymongo
 import gridfs
 from gridfs.errors import NoFile
 
-from xmodule.modulestore.mongo.base import location_to_query, MongoModuleStore
 from xmodule.contentstore.content import XASSET_LOCATION_TAG
 
 import logging
@@ -12,7 +11,6 @@ from xmodule.exceptions import NotFoundError
 from fs.osfs import OSFS
 import os
 import json
-import bson.son
 from bson.son import SON
 from opaque_keys.edx.locations import AssetLocation
 
@@ -46,8 +44,10 @@ class MongoContentStore(ContentStore):
     def save(self, content):
         content_id = self.asset_db_key(content.location)
 
-        # Seems like with the GridFS we can't update existing ID's we have to do a delete/add pair
-        self.delete(content_id)
+        # The way to version files in gridFS is to not use the file id as the _id but just as the filename.
+        # Then you can upload as many versions as you like and access by date or version. Because we use
+        # the location as the _id, we must delete before adding (there's no replace method in gridFS)
+        self.delete(content_id)  # delete is a noop if the entry doesn't exist; so, don't waste time checking
 
         thumbnail_location = content.thumbnail_location.to_deprecated_list_repr() if content.thumbnail_location else None
         with self.fs.new_file(_id=content_id, filename=content.get_url_path(), content_type=content.content_type,
@@ -146,7 +146,8 @@ class MongoContentStore(ContentStore):
         assets, __ = self.get_all_content_for_course(course_key)
 
         for asset in assets:
-            asset_location = AssetLocation._from_deprecated_son(asset['_id'], course_key.run)  # pylint: disable=protected-access
+            # assuming course_key's deprecated flag is controlling rather than presence or absence of 'run' in _id
+            asset_location = course_key.make_asset_key(asset['_id']['category'], asset['_id']['name'])
             # TODO: On 6/19/14, I had to put a try/except around this
             # to export a course. The course failed on JSON files in
             # the /static/ directory placed in it with an import.
@@ -191,18 +192,15 @@ class MongoContentStore(ContentStore):
 
             ]
         '''
-        course_filter = course_key.make_asset_key(
-            "asset" if not get_thumbnails else "thumbnail",
-            None
-        )
-        # 'borrow' the function 'location_to_query' from the Mongo modulestore implementation
         if maxresults > 0:
             items = self.fs_files.find(
-                location_to_query(course_filter, wildcard=True, tag=XASSET_LOCATION_TAG),
+                query_for_course(course_key, "asset" if not get_thumbnails else "thumbnail"),
                 skip=start, limit=maxresults, sort=sort
             )
         else:
-            items = self.fs_files.find(location_to_query(course_filter, wildcard=True, tag=XASSET_LOCATION_TAG), sort=sort)
+            items = self.fs_files.find(
+                query_for_course(course_key, "asset" if not get_thumbnails else "thumbnail"), sort=sort
+            )
         count = items.count()
         return list(items), count
 
@@ -272,7 +270,7 @@ class MongoContentStore(ContentStore):
         referenced by other runs or other courses.
         :param course_key:
         """
-        course_query = MongoModuleStore._course_key_to_son(course_key, tag=XASSET_LOCATION_TAG)  # pylint: disable=protected-access
+        course_query = query_for_course(course_key)
         matching_assets = self.fs_files.find(course_query)
         for asset in matching_assets:
             self.fs.delete(asset['_id'])
@@ -286,4 +284,29 @@ class MongoContentStore(ContentStore):
         # stability of order is more important than sanity of order as any changes to order make things
         # unfindable
         ordered_key_fields = ['category', 'name', 'course', 'tag', 'org', 'revision']
-        return SON((field_name, getattr(location, field_name)) for field_name in ordered_key_fields)
+        dbkey = SON((field_name, getattr(location, field_name)) for field_name in ordered_key_fields)
+        if not getattr(location, 'deprecated', False):
+            # NOTE, there's no need to state that run doesn't exist in the negative case b/c access via
+            # SON requires equivalence (same keys and values in exact same order)
+            dbkey['run'] = location.run
+        return dbkey
+
+
+def query_for_course(course_key, category=None):
+    """
+    Construct a SON object that will query for all assets possibly limited to the given type
+    (thumbnail v assets) in the course using the index in mongo_indexes.md
+    """
+    dbkey = SON([
+        ('_id.tag', XASSET_LOCATION_TAG),
+        ('_id.org', course_key.org),
+        ('_id.course', course_key.course),
+    ])
+    if category:
+        dbkey['_id.category'] = category
+    if getattr(course_key, 'deprecated', False):
+        dbkey['_id.run'] = {'$exists': False}
+    else:
+        dbkey['_id.run'] = course_key.run
+    return dbkey
+

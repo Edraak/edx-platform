@@ -263,28 +263,6 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
         return jsonfields
 
 
-# The only thing using this w/ wildcards is contentstore.mongo for asset retrieval
-def location_to_query(location, wildcard=True, tag='i4x'):
-    """
-    Takes a Location and returns a SON object that will query for that location by subfields
-    rather than subdoc.
-    Fields in location that are None are ignored in the query.
-
-    If `wildcard` is True, then a None in a location is treated as a wildcard
-    query. Otherwise, it is searched for literally
-    """
-    query = location.to_deprecated_son(prefix='_id.', tag=tag)
-
-    if wildcard:
-        for key, value in query.items():
-            # don't allow wildcards on revision, since public is set as None, so
-            # its ambiguous between None as a real value versus None=wildcard
-            if value is None and key != '_id.revision':
-                del query[key]
-
-    return query
-
-
 class MongoModuleStore(ModuleStoreWriteBase):
     """
     A Mongodb backed ModuleStore
