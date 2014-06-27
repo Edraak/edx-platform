@@ -1087,6 +1087,31 @@ class MongoModuleStore(ModuleStoreWriteBase):
         field_data = KvsFieldData(kvs)
         return field_data
 
+    def _clone_modules(modulestore, modules, source_course_id, dest_course_id, user_id):
+        for module in modules:
+            original_loc = module.location
+            module.location = module.location.map_into_course(dest_course_id)
+            if module.location.category == 'course':
+                module.location = module.location.replace(name=module.location.run)
+
+            print "Cloning module {0} to {1}....".format(original_loc, module.location)
+
+            if 'data' in module.fields and module.fields['data'].is_set_on(module) and isinstance(module.data, basestring):
+                module.data = rewrite_nonportable_content_links(
+                    source_course_id, dest_course_id, module.data
+                )
+
+            # repoint children
+            if module.has_children:
+                new_children = []
+                for child_loc in module.children:
+                    child_loc = child_loc.map_into_course(dest_course_id)
+                    new_children.append(child_loc)
+
+                module.children = new_children
+
+            modulestore.update_item(module, user_id, allow_not_found=True)
+
     def heartbeat(self):
         """
         Check that the db is reachable.

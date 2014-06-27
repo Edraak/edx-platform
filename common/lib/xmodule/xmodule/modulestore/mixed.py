@@ -299,6 +299,64 @@ class MixedModuleStore(ModuleStoreWriteBase):
 
         return store.create_course(org, offering, user_id, fields, **kwargs)
 
+    def clone_course(modulestore, contentstore, source_course_id, dest_course_id, user_id):
+        # check to see if the dest_location exists as an empty course
+        # we need an empty course because the app layers manage the permissions and users
+        if not modulestore.has_course(dest_course_id):
+            raise Exception(u"An empty course at {0} must have already been created. Aborting...".format(dest_course_id))
+
+        # verify that the dest_location really is an empty course, which means only one with an optional 'overview'
+        dest_modules = modulestore.get_items(dest_course_id)
+
+        for module in dest_modules:
+            if module.location.category == 'course' or (
+                    module.location.category == 'about' and module.location.name == 'overview'
+            ):
+                continue
+            # only course and about overview allowed
+            raise Exception("Course at destination {0} is not an empty course. You can only clone into an empty course. Aborting...".format(dest_course_id))
+
+        # check to see if the source course is actually there
+        if not modulestore.has_course(source_course_id):
+            raise Exception("Cannot find a course at {0}. Aborting".format(source_course_id))
+
+        # Get all modules under this namespace which is (tag, org, course) tuple
+        modules = modulestore.get_items(source_course_id, revision=REVISION_OPTION_PUBLISHED_ONLY)
+        _clone_modules(modulestore, modules, source_course_id, dest_course_id, user_id)
+        course_location = dest_course_id.make_usage_key('course', dest_course_id.run)
+        modulestore.publish(course_location, user_id)
+
+        modules = modulestore.get_items(source_course_id, revision=REVISION_OPTION_DRAFT_ONLY)
+        _clone_modules(modulestore, modules, source_course_id, dest_course_id, user_id)
+
+        # now iterate through all of the assets and clone them
+        # first the thumbnails
+        thumb_keys = contentstore.get_all_content_thumbnails_for_course(source_course_id)
+        for thumb_key in thumb_keys:
+            content = contentstore.find(thumb_key)
+            content.location = content.location.map_into_course(dest_course_id)
+
+            print "Cloning thumbnail {0} to {1}".format(thumb_key, content.location)
+
+            contentstore.save(content)
+
+        # now iterate through all of the assets, also updating the thumbnail pointer
+
+        asset_keys, __ = contentstore.get_all_content_for_course(source_course_id)
+        for asset_key in asset_keys:
+            content = contentstore.find(asset_key)
+            content.location = content.location.map_into_course(dest_course_id)
+
+            # be sure to update the pointer to the thumbnail
+            if content.thumbnail_location is not None:
+                content.thumbnail_location = content.thumbnail_location.map_into_course(dest_course_id)
+
+            print "Cloning asset {0} to {1}".format(asset_key, content.location)
+
+            contentstore.save(content)
+
+        return True
+
     def create_item(self, course_or_parent_loc, category, user_id=None, **kwargs):
         """
         Create and return the item. If parent_loc is a specific location v a course id,
