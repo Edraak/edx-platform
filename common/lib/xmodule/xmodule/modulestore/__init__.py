@@ -323,6 +323,23 @@ class ModuleStoreWrite(ModuleStoreRead):
         pass
 
     @abstractmethod
+    def clone_course(self, source_course_id, dest_course_id, user_id):
+        """
+        Sets up source_course_id to point a course with the same content as the desct_course_id. This
+        operation may be cheap or expensive. It may have to copy all assets and all xblock content or
+        merely setup new pointers.
+
+        Backward compatibility: this method used to require in some modulestores that dest_course_id
+        pointed to an empty but already created course. Implementers should support this or should
+        enable creating the course from scratch.
+
+        Raises:
+            ItemNotFoundError: if the source course doesn't exist (or any of its xblocks aren't found)
+            DuplicateItemError: if the destination course already exists (with content in some cases)
+        """
+        pass
+
+    @abstractmethod
     def delete_course(self, course_key, user_id=None):
         """
         Deletes the course. It may be a soft or hard delete. It may or may not remove the xblock definitions

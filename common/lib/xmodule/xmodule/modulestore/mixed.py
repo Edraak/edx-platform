@@ -14,7 +14,7 @@ from . import ModuleStoreWriteBase
 from xmodule.modulestore import PublishState
 from xmodule.modulestore.django import create_modulestore_instance, loc_mapper
 from opaque_keys.edx.locator import CourseLocator, BlockUsageLocator
-from xmodule.modulestore.exceptions import ItemNotFoundError
+from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateItemError
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from xmodule.modulestore.mongo.base import MongoModuleStore
 from xmodule.modulestore.split_mongo.split import SplitMongoModuleStore
@@ -299,11 +299,20 @@ class MixedModuleStore(ModuleStoreWriteBase):
 
         return store.create_course(org, offering, user_id, fields, **kwargs)
 
-    def clone_course(modulestore, contentstore, source_course_id, dest_course_id, user_id):
+    def clone_course(self, source_course_id, dest_course_id, user_id):
+        """
+        See the superclass for the general documentation.
+
+        If cloning w/in a store, delegates to that store's clone_course which, in order to be self-
+        sufficient, should handle the asset copying (call the same method as this one does)
+        If cloning between stores,
+            * copy the assets
+            * migrate the courseware
+        """
         # check to see if the dest_location exists as an empty course
         # we need an empty course because the app layers manage the permissions and users
         if not modulestore.has_course(dest_course_id):
-            raise Exception(u"An empty course at {0} must have already been created. Aborting...".format(dest_course_id))
+            raise DuplicateItemError(u"An empty course at {0} must have already been created. Aborting...".format(dest_course_id))
 
         # verify that the dest_location really is an empty course, which means only one with an optional 'overview'
         dest_modules = modulestore.get_items(dest_course_id)

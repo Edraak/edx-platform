@@ -657,10 +657,8 @@ class ContentStoreToyCourseTest(ContentStoreTestCase):
 
         _create_course(self, dest_course_id, course_data)
 
-        content_store = contentstore()
-
         # now do the actual cloning
-        clone_course(module_store, content_store, source_course_id, dest_course_id, self.user.id)
+        module_store.clone_course(source_course_id, dest_course_id, self.user.id)
 
         # first assert that all draft content got cloned as well
         draft_items = module_store.get_items(source_course_id, revision=REVISION_OPTION_DRAFT_ONLY)
@@ -709,7 +707,6 @@ class ContentStoreToyCourseTest(ContentStoreTestCase):
         }
 
         module_store = modulestore()
-        content_store = contentstore()
 
         import_from_xml(module_store, self.user.id, 'common/test/data/', ['toy'])
 
@@ -732,7 +729,7 @@ class ContentStoreToyCourseTest(ContentStoreTestCase):
         _create_course(self, dest_course_id, course_data)
 
         # do the actual cloning
-        clone_course(module_store, content_store, source_course_id, dest_course_id, self.user.id)
+        module_store.clone_course(source_course_id, dest_course_id, self.user.id)
 
         # make sure that any non-portable links are rewritten during cloning
         html_module = module_store.get_item(dest_course_id.make_usage_key('html', 'nonportable'))
