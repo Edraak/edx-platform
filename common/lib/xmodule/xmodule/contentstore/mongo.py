@@ -16,6 +16,7 @@ from opaque_keys.edx.locations import AssetLocation
 
 
 class MongoContentStore(ContentStore):
+
     # pylint: disable=W0613
     def __init__(self, host, db, port=27017, user=None, password=None, bucket='fs', collection=None, **kwargs):
         """
@@ -264,6 +265,27 @@ class MongoContentStore(ContentStore):
             raise NotFoundError(asset_db_key)
         return item
 
+    def copy_all_course_assets(self, source_course_key, dest_course_key):
+        """
+        See :meth:`.ContentStore.copy_all_course_assets`
+
+        This implementation fairly expensively copies all of the data
+        """
+        source_query = query_for_course(source_course_key)
+        # it'd be great to figure out how to do all of this on the db server and not pull the bits over
+        for asset in self.fs_files.find(source_query):
+            asset_key = self.make_id_son(asset)
+            source_content = self.fs.get(asset_key)
+            asset_key['org'] = dest_course_key.org
+            asset_key['course'] = dest_course_key.course
+            if getattr(dest_course_key, 'deprecated', False):  # remove the run if exists
+                if 'run' in asset_key:
+                    del asset_key['run']
+            else:  # add the run, since it's the last field, we're golden
+                asset_key['run'] = dest_course_key.run
+            source_content['_id'] = asset_key
+            self.fs.put(source_content._data)
+
     def delete_all_course_assets(self, course_key):
         """
         Delete all assets identified via this course_key. Dangerous operation which may remove assets
@@ -273,22 +295,38 @@ class MongoContentStore(ContentStore):
         course_query = query_for_course(course_key)
         matching_assets = self.fs_files.find(course_query)
         for asset in matching_assets:
-            self.fs.delete(asset['_id'])
+            asset_key = self.make_id_son(asset)
+            self.fs.delete(asset_key)
 
-    @staticmethod
-    def asset_db_key(location):
+    # codifying the original order which pymongo used for the dicts coming out of location_to_dict
+    # stability of order is more important than sanity of order as any changes to order make things
+    # unfindable
+    ordered_key_fields = ['category', 'name', 'course', 'tag', 'org', 'revision']
+    @classmethod
+    def asset_db_key(cls, location):
         """
         Returns the database query to find the given asset location.
         """
-        # codifying the original order which pymongo used for the dicts coming out of location_to_dict
-        # stability of order is more important than sanity of order as any changes to order make things
-        # unfindable
-        ordered_key_fields = ['category', 'name', 'course', 'tag', 'org', 'revision']
-        dbkey = SON((field_name, getattr(location, field_name)) for field_name in ordered_key_fields)
+        dbkey = SON((field_name, getattr(location, field_name)) for field_name in cls.ordered_key_fields)
         if not getattr(location, 'deprecated', False):
             # NOTE, there's no need to state that run doesn't exist in the negative case b/c access via
             # SON requires equivalence (same keys and values in exact same order)
             dbkey['run'] = location.run
+        return dbkey
+
+    def make_id_son(self, fs_entry):
+        """
+        Change the _id field in fs_entry into the properly ordered SON
+        Args:
+            fs_entry: the element returned by self.fs_files.find
+        """
+        _id_field = fs_entry['_id']
+        dbkey = SON((field_name, _id_field.get(field_name)) for field_name in self.ordered_key_fields)
+        if 'run' in _id_field:
+            # NOTE, there's no need to state that run doesn't exist in the negative case b/c access via
+            # SON requires equivalence (same keys and values in exact same order)
+            dbkey['run'] = _id_field['run']
+        fs_entry['_id'] = dbkey
         return dbkey
 
 
