@@ -5,9 +5,11 @@ Test for transcript Srt class
 import unittest
 import textwrap
 import json
+from mock import patch
 
 
 from xmodule.video_module import srt, sjson
+from xmodule.video_module.transcript import Transcript
 
 
 class TestSrt(unittest.TestCase):
@@ -64,4 +66,20 @@ class TestSjson(unittest.TestCase):
     def test_convert_to_txt(self):
         txt = sjson.convert_to_txt(self.content)
         self.assertEqual(txt, u'Привіт, edX вітає вас.')
+
+
+class TestTranscript(unittest.TestCase):
+    """
+    Verify that `convert` calls to right methods
+    """
+
+    def test_convert(self):
+        with patch('xmodule.video_module.sjson.convert_to_srt') as mock:
+            Transcript.convert('sjson', 'srt')('Some data', 'some_translation_function')
+            mock.assert_called_with('Some data', 'some_translation_function')
+        Transcript.convert('sjson', 'txt')('Some data', 'some_translation_function')
+        Transcript.convert('srt', 'txt')('Some data', 'some_translation_function')
+        Transcript.convert('srt', 'sjson')('Some data', 'some_translation_function')
+        Transcript.convert('srt', 'unknown')('Some data', 'some_translation_function')
+        Transcript.convert('unknown', 'srt')('Some data', 'some_translation_function')
 

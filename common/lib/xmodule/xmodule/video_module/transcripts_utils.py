@@ -15,24 +15,10 @@ from xmodule.exceptions import NotFoundError
 from xmodule.contentstore.content import StaticContent
 from xmodule.contentstore.django import contentstore
 
+from .transcript import Transcript
+
 
 log = logging.getLogger(__name__)
-
-
-class TranscriptException(Exception):  # pylint disable=C0111
-    pass
-
-
-class TranscriptsGenerationException(Exception):  # pylint disable=C0111
-    pass
-
-
-class GetTranscriptsFromYouTubeException(Exception):  # pylint disable=C0111
-    pass
-
-
-class TranscriptsRequestValidationException(Exception):  # pylint disable=C0111
-    pass
 
 
 def generate_subs(speed, source_speed, source_subs):
@@ -181,7 +167,7 @@ def generate_subs_from_source(speed_subs, subs_type, subs_filedata, item, langua
     if subs_type.lower() != 'srt':
         raise TranscriptsGenerationException(_("We support only SubRip (*.srt) transcripts format."))
 
-    subs = json.loads(srt.convert_to_sjson(subs_filedata))
+    subs = json.loads(Transcript.convert('srt', 'sjson')(subs_filedata, _))
 
     for speed, subs_id in speed_subs.iteritems():
         save_subs_to_store(

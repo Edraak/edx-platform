@@ -17,8 +17,6 @@ from xmodule.fields import RelativeTime
 
 from .transcripts_utils import (
     get_or_create_sjson,
-    TranscriptException,
-    TranscriptsGenerationException,
     generate_sjson_for_all_speeds,
     youtube_speed_dict,
     save_to_store,
@@ -26,7 +24,7 @@ from .transcripts_utils import (
 )
 
 from .transcript import Transcript
-from . import srt, sjson
+from . import srt, sjson, TranscriptException, TranscriptsGenerationException
 
 
 log = logging.getLogger(__name__)
@@ -163,11 +161,11 @@ class VideoStudentViewHandlers(object):
 
             data = Transcript.asset(self.location, transcript_name, lang).data
             filename = u'{}.{}'.format(transcript_name, transcript_format)
-            content = getattr(sjson, 'convert_to_' + transcript_format)(data)
+            content = Transcript.convert('sjson', transcript_format)(data, self.runtime.service(self, "i18n").ugettext)
         else:
             data = Transcript.asset(self.location, None, None, self.transcripts[lang]).data
             filename = u'{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
-            content = getattr(srt, 'convert_to_' + transcript_format, lambda x: x)(data)
+            content = Transcript.convert('srt', transcript_format)(data, self.runtime.service(self, "i18n").ugettext)
 
         if not content:
             log.debug('no subtitles produced in get_transcript')

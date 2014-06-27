@@ -7,7 +7,10 @@ import json
 from pysrt import SubRipFile
 from HTMLParser import HTMLParser
 
-from .transcript import TranscriptConvertEx
+from . import TranscriptConvertEx
+
+
+__all__ = ['convert_to_txt', 'convert_to_sjson']
 
 
 def _prepare_content(content, translate):
@@ -17,6 +20,7 @@ def _prepare_content(content, translate):
     Args:
         content, str, utf8 encoded string
     """
+
     try:
         pysrt_obj = SubRipFile.from_string(content.decode('utf8'))
     except Exception as ex:

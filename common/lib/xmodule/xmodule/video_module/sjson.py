@@ -7,7 +7,10 @@ import json
 from pysrt import SubRipItem, SubRipTime
 from HTMLParser import HTMLParser
 
-from .transcript import TranscriptConvertEx
+from . import TranscriptConvertEx
+
+
+__all__ = ['convert_to_srt', 'convert_to_txt']
 
 
 def _prepare_content(content):
