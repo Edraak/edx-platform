@@ -16,6 +16,12 @@ from xmodule.contentstore.content import StaticContent
 from xmodule.contentstore.django import contentstore
 
 from .transcript import Transcript
+from . import (
+    TranscriptException,
+    GetTranscriptsFromYouTubeException,
+    GetTranscriptsFromYouTubeException,
+    TranscriptsGenerationException
+)
 
 
 log = logging.getLogger(__name__)
@@ -73,7 +79,7 @@ def save_subs_to_store(subs, subs_id, item, language='en'):
     Returns: location of saved subtitles.
     """
     filedata = json.dumps(subs, indent=2)
-    filename = subs_filename(subs_id, language)
+    filename = Transcript.subs_filename(subs_id, language)
     return save_to_store(filedata, filename, 'application/json', item.location)
 
 def get_transcripts_from_youtube(youtube_id, settings, i18n):
@@ -147,7 +153,7 @@ def remove_subs_from_store(subs_id, item, lang='en'):
     """
     Remove from store, if transcripts content exists.
     """
-    filename = subs_filename(subs_id, lang)
+    filename = Transcript.subs_filename(subs_id, lang)
     Transcript.delete_asset(item.location, filename)
 
 
@@ -301,16 +307,6 @@ def youtube_speed_dict(item):
     yt_speeds = [0.75, 1.00, 1.25, 1.50]
     youtube_ids = {p[0]: p[1] for p in zip(yt_ids, yt_speeds) if p[0]}
     return youtube_ids
-
-
-def subs_filename(subs_id, lang='en'):
-    """
-    Generate proper filename for storage.
-    """
-    if lang == 'en':
-        return u'subs_{0}.srt.sjson'.format(subs_id)
-    else:
-        return u'{0}_subs_{1}.srt.sjson'.format(lang, subs_id)
 
 
 def generate_sjson_for_all_speeds(item, user_filename, result_subs_dict, lang):

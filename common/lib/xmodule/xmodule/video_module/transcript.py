@@ -1,6 +1,10 @@
 """
 Abstractions for trancripts.
 """
+from xmodule.contentstore.django import contentstore
+from xmodule.exceptions import NotFoundError
+from xmodule.contentstore.content import StaticContent
+
 from . import srt, sjson
 
 
@@ -9,13 +13,22 @@ class TranscriptAsset(object):
     Container for asset methods
     """
     @staticmethod
+    def subs_filename(subs_id, lang='en'):
+        """
+        Generate proper filename for storage.
+        """
+        if lang == 'en':
+            return u'subs_{0}.srt.sjson'.format(subs_id)
+        else:
+            return u'{0}_subs_{1}.srt.sjson'.format(lang, subs_id)
+    @staticmethod
     def asset(location, subs_id, lang='en', filename=None):
         """
         Get asset from contentstore, asset location is built from subs_id and lang.
 
         `location` is module location.
         """
-        asset_filename = subs_filename(subs_id, lang) if not filename else filename
+        asset_filename = Transcript.subs_filename(subs_id, lang) if not filename else filename
         return Transcript.get_asset(location, asset_filename)
 
     @staticmethod

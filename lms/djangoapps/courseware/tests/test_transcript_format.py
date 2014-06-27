@@ -70,30 +70,24 @@ class TestSjson(unittest.TestCase):
 
 class TestTranscript(unittest.TestCase):
     """
-    Verify that `convert` calls to right methods
+    Verify that `convert` calls to right methods.
     """
-
     def test_convert(self):
         """
-        Test that proper convertion methods are called
+        Verify that proper convertion methods are called.
         """
-
         with patch('xmodule.video_module.sjson.convert_to_srt') as mock:
             Transcript.convert('sjson', 'srt')('Some data', 'some_translation_function')
             mock.assert_called_with('Some data', 'some_translation_function')
-
         with patch('xmodule.video_module.sjson.convert_to_txt') as mock:
             Transcript.convert('sjson', 'txt')('Some data', 'some_translation_function')
             mock.assert_called_with('Some data', 'some_translation_function')
-
         with patch('xmodule.video_module.srt.convert_to_txt') as mock:
             Transcript.convert('srt', 'txt')('Some data', 'some_translation_function')
             mock.assert_called_with('Some data', 'some_translation_function')
-
         with patch('xmodule.video_module.srt.convert_to_sjson') as mock:
             Transcript.convert('srt', 'sjson')('Some data', 'some_translation_function')
             mock.assert_called_with('Some data', 'some_translation_function')
-
         self.assertEqual(
             Transcript.convert('srt', 'unknown')('Some data', 'some_translation_function'),
             'Some data'

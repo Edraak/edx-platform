@@ -19,7 +19,7 @@ from xmodule.contentstore.content import StaticContent
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.exceptions import NotFoundError
 from xmodule.contentstore.django import contentstore, _CONTENTSTORE
-from xmodule.video_module import transcripts_utils
+from xmodule.video_module import Transcript
 
 from contentstore.tests.modulestore_config import TEST_MODULESTORE
 TEST_DATA_CONTENTSTORE = copy.deepcopy(settings.CONTENTSTORE)
@@ -547,7 +547,7 @@ class TestSubsFilename(unittest.TestCase):
     """
 
     def test_unicode(self):
-        name = transcripts_utils.subs_filename(u"˙∆©ƒƒƒ")
+        name = Transcript.subs_filename(u"˙∆©ƒƒƒ")
         self.assertEqual(name, u'subs_˙∆©ƒƒƒ.srt.sjson')
-        name = transcripts_utils.subs_filename(u"˙∆©ƒƒƒ", 'uk')
+        name = Transcript.subs_filename(u"˙∆©ƒƒƒ", 'uk')
         self.assertEqual(name, u'uk_subs_˙∆©ƒƒƒ.srt.sjson')

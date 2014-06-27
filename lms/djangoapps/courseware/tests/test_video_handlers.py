@@ -17,12 +17,13 @@ from . import BaseTestXmodule
 from .test_video_xml import SOURCE_XML
 from cache_toolbox.core import del_cached_content
 from xmodule.exceptions import NotFoundError
-
-from xmodule.video_module.transcripts_utils import (
+from opaque_keys.edx.locations import AssetLocation
+from xmodule.video_module import (
     TranscriptException,
     TranscriptsGenerationException,
+    TranscriptConvertEx
 )
-from opaque_keys.edx.locations import AssetLocation
+
 
 SRT_content = textwrap.dedent("""
         0
@@ -561,16 +562,17 @@ class TestStudioTranscriptTranslationPostDispatch(TestVideo):
         with patch('xmodule.video_module.video_handlers.save_to_store'):
             with self.assertRaises(TranscriptException):  # transcripts were not saved to store for some reason.
                 response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
+
         request = Request.blank('/translation/uk', POST={'file': ('filename', 'content')})
         with self.assertRaises(TranscriptsGenerationException):  # Not an srt filename
             self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', 'content')})
-        with self.assertRaises(TranscriptsGenerationException):  # Content format is not srt.
+        with self.assertRaises(TranscriptConvertEx):  # Content format is not srt.
             response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         request = Request.blank('/translation/uk', POST={'file': ('filename.srt', SRT_content.decode('utf8').encode('cp1251'))})
-        with self.assertRaises(UnicodeDecodeError):  # Non-UTF8 file content encoding.
+        with self.assertRaises(TranscriptConvertEx):  # Non-UTF8 file content encoding.
             response = self.item_descriptor.studio_transcript(request=request, dispatch='translation/uk')
 
         # No language is passed.

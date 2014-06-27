@@ -20,11 +20,10 @@ from .transcripts_utils import (
     generate_sjson_for_all_speeds,
     youtube_speed_dict,
     save_to_store,
-    subs_filename
 )
 
 from .transcript import Transcript
-from . import srt, sjson, TranscriptException, TranscriptsGenerationException
+from . import TranscriptException, TranscriptsGenerationException, TranscriptConvertEx
 
 
 log = logging.getLogger(__name__)
@@ -171,7 +170,7 @@ class VideoStudentViewHandlers(object):
             log.debug('no subtitles produced in get_transcript')
             raise ValueError
 
-        return content, filename, Transcrip.mime_types[transcript_format]
+        return content, filename, Transcript.mime_types[transcript_format]
 
     def get_static_transcript(self, request):
         """
@@ -208,7 +207,7 @@ class VideoStudentViewHandlers(object):
                     status=307,
                     location='/static/{0}/{1}'.format(
                         asset_path,
-                        subs_filename(transcript_name, self.transcript_language)
+                        Transcript.subs_filename(transcript_name, self.transcript_language)
                     )
                 )
         return response
@@ -258,7 +257,7 @@ class VideoStudentViewHandlers(object):
                 return self.get_static_transcript(request)
             except (
                 TranscriptException,
-                UnicodeDecodeError,
+                TranscriptConvertEx,
                 TranscriptsGenerationException
             ) as ex:
                 log.info(ex.message)
@@ -270,7 +269,7 @@ class VideoStudentViewHandlers(object):
         elif dispatch == 'download':
             try:
                 transcript_content, transcript_filename, transcript_mime_type = self.get_transcript(self.transcript_download_format)
-            except (NotFoundError, ValueError, KeyError, UnicodeDecodeError):
+            except (NotFoundError, ValueError, KeyError, TranscriptConvertEx):
                 log.debug("Video@download exception")
                 return Response(status=404)
             else:
@@ -340,7 +339,7 @@ class VideoStudioViewHandlers(object):
                     Unjsonable filename or content.
                 TranscriptsGenerationException, TranscriptException:
                     no SRT extension or not parse-able by PySRT
-                UnicodeDecodeError: non-UTF8 uploaded file content encoding.
+                TranscriptConvertEx: non-UTF8 uploaded file content encoding.
         """
         _ = self.runtime.service(self, "i18n").ugettext
 
