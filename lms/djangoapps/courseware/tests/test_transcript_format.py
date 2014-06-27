@@ -74,12 +74,32 @@ class TestTranscript(unittest.TestCase):
     """
 
     def test_convert(self):
+        """
+        Test that proper convertion methods are called
+        """
+
         with patch('xmodule.video_module.sjson.convert_to_srt') as mock:
             Transcript.convert('sjson', 'srt')('Some data', 'some_translation_function')
             mock.assert_called_with('Some data', 'some_translation_function')
-        Transcript.convert('sjson', 'txt')('Some data', 'some_translation_function')
-        Transcript.convert('srt', 'txt')('Some data', 'some_translation_function')
-        Transcript.convert('srt', 'sjson')('Some data', 'some_translation_function')
-        Transcript.convert('srt', 'unknown')('Some data', 'some_translation_function')
-        Transcript.convert('unknown', 'srt')('Some data', 'some_translation_function')
+
+        with patch('xmodule.video_module.sjson.convert_to_txt') as mock:
+            Transcript.convert('sjson', 'txt')('Some data', 'some_translation_function')
+            mock.assert_called_with('Some data', 'some_translation_function')
+
+        with patch('xmodule.video_module.srt.convert_to_txt') as mock:
+            Transcript.convert('srt', 'txt')('Some data', 'some_translation_function')
+            mock.assert_called_with('Some data', 'some_translation_function')
+
+        with patch('xmodule.video_module.srt.convert_to_sjson') as mock:
+            Transcript.convert('srt', 'sjson')('Some data', 'some_translation_function')
+            mock.assert_called_with('Some data', 'some_translation_function')
+
+        self.assertEqual(
+            Transcript.convert('srt', 'unknown')('Some data', 'some_translation_function'),
+            'Some data'
+        )
+        self.assertEqual(
+            Transcript.convert('unknown', 'srt')('Some data', 'some_translation_function'),
+            'Some data'
+        )
 

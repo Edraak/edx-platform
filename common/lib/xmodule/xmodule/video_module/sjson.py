@@ -50,7 +50,7 @@ def convert_to_srt(content, translate=lambda x: x):
     return output
 
 
-def convert_to_txt(content):
+def convert_to_txt(content, *args):
     """
     Convert SJSON transcript to TXT transcript.
 

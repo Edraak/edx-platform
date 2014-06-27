@@ -62,7 +62,7 @@ class Transcript(TranscriptAsset):
         Convert input_format to output format
         """
         result = getattr(
-            globals()[input_format.lower()],
+            globals().get(input_format.lower()),
             'convert_to_' + output_format.lower(),
             lambda x, *args, **kwargs: x
         )
