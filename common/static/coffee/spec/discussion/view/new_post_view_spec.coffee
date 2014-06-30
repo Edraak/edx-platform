@@ -3,21 +3,33 @@ describe "NewPostView", ->
     beforeEach ->
         setFixtures(
             """
-            <article class="new-post-article" style="display: block;">
-                <div class="inner-wrapper">
-                    <form class="new-post-form">
-                        <div class="left-column" >
-                        </div>
-                    </form>
+            <div class="discussion-body">
+                <div class="discussion-column">
+                  <article class="new-post-article" style="display: block;"></article>
                 </div>
-            </article>
+            </div>
 
-            <script aria-hidden="true" type="text/template" id="new-post-tab-template">
+            <script aria-hidden="true" type="text/template" id="new-post-template">
                 <div class="inner-wrapper">
                     <form class="new-post-form">
-                        <div class="left-column">
-                            '<%= topic_dropdown_html %>
-                            '<%= options_html %>'
+                        <div class="control-group">
+                            <div class="control-items">
+                                <span class="control-label">
+                                   Organized Into:
+                                </span>
+                                <span class="control-controls">
+                                    <div class="form-topic-drop">
+                                        <a href="#" aria-labelledby="topic-dropdown-label" class="topic_dropdown_button">select...<span class="drop-arrow" aria-hidden="true">▾</span></a>
+                                        <div class="topic_menu_wrapper">
+                                            <div class="topic_menu_search" role="menu">
+                                                <label class="sr" for="browse-topic-newpost">Filter List</label>
+                                                <input type="text" id="browse-topic-newpost" class="form-topic-drop-search-input" placeholder="Filter discussion areas">
+                                           </div>
+                                           <ul class="topic_menu" role="menu"><%= topics_html %></ul>
+                                       </div>
+                                   </div>
+                               </span>
+                           </div>
                         </div>
                     </form>
                 </div>
@@ -32,60 +44,6 @@ describe "NewPostView", ->
                     <a href="#"><span class="category-menu-span"><%- text %></span></a>
                     <ul role="menu"><%= entries %></ul>
                 </li>
-            </script>
-
-            <script aria-hidden="true" type="text/template" id="new-post-topic-dropdown-template">
-                <span class="topic-dropdown-label" id="topic-dropdown-label">Create new post about:</span>
-                <div class="form-topic-drop">
-                    <a href="#" aria-labelledby="topic-dropdown-label" class="topic_dropdown_button">${_("Show All Discussions")}<span class="drop-arrow" aria-hidden="true">▾</span></a>
-                    <div class="topic_menu_wrapper">
-                        <div class="topic_menu_search" role="menu">
-                            <label class="sr" for="browse-topic-newpost">Filter List</label>
-                            <input type="text" id="browse-topic-newpost" class="form-topic-drop-search-input" placeholder="Filter discussion areas">
-                        </div>
-                        <ul class="topic_menu" role="menu"><%= topics_html %></ul>
-                    </div>
-                </div>
-            </script>
-
-            <script aria-hidden="true" type="text/template" id="new-post-options-template">
-                <div class="options">
-                    <input type="checkbox" name="follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">follow this post</label>
-                    <% if (allow_anonymous) { %>
-                    <br>
-                    <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous">
-                    <label for="new-post-anonymous">post anonymously</label>
-                    <% } %>
-                    <% if (allow_anonymous_to_peers) { %>
-                    <br>
-                    <input type="checkbox" name="anonymous_to_peers" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers">
-                    <label for="new-post-anonymous-to-peers">post anonymously to classmates</label>
-                    <% } %>
-                    <% if (cohort_options) { %>
-                    <div class="form-group-label choose-cohort">
-                        ## Translators: This labels the selector for which group of students can view a post
-                        Make visible to:
-                        <select class="group-filter-select new-post-group" name="group_id">
-                            <option value="">All Groups</option>
-                            <% _.each(cohort_options, function(opt) { %>
-                                <option value="<%= opt.value %>" <% if (opt.selected) { %>selected<% } %>><%- opt.text %></option>
-                            <% }); %>
-                        </select>
-                    </div>
-                    <% } %>
-                </div>
-            </script>
-
-            <script aria-hidden="true" type="text/template" id="new-post-editor-template">
-                <div class="form-row">
-                    <label class="sr" for="new-post-title">new post title</label>
-                    <input type="text" id="new-post-title" class="new-post-title" name="title" placeholder="Title">
-                </div>
-                <div class="form-row">
-                    <div class="new-post-body" name="body" placeholder="Enter your question or comment…"></div>
-                </div>
-                <input type="submit" id="new-post-submit" class="submit" value="Add post">
-                <a href="#" class="new-post-cancel">Cancel</a>
             </script>
             """
         )

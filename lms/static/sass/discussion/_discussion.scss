@@ -157,12 +157,12 @@ body.discussion {
 
   .new-post-article {
     display: none;
-    margin-top: $baseline;
+    margin-top: 0px;
 
     .inner-wrapper {
       max-width: 1180px;
       min-width: 760px;
-      margin: auto;
+      margin: 0px;
     }
 
     .left-column {
@@ -355,6 +355,7 @@ body.discussion {
     background: $shadow-d2;
     box-shadow: 0 1px 2px $shadow-d2 inset, 0 1px 0 rgba(255, 255, 255, .5);
     color: $white;
+    margin-top: 0px;
 
     .form-row {
       margin-bottom: $baseline;
@@ -615,8 +616,6 @@ body.discussion {
   }
 
   .blank-slate {
-
-    padding: 40px 40px 10px;
 
     section {
       border-bottom: 1px solid #ccc;
@@ -1207,7 +1206,7 @@ body.discussion {
   }
 
   .new-post-form {
-    margin-top: $baseline;
+    margin-top: 0px;
     @include clearfix;
   }
 

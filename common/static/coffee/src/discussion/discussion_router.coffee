@@ -45,8 +45,12 @@ if Backbone?
       if(@main)
         @main.cleanup()
         @main.undelegateEvents()
+      unless($(".discussion-article").is(":visible"))
+        $(".discussion-article").fadeIn()
+      if(@newPost.is(":visible"))
+        @newPost.fadeOut()
 
-      @main = new DiscussionThreadView(el: $(".discussion-column"), model: @thread)
+      @main = new DiscussionThreadView(el: $(".discussion-article"), model: @thread)
       @main.render()
       @main.on "thread:responses:rendered", =>
         @nav.updateSidebar()
@@ -59,8 +63,10 @@ if Backbone?
       @navigate("", trigger: true)
 
     showNewPost: (event) =>
-      @newPost.slideDown(300)
+      @newPost.fadeIn()
+      $('.discussion-article').fadeOut()
       $('.new-post-title').focus()
 
     hideNewPost: (event) =>
-      @newPost.slideUp(300)
+      $('.discussion-article').fadeIn()
+      @newPost.fadeOut()

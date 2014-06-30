@@ -9,65 +9,45 @@ if Backbone?
           @maxNameWidth = 100
 
       render: () ->
+          context = _.clone(@course_settings.attributes)
+          _.extend(context, {
+              cohort_options: @getCohortOptions(),
+              mode: @mode
+          })
+          context.topics_html = @renderCategoryMap(@course_settings.get("category_map")) if @mode is "tab"
+          @$el.html(_.template($("#new-post-template").html(), context))
+
           if @mode is "tab"
-              @$el.html(
-                  _.template(
-                      $("#new-post-tab-template").html(), {
-                          topic_dropdown_html: @getTopicDropdownHTML(),
-                          options_html: @getOptionsHTML(),
-                          editor_html: @getEditorHTML()
-                      }
-                  )
-              )
               # set up the topic dropdown in tab mode
               @dropdownButton = @$(".topic_dropdown_button")
               @topicMenu      = @$(".topic_menu_wrapper")
-              @menuOpen = @dropdownButton.hasClass('dropped')
+              @hideTopicDropdown()
               @topicId    = @$(".topic").first().data("discussion_id")
               @topicText  = @getFullTopicName(@$(".topic").first())
               $('.choose-cohort').hide() unless @$(".topic_menu li a").first().is("[cohorted=true]")
               @setSelectedTopic()
-          else # inline
-              @$el.html(
-                  _.template(
-                      $("#new-post-inline-template").html(), {
-                          options_html: @getOptionsHTML(),
-                          editor_html: @getEditorHTML()
-                      }
-                  )
-              )
+
           DiscussionUtil.makeWmdEditor @$el, $.proxy(@$, @), "new-post-body"
 
-      getTopicDropdownHTML: () ->
-          # populate the category menu (topic dropdown)
-          _renderCategoryMap = (map) ->
-              category_template = _.template($("#new-post-menu-category-template").html())
-              entry_template = _.template($("#new-post-menu-entry-template").html())
-              html = ""
-              for name in map.children
-                  if name of map.entries
-                      entry = map.entries[name]
-                      html += entry_template({text: name, id: entry.id, is_cohorted: entry.is_cohorted})
-                  else # subcategory
-                      html += category_template({text: name, entries: _renderCategoryMap(map.subcategories[name])})
-              html
-          topics_html = _renderCategoryMap(@course_settings.get("category_map"))
-          _.template($("#new-post-topic-dropdown-template").html(), {topics_html: topics_html})
+      renderCategoryMap: (map) ->
+          category_template = _.template($("#new-post-menu-category-template").html())
+          entry_template = _.template($("#new-post-menu-entry-template").html())
+          html = ""
+          for name in map.children
+              if name of map.entries
+                  entry = map.entries[name]
+                  html += entry_template({text: name, id: entry.id, is_cohorted: entry.is_cohorted})
+              else # subcategory
+                  html += category_template({text: name, entries: @renderCategoryMap(map.subcategories[name])})
+          html
 
-      getEditorHTML: () ->
-          _.template($("#new-post-editor-template").html(), {})
-
-      getOptionsHTML: () ->
-          # cohort options?
+      getCohortOptions: () ->
           if @course_settings.get("is_cohorted") and DiscussionUtil.isStaff()
               user_cohort_id = $("#discussion-container").data("user-cohort-id")
-              cohort_options = _.map @course_settings.get("cohorts"), (cohort) ->
+              _.map @course_settings.get("cohorts"), (cohort) ->
                   {value: cohort.id, text: cohort.name, selected: cohort.id==user_cohort_id}
           else
-              cohort_options = null
-          context = _.clone(@course_settings.attributes)
-          context.cohort_options = cohort_options
-          _.template($("#new-post-options-template").html(), context)
+              null
 
       events:
           "submit .new-post-form":            "createPost"
