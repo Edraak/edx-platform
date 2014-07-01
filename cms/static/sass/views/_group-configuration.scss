@@ -361,6 +361,31 @@
             @extend %t-title5;
           }
 
+          &.add-group-configuration-name label {
+            display: inline-block;
+            width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .group-configuration-id {
+            @include font-size(18);
+            @include line-height(18);
+            display: inline-block;
+            width: 30%;
+            text-align: right;
+            vertical-align: top;
+            color: $gray-l1;
+
+            .group-configuration-label {
+              margin-right: ($baseline*.75);
+            }
+
+            .group-configuration-value {
+              font-weight: bold;
+            }
+          }
+
           &.group-allocation {
             color: $gray-l1;
           }
