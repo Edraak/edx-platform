@@ -3,8 +3,11 @@ from django.shortcuts import redirect
 
 from rest_framework import generics, permissions
 from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
+from student.forms import PasswordResetFormNoActive
 from student.models import CourseEnrollment, User
 
 from .serializers import CourseEnrollmentSerializer, UserSerializer
@@ -49,7 +52,16 @@ class UserCourseEnrollmentsList(generics.ListAPIView):
 
         return super(UserCourseEnrollmentsList, self).get(self, request, *args, **kwargs)
 
+@api_view(["GET"])
 def my_user_info(request):
     if not request.user:
         raise PermissionDenied
     return redirect("user-detail", username=request.user.username)
+
+@api_view(["POST"])
+def password_reset(request):
+    form = PasswordResetFormNoActive({"email": request.DATA.get("email")})
+    if form.is_valid():
+        form.save()
+        return Response({}, status=200)
+    return Response(form.errors, status=400)
