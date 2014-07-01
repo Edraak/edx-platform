@@ -1,4 +1,5 @@
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 
 from rest_framework import generics, permissions
 from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
@@ -47,3 +48,8 @@ class UserCourseEnrollmentsList(generics.ListAPIView):
             raise PermissionDenied
 
         return super(UserCourseEnrollmentsList, self).get(self, request, *args, **kwargs)
+
+def my_user_info(request):
+    if not request.user:
+        raise PermissionDenied
+    return redirect("user-detail", username=request.user.username)
