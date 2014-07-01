@@ -156,6 +156,24 @@
             }
           }
         }
+
+        .actions {
+          @include transition(opacity .15s .25s ease-in-out);
+          opacity: 0.0;
+          position: absolute;
+          top: $baseline;
+          right: $baseline;
+
+          .action {
+            display: inline-block;
+            margin-right: ($baseline/4);
+
+            .edit {
+              @include blue-button;
+              @extend %t-action4;
+            }
+          }
+        }
       }
 
       &:hover .actions {
@@ -315,6 +333,28 @@
 
           &.add-group-configuration-name label {
             @extend %t-title5;
+            display: inline-block;
+            width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .group-configuration-id {
+            @include font-size(18);
+            @include line-height(18);
+            display: inline-block;
+            width: 30%;
+            text-align: right;
+            vertical-align: top;
+            color: $gray-l1;
+
+            .group-configuration-label {
+              margin-right: ($baseline*.75);
+            }
+
+            .group-configuration-value {
+              font-weight: bold;
+            }
           }
         }
 

@@ -868,6 +868,24 @@ class GroupConfiguration(object):
     Prepare Group Configuration for the course.
     """
     @staticmethod
+    def prepare(group_configuration, course, validate=True, assign_id=True, assign_group_ids=True):
+        group_configuration = GroupConfiguration.parse(group_configuration)
+        if validate:
+            GroupConfiguration.validate(group_configuration)
+        if assign_id:
+            used_ids = set([p.id for p in course.user_partitions])
+            if isinstance(assign_id, basestring):
+                cid = int(assign_id)
+            else:
+                cid = None
+            group_configuration = GroupConfiguration.assign_id(group_configuration, used_ids, cid=cid)
+
+        if assign_group_ids:
+            group_configuration = GroupConfiguration.assign_group_ids(group_configuration)
+
+        return group_configuration
+
+    @staticmethod
     def parse(configuration_json):
         """
         Parse given string that represents group configuration.
@@ -905,6 +923,21 @@ class GroupConfiguration(object):
             raise GroupConfigurationsValidationError("group configuration ID must be numeric")
 
     @staticmethod
+    def assign_id(group_configuration, used_ids, cid=None):
+        if not group_configuration.get("id"):
+            group_configuration["id"] = cid if cid else GroupConfiguration.generate_id(used_ids)
+
+        return group_configuration
+
+    @staticmethod
+    def assign_group_ids(group_configuration):
+        # Assign ids to every group in configuration.
+        for index, group in enumerate(group_configuration.get('groups', [])):
+            group["id"] = index
+
+        return group_configuration
+
+    @staticmethod
     def generate_id(used_ids):
         """
         Return next ID that will be assigned to a group configuration.
@@ -912,7 +945,7 @@ class GroupConfiguration(object):
         return max(used_ids) + 1 if used_ids else 1
 
 
-@require_http_methods(("GET", "POST"))
+@require_http_methods(("GET", "POST", "PUT"))
 @login_required
 @ensure_csrf_cookie
 def group_configurations_list_handler(request, course_key_string):
@@ -938,21 +971,15 @@ def group_configurations_list_handler(request, course_key_string):
             'configurations': [u.to_json() for u in course.user_partitions] if splite_test_enabled else None,
         })
 
-    if request.method == 'POST':
+    # from here on down, we know the client has requested JSON
+    if request.method == 'GET':
+        return JsonResponse(course.user_partitions)
+    elif request.method == 'POST':
         # create a new group configuration for the course
         try:
-            configuration = GroupConfiguration.parse(request.body)
-            GroupConfiguration.validate(configuration)
-        except Exception as err:
+            configuration = GroupConfiguration.prepare(request.body, course, )
+        except GroupConfigurationsValidationError as err:
             return JsonResponse({"error": err.message}, status=400)
-
-        if not configuration.get("id"):
-            used_ids = set([p.id for p in course.user_partitions])
-            configuration["id"] = GroupConfiguration.generate_id(used_ids)
-
-        # Assign ids to every group in configuration.
-        for index, group in enumerate(configuration.get('groups', [])):
-            group["id"] = index
 
         course.user_partitions.append(UserPartition.from_json(configuration))
         store.update_item(course, request.user.id)
@@ -966,11 +993,46 @@ def group_configurations_list_handler(request, course_key_string):
         return response
 
 
-@require_http_methods(("GET", "POST"))
 @login_required
 @ensure_csrf_cookie
+@require_http_methods(("POST", "PUT"))
 def group_configurations_detail_handler(request, course_key_string, group_configuration_id):
-    return JsonResponse(status=404)
+    """
+    JSON API endpoint for manipulating a group configuration via its internal ID.
+    Used by the Backbone application.
+
+    POST or PUT
+        json: update group configuration based on provided information
+    """
+    course_key = CourseKey.from_string(course_key_string)
+    course = _get_course_module(course_key, request.user)
+    store = modulestore()
+    matching_id = [p for p in course.user_partitions
+                   if unicode(p.id) == unicode(group_configuration_id)]
+    if matching_id:
+        configuration = matching_id[0]
+    else:
+        configuration = None
+
+    if request.method == 'GET':
+        if not configuration:
+            return JsonResponse(status=404)
+        return JsonResponse(configuration)
+    elif request.method in ('POST', 'PUT'):  # can be either and sometimes
+                                        # django is rewriting one to the other
+        try:
+            new_configuration = GroupConfiguration.prepare(request.body, course, assign_id=group_configuration_id)
+        except TextbookValidationError as err:
+            return JsonResponse({"error": err.message}, status=400)
+
+        if configuration:
+            index = course.user_partitions.index(configuration)
+            course.user_partitions[index] = UserPartition.from_json(new_configuration)
+        else:
+            course.user_partitions.append(new_configuration)
+        store.update_item(course, request.user.id)
+        print new_configuration
+        return JsonResponse(new_configuration, status=201)
 
 
 def _get_course_creator_status(user):

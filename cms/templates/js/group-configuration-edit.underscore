@@ -8,8 +8,14 @@
         <fieldset class="group-configuration-fields">
             <legend class="sr"><%= gettext("Group Configuration information") %></legend>
             <div class="input-wrap field text required add-group-configuration-name <% if(error && error.attributes && error.attributes.name) { print('error'); } %>">
-                <label for="group-configuration-name-<%= uniqueId %>"><%= gettext("Group Configuration Name") %></label>
-                <span class="tip tip-stacked"><%= gettext("Name or short description of the configuration") %></span>
+                <label for="group-configuration-name-<%= uniqueId %>"><%= gettext("Group Configuration Name") %></label><%
+                if (_.isNumber(id)) {
+                    %><span class="group-configuration-id">
+                        <span class="group-configuration-label"><%= gettext('Experiment ID') %></span>
+                        <span class="group-configuration-value"><%= id %></span>
+                    </span><%
+                }
+                %><span class="tip tip-stacked"><%= gettext("Name or short description of the configuration") %></span>
                 <input id="group-configuration-name-<%= uniqueId %>" class="group-configuration-name-input input-text" name="group-configuration-name" type="text" placeholder="<%= gettext("This is the Name of the Experiment") %>" value="<%= name %>">
             </div>
             <div class="input-wrap field text add-group-configuration-description">

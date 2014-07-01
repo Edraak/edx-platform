@@ -3,6 +3,7 @@ Acceptance tests for Studio related to the split_test module.
 """
 
 import json
+import math
 from unittest import skip
 
 from ..fixtures.course import CourseFixture, XBlockFixtureDesc
@@ -256,6 +257,31 @@ class GroupConfigurationsTest(UniqueCourseTest):
             self.course_info['run']
         )
 
+    def _assert_fields(self, config, cid=None, name='', description='', groups=None):
+        self.assertEqual(config.mode, 'details')
+
+        if name:
+            self.assertIn(name, config.name)
+
+        if cid:
+            self.assertEqual(cid, config.id)
+        else:
+            self.assertTrue(config.id)
+
+        # Expand the configuration
+        config.toggle()
+
+        if description:
+            self.assertIn(description, config.description)
+
+        if groups:
+            allocation = int(math.floor(100 / len(groups)))
+            for index, group in enumerate(groups):
+                self.assertEqual(group, config.groups[index].name)
+                self.assertEqual(str(allocation) + "%", config.groups[index].allocation)
+        # Collapse the configuration
+        config.toggle()
+
     def test_no_group_configurations_added(self):
         """
         Ensure that message telling me to create a new group configuration is
@@ -287,29 +313,27 @@ class GroupConfigurationsTest(UniqueCourseTest):
         self.page.visit()
 
         config = self.page.group_configurations()[0]
-        self.assertIn("Name of the Group Configuration", config.name)
-        self.assertEqual(config.id, '0')
-        # Expand the configuration
-        config.toggle()
-        self.assertIn("Description of the group configuration.", config.description)
-        self.assertEqual(len(config.groups), 2)
-
-        self.assertEqual("Group 0", config.groups[0].name)
-        self.assertEqual("50%", config.groups[0].allocation)
+        # no groups when the the configuration is collapsed
+        self.assertEqual(len(config.groups), 0)
+        self._assert_fields(
+            config,
+            cid="0", name="Name of the Group Configuration",
+            description="Description of the group configuration.",
+            groups=["Group 0", "Group 1"]
+        )
 
         config = self.page.group_configurations()[1]
-        self.assertIn("Name of second Group Configuration", config.name)
-        self.assertEqual(len(config.groups), 0)  # no groups when the partition is collapsed
-        # Expand the configuration
-        config.toggle()
-        self.assertEqual(len(config.groups), 3)
 
-        self.assertEqual("Beta", config.groups[1].name)
-        self.assertEqual("33%", config.groups[1].allocation)
+        self._assert_fields(
+            config,
+            name="Name of second Group Configuration",
+            description="Second group configuration.",
+            groups=["Alpha", "Beta", "Gamma"]
+        )
 
-    def test_can_create_group_configuration(self):
+    def test_can_create_and_edit_group_configuration(self):
         """
-        Ensure that the group configuration can be created correctly.
+        Ensure that the group configuration can be created and edited correctly.
         """
         self.page.visit()
 
@@ -318,22 +342,32 @@ class GroupConfigurationsTest(UniqueCourseTest):
         self.page.create()
 
         config = self.page.group_configurations()[0]
+
         config.name = "New Group Configuration Name"
         config.description = "New Description of the group configuration."
         # Save the configuration
         config.save()
 
-        self.assertEqual(config.mode, 'details')
-        self.assertIn("New Group Configuration Name", config.name)
-        self.assertTrue(config.id)
-        # Expand the configuration
-        config.toggle()
-        self.assertIn("New Description of the group configuration.", config.description)
-        self.assertEqual(len(config.groups), 2)
+        self._assert_fields(
+            config,
+            name="New Group Configuration Name",
+            description="New Description of the group configuration.",
+            groups=["Group A", "Group B"]
+        )
 
-        self.assertEqual("Group A", config.groups[0].name)
-        self.assertEqual("Group B", config.groups[1].name)
-        self.assertEqual("50%", config.groups[0].allocation)
+        # Edit the group configuration
+        config.edit()
+        # Update fields
+        config.name = "Second Group Configuration Name"
+        config.description = "Second Description of the group configuration."
+        # Save the configuration
+        config.save()
+
+        self._assert_fields(
+            config,
+            name="Second Group Configuration Name",
+            description="Second Description of the group configuration."
+        )
 
     def test_can_cancel_creation_of_group_configuration(self):
         """
@@ -352,6 +386,35 @@ class GroupConfigurationsTest(UniqueCourseTest):
         config.cancel()
 
         self.assertEqual(len(self.page.group_configurations()), 0)
+
+    def test_can_cancel_editing_of_group_configuration(self):
+        """
+        Ensure that editing of the group configuration can be canceled correctly.
+        """
+        self.course_fix.add_advanced_settings({
+            u"user_partitions": {
+                "value": [
+                    UserPartition(0, 'Name of the Group Configuration', 'Description of the group configuration.', [Group("0", 'Group 0'), Group("1", 'Group 1')]).to_json(),
+                    UserPartition(1, 'Name of second Group Configuration', 'Second group configuration.', [Group("0", 'Alpha'), Group("1", 'Beta'), Group("2", 'Gamma')]).to_json()
+                ],
+            },
+        })
+        self.course_fix._add_advanced_settings()
+        self.page.visit()
+
+        config = self.page.group_configurations()[0]
+
+        config.name = "New Group Configuration Name"
+        config.description = "New Description of the group configuration."
+        # Cancel the configuration
+        config.cancel()
+
+        self._assert_fields(
+            config,
+            name="Name of the Group Configuration",
+            description="Description of the group configuration.",
+            groups=["Group 0", "Group 1"]
+        )
 
     def test_group_configuration_validation(self):
         """
@@ -377,11 +440,10 @@ class GroupConfigurationsTest(UniqueCourseTest):
         config.name = "Name of the Group Configuration"
         # Save the configuration
         config.save()
-        # Verify the configuration is saved and it is shown in `details` mode.
-        self.assertEqual(config.mode, 'details')
-        # Verify the configuration for the data correctness
-        self.assertIn("Name of the Group Configuration", config.name)
-        self.assertTrue(config.id)
-        # Expand the configuration
-        config.toggle()
-        self.assertIn("Description of the group configuration.", config.description)
+
+        self._assert_fields(
+            config,
+            name="Name of the Group Configuration",
+            description="Description of the group configuration.",
+            groups=["Group A", "Group B"]
+        )

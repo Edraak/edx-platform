@@ -30,10 +30,11 @@ define([
                     });
 
                     frag.appendChild(view.render().el);
-                });
+                }.bind(this));
 
                 this.$el.html([frag]);
             }
+
             return this;
         },
 

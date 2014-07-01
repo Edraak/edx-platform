@@ -23,10 +23,12 @@
 require(["!domReady", "js/collections/group_configuration", "js/views/pages/group_configurations"],
 function(doc, GroupConfigurationCollection, GroupConfigurationsPage, xmoduleLoader) {
   % if configurations is not None:
+    var collection = new GroupConfigurationCollection(${json.dumps(configurations)});
+    collection.url = "${group_configuration_url}";
     var view = new GroupConfigurationsPage({
         el: $('#content'),
-        collection: new GroupConfigurationCollection(${json.dumps(configurations)}, { url: "${group_configuration_url}" })
-    });
+        collection: collection
+      });
     view.render();
   % endif
 });
