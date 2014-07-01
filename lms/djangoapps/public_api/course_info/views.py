@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 from courseware.model_data import FieldDataCache
 from courseware.module_render import get_module
+from courseware.courses import get_course_about_section
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.locations import SlashSeparatedCourseKey
 
@@ -57,3 +58,14 @@ class CourseHandoutsList(generics.ListAPIView):
         course_handouts_module = get_course_info_module(request, course_id, 'handouts')
         return Response({'handouts_html': course_handouts_module.data})
 
+
+class CourseAboutDetail(generics.RetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+        course_id = SlashSeparatedCourseKey.from_deprecated_string(kwargs['course_id'])
+        course = modulestore().get_course(course_id)
+        # There are other fields, but they don't seem to be in use.
+        # see courses.py:get_course_about_section
+        return Response(
+            {"overview": get_course_about_section(course, "overview").strip()}
+        )

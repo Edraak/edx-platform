@@ -33,10 +33,16 @@ class CourseField(serializers.RelatedField):
                 kwargs={'course_id': course_id},
                 request=request
             )
+            course_about_url = reverse(
+                'course-about-detail',
+                kwargs={'course_id': course_id},
+                request=request
+            )
         else:
             video_outline_url = None
             course_updates_url = None
             course_handouts_url = None
+            course_about_url = None
 
         return {
             "id": course_id,
@@ -51,7 +57,8 @@ class CourseField(serializers.RelatedField):
             },
             "video_outline": video_outline_url,
             "course_updates": course_updates_url,
-            "course_handouts": course_handouts_url
+            "course_handouts": course_handouts_url,
+            "course_about": course_about_url,
         }
 
 
