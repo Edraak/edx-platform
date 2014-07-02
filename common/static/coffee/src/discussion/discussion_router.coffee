@@ -63,10 +63,17 @@ if Backbone?
       @navigate("", trigger: true)
 
     showNewPost: (event) =>
-      @newPost.fadeIn()
-      $('.discussion-article').fadeOut()
-      $('.new-post-title').focus()
+      $('.discussion-article').fadeOut(
+        duration: 200
+        complete: =>
+          @newPost.fadeIn(200)
+          $('.new-post-title').focus()
+      )
 
     hideNewPost: (event) =>
-      $('.discussion-article').fadeIn()
-      @newPost.fadeOut()
+      @newPost.fadeOut(
+        duration: 200
+        complete: =>
+          $('.discussion-article').fadeIn(200)
+      )
+
