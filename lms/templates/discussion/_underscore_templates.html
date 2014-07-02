@@ -369,20 +369,26 @@
 }
 
 .wrapper-field {
-
+  margin-bottom: 10px;
 }
 .field-label {
   display: inline-block;
-  width:49%;
+  width: 49%;
+  vertical-align: top;
 }
 
 .field-label-name {
   display: inline-block;
   width:35%;
+  vertical-align: bottom;
 }
 
 .field-label-input {
   display: inline-block;
+}
+
+.post-title {
+ width: 95%;
 }
 
 .field-help {
@@ -393,9 +399,23 @@
 
 .new-post-body-form {
 }
-.wrapper-field {
-    padding: 4px;
+.new-post-option {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 10px 0;
 }
+
+.new-post-follow {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.new-post-anonymous {
+  display: inline-block;
+  margin-left: 10px;
+}
+
 .new-post-body.editor {width: 96%;}
 </style>
 
@@ -405,9 +425,9 @@
 
             <div class="wrapper-field">
                 <div class="field-label">
-                    <span class="field-label-name">
+                    <label class="field-label-name">
                         Create New:
-                    </span>
+                    </label>
                     <span class="field-label-input">
                         <input type="button" value="Question">
                         <input type="button" value="Discussion">
@@ -426,9 +446,9 @@
             ${'<% if (mode=="tab") { %>'}
             <div class="wrapper-field">
                 <div class="field-label">
-                    <span class="field-label-name">
+                    <label class="field-label-name">
                        Organized Into:
-                    </span>
+                    </label>
                     <span class="field-label-input">
                         <div class="form-topic-drop">
                             <a href="#" aria-labelledby="topic-dropdown-label" class="topic_dropdown_button">${_("select...")}<span class="drop-arrow" aria-hidden="true">▾</span></a>
@@ -452,9 +472,9 @@
 
             <div class="wrapper-field">
                 <div class="field-label">
-                    <span class="field-label-name">
+                    <label class="field-label-name">
                       Visible To:
-                    </span>
+                    </label>
                     <span class="field-label-input">
                         ${'<% if (cohort_options) { %>'}
                         <div class="form-group-label choose-cohort">
@@ -479,7 +499,7 @@
 
             <div class="wrapper-field">
                 <div class="field-label">
-                    <span class="field-label-input">
+                    <span class="post-title field-label-input">
                         <label class="sr" for="new-post-title">${_("new post title")}</label>
                         <input type="text" id="new-post-title" class="new-post-title" name="title" placeholder="${_('Title')}">
                     </span>
@@ -495,15 +515,21 @@
 
             <div class="wrapper-field">
                 <div class="field-label">
+                  <div class="new-post-option option-follow">
                     <input type="checkbox" name="follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
-                    ${'<% if (allow_anonymous) { %>'}
+                  </div>
+                  ${'<% if (allow_anonymous) { %>'}
+                  <div class="new-post-option option-anonymous">
                     <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous">
                     <label for="new-post-anonymous">${_("post anonymously")}</label>
-                    ${'<% } %>'}
-                    ${'<% if (allow_anonymous_to_peers) { %>'}
+                  </div>
+                  ${'<% } %>'}
+                  ${'<% if (allow_anonymous_to_peers) { %>'}
+                  <div class="new-post-option option-anonymous">
                     <input type="checkbox" name="anonymous_to_peers" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers">
                     <label for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
-                    ${'<% } %>'}
+                  </div>
+                  ${'<% } %>'}
                </div>
             </div>
 
