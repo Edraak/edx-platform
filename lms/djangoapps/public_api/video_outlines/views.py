@@ -6,7 +6,8 @@ only displayed at the course level. This is because it makes it a lot easier to
 optimize and reason about, and it avoids having to tackle the bigger problem of
 general XBlock representation in this rather specialized formatting.
 """
-from rest_framework import generics
+from rest_framework import generics, permissions
+from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -90,6 +91,8 @@ def video_summary(video_module):
 
 
 class VideoSummaryList(generics.ListAPIView):
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request, *args, **kwargs):
         course_id = SlashSeparatedCourseKey.from_deprecated_string(kwargs['course_id'])

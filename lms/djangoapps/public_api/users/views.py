@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 
 from rest_framework import generics, permissions
 from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -53,6 +53,8 @@ class UserCourseEnrollmentsList(generics.ListAPIView):
         return super(UserCourseEnrollmentsList, self).get(self, request, *args, **kwargs)
 
 @api_view(["GET"])
+@authentication_classes((OAuth2Authentication, SessionAuthentication))
+@permission_classes((IsAuthenticated,))
 def my_user_info(request):
     if not request.user:
         raise PermissionDenied

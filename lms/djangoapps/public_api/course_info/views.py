@@ -6,7 +6,8 @@ only displayed at the course level. This is because it makes it a lot easier to
 optimize and reason about, and it avoids having to tackle the bigger problem of
 general XBlock representation in this rather specialized formatting.
 """
-from rest_framework import generics
+from rest_framework import generics, permissions
+from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -44,6 +45,9 @@ class CourseUpdatesList(generics.ListAPIView):
     1. This only works for new-style course updates and is not the older freeform
        format.
     """
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
     def list(self, request, *args, **kwargs):
         course_id = SlashSeparatedCourseKey.from_deprecated_string(kwargs['course_id'])
         course_updates_module = get_course_info_module(request, course_id, 'updates')
@@ -53,6 +57,9 @@ class CourseUpdatesList(generics.ListAPIView):
 class CourseHandoutsList(generics.ListAPIView):
     """Please just render this in an HTML view for now.
     """
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
     def list(self, request, *args, **kwargs):
         course_id = SlashSeparatedCourseKey.from_deprecated_string(kwargs['course_id'])
         course_handouts_module = get_course_info_module(request, course_id, 'handouts')
@@ -60,6 +67,8 @@ class CourseHandoutsList(generics.ListAPIView):
 
 
 class CourseAboutDetail(generics.RetrieveAPIView):
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         course_id = SlashSeparatedCourseKey.from_deprecated_string(kwargs['course_id'])
