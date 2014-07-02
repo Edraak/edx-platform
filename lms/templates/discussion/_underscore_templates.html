@@ -362,28 +362,38 @@
 
 <!-- temporary, do not merge to master !!! -->
 <style type="text/css">
-.control-group {
-  display: inline-block;
-  width: 100%;
-}
-.control-items {
-  display: inline-block;
-  position: relative;
-  float: left;
-  width: 49%;
-  top: 0px;
-}
-.control-help {
-  display: inline-block;
-  position: relative;
-  float: right;
-  width: 49%;
-  top: 0px;
-}
 
 .new-post-form {
+  padding: 40px;
+  box-sizing:border-box;
 }
-.control-group {
+
+.wrapper-field {
+
+}
+.field-label {
+  display: inline-block;
+  width:49%;
+}
+
+.field-label-name {
+  display: inline-block;
+  width:35%;
+}
+
+.field-label-input {
+  display: inline-block;
+}
+
+.field-help {
+  display: inline-block;
+  width: 49%;
+  font-size: 12px;
+}
+
+.new-post-body-form {
+}
+.wrapper-field {
     padding: 4px;
 }
 .new-post-body.editor {width: 96%;}
@@ -393,17 +403,17 @@
     <div class="inner-wrapper">
         <form class="new-post-form">
 
-            <div class="control-group">
-                <div class="control-items">
-                    <span class="control-label">
+            <div class="wrapper-field">
+                <div class="field-label">
+                    <span class="field-label-name">
                         Create New:
                     </span>
-                    <span class="control-controls">
+                    <span class="field-label-input">
                         <input type="button" value="Question">
                         <input type="button" value="Discussion">
                     </span>
                 </div>
-                <div class="control-help">
+                <div class="field-help">
                     <span class="post-type-description question">
                         Questions are resolved when the author or staff accepts a response as the answer.
                     </span>
@@ -414,12 +424,12 @@
             </div>
 
             ${'<% if (mode=="tab") { %>'}
-            <div class="control-group">
-                <div class="control-items">
-                    <span class="control-label">
+            <div class="wrapper-field">
+                <div class="field-label">
+                    <span class="field-label-name">
                        Organized Into:
                     </span>
-                    <span class="control-controls">
+                    <span class="field-label-input">
                         <div class="form-topic-drop">
                             <a href="#" aria-labelledby="topic-dropdown-label" class="topic_dropdown_button">${_("select...")}<span class="drop-arrow" aria-hidden="true">▾</span></a>
                             <div class="topic_menu_wrapper">
@@ -432,7 +442,7 @@
                        </div>
                    </span>
                </div>
-               <div class="control-help">
+               <div class="field-help">
                   <span>
             Think carefully about where you place your question, as it makes it easier for other students and staff to build conversation when it is in the right place.
                   </span>
@@ -440,12 +450,12 @@
             </div>
             ${'<% } %>'}
 
-            <div class="control-group">
-                <div class="control-items">
-                    <span class="control-label">
+            <div class="wrapper-field">
+                <div class="field-label">
+                    <span class="field-label-name">
                       Visible To:
                     </span>
-                    <span class="control-controls">
+                    <span class="field-label-input">
                         ${'<% if (cohort_options) { %>'}
                         <div class="form-group-label choose-cohort">
                             ## Translators: This labels the selector for which group of students can view a post
@@ -460,21 +470,21 @@
                        ${'<% } %>'}
                     </span>
                </div>
-               <div class="control-help">
+               <div class="field-help">
                   <span>
-            As an instructor you can decide whether posts should be visible to all cohorts or only to a specific cohort.  Students in cohorts can't see posts from other cohorts.
+            As an instructor you can decide whether posts should be visible to all cohorts or only to a specific cohort.  Students in cohorts can not see posts from other cohorts.
                   </span>
                </div>
             </div>
 
-            <div class="control-group">
-                <div class="control-items">
-                    <span class="control-controls">
+            <div class="wrapper-field">
+                <div class="field-label">
+                    <span class="field-label-input">
                         <label class="sr" for="new-post-title">${_("new post title")}</label>
                         <input type="text" id="new-post-title" class="new-post-title" name="title" placeholder="${_('Title')}">
                     </span>
                </div>
-               <div class="control-help">
+               <div class="field-help">
                   <span>
             Make sure your title clearly describes your discussion topic.  Clear titles encourage discussion and make it easier for interested students to find them.
                   </span>
@@ -483,8 +493,8 @@
 
             <div class="new-post-body editor" name="body" placeholder="${_(u'Enter your question or comment…')}"></div>
 
-            <div class="control-group">
-                <div class="control-items">
+            <div class="wrapper-field">
+                <div class="field-label">
                     <input type="checkbox" name="follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
                     ${'<% if (allow_anonymous) { %>'}
                     <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous">
@@ -497,8 +507,8 @@
                </div>
             </div>
 
-            <div class="control-group">
-                <div class="control-items">
+            <div class="wrapper-field">
+                <div class="field-label">
                     <input type="submit" id="new-post-submit" class="submit" value="${_('Add post')}">
                     <a href="#" class="new-post-cancel">${_('Cancel')}</a>
                </div>

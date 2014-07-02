@@ -350,12 +350,8 @@ body.discussion {
 
   .new-post-form {
     @include clearfix;
-    border-radius: 3px;
-    width: 100%;
-    background: $shadow-d2;
-    box-shadow: 0 1px 2px $shadow-d2 inset, 0 1px 0 rgba(255, 255, 255, .5);
-    color: $white;
-    margin-top: 0px;
+    background: $gray-l5;
+    box-shadow: 0 1px 2px $shadow inset;
 
     .form-row {
       margin-bottom: $baseline;
