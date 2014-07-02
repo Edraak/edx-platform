@@ -8,7 +8,8 @@ from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _
 from util.json_request import JsonResponse
 from django.http import HttpResponse, HttpResponseNotFound
-from shoppingcart.models import Coupon
+from shoppingcart.models import Coupon, CourseRegistrationCode
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
 import logging
 
@@ -58,16 +59,24 @@ def add_coupon(request):
 
     if coupon:
         return HttpResponseNotFound(_("coupon with the coupon code ({code}) already exist").format(code=code))
-    else:
-        description = request.REQUEST.get('description')
-        course_id = request.REQUEST.get('course_id')
-        discount = request.REQUEST.get('discount')
-        coupon = Coupon(
-            code=code, description=description, course_id=course_id,
-            percentage_discount=discount, created_by_id=request.user.id
+
+    # check if the coupon code is in the CourseRegistrationCode Table
+    course_registration_code = CourseRegistrationCode.objects.filter(code=code)
+    if course_registration_code:
+        return HttpResponseNotFound(_(
+            "The code ({code}) that you have tried to define is already in use as a registration code").format(code=code)
         )
-        coupon.save()
-        return HttpResponse(_("coupon with the coupon code ({code}) added successfully").format(code=code))
+
+    course_id = request.REQUEST.get('course_id')
+    description = request.REQUEST.get('description')
+    course_id = request.REQUEST.get('course_id')
+    discount = request.REQUEST.get('discount')
+    coupon = Coupon(
+        code=code, description=description, course_id=course_id,
+        percentage_discount=discount, created_by_id=request.user.id
+    )
+    coupon.save()
+    return HttpResponse(_("coupon with the coupon code ({code}) added successfully").format(code=code))
 
 
 @require_POST
@@ -90,15 +99,22 @@ def update_coupon(request):
 
     if filtered_coupons:
         return HttpResponseNotFound(_("coupon with the coupon id ({coupon_id}) already exists").format(coupon_id=coupon_id))
-    else:
-        description = request.REQUEST.get('description')
-        course_id = request.REQUEST.get('course_id')
-        discount = request.REQUEST.get('discount')
-        coupon.code = code
-        coupon.description = description
-        coupon.course_id = course_id
-        coupon.percentage_discount = discount
-        coupon.save()
+
+    # check if the coupon code is in the CourseRegistrationCode Table
+    course_registration_code = CourseRegistrationCode.objects.filter(code=code)
+    if course_registration_code:
+        return HttpResponseNotFound(_(
+            "The code ({code}) that you have tried to define is already in use as a registration code").format(code=code)
+        )
+
+    course_id = request.REQUEST.get('course_id')
+    description = request.REQUEST.get('description')
+    discount = request.REQUEST.get('discount')
+    coupon.code = code
+    coupon.description = description
+    coupon.course_id = course_id
+    coupon.percentage_discount = discount
+    coupon.save()
 
     return HttpResponse(_("coupon with the coupon id ({coupon_id}) updated Successfully").format(coupon_id=coupon_id))
 

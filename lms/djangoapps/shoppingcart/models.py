@@ -310,7 +310,7 @@ class CourseRegistrationCode(models.Model):
     This table contains registration codes
     With registration code, a user can register for a course for free
     """
-    code = models.CharField(max_length=32, db_index=True)
+    code = models.CharField(max_length=32, db_index=True, unique=True)
     course_id = CourseKeyField(max_length=255, db_index=True)
     transaction_group_name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     created_by = models.ForeignKey(User, related_name='created_by_user')

@@ -4,12 +4,29 @@
 <%include file="edit_coupon_modal.html" />
 
 <div class="ecommerce-wrapper">
+  <h3 class="coupon-errors" id="code-error"></h3>
+  <h2>Registration Codes</h2>
+  <p>Enter the number of registration codes that you want to generate. Click to generate a CSV :</p>
+  <p>
+     <form action="${ section_data['generate_registration_code_csv_url'] }" id="course_codes_number" method="post">
+       <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+       <input type="text" name="transaction_group_name" placeholder="Transaction Group Name"/>
+       <input type="text" name="course_registration_code_number" placeholder="Number Registration Codes" maxlength="4"/>
+       <input type="submit" name="generate-registration-codes-csv" value="${_("Generate Registration Codes")}" data-csv="true">
+     </form>
+  </p>
+  <p>Click to generate a CSV file of all Course Registrations Codes:</p>
+  <p><input type="button" name="list-registration-codes-csv" value="${_("Download Registration Codes")}" data-endpoint="${ section_data['get_registration_code_csv_url'] }" data-csv="true"></p>
+  <p>Click to generate a CSV file of all Active Course Registrations Codes:</p>
+  <p><input type="button" name="active-registration-codes-csv" value="${_("Active Registration Codes")}" data-endpoint="${ section_data['active_registration_code_csv_url'] }" data-csv="true"></p>
+  <p>Click to generate a CSV file of all Spent Course Registrations Codes:</p>
+  <p><input type="button" name="spent-registration-codes-csv" value="${_("Spent Registration Codes")}" data-endpoint="${ section_data['spent_registration_code_csv_url'] }" data-csv="true"></p>
+  <hr>
   <h2>${_("Coupons List")}
-      %if section_data['total_amount'] is not None:
+    %if section_data['total_amount'] is not None:
            <span>${_("Total Amount: ")}<span>$${section_data['total_amount']}</span></span>
       %endif
   </h2>
-
   <h3 class="coupon-errors" id="coupon-error"></h3>
   <span class="tip">${_("Coupons Information")} <a id="add_coupon_link" href="#add-coupon-modal" rel="leanModal"
                                                    class="add blue-button">${_("+ Add Coupon")}</a></span>
@@ -44,7 +61,6 @@
         <td>
            ${ coupon.couponredemption_set.all().count() }
         </td>
-        <!--<td>${coupon.is_active}</td>-->
         <td><a data-item-id="${coupon.id}" class='remove_coupon' href='#'>[x]</a><a href="#edit-modal" data-item-id="${coupon.id}" class="edit-right">Edit</a></td>
       </tr>
       %endfor
@@ -58,6 +74,62 @@
 
 <script>
   $(function () {
+    function isInt(n) {
+     return n % 1 == 0;
+    }
+    $("form#course_codes_number").submit(function(e) {
+      $('#code-error').attr('style', 'display: none');
+      $('#coupon-error').val('');
+      $('#coupon-error').attr('style', 'display: none');
+      var group_name = $('input[name="transaction_group_name"]').val();
+      if (group_name == '') {
+        $('#code-error').html('Please Enter the Transaction Group Name').show();
+          return false;
+      }
+      if ($.isNumeric(group_name)) {
+        $('#code-error').html('Please Enter the non-numeric value for Transaction Group Name').show();
+          return false;
+      }
+      var registration_codes = $('input[name="course_registration_code_number"]').val();
+      if (Math.floor(registration_codes) == registration_codes && $.isNumeric(registration_codes)) {
+        if (parseInt(registration_codes) > 1000 ) {
+          $('#code-error').html('Please Enter the Value less than or equal to 1000 for Registration Codes').show();
+          return false;
+        }
+        return true;
+      }
+      else {
+        $('#code-error').html('Please Enter the Integer Value for Registration Codes').show();
+        return false;
+      }
+    });
+    $("input[name='active-registration-codes-csv']").click(function(e){
+      $('#coupon-error').val('');
+      $('#coupon-error').attr('style', 'display: none');
+      $('#code-error').attr('style', 'display: none');
+      e.preventDefault();
+      var url;
+      url = $(this).data('endpoint');
+      location.href = url;
+    });
+    $("input[name='spent-registration-codes-csv']").click(function(e){
+      $('#coupon-error').val('');
+      $('#coupon-error').attr('style', 'display: none');
+      $('#code-error').attr('style', 'display: none');
+      e.preventDefault();
+      var url;
+      url = $(this).data('endpoint');
+      location.href = url;
+    });
+    $("input[name='list-registration-codes-csv']").click(function(e){
+      $('#coupon-error').val('');
+      $('#coupon-error').attr('style', 'display: none');
+      $('#code-error').attr('style', 'display: none');
+      e.preventDefault();
+      var url;
+      url = $(this).data('endpoint');
+      location.href = url ;
+    });
     $('a[rel*=leanModal]').leanModal();
     $.each($("a.edit-right"), function () {
       if ($(this).parent().parent('tr').hasClass('inactive_coupon')) {
@@ -70,6 +142,7 @@
       }
     });
     $('a.edit-right').click(function (event) {
+      $('#code-error').attr('style', 'display: none');
       $('#edit_coupon_form #coupon_form_error').attr('style', 'display: none');
       $('#edit_coupon_form #coupon_form_error').text();
       event.preventDefault();
@@ -99,6 +172,7 @@
       });
     });
     $('a.remove_coupon').click(function (event) {
+      $('#code-error').attr('style', 'display: none');
       var anchor = $(this);
       if (anchor.data("disabled")) {
         return false;

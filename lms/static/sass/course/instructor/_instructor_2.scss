@@ -812,6 +812,18 @@ input[name="subject"] {
   .content{
     padding: 0 !important;
   }
+  input[name="course_registration_code_number"] {
+    margin-right: 10px;
+    height: 34px;
+    width: 250px;
+    border-radius: 3px;
+  }
+  input[name="transaction_group_name"] {
+    margin-right: 10px;
+    height: 34px;
+    width: 300px;
+    border-radius: 3px;
+  }
   .coupons-table {
     width: 100%;
     tr:nth-child(even){

@@ -138,6 +138,10 @@ def _section_e_commerce(course_key, access):
         'ajax_get_coupon_info': reverse('get_coupon_info'),
         'ajax_update_coupon': reverse('update_coupon'),
         'instructor_url': reverse('instructor_dashboard', kwargs={'course_id': course_key.to_deprecated_string()}),
+        'get_registration_code_csv_url': reverse('get_registration_codes', kwargs={'course_id': course_key.to_deprecated_string()}),
+        'generate_registration_code_csv_url': reverse('generate_registration_codes', kwargs={'course_id': course_key.to_deprecated_string()}),
+        'active_registration_code_csv_url': reverse('active_registration_codes', kwargs={'course_id': course_key.to_deprecated_string()}),
+        'spent_registration_code_csv_url': reverse('spent_registration_codes', kwargs={'course_id': course_key.to_deprecated_string()}),
         'coupons': coupons,
         'total_amount': total_amount,
     }

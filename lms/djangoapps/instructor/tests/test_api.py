@@ -34,6 +34,7 @@ from microsite_configuration import microsite
 
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
 from courseware.models import StudentModule
+from shoppingcart.models import Coupon, CourseRegistrationCode
 
 # modules which are mocked in test cases.
 import instructor_task.api
@@ -2122,3 +2123,128 @@ class TestDueDateExtensions(ModuleStoreTestCase, LoginEnrollmentTestCase):
             u'header': [u'Unit', u'Extended Due Date'],
             u'title': u'Due date extensions for %s (%s)' % (
             self.user1.profile.name, self.user1.username)})
+
+
+@override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
+@override_settings(REGISTRATION_CODE_LENGTH=8)
+class TestCourseRegistrationCodes(ModuleStoreTestCase):
+    """
+    Test data dumps for E-commerce Course Registration Codes.
+    """
+    def setUp(self):
+        """
+        Fixtures.
+        """
+        self.course = CourseFactory.create()
+        self.instructor = InstructorFactory(course_key=self.course.id)
+        self.client.login(username=self.instructor.username, password='test')
+
+        # Active Registration Codes
+        for i in range(12):
+            course_registration_code = CourseRegistrationCode(
+                code='MyCode0{}'.format(i), course_id=self.course.id.to_deprecated_string(),
+                transaction_group_name='Test Group', created_by=self.instructor
+            )
+            course_registration_code.save()
+
+        # Spent(used) Registration Codes
+        for i in range(5):
+            course_registration_code = CourseRegistrationCode(
+                code='34WWegh{}'.format(i), course_id=self.course.id.to_deprecated_string(),
+                transaction_group_name='Test Group One', created_by=self.instructor, redeemed_by=self.instructor
+            )
+            course_registration_code.save()
+
+    def test_generate_course_registration_codes_csv(self):
+        """
+        Test to generate a response of all the generated course registration codes
+        """
+        url = reverse('generate_registration_codes',
+                      kwargs={'course_id': self.course.id.to_deprecated_string()})
+
+        data = {'course_registration_codes_number': 15.0, 'transaction_group_name': 'Test Group'}
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response['Content-Type'], 'text/csv')
+        body = response.content.replace('\r', '')
+        self.assertTrue(body.startswith('"code","course_id","transaction_group_name","created_by","redeemed_by"'))
+        self.assertEqual(len(body.split('\n')), 17)
+
+    @patch.object(instructor.views.api, 'random_code_generator', Mock(side_effect=['first', 'second', 'third', 'fourth']))
+    def test_generate_course_registration_codes_matching_existing_coupon_code(self):
+        """
+        Test the generated course registration code is already in the Coupon Table
+        """
+        url = reverse('generate_registration_codes',
+                      kwargs={'course_id': self.course.id.to_deprecated_string()})
+
+        coupon = Coupon(code='first', course_id=self.course.id.to_deprecated_string(), created_by=self.instructor)
+        coupon.save()
+        data = {'course_registration_codes_number': 3, 'transaction_group_name': 'Test Group'}
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response['Content-Type'], 'text/csv')
+        body = response.content.replace('\r', '')
+        self.assertTrue(body.startswith('"code","course_id","transaction_group_name","created_by","redeemed_by"'))
+        self.assertEqual(len(body.split('\n')), 5)  # 1 for headers, 1 for new line at the end and 3 for the actual data
+
+    @patch.object(instructor.views.api, 'random_code_generator', Mock(side_effect=['first', 'first', 'second', 'third']))
+    def test_generate_course_registration_codes_integrity_error(self):
+        """
+       Test for the Integrity error against the generated code
+        """
+        url = reverse('generate_registration_codes',
+                      kwargs={'course_id': self.course.id.to_deprecated_string()})
+
+        data = {'course_registration_codes_number': 2, 'transaction_group_name': 'Test Group'}
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response['Content-Type'], 'text/csv')
+        body = response.content.replace('\r', '')
+        self.assertTrue(body.startswith('"code","course_id","transaction_group_name","created_by","redeemed_by"'))
+        self.assertEqual(len(body.split('\n')), 4)
+
+    def test_spent_course_registration_codes_csv(self):
+        """
+        Test to generate a response of all the spent course registration codes
+        """
+        url = reverse('spent_registration_codes',
+                      kwargs={'course_id': self.course.id.to_deprecated_string()})
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response['Content-Type'], 'text/csv')
+        body = response.content.replace('\r', '')
+        self.assertTrue(body.startswith('"code","course_id","transaction_group_name","created_by","redeemed_by"'))
+        self.assertEqual(len(body.split('\n')), 7)
+
+    def test_active_course_registration_codes_csv(self):
+        """
+        Test to generate a response of all the active course registration codes
+        """
+        url = reverse('active_registration_codes',
+                      kwargs={'course_id': self.course.id.to_deprecated_string()})
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response['Content-Type'], 'text/csv')
+        body = response.content.replace('\r', '')
+        self.assertTrue(body.startswith('"code","course_id","transaction_group_name","created_by","redeemed_by"'))
+        self.assertEqual(len(body.split('\n')), 14)
+
+    def test_get_all_course_registration_codes_csv(self):
+        """
+        Test to generate a response of all the course registration codes
+        """
+        url = reverse('get_registration_codes',
+                      kwargs={'course_id': self.course.id.to_deprecated_string()})
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response['Content-Type'], 'text/csv')
+        body = response.content.replace('\r', '')
+        self.assertTrue(body.startswith('"code","course_id","transaction_group_name","created_by","redeemed_by"'))
+        self.assertEqual(len(body.split('\n')), 19)

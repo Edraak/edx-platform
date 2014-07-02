@@ -13,6 +13,7 @@ PROFILE_FEATURES = ('name', 'language', 'location', 'year_of_birth', 'gender',
                     'level_of_education', 'mailing_address', 'goals')
 AVAILABLE_FEATURES = STUDENT_FEATURES + PROFILE_FEATURES
 
+COURSE_REGISTRATION_FEATURES = ('code', 'course_id', 'transaction_group_name', 'created_by', 'redeemed_by')
 
 def enrolled_students_features(course_id, features):
     """
@@ -45,6 +46,29 @@ def enrolled_students_features(course_id, features):
         return student_dict
 
     return [extract_student(student, features) for student in students]
+
+
+def course_registration_features(features, registration_codes):
+    """
+    Return list of Course Registration Codes as dictionaries.
+
+    instructor_registration_features(course_id, ['username, first_name'])
+    would return [
+        {'code': 'code1', 'course_id': 'edX/Open_DemoX/edx_demo_course, ..... }
+        {'code': 'code2', 'course_id': 'edX/Open_DemoX/edx_demo_course, ..... }
+    ]
+    """
+
+    def extract_course_registration(registration_code, features):
+        """ convert registration_code to dictionary """
+        registration_features = [x for x in COURSE_REGISTRATION_FEATURES if x in features]
+
+        course_registration_dict = dict((feature, getattr(registration_code, feature))
+                                      for feature in registration_features)
+
+        course_registration_dict['course_id'] = course_registration_dict['course_id'].to_deprecated_string()
+        return course_registration_dict
+    return [extract_course_registration(code, features) for code in registration_codes]
 
 
 def dump_grading_context(course):
