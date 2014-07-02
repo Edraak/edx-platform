@@ -75,7 +75,7 @@ if Backbone?
     #TODO fix this entire chain of events
     addAndSelectThread: (thread) =>
       commentable_id = thread.get("commentable_id")
-      menuItem = @$(".forum-nav-browse-menu-item[data-discussion-id]").filter(-> $(this).data("discussion-id").id == commentable_id)
+      menuItem = @$(".forum-nav-browse-menu-item[data-discussion-id]").filter(-> $(this).data("discussion-id") == commentable_id)
       @setCurrentTopicDisplay(@getPathText(menuItem))
       @retrieveDiscussion commentable_id, =>
         @trigger "thread:created", thread.get('id')
@@ -373,7 +373,7 @@ if Backbone?
       else
         allItems = item.find(".forum-nav-browse-menu-item").andSelf()
         discussionIds = allItems.filter("[data-discussion-id]").map(
-          (i, elem) -> $(elem).data("discussion-id").id
+          (i, elem) -> $(elem).data("discussion-id")
         ).get()
         @retrieveDiscussions(discussionIds)
         @$(".forum-nav-filter-cohort").toggle(item.data('cohorted') == true)

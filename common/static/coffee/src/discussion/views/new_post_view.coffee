@@ -22,7 +22,7 @@ if Backbone?
               @dropdownButton = @$(".topic_dropdown_button")
               @topicMenu      = @$(".topic_menu_wrapper")
               @hideTopicDropdown()
-              @topicId    = @$(".topic").first().data("discussion_id")
+              @topicId    = @$(".topic").first().data("discussion-id")
               @topicText  = @getFullTopicName(@$(".topic").first())
               $('.choose-cohort').hide() unless @$(".topic_menu li a").first().is("[cohorted=true]")
               @setSelectedTopic()
@@ -130,10 +130,10 @@ if Backbone?
 
       setTopic: (event) ->
           $target = $(event.target)
-          if $target.data('discussion_id')
+          if $target.data('discussion-id')
               @topicText = $target.html()
               @topicText  = @getFullTopicName($target)
-              @topicId   = $target.data('discussion_id')
+              @topicId   = $target.data('discussion-id')
               @setSelectedTopic()
               if $target.is('[cohorted=true]')
                 $('.choose-cohort').show();
