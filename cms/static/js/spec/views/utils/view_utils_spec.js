@@ -1,6 +1,6 @@
 define(["jquery", "underscore", "js/views/baseview", "js/views/utils/view_utils", "js/utils/handle_iframe_binding",
     "js/spec_helpers/edit_helpers"],
-    function ($, _, BaseView, view_utils, IframeBinding, view_helpers) {
+    function ($, _, BaseView, ViewUtils, IframeBinding, view_helpers) {
 
         describe("ViewUtils", function() {
             describe("disabled element while running", function() {
@@ -11,7 +11,7 @@ define(["jquery", "underscore", "js/views/baseview", "js/views/utils/view_utils"
                     setFixtures("<a href='#' id='link'>ripe apples drop about my head</a>");
                     link = $("#link");
                     expect(link).not.toHaveClass("is-disabled");
-                    view_utils.disableElementWhileRunning(link, function() { return promise; });
+                    ViewUtils.disableElementWhileRunning(link, function() { return promise; });
                     expect(link).toHaveClass("is-disabled");
                     deferred.resolve();
                     expect(link).not.toHaveClass("is-disabled");
@@ -24,7 +24,7 @@ define(["jquery", "underscore", "js/views/baseview", "js/views/utils/view_utils"
                         deferred = new $.Deferred(),
                         promise = deferred.promise(),
                         notificationSpy = view_helpers.createNotificationSpy();
-                    view_utils.runOperationShowingMessage(testMessage, function() { return promise; });
+                    ViewUtils.runOperationShowingMessage(testMessage, function() { return promise; });
                     view_helpers.verifyNotificationShowing(notificationSpy, /Testing/);
                     deferred.resolve();
                     view_helpers.verifyNotificationHidden(notificationSpy);
@@ -35,7 +35,7 @@ define(["jquery", "underscore", "js/views/baseview", "js/views/utils/view_utils"
                         deferred = new $.Deferred(),
                         promise = deferred.promise(),
                         notificationSpy = view_helpers.createNotificationSpy();
-                    view_utils.runOperationShowingMessage(testMessage, function() { return promise; });
+                    ViewUtils.runOperationShowingMessage(testMessage, function() { return promise; });
                     view_helpers.verifyNotificationShowing(notificationSpy, /Testing/);
                     deferred.fail();
                     view_helpers.verifyNotificationShowing(notificationSpy, /Testing/);

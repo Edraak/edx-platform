@@ -1,8 +1,8 @@
 /**
  * Subviews (usually small side panels) for XBlockContainerPage.
  */
-define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/feedback_prompt"],
-    function ($, _, gettext, BaseView, PromptView) {
+define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/view_utils", "js/views/feedback_prompt"],
+    function ($, _, gettext, BaseView, ViewUtils, PromptView) {
 
         var disabledCss = "is-disabled";
 
@@ -119,7 +119,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/feedba
                 if (e && e.preventDefault) {
                     e.preventDefault();
                 }
-                this.runOperationShowingMessage(gettext('Publishing&hellip;'),
+                ViewUtils.runOperationShowingMessage(gettext('Publishing&hellip;'),
                     function () {
                         return xblockInfo.save({publish: 'make_public'});
                     }).always(function() {

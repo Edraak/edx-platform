@@ -77,7 +77,7 @@ define(["jquery", "underscore", "gettext", "js/models/asset", "js/views/paging",
             },
 
             onError: function() {
-                this.hideLoadingIndicator();
+                ViewUtils.hideLoadingIndicator();
             },
 
             handleDestroy: function(model) {

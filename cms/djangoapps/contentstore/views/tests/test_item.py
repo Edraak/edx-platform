@@ -372,7 +372,7 @@ class TestDuplicateItem(ItemTest):
         verify_name(self.html_usage_key, self.seq_usage_key, "Duplicate of 'Text'")
 
         # The sequence does not have a display_name set, so category is shown.
-        verify_name(self.seq_usage_key, self.chapter_usage_key, "Duplicate of 'Sequence'")
+        verify_name(self.seq_usage_key, self.chapter_usage_key, "Duplicate of sequential")
 
         # Now send a custom display name for the duplicate.
         verify_name(self.seq_usage_key, self.chapter_usage_key, "customized name", display_name="customized name")
