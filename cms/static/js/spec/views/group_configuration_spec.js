@@ -3,12 +3,12 @@ define([
     'js/collections/group_configuration',
     'js/views/group_configuration_details',
     'js/views/group_configurations_list', 'js/views/group_configuration_edit',
-    'js/models/group', 'js/collections/group', 'js/views/feedback_notification',
+    'js/views/group_configuration_item', 'js/views/feedback_notification',
     'js/spec_helpers/create_sinon', 'jasmine-stealth'
 ], function(
     GroupConfigurationModel, Course, GroupConfigurationSet,
     GroupConfigurationDetails, GroupConfigurationsList, GroupConfigurationEdit,
-    GroupModel, GroupSet, Notification, create_sinon
+    GroupConfigurationItem, Notification, create_sinon
 ) {
     'use strict';
     beforeEach(function() {
@@ -74,12 +74,12 @@ define([
                 this.view.render().$('.show-groups').click();
 
                 expect(this.model.get('showGroups')).toBeTruthy();
-                expect(this.view.$el.find('.group').length).toBe(3);
-                expect(this.view.$el.find('.group-configuration-groups-count'))
+                expect(this.view.$('.group').length).toBe(3);
+                expect(this.view.$('.group-configuration-groups-count'))
                     .not.toExist();
-                expect(this.view.$el.find('.group-configuration-description'))
+                expect(this.view.$('.group-configuration-description'))
                     .toContainText('Configuration Description');
-                expect(this.view.$el.find('.group-allocation'))
+                expect(this.view.$('.group-allocation'))
                     .toContainText('33%');
             });
 
@@ -89,12 +89,12 @@ define([
                 this.view.render().$('.hide-groups').click();
 
                 expect(this.model.get('showGroups')).toBeFalsy();
-                expect(this.view.$el.find('.group').length).toBe(0);
-                expect(this.view.$el.find('.group-configuration-groups-count'))
+                expect(this.view.$('.group').length).toBe(0);
+                expect(this.view.$('.group-configuration-groups-count'))
                     .toContainText('Contains 3 groups');
-                expect(this.view.$el.find('.group-configuration-description'))
+                expect(this.view.$('.group-configuration-description'))
                     .not.toExist();
-                expect(this.view.$el.find('.group-allocation'))
+                expect(this.view.$('.group-allocation'))
                     .not.toExist();
             });
         });
@@ -143,8 +143,6 @@ define([
             });
 
             it('should save properly', function() {
-                var group;
-
                 this.view.render();
                 this.view.$('.group-configuration-name-input').val(
                     'New Configuration'
@@ -184,6 +182,20 @@ define([
                 expect(this.model.save).not.toHaveBeenCalled();
             });
 
+            it('should be removed if it is a new item', function() {
+                this.model.unset('id');
+                this.view.render();
+                this.view.$('.group-configuration-name-input').val(
+                    'New Configuration'
+                );
+                this.view.$('.group-configuration-description-input').val(
+                    'New Description'
+                );
+                this.view.$('.action-cancel').click();
+                expect($('.group-configuration').length).toBe(0);
+                expect(this.model.save).not.toHaveBeenCalled();
+            });
+
             it('should be possible to correct validation errors', function() {
                 this.view.render();
                 this.view.$('.group-configuration-name-input').val('');
@@ -196,6 +208,18 @@ define([
                 this.view.$('form').submit();
                 expect(this.model.validationError).toBeFalsy();
                 expect(this.model.save).toHaveBeenCalled();
+            });
+
+            var message = 'should have appropriate class names on focus/blur';
+            it(message, function () {
+                this.view.render();
+                var element = this.view.$('.group-configuration-name-input'),
+                    parent = this.view.$('.add-group-configuration-name');
+
+                element.focus();
+                expect(parent).toHaveClass('is-focused');
+                element.blur();
+                expect(parent).not.toHaveClass('is-focused');
             });
         });
 
@@ -244,12 +268,6 @@ define([
                 type: 'text/template'
             }).text(noGroupConfigurationsTpl));
 
-            this.itemSpies = spyOnConstructor(
-                window, 'GroupConfigurationsItem', [ 'render' ]
-            );
-            this.itemSpies.render.andReturn(this.itemSpies);
-            this.itemSpies.$el = showEl;
-            this.itemSpies.el = showEl.get(0);
             this.collection = new GroupConfigurationSet();
             this.view = new GroupConfigurationsList({
                 collection: this.collection
@@ -264,7 +282,26 @@ define([
                 'You haven\'t created any group configurations yet.'
             );
             expect(this.view.$el).toContain('.new-button');
-            expect(this.itemSpies.constructor).not.toHaveBeenCalled();
+            expect(
+                this.view.$('.group-configurations-list-item').length
+            ).toBe(0);
+        });
+
+        message = 'the empty template should disappear when new ' +
+                      'group configuration is added';
+        it(message, function() {
+            var emptyMessage = 'You haven\'t created any group ' +
+                'configurations yet.';
+
+            expect(this.view.$el).toContainText(emptyMessage);
+            expect(
+                this.view.$('.group-configurations-list-item').length
+            ).toBe(0);
+            this.collection.add([{}]);
+            expect(this.view.$el).not.toContainText(emptyMessage);
+            expect(
+                this.view.$('.group-configurations-list-item').length
+            ).toBe(1);
         });
 
         message = 'should render GroupConfigurationDetails views by default';
@@ -275,11 +312,11 @@ define([
             expect(this.view.$el).not.toContainText(
                 'You haven\'t created any group configurations yet.'
             );
-            expect(this.view.$el.find('.group-configuration').length).toBe(3);
+            expect(this.view.$('.group-configuration').length).toBe(3);
         });
     });
 
-    describe('GroupConfigurationsItem', function() {
+    describe('GroupConfigurationItem', function() {
         var groupConfigurationEditTpl = readFixtures(
             'group-configuration-edit.underscore'
         ), message;
@@ -289,21 +326,33 @@ define([
                 id: 'group-configuration-edit-tpl',
                 type: 'text/template'
             }).text(groupConfigurationEditTpl));
-            this.collection = new GroupConfigurationSet();
-            this.view = new GroupConfigurationsList({
-                collection: this.collection
+            this.model = new GroupConfigurationModel({});
+            this.collection = new GroupConfigurationSet([ this.model ]);
+            this.view = new GroupConfigurationItem({
+                model: this.model
             });
             this.view.render();
         });
 
         message = 'should render GroupConfigurationDetails view by default';
         it(message, function() {
-            this.collection.add([{}, {}, {}]);
-            this.view.render();
-
             expect(
-                this.view.$el.find('.view-group-configuration-details').length
-            ).toBe(3);
+                this.view.$('.view-group-configuration-details').length
+            ).toBe(1);
+        });
+
+        message = 'previous view should be replaced correctly';
+        it(message, function() {
+            expect(
+                this.view.$('.view-group-configuration-details').length
+            ).toBe(1);
+            this.model.set('editing', true);
+            expect(
+                this.view.$('.view-group-configuration-edit').length
+            ).toBe(1);
+            expect(
+                this.view.$('.view-group-configuration-details').length
+            ).toBe(0);
         });
     });
 });
