@@ -50,6 +50,7 @@
 // applications
 @import "discussion/utilities/variables";
 @import 'discussion/discussion'; // Process old file after definitions but before everything else
+@import "discussion/views/new-post";
 @import "discussion/elements/navigation";
 @import 'discussion/utilities/developer';
 @import 'discussion/utilities/shame';

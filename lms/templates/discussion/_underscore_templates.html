@@ -255,7 +255,7 @@
             )
         %>
         <span class="forum-nav-thread-votes-count">+${'<%='}${js_block}${'%>'}</span>
-        <% 
+        <%
         js_block =  u"""
         var fmt;
         // Counts in data do not include the post itself, but the UI should
@@ -358,65 +358,6 @@
     </div>
 </script>
 
-<!-- temporary, do not merge to master !!! -->
-<style type="text/css">
-
-.new-post-form {
-  padding: 40px;
-  box-sizing:border-box;
-}
-
-.wrapper-field {
-  margin-bottom: 10px;
-}
-.field-label {
-  display: inline-block;
-  width: 49%;
-  vertical-align: top;
-}
-
-.field-label-name {
-  display: inline-block;
-  width:35%;
-  vertical-align: bottom;
-}
-
-.field-label-input {
-  display: inline-block;
-}
-
-.post-title {
- width: 95%;
-}
-
-.field-help {
-  display: inline-block;
-  width: 49%;
-  font-size: 12px;
-}
-
-.new-post-body-form {
-}
-.new-post-option {
-  border: 1px solid gray;
-  border-radius: 3px;
-  padding: 10px;
-  margin: 10px 0;
-}
-
-.new-post-follow {
-  display: inline-block;
-  margin-left: 10px;
-}
-
-.new-post-anonymous {
-  display: inline-block;
-  margin-left: 10px;
-}
-
-.new-post-body.editor {width: 96%;}
-</style>
-
 <script aria-hidden="true" type="text/template" id="new-post-template">
     <div class="inner-wrapper">
         <form class="new-post-form">
@@ -462,8 +403,8 @@
                </div>
                <div class="field-help">
                   <span>
-            Think carefully about where you place your question, as it makes it easier for other students and staff to build conversation when it is in the right place.
-                  </span>
+                    Think carefully about where you place your post, as it makes it easier for other students and staff to build conversation when it is in the right place.
+                    </span>
                </div>
             </div>
             ${'<% } %>'}
@@ -503,8 +444,11 @@
                     </span>
                </div>
                <div class="field-help">
-                  <span>
-            Make sure your title clearly describes your discussion topic.  Clear titles encourage discussion and make it easier for interested students to find them.
+                  <span class="post-title-description question">
+                        Make sure your title clearly describes your question. Try to avoid unclear or generic questions when possible.
+                  </span>
+                  <span class="post-title-description discussion">
+                      Make sure your title clearly describes your discussion topic.  Clear titles encourage discussion and make it easier for interested students to find them.
                   </span>
                </div>
             </div>
@@ -514,11 +458,11 @@
             <div class="wrapper-field">
                 <div class="field-label">
                   <div class="new-post-option option-follow">
-                    <input type="checkbox" name="follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
+                    <input type="checkbox" name="follow" class="post-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
                   </div>
                   ${'<% if (allow_anonymous) { %>'}
                   <div class="new-post-option option-anonymous">
-                    <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous">
+                    <input type="checkbox" name="anonymous" class="post-anonymous" id="new-post-anonymous">
                     <label for="new-post-anonymous">${_("post anonymously")}</label>
                   </div>
                   ${'<% } %>'}

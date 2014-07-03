@@ -1,0 +1,60 @@
+// discussion - views - new post
+// ====================
+
+.new-post-form {
+  padding: ($baseline*2);
+  box-sizing: border-box;
+
+  // UI: form input fields
+  .wrapper-field {
+    margin-bottom: ($baseline/2);
+
+    .field-label {
+      display: inline-block;
+      width: 49%;
+      vertical-align: top;
+
+      .field-label-name {
+        display: inline-block;
+        width:35%;
+        vertical-align: bottom;
+      }
+      .field-label-input {
+        display: inline-block;
+      }
+    }
+
+    // UI: support text for input fields
+    .field-help {
+      display: inline-block;
+      width: 49%;
+      font-size: 12px;
+
+      // CASE: question help
+      .question {
+        // temporary hiding until question feature is ready
+        display: none;
+      }
+    }
+
+    // UI: post options
+    .new-post-option {
+      border: 1px solid $gray;
+      border-radius: 3px;
+      padding: ($baseline/2) 0;
+      margin: ($baseline/2) 0;
+
+      .post-follow, .post-anonymous {
+        display: inline-block;
+        margin-left: ($baseline/2);
+      }
+    }
+
+    .post-title {
+     width: 95%;
+    }
+  }
+
+
+  .new-post-body.editor {width: 96%;}
+}
