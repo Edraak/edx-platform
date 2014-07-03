@@ -1,143 +1,7 @@
-// forums - main styling
+// forums - main app styling
 // ====================
 
-// mixins and extends
-@mixin blue-button {
-  display: block;
-  height: 35px;
-  padding: 0 ($baseline*.75);
-  border-radius: 3px;
-  border: 1px solid #2d81ad;
-  @include linear-gradient(top, #6dccf1, #38a8e5);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 32px;
-  color: $white;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
-
-  &:hover, &:focus {
-    border-color: #297095;
-    @include linear-gradient(top, #4fbbe4, #2090d0);
-  }
-}
-
-@mixin white-button {
-  @include linear-gradient(top, #eee, #ccc);
-  display: block;
-  border: 1px solid #aaa;
-  border-radius: 3px;
-  padding: 0 ($baseline*.75);
-  height: 35px;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
-  color: $dark-gray;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 32px;
-
-  &:hover, &:focus {
-    @include linear-gradient(top, $white, #ddd);
-  }
-}
-
-@mixin dark-grey-button {
-  display: block;
-  height: 35px;
-  padding: 0 ($baseline*.75);
-  border-radius: 3px;
-  border: 1px solid #222;
-  background: -webkit-linear-gradient(top, #777, #555);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 32px;
-  color: $white;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
-
-  &:hover, &:focus {
-    background: -webkit-linear-gradient(top, #888, #666);
-  }
-}
-
-@mixin discussion-wmd-input {
-  width: 100%;
-  height: 240px;
-  margin-top: 0;
-  padding: ($baseline/2);
-  @include box-sizing(border-box);
-  border: 1px solid #aaa;
-  border-radius: 3px 3px 0 0;
-  background: $white;
-  font-family: 'Monaco', monospace;
-  font-size: 13px;
-  line-height: 1.6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) inset;
-}
-
-@mixin discussion-wmd-preview-container {
-  width: 100%;
-  @include box-sizing(border-box);
-  border: 1px solid #aaa;
-  border-top: none;
-  border-radius: 0 0 3px 3px;
-  background: #eee;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) inset;
-}
-
-@mixin discussion-new-post-wmd-preview-container {
-  @include discussion-wmd-preview-container;
-  border-color: #333;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) inset;
-}
-
-@mixin discussion-wmd-preview-label {
-  width: 100%;
-  padding-top: 3px;
-  padding-left: 5px;
-  color: #bbb;
-  font-size: 11px;
-  text-transform: uppercase;
-}
-
-@mixin discussion-wmd-preview {
-  width: 100%;
-  padding: 10px 20px;
-  color: #333;
-}
-
-@-webkit-keyframes fadeIn {
-  0% { opacity: 0.0; }
-  100% { opacity: 1.0; }
-}
-
-// ===============
-
-// main styling
 body.discussion {
-
-  // new post creation
-  .new-post-form-errors {
-    display: none;
-    background: $error-red;
-    padding: 0;
-    border: 1px solid $dark-gray;
-    list-style: none;
-    color: $white;
-    line-height: 1.6;
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0 1px 0 rgba(255, 255, 255, .2);
-
-    li {
-      padding: ($baseline/2) $baseline 12px 45px;
-      border-bottom: 1px solid #dc4949;
-      background: url(../images/white-error-icon.png) no-repeat 15px 14px;
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-  }
 
   .course-tabs .right {
     float: right;
@@ -152,148 +16,6 @@ body.discussion {
       font-size: 16px;
       vertical-align: middle;
       color: $white;
-    }
-  }
-
-  .new-post-article {
-    display: none;
-    margin-top: 0px;
-
-    .inner-wrapper {
-      max-width: 1180px;
-      min-width: 760px;
-      margin: 0px;
-    }
-
-    .left-column {
-      @include box-sizing(border-box);
-      float: left;
-      padding: ($baseline*2);
-      width: 32%;
-
-      .topic-dropdown-label {
-        font-size: 22px;
-        font-weight: 700;
-        color: $white;
-        text-shadow: none;
-      }
-
-      .form-topic-drop {
-        position: relative;
-
-        ul {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-        }
-      }
-
-      .form-group-label {
-        display: block;
-        padding-top: ($baseline/4);
-        color: $white;
-      }
-
-      .topic_dropdown_button {
-        @include white-button;
-        position: relative;
-        z-index: 1000;
-        margin-top: 15px;
-        border-color: #444;
-        height: 40px;
-        line-height: 36px;
-
-        .drop-arrow {
-          float: right;
-          color: #999;
-          line-height: 37px;
-        }
-      }
-
-      .topic_menu_wrapper {
-        display: none;
-        position: absolute;
-        top: $baseline*2;
-        left: 0;
-        z-index: 9999;
-        width: 100%;
-        @include box-sizing(border-box);
-        background: #797979;
-        border: 1px solid $dark-gray;
-        box-shadow: 0 2px 50px rgba(0, 0, 0, .4);
-      }
-
-      .topic_menu {
-        max-height: 400px;
-        overflow-y: scroll;
-
-        a {
-          display: block;
-          padding: ($baseline/2) 15px;
-          border-top: 1px solid #5f5f5f;
-          font-size: 14px;
-          font-weight: 700;
-          line-height: 18px;
-          color: #eee;
-          @include transition(none);
-
-          &:hover, &:focus {
-            background-color: #666;
-          }
-
-          .topic-menu-span {
-            color: #eee;
-          }
-        }
-
-        li li {
-          a {
-            padding-left: 39px;
-            background: url(../images/nested-icon.png) no-repeat 17px 10px;
-          }
-        }
-
-        li li li {
-          a {
-            padding-left: 63px;
-            background: url(../images/nested-icon.png) no-repeat 41px 10px;
-          }
-        }
-      }
-
-      .topic_menu_search {
-        padding: $baseline/2;
-        border-bottom: 1px solid black;
-      }
-
-      .form-topic-drop-search-input {
-        width: 100%;
-        height: 30px;
-        padding: 0 15px;
-        @include box-sizing(border-box);
-        border-radius: 30px;
-        border: 1px solid $dark-gray;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, .25) inset;
-        background: -webkit-linear-gradient(top, #eee, $white);
-        font-size: 11px;
-        line-height: 16px;
-        color: #333;
-      }
-    }
-
-    .right-column {
-      float: left;
-      width: 68%;
-      padding: ($baseline*2);
-      @include box-sizing(border-box);
-    }
-
-    .wmd-button {
-      background: none;
-    }
-
-    .wmd-button span {
-      background: url(../images/new-post-icons-full.png) no-repeat;
     }
   }
 
@@ -341,87 +63,10 @@ body.discussion {
       font-size: 16px;
       font-family: $sans-serif;
     }
-
   }
 
   .comments .edit-post-form h1 {
     @extend %t-title6;
-  }
-
-  .new-post-form {
-    @include clearfix;
-    background: $gray-l5;
-    box-shadow: 0 1px 2px $shadow inset;
-
-    .form-row {
-      margin-bottom: $baseline;
-    }
-
-    .new-post-body .wmd-input {
-      @include discussion-wmd-input;
-      @include box-sizing(border-box);
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 150px;
-      background: $white;
-    }
-
-    .new-post-body .wmd-preview-container {
-      @include discussion-new-post-wmd-preview-container;
-    }
-
-    .new-post-body .wmd-preview-label {
-      @include discussion-wmd-preview-label;
-    }
-
-    .new-post-body .wmd-preview {
-      @include discussion-wmd-preview;
-    }
-
-    .new-post-title {
-      @include box-sizing(border-box);
-      border: 1px solid $dark-gray;
-      border-radius: 3px;
-      padding: 0 ($baseline/2);
-      width: 100%;
-      height: 40px;
-      box-shadow: 0 1px 3px $shadow inset;
-      color: $dark-gray;
-      font-weight: 700;
-    }
-
-    .submit {
-      @include blue-button;
-      float: left;
-      margin-top: ($baseline/2);
-      border-color: $dark-gray;
-      padding-bottom: ($baseline/10);
-      height: 37px;
-
-      &:hover, &:focus {
-        border-color: #222;
-      }
-    }
-
-    .new-post-cancel {
-      @include white-button;
-      float: left;
-      margin: ($baseline/2) 0 0 ($baseline*.75);
-      border-color: #444;
-    }
-
-    .options {
-      margin-top: ($baseline*2);
-
-      label {
-        display: inline;
-        margin-left: ($baseline/2);
-        color: $white;
-        text-shadow: none;
-        font-size: 15px;
-      }
-    }
   }
 
   .thread-title {
@@ -431,41 +76,6 @@ body.discussion {
     font-weight: 700;
     font-size: 21px;
   }
-
-  section.user-profile {
-    display: table-cell;
-    border-right: 1px solid #ddd;
-    border-radius: 3px 0 0 3px;
-    background-color: $sidebar-color;
-    box-shadow: none;
-
-    .user-profile {
-      padding: 32px 36px;
-    }
-
-    .sidebar-username {
-      font-weight: 700;
-      font-size: 18px;
-    }
-
-    .sidebar-user-roles {
-      margin-top: 6px;
-      font-style: italic;
-      font-size: 13px;
-    }
-
-    .sidebar-threads-count {
-      margin-top: 14px;
-    }
-
-    .sidebar-threads-count span,
-    .sidebar-comments-count span {
-      font-weight: 700;
-    }
-  }
-
-
-
 
   .wmd-panel {
     min-width: 500px;
@@ -826,9 +436,6 @@ body.discussion {
         background-position: 0 0;
       }
     }
-
-
-
   }
 
   .discussion-post {
@@ -854,8 +461,6 @@ body.discussion {
   .responses li header {
     margin-bottom: $baseline;
   }
-
-
 
   .responses {
     list-style: none;
@@ -911,7 +516,6 @@ body.discussion {
         color: $white;
         text-transform: uppercase;
       }
-
 
       &.loading {
         height: 0;
@@ -1193,39 +797,10 @@ body.discussion {
     }
   }
 
-
-
-
   .main-article.new {
     display: none;
     padding: ($baseline*2.5);
   }
-
-  .new-post-form {
-    margin-top: 0px;
-    @include clearfix;
-  }
-
-  .new-post-form .submit {
-    @include blue-button;
-    float: left;
-    margin-top: ($baseline/2);
-    padding-bottom: ($baseline/10);
-  }
-
-  .new-post-form .options {
-    float: right;
-    margin-top: $baseline;
-    font-size: 14px;
-
-    label {
-      margin-left: ($baseline/5);
-    }
-  }
-
-
-
-
 
   .discussion-reply-new {
     padding: $baseline ($baseline*1.5);
@@ -1860,101 +1435,6 @@ body.discussion {
 
 .discussion-user-threads {
   @extend .discussion-module
-}
-
-// ====================
-
-// post actions - pinning
-.discussion-pin {
-      font-size: 12px;
-      float:right;
-      padding-right: 5px;
-      font-style: italic;
-      margin-right: $baseline/2;
-      opacity: 0.8;
-
-      &.admin-pin {
-        cursor: pointer;
-
-        &:hover, &:focus {
-          @include transition(opacity .2s linear 0s);
-          opacity: 1.0;
-        }
-      }
-    }
-
-.discussion-pin-inline {
-  font-size: 12px;
-  float:right;
-  font-style: italic;
-  position: relative;
-  right:-20px;
-  top:-13px;
-  margin-right:35px;
-  margin-top:13px;
-  opacity: 1.0;
-}
-
-.notpinned .icon {
-  display: block;
-  float: left;
-  margin: 3px;
-  width: 10px;
-  height: 14px;
-  padding-right: 3px;
-  color: #333;
-}
-
-.pinned .icon {
-  display: block;
-  float: left;
-  margin: 3px;
-  width: 10px;
-  height: 14px;
-  padding-right: 3px;
-  color: $pink;
-}
-
-.pinned span {
-  color: $pink;
-  font-style: italic;
-}
-
-.notpinned span {
-  color: #333;
-  font-style: italic;
-}
-
-.pinned-false
-{
-display:none;
-}
-
-// ====================
-
-// post actions - flagging
-.discussion-flag-abuse, .discussion-delete-comment, .discussion-edit-comment {
-  font-size: 12px;
-  float:right;
-  margin-left: ($baseline/2);
-  font-style: italic;
-  cursor:pointer;
-  color: $dark-gray;
-  opacity: 0.8;
-
-  &:hover, &:focus {
-    @include transition(opacity .2s linear 0s);
-    opacity: 1.0;
-  }
-
-  .flag-label {
-    font-style: italic;
-    margin-left: ($baseline/4);
-  }
-}
-
-.flagged * {
-  color: $pink;
 }
 
 // ====================

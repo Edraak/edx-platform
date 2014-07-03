@@ -1,0 +1,95 @@
+// discussion - elements - actions
+// ====================
+
+// post actions - pinning
+.discussion-pin {
+      font-size: 12px;
+      float:right;
+      padding-right: 5px;
+      font-style: italic;
+      margin-right: $baseline/2;
+      opacity: 0.8;
+
+      &.admin-pin {
+        cursor: pointer;
+
+        &:hover, &:focus {
+          @include transition(opacity .2s linear 0s);
+          opacity: 1.0;
+        }
+      }
+    }
+
+.discussion-pin-inline {
+  font-size: 12px;
+  float:right;
+  font-style: italic;
+  position: relative;
+  right:-20px;
+  top:-13px;
+  margin-right:35px;
+  margin-top:13px;
+  opacity: 1.0;
+}
+
+.notpinned .icon {
+  display: block;
+  float: left;
+  margin: 3px;
+  width: 10px;
+  height: 14px;
+  padding-right: 3px;
+  color: #333;
+}
+
+.pinned .icon {
+  display: block;
+  float: left;
+  margin: 3px;
+  width: 10px;
+  height: 14px;
+  padding-right: 3px;
+  color: $pink;
+}
+
+.pinned span {
+  color: $pink;
+  font-style: italic;
+}
+
+.notpinned span {
+  color: #333;
+  font-style: italic;
+}
+
+.pinned-false
+{
+display:none;
+}
+
+// ====================
+
+// post actions - flagging
+.discussion-flag-abuse, .discussion-delete-comment, .discussion-edit-comment {
+  font-size: 12px;
+  float:right;
+  margin-left: ($baseline/2);
+  font-style: italic;
+  cursor:pointer;
+  color: $dark-gray;
+  opacity: 0.8;
+
+  &:hover, &:focus {
+    @include transition(opacity .2s linear 0s);
+    opacity: 1.0;
+  }
+
+  .flag-label {
+    font-style: italic;
+    margin-left: ($baseline/4);
+  }
+}
+
+.flagged * {
+  color: $pink;
+}

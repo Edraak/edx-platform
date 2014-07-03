@@ -1,0 +1,111 @@
+// discussion - mixins and extends
+// ====================
+
+@mixin blue-button {
+  display: block;
+  height: 35px;
+  padding: 0 ($baseline*.75);
+  border-radius: 3px;
+  border: 1px solid #2d81ad;
+  @include linear-gradient(top, #6dccf1, #38a8e5);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 32px;
+  color: $white;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
+
+  &:hover, &:focus {
+    border-color: #297095;
+    @include linear-gradient(top, #4fbbe4, #2090d0);
+  }
+}
+
+@mixin white-button {
+  @include linear-gradient(top, #eee, #ccc);
+  display: block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 0 ($baseline*.75);
+  height: 35px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
+  color: $dark-gray;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 32px;
+
+  &:hover, &:focus {
+    @include linear-gradient(top, $white, #ddd);
+  }
+}
+
+@mixin dark-grey-button {
+  display: block;
+  height: 35px;
+  padding: 0 ($baseline*.75);
+  border-radius: 3px;
+  border: 1px solid #222;
+  background: -webkit-linear-gradient(top, #777, #555);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 32px;
+  color: $white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
+
+  &:hover, &:focus {
+    background: -webkit-linear-gradient(top, #888, #666);
+  }
+}
+
+@mixin discussion-wmd-input {
+  width: 100%;
+  height: 240px;
+  margin-top: 0;
+  padding: ($baseline/2);
+  @include box-sizing(border-box);
+  border: 1px solid #aaa;
+  border-radius: 3px 3px 0 0;
+  background: $white;
+  font-family: 'Monaco', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) inset;
+}
+
+@mixin discussion-wmd-preview-container {
+  width: 100%;
+  @include box-sizing(border-box);
+  border: 1px solid #aaa;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+  background: #eee;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) inset;
+}
+
+@mixin discussion-new-post-wmd-preview-container {
+  @include discussion-wmd-preview-container;
+  border-color: #333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) inset;
+}
+
+@mixin discussion-wmd-preview-label {
+  width: 100%;
+  padding-top: 3px;
+  padding-left: 5px;
+  color: #bbb;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+@mixin discussion-wmd-preview {
+  width: 100%;
+  padding: 10px 20px;
+  color: #333;
+}
+
+@-webkit-keyframes fadeIn {
+  0% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
