@@ -20,7 +20,7 @@
         </fieldset>
     </div>
     <div class="actions">
-        <button class="action action-primary" type="submit"><%= gettext("Save") %></button>
+        <button class="action action-primary" type="submit"><% if (isNew) { print(gettext("Create")) } else { print(gettext("Save")) } %></button>
         <button class="action action-secondary action-cancel"><%= gettext("Cancel") %></button>
     </div>
 </form>

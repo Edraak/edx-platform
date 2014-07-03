@@ -35,6 +35,7 @@ function(BaseView, _, $, NotificationView) {
                 uniqueId: _.uniqueId(),
                 name: this.model.escape('name'),
                 description: this.model.escape('description'),
+                isNew: this.model.isNew(),
                 error: this.model.validationError
             }));
 
