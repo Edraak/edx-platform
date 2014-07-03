@@ -1022,7 +1022,7 @@ def group_configurations_detail_handler(request, course_key_string, group_config
                                         # django is rewriting one to the other
         try:
             new_configuration = GroupConfiguration.prepare(request.body, course, assign_id=group_configuration_id)
-        except TextbookValidationError as err:
+        except GroupConfigurationsValidationError as err:
             return JsonResponse({"error": err.message}, status=400)
 
         if configuration:
