@@ -336,15 +336,13 @@ class GroupConfigurationsTest(UniqueCourseTest):
         Ensure that the group configuration can be created and edited correctly.
         """
         self.page.visit()
-
         self.assertEqual(len(self.page.group_configurations()), 0)
         # Create new group configuration
         self.page.create()
-
         config = self.page.group_configurations()[0]
-
         config.name = "New Group Configuration Name"
         config.description = "New Description of the group configuration."
+        self.assertEqual(config.get_text('.action-primary'), "Create")
         # Save the configuration
         config.save()
 
@@ -358,8 +356,10 @@ class GroupConfigurationsTest(UniqueCourseTest):
         # Edit the group configuration
         config.edit()
         # Update fields
+        self.assertTrue(config.id)
         config.name = "Second Group Configuration Name"
         config.description = "Second Description of the group configuration."
+        self.assertEqual(config.get_text('.action-primary'), "Save")
         # Save the configuration
         config.save()
 

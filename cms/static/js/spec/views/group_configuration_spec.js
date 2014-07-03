@@ -318,15 +318,24 @@ define([
 
     describe('GroupConfigurationItem', function() {
         var groupConfigurationEditTpl = readFixtures(
-            'group-configuration-edit.underscore'
-        ), message;
+                'group-configuration-edit.underscore'
+            ),
+            groupConfigurationDetailsTpl = readFixtures(
+                'group-configuration-details.underscore'
+            ), message;
 
         beforeEach(function() {
             setFixtures($('<script>', {
                 id: 'group-configuration-edit-tpl',
                 type: 'text/template'
             }).text(groupConfigurationEditTpl));
-            this.model = new GroupConfigurationModel({});
+            setFixtures($('<script>', {
+                id: 'group-configuration-details-tpl',
+                type: 'text/template'
+            }).text(groupConfigurationDetailsTpl));
+            this.model = new GroupConfigurationModel({
+                id: 0
+            });
             this.collection = new GroupConfigurationSet([ this.model ]);
             this.view = new GroupConfigurationItem({
                 model: this.model
@@ -346,7 +355,7 @@ define([
             expect(
                 this.view.$('.view-group-configuration-details').length
             ).toBe(1);
-            this.model.set('editing', true);
+            this.view.$('.action-edit .edit').click();
             expect(
                 this.view.$('.view-group-configuration-edit').length
             ).toBe(1);

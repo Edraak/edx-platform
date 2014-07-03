@@ -55,11 +55,17 @@ class GroupConfiguration(object):
         css = 'a.group-toggle'
         self.find_css(css).first.click()
 
+    def get_text(self, css):
+        """
+        Return text for the defined by css locator.
+        """
+        return self.find_css(css).first.text[0]
+
     def edit(self):
         """
         Open editing view for the group configuration.
         """
-        css = '.action-edit'
+        css = '.action-edit .edit'
         self.find_css(css).first.click()
 
     def save(self):
@@ -92,24 +98,21 @@ class GroupConfiguration(object):
         """
         Return group configuration id.
         """
-        css = '.group-configuration-id .group-configuration-value'
-        return self.find_css(css).first.text[0]
+        return self.get_text('.group-configuration-id .group-configuration-value')
 
     @property
     def validation_message(self):
         """
         Return validation message.
         """
-        css = '.message-status.error'
-        return self.find_css(css).first.text[0]
+        return self.get_text('.message-status.error')
 
     @property
     def name(self):
         """
         Return group configuration name.
         """
-        css = '.group-configuration-title'
-        return self.find_css(css).first.text[0]
+        return self.get_text('.group-configuration-title')
 
     @name.setter
     def name(self, value):
@@ -124,8 +127,7 @@ class GroupConfiguration(object):
         """
         Return group configuration description.
         """
-        css = '.group-configuration-description'
-        return self.find_css(css).first.text[0]
+        return self.get_text('.group-configuration-description')
 
     @description.setter
     def description(self, value):
