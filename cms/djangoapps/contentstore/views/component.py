@@ -64,6 +64,7 @@ else:
         'concept',  # Concept mapper. See https://github.com/pmitros/ConceptXBlock
         'done',  # Lets students mark things as done. See https://github.com/pmitros/DoneXBlock
         'audio',  # Embed an audio file. See https://github.com/pmitros/AudioXBlock
+        'recommender', # Crowdsourced recommender. Prototype by swl&pmitros. Intended for roll-out in one place in one course. 
         'split_test'
     ] + OPEN_ENDED_COMPONENT_TYPES + NOTE_COMPONENT_TYPES
 
