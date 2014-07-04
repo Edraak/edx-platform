@@ -1,3 +1,4 @@
 <span class="xblock-string-field-editor">
-    <input type="text" value="<%= value %>" class="xblock-field-input page-header-title-edit is-hidden" data-metadata-name="<%= fieldName %>">
+    <input type="text" value="<%= value %>" class="xblock-field-input xblock-field-input-<%= fieldName %> is-hidden"
+           data-metadata-name="<%= fieldName %>">
 </span>

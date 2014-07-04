@@ -3,6 +3,7 @@ Utility methods useful for Studio page tests.
 """
 from bok_choy.promise import Promise
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 
 def click_css(page, css, source_index=0, require_notification=True):
@@ -66,3 +67,17 @@ def add_advanced_component(page, menu_index, name):
     Promise(is_advanced_components_showing, "Advanced component menu not showing").fulfill()
 
     click_css(page, 'a[data-category={}]'.format(name))
+
+
+def set_input_value_and_save(page, css, value):
+    """
+    Sets the text field with given label (display name) to the specified value, and presses Save.
+    """
+    input_element = page.q(css)[0]
+    # Click in the input to give it the focus
+    action = ActionChains(page.browser).click(input_element)
+    # Delete all of the characters that are currently there
+    for _x in range(0, len(input_element.get_attribute('value'))):
+        action = action.send_keys(Keys.BACKSPACE)
+    # Send the new text, then hit the enter key so that the change event is triggered).
+    action.send_keys(value).send_keys(Keys.ENTER).perform()
