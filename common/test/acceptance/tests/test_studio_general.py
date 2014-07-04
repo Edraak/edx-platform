@@ -164,12 +164,12 @@ class CourseSectionTest(UniqueCourseTest):
         """
         Check that section name is editable on course outline page.
         """
-        new_name = "Test Section New"
+        new_name = u"Test Section New"
         section = self.course_outline_page.section_at(0)
-        self.assertEqual(section.name(), "Test Section")
+        self.assertEqual(section.name, u"Test Section")
         section.change_name(new_name)
         self.browser.refresh()
-        self.assertEqual(section.name(), new_name)
+        self.assertEqual(section.name, new_name)
 
     # TODO: re-enable when release date support is added back
     # def test_section_name_not_editable_inside_modal(self):

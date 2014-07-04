@@ -37,7 +37,7 @@ class CourseOutlineItem(object):
         """
         name_element = self.q(css=self._bounded_selector(self.NAME_SELECTOR)).first
         if name_element:
-            return name_element.text
+            return name_element[0].text
         else:
             return None
 
@@ -85,7 +85,7 @@ class CourseOutlineContainer(CourseOutlineItem):
 
         return child_class(
             self.browser,
-            self.q(css=child_class.BODY_SELECTOR)[index].attrs('data-locator')[0]
+            self.q(css=child_class.BODY_SELECTOR).attrs('data-locator')[index]
         )
 
 

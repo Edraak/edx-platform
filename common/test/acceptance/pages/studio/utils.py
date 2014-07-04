@@ -73,7 +73,7 @@ def set_input_value_and_save(page, css, value):
     """
     Sets the text field with given label (display name) to the specified value, and presses Save.
     """
-    input_element = page.q(css)[0]
+    input_element = page.q(css=css).results[0]
     # Click in the input to give it the focus
     action = ActionChains(page.browser).click(input_element)
     # Delete all of the characters that are currently there
