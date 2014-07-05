@@ -46,7 +46,7 @@ from .component import (
     NOTE_COMPONENT_TYPES,
     ADVANCED_COMPONENT_POLICY_KEY
 )
-from .item import xblock_outline_json
+from .item import create_xblock_info
 
 from django_comment_common.models import assign_default_role
 from django_comment_common.utils import seed_permissions_roles
@@ -141,7 +141,7 @@ def course_outline_json(request, course_key):
     Returns a JSON representation of the course module and recursively all of its children.
     """
     course_module = _get_course_module(course_key, request.user, depth=None)
-    return xblock_outline_json(course_module)
+    return create_xblock_info(course_module, include_child_info=True, recurse_child_info=True)
 
 
 def _accessible_courses_list(request):

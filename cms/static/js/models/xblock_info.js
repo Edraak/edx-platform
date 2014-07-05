@@ -12,7 +12,17 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
             "is_container": null,
             "data": null,
             "metadata" : null,
+            "studio_url": null,
             "children": null,
+            /**
+             * An optional object with information about the children as well as about
+             * the primary xblock type that is supported as a child.
+             */
+            "child_info": null,
+            /**
+             * An optional object with information about each of the ancestors.
+             */
+            "ancestor_info": null,
             /**
              * True iff:
              * 1) Edits have been made to the xblock and no published version exists.
@@ -54,16 +64,21 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
         },
 
         parse: function(response) {
-            var i, rawChildren, children;
-            rawChildren = response.children;
-            children = [];
-            if (rawChildren) {
-                for (i=0; i < rawChildren.length; i++) {
-                    children.push(this.createChild(rawChildren[i]));
+            var ancestors = response.ancestor_info && response.ancestor_info.ancestors,
+                children = response.child_info && response.child_info.children;
+            response.ancestors = this.parseXBlockInfoList(ancestors);
+            response.children = this.parseXBlockInfoList(children);
+            return response;
+        },
+
+        parseXBlockInfoList: function(list) {
+            var i, result = [];
+            if (list) {
+                for (i=0; i < list.length; i++) {
+                    result.push(this.createChild(list[i]));
                 }
             }
-            response.children = children;
-            return response;
+            return result;
         },
 
         createChild: function(response) {

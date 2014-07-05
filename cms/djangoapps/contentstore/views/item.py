@@ -35,7 +35,7 @@ from util.json_request import expect_json, JsonResponse
 
 from .access import has_course_access
 from contentstore.views.helpers import is_unit, xblock_studio_url, xblock_primary_child_category, \
-    xblock_type_display_name
+    xblock_type_display_name, get_parent_xblock
 from contentstore.views.preview import get_preview_fragment
 from edxmako.shortcuts import render_to_string
 from models.settings.course_grading import CourseGradingModel
@@ -264,7 +264,7 @@ def xblock_outline_handler(request, usage_key_string):
     if response_format == 'json' or 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json'):
         store = modulestore()
         xblock = store.get_item(usage_key)
-        return JsonResponse(xblock_outline_json(xblock))
+        return JsonResponse(create_xblock_info(xblock, include_child_info=True, recurse_child_info=True))
     else:
         return HttpResponse(status=406)
 
@@ -552,10 +552,11 @@ def _get_module_info(usage_key, user, rewrite_static_links=True):
         )
 
     # Note that children aren't being returned until we have a use case.
-    return create_xblock_info(usage_key, module, data, own_metadata(module))
+    return create_xblock_info(module, data=data, metadata=own_metadata(module), include_ancestor_info=True)
 
 
-def create_xblock_info(usage_key, xblock, data=None, metadata=None):
+def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=False,
+                       include_child_info=False, recurse_child_info=False):
     """
     Creates the information needed for client-side XBlockInfo.
 
@@ -563,45 +564,68 @@ def create_xblock_info(usage_key, xblock, data=None, metadata=None):
     (regardless of whether or not the xblock actually has data or metadata).
     """
     publish_state = compute_publish_state(xblock) if xblock else None
+    is_container = xblock.has_children
 
     xblock_info = {
         "id": unicode(xblock.location),
         "display_name": xblock.display_name_with_default,
         "category": xblock.category,
-        "has_changes": modulestore().has_changes(usage_key),
+        "has_changes": modulestore().has_changes(xblock.location),
         "published": publish_state in (PublishState.public, PublishState.draft),
         "edited_on": get_default_time_display(xblock.edited_on) if xblock.edited_on else None,
-        "edited_by": User.objects.get(id=xblock.edited_by).username if xblock.edited_by else None
+        "edited_by": User.objects.get(id=xblock.edited_by).username if xblock.edited_by else None,
+        'is_container': is_container,
+        'studio_url': xblock_studio_url(xblock),
     }
     if data is not None:
         xblock_info["data"] = data
     if metadata is not None:
         xblock_info["metadata"] = metadata
-
+    if include_ancestor_info:
+        xblock_info['ancestor_info'] = _create_xblock_ancestor_info(xblock)
+    if include_child_info:
+        xblock_info['child_info'] = _create_xblock_child_info(xblock, recurse_child_info=recurse_child_info)
     return xblock_info
 
 
-# TODO: merge with create_xblock_info
-def xblock_outline_json(xblock):
+def _create_xblock_ancestor_info(xblock):
     """
-    Returns a JSON representation of an xblock and recursively all of its children.
+    Returns information about the ancestors of an xblock. Note that the direct parent will also return
+    information about all of its children.
     """
-    is_container = xblock.has_children
-    child_category = xblock_primary_child_category(xblock)
-    result = {
-        'display_name': xblock.display_name,
-        'id': unicode(xblock.location),
-        'category': xblock.category,
-        'is_draft': getattr(xblock, 'is_draft', False),
-        'is_container': is_container,
-        'studio_url': xblock_studio_url(xblock),
-        'release_date': u'Jan 01, 2030 at 00:00 UTC' if xblock.category == 'chapter' else None,
+    ancestors = []
+
+    def collect_ancestor_info(ancestor, include_child_info=False):
+        """
+        Collect xblock info regarding the specified xblock and its ancestors.
+        """
+        ancestors.append(create_xblock_info(ancestor, include_child_info=include_child_info))
+        parent = get_parent_xblock(ancestor)
+        if parent:
+            collect_ancestor_info(parent)
+
+    collect_ancestor_info(get_parent_xblock(xblock), include_child_info=True)
+    return {
+        'ancestors': ancestors
     }
+
+
+def _create_xblock_child_info(xblock, recurse_child_info=True):
+    """
+    Returns information about the children of an xblock, as well as about the primary category
+    of xblock expected as children.
+    """
+    child_info = {}
+    child_category = xblock_primary_child_category(xblock)
     if child_category:
-        result['child_info'] = {
+        child_info = {
             'category': child_category,
             'display_name': xblock_type_display_name(child_category, default_display_name=child_category),
         }
-    if is_container:
-        result['children'] = [xblock_outline_json(child) for child in xblock.get_children()]
-    return result
+    if xblock.has_children:
+        child_info['children'] = [
+            create_xblock_info(
+                child, include_child_info=recurse_child_info, recurse_child_info=True
+            ) for child in xblock.get_children()
+        ]
+    return child_info

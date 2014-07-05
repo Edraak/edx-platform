@@ -6,11 +6,6 @@ define(["js/models/xblock_info"],
                 'read': '/xblock/outline'
             },
 
-            defaults: {
-                "studio_url": null,
-                "child_info": null
-            },
-
             createChild: function(response) {
                 return new XBlockOutlineInfo(response, { parse: true });
             },

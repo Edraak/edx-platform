@@ -11,15 +11,8 @@ from contentstore.utils import reverse_usage_url
 <%block name="bodyclass">is-signedin course view-outline</%block>
 
 <%namespace name='static' file='static_content.html'/>
-<%namespace name="units" file="widgets/units.html" />
 
 <%block name="jsextra">
-<link rel="stylesheet" type="text/css" href="${static.url('js/vendor/timepicker/jquery.timepicker.css')}" />
-<link rel="stylesheet" type="text/css" href="${static.url('css/vendor/html5-input-polyfills/number-polyfill.css')}" />
-<script type="text/template" id="section-name-edit-tpl">
-    <%static:include path="js/section-name-edit.underscore" />
-</script>
-
 <script type="text/javascript">
     require(["domReady!", "jquery", "js/views/pages/course_outline", "js/models/xblock_outline_info"],
             function(doc, $, CourseOutlinePage, XBlockOutlineInfo) {
@@ -34,7 +27,7 @@ from contentstore.utils import reverse_usage_url
 </%block>
 
 <%block name="header_extras">
-% for template_name in ['xblock-outline', 'xblock-string-field-editor']:
+% for template_name in ['course-outline', 'xblock-string-field-editor']:
 <script type="text/template" id="${template_name}-tpl">
     <%static:include path="js/${template_name}.underscore" />
 </script>

@@ -10,107 +10,112 @@ define(["jquery", "js/spec_helpers/create_sinon", "js/spec_helpers/view_helpers"
 
             beforeEach(function () {
                 mockCourseJSON = {
-                    category: "course",
+                    id: "mock-course",
                     display_name: "Mock Course",
-                    release_date: null,
-                    children: [
-                        {
+                    category: "course",
+                    studio_url: "/course/slashes:MockCourse",
+                    is_container: true,
+                    has_changes: false,
+                    published: true,
+                    edited_on: "Jul 02, 2014 at 20:56 UTC",
+                    edited_by: "MockUser",
+                    child_info: {
+                        display_name: "Section",
+                        category: "chapter",
+                        children: [{
+                            id: "mock-section",
                             category: "chapter",
                             display_name: "Mock Section",
-                            release_date: "Jan 01, 2030 at 00:00 UTC",
-                            children: [
-                                {
-                                    category: "sequential",
+                            studio_url: "/course/slashes:MockCourse",
+                            is_container: true,
+                            has_changes: false,
+                            published: true,
+                            edited_on: "Jul 02, 2014 at 20:56 UTC",
+                            edited_by: "MockUser",
+                            child_info: {
+                                category: "sequential",
+                                display_name: "Subsection",
+                                children: [{
+                                    id: "mock-subsection",
                                     display_name: "Mock Subsection",
-                                    release_date: null,
-                                    children: [
-                                        {
-                                            category: "vertical",
-                                            display_name: "Mock Unit",
-                                            release_date: null,
-                                            studio_url: "/container/mock-unit",
-                                            children: [ ],
-                                            is_container: true,
-                                            is_draft: true,
-                                            id: "mock-unit"
-                                        }
-                                    ],
-                                    studio_url: null,
+                                    category: "sequential",
+                                    studio_url: "/course/slashes:MockCourse",
+                                    is_container: true,
+                                    has_changes: false,
+                                    published: true,
+                                    edited_on: "Jul 02, 2014 at 20:56 UTC",
+                                    edited_by: "MockUser",
                                     child_info: {
                                         category: "vertical",
-                                        display_name: "Unit"
-                                    },
-                                    is_container: true,
-                                    is_draft: false,
-                                    id: "mock-subsection"
-                                }
-                            ],
-                            studio_url: "/course/slashes:MockCourse",
-                            child_info: {
-                                category: "sequential",
-                                display_name: "Subsection"
-                            },
-                            is_container: true,
-                            is_draft: false,
-                            id: "mock-section"
-                        }
-                    ],
-                    studio_url: "/course/slashes:MockCourse",
-                    child_info: {
-                        category: "chapter",
-                        display_name: "Section"
-                    },
-                    is_container: true,
-                    is_draft: false,
-                    id: "mock-course"
+                                        display_name: "Unit",
+                                        children: [{
+                                            id: "mock-unit",
+                                            display_name: "Mock Unit",
+                                            category: "vertical",
+                                            studio_url: "/container/mock-unit",
+                                            is_container: true,
+                                            has_changes: true,
+                                            published: false,
+                                            edited_on: "Jul 02, 2014 at 20:56 UTC",
+                                            edited_by: "MockUser"
+                                        }]
+                                    }
+                                }]
+                            }
+                        }]
+                    }
                 };
                 mockEmptyCourseJSON = {
-                    category: "course",
+                    id: "mock-course",
                     display_name: "Mock Course",
-                    release_date: null,
-                    children: [],
+                    category: "course",
                     studio_url: "/course/slashes:MockCourse",
-                    child_info: {
-                        category: "chapter",
-                        display_name: "Section"
-                    },
                     is_container: true,
-                    is_draft: false,
-                    id: "mock-course"
+                    has_changes: false,
+                    published: true,
+                    edited_on: "Jul 02, 2014 at 20:56 UTC",
+                    edited_by: "MockUser",
+                    child_info: {
+                        display_name: "Section",
+                        category: "chapter",
+                        children: []
+                    }
                 };
                 mockSingleSectionCourseJSON = {
-                    category: "course",
+                    id: "mock-course",
                     display_name: "Mock Course",
-                    release_date: null,
-                    children: [
-                        {
+                    category: "course",
+                    studio_url: "/course/slashes:MockCourse",
+                    is_container: true,
+                    has_changes: false,
+                    published: true,
+                    edited_on: "Jul 02, 2014 at 20:56 UTC",
+                    edited_by: "MockUser",
+                    child_info: {
+                        display_name: "Section",
+                        category: "chapter",
+                        children: [{
+                            id: "mock-section",
                             category: "chapter",
                             display_name: "Mock Section",
-                            release_date: "Jan 01, 2030 at 00:00 UTC",
-                            children: [],
                             studio_url: "/course/slashes:MockCourse",
+                            is_container: true,
+                            has_changes: false,
+                            published: true,
+                            edited_on: "Jul 02, 2014 at 20:56 UTC",
+                            edited_by: "MockUser",
                             child_info: {
                                 category: "sequential",
-                                display_name: "Subsection"
-                            },
-                            is_container: true,
-                            is_draft: false,
-                            id: "mock-section"
-                        }
-                    ],
-                    studio_url: "/course/slashes:MockCourse",
-                    child_info: {
-                        category: "chapter",
-                        display_name: "Section"
-                    },
-                    is_container: true,
-                    is_draft: false,
-                    id: "mock-course"
+                                display_name: "Subsection",
+                                children: []
+                            }
+                        }]
+                    }
                 };
 
                 view_helpers.installMockAnalytics();
                 view_helpers.installViewTemplates();
-                view_helpers.installTemplate('xblock-outline');
+                view_helpers.installTemplate('course-outline');
                 view_helpers.installTemplate('xblock-string-field-editor');
                 appendSetFixtures(mockOutlinePage);
             });

@@ -28,29 +28,6 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
         });
 
         /**
-         * A controller for updating the visibility status of the unit on the RHS navigation tree.
-         */
-        var VisibilityStateController = UnitStateListenerView.extend({
-
-            render: function() {
-                var computeState = function(published, has_changes) {
-                    if (!published) {
-                        return "private";
-                    }
-                    else if (has_changes) {
-                        return "draft";
-                    }
-                    else {
-                        return "public";
-                    }
-                };
-                var state = computeState(this.model.get('published'), this.model.get('has_changes'));
-                this.$el.removeClass("private-item public-item draft-item");
-                this.$el.addClass(state + "-item");
-            }
-        });
-
-        /**
          * A controller for updating the "View Live" and "Preview" buttons.
          */
         var PreviewActionController = UnitStateListenerView.extend({
@@ -175,7 +152,6 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
         });
 
         return {
-            'VisibilityStateController': VisibilityStateController,
             'PreviewActionController': PreviewActionController,
             'Publisher': Publisher
         };

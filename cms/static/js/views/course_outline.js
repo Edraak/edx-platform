@@ -1,13 +1,10 @@
-define(["jquery", "underscore", "gettext", "js/views/xblock_outline", "js/views/utils/view_utils",
-        "js/views/utils/xblock_utils"],
-    function($, _, gettext, XBlockOutlineView, ViewUtils, XBlockViewUtils) {
+define(["jquery", "underscore", "gettext", "js/views/xblock_outline", "js/views/utils/view_utils"],
+    function($, _, gettext, XBlockOutlineView, ViewUtils) {
 
         var CourseOutlineView = XBlockOutlineView.extend({
-            // takes XBlockInfo as a model
+            // takes XBlockOutlineInfo as a model
 
-            initialize: function() {
-                XBlockOutlineView.prototype.initialize.call(this);
-            },
+            templateName: 'course-outline',
 
             shouldExpandChildren: function() {
                 // Expand the children if this xblock's locator is in the intially expanded state
@@ -24,12 +21,12 @@ define(["jquery", "underscore", "gettext", "js/views/xblock_outline", "js/views/
                 return this.model.get('category') !== 'vertical';
             },
 
-            createChildView: function(xblockInfo, parentInfo) {
+            createChildView: function(xblockInfo, parentInfo, parentView) {
                 return new CourseOutlineView({
                     model: xblockInfo,
                     parentInfo: parentInfo,
                     template: this.template,
-                    parentView: this
+                    parentView: parentView || this
                 });
             },
 
@@ -66,16 +63,6 @@ define(["jquery", "underscore", "gettext", "js/views/xblock_outline", "js/views/
                 return view.model.fetch({});
             },
 
-            handleAddEvent: function(event) {
-                var self = this,
-                    target = $(event.target),
-                    category = target.data('category');
-                event.preventDefault();
-                XBlockViewUtils.addXBlock(target).done(function(locator) {
-                    self.onChildAdded(locator, category);
-                });
-            },
-
             onChildAdded: function(locator, category) {
                 // For units, redirect to the new page, and for everything else just refresh inline.
                 if (category === 'vertical') {
@@ -87,15 +74,6 @@ define(["jquery", "underscore", "gettext", "js/views/xblock_outline", "js/views/
                         expandedLocators: [ locator ]
                     });
                 }
-            },
-
-            onChildDeleted: function() {
-                this.refresh();
-            },
-
-            addButtonActions: function(element) {
-                XBlockOutlineView.prototype.addButtonActions.call(this, element);
-                element.find('.add-button').click(_.bind(this.handleAddEvent, this));
             }
         });
 

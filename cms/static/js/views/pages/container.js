@@ -4,9 +4,10 @@
  */
 define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views/utils/view_utils",
         "js/views/container", "js/views/xblock", "js/views/components/add_xblock", "js/views/modals/edit_xblock",
-        "js/models/xblock_info", "js/views/xblock_string_field_editor", "js/views/pages/container_subviews"],
+        "js/models/xblock_info", "js/views/xblock_string_field_editor", "js/views/pages/container_subviews",
+        "js/views/unit_outline"],
     function ($, _, gettext, BasePage, ViewUtils, ContainerView, XBlockView, AddXBlockComponent,
-              EditXBlockModal, XBlockInfo, XBlockStringFieldEditor, ContainerSubviews) {
+              EditXBlockModal, XBlockInfo, XBlockStringFieldEditor, ContainerSubviews, UnitOutlineView) {
         var XBlockContainerPage = BasePage.extend({
             // takes XBlockInfo as a model
 
@@ -38,17 +39,17 @@ define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views
                     });
                     this.xblockPublisher.render();
 
-                    // No need to render initially. This is only used for updating state
-                    // when the unit changes visibility.
-                    this.visibilityState = new ContainerSubviews.VisibilityStateController({
-                        el: this.$('.section-item.editing a'),
-                        model: this.model
-                    });
                     this.previewActions = new ContainerSubviews.PreviewActionController({
                         el: this.$('.nav-actions'),
                         model: this.model
                     });
                     this.previewActions.render();
+
+                    this.unitOutlineView = new UnitOutlineView({
+                        el: this.$('.wrapper-unit-overview'),
+                        model: this.model
+                    });
+                    this.unitOutlineView.render();
                 }
             },
 

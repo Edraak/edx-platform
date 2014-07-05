@@ -1,15 +1,17 @@
-define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/xblock_utils",
-        "js/views/xblock_string_field_editor"],
-    function($, _, gettext, BaseView, XBlockViewUtils, XBlockStringFieldEditor) {
+define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/view_utils",
+        "js/views/utils/xblock_utils", "js/views/xblock_string_field_editor"],
+    function($, _, gettext, BaseView, ViewUtils, XBlockViewUtils, XBlockStringFieldEditor) {
 
         var XBlockOutlineView = BaseView.extend({
             // takes XBlockInfo as a model
+
+            templateName: 'xblock-outline',
 
             initialize: function() {
                 BaseView.prototype.initialize.call(this);
                 this.template = this.options.template;
                 if (!this.template) {
-                    this.template = this.loadTemplate('xblock-outline');
+                    this.template = this.loadTemplate(this.templateName);
                 }
                 this.parentInfo = this.options.parentInfo;
                 this.parentView = this.options.parentView;
@@ -20,69 +22,15 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
             render: function() {
                 this.renderTemplate();
                 this.addButtonActions(this.$el);
-                this.nameEditor = new XBlockStringFieldEditor({
-                    el: this.$('.wrapper-xblock-field'),
-                    model: this.model
-                });
-                this.nameEditor.render();
+                this.addNameEditor();
                 if (this.shouldRenderChildren() && this.shouldExpandChildren()) {
                     this.renderChildren();
                 }
-                if (this.initialState && this.model.id === this.initialState.editDisplayName) {
+                if (this.nameEditor && this.initialState && this.model.id === this.initialState.editDisplayName) {
                     this.nameEditor.$('.xblock-field-value').click();
                 }
                 this.initialState = null;
                 return this;
-            },
-
-            renderChildren: function() {
-                var i, children, listElement, childOutlineView;
-                listElement = this.$('.sortable-list');
-                children = this.model.get('children');
-                for (i=0; i < children.length; i++) {
-                    childOutlineView = this.createChildView(children[i], this.model);
-                    childOutlineView.initialState = this.initialState;
-                    childOutlineView.render();
-                    listElement.append(childOutlineView.$el);
-                }
-                this.renderedChildren = true;
-            },
-
-            toggleExpandCollapse: function(event) {
-                // Ensure that the children have been rendered before expanding
-                if (this.shouldRenderChildren() && !this.renderedChildren) {
-                    this.renderChildren();
-                }
-                BaseView.prototype.toggleExpandCollapse.call(this, event);
-            },
-
-            addButtonActions: function(element) {
-                var self = this;
-                element.find('.configure-button').click(function(event) {
-                    event.preventDefault();
-                    self.editXBlock($(event.target));
-                });
-                element.find('.delete-button').click(function(event) {
-                    event.preventDefault();
-                    self.deleteXBlock($(event.target));
-                });
-            },
-
-            shouldRenderChildren: function() {
-                return true;
-            },
-
-            shouldExpandChildren: function() {
-                return true;
-            },
-
-            createChildView: function(xblockInfo, parentInfo) {
-                return new XBlockOutlineView({
-                    model: xblockInfo,
-                    parentInfo: parentInfo,
-                    template: this.template,
-                    parentView: this
-                });
             },
 
             renderTemplate: function() {
@@ -122,6 +70,68 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                 }
             },
 
+            renderChildren: function() {
+                var i, children, listElement, childOutlineView;
+                listElement = this.$('.sortable-list');
+                children = this.model.get('children');
+                for (i=0; i < children.length; i++) {
+                    childOutlineView = this.createChildView(children[i], this.model);
+                    childOutlineView.initialState = this.initialState;
+                    childOutlineView.render();
+                    listElement.append(childOutlineView.$el);
+                }
+                this.renderedChildren = true;
+            },
+
+            addNameEditor: function() {
+                var xblockField = this.$('.wrapper-xblock-field');
+                if (xblockField.length > 0) {
+                    this.nameEditor = new XBlockStringFieldEditor({
+                        el: xblockField,
+                        model: this.model
+                    });
+                    this.nameEditor.render();
+                }
+            },
+
+            toggleExpandCollapse: function(event) {
+                // Ensure that the children have been rendered before expanding
+                if (this.shouldRenderChildren() && !this.renderedChildren) {
+                    this.renderChildren();
+                }
+                BaseView.prototype.toggleExpandCollapse.call(this, event);
+            },
+
+            addButtonActions: function(element) {
+                var self = this;
+                element.find('.configure-button').click(function(event) {
+                    event.preventDefault();
+                    self.editXBlock($(event.target));
+                });
+                element.find('.delete-button').click(function(event) {
+                    event.preventDefault();
+                    self.deleteXBlock($(event.target));
+                });
+                element.find('.add-button').click(_.bind(this.handleAddEvent, this));
+            },
+
+            shouldRenderChildren: function() {
+                return true;
+            },
+
+            shouldExpandChildren: function() {
+                return true;
+            },
+
+            createChildView: function(xblockInfo, parentInfo, parentView) {
+                return new XBlockOutlineView({
+                    model: xblockInfo,
+                    parentInfo: parentInfo,
+                    template: this.template,
+                    parentView: parentView || this
+                });
+            },
+
             getXBlockType: function(category, parentInfo) {
                 var xblockType = category;
                 if (category === 'chapter') {
@@ -146,9 +156,17 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                 });
             },
 
+            onChildAdded: function(locator, category) {
+                // For units, redirect to the new page, and for everything else just refresh inline.
+                if (category === 'vertical') {
+                    ViewUtils.redirect('/container/' + locator);
+                } else {
+                    this.refresh();
+                }
+            },
+
             onChildDeleted: function() {
-                // Update the model so that we get the latest publish and last modified information.
-                this.model.fetch();
+                this.refresh();
             },
 
             deleteXBlock: function() {
@@ -157,6 +175,24 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                     if (parentView) {
                         parentView.onChildDeleted();
                     }
+                });
+            },
+
+            /**
+             * Refresh the view's model from the server, which will cause the view to refresh.
+             * @returns {*} A promise representing the refresh operation.
+             */
+            refresh: function() {
+                return this.model.fetch({});
+            },
+
+            handleAddEvent: function(event) {
+                var self = this,
+                    target = $(event.target),
+                    category = target.data('category');
+                event.preventDefault();
+                XBlockViewUtils.addXBlock(target).done(function(locator) {
+                    self.onChildAdded(locator, category);
                 });
             }
         });
