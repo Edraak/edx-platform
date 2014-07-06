@@ -566,6 +566,12 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
     publish_state = compute_publish_state(xblock) if xblock else None
     is_container = xblock.has_children
 
+    # TODO: remove this once the fake **replace_user** has been refactored away
+    try:
+        edited_by = User.objects.get(id=xblock.edited_by).username if xblock.edited_by else None
+    except ValueError:
+        edited_by = "Invalid username"
+
     xblock_info = {
         "id": unicode(xblock.location),
         "display_name": xblock.display_name_with_default,
@@ -573,7 +579,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
         "has_changes": modulestore().has_changes(xblock.location),
         "published": publish_state in (PublishState.public, PublishState.draft),
         "edited_on": get_default_time_display(xblock.edited_on) if xblock.edited_on else None,
-        "edited_by": User.objects.get(id=xblock.edited_by).username if xblock.edited_by else None,
+        "edited_by": edited_by,
         'is_container': is_container,
         'studio_url': xblock_studio_url(xblock),
     }
@@ -583,7 +589,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
         xblock_info["metadata"] = metadata
     if include_ancestor_info:
         xblock_info['ancestor_info'] = _create_xblock_ancestor_info(xblock)
-    if include_child_info:
+    if include_child_info and is_container:
         xblock_info['child_info'] = _create_xblock_child_info(xblock, recurse_child_info=recurse_child_info)
     return xblock_info
 

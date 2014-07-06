@@ -13,16 +13,15 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
 from contentstore.utils import reverse_usage_url
-
 from contentstore.views.component import component_handler, get_component_templates
-
+from contentstore.views.item import create_xblock_info
 from contentstore.tests.utils import CourseTestCase
 from student.tests.factories import UserFactory
 from xmodule.capa_module import CapaDescriptor
 from xmodule.modulestore import PublishState
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from xmodule.modulestore.tests.factories import ItemFactory
 from xmodule.x_module import STUDIO_VIEW, STUDENT_VIEW
 from xblock.exceptions import NoSuchHandlerError
 from opaque_keys.edx.keys import UsageKey
@@ -983,54 +982,88 @@ class TestComponentTemplates(CourseTestCase):
         self.assertIsNone(ora_template.get('boilerplate_name', None))
 
 
-class TestXBlockOutline(ItemTest):
+class TestXBlockInfo(ItemTest):
     """
     Unit tests for XBlock's outline handling.
     """
-    def test_json_responses(self):
-        chapter = ItemFactory.create(parent_location=self.course.location, category='chapter', display_name="Week 1")
-        lesson = ItemFactory.create(parent_location=chapter.location, category='sequential', display_name="Lesson 1")
-        subsection = ItemFactory.create(parent_location=lesson.location, category='vertical', display_name='Subsection 1')
-        ItemFactory.create(parent_location=subsection.location, category="video", display_name="My Video")
+    def setUp(self):
+        super(TestXBlockInfo, self).setUp()
+        user_id = self.user.id
+        self.chapter = ItemFactory.create(
+            parent_location=self.course.location, category='chapter', display_name="Week 1", user_id=user_id
+        )
+        self.sequential = ItemFactory.create(
+            parent_location=self.chapter.location, category='sequential', display_name="Lesson 1", user_id=user_id
+        )
+        self.vertical = ItemFactory.create(
+            parent_location=self.sequential.location, category='vertical', display_name='Subsection 1', user_id=user_id
+        )
+        ItemFactory.create(
+            parent_location=self.vertical.location, category='video', display_name='My Video', user_id=user_id
+        )
 
+    def test_json_responses(self):
         outline_url = reverse_usage_url('xblock_outline_handler', self.usage_key)
         resp = self.client.get(outline_url, HTTP_ACCEPT='application/json')
         json_response = json.loads(resp.content)
+        self.validate_course_xblock_info(json_response)
 
-        # First spot check some values in the root response
-        self.assertEqual(json_response['category'], 'course')
-        self.assertEqual(json_response['id'], 'location:MITx+999+Robot_Super_Course+course+Robot_Super_Course')
-        self.assertEqual(json_response['display_name'], 'Robot Super Course')
-        self.assertTrue(json_response['is_container'])
-        self.assertFalse(json_response['is_draft'])
+    def test_create_xblock_info(self):
+        chapter = modulestore().get_item(self.chapter.location)
+        xblock_info = create_xblock_info(chapter, include_child_info=True, recurse_child_info=True)
+        self.validate_chapter_xblock_info(xblock_info)
+        sequential = modulestore().get_item(self.sequential.location)
+        xblock_info = create_xblock_info(sequential, include_child_info=True, recurse_child_info=True)
+        self.validate_xblock_info_consistency(xblock_info)
 
-        # Now verify the first child
-        children = json_response['children']
+    def validate_course_xblock_info(self, xblock_info):
+        """
+        Validate that the xblock info is correct for the test course.
+        """
+        self.assertEqual(xblock_info['category'], 'course')
+        self.assertEqual(xblock_info['id'], 'location:MITx+999+Robot_Super_Course+course+Robot_Super_Course')
+        self.assertEqual(xblock_info['display_name'], 'Robot Super Course')
+        self.assertTrue(xblock_info['is_container'])
+        self.assertTrue(xblock_info['published'])
+
+        # Now verify that the chapter information is correct
+        children = xblock_info['child_info']['children']
         self.assertTrue(len(children) > 0)
-        first_child_response = children[0]
-        self.assertEqual(first_child_response['category'], 'chapter')
-        self.assertEqual(first_child_response['id'], 'location:MITx+999+Robot_Super_Course+chapter+Week_1')
-        self.assertEqual(first_child_response['display_name'], 'Week 1')
-        self.assertTrue(first_child_response['is_container'])
-        self.assertFalse(first_child_response['is_draft'])
-        self.assertTrue(len(first_child_response['children']) > 0)
+        chapter_xblock_info = children[0]
+        self.validate_chapter_xblock_info(chapter_xblock_info)
 
         # Finally, validate the entire response for consistency
-        self.assert_correct_json_response(json_response)
+        self.validate_xblock_info_consistency(xblock_info)
 
-    def assert_correct_json_response(self, json_response):
+    def validate_chapter_xblock_info(self, xblock_info):
         """
-        Asserts that the JSON response is syntactically consistent
+        Validate that the xblock info is correct for the test chapter.
         """
-        self.assertIsNotNone(json_response['display_name'])
-        self.assertIsNotNone(json_response['id'])
-        self.assertIsNotNone(json_response['category'])
-        self.assertIsNotNone(json_response['is_draft'])
-        self.assertIsNotNone(json_response['is_container'])
-        if json_response['is_container']:
-            for child_response in json_response['children']:
-                self.assert_correct_json_response(child_response)
+        self.assertEqual(xblock_info['category'], 'chapter')
+        self.assertEqual(xblock_info['id'], 'location:MITx+999+Robot_Super_Course+chapter+Week_1')
+        self.assertEqual(xblock_info['display_name'], 'Week 1')
+        self.assertTrue(xblock_info['is_container'])
+        self.assertTrue(xblock_info['published'])
+        self.assertEqual(xblock_info['edited_by'], 'testuser')
+        self.assertTrue(len(xblock_info['child_info']['children']) > 0)
+
+        # Finally, validate the entire response for consistency
+        self.validate_xblock_info_consistency(xblock_info)
+
+    def validate_xblock_info_consistency(self, xblock_info):
+        """
+        Validate that the xblock info is internally consistent.
+        """
+        self.assertIsNotNone(xblock_info['display_name'])
+        self.assertIsNotNone(xblock_info['id'])
+        self.assertIsNotNone(xblock_info['category'])
+        self.assertIsNotNone(xblock_info['published'])
+        self.assertEqual(xblock_info['edited_by'], 'testuser')
+        self.assertIsNotNone(xblock_info['is_container'])
+        if xblock_info['is_container']:
+            for child_response in xblock_info['child_info']['children']:
+                self.validate_xblock_info_consistency(child_response)
         else:
-            self.assertFalse('children' in json_response)
+            self.assertFalse('child_info' in xblock_info)
 
 
