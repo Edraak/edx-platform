@@ -500,9 +500,6 @@ class DraftModuleStore(MongoModuleStore):
 
         item = self.get_item(location)
 
-        # blocks with a direct only category can never have changes
-        if item.category in DIRECT_ONLY_CATEGORIES:
-            return False
         # don't check children if this block has changes (is not public)
         if self.compute_publish_state(item) != PublishState.public:
             return True

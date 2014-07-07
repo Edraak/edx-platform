@@ -30,7 +30,7 @@ define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views
             },
 
             hasContent: function() {
-                return this.model.get('children').length > 0;
+                return this.model.get('child_info').children.length > 0;
             },
 
             toggleExpandCollapse: function(event) {

@@ -563,7 +563,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
     If data or metadata are not specified, their information will not be added
     (regardless of whether or not the xblock actually has data or metadata).
     """
-    publish_state = compute_publish_state(xblock) if xblock else None
+    publish_state = compute_publish_state(xblock)
     is_container = xblock.has_children
 
     # TODO: remove this once the fake **replace_user** has been refactored away
@@ -605,11 +605,9 @@ def _create_xblock_ancestor_info(xblock):
         """
         Collect xblock info regarding the specified xblock and its ancestors.
         """
-        ancestors.append(create_xblock_info(ancestor, include_child_info=include_child_info))
-        parent = get_parent_xblock(ancestor)
-        if parent:
-            collect_ancestor_info(parent)
-
+        if ancestor:
+            ancestors.append(create_xblock_info(ancestor, include_child_info=include_child_info))
+            collect_ancestor_info(get_parent_xblock(ancestor))
     collect_ancestor_info(get_parent_xblock(xblock), include_child_info=True)
     return {
         'ancestors': ancestors

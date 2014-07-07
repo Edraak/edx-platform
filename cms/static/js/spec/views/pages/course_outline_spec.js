@@ -300,7 +300,7 @@ define(["jquery", "js/spec_helpers/create_sinon", "js/spec_helpers/view_helpers"
                     expect(displayNameInput).toHaveClass('is-hidden');
                     expect(displayNameElement).not.toHaveClass('is-hidden');
                     expect(displayNameElement.text().trim()).toBe(updatedDisplayName);
-                    sectionModel = outlinePage.model.get('children')[0];
+                    sectionModel = outlinePage.model.get('child_info').children[0];
                     expect(sectionModel.get('display_name')).toBe(updatedDisplayName);
                 });
 
@@ -363,7 +363,7 @@ define(["jquery", "js/spec_helpers/create_sinon", "js/spec_helpers/view_helpers"
                     expect(displayNameInput).toHaveClass('is-hidden');
                     expect(displayNameElement).not.toHaveClass('is-hidden');
                     expect(displayNameElement.text().trim()).toBe(updatedDisplayName);
-                    subsectionModel = outlinePage.model.get('children')[0].get('children')[0];
+                    subsectionModel = outlinePage.model.get('child_info').children[0];
                     expect(subsectionModel.get('display_name')).toBe(updatedDisplayName);
                 });
 

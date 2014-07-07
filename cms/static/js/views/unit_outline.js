@@ -16,15 +16,17 @@ define(['js/views/xblock_outline'],
                 var i, listElement,
                     ancestors, ancestor, ancestorView = this,
                     previousAncestor = null;
-                ancestors = this.model.get('ancestors');
-                listElement = this.$('.sortable-list');
-                for (i=ancestors.length - 1; i >= 0; i--) {
-                    ancestor = ancestors[i];
-                    ancestorView = this.createChildView(ancestor, previousAncestor, ancestorView);
-                    ancestorView.render();
-                    listElement.append(ancestorView.$el);
-                    previousAncestor = ancestor;
-                    listElement = ancestorView.$('.sortable-list');
+                if (this.model.get('ancestor_info')) {
+                    ancestors = this.model.get('ancestor_info').ancestors;
+                    listElement = this.$('.sortable-list');
+                    for (i=ancestors.length - 1; i >= 0; i--) {
+                        ancestor = ancestors[i];
+                        ancestorView = this.createChildView(ancestor, previousAncestor, ancestorView);
+                        ancestorView.render();
+                        listElement.append(ancestorView.$el);
+                        previousAncestor = ancestor;
+                        listElement = ancestorView.$('.sortable-list');
+                    }
                 }
                 return ancestorView;
             },

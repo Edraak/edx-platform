@@ -73,12 +73,14 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
             renderChildren: function() {
                 var i, children, listElement, childOutlineView;
                 listElement = this.$('.sortable-list');
-                children = this.model.get('children');
-                for (i=0; i < children.length; i++) {
-                    childOutlineView = this.createChildView(children[i], this.model);
-                    childOutlineView.initialState = this.initialState;
-                    childOutlineView.render();
-                    listElement.append(childOutlineView.$el);
+                if (this.model.get('child_info')) {
+                    children = this.model.get('child_info').children;
+                    for (i=0; i < children.length; i++) {
+                        childOutlineView = this.createChildView(children[i], this.model);
+                        childOutlineView.initialState = this.initialState;
+                        childOutlineView.render();
+                        listElement.append(childOutlineView.$el);
+                    }
                 }
                 this.renderedChildren = true;
             },

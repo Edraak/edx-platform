@@ -13,7 +13,6 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
             "data": null,
             "metadata" : null,
             "studio_url": null,
-            "children": null,
             /**
              * An optional object with information about the children as well as about
              * the primary xblock type that is supported as a child.
@@ -64,10 +63,12 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
         },
 
         parse: function(response) {
-            var ancestors = response.ancestor_info && response.ancestor_info.ancestors,
-                children = response.child_info && response.child_info.children;
-            response.ancestors = this.parseXBlockInfoList(ancestors);
-            response.children = this.parseXBlockInfoList(children);
+            if (response.ancestor_info) {
+                response.ancestor_info.ancestors = this.parseXBlockInfoList(response.ancestor_info.ancestors);
+            }
+            if (response.child_info) {
+                response.child_info.children = this.parseXBlockInfoList(response.child_info.children);
+            }
             return response;
         },
 
