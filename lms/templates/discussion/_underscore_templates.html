@@ -361,7 +361,7 @@
 <script aria-hidden="true" type="text/template" id="new-post-template">
     <div class="inner-wrapper">
         <form class="new-post-form">
-
+            <div class="new-post-form-errors"></div>
             <div class="wrapper-field">
                 <div class="field-label">
                     <label class="field-label-name">
@@ -374,10 +374,10 @@
                 </div>
                 <div class="field-help">
                     <span class="post-type-description question">
-                        Questions are resolved when the author or staff accepts a response as the answer.
+                        ${_("Questions are resolved when the author or staff accepts a response as the answer.")}
                     </span>
                     <span class="post-type-description discussion">
-                        Discussions are any other notes, resources, or reflections, students want to share with the community.
+                        ${_("Discussions are any other notes, resources, or reflections, students want to share with the community.")}
                     </span>
                 </div>
             </div>
@@ -403,7 +403,7 @@
                </div>
                <div class="field-help">
                   <span>
-                    Think carefully about where you place your post, as it makes it easier for other students and staff to build conversation when it is in the right place.
+                    ${_("Think carefully about where you place your post, as it makes it easier for other students and staff to build conversation when it is in the right place.")}
                     </span>
                </div>
             </div>
@@ -431,7 +431,7 @@
                </div>
                <div class="field-help">
                   <span>
-            As an instructor you can decide whether posts should be visible to all cohorts or only to a specific cohort.  Students in cohorts can not see posts from other cohorts.
+            ${_("As an instructor you can decide whether posts should be visible to all cohorts or only to a specific cohort.  Students in cohorts can not see posts from other cohorts.")}
                   </span>
                </div>
             </div>
@@ -445,10 +445,10 @@
                </div>
                <div class="field-help">
                   <span class="post-title-description question">
-                        Make sure your title clearly describes your question. Try to avoid unclear or generic questions when possible.
+                        ${_("Make sure your title clearly describes your question. Try to avoid unclear or generic questions when possible.")}
                   </span>
                   <span class="post-title-description discussion">
-                      Make sure your title clearly describes your discussion topic.  Clear titles encourage discussion and make it easier for interested students to find them.
+                      ${_("Make sure your title clearly describes your discussion topic.  Clear titles encourage discussion and make it easier for interested students to find them.")}
                   </span>
                </div>
             </div>
@@ -456,20 +456,20 @@
             <div class="new-post-body editor" name="body" placeholder="${_(u'Enter your question or comment…')}"></div>
 
             <div class="wrapper-field">
-                <div class="field-label">
-                  <div class="new-post-option option-follow">
-                    <input type="checkbox" name="follow" class="post-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
+                <div class="field-label field-label-options">
+                  <div class="new-post-option option-follow is-enabled">
+                    <input type="checkbox" name="follow" class="post-follow" id="new-post-follow" checked><label class="post-follow-label"for="new-post-follow"><i class="icon icon-star"></i>${_("follow this post")}</label>
                   </div>
                   ${'<% if (allow_anonymous) { %>'}
                   <div class="new-post-option option-anonymous">
                     <input type="checkbox" name="anonymous" class="post-anonymous" id="new-post-anonymous">
-                    <label for="new-post-anonymous">${_("post anonymously")}</label>
+                    <label class="post-anonymous-label" for="new-post-anonymous">${_("post anonymously")}</label>
                   </div>
                   ${'<% } %>'}
                   ${'<% if (allow_anonymous_to_peers) { %>'}
                   <div class="new-post-option option-anonymous">
                     <input type="checkbox" name="anonymous_to_peers" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers">
-                    <label for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
+                    <label class="post-anonymous-to-peers-label" for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
                   </div>
                   ${'<% } %>'}
                </div>
@@ -481,9 +481,6 @@
                     <a href="#" class="new-post-cancel">${_('Cancel')}</a>
                </div>
             </div>
-
-            <!-- TODO: where does this belong ?? -->
-            <div class="new-post-form-errors"></div>
         </form>
     </div>
 </script>

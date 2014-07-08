@@ -1,27 +1,49 @@
 // discussion - views - new post
 // ====================
 
-// OLD New Post Form styling - refactor before merge
+// UI: form - general new post creation
 .new-post-form {
-  padding: ($baseline*2);
+  @include clearfix;
   box-sizing: border-box;
+  padding: ($baseline*2);
+  background: $gray-l5;
+  box-shadow: 0 1px 2px $shadow inset;
 
   // UI: form input fields
   .wrapper-field {
-    margin-bottom: ($baseline/2);
+    margin-bottom: $baseline;
 
     .field-label {
       display: inline-block;
       width: 49%;
       vertical-align: top;
 
+      // CASE: post options
+      &.field-label-options {
+        width: 100%;
+      }
+
       .field-label-name {
         display: inline-block;
-        width:35%;
+        width: 35%;
         vertical-align: bottom;
       }
       .field-label-input {
         display: inline-block;
+
+        // CASE: post title
+        .new-post-title {
+          @include box-sizing(border-box);
+          padding: 0 $baseline/2;
+          width: 100%;
+          height: 40px;
+          border-radius: 3px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) inset;
+          color: #333;
+          font-weight: 700;
+          font-size: 16px;
+          font-family: 'Open Sans', sans-serif;
+        }
       }
     }
 
@@ -40,75 +62,56 @@
 
     // UI: post options
     .new-post-option {
-      border: 1px solid $gray;
+      display: inline-block;
       border-radius: 3px;
       padding: ($baseline/2) 0;
-      margin: ($baseline/2) 0;
+      margin: $baseline $baseline 0 0;
 
+      &.is-enabled {
+        border: 1px solid $blue;
+
+        .post-follow-label, .post-anonymous-label, .post-anonymous-to-peers-label {
+          color: $blue;
+        }
+
+      }
       .post-follow, .post-anonymous {
         display: inline-block;
         margin-left: ($baseline/2);
       }
+
+      .post-follow-label, .post-anonymous-label, .post-anonymous-to-peers-label {
+        display: inline-block;
+        margin: 0px ($baseline/2);
+
+        .icon {
+          margin-right: 8px;
+        }
+      }
     }
+
 
     .post-title {
      width: 95%;
     }
   }
+}
 
-
-  .new-post-body.editor {width: 96%;}
+// CASE: inline styling
+.discussion-module .new-post-form {
+  background: $white;
 }
 
 
+// ====================
+
+// UI: actions - new post creation 
 .new-post-form {
-  @include clearfix;
-  background: $gray-l5;
-  box-shadow: 0 1px 2px $shadow inset;
-
-  .form-row {
-    margin-bottom: $baseline;
-  }
-
-  .new-post-body .wmd-input {
-    @include discussion-wmd-input;
-    @include box-sizing(border-box);
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    height: 150px;
-    background: $white;
-  }
-
-  .new-post-body .wmd-preview-container {
-    @include discussion-new-post-wmd-preview-container;
-  }
-
-  .new-post-body .wmd-preview-label {
-    @include discussion-wmd-preview-label;
-  }
-
-  .new-post-body .wmd-preview {
-    @include discussion-wmd-preview;
-  }
-
-  .new-post-title {
-    @include box-sizing(border-box);
-    border: 1px solid $dark-gray;
-    border-radius: 3px;
-    padding: 0 ($baseline/2);
-    width: 100%;
-    height: 40px;
-    box-shadow: 0 1px 3px $shadow inset;
-    color: $dark-gray;
-    font-weight: 700;
-  }
 
   .submit {
     @include blue-button;
     float: left;
     margin-top: ($baseline/2);
-    border-color: $dark-gray;
     padding-bottom: ($baseline/10);
     height: 37px;
 
@@ -121,54 +124,25 @@
     @include white-button;
     float: left;
     margin: ($baseline/2) 0 0 ($baseline*.75);
-    border-color: #444;
-  }
-
-  .options {
-    margin-top: ($baseline*2);
-
-    label {
-      display: inline;
-      margin-left: ($baseline/2);
-      color: $white;
-      text-shadow: none;
-      font-size: 15px;
-    }
   }
 }
 
-.new-post-form .submit {
-  @include blue-button;
-  float: left;
-  margin-top: ($baseline/2);
-  padding-bottom: ($baseline/10);
-}
+// ====================
 
-.new-post-form .options {
-  float: right;
-  margin-top: $baseline;
-  font-size: 14px;
-
-  label {
-    margin-left: ($baseline/5);
-  }
-}
-
-// new post creation - refactor before merge
+// CASE: errors - new post creation 
 .new-post-form-errors {
   display: none;
-  background: $error-red;
+  margin-bottom: $baseline;
   padding: 0;
-  border: 1px solid $dark-gray;
-  list-style: none;
-  color: $white;
-  line-height: 1.6;
   border-radius: 3px;
+  background: $error-red;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0 1px 0 rgba(255, 255, 255, .2);
+  color: $white;
+  list-style: none;
 
-  li {
+  .new-post-form-error {
     padding: ($baseline/2) $baseline 12px 45px;
-    border-bottom: 1px solid #dc4949;
+    border-bottom: 1px solid $red;
     background: url(../images/white-error-icon.png) no-repeat 15px 14px;
 
     &:last-child {
@@ -177,7 +151,9 @@
   }
 }
 
-// Refactor before merge - from discussion.scss
+// ====================
+
+// TO DO - Clean up to reuse _navigation.scss styling instead of the old topic dropdown styling below (pulled from _discussion.scss)
 .new-post-article {
   display: none;
   margin-top: 0px;
@@ -222,8 +198,8 @@
       position: relative;
       z-index: 1000;
       margin-top: 15px;
-      border-color: #444;
       height: 40px;
+      border-color: #444;
       line-height: 36px;
 
       .drop-arrow {
@@ -234,16 +210,15 @@
     }
 
     .topic_menu_wrapper {
-      display: none;
-      position: absolute;
-      top: $baseline*2;
+      @include box-sizing(border-box);
+      top: ($baseline*2);
       left: 0;
       z-index: 9999;
+      display: none;
       width: 100%;
-      @include box-sizing(border-box);
-      background: #797979;
       border: 1px solid $dark-gray;
-      box-shadow: 0 2px 50px rgba(0, 0, 0, .4);
+      background: #797979;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, .4);
     }
 
     .topic_menu {
@@ -309,13 +284,5 @@
     width: 68%;
     padding: ($baseline*2);
     @include box-sizing(border-box);
-  }
-
-  .wmd-button {
-    background: none;
-  }
-
-  .wmd-button span {
-    background: url(../images/new-post-icons-full.png) no-repeat;
   }
 }
