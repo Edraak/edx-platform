@@ -59,7 +59,19 @@ define(["backbone", "js/utils/module"], function(Backbone, ModuleUtils) {
              * The xblock which is determining the release date. For instance, for a unit,
              * this will either be the parent subsection or the grandparent section.
              */
-            "release_date_from":null
+            "release_date_from":null,
+            /**
+            * If xblock is graded, the date after which student assesment will be evaluated.
+            **/
+            "due_date": null,
+            /**
+            * Grading policy for xblock
+            **/
+            "grading_format": null,
+            /**
+            * Course graders
+            **/
+            "course_graders": null,
         },
 
         parse: function(response) {

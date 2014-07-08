@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import hashlib
 import logging
 from uuid import uuid4
+import json
 
 from collections import OrderedDict
 from functools import partial
@@ -28,6 +29,7 @@ from xmodule.modulestore.inheritance import own_metadata
 from xmodule.x_module import PREVIEW_VIEWS, STUDIO_VIEW, STUDENT_VIEW
 from contentstore.utils import compute_publish_state
 from xmodule.modulestore import PublishState
+from xmodule.seq_module import SequenceDescriptor
 from django.contrib.auth.models import User
 from util.date_utils import get_default_time_display
 
@@ -582,6 +584,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
         "edited_by": edited_by,
         'is_container': is_container,
         'studio_url': xblock_studio_url(xblock),
+        'release_date': get_default_time_display(xblock.start),
     }
     if data is not None:
         xblock_info["data"] = data
@@ -591,6 +594,10 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
         xblock_info['ancestor_info'] = _create_xblock_ancestor_info(xblock)
     if include_child_info and is_container:
         xblock_info['child_info'] = _create_xblock_child_info(xblock, recurse_child_info=recurse_child_info)
+    if xblock.graded and xblock.category == u'sequential' and not is_unit(xblock):
+        xblock_info['due_date'] = get_default_time_display(xblock.due)
+        xblock_info['grading_format'] = xblock.format
+        xblock_info['course_graders'] =  json.dumps(CourseGradingModel.fetch(xblock.location.course_key).graders),
     return xblock_info
 
 
