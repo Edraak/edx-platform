@@ -51,6 +51,7 @@ if Backbone?
 
       events:
           "submit .new-post-form":            "createPost"
+          "click  .post-type-option":         "setType"
           "click  .topic_dropdown_button":    "toggleTopicDropdown"
           "click  .topic_menu_wrapper":       "setTopic"
           "click  .topic_menu_search":        "ignoreClick"
@@ -98,6 +99,12 @@ if Backbone?
                   @$(".new-post-body textarea").val("").attr("prev-text", "")
                   @$(".wmd-preview p").html("") # only line not duplicated in new post inline view
                   @collection.add thread
+
+      setType: (event) ->
+        $target = $(event.target)
+        $target.addClass("is-enabled")
+        $target.siblings().removeClass("is-enabled")
+
 
       toggleTopicDropdown: (event) ->
           event.stopPropagation()
@@ -170,17 +177,17 @@ if Backbone?
           path = (x.replace /^\s+|\s+$/g, "" for x in name.split("/"))
           while path.length > 1
               path.shift()
-              partialName = gettext("…") + " / " + path.join(" / ")
+              partialName = path.join(" / ")
               if  @getNameWidth(partialName) < @maxNameWidth
                   return partialName
 
           rawName = path[0]
 
-          name = gettext("…") + " / " + rawName
+          name = rawName
 
           while @getNameWidth(name) > @maxNameWidth
               rawName = rawName[0...rawName.length-1]
-              name =  gettext("…") + " / " + rawName + " " + gettext("…")
+              name =  rawName + " " + gettext("…")
 
           return name
 

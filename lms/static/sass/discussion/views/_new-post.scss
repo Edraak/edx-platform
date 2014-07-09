@@ -26,9 +26,10 @@
       .field-label-name {
         display: inline-block;
         width: 25%;
-        vertical-align: bottom;
+        vertical-align: top;
         text-transform: uppercase;
         font-size: 12px;
+        line-height: 40px;
       }
 
       .field-label-input {
@@ -63,7 +64,6 @@
               background-color: $forum-color-active-thread;
               background-image: none;
               box-shadow: 0 1px 1px rgba(0, 0,  0, 0.4) inset;
-              color: $blue;
             }
           }
         }
@@ -76,7 +76,7 @@
         // CASE: post title
         .new-post-title {
           @include box-sizing(border-box);
-          border: 1px solid $gray;
+          border: 1px solid $gray-l2;
           border-radius: 3px;
           padding: 0 $baseline/2;
           width: 100%;
@@ -242,8 +242,10 @@
 
   .topic_dropdown_button {
     @include white-button;
+    @extend %cont-truncated;
     position: relative;
     z-index: 1000;
+    padding: 0 $baseline 0 ($baseline*.75);
     height: 40px;
     font-size: 14px;
     line-height: 36px;

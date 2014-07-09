@@ -106,3 +106,11 @@
   0% { opacity: 0.0; }
   100% { opacity: 1.0; }
 }
+
+// extends - content - text overflow by ellipsis
+%cont-truncated {
+  @include box-sizing(border-box);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
