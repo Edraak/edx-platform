@@ -5,9 +5,9 @@
 .new-post-form {
   @include clearfix;
   box-sizing: border-box;
+  border-radius: 3px;
   padding: ($baseline*2);
   background: $gray-l5;
-  box-shadow: 0 1px 2px $shadow inset;
 
   // UI: form input fields
   .wrapper-field {
@@ -25,20 +25,63 @@
 
       .field-label-name {
         display: inline-block;
-        width: 35%;
+        width: 25%;
         vertical-align: bottom;
+        text-transform: uppercase;
+        font-size: 12px;
       }
+
       .field-label-input {
         display: inline-block;
+
+        // CASE: post type buttons
+        &.post-type {
+          width: 70%;
+
+          [class^="post-type-"] {
+            @include linear-gradient(top, $white, $gray-l5);
+            display: inline-block;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            width: 48%;
+            height: 40px;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, .15);
+            color: $dark-gray;
+            text-shadow: none;
+            font-weight: 600;
+            font-size: 13px;
+
+            &:hover, &:focus {
+              @include linear-gradient(top, $white, $gray-l6);
+            }
+
+            &:first-child {
+              margin-right: 2%;
+            }
+
+            &.is-enabled {
+              background-color: $forum-color-active-thread;
+              background-image: none;
+              box-shadow: 0 1px 1px rgba(0, 0,  0, 0.4) inset;
+              color: $blue;
+            }
+          }
+        }
+
+        // CASE: post topic
+        &.post-topic {
+          width: 70%;
+        }
 
         // CASE: post title
         .new-post-title {
           @include box-sizing(border-box);
+          border: 1px solid $gray;
+          border-radius: 3px;
           padding: 0 $baseline/2;
           width: 100%;
           height: 40px;
-          border-radius: 3px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) inset;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) inset;
           color: #333;
           font-weight: 700;
           font-size: 16px;
@@ -62,13 +105,22 @@
 
     // UI: post options
     .new-post-option {
+      @include box-sizing(border-box);
       display: inline-block;
       border-radius: 3px;
       padding: ($baseline/2) 0;
       margin: $baseline $baseline 0 0;
 
+      &:hover {
+        box-shadow: 0 0 2px $shadow-d2;
+      }
+
       &.is-enabled {
         border: 1px solid $blue;
+
+        &:hover {
+          box-shadow: none;
+        }
 
         .post-follow-label, .post-anonymous-label, .post-anonymous-to-peers-label {
           color: $blue;
@@ -90,9 +142,8 @@
       }
     }
 
-
     .post-title {
-     width: 95%;
+     width: 96%;
     }
   }
 }
@@ -105,7 +156,7 @@
 
 // ====================
 
-// UI: actions - new post creation 
+// UI: actions - new post creation
 .new-post-form {
 
   .submit {
@@ -129,7 +180,7 @@
 
 // ====================
 
-// CASE: errors - new post creation 
+// CASE: errors - new post creation
 .new-post-form-errors {
   display: none;
   margin-bottom: $baseline;
@@ -153,7 +204,9 @@
 
 // ====================
 
-// TO DO - Clean up to reuse _navigation.scss styling instead of the old topic dropdown styling below (pulled from _discussion.scss)
+// UI: topic dropdown - new post creation
+
+// TO-DO: refactor to use _navigation.scss as general topic selector
 .new-post-article {
   display: none;
   margin-top: 0px;
@@ -164,125 +217,108 @@
     margin: 0px;
   }
 
-  .left-column {
-    @include box-sizing(border-box);
-    float: left;
-    padding: ($baseline*2);
-    width: 32%;
+  .topic-dropdown-label {
+    font-size: 22px;
+    font-weight: 700;
+    color: $white;
+    text-shadow: none;
+  }
 
-    .topic-dropdown-label {
-      font-size: 22px;
-      font-weight: 700;
-      color: $white;
-      text-shadow: none;
-    }
+  .form-topic-drop {
+    position: relative;
 
-    .form-topic-drop {
-      position: relative;
-
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-    }
-
-    .form-group-label {
-      display: block;
-      padding-top: ($baseline/4);
-      color: $white;
-    }
-
-    .topic_dropdown_button {
-      @include white-button;
-      position: relative;
-      z-index: 1000;
-      margin-top: 15px;
-      height: 40px;
-      border-color: #444;
-      line-height: 36px;
-
-      .drop-arrow {
-        float: right;
-        color: #999;
-        line-height: 37px;
-      }
-    }
-
-    .topic_menu_wrapper {
-      @include box-sizing(border-box);
-      top: ($baseline*2);
-      left: 0;
-      z-index: 9999;
-      display: none;
-      width: 100%;
-      border: 1px solid $dark-gray;
-      background: #797979;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, .4);
-    }
-
-    .topic_menu {
-      max-height: 400px;
-      overflow-y: scroll;
-
-      a {
-        display: block;
-        padding: ($baseline/2) 15px;
-        border-top: 1px solid #5f5f5f;
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 18px;
-        color: #eee;
-        @include transition(none);
-
-        &:hover, &:focus {
-          background-color: #666;
-        }
-
-        .topic-menu-span {
-          color: #eee;
-        }
-      }
-
-      li li {
-        a {
-          padding-left: 39px;
-          background: url(../images/nested-icon.png) no-repeat 17px 10px;
-        }
-      }
-
-      li li li {
-        a {
-          padding-left: 63px;
-          background: url(../images/nested-icon.png) no-repeat 41px 10px;
-        }
-      }
-    }
-
-    .topic_menu_search {
-      padding: $baseline/2;
-      border-bottom: 1px solid black;
-    }
-
-    .form-topic-drop-search-input {
-      width: 100%;
-      height: 30px;
-      padding: 0 15px;
-      @include box-sizing(border-box);
-      border-radius: 30px;
-      border: 1px solid $dark-gray;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .25) inset;
-      background: -webkit-linear-gradient(top, #eee, $white);
-      font-size: 11px;
-      line-height: 16px;
-      color: #333;
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
   }
 
-  .right-column {
-    float: left;
-    width: 68%;
-    padding: ($baseline*2);
+  .form-group-label {
+    display: block;
+    padding-top: ($baseline/4);
+    color: $white;
+  }
+
+  .topic_dropdown_button {
+    @include white-button;
+    position: relative;
+    z-index: 1000;
+    height: 40px;
+    font-size: 14px;
+    line-height: 36px;
+
+    .drop-arrow {
+      float: right;
+      color: #999;
+      line-height: 37px;
+    }
+  }
+
+  .topic_menu_wrapper {
     @include box-sizing(border-box);
+    position: absolute;
+    top: ($baseline*2);
+    left: 0;
+    z-index: 9999;
+    display: none;
+    border: 1px solid $gray-l3;
+    width: 100%;
+    background: $white;
+    box-shadow: 0 2px 1px $shadow;
+  }
+
+  .topic_menu {
+    max-height: 400px;
+    overflow-y: scroll;
+
+    a {
+      @include transition(none);
+      display: block;
+      padding: ($baseline/2) 15px;
+      font-size: 14px;
+      line-height: 18px;
+      cursor: default;
+
+      &:hover, &:focus {
+        color: $link-color;
+      }
+
+      .topic-menu-span {
+        color: #eee;
+      }
+    }
+    a[data-discussion-id]:hover {
+      background-color: $gray-l4;
+    }
+
+    li li {
+      a {
+        padding-left: 39px;
+        background: url(../images/nested-icon.png) no-repeat 17px 10px;
+      }
+    }
+
+    li li li {
+      a {
+        padding-left: 63px;
+        background: url(../images/nested-icon.png) no-repeat 41px 10px;
+      }
+    }
+  }
+  .topic_menu_search {
+    border-bottom: 1px solid $gray-l2;
+    padding: ($baseline/4);
+  }
+
+  .form-topic-drop-search-input {
+    @include box-sizing(border-box);
+    border: 1px solid $gray-l3;
+    padding: 0 15px;
+    width: 100%;
+    height: 30px;
+    color: #333;
+    font-size: 11px;
+    line-height: 16px;
   }
 }

@@ -43,6 +43,12 @@
   margin-bottom: 0;
 }
 
+// Override cursor for topic dropdown in new post creation
+
+.topic_menu a[data-discussion-id] {
+  cursor: pointer !important;
+}
+
 // Override global input rules
 .forum-nav-browse-filter-input {
   box-shadow: none !important;

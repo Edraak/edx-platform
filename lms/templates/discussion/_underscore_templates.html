@@ -365,11 +365,11 @@
             <div class="wrapper-field">
                 <div class="field-label">
                     <label class="field-label-name">
-                        Create New:
+                        ${_("Create New:")}
                     </label>
-                    <span class="field-label-input">
-                        <input type="button" value="Question">
-                        <input type="button" value="Discussion">
+                    <span class="post-type field-label-input">
+                        <input class="post-type-question" type="button" value="Question">
+                        <input class="post-type-discussion is-enabled" type="button" value="Discussion">
                     </span>
                 </div>
                 <div class="field-help">
@@ -386,15 +386,15 @@
             <div class="wrapper-field">
                 <div class="field-label">
                     <label class="field-label-name">
-                       Organized Into:
+                       ${_("Topic Area:")}
                     </label>
-                    <span class="field-label-input">
+                    <span class="post-topic field-label-input">
                         <div class="form-topic-drop">
                             <a href="#" aria-labelledby="topic-dropdown-label" class="topic_dropdown_button">${_("select...")}<span class="drop-arrow" aria-hidden="true">▾</span></a>
                             <div class="topic_menu_wrapper">
                                 <div class="topic_menu_search" role="menu">
                                     <label class="sr" for="browse-topic-newpost">${_("Filter List")}</label>
-                                    <input type="text" id="browse-topic-newpost" class="form-topic-drop-search-input" placeholder="${_('Filter discussion areas')}">
+                                    <input type="text" id="browse-topic-newpost" class="form-topic-drop-search-input" placeholder="${_('Filter topics')}">
                                </div>
                                <ul class="topic_menu" role="menu">${'<%= topics_html %>'}</ul>
                            </div>
@@ -408,14 +408,13 @@
                </div>
             </div>
             ${'<% } %>'}
-
+            ${'<% if (cohort_options) { %>'}
             <div class="wrapper-field">
                 <div class="field-label">
                     <label class="field-label-name">
-                      Visible To:
+                      ${_("Visible To:")}
                     </label>
-                    <span class="field-label-input">
-                        ${'<% if (cohort_options) { %>'}
+                    <span class="post-cohort field-label-input">
                         <div class="form-group-label choose-cohort">
                             ## Translators: This labels the selector for which group of students can view a post
                             ${_("Make visible to:")}
@@ -426,7 +425,6 @@
                                 ${'<% }); %>'}
                              </select>
                          </div>
-                       ${'<% } %>'}
                     </span>
                </div>
                <div class="field-help">
@@ -435,6 +433,7 @@
                   </span>
                </div>
             </div>
+            ${'<% } %>'}
 
             <div class="wrapper-field">
                 <div class="field-label">
