@@ -381,7 +381,6 @@
                     </span>
                 </div>
             </div>
-
             ${'<% if (mode=="tab") { %>'}
             <div class="wrapper-field">
                 <div class="field-label">
@@ -457,17 +456,17 @@
             <div class="wrapper-field">
                 <div class="field-label field-label-options">
                   <div class="new-post-option option-follow is-enabled">
-                    <input type="checkbox" name="follow" class="post-follow" id="new-post-follow" checked><label class="post-follow-label"for="new-post-follow"><i class="icon icon-star"></i>${_("follow this post")}</label>
+                    <input type="checkbox" name="follow" class="post-follow js-post-option" id="new-post-follow" checked><label class="post-follow-label"for="new-post-follow"><i class="icon icon-star"></i>${_("follow this post")}</label>
                   </div>
                   ${'<% if (allow_anonymous) { %>'}
                   <div class="new-post-option option-anonymous">
-                    <input type="checkbox" name="anonymous" class="post-anonymous" id="new-post-anonymous">
+                    <input type="checkbox" name="anonymous" class="post-anonymous js-post-option" id="new-post-anonymous">
                     <label class="post-anonymous-label" for="new-post-anonymous">${_("post anonymously")}</label>
                   </div>
                   ${'<% } %>'}
                   ${'<% if (allow_anonymous_to_peers) { %>'}
                   <div class="new-post-option option-anonymous">
-                    <input type="checkbox" name="anonymous_to_peers" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers">
+                    <input type="checkbox" name="anonymous_to_peers" class="post-anonymous-to-peers js-post-option" id="new-post-anonymous-to-peers">
                     <label class="post-anonymous-to-peers-label" for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
                   </div>
                   ${'<% } %>'}
