@@ -110,3 +110,98 @@ li[class*=forum-nav-thread-label-] {
   margin-top: 0px;
   @include clearfix;
 }
+
+// Sidebar extend dependence from course/extends to _profile.scss
+// application-extends-2 does not import this dependency, so it was duplicated here until the profile page is refactored.
+
+.sidebar {
+  @include box-sizing(border-box);
+  display: table-cell;
+  font-family: $sans-serif;
+  font-size: 14px;
+  position: relative;
+  vertical-align: top;
+  width: flex-grid(3);
+  background: $sidebar-color;
+
+  h1, h2 {
+   font-size: em(20);
+   font-weight: bold;
+   letter-spacing: 0;
+   text-transform: none;
+   font-family: $sans-serif;
+   text-align: left;
+   font-style: normal;
+  }
+
+  h1 {
+    font-size: 18px;
+    padding: 32px 26px 20px 26px;
+  }
+
+  a {
+    border: none;
+    font-style: normal;
+  }
+
+  .bottom-border {
+    border-bottom: 1px solid $border-color;
+  }
+
+  @media print {
+    display: none;
+  }
+
+  h3 {
+    background: none;
+    border: none;
+    color: #000;
+    font-weight: normal;
+    margin: 0;
+    overflow: hidden;
+    font-size: 1em;
+
+    a {
+      display: block;
+      text-decoration: none;
+      @include transition(none);
+    }
+
+    &.active {
+      // @extend .bottom-border;
+      color: #000;
+      font-weight: bold;
+
+      a {
+        color: #000;
+      }
+    }
+  }
+
+  ul, ol {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+
+    li {
+      // @extend .bottom-border;
+      @extend .clearfix;
+      background: none;
+      position: relative;
+      padding: 0;
+
+      a {
+        display: block;
+        line-height: lh();
+        font-size: 1em;
+        @include box-sizing(border-box);
+        padding: lh(.25) lh(.5) lh(.25) 0;
+
+        &:hover, &:focus {
+          color: #666;
+          background: #f6f6f6;
+        }
+      }
+    }
+  }
+}
