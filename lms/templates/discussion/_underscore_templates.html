@@ -361,26 +361,7 @@
 <script aria-hidden="true" type="text/template" id="new-post-template">
     <div class="inner-wrapper">
         <form class="new-post-form">
-            <div class="new-post-form-errors"></div>
-            <div class="wrapper-field">
-                <div class="field-label">
-                    <label class="field-label-name">
-                        ${_("Create New:")}
-                    </label>
-                    <span class="post-type field-label-input">
-                        <input class="post-type-option post-type-question" type="button" value="Question">
-                        <input class="post-type-option post-type-discussion is-enabled" type="button" value="Discussion">
-                    </span>
-                </div>
-                <div class="field-help">
-                    <span class="post-type-description question">
-                        ${_("Questions are resolved when the author or staff accepts a response as the answer.")}
-                    </span>
-                    <span class="post-type-description discussion">
-                        ${_("Discussions are any other notes, resources, or reflections, students want to share with the community.")}
-                    </span>
-                </div>
-            </div>
+            <div class="new-post-form-errors"></div<name />
             ${'<% if (mode=="tab") { %>'}
             <div class="wrapper-field">
                 <div class="field-label">
@@ -402,7 +383,7 @@
                </div>
                <div class="field-help">
                   <span>
-                    ${_("Think carefully about where you place your post, as it makes it easier for other students and staff to build conversation when it is in the right place.")}
+                    ${_("Add your post into a relevant topic to help others find it.")}
                     </span>
                </div>
             </div>
@@ -428,7 +409,7 @@
                </div>
                <div class="field-help">
                   <span>
-            ${_("As an instructor you can decide whether posts should be visible to all cohorts or only to a specific cohort.  Students in cohorts can not see posts from other cohorts.")}
+            ${_("Instructors can set whether a post is visible to all cohorts or only to a specific cohort.")}
                   </span>
                </div>
             </div>
@@ -446,7 +427,7 @@
                         ${_("Make sure your title clearly describes your question. Try to avoid unclear or generic questions when possible.")}
                   </span>
                   <span class="post-title-description discussion">
-                      ${_("Make sure your title clearly describes your discussion topic.  Clear titles encourage discussion and make it easier for interested students to find them.")}
+                      ${_("Add a clear and descriptive title to encourage participation.")}
                   </span>
                </div>
             </div>

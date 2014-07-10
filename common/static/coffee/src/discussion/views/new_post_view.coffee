@@ -51,7 +51,6 @@ if Backbone?
 
       events:
           "submit .new-post-form":            "createPost"
-          "click  .post-type-option":         "setType"
           "click  .topic_dropdown_button":    "toggleTopicDropdown"
           "click  .topic_menu_wrapper":       "setTopic"
           "click  .topic_menu_search":        "ignoreClick"
@@ -99,11 +98,6 @@ if Backbone?
                   @$(".new-post-body textarea").val("").attr("prev-text", "")
                   @$(".wmd-preview p").html("") # only line not duplicated in new post inline view
                   @collection.add thread
-
-      setType: (event) ->
-        $target = $(event.target)
-        $target.addClass("is-enabled")
-        $target.siblings().removeClass("is-enabled")
 
 
       toggleTopicDropdown: (event) ->
