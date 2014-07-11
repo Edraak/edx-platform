@@ -91,6 +91,7 @@ class BokChoyTestSuite(TestSuite):
         # screenshots and XUnit XML reports
         cmd = [
             "SCREENSHOT_DIR='{}'".format(self.log_dir),
+            "HAR_DIR='{}'".format(self.log_dir),
             "nosetests",
             test_spec,
             "--with-xunit",
