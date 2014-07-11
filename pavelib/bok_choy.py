@@ -14,7 +14,6 @@ except ImportError:
 
 __test__ = False  # do not collect
 
-
 @task
 @needs('pavelib.prereqs.install_prereqs')
 @cmdopts([
@@ -39,7 +38,33 @@ def test_bokchoy(options):
     opts = {
         'test_spec': getattr(options, 'test_spec', None),
         'fasttest': getattr(options, 'fasttest', False),
-        'verbosity': getattr(options, 'verbosity', 2)
+        'verbosity': getattr(options, 'verbosity', 2),
+        'test_dir': 'tests',
+    }
+
+    test_suite = BokChoyTestSuite('bok-choy', **opts)
+    test_suite.run()
+
+
+@task
+@needs('pavelib.prereqs.install_prereqs')
+@cmdopts([
+    ('test_spec=', 't', 'Specific test to run'),
+    ('fasttest', 'a', 'Skip some setup'),
+    make_option("--verbose", action="store_const", const=2, dest="verbosity"),
+    make_option("-q", "--quiet", action="store_const", const=0, dest="verbosity"),
+    make_option("-v", "--verbosity", action="count", dest="verbosity"),
+])
+def perf_report_bokchoy(options):
+    """
+    Generates a har file for with page performance info.
+    """
+    opts = {
+        'test_spec': getattr(options, 'test_spec', None),
+        'fasttest': getattr(options, 'fasttest', False),
+        'verbosity': getattr(options, 'verbosity', 2),
+        'test_dir': 'performance',
+        'ptests': True,
     }
 
     test_suite = BokChoyTestSuite('bok-choy', **opts)
