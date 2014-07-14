@@ -18,6 +18,7 @@ def patch_session_object(session):
     original_create = session.create
     original_save = session.save
     original_delete = session.delete
+    original_load = session.load
 
     def create(self):
         """Logs and then calls original create method."""
@@ -43,9 +44,27 @@ def patch_session_object(session):
             self.session_key, self.get_expiry_date(), json.dumps(self._session))
         )
 
+    def load(self):
+        try:
+            session_data = self._cache.get(self.cache_key, None)
+        except Exception:
+            log.info(u"SessionEngine:Load KeyNotFound SessionKey:{0}".format(
+                self.session_key)
+            )
+            session_data = None
+
+        log.info(u"SessionEngine:Load KeyFound SessionKey:{0} State:\"{1}\"".format(
+            self.session_key, json.dumps(session_data))
+        )
+        if session_data is not None:
+            return session_data
+        self.create()
+        return {}
+
     session.create = types.MethodType(create, session)
     session.save = types.MethodType(save, session)
     session.delete = types.MethodType(delete, session)
+    session.load = types.MethodType(load, session)
 
 
 class SessionMiddleware(DjangoSessionMiddleware):
@@ -62,6 +81,19 @@ class SessionMiddleware(DjangoSessionMiddleware):
 
         if settings.FEATURES.get("ENABLE_VERBOSE_LOGGING_FOR_SESSIONS", False):
             patch_session_object(request.session)
-            log.info(u"SessionEngine:InitialState SessionKey:{0} SessionExpiry:{1} State:\"{2}\"".format(
-                request.session.session_key, request.session.get_expiry_date(), json.dumps(request.session._session))
+
+            session_id = request.COOKIES.get(settings.SESSION_COOKIE_NAME, None)
+            log.info(u"SessionEngine:RequestState SessionKey:{0} SessionExpiry:{1} CookieSessionId:{2} State:\"{3}\"".format(
+                request.session.session_key, request.session.get_expiry_date(), session_id, json.dumps(request.session._session))
             )
+
+    def process_response(self, request, response):
+
+        new_response = super(SessionMiddleware, self).process_response(request, response)
+
+        session_id = request.COOKIES.get(settings.SESSION_COOKIE_NAME, None)
+        log.info(u"SessionEngine:ResponseState SessionKey:{0} SessionExpiry:{1} CookieSessionId:{2} State:\"{3}\"".format(
+            request.session.session_key, request.session.get_expiry_date(), session_id, json.dumps(request.session._session))
+        )
+
+        return new_response
