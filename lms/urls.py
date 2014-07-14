@@ -13,6 +13,7 @@ if settings.DEBUG or settings.FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
 
 urlpatterns = ('',  # nopep8
     # certificate view
+    url(r'^sessions_report$', 'sessions.views.sessions_report'),
     url(r'^update_certificate$', 'certificates.views.update_certificate'),
     url(r'^request_certificate$', 'certificates.views.request_certificate'),
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
