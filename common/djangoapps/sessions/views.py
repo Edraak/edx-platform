@@ -24,7 +24,8 @@ def sessions_report(request):
         session['key'] = 'value'
         session.save()
 
-    response = '-------- Key: {0} --------- \n'.format(session.session_key)
+    response = ''
+    misses = 0
     for iteration in range(0, iterations):
 
         data = session.load()
@@ -32,11 +33,14 @@ def sessions_report(request):
         status = 'Found '
         if not data:
             status = 'Empty '
+            misses += 1
 
         result = '{0}: {1} {2}\n'.format(iteration, status, json.dumps(data))
         response += result
 
         if sleep_time is not None:
             time.sleep(sleep_time)
+
+    response = '-------- Key: {0} ----  Misses: {1} ----- \n'.format(session.session_key, misses) + response
 
     return HttpResponse(response, content_type="text/plain")
