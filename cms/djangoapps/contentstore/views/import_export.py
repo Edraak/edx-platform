@@ -31,8 +31,6 @@ from xmodule.modulestore.xml_exporter import export_to_xml
 from .access import has_course_access
 
 from extract_tar import safetar_extractall
-from student import auth
-from student.roles import CourseInstructorRole, CourseStaffRole, GlobalStaff
 from util.json_request import JsonResponse
 
 from contentstore.utils import reverse_course_url, reverse_usage_url
