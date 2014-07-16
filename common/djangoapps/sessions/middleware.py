@@ -49,7 +49,7 @@ def patch_session_object(session):
             session_data = self._cache.get(self.cache_key, None)
         except Exception:
             log.info(u"SessionEngine:Load KeyNotFound SessionKey:{0}".format(
-                self.session_key)
+                self.session_key), exc_info=True
             )
             session_data = None
 
