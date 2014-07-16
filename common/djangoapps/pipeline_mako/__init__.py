@@ -5,7 +5,6 @@ from pipeline.packager import Packager
 from pipeline.utils import guess_type
 from static_replace import try_staticfiles_lookup
 
-import json
 
 def compressed_css(package_name, raw=False):
     package = settings.PIPELINE_CSS.get(package_name, {})
@@ -80,10 +79,3 @@ def render_individual_js(package, paths, templates=None):
     if templates:
         tags.append(render_inline_js(package, templates))
     return '\n'.join(tags)
-
-def escape_string(text):
-    # This function is used to escape strings for
-    # javascript code in a mako template file
-    # Here we use 'json.dumps' to do the escape because
-    # it can perform all the needed escape operations
-    return json.dumps(text)
