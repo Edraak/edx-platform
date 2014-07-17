@@ -64,7 +64,7 @@ class SplitTest(ContainerBase):
 
     def verify_add_missing_groups_button_not_present(self, container):
         """
-        Checks that the "add missing gorups" button/link is not present.
+        Checks that the "add missing groups" button/link is not present.
         """
         def missing_groups_button_not_present():
             button_present = container.missing_groups_button_present()
@@ -143,6 +143,9 @@ class SplitTest(ContainerBase):
         Test deleting an inactive group.
         """
         container = self.create_poorly_configured_split_instance()
+
+        # The inactive group is the 2nd group, but it is the first one
+        # with a visible delete button, so use index 0
         container.delete(0)
         self.verify_groups(container, ['alpha'], [], verify_missing_groups_not_present=False)
 
