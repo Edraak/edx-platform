@@ -1,8 +1,7 @@
 """
 Utility methods useful for Studio page tests.
 """
-from bok_choy.promise import Promise
-from selenium.webdriver.common.action_chains import ActionChains
+from bok_choy.promise import EmptyPromise
 
 
 def click_css(page, css, source_index=0, require_notification=True):
@@ -14,9 +13,17 @@ def click_css(page, css, source_index=0, require_notification=True):
     If require_notification is False (default value is True), the method will return immediately.
     Otherwise, it will wait for the "mini-notification" to appear and disappear.
     """
-    buttons = page.q(css=css).filter(lambda el: el.size['width'] > 0)
-    target = buttons[source_index]
-    ActionChains(page.browser).click(target).release().perform()
+    # Some buttons trigger ajax posts
+    # (e.g. .add-missing-groups-button as configured in split_test_author_view.js)
+    # so before you click anything wait for the ajax call to finish
+    page.wait_for_ajax()
+    page.q(css=css).filter(lambda el: el.size['width'] > 0).nth(source_index).click()
+
+    # Some buttons trigger ajax posts
+    # (e.g. .add-missing-groups-button as configured in split_test_author_view.js)
+    # so after you click anything wait for the ajax call to finish
+    page.wait_for_ajax()
+
     if require_notification:
         wait_for_notification(page)
 
@@ -26,15 +33,13 @@ def wait_for_notification(page):
     Waits for the "mini-notification" to appear and disappear on the given page (subclass of PageObject).
     """
     def _is_saving():
-        num_notifications = page.q(css='.wrapper-notification-mini.is-shown').present
-        return (num_notifications == 1, num_notifications)
+        return page.q(css='.wrapper-notification-mini.is-shown').present
 
     def _is_saving_done():
-        num_notifications = page.q(css='.wrapper-notification-mini.is-hiding').present
-        return (num_notifications == 1, num_notifications)
+        return page.q(css='.wrapper-notification-mini.is-hiding').present
 
-    Promise(_is_saving, 'Notification should have been shown.', timeout=60).fulfill()
-    Promise(_is_saving_done, 'Notification should have been hidden.', timeout=60).fulfill()
+    EmptyPromise(_is_saving, 'Notification should have been shown.', timeout=60).fulfill()
+    EmptyPromise(_is_saving_done, 'Notification should have been hidden.', timeout=60).fulfill()
 
 
 def press_the_notification_button(page, name):
@@ -66,18 +71,22 @@ def add_advanced_component(page, menu_index, name):
     menu_index specifies which instance of the menus should be used (based on vertical
     placement within the page).
     """
+    # Click on the Advanced icon.
     click_css(page, 'a>span.large-advanced-icon', menu_index, require_notification=False)
 
     # Sporadically, the advanced component was not getting created after the click_css call on the category (below).
     # Try making sure that the menu of advanced components is visible before clicking (the HTML is always on the
     # page, but will have display none until the large-advanced-icon is clicked).
-    def is_advanced_components_showing():
-        advanced_buttons = page.q(css=".new-component-advanced").filter(lambda el: el.size['width'] > 0)
-        return (len(advanced_buttons) == 1, len(advanced_buttons))
+    page.wait_for_element_visibility('.new-component-advanced', 'Advanced component menu is visible')
 
-    Promise(is_advanced_components_showing, "Advanced component menu not showing").fulfill()
+    # Now click on the component to add it.
+    component_css = 'a[data-category={}]'.format(name)
+    page.wait_for_element_visibility(component_css, 'Advanced component {} is visible'.format(name))
 
-    click_css(page, 'a[data-category={}]'.format(name))
+    # Click the component to add it.
+    page.wait_for_ajax()
+    page.q(css=component_css).first.click()
+    wait_for_notification(page)
 
 
 def type_in_codemirror(page, index, text, find_prefix="$"):

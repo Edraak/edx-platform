@@ -104,9 +104,17 @@ class ContainerPage(PageObject):
         """
         Delete the item with index source_index (based on vertical placement in page).
         """
+        # Click the delete button
         click_css(self, 'a.delete-button', source_index, require_notification=False)
+
+        # Wait for the confirmation dialog
+        confirmation_button_css = 'a.button.action-primary'
+        self.wait_for_element_visibility(confirmation_button_css, 'Confirmation dialog button is visible')
+
         # Click the confirmation dialog button
-        click_css(self, 'a.button.action-primary', 0)
+        self.q(css=confirmation_button_css).first.click()
+        wait_for_notification(self)
+
 
     def edit(self):
         """
