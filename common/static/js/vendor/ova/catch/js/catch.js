@@ -1117,7 +1117,13 @@ CatchAnnotation.prototype = {
                 break;
         }
         this.current_tab = action.html();
-        // Change userid and refresh
+        
+        //checks to make sure that Grouping is redone when switching tags in text annotations
+        if(this.options.media === 'text'){
+            this.current_tab==='public'?this.annotator.plugins.Grouping.useGrouping = 0:this.annotator.plugins.Grouping.useGrouping = 1;
+            this.annotator.publish("changedTabsInCatch");
+        }
+        //Change userid and refresh
         this.changeUserId(userId);
     },
     _onSelectionButtonClick: function(evt){
