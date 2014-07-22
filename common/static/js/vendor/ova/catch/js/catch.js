@@ -466,8 +466,8 @@ CatchAnnotation.prototype = {
         var onClearSearchButtonClick = this.__bind(this._onClearSearchButtonClick, this);
         var onDeleteReplyButtonClick = this.__bind(this._onDeleteReplyButtonClick, this);
         var onZoomToImageBoundsButtonClick = this.__bind(this._onZoomToImageBoundsButtonClick, this);
-    
-        // Open Button
+        var openLoadingGIF = this.__bind(this.openLoadingGIF, this);
+        //Open Button
         el.on("click", ".annotationItem .annotationRow", openAnnotationItem);
         // Close Button
         el.on("click", ".annotationItem .detailHeader", closeAnnotationItem);
@@ -511,6 +511,7 @@ CatchAnnotation.prototype = {
         // Delete Reply Button
         el.on("click", ".replies .replyItem .deleteReply", onDeleteReplyButtonClick);
         
+        el.on("click", ".annotationListButtons .PublicPrivate", openLoadingGIF);
     },
     changeMedia: function(media) {
         var media = media || 'text';
@@ -1209,5 +1210,8 @@ CatchAnnotation.prototype = {
                 item.remove();
             }
         }
-    }
+    },
+    openLoadingGIF: function(){
+        $('#mainCatch').append('<div class=\'annotations-loading-gif\'><img src="'+this.options.imageUrlRoot+'loading_bar.gif" /><br />Annotations Data Loading...Please Wait.</div>');
+    },
 }
