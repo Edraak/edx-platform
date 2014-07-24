@@ -44,22 +44,18 @@
       %elif reverify:
         <span class="sts-label">${_("You are re-verifying for")}</span>
       %else:
-        <span class="sts-label">${_("Congrats! You are now registered for")}</span>
+        <span class="sts-label label-congrats">${_("Congrats!")}</span>
+        <span class="sts-label">${_("You are now registered to audit")}</span>
       %endif
         <span class="sts-course-org">${course_org}'s</span>
         <span class="sts-course-number">${course_num}</span>
         <span class="sts-course-name">${course_name}.</span>
     </span>
-    <span class="sts-track">
-      <span class="sts-track-value">
-        %if upgrade:
-          <span class="context">${_("Upgrading to:")}</span> ${_("ID Verified")}
-        %elif reverify:
-          <span class="context">${_("Re-verifying for:")}</span> ${_("ID Verified")}
-        %else:
-          <span class="context">${_("Registering as: ")}</span> ${_("ID Verified")}
-        %endif
-    </span>
   </h2>
+  <ul class="list-actions">
+    <li class="action action-select">
+      <input type="submit" name="audit_mode" value="${_('Go to Course')}" />
+    </li>
+  </ul>
 </header>
 %endif

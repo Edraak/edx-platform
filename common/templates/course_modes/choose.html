@@ -191,12 +191,11 @@ $(document).ready(function() {
 
     %else:
     <!-- /experiment-variant-A -->
+    <span class="deco-divider">
+      <span class="copy">${_("or")}</span>
+    </span>
     <div class="wrapper-register-choose wrapper-content-main exp-variant-A">
       <article class="register-choose content-main">
-
-        %if not upgrade:
-        <h3 class="title">${_("Now choose your course track:")}</h3>
-        %endif
 
         <form class="form-register-choose" method="post" name="enrollment_mode_form" id="enrollment_mode_form">
 
@@ -208,11 +207,11 @@ $(document).ready(function() {
 
                 %if upgrade:
                   <div class="copy">
-                    <p>${_("Plan to use your completed coursework for job applications, career advancement, or school applications? Upgrade to work toward a Verified Certificate of Achievement to document your accomplishment. A minimum fee applies.")}</p>
+                    <p>${_("Use your completed coursework for career advancement or school applications. Upgrade to the Verified Certificate track to document your accomplishment for your employer or school.")}</p>
                   </div>
                 %else:
                   <div class="copy">
-                    <p>${_("Plan to use your completed coursework for job applications, career advancement, or school applications? Then work toward a Verified Certificate of Achievement to document your accomplishment. A minimum fee applies.")}</p>
+                    <p>${_("Use your completed coursework for career advancement or school applications. Select the Verified Certificate track to document your accomplishment for your employer or school.")}</p>
                   </div>
                 %endif
               </div>
@@ -243,31 +242,6 @@ $(document).ready(function() {
               </div>
             </div>
           % endif
-
-          %if not upgrade:
-
-            % if "audit" in modes:
-            <span class="deco-divider">
-              <span class="copy">${_("or")}</span>
-            </span>
-            <div class="register-choice register-choice-audit">
-              <div class="wrapper-copy">
-                <h4 class="title">${_("Audit This Course")}</h4>
-                <div class="copy">
-                  <p>${_("You can audit this course and still have complete access to the course material. If you complete and pass the course you will automatically earn an Honor Code Certificate free of charge.")}</p>
-                </div>
-              </div>
-
-              <ul class="list-actions">
-                <li class="action action-select">
-                <input type="submit" name="audit_mode" value="${_('Pusue Honor Code Certificate')}" />
-                </li>
-              </ul>
-            </div>
-
-            % endif
-
-          %endif
 
           <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
         </form>
