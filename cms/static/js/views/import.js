@@ -109,15 +109,24 @@ define(
             },
 
             /**
+             * Start upload feedback. Makes status list visible and starts
+             * showing upload progress.
+             */
+            startUploadFeedback: function (){
+                this.stopGetStatus = false;
+                $('div.wrapper-status').removeClass('is-hidden');
+                $('.status-info').show();
+                updateStage(0);
+            },
+
+            /**
              * Entry point for server feedback. Makes status list visible and starts
              * sending requests to the server for status updates.
              * @param {string} url The url to send Ajax GET requests for updates.
              */
             startServerFeedback: function (url){
                 this.stopGetStatus = false;
-                $('div.wrapper-status').removeClass('is-hidden');
-                $('.status-info').show();
-                getStatus(url, 500, 0);
+                getStatus(url, 1000, 0);
             },
 
 

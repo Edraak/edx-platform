@@ -63,6 +63,9 @@
 
               <div class="status-detail">
                 <h3 class="title">${_("Uploading")}</h3>
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
+                </div>
                 <p class="copy">${_("Transferring your file to our servers")}</p>
               </div>
             </li>
@@ -228,13 +231,14 @@ $('#fileupload').fileupload({
         } else {
             doneAt = 99;
         }
+        CourseImport.startUploadFeedback();
         if (percentInt >= doneAt) {
             bar.hide();
             CourseImport.startServerFeedback(feedbackUrl.replace("fillerName", file.name));
         } else {
             bar.show();
             fill.width(percentVal);
-            percent.html(percentVal);
+            fill.html(percentVal);
         }
     },
     done: function(e, data){
