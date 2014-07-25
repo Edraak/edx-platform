@@ -9,10 +9,9 @@ from xblock.runtime import KvsFieldData, DictKeyValueStore
 
 import xmodule.course_module
 from xmodule.modulestore.xml import ImportSystem, XMLModuleStore
+from xmodule.modulestore.django  import ModuleI18nService
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from django.utils.timezone import UTC
-from django.test.utils import override_settings
-from django.conf import settings
 
 
 ORG = 'test_org'
@@ -39,6 +38,7 @@ class DummySystem(ImportSystem):
         course_dir = "test_dir"
         error_tracker = Mock()
         parent_tracker = Mock()
+        services = {'i18n': ModuleI18nService()}
 
         super(DummySystem, self).__init__(
             xmlstore=xmlstore,
@@ -48,6 +48,7 @@ class DummySystem(ImportSystem):
             parent_tracker=parent_tracker,
             load_error_modules=load_error_modules,
             field_data=KvsFieldData(DictKeyValueStore()),
+            services=services
         )
 
 
@@ -190,8 +191,6 @@ class IsNewCourseTestCase(unittest.TestCase):
         (xmodule.course_module.CourseFields.start.default, 'January 2014', 'January 2014', False),
     ]
 
-
-
     @patch('xmodule.course_module.datetime.now')
     def test_start_date_text(self, gmtime_mock):
         gmtime_mock.return_value = NOW
@@ -211,9 +210,8 @@ class IsNewCourseTestCase(unittest.TestCase):
         ('2014-07-11T04:30', None, 'Jul 10, 2014', False),
     ]
 
-    @override_settings(TIME_ZONE_DISPLAYED_FOR_DEADLINES="US/Pacific")
+    @patch('django.conf.settings.TIME_ZONE_DISPLAYED_FOR_DEADLINES', new="US/Pacific")
     def test_start_date_text_correct_timezone(self):
-        import pdb; pdb.set_trace()
         for s in self.pacific_timezone_start_settings:
             d = get_dummy_course(start=s[0], advertised_start=s[1])
             self.assertEqual(d.start_date_text, s[2])

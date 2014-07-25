@@ -3,8 +3,6 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from courseware.courses import course_image_url, get_course_about_section
-from util.date_utils import get_time_display
-import datetime
 %>
 <%page args="course" />
 <article id="${course.id.to_deprecated_string()}" class="course">

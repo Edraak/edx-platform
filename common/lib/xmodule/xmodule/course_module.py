@@ -19,7 +19,6 @@ from xblock.fields import Scope, List, String, Dict, Boolean, Integer
 from .fields import Date
 from opaque_keys.edx.locator import CourseLocator
 from django.utils.timezone import UTC
-from django.conf import settings
 
 log = logging.getLogger(__name__)
 
@@ -223,8 +222,8 @@ class CourseFields(object):
         scope=Scope.settings
     )
     display_name = String(
-        help=_("Enter the name of the course as it should appear in the edX.org course list."),
-        default="Empty",
+        help=_("Enter the name of the course as it should appear in the edX.org course list."), 
+        default="Empty", 
         display_name=_("Course Display Name"),
         scope=Scope.settings
     )
@@ -557,10 +556,7 @@ class CourseDescriptor(CourseFields, SequenceDescriptor):
         _ = self.runtime.service(self, "i18n").ugettext
 
         if self.wiki_slug is None:
-            if isinstance(self.location, UsageKey):
-                self.wiki_slug = self.location.course
-            elif isinstance(self.location, CourseLocator):
-                self.wiki_slug = self.id.offering or self.display_name
+            self.wiki_slug = self.location.course
 
         if self.due_date_display_format is None and self.show_timezone is False:
             # For existing courses with show_timezone set to False (and no due_date_display_format specified),
