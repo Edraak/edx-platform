@@ -8,6 +8,7 @@ Building a Course
    :maxdepth: 2
 
    creating_new_course
-   export_import_course
    setting_up_student_view
    establish_grading_policy
+   course_rerun
+   export_import_course

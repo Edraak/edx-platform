@@ -6,19 +6,21 @@ Exporting and Importing a Course
 
 You can :ref:`Export a Course` and :ref:`Import a Course` through Studio.
 
+To duplicate an existing course for a new run, course creators can use the
+course re-run option. See :ref:`Rerun a Course`.
+
 .. _Export a Course:
 
-*************** 
+***************
 Export a Course
 ***************
+
 There are several reasons you may want to export your course:
 
 * To save your work
 * To edit the XML in your course directly
 * To create a backup copy of your course, which you can import if you want to
   revert the course back to a previous state
-* To create a copy of your course that you can later import into another course
-  instance and customize
 * To share with another instructor for another class
  
  
@@ -50,7 +52,7 @@ When the export completes you can then access the .tar.gz file on your computer.
 
 .. _Import a Course:
 
-*************** 
+***************
 Import a Course
 ***************
 
@@ -62,7 +64,6 @@ Import a Course
  
 There are several reasons you may want to import a course:
 
-* To run a new version of an existing course
 * To replace an existing course 
 * To load a course you developed outside of Studio
 
