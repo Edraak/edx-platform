@@ -191,11 +191,9 @@ $('#fileupload').fileupload({
                 e.preventDefault();
                 submitBtn.hide();
                 data.submit().complete(function(result, textStatus, xhr) {
-                    CourseImport.stopGetStatus = true;
                     window.onbeforeunload = null;
                     if (xhr.status != 200) {
                         if (!result.responseText) {
-                            alert(gettext("Your browser has timed out, but the server is still processing your import. Please wait 5 minutes and verify that the new content has appeared."));
                             return;
                         }
                         var serverMsg = $.parseJSON(result.responseText);
@@ -210,6 +208,7 @@ $('#fileupload').fileupload({
                         chooseBtn.html("${_("Choose new file")}").show();
                         bar.hide();
                     }
+                    CourseImport.stopGetStatus = true;
                     chooseBtn.html("${_("Choose new file")}").show();
                     bar.hide();
                 });
