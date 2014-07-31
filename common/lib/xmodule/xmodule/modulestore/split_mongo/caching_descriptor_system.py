@@ -2,13 +2,14 @@ import sys
 import logging
 from xblock.runtime import KvsFieldData
 from xblock.fields import ScopeIds
-from opaque_keys.edx.locator import BlockUsageLocator, LocalId, CourseLocator
+from opaque_keys.edx.locator import BlockUsageLocator, LocalId, CourseLocator, DefinitionLocator
 from xmodule.mako_module import MakoDescriptorSystem
 from xmodule.error_module import ErrorDescriptor
 from xmodule.errortracker import exc_info_to_str
 from xmodule.modulestore.split_mongo import encode_key_for_mongo
 from ..exceptions import ItemNotFoundError
 from .split_mongo_kvs import SplitMongoKVS
+from .definition_lazy_loader import DefinitionLazyLoader
 
 log = logging.getLogger(__name__)
 
@@ -99,23 +100,40 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
             self.course_entry['org'] = course_entry_override['org']
             self.course_entry['course'] = course_entry_override['course']
             self.course_entry['run'] = course_entry_override['run']
-        # most likely a lazy loader or the id directly
-        definition = json_data.get('definition', {})
-        definition_id = self.modulestore.definition_locator(definition)
+
+        definition_id = json_data.get('definition')
+        block_type = json_data['category']
+
+        course_key = CourseLocator(
+            version_guid=course_entry_override['structure']['_id'],
+            org=course_entry_override.get('org'),
+            course=course_entry_override.get('course'),
+            run=course_entry_override.get('run'),
+            branch=course_entry_override.get('branch'),
+        )
+
+        if definition_id is not None and not json_data.get('definition_loaded', False):
+            definition_loader = DefinitionLazyLoader(
+                self.modulestore, block_type, definition_id,
+                lambda fields: self.modulestore.convert_references_to_keys(
+                    course_key, self.load_block_type(block_type),
+                    fields, self.course_entry['structure']['blocks'],
+                )
+            )
+        else:
+            definition_loader = None
+
+        # If not definition id is provide, generate an in-memory id
+        if definition_id is None:
+            definition_id = LocalId()
 
         # If no usage id is provided, generate an in-memory id
         if block_id is None:
             block_id = LocalId()
 
         block_locator = BlockUsageLocator(
-            CourseLocator(
-                version_guid=course_entry_override['structure']['_id'],
-                org=course_entry_override.get('org'),
-                course=course_entry_override.get('course'),
-                run=course_entry_override.get('run'),
-                branch=course_entry_override.get('branch'),
-            ),
-            block_type=json_data.get('category'),
+            course_key,
+            block_type=block_type,
             block_id=block_id,
         )
 
@@ -123,7 +141,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
             block_locator.course_key, class_, json_data.get('fields', {}), self.course_entry['structure']['blocks'],
         )
         kvs = SplitMongoKVS(
-            definition,
+            definition_loader,
             converted_fields,
             json_data.get('_inherited_settings'),
             **kwargs
@@ -133,7 +151,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
         try:
             module = self.construct_xblock_from_class(
                 class_,
-                ScopeIds(None, json_data.get('category'), definition_id, block_locator),
+                ScopeIds(None, block_type, definition_id, block_locator),
                 field_data,
             )
         except Exception:
@@ -159,7 +177,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem):
         module.previous_version = edit_info.get('previous_version')
         module.update_version = edit_info.get('update_version')
         module.source_version = edit_info.get('source_version', None)
-        module.definition_locator = definition_id
+        module.definition_locator = DefinitionLocator(block_type, definition_id)
         # decache any pending field settings
         module.save()
 

@@ -59,7 +59,10 @@ class VersionConflictError(Exception):
     The caller asked for either draft or published head and gave a version which conflicted with it.
     """
     def __init__(self, requestedLocation, currentHeadVersionGuid):
-        super(VersionConflictError, self).__init__()
+        super(VersionConflictError, self).__init__('Requested {}, but current head is {}'.format(
+            requestedLocation,
+            currentHeadVersionGuid
+        ))
         self.requestedLocation = requestedLocation
         self.currentHeadVersionGuid = currentHeadVersionGuid
 

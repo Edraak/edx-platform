@@ -17,6 +17,7 @@ import sys
 import logging
 import copy
 import re
+import threading
 from uuid import uuid4
 
 from bson.son import SON
@@ -437,7 +438,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Prevent updating the meta-data inheritance cache for the given course
         """
-        if not hasattr(self.ignore_write_events_on_courses.courses):
+        if not hasattr(self.ignore_write_events_on_courses, 'courses'):
             self.ignore_write_events_on_courses.courses = set()
 
         self.ignore_write_events_on_courses.courses.add(course_id)
@@ -447,18 +448,18 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Restart updating the meta-data inheritance cache for the given course.
         Refresh the meta-data inheritance cache now since it was temporarily disabled.
         """
-        if not hasattr(self.ignore_write_events_on_courses.courses):
+        if not hasattr(self.ignore_write_events_on_courses, 'courses'):
             return
 
-        if course_id in self.ignore_write_events_on_courses:
-            self.ignore_write_events_on_courses.remove(course_id)
+        if course_id in self.ignore_write_events_on_courses.courses:
+            self.ignore_write_events_on_courses.courses.remove(course_id)
             self.refresh_cached_metadata_inheritance_tree(course_id)
 
     def _is_bulk_write_in_progress(self, course_id):
         """
         Returns whether a bulk write operation is in progress for the given course.
         """
-        if not hasattr(self.ignore_write_events_on_courses.courses):
+        if not hasattr(self.ignore_write_events_on_courses, 'courses'):
             return False
 
         course_id = course_id.for_branch(None)
