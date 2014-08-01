@@ -5,7 +5,7 @@ import unittest
 import functools
 import requests
 from path import path
-from bok_choy.web_app_test import WebAppTest
+from bok_choy.web_app_test import WebAppPerfReport
 
 
 def skip_if_browser(browser):
@@ -71,7 +71,7 @@ def load_data_str(rel_path):
         return data_file.read()
 
 
-class UniqueCourseTest(WebAppTest):
+class UniqueCourseTest(WebAppPerfReport):
     """
     Test that provides a unique course ID.
     """
