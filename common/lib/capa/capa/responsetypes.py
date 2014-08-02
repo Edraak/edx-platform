@@ -22,6 +22,7 @@ from pyparsing import ParseException
 import sys
 import random
 import re
+import copy
 import requests
 import subprocess
 import textwrap
@@ -150,7 +151,7 @@ class LoncapaResponse(object):
 
         """
         self.xml = xml
-        self.original_xml = xml.__deepcopy__(xml)      # copy of the original, unaltered XML for the benefit of hints
+        self.original_xml = copy.deepcopy(xml)      # copy of the original, unaltered XML for the benefit of hints
 
         self.inputfields = inputfields
         self.context = context
@@ -264,7 +265,7 @@ class LoncapaResponse(object):
         using_new_style_hints = False  # assume we are not using new style hints
         xproblem_element = self.xml.getroottree().xpath('.')
         schema_version = xproblem_element[0].get('schema')
-        if schema_version and schema_version == 'edXML/1.0':        # this is the right schema
+        if schema_version == 'edXML/1.0':                           # this is the right schema
             using_new_style_hints = True                            # turns out we are using new style hints
         return using_new_style_hints
 
@@ -396,8 +397,7 @@ class LoncapaResponse(object):
                     and hasattr(self, 'check_hint_condition')):
 
                     rephints = hintgroup.findall(self.hint_tag)
-                    hints_to_show = self.check_hint_condition(
-                        rephints, student_answers)
+                    hints_to_show = self.check_hint_condition(rephints, student_answers)
                     # can be 'on_request' or 'always' (default)
 
                     hintmode = hintgroup.get('mode', 'always')
@@ -442,21 +442,8 @@ class LoncapaResponse(object):
         """
         pass
 
-    def _extract_problem_hints(self):
-        """
-        Find any problem hints (as distinct from question hints which provide a form
-        of 'targeted feedback') in the XML for the problem. If any are found,
-        create a list of them for later use then remove the XML elements to keep
-        them from being displayed to student (via the XML, that is).
-        :return: Nothing
-        """
-        problem_hint_list = []
-        problem_element = self.xml.getparent()
-        for hint_element in problem_element.findall('hints/hint'):
-            problem_hint_list.append(hint_element.text.strip())
-
     def setup_response(self):
-        self._extract_problem_hints()
+        pass
 
     def __unicode__(self):
         return u'LoncapaProblem Response %s' % self.xml.tag
@@ -787,9 +774,8 @@ class ChoiceResponse(LoncapaResponse):
                 correctness_string = 'INCORRECT'
                 div_class = 'question_hint_incorrect'
 
-            new_cmap[problem]['msg'] = '<div class="' + div_class + '">' \
-                                       + correctness_string \
-                                       + new_cmap[problem]['msg'] + '</div>'
+            new_cmap[problem]['msg'] = '<div class="{0}">{1}{2}</div>'.format(div_class, correctness_string, new_cmap[problem]['msg'] )
+
 
     def get_single_choice_hints(self, new_cmap, student_answers):
         '''
@@ -803,7 +789,7 @@ class ChoiceResponse(LoncapaResponse):
         '''
         problem_hint_shown = False
         for problem_id in student_answers:
-            if unicode(self.answer_id) == problem_id:
+            if self.answer_id == problem_id:
                 student_answer_list = student_answers[problem_id]
                 for choice_element in self.xml.findall('checkboxgroup/choice'):
                     hint = ''
@@ -829,7 +815,7 @@ class ChoiceResponse(LoncapaResponse):
 
         for index, choice in enumerate(self.xml.xpath('//*[@id=$id]//choice',
                                                       id=self.xml.get('id'))):
-            if choice.get('id') == None:
+            if not choice.get('id'):
                 choice.set("id", chr(ord("A") + index))   # each choice gets a default 'id' of A,B,C...
             choice.set("name", "choice_" + str(index))
 
@@ -853,8 +839,8 @@ class ChoiceResponse(LoncapaResponse):
             return CorrectMap(self.answer_id, 'incorrect')
 
     def get_answers(self):
-        answers = []
-        if self.correct_choices != None:
+        answers = {}
+        if self.correct_choices:
             answers = {self.answer_id: list(self.correct_choices)}
         return answers
 
@@ -871,7 +857,7 @@ class ChoiceResponse(LoncapaResponse):
         compound_hint_matched = False       # assume we won't find any matching rules
 
         for student_answer in student_answers:
-            if unicode(self.answer_id) == student_answer:
+            if self.answer_id == student_answer:
                 problem_hint_shown = False
                 selection_id_list = []              # create a list of all the student's selected id's
                 for student_answer in student_answers[student_answer]:
@@ -969,7 +955,7 @@ class MultipleChoiceResponse(LoncapaResponse):
         '''
 
         for student_answer in student_answers:
-            if unicode(self.answer_id) == student_answer:
+            if self.answer_id == student_answer:
                 choicegroup_test = '[@id="' + student_answer + '"]'
                 choice_test = '[@name="' + student_answers[student_answer] + '"]'
                 choice = self.xml.xpath('//choicegroup' + choicegroup_test + '/choice' + choice_test)[0]
@@ -1529,13 +1515,15 @@ class NumericalResponse(LoncapaResponse):
         return {self.answer_id: self.correct_answer}
 
     def _get_hint_label(self, hint_element, is_correct):
+        _ = self.capa_system.i18n.ugettext
         hint_label = hint_element.get('label')
         if hint_label:
             correctness_string = hint_label + ': '
         else:
-            correctness_string = 'INCORRECT: '  # assume the answer is incorrect
+            # Translators: these correctness_string values indicate to the student whether the answer is correct or not.
+            correctness_string = _("INCORRECT: ")   # assume the answer is incorrect
             if is_correct:
-                correctness_string = 'CORRECT: '
+                correctness_string = _("CORRECT: ")
         return correctness_string
 
     def get_single_choice_hints(self, new_cmap, student_answers):
@@ -1551,7 +1539,7 @@ class NumericalResponse(LoncapaResponse):
         hint_found = False
 
         for problem_id in student_answers:
-            if unicode(self.answer_id) == problem_id:
+            if self.answer_id == problem_id:
                 if new_cmap.cmap[problem_id]['correctness'] == 'correct':  # if the grader liked the student's answer
                     correct_hints = self.original_xml.xpath('//numericalresponse/correcthint')
                     if correct_hints:
@@ -1736,6 +1724,7 @@ class StringResponse(LoncapaResponse):
         :return:        True if the expression matches
         """
         result = False
+        _ = self.capa_system.i18n.ugettext
         if use_regex:
             try:
 
@@ -1743,10 +1732,10 @@ class StringResponse(LoncapaResponse):
                 regexp = re.compile(pattern.strip(), flags=flags | re.UNICODE)
                 result = bool(re.search(regexp, answer.strip()))
             except Exception as err:
-                msg = u'Illegal regex expression: ' + pattern     # NOTE: this line needs internationalization
+                msg = _("Illegal regex expression: ") + pattern
                 raise ResponseError(msg)
         else:
-            result = unicode(answer.upper().strip()).__contains__(pattern.upper())
+            result = unicode(pattern.upper() in answer.upper().strip())
         return result
 
     def check_string(self, expected, given):

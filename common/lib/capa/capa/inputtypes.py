@@ -386,7 +386,7 @@ class OptionInput(InputTypeBase):
 
             if 'schema' in problem_element.attrib:
                 schema = problem_element.attrib['schema']
-                if schema and (schema == 'edXML/1.0'):
+                if schema == 'edXML/1.0':
                     options_string = "("
                     correct_option = ''
                     delimiter = ''

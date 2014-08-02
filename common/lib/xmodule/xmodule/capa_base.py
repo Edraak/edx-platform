@@ -607,7 +607,7 @@ class CapaMixin(CapaFields):
 
         If the magic pattern is not found in the html string, an exception is thrown.
 
-        There is probably a better way to do this but I couldn't think anything better this far
+        There is probably a better way to do this but I couldn't think of anything better this far
         downstream.
         :param hint_text:   the text of the hint to be inserted
         :param html:        the existing html string to be modified
@@ -615,7 +615,7 @@ class CapaMixin(CapaFields):
         """
         MARKER_PATTERN = '<div hidden class="problem_hint">MARKER</div>'  # this appears verbatim in problem.html
         REPLACEMENT_STRING = '<div        class="problem_hint">' + hint_text + '</div>'
-        if str(html).__contains__(MARKER_PATTERN):
+        if MARKER_PATTERN in html:
             html = html.replace(MARKER_PATTERN, REPLACEMENT_STRING)  # replace the marker pattern (see problem.html)
         else:
             raise NotFoundError('Marker pattern not found')
