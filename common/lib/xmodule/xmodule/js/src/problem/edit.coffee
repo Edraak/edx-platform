@@ -536,7 +536,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     textHintElementString = ''
     ciString = ''
 
-    debugger
     for line in xmlString.split('\n')
       textMatch = line.match( /^\s*(!?(not)?(or)?=)([^\n]+)/ )
       if textMatch
@@ -660,7 +659,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      debugger;
       xml = xml.replace( /^\s*\|?\s*(!?(not)*(or)*=[^\n]+[\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
