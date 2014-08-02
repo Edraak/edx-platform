@@ -462,8 +462,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     
       #________________________________________________________________________________
   @parseForNumeric: (xmlString) ->
-    # try to parse the supplied string to find a numeric problem
-    # return the string unmodified if this is not a drop down problem
+    # parse the supplied string knowing it is a numeric problem
     returnXmlString = xmlString
     operator = ''
     answerExpression = ''
@@ -474,6 +473,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     hintElementString = ''
     numericHintElementString = ''
 
+    debugger
     for line in xmlString.split('\n')
       numericMatch = line.match( /^\s*([=!]+)\s*([\d\.*/+-]+)\s+([+-]+)\s*([\d\.]+)/ )
       if numericMatch
@@ -511,21 +511,59 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
                 hintElementString += '\n        <numerichint  answer="' +
                   answerExpression + '">' + hintText + '\n        </numerichint>\n'
 
-
-
-
-
-
-
-
-    returnXmlString  =  '    <numericalresponse answer="' + answerString  + '">\n'
-    returnXmlString += '        ' + responseParameterElementString
-    returnXmlString += '        <formulaequationinput/>\n'
-    returnXmlString += '        ' + hintElementString
-    returnXmlString += '        ' + numericHintElementString
-    returnXmlString +=  '</numericalresponse>\n'
+    if answerString
+      returnXmlString  =  '    <numericalresponse answer="' + answerString  + '">\n'
+      returnXmlString += '        ' + responseParameterElementString
+      returnXmlString += '        <formulaequationinput/>\n'
+      returnXmlString += '        ' + hintElementString
+      returnXmlString += '        ' + numericHintElementString
+      returnXmlString +=  '</numericalresponse>\n'
     return returnXmlString
 
+  #________________________________________________________________________________
+  @parseForText: (xmlString) ->
+    # parse the supplied string knowing it is a text input problem -- the markdown
+    # associated with any numeric input questions (which look very similar to
+    # text input questions from the parser's point of view) will have been extracted
+    # before this point in processing
+    returnXmlString = xmlString
+    operator = ''
+    answerExpression = ''
+    answerString = ''
+    hintElementString = ''
+    textHintElementString = ''
+
+    debugger
+    for line in xmlString.split('\n')
+      textMatch = line.match( /^\s*(!?(not)?(or)?=)([^\n]+)/ )
+      if textMatch
+        if textMatch[1]
+          operator = textMatch[1]
+        if textMatch[4]
+          answerExpression = textMatch[4]
+
+        if operator == '='
+          if answerExpression
+            hintMatches = line.match( /_([0-9]+)_/ ) # check for an extracted hint string
+            if hintMatches                                # the line does contain an extracted hint string
+              xmlString = xmlString.replace(hintMatches[0], '')  # remove the phrase, else it will be displayed
+              hintIndex = parseInt(hintMatches[1])
+              hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
+              hintText = hintText.trim()
+
+            if answerString == ''           # if this is the *first* answer supplied
+              answerString = answerExpression
+              hintElementString = '<correcthint>' + hintText + '\n        </correcthint>\n'
+            else
+              hintElementString += '\n        <additional_answer  answer="' +
+                  answerExpression + '">' + hintText + '\n        </additional_answer>\n'
+
+    if answerString
+      returnXmlString  =  '    <stringresponse answer="' + answerString  + '">\n'
+      returnXmlString += '        <textline size="20" />\n'
+      returnXmlString += '        ' + hintElementString
+      returnXmlString +=  '</stringresponse>\n'
+    return returnXmlString
 
   @markdownToXml: (markdown)->
     toXml = `function (markdown) {
@@ -602,13 +640,20 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
       //_____________________________________________________________________
       //
-      // numeric and text input questions
+      // numeric input questions
       //
-      // replace string and numerical
       xml = xml.replace( /^\s*(=[^\n]+[\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForNumeric(match);
       });
 
+      //_____________________________________________________________________
+      //
+      // text input questions
+      //
+      debugger;
+      xml = xml.replace( /^\s*(!?(not)*(or)*=[^\n]+[\n]+)+/gm, function(match) {
+        return MarkdownEditingDescriptor.parseForText(match);
+      });
 
       //_____________________________________________________________________
       //

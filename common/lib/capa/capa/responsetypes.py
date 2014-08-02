@@ -870,7 +870,6 @@ class ChoiceResponse(LoncapaResponse):
         """
         compound_hint_matched = False       # assume we won't find any matching rules
 
-        # for problem in student_answers:
         for student_answer in student_answers:
             if unicode(self.answer_id) == student_answer:
                 problem_hint_shown = False
