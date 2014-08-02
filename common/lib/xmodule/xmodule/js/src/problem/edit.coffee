@@ -490,13 +490,16 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             hintMatches = line.match( /_([0-9]+)_/ ) # check for an extracted hint string
             if hintMatches                                # the line does contain an extracted hint string
               xmlString = xmlString.replace(hintMatches[0], '')  # remove the phrase, else it will be displayed
+              answerExpression = answerExpression.replace(hintMatches[0], '')
+              answerExpression = answerExpression.trim()
               hintIndex = parseInt(hintMatches[1])
               hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
               hintText = hintText.trim()
+              hintText = MarkdownEditingDescriptor.extractCustomLabel( hintText )
 
             if answerString == ''           # if this is the *first* answer supplied
               answerString = answerExpression
-              hintElementString = '<correcthint>' + hintText + '\n        </correcthint>\n'
+              hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 responseParameterElementString = '<responseparam type="tolerance" default="' + tolerance + '"/>\n'
               else
@@ -547,9 +550,12 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             hintMatches = line.match( /_([0-9]+)_/ ) # check for an extracted hint string
             if hintMatches                                # the line does contain an extracted hint string
               xmlString = xmlString.replace(hintMatches[0], '')  # remove the phrase, else it will be displayed
+              answerExpression = answerExpression.replace(hintMatches[0], '')
+              answerExpression = answerExpression.trim()
               hintIndex = parseInt(hintMatches[1])
               hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
               hintText = hintText.trim()
+              hintText = MarkdownEditingDescriptor.extractCustomLabel( hintText )
 
             if answerString == ''           # if this is the *first* answer supplied
               answerString = answerExpression
@@ -557,7 +563,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               if answerString[0] == '|'      # if the first character is '|' the answer is a regex
                 ciString = ' type="ci regexp"'
 
-              hintElementString = '<correcthint>' + hintText + '\n        </correcthint>\n'
+              hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
             else
               hintElementString += '\n        <additional_answer  answer="' +
                   answerExpression + '">' + hintText + '\n        </additional_answer>\n'
@@ -654,7 +660,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      xml = xml.replace( /^\s*(!?(not)*(or)*=[^\n]+[\n]+)+/gm, function(match) {
+      debugger;
+      xml = xml.replace( /^\s*\|?\s*(!?(not)*(or)*=[^\n]+[\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
 
