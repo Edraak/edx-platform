@@ -473,7 +473,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     hintElementString = ''
     numericHintElementString = ''
 
-    debugger
     for line in xmlString.split('\n')
       numericMatch = line.match( /^\s*([=!]+)\s*([\d\.*/+-]+)\s+([+-]+)\s*([\d\.]+)/ )
       if numericMatch
@@ -517,7 +516,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       returnXmlString += '        <formulaequationinput/>\n'
       returnXmlString += '        ' + hintElementString
       returnXmlString += '        ' + numericHintElementString
-      returnXmlString +=  '</numericalresponse>\n'
+      returnXmlString +=  '    </numericalresponse>\n'
     return returnXmlString
 
   #________________________________________________________________________________
@@ -532,6 +531,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     answerString = ''
     hintElementString = ''
     textHintElementString = ''
+    ciString = ''
 
     debugger
     for line in xmlString.split('\n')
@@ -553,16 +553,20 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
             if answerString == ''           # if this is the *first* answer supplied
               answerString = answerExpression
+
+              if answerString[0] == '|'      # if the first character is '|' the answer is a regex
+                ciString = ' type="ci regexp"'
+
               hintElementString = '<correcthint>' + hintText + '\n        </correcthint>\n'
             else
               hintElementString += '\n        <additional_answer  answer="' +
                   answerExpression + '">' + hintText + '\n        </additional_answer>\n'
 
     if answerString
-      returnXmlString  =  '    <stringresponse answer="' + answerString  + '">\n'
+      returnXmlString  =  '    <stringresponse answer="' + answerString  + '" ' + ciString + '>\n'
       returnXmlString += '        <textline size="20" />\n'
       returnXmlString += '        ' + hintElementString
-      returnXmlString +=  '</stringresponse>\n'
+      returnXmlString +=  '    </stringresponse>\n'
     return returnXmlString
 
   @markdownToXml: (markdown)->
@@ -650,7 +654,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      debugger;
       xml = xml.replace( /^\s*(!?(not)*(or)*=[^\n]+[\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
