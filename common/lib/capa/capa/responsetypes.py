@@ -392,10 +392,9 @@ class LoncapaResponse(object):
                 # </formularesponse>
 
                 if (self.hint_tag is not None
-                    and hintgroup
-                    and hintgroup.find(self.hint_tag) is not None
-                    and hasattr(self, 'check_hint_condition')
-                ):
+                        and hintgroup
+                        and hintgroup.find(self.hint_tag) is not None
+                        and hasattr(self, 'check_hint_condition')):
 
                     rephints = hintgroup.findall(self.hint_tag)
                     hints_to_show = self.check_hint_condition(rephints, student_answers)

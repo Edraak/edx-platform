@@ -213,7 +213,7 @@ class CapaMixin(CapaFields):
         super(CapaMixin, self).__init__(*args, **kwargs)
 
         problem_hints_count = 0
-        
+
         due_date = get_extended_due_date(self)
 
         if self.graceperiod is not None and due_date:
