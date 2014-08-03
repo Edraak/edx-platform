@@ -5,7 +5,7 @@ describe 'MarkdownEditingDescriptor', ->
       @descriptor = new MarkdownEditingDescriptor($('.problem-editor'))
       saveResult = @descriptor.save()
       expect(saveResult.metadata.markdown).toEqual('markdown')
-      expect(saveResult.data).toEqual('<problem>\n<p>markdown</p>\n</problem>')
+      expect(saveResult.data).toEqual('<problem schema="edXML/1.0">\n<p>markdown</p>\n</problem>')
     it 'clears markdown when xml editor is selected', ->
       loadFixtures 'problem-with-markdown.html'
       @descriptor = new MarkdownEditingDescriptor($('.problem-editor'))
@@ -101,7 +101,7 @@ describe 'MarkdownEditingDescriptor', ->
   describe 'markdownToXml', ->
     it 'converts raw text to paragraph', ->
       data = MarkdownEditingDescriptor.markdownToXml('foo')
-      expect(data).toEqual('<problem>\n<p>foo</p>\n</problem>')
+      expect(data).toEqual('<problem schema="edXML/1.0">\n<p>foo</p>\n</problem>')
     # test default templates
     it 'converts numerical response to xml', ->
       data = MarkdownEditingDescriptor.markdownToXml("""A numerical response problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.
@@ -133,7 +133,7 @@ describe 'MarkdownEditingDescriptor', ->
         If you look at your hand, you can count that you have five fingers.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A numerical response problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.</p>
 
         <p>The answer is correct if it is within a specified numerical tolerance of the expected answer.</p>
@@ -189,7 +189,7 @@ describe 'MarkdownEditingDescriptor', ->
         Enter 0 with a tolerance:
         = 0 +- .02
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Enter 0 with a tolerance:</p>
         <numericalresponse answer="0">
           <responseparam type="tolerance" default=".02" />
@@ -204,7 +204,7 @@ describe 'MarkdownEditingDescriptor', ->
         = 1 +- .02
         or= 2 +- 5%
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Enter 1 with a tolerance:</p>
         <numericalresponse answer="1">
           <responseparam type="tolerance" default=".02" />
@@ -230,7 +230,7 @@ describe 'MarkdownEditingDescriptor', ->
         The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.</p>
 
         <p>One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.</p>
@@ -273,7 +273,7 @@ describe 'MarkdownEditingDescriptor', ->
         The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.</p>
         
         <p>One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.</p>
@@ -317,7 +317,7 @@ describe 'MarkdownEditingDescriptor', ->
         When the student is ready, the explanation appears.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>bleh</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -367,7 +367,7 @@ describe 'MarkdownEditingDescriptor', ->
         Multiple Choice also allows students to select from a variety of pre-written responses, although the format makes it easier for students to read very long response options. Optionresponse also differs slightly because students are more likely to think of an answer and then search for it rather than relying purely on recognition to answer the question.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>OptionResponse gives a limited set of options for students to respond with, and presents those options in a format that encourages them to search for a specific answer rather than being immediately presented with options from which to recognize the correct answer.</p>
 
         <p>The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag.</p>
@@ -399,7 +399,7 @@ describe 'MarkdownEditingDescriptor', ->
         Lansing is the capital of Michigan, although it is not Michgan's largest city, or even the seat of the county in which it resides.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A string response problem accepts a line of text input from the student, and evaluates the input for correctness based on an expected answer within each input box.</p>
 
         <p>The answer is correct if it matches every character of the expected answer. This can be a problem with international spelling, dates, or anything where the format of the answer is not clear.</p>
@@ -426,7 +426,7 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Who lead the civil right movement in the United States of America?</p>
         <stringresponse answer="\w*\.?\s*Luther King\s*.*" type="ci regexp" >
           <textline size="20"/>
@@ -452,7 +452,7 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Who lead the civil right movement in the United States of America?</p>
         <stringresponse answer="Dr. Martin Luther King Jr." type="ci" >
           <additional_answer>Doctor Martin Luther King Junior</additional_answer>
@@ -481,7 +481,7 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Write a number from 1 to 4.</p>
         <stringresponse answer="^One$" type="ci regexp" >
           <additional_answer>two</additional_answer>
@@ -508,7 +508,7 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>Who lead the civil right movement in the United States of America?</p>
     <stringresponse answer="w*.?s*Luther Kings*.*" type="ci regexp" >
       <textline label="Who lead the civil right movement in the United States of America?" size="20"/>
@@ -538,7 +538,7 @@ describe 'MarkdownEditingDescriptor', ->
         (x) Berlin
         ( ) Donut
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
     
     <p>What is the capital of France?</p>
@@ -575,7 +575,7 @@ describe 'MarkdownEditingDescriptor', ->
         (x) Berlin
         ( ) Donut
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
     
     <p>What is the capital of France?</p>
@@ -610,7 +610,7 @@ describe 'MarkdownEditingDescriptor', ->
         (x) Berlin
         ( ) Donut
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
     
     <p>>>What is the capital of France?<</p>
@@ -635,7 +635,7 @@ describe 'MarkdownEditingDescriptor', ->
       >>Enter the numerical value of Pi:<<
       = 3.14159 +- .02
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>Enter the numerical value of Pi:</p>
     <numericalresponse answer="3.14159">
       <responseparam type="tolerance" default=".02" />
@@ -649,7 +649,7 @@ describe 'MarkdownEditingDescriptor', ->
       >>What is the "capital" of France & the 'best' > place < to live"?<<
       = Paris
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>What is the "capital" of France & the 'best' > place < to live"?</p>
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the &quot;capital&quot; of France &amp; the &apos;best&apos; &gt; place &lt; to live&quot;?" size="20"/>
@@ -708,7 +708,7 @@ describe 'MarkdownEditingDescriptor', ->
         Code should be nicely monospaced.
         [/code]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Not a header</p>
         <h1>A header</h1>
 
