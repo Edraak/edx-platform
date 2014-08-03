@@ -104,7 +104,7 @@ def course_notifications_handler(request, course_key_string=None, action_state_i
     Handle incoming requests for notifications in a RESTful way.
 
     course_key_string and action_state_id must both be set; else a HttpBadResponseRequest is returned.
-    
+
     For each of these operations, the requesting user must have access to the course;
     else a PermissionDenied error is returned.
 
@@ -994,13 +994,14 @@ class GroupConfiguration(object):
     """
     Prepare Group Configuration for the course.
     """
-    def __init__(self, json_string, course, configuration_id=None):
+    def __init__(self, json_string, course, store, configuration_id=None):
         """
         Receive group configuration as a json (`json_string`), deserialize it
         and validate.
         """
         self.configuration = GroupConfiguration.parse(json_string)
         self.course = course
+        self.store = store
         self.assign_id(configuration_id)
         self.assign_group_ids()
         self.validate()
@@ -1025,6 +1026,41 @@ class GroupConfiguration(object):
             raise GroupConfigurationsValidationError(_("must have name of the configuration"))
         if len(self.configuration.get('groups', [])) < 2:
             raise GroupConfigurationsValidationError(_("must have at least two groups"))
+        self.validate_content_experiments()
+
+    def validate_content_experiments(self):
+        # @TODO: Added for testing.
+        if self.configuration.get("name") == "test".lower():
+
+            # Possible error messages:
+            # "The experiment does not contain all of the groups in the configuration."
+            # "The experiment has an inactive group. Move content into active groups, then delete the inactive group."
+
+            # @TODO: DO we need to re-word those messages?
+            # @TODO: It is really weird for me to see on the Group Configuration page those messages.
+            # @TODO: Do we need links to the group configuration page? Should label be a links?
+
+            # Include just group configurations with validation errors.
+            raise GroupConfigurationsValidationError([
+                {
+                    'label': 'Unit Name / Experiment Name',
+                    'messages': [
+                        'The experiment does not contain all of the groups in the configuration.',
+                        'The experiment has an inactive group. Move content into active groups, then delete the inactive group.',
+                    ]
+                },
+                {
+                    'label': 'Another Unit Name / Another Experiment Name',
+                    'messages': [
+                        'The experiment has an inactive group. Move content into active groups, then delete the inactive group.',
+                    ]
+                },
+            ])
+
+        # messages = [message.message_text for split_test in self.content_experiments for message in split_test.validation_messages()]
+        # if messages:
+        #     # @TODO: fix list to dict
+        #     raise GroupConfigurationsValidationError(messages)
 
     def generate_id(self, used_ids):
         """
@@ -1074,6 +1110,12 @@ class GroupConfiguration(object):
             groups
         )
 
+    @property
+    def content_experiments(self):
+        descriptors = self.store.get_items(self.course.id, category='split_test')
+        return [item for item in descriptors if item.user_partition_id == self.configuration.get('id')]
+
+    # @TODO Do not use static method here?
     @staticmethod
     def get_usage_info(course, store):
         """
@@ -1115,6 +1157,7 @@ class GroupConfiguration(object):
             })
         return usage_info
 
+    # @TODO Do not use static method here?
     @staticmethod
     def add_usage_info(course, store):
         """
@@ -1164,7 +1207,7 @@ def group_configurations_list_handler(request, course_key_string):
         if request.method == 'POST':
         # create a new group configuration for the course
             try:
-                new_configuration = GroupConfiguration(request.body, course).get_user_partition()
+                new_configuration = GroupConfiguration(request.body, course, store).get_user_partition()
             except GroupConfigurationsValidationError as err:
                 return JsonResponse({"error": err.message}, status=400)
 
@@ -1206,7 +1249,7 @@ def group_configurations_detail_handler(request, course_key_string, group_config
     if request.method in ('POST', 'PUT'):  # can be either and sometimes
                                         # django is rewriting one to the other
         try:
-            new_configuration = GroupConfiguration(request.body, course, group_configuration_id).get_user_partition()
+            new_configuration = GroupConfiguration(request.body, course, store, group_configuration_id).get_user_partition()
         except GroupConfigurationsValidationError as err:
             return JsonResponse({"error": err.message}, status=400)
 

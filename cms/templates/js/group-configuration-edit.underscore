@@ -2,7 +2,7 @@
     <div class="wrapper-form">
     <% if (error && error.message) { %>
         <div class="group-configuration-edit-error message message-status message-status error is-shown" name="group-configuration-edit-error">
-          <%= gettext(error.message) %>
+          <%= error.message %>
         </div>
     <% } %>
         <fieldset class="group-configuration-fields">

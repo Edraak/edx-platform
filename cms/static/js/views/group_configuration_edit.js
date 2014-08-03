@@ -1,8 +1,8 @@
 define([
-    'js/views/baseview', 'underscore', 'jquery', 'gettext',
+    'js/views/baseview', 'underscore', 'underscore.string', 'jquery', 'gettext',
     'js/views/group_edit'
 ],
-function(BaseView, _, $, gettext, GroupEdit) {
+function(BaseView, _, str, $, gettext, GroupEdit) {
     'use strict';
     var GroupConfigurationEdit = BaseView.extend({
         tagName: 'div',
@@ -118,10 +118,39 @@ function(BaseView, _, $, gettext, GroupEdit) {
                     var dfd = $.Deferred();
 
                     this.model.save({}, {
+                        notifyOnError: false,
                         success: function() {
                             this.model.setOriginalAttributes();
                             this.close();
                             dfd.resolve();
+                        }.bind(this),
+                        error: function(model, jqXHR) {
+                            var message = gettext("This may be happening because of an error with our server or your internet connection. Try refreshing the page or making sure you are online.");
+                            if (jqXHR.responseText) {
+                                try {
+                                    // @TODO: Move into separate template like a
+                                    // group-configuration-validation.underscore?
+                                    message = _.template([
+                                        '<dl class="validation-errors">',
+                                            '<% _.each(errors, function (error) { %>',
+                                                '<dt><%= error.label %>:</dt>',
+                                                '<% _.each(error.messages, function (message) { %>',
+                                                    '<dd><%= message %></dd>',
+                                                '<% }); %>',
+                                            '<% }); %>',
+                                        '</dl>'].join(''), {
+                                            errors: JSON.parse(jqXHR.responseText).error
+                                        }
+                                    );
+                                } catch (error) {
+                                    message = str.truncate(jqXHR.responseText, 300);
+                                }
+                            }
+
+                            this.model.validationError = {
+                                message: message
+                            };
+                            this.render();
                         }.bind(this)
                     });
 
