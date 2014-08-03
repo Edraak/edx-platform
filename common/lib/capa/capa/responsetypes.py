@@ -1649,8 +1649,8 @@ class StringResponse(LoncapaResponse):
             self.xml.remove(el)
 
         # remove incorrect_answer from xml, otherwise it will be displayed
-        for el in self.xml.findall('incorrect_answer'):
-            self.xml.remove(el)
+        for element in self.xml.findall('incorrect_answer'):
+            self.xml.remove(element)
 
     def get_score(self, student_answers):
         """Grade a string response """

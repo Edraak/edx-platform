@@ -208,11 +208,10 @@ class CapaMixin(CapaFields):
 
     show_hint_button = False
     next_hint_index = 0
+    problem_hints_count = 0
 
     def __init__(self, *args, **kwargs):
         super(CapaMixin, self).__init__(*args, **kwargs)
-
-        problem_hints_count = 0
 
         due_date = get_extended_due_date(self)
 
