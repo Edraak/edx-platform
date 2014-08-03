@@ -394,7 +394,8 @@ class LoncapaResponse(object):
                 if (self.hint_tag is not None
                     and hintgroup
                     and hintgroup.find(self.hint_tag) is not None
-                    and hasattr(self, 'check_hint_condition')):
+                    and hasattr(self, 'check_hint_condition')
+                ):
 
                     rephints = hintgroup.findall(self.hint_tag)
                     hints_to_show = self.check_hint_condition(rephints, student_answers)
@@ -755,7 +756,6 @@ class ChoiceResponse(LoncapaResponse):
         self.correct_choices = set([choice.get(
             'name') for choice in correct_xml])
 
-
     def wrap_hints_correct_or_incorrect(self, new_cmap, problem, problem_hint_shown):
         """
         If any question hints have been added to the 'msg' string in 'new_cmap' wrap that
@@ -774,8 +774,7 @@ class ChoiceResponse(LoncapaResponse):
                 correctness_string = 'INCORRECT'
                 div_class = 'question_hint_incorrect'
 
-            new_cmap[problem]['msg'] = '<div class="{0}">{1}{2}</div>'.format(div_class, correctness_string, new_cmap[problem]['msg'] )
-
+            new_cmap[problem]['msg'] = '<div class="{0}">{1}{2}</div>'.format(div_class, correctness_string, new_cmap[problem]['msg'])
 
     def get_single_choice_hints(self, new_cmap, student_answers):
         '''
@@ -1677,8 +1676,8 @@ class StringResponse(LoncapaResponse):
                     hint_found = True
                     for primary_hint in self.original_xml.xpath('//stringresponse/correcthint'):
                         new_cmap[problem]['msg'] = new_cmap[problem]['msg'] \
-                                                   + '<div class="' + QUESTION_HINT_CORRECT_STYLE \
-                                                   + '">CORRECT: ' + primary_hint.text.strip() + '</div>'
+                            + '<div class="' + QUESTION_HINT_CORRECT_STYLE \
+                            + '">CORRECT: ' + primary_hint.text.strip() + '</div>'
 
             # check all additional answers
             if not hint_found:
@@ -1688,8 +1687,8 @@ class StringResponse(LoncapaResponse):
                         hint_found = True
                         for additional_answer_hint in self.original_xml.xpath('//stringresponse/additional_answer'):
                             new_cmap[problem]['msg'] = new_cmap[problem]['msg'] \
-                                                       + '<div class="' + QUESTION_HINT_CORRECT_STYLE \
-                                                       + '">CORRECT: ' + additional_answer_hint.text.strip() + '</div>'
+                                + '<div class="' + QUESTION_HINT_CORRECT_STYLE \
+                                + '">CORRECT: ' + additional_answer_hint.text.strip() + '</div>'
 
             # check all incorrect answers (regex not allowed)
             if not hint_found:
@@ -1699,8 +1698,8 @@ class StringResponse(LoncapaResponse):
                         hint_found = True
                         for incorrect_answer_hint in self.original_xml.xpath('//stringequalhint'):
                             new_cmap[problem]['msg'] = new_cmap[problem]['msg'] \
-                                                       + '<div class="' + QUESTION_HINT_INCORRECT_STYLE \
-                                                       + '>INCORRECT: ' + incorrect_answer_hint.text.strip() + '</div>'
+                                + '<div class="' + QUESTION_HINT_INCORRECT_STYLE \
+                                + '>INCORRECT: ' + incorrect_answer_hint.text.strip() + '</div>'
 
             # check all incorrect answers (regex supplied)
             if not hint_found:
@@ -1711,8 +1710,8 @@ class StringResponse(LoncapaResponse):
                         attribute_test = '[@answer="' + incorrect_answer_text + '"]'
                         for incorrect_answer_hint in self.original_xml.xpath('//regexphint' + attribute_test):
                             new_cmap[problem]['msg'] = new_cmap[problem]['msg'] \
-                                                       + '<div class="' + QUESTION_HINT_INCORRECT_STYLE \
-                                                       + '>INCORRECT: ' + incorrect_answer_hint.text.strip() + '</div>'
+                                + '<div class="' + QUESTION_HINT_INCORRECT_STYLE \
+                                + '>INCORRECT: ' + incorrect_answer_hint.text.strip() + '</div>'
 
         return hint_found
 

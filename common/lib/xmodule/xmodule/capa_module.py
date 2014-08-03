@@ -56,7 +56,7 @@ class CapaModule(CapaMixin, XModule):
           <other request-specific values here > }
         """
         handlers = {
-            'hint_button':self.hint_button,
+            'hint_button': self.hint_button,
             'problem_get': self.get_problem,
             'problem_check': self.check_problem,
             'problem_reset': self.reset_problem,

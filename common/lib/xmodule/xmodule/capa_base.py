@@ -659,7 +659,7 @@ class CapaMixin(CapaFields):
 
         hint_text = ''
         if show_problem_hint:                       # if the student has requested a problem hint
-            hint_element = self.lcp.tree.xpath("//problem/demandhint/hint")[ self.next_hint_index ]
+            hint_element = self.lcp.tree.xpath("//problem/demandhint/hint")[self.next_hint_index]
             hint_text = hint_element.text.strip()
             self.next_hint_index += 1                               # increment the index
             if self.next_hint_index == self.problem_hints_count:    # if all hints have been shown
@@ -676,7 +676,7 @@ class CapaMixin(CapaFields):
             'attempts_used': self.attempts,
             'attempts_allowed': self.max_attempts,
             'show_hint_button': self.show_hint_button,
-            'next_hint_index':self.next_hint_index,
+            'next_hint_index': self.next_hint_index,
         }
 
         html = self.runtime.render_template('problem.html', context)

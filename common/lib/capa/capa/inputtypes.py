@@ -401,9 +401,8 @@ class OptionInput(InputTypeBase):
                     option_input_elements = self.xml.xpath('//optioninput [@id="' + self.input_id + '"]')
                     if option_input_elements:
                         option_input_element = option_input_elements[0]
-                        option_input_element.attrib.update({'options':options_string})
-                        option_input_element.attrib.update({'correct':correct_option})
-
+                        option_input_element.attrib.update({'options': options_string})
+                        option_input_element.attrib.update({'correct': correct_option})
 
     def __init__(self, system, xml, state):
         super(OptionInput, self).__init__(system, xml, state)
