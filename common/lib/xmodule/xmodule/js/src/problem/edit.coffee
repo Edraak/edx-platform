@@ -329,8 +329,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     if dropdownMatches                            # the xml has an opening and closing double bracket [[...]]
       reducedXmlString = xmlString.replace(dropdownMatches[0], '')
       returnXmlString = MarkdownEditingDescriptor.insertParagraphText(xmlString, reducedXmlString)
-      returnXmlString +=  '    <optionresponse>\n'
-      returnXmlString += '        <optioninput options="OPTIONS_PLACEHOLDER" correct="CORRECT_PLACEHOLDER">\n'
+      returnXmlString +=  '<optionresponse>\n'
+      returnXmlString += '    <optioninput options="OPTIONS_PLACEHOLDER" correct="CORRECT_PLACEHOLDER">\n'
 
       optionsString = ''
       delimiter = ''
@@ -369,18 +369,18 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             itemText = itemText.slice(0, itemText.length-1) # suppress it
           itemText = itemText.trim()
 
-          returnXmlString += '              <option  correct="' + correctnessText + '">'
-          returnXmlString += '                  ' + itemText + '\n'
+          returnXmlString += '          <option  correct="' + correctnessText + '">'
+          returnXmlString += '              ' + itemText + '\n'
           if hintText
-            returnXmlString += '                   <optionhint ' + @customLabel + '>' + hintText + '\n'
-            returnXmlString += '                   </optionhint>\n'
-          returnXmlString += '              </option>\n'
+            returnXmlString += '               <optionhint ' + @customLabel + '>' + hintText + '\n'
+            returnXmlString += '               </optionhint>\n'
+          returnXmlString += '          </option>\n'
 
           delimiter = ', '
 
-      returnXmlString += '        </optioninput>\n'
+      returnXmlString += '    </optioninput>\n'
       returnXmlString = returnXmlString.replace('OPTIONS_PLACEHOLDER', optionsString)  # poke the options in
-      returnXmlString += '    </optionresponse>\n'
+      returnXmlString += '</optionresponse>\n'
     else
       returnXmlString = xmlString
 
@@ -394,8 +394,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     booleanExpressionStrings = []
     booleanHintPhrases = []
 
-    returnXmlString +=  '    <choiceresponse>\n'
-    returnXmlString += '        <checkboxgroup direction="vertical">\n'
+    returnXmlString +=  '<choiceresponse>\n'
+    returnXmlString += '    <checkboxgroup direction="vertical">\n'
 
     for line in xmlString.split('\n')
       correctnessText = ''
@@ -426,14 +426,14 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
         if choiceMatches[1].match(/X/i)
           correctnessText = 'True'
 
-        returnXmlString += '          <choice  correct="' + correctnessText + '">'
-        returnXmlString += '              ' + line + '\n'
+        returnXmlString += '      <choice  correct="' + correctnessText + '">'
+        returnXmlString += '          ' + line + '\n'
         if hintTextSelected.length > 0 and hintTextUnselected.length > 0
-          returnXmlString += '               <choicehint selected="True">' + hintTextSelected + '\n'
-          returnXmlString += '               </choicehint>\n'
-          returnXmlString += '               <choicehint selected="False">' + hintTextUnselected + '\n'
-          returnXmlString += '               </choicehint>\n'
-        returnXmlString += '          </choice>\n'
+          returnXmlString += '           <choicehint selected="True">' + hintTextSelected + '\n'
+          returnXmlString += '           </choicehint>\n'
+          returnXmlString += '           <choicehint selected="False">' + hintTextUnselected + '\n'
+          returnXmlString += '           </choicehint>\n'
+        returnXmlString += '      </choice>\n'
 
       else                        # this line is not a checkbox choice, but it may be a combination hint spec line
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
@@ -447,15 +447,15 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             booleanExpressionStrings.push(combinationHintMatch[1])
             booleanHintPhrases.push(combinationHintMatch[2])
 
-    returnXmlString += '        </checkboxgroup>\n'
+    returnXmlString += '    </checkboxgroup>\n'
 
     index = 0
     for booleanExpression in booleanExpressionStrings
       booleanHintPhrase = booleanHintPhrases[index++]
-      returnXmlString += '        <booleanhint value="' + booleanExpression + '">' + booleanHintPhrase + '\n'
-      returnXmlString += '        </booleanhint>\n'
+      returnXmlString += '    <booleanhint value="' + booleanExpression + '">' + booleanHintPhrase + '\n'
+      returnXmlString += '    </booleanhint>\n'
 
-    returnXmlString += '    </choiceresponse>\n'
+    returnXmlString += '</choiceresponse>\n'
 
     return returnXmlString
 
@@ -471,15 +471,21 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     tolerance = ''
     responseParameterElementString = ''
     hintElementString = ''
-    numericHintElementString = ''
 
+    debugger
     for line in xmlString.split('\n')
-      numericMatch = line.match( /^\s*([=!]+)\s*([\d\.*/+-]+)\s+([+-]+)\s*([\d\.]+)/ )
+      numericMatch = line.match(/^\s*([=!]+)\s*([ \d,\.\)([\]+\-\%*/^]+)\s*([\d,\.\)([\]+\-\%*/^]*)\s*([\d,\.\)([\]+\-\%*/^]*)/)
       if numericMatch
         if numericMatch[1]
           operator = numericMatch[1]
         if numericMatch[2]
-          answerExpression = numericMatch[2]
+          answerExpression = numericMatch[2].trim()
+          firstCharacter = answerExpression.slice(0,1)
+          lastCharacter = answerExpression.slice(answerExpression.length-1, answerExpression.length)
+          if firstCharacter == '[' and lastCharacter != ']'   # if the first character is a bracket but not the last
+            operator = 'no bracket match'                     # obliterate the operator to abort the whole search
+          if firstCharacter == '(' and lastCharacter != ')'   # if the first character is a paren but not the last
+            operator = 'no paren match'                       # obliterate the operator to abort the whole search
         if numericMatch[3]
           plusMinus = numericMatch[3]
         if numericMatch[4]
@@ -499,27 +505,27 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
             if answerString == ''           # if this is the *first* answer supplied
               answerString = answerExpression
-              hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
+              if hintText
+                hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 responseParameterElementString = '<responseparam type="tolerance" default="' + tolerance + '"/>\n'
               else
                 responseParameterElementString = '<responseparam type="equal"/>\n'
             else
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
-                hintElementString += '\n        <numerichint  answer="' +
+                hintElementString += '\n    <numerichint  answer="' +
                   answerExpression + '" tolerance="' + tolerance + '">' +
-                  hintText + '\n        </numerichint>\n'
+                  hintText + '\n</numerichint>\n'
               else
-                hintElementString += '\n        <numerichint  answer="' +
-                  answerExpression + '">' + hintText + '\n        </numerichint>\n'
+                hintElementString += '\n            <numerichint  answer="' +
+                  answerExpression + '">' + hintText + '\n    </numerichint>\n'
 
     if answerString
-      returnXmlString  =  '    <numericalresponse answer="' + answerString  + '">\n'
-      returnXmlString += '        ' + responseParameterElementString
-      returnXmlString += '        <formulaequationinput/>\n'
-      returnXmlString += '        ' + hintElementString
-      returnXmlString += '        ' + numericHintElementString
-      returnXmlString +=  '    </numericalresponse>\n'
+      returnXmlString  = '<numericalresponse answer="' + answerString  + '">\n'
+      returnXmlString += '  ' + responseParameterElementString
+      returnXmlString += '  <formulaequationinput />\n'
+      returnXmlString += hintElementString
+      returnXmlString += '</numericalresponse>'
     return returnXmlString
 
   #________________________________________________________________________________
@@ -562,16 +568,18 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               if answerString[0] == '|'      # if the first character is '|' the answer is a regex
                 ciString = ' type="ci regexp"'
 
-              hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
+              if hintText
+                hintElementString = '    <correcthint ' + @customLabel + '>' + hintText + '\n    </correcthint>\n'
             else
-              hintElementString += '\n        <additional_answer  answer="' +
-                  answerExpression + '">' + hintText + '\n        </additional_answer>\n'
+              if hintText
+                hintElementString += '    <additional_answer  answer="' +
+                  answerExpression + '">' + hintText + '\n    </additional_answer>\n'
 
     if answerString
-      returnXmlString  =  '    <stringresponse answer="' + answerString  + '" ' + ciString + '>\n'
-      returnXmlString += '        <textline size="20" />\n'
-      returnXmlString += '        ' + hintElementString
-      returnXmlString +=  '    </stringresponse>\n'
+      returnXmlString  =  '<stringresponse answer="' + answerString  + '" ' + ciString + '>\n'
+      returnXmlString += '    <textline size="20" />\n'
+      returnXmlString += hintElementString
+      returnXmlString +=  '</stringresponse>\n'
     return returnXmlString
 
   @markdownToXml: (markdown)->
@@ -651,7 +659,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // numeric input questions
       //
-      xml = xml.replace( /^\s*(=[^\n]+[\n]+)+/gm, function(match) {
+      xml = xml.replace( /^\s*(=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForNumeric(match);
       });
 
@@ -739,7 +747,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       xml = MarkdownEditingDescriptor.insertProblemHints(xml);      // insert any extracted problem hints
 
       // make all elements descendants of a single problem element
-      xml = '<problem schema="edXML/1.0">\n' + xml + '\n</problem>';
+      xml = '<problem schema="edXML/1.0">\n' + xml + '</problem>';
 
       return xml;
     }`
