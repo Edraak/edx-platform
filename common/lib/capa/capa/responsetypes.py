@@ -269,7 +269,7 @@ class LoncapaResponse(object):
             using_new_style_hints = True                            # turns out we are using new style hints
         return using_new_style_hints
 
-    def get_compound_condition_hints(self, new_cmap, student_answers):
+    def get_compound_condition_hints(self, new_cmap, student_answers):  # pylint: disable=W0613
         """
         Check for any compound condition hints for the current question. If any are found
         and the selection matches the criteria specified, modify 'new_cmap'
@@ -1514,6 +1514,14 @@ class NumericalResponse(LoncapaResponse):
         return {self.answer_id: self.correct_answer}
 
     def _get_hint_label(self, hint_element, is_correct):
+        """
+        Return the appropriate label string for the hint represented by 'hint_element' -- if
+        the course author supplied an override label, that will take precedence over the
+        defaults of 'CORRECT' and 'INCORRECT'
+        :param hint_element: an XML element containing a question hint's specifications
+        :param is_correct: True if the choice associated with this hint is a 'correct' choice
+        :return: either the override label (if supplied), or one of the default labels
+        """
         _ = self.capa_system.i18n.ugettext
         hint_label = hint_element.get('label')
         if hint_label:
@@ -1634,7 +1642,7 @@ class StringResponse(LoncapaResponse):
             return
         # end of backward compatibility
 
-        correct_answers = [self.xml.get('answer')] + [el.text for el in self.xml.findall('additional_answer')]
+        correct_answers = [self.xml.get('answer')] + [element.text for element in self.xml.findall('additional_answer')]
         self.correct_answer = [contextualize_text(answer, self.context).strip() for answer in correct_answers]
 
         # remove additional_answer from xml, otherwise they will be displayed
@@ -1726,11 +1734,10 @@ class StringResponse(LoncapaResponse):
         _ = self.capa_system.i18n.ugettext
         if use_regex:
             try:
-
                 flags = re.IGNORECASE if self.case_insensitive else 0
                 regexp = re.compile(pattern.strip(), flags=flags | re.UNICODE)
                 result = bool(re.search(regexp, answer.strip()))
-            except Exception as err:
+            except Exception:
                 msg = _("Illegal regex expression: ") + pattern
                 raise ResponseError(msg)
         else:

@@ -19,7 +19,6 @@ except ImportError:
     dog_stats_api = None
 
 from pkg_resources import resource_string
-from lxml import etree
 
 from capa.capa_problem import LoncapaProblem, LoncapaSystem
 from capa.responsetypes import StudentInputError, \
@@ -213,6 +212,8 @@ class CapaMixin(CapaFields):
     def __init__(self, *args, **kwargs):
         super(CapaMixin, self).__init__(*args, **kwargs)
 
+        problem_hints_count = 0
+        
         due_date = get_extended_due_date(self)
 
         if self.graceperiod is not None and due_date:
@@ -613,10 +614,10 @@ class CapaMixin(CapaFields):
         :param html:        the existing html string to be modified
         :return:            the modified version of the html string
         """
-        MARKER_PATTERN = '<div hidden class="problem_hint">MARKER</div>'  # this appears verbatim in problem.html
-        REPLACEMENT_STRING = '<div        class="problem_hint">' + hint_text + '</div>'
-        if MARKER_PATTERN in html:
-            html = html.replace(MARKER_PATTERN, REPLACEMENT_STRING)  # replace the marker pattern (see problem.html)
+        marker_pattern = '<div hidden class="problem_hint">MARKER</div>'  # this appears verbatim in problem.html
+        replacement_string = '<div        class="problem_hint">' + hint_text + '</div>'
+        if marker_pattern in html:
+            html = html.replace(marker_pattern, replacement_string)  # replace the marker pattern (see problem.html)
         else:
             raise NotFoundError('Marker pattern not found')
         return html
@@ -719,12 +720,17 @@ class CapaMixin(CapaFields):
         :param html:         the string representation of the XML to operate on
         :return:             a potentially modified string representation of the XML
         """
-        length_start = len(html)
-        html = re.sub(r'</' + element_name + '>','~', html)
+        html = re.sub(r'</' + element_name + '>', '~', html)
         html = re.sub(r'<' + element_name + '[^~]+~', '', html)
         return html
 
     def _strip_hints_from_xml(self, html):
+        """
+        Given an HTML string find and remove any occurrence of a set of tags associated with
+        hints to keep them from appearing to the student when the HTML is rendered.
+        :param html: a string of HTML being processed before presentation to the student
+        :return: the modified HTML string after stripping hint elements
+        """
         html = self._strip_element('demandhint', html)
         html = self._strip_element('choicehint', html)
         html = self._strip_element('optionhint', html)
@@ -740,6 +746,9 @@ class CapaMixin(CapaFields):
         return html
 
     def hint_button(self, data):
+        """
+        The handler invoked when a hint button click message is received.
+        """
         self.next_hint_index = int(data['next_hint_index'])
         html = self.get_problem_html(encapsulate=False, show_problem_hint=True)
 
