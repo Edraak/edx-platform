@@ -325,7 +325,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   @parseForDropdown: (xmlString) ->
     # parse the supplied string knowing it is a drop down problem
     dropdownMatches = xmlString.match( /\[\[([^\]]+)\]\]/ )   # try to match an opening and closing double bracket
-
     if dropdownMatches                            # the xml has an opening and closing double bracket [[...]]
       reducedXmlString = xmlString.replace(dropdownMatches[0], '')
       returnXmlString = MarkdownEditingDescriptor.insertParagraphText(xmlString, reducedXmlString)
@@ -370,11 +369,12 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             itemText = itemText.slice(0, itemText.length-1) # suppress it
           itemText = itemText.trim()
 
-          returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText + '\n'
+          returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText
           if hintText
+            returnXmlString += '\n'
             returnXmlString += '               <optionhint ' + @customLabel + '>' + hintText + '\n'
             returnXmlString += '               </optionhint>\n'
-          returnXmlString += '          </option>\n'
+          returnXmlString += '</option>\n'
 
           delimiter = ', '
 
@@ -389,14 +389,13 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   #________________________________________________________________________________
   @parseForCheckbox: (xmlString) ->
     # parse the supplied string knowing it is a checkbox problem
-    returnXmlString = ''
+    choiceString = ''
     reducedXmlString = ''
     booleanExpressionStrings = []
     booleanHintPhrases = []
+    returnXmlString = xmlString
 
-    returnXmlString +=  '<choiceresponse>\n'
-    returnXmlString += '    <checkboxgroup direction="vertical">\n'
-
+    debugger
     for line in xmlString.split('\n')
       correctnessText = ''
       itemText = ''
@@ -426,14 +425,14 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
         if choiceMatches[1].match(/X/i)
           correctnessText = 'True'
 
-        returnXmlString += '      <choice  correct="' + correctnessText + '">' + line
+        choiceString += '      <choice  correct="' + correctnessText + '">' + line.trim()
         if hintTextSelected.length > 0 and hintTextUnselected.length > 0
-          returnXmlString += '\n'
-          returnXmlString += '           <choicehint selected="True">' + hintTextSelected + '\n'
-          returnXmlString += '           </choicehint>\n'
-          returnXmlString += '           <choicehint selected="False">' + hintTextUnselected + '\n'
-          returnXmlString += '           </choicehint>\n    '
-        returnXmlString += '</choice>\n'
+          choiceString += '\n'
+          choiceString += '           <choicehint selected="True">' + hintTextSelected + '\n'
+          choiceString += '           </choicehint>\n'
+          choiceString += '           <choicehint selected="False">' + hintTextUnselected + '\n'
+          choiceString += '           </choicehint>\n    '
+        choiceString += '</choice>\n'
 
       else                        # this line is not a checkbox choice, but it may be a combination hint spec line
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
@@ -447,20 +446,22 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             booleanExpressionStrings.push(combinationHintMatch[1])
             booleanHintPhrases.push(combinationHintMatch[2])
 
-    returnXmlString += '    </checkboxgroup>\n'
+    if choiceString
+      returnXmlString =  '<choiceresponse>\n'
+      returnXmlString += '    <checkboxgroup direction="vertical">\n'
+      returnXmlString += choiceString
+      index = 0
+      for booleanExpression in booleanExpressionStrings
+        booleanHintPhrase = booleanHintPhrases[index++]
+        returnXmlString += '    <booleanhint value="' + booleanExpression + '">' + booleanHintPhrase + '\n'
+        returnXmlString += '    </booleanhint>\n'
 
-    index = 0
-    for booleanExpression in booleanExpressionStrings
-      booleanHintPhrase = booleanHintPhrases[index++]
-      returnXmlString += '    <booleanhint value="' + booleanExpression + '">' + booleanHintPhrase + '\n'
-      returnXmlString += '    </booleanhint>\n'
-
-    returnXmlString += '</choiceresponse>\n'
+      returnXmlString += '</choiceresponse>\n'
 
     return returnXmlString
 
     
-      #________________________________________________________________________________
+  #________________________________________________________________________________
   @parseForNumeric: (xmlString) ->
     # parse the supplied string knowing it is a numeric problem
     returnXmlString = xmlString
@@ -509,21 +510,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
                 hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 responseParameterElementString = '  <responseparam type="tolerance" default="' + tolerance + '" />\n'
-
-
-
-
-
-# test shows this line NOT added, really?
-#             else
-#                responseParameterElementString = '<responseparam type="equal"/>\n'
-
-
-
-
-
-
-
             else
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 hintElementString += '\n    <numerichint  answer="' +
@@ -553,7 +539,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     answerString = ''
     hintElementString = ''
     textHintElementString = ''
-    ciString = ' type="ci"'
+    ciString = 'type="ci"'
 
     debugger
     for line in xmlString.split('\n')
@@ -580,7 +566,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               answerString = answerExpression
 
               if answerString[0] == '|'      # if the first character is '|' the answer is a regex
-                ciString = ' type="ci regexp"'
+                ciString = 'type="ci regexp"'
 
               if hintText
                 hintElementString = '    <correcthint ' + @customLabel + '>' + hintText + '\n    </correcthint>\n'
@@ -590,8 +576,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
                   answerExpression + '">' + hintText + '\n    </additional_answer>\n'
 
     if answerString
-      returnXmlString  =  '<stringresponse answer="' + answerString  + '" ' + ciString + '>\n'
-      returnXmlString += '  <textline size="20" />\n'
+      returnXmlString  =  '<stringresponse answer="' + answerString  + '" ' + ciString + ' >\n'
+      returnXmlString += '  <textline size="20"/>\n'
       returnXmlString += hintElementString
       returnXmlString +=  '</stringresponse>\n'
     return returnXmlString
@@ -613,7 +599,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // multiple choice questions
       //
-      debugger
       xml = xml.replace(/(^\s*\(.{0,3}\).*?$\n*)+/gm, function(match, p) {
         var choices = '';
         var shuffle = false;
@@ -644,10 +629,11 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
             choices += '    <choice correct="' + correct + '"' + fixed + '>' + value;
             if(hintText) {
-              choices += '        <choicehint ' + MarkdownEditingDescriptor.customLabel + '>' + hintText + '\n'
-              choices += '        </choicehint>'
+              choices += '\n';
+              choices += '        <choicehint ' + MarkdownEditingDescriptor.customLabel + '>' + hintText + '\n';
+              choices += '        </choicehint>\n    ';
             }
-            choices += '\n    </choice>\n';
+            choices += '</choice>\n';
           }
         }
         var result = '<multiplechoiceresponse>\n';
@@ -666,8 +652,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // checkbox questions
       //
-      debugger
-      xml = xml.replace(/(^\s+(\[[x ]+|_[0-9]+)[^\n]+\n)+/gm, function(match) {
+      xml = xml.replace(/(^\s+\[[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForCheckbox(match);
       });
 
