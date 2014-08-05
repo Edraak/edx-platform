@@ -480,6 +480,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           operator = numericMatch[1].trim()
         if numericMatch[2]
           answerExpression = numericMatch[2].trim()
+          if not answerExpression
+            operator = 'non-numeric answer'                   # obliterate the operator to abort the whole search
           firstCharacter = answerExpression.slice(0,1)
           lastCharacter = answerExpression.slice(answerExpression.length-1, answerExpression.length)
           if firstCharacter == '[' and lastCharacter != ']'   # if the first character is a bracket but not the last
@@ -577,15 +579,15 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             else
               if hintText
                 hintElementString += '    <additional_answer  answer="' +
-                  answerExpression + '">' + hintText + '\n    </additional_answer>\n'
+                  answerExpression + '">' + hintText + '\n  </additional_answer>\n'
               else
-                additionalAnswerString += '    <additional_answer>' + answerExpression + '</additional_answer>\n'
+                additionalAnswerString += '  <additional_answer>' + answerExpression + '</additional_answer>\n'
 
     if answerString
       returnXmlString  =  '<stringresponse answer="' + answerString  + '" ' + ciString + ' >\n'
-      returnXmlString += '  <textline size="20"/>\n'
       returnXmlString += additionalAnswerString
       returnXmlString += hintElementString
+      returnXmlString += '  <textline size="20"/>\n'
       returnXmlString +=  '</stringresponse>\n'
     return returnXmlString
 
