@@ -538,6 +538,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     returnXmlString = xmlString
     operator = ''
     answerExpression = ''
+    additionalAnswerString = ''
     answerString = ''
     hintElementString = ''
     textHintElementString = ''
@@ -577,10 +578,13 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               if hintText
                 hintElementString += '    <additional_answer  answer="' +
                   answerExpression + '">' + hintText + '\n    </additional_answer>\n'
+              else
+                additionalAnswerString += '    <additional_answer>' + answerExpression + '</additional_answer>\n'
 
     if answerString
       returnXmlString  =  '<stringresponse answer="' + answerString  + '" ' + ciString + ' >\n'
       returnXmlString += '  <textline size="20"/>\n'
+      returnXmlString += additionalAnswerString
       returnXmlString += hintElementString
       returnXmlString +=  '</stringresponse>\n'
     return returnXmlString
@@ -663,7 +667,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // numeric input questions
       //
-      xml = xml.replace( /^\s*((or)?=[^\n]+)+/gm, function(match) {
+      xml = xml.replace( /^(\s*(or)?=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForNumeric(match);
       });
 
@@ -671,8 +675,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      debugger
-      xml = xml.replace( /^\s*((or)?=[^\n]+)+/gm, function(match) {
+      xml = xml.replace( /^(\s*(or)?=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
 
