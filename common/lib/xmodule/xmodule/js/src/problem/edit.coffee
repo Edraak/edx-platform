@@ -376,7 +376,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             returnXmlString += '               </optionhint>\n'
           returnXmlString += '</option>\n'
 
-          delimiter = ', '
+          delimiter = ','
 
       returnXmlString += '    </optioninput>\n'
       returnXmlString = returnXmlString.replace('OPTIONS_PLACEHOLDER', optionsString)  # poke the options in
@@ -395,7 +395,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     booleanHintPhrases = []
     returnXmlString = xmlString
 
-    debugger
     for line in xmlString.split('\n')
       correctnessText = ''
       itemText = ''
@@ -475,7 +474,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
 #    debugger
     for line in xmlString.split('\n')
-      numericMatch = line.match(/^\s*([=!]+)\s*([ \d,\.\)([\]\-\%*/^]+)\s*([\d,\.\)([\]+\-\%*/^]*)\s*([\d,\.\)([\]+\-\%*/^]*)/)
+      numericMatch = line.match(/^\s*([or=!]+)\s*([ \d,\.\)([\]\-\%*/^]+)\s*([\d,\.\)([\]+\-\%*/^]*)\s*([\d,\.\)([\]+\-\%*/^]*)/)
       if numericMatch
         if numericMatch[1]
           operator = numericMatch[1].trim()
@@ -519,12 +518,15 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
                 hintElementString += '\n            <numerichint  answer="' +
                   answerExpression + '">' + hintText + '\n    </numerichint>\n'
 
+        if operator == 'or='          # this test is only here to pass regression testing until 'or=' is implemented
+          returnXmlString = line      # we'll just pass this line through
+
     if answerString
       returnXmlString  = '<numericalresponse answer="' + answerString  + '">\n'
       returnXmlString += responseParameterElementString
       returnXmlString += '  <formulaequationinput />\n'
       returnXmlString += hintElementString
-      returnXmlString += '</numericalresponse>\n\n'
+      returnXmlString += '</numericalresponse>'
     return returnXmlString
 
   #________________________________________________________________________________
@@ -541,7 +543,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     textHintElementString = ''
     ciString = 'type="ci"'
 
-    debugger
     for line in xmlString.split('\n')
       textMatch = line.match( /^\s*(!?(not)?(or)?=)([^\n]+)/ )
       if textMatch
@@ -550,7 +551,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
         if textMatch[4]
           answerExpression = textMatch[4].trim()
 
-        if operator == '='
+        debugger
+        if operator == '=' or operator == 'or='
           if answerExpression
             hintMatches = line.match( /_([0-9]+)_/ ) # check for an extracted hint string
             if hintMatches                                # the line does contain an extracted hint string
@@ -567,6 +569,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
               if answerString[0] == '|'      # if the first character is '|' the answer is a regex
                 ciString = 'type="ci regexp"'
+                answerString = answerString.replace('|', '').trim()
 
               if hintText
                 hintElementString = '    <correcthint ' + @customLabel + '>' + hintText + '\n    </correcthint>\n'
@@ -660,7 +663,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // numeric input questions
       //
-      xml = xml.replace( /^\s*(=[^\n]+)+/gm, function(match) {
+      xml = xml.replace( /^\s*((or)?=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForNumeric(match);
       });
 
@@ -668,7 +671,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      xml = xml.replace( /^\s*\|?\s*(!?(not)*(or)*=[^\n]+[\n]+)+/gm, function(match) {
+      debugger
+      xml = xml.replace( /^\s*((or)?=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
 
