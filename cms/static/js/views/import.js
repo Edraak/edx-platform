@@ -50,8 +50,22 @@ define(
         var getStatus = function (url, timeout, stage) {
             var currentStage = stage || 0;
             if (CourseImport.stopGetStatus) { return ;}
-            updateStage(currentStage);
-            if (currentStage == 3 ) { return ;}
+
+            if (currentStage === 4) {
+                CourseImport.stopGetStatus = true;
+                $('.view-import .choose-file-button').html(gettext("Choose new file")).show();
+                window.onbeforeunload = null;
+                CourseImport.displayFinishedImport();
+            } else if (currentStage < 0) {
+                CourseImport.stopGetStatus = true;
+                $('.view-import .choose-file-button').html(gettext("Choose new file")).show();
+                var errMsg = gettext("Error importing course")
+                var failedStage = Math.abs(currentStage)
+                CourseImport.stageError(failedStage, errMsg);
+            } else {
+                updateStage(currentStage);
+            }
+
             var time = timeout || 1000;
             $.getJSON(url,
                 function (data) {
@@ -149,8 +163,10 @@ define(
                 });
                 var message = msg || gettext("There was an error with the upload");
                 var elem = $('ol.status-progress').children().eq(stageNo);
-                elem.removeClass('is-started').addClass('has-error');
-                elem.find('p.copy').hide().after("<p class='copy error'>" + message + "</p>");
+                if (!elem.hasClass('has-error')) {
+                    elem.removeClass('is-started').addClass('has-error');
+                    elem.find('p.copy').hide().after("<p class='copy error'>" + message + "</p>");
+                }
             }
 
         };
