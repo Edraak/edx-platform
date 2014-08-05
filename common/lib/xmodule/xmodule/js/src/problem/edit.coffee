@@ -510,13 +510,14 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 responseParameterElementString = '  <responseparam type="tolerance" default="' + tolerance + '" />\n'
             else
-              if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
-                hintElementString += '\n    <numerichint  answer="' +
-                  answerExpression + '" tolerance="' + tolerance + '">' +
-                  hintText + '\n</numerichint>\n'
-              else
-                hintElementString += '\n            <numerichint  answer="' +
-                  answerExpression + '">' + hintText + '\n    </numerichint>\n'
+# i think the multiple '=' case is not allowed -- distinct from the 'or=' construction
+#              if plusMinus and tolerance    # author has supplied a tolerance specification on a later answer
+#                hintElementString += '\n    <numerichint  answer="' +
+#                  answerExpression + '" tolerance="' + tolerance + '">' +
+#                  hintText + '\n</numerichint>\n'
+#              else
+#                hintElementString += '\n            <numerichint  answer="' +
+#                  answerExpression + '">' + hintText + '\n    </numerichint>\n'
 
         if operator == 'or='          # this test is only here to pass regression testing until 'or=' is implemented
           returnXmlString = line      # we'll just pass this line through
@@ -552,7 +553,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
         if textMatch[4]
           answerExpression = textMatch[4].trim()
 
-        debugger
         if operator == '=' or operator == 'or='
           if answerExpression
             hintMatches = line.match( /_([0-9]+)_/ ) # check for an extracted hint string
@@ -602,6 +602,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       xml = MarkdownEditingDescriptor.parseForProblemHints(xml);    // pull out any problem hints
       xml = MarkdownEditingDescriptor.parseForQuestionHints(xml);    // pull out any problem hints
 
+      debugger
       //_____________________________________________________________________
       //
       // multiple choice questions
