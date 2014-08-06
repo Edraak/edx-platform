@@ -450,6 +450,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
         booleanHintPhrase = booleanHintPhrases[index++]
         returnXmlString += '    <booleanhint value="' + booleanExpression + '">' + booleanHintPhrase + '\n'
         returnXmlString += '    </booleanhint>\n'
+      returnXmlString += '    </checkboxgroup>\n'
 
       returnXmlString += '</choiceresponse>\n'
 
@@ -588,6 +589,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       xml = MarkdownEditingDescriptor.parseForProblemHints(xml);    // pull out any problem hints
       xml = MarkdownEditingDescriptor.parseForQuestionHints(xml);    // pull out any problem hints
 
+      console.warn('\n\n\n>> xx')
       debugger
       //_____________________________________________________________________
       //

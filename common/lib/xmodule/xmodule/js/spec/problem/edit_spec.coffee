@@ -723,7 +723,7 @@ describe 'MarkdownEditingDescriptor', ->
 
         <p>Option with multiple correct ones</p>
         <optionresponse>
-            <optioninput options="'one option', ('correct one'), ('should not be correct')" correct="correct one">
+            <optioninput options="'one option',('correct one'),('should not be correct')" correct="correct one">
                   <option  correct="False">'one option'</option>
                   <option  correct="True">correct one</option>
                   <option  correct="True">should not be correct</option>
@@ -731,7 +731,7 @@ describe 'MarkdownEditingDescriptor', ->
         </optionresponse>
         <p>Option with embedded parens</p>
         <optionresponse>
-            <optioninput options="'My (heart)', 'another', ('correct')" correct="correct">
+            <optioninput options="'My (heart)','another',('correct')" correct="correct">
                   <option  correct="False">'My (heart)'</option>
                   <option  correct="False">'another'</option>
                   <option  correct="True">correct</option>
