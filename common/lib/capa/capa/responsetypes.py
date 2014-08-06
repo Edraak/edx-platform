@@ -1730,17 +1730,21 @@ class StringResponse(LoncapaResponse):
         :return:        True if the expression matches
         """
         result = False
-        _ = self.capa_system.i18n.ugettext
-        if use_regex:
-            try:
-                flags = re.IGNORECASE if self.case_insensitive else 0
-                regexp = re.compile(pattern.strip(), flags=flags | re.UNICODE)
-                result = bool(re.search(regexp, answer.strip()))
-            except Exception:
-                msg = _("Illegal regex expression: ") + pattern
-                raise ResponseError(msg)
-        else:
-            result = unicode(pattern.upper() in answer.upper().strip())
+        if answer:
+            if isinstance(answer, basestring):              # force answer to be a list
+                answer = list(answer)
+
+            _ = self.capa_system.i18n.ugettext
+            if use_regex:
+                try:
+                    flags = re.IGNORECASE if self.case_insensitive else 0
+                    regexp = re.compile(pattern.strip(), flags=flags | re.UNICODE)
+                    result = bool(re.search(regexp, answer[0].strip()))
+                except Exception:
+                    msg = _("Illegal regex expression: ") + pattern
+                    raise ResponseError(msg)
+            else:
+                result = unicode(pattern.upper() in answer[0].upper().strip())
         return result
 
     def check_string(self, expected, given):
