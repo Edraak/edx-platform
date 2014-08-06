@@ -199,13 +199,9 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     else
       return template
 
-#________________________________________________________________________________
+  #________________________________________________________________________________
   @matchCompoundConditionPattern: (testString) ->
     return testString.match( /\{\{(.+)\}\}/ )
-
-#  #________________________________________________________________________________
-#  @matchBooleanConditionPattern: (testString) ->
-#    return testString.match( /\(\((.+)\)\)(.+)/ )
 
   #________________________________________________________________________________
   @matchMultipleChoicePattern: (testString) ->
@@ -472,7 +468,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     responseParameterElementString = ''
     hintElementString = ''
 
-#    debugger
     for line in xmlString.split('\n')
       numericMatch = line.match(/^\s*([or=!]+)\s*([ \d,\.\)([\]\-\%*/^]+)\s*([\d,\.\)([\]+\-\%*/^]*)\s*([\d,\.\)([\]+\-\%*/^]*)/)
       if numericMatch
@@ -480,14 +475,15 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           operator = numericMatch[1].trim()
         if numericMatch[2]
           answerExpression = numericMatch[2].trim()
-          if not answerExpression
-            operator = 'non-numeric answer'                   # obliterate the operator to abort the whole search
+          numericCheckMatch = answerExpression.match(/[\s\d+\-\%*/]+/)   # should include only numerics and whitespace
+          if (numericCheckMatch is null) or (numericCheckMatch[0].length < answerExpression.length)
+            operator = ''                                     # obliterate the operator to ignore this line
           firstCharacter = answerExpression.slice(0,1)
           lastCharacter = answerExpression.slice(answerExpression.length-1, answerExpression.length)
           if firstCharacter == '[' and lastCharacter != ']'   # if the first character is a bracket but not the last
-            operator = 'no bracket match'                     # obliterate the operator to abort the whole search
+            operator = ''                                     # obliterate the operator to ignore this line
           if firstCharacter == '(' and lastCharacter != ')'   # if the first character is a paren but not the last
-            operator = 'no paren match'                       # obliterate the operator to abort the whole search
+            operator = ''                                     # obliterate the operator to ignore this line
         if numericMatch[3]
           plusMinus = numericMatch[3].trim()
         if numericMatch[4]
@@ -495,8 +491,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
         if operator == '='
           if answerExpression
-            hintMatches = line.match( /_([0-9]+)_/ ) # check for an extracted hint string
-            if hintMatches                                # the line does contain an extracted hint string
+            hintMatches = line.match( /_([0-9]+)_/ )          # check for an extracted hint string
+            if hintMatches                                    # the line does contain an extracted hint string
               xmlString = xmlString.replace(hintMatches[0], '')  # remove the phrase, else it will be displayed
               answerExpression = answerExpression.replace(hintMatches[0], '')
               answerExpression = answerExpression.trim()
@@ -511,18 +507,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
                 hintElementString = '<correcthint ' + @customLabel + '>' + hintText + '\n        </correcthint>\n'
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 responseParameterElementString = '  <responseparam type="tolerance" default="' + tolerance + '" />\n'
-            else
-# i think the multiple '=' case is not allowed -- distinct from the 'or=' construction
-#              if plusMinus and tolerance    # author has supplied a tolerance specification on a later answer
-#                hintElementString += '\n    <numerichint  answer="' +
-#                  answerExpression + '" tolerance="' + tolerance + '">' +
-#                  hintText + '\n</numerichint>\n'
-#              else
-#                hintElementString += '\n            <numerichint  answer="' +
-#                  answerExpression + '">' + hintText + '\n    </numerichint>\n'
-
-        if operator == 'or='          # this test is only here to pass regression testing until 'or=' is implemented
-          returnXmlString = line      # we'll just pass this line through
 
     if answerString
       returnXmlString  = '<numericalresponse answer="' + answerString  + '">\n'
