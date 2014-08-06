@@ -200,24 +200,12 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       return template
 
   #________________________________________________________________________________
-  @matchCompoundConditionPattern: (testString) ->
-    return testString.match( /\{\{(.+)\}\}/ )
-
-  #________________________________________________________________________________
-  @matchMultipleChoicePattern: (testString) ->
-    return testString.match( /\s+\(\s*x?\s*\)[^\n]+/ )
-
-  #________________________________________________________________________________
-  @matchCheckboxMarkerPattern: (testString) ->
-    return testString.match( /(\s+\[\s*x?\s*\])([^\n]+)/ )
-
-  #________________________________________________________________________________
   @insertParagraphText: (xmlString, reducedXmlString) ->
       returnXmlString = ''
       for line in reducedXmlString.split('\n')
         trimmedLine = line.trim()
         if trimmedLine.length > 0
-          compoundConditionMatches = @matchCompoundConditionPattern( line )      # string surrounded by {{...}} is a match group
+          compoundConditionMatches = line.match( /\{\{(.+)\}\}/ )      # string surrounded by {{...}} is a match group
           if compoundConditionMatches == null
             returnXmlString += '<p>\n'
             returnXmlString += trimmedLine
@@ -271,7 +259,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   #
   @parseForProblemHints: (xmlString) ->
     MarkdownEditingDescriptor.problemHintStrings = []    # initialize the strings array
-    for line in xmlString.split('\n')
+   for line in xmlString.split('\n')
       matches = line.match( /\|\|(.+)\|\|/ )      # string surrounded by ||...|| is a match group
       if matches
         problemHint = matches[1]
@@ -648,7 +636,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // checkbox questions
       //
-      xml = xml.replace(/(^\s+\[[^\n]+\n)+/gm, function(match) {
+      xml = xml.replace(/(^\s*\[[\sx]+]\s*[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForCheckbox(match);
       });
 
@@ -656,7 +644,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // numeric input questions
       //
-      xml = xml.replace( /^(\s*(or)?=[^\n]+)+/gm, function(match) {
+      xml = xml.replace( /(^\s*(or)?=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForNumeric(match);
       });
 
@@ -664,7 +652,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      xml = xml.replace( /^(\s*(or)?=[^\n]+)+/gm, function(match) {
+      xml = xml.replace( /(^\s*(or)?=[^\n]+)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
 
@@ -672,7 +660,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // drop down questions
       //
-      xml = xml.replace(/\[\[([^\]]+)\]\]/g, function(match, p) {
+      xml = xml.replace(/(^\s*\[\[([^\]]+)\]\])+/g, function(match, p) {
         return MarkdownEditingDescriptor.parseForDropdown(match);
       });
 
