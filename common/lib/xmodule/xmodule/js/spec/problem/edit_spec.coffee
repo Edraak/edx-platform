@@ -579,7 +579,6 @@ describe 'MarkdownEditingDescriptor', ->
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the capital of France?" size="20"/>
     </stringresponse>
-    
     <p>Germany is a country in Europe, too.</p>
     
     <p>What is the capital of Germany?</p>
@@ -591,8 +590,6 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-    
-    
     </problem>""")
     it 'tests malformed labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
@@ -614,7 +611,6 @@ describe 'MarkdownEditingDescriptor', ->
     <stringresponse answer="Paris" type="ci" >
       <textline size="20"/>
     </stringresponse>
-    
     <p>blahWhat is the capital of Germany?</p>
     <multiplechoiceresponse>
       <choicegroup label="What is the capital of &lt;&lt;Germany?" type="MultipleChoice">
@@ -624,8 +620,6 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-    
-    
     </problem>""")
     it 'adds labels to formulae', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
@@ -651,7 +645,6 @@ describe 'MarkdownEditingDescriptor', ->
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the &quot;capital&quot; of France &amp; the &apos;best&apos; &gt; place &lt; to live&quot;?" size="20"/>
     </stringresponse>
-    
     
     </problem>""")
     # test oddities
