@@ -117,8 +117,10 @@ describe 'MarkdownEditingDescriptor', ->
         Enter the number of fingers on a human hand:
         = 5
 
-        Range tolerance case
+        Range tolerance case 1
         = [6, 7]
+
+        Range tolerance case 2
         = (1, 2)
 
         If first and last symbols are not brackets, or they are not closed, stringresponse will appear.
@@ -776,146 +778,225 @@ describe 'MarkdownEditingDescriptor', ->
         </problem>""")
     # failure tests
 
-  describe 'hinting syntax tests', ->
-    it 'multiple problem hints supplied', ->
-      data =  MarkdownEditingDescriptor.markdownToXml("""
+#  describe 'hinting syntax tests', ->
+#    it 'multiple problem hints supplied', ->
+#      data =  MarkdownEditingDescriptor.markdownToXml("""
+#
+#         >>Select all the fruits from the list<<
+#
+#            [x] Apple
+#            [ ] Mushroom
+#            [ ] Potato
+#
+#            ||Remember that fruits always have seeds.||
+#            ||In this set of choices there is a fungus included.||
+#            ||In addition to the fungus distractor, there is also a root vegetable here.||
+#
+#        """)
+#      expect(data).toEqual("""<problem schema="edXML/1.0">
+#
+#    <p>Select all the fruits from the list</p>
+#    <choiceresponse>
+#        <checkboxgroup label="Select all the fruits from the list" direction="vertical">
+#          <choice  correct="True">Apple</choice>
+#          <choice  correct="False">Mushroom</choice>
+#          <choice  correct="False">Potato</choice>
+#        </checkboxgroup>
+#    </choiceresponse>
+#
+#    <p>   </p>
+#    <p>   </p>
+#    <p>   </p>
+#        <demandhint>
+#            <hint> Remember that fruits always have seeds.
+#            </hint>
+#            <hint> In this set of choices there is a fungus included.
+#            </hint>
+#            <hint> In addition to the fungus distractor, there is also a root vegetable here.
+#            </hint>
+#        </demandhint>
+#    </problem>""")
+#
+#
+#
+#
+#
+#    it 'multiple problem hints supplied plus one question', ->
+#      data =  MarkdownEditingDescriptor.markdownToXml("""
+#
+#                 >>Select all the fruits from the list<<
+#
+#            [x] Apple
+#            [ ] Mushroom      {{ No, mushroom isn't a fruit. }}
+#            [ ] Potato
+#
+#            ||Remember that fruits always have seeds.||
+#            ||In this set of choices there is a fungus included.||
+#            ||In addition to the fungus distractor, there is also a root vegetable here.||
+#
+#
+#        """)
+#      expect(data).toEqual("""<problem schema="edXML/1.0">
+#      <p>         Select all the fruits from the list</p>
+#      <choiceresponse>
+#          <checkboxgroup label="Select all the fruits from the list" direction="vertical">
+#            <choice  correct="False">Apple</choice>
+#            <choice  correct="False">Mushroom</choice>
+#            <choice  correct="False">Potato</choice>
+#          </checkboxgroup>
+#      </choiceresponse>
+#
+#      <p>            </p>
+#      <p>            </p>
+#      <p>            </p>
+#          <demandhint>
+#              <hint> Remember that fruits always have seeds.
+#              </hint>
+#              <hint> In this set of choices there is a fungus included.
+#              </hint>
+#              <hint> In addition to the fungus distractor, there is also a root vegetable here.
+#              </hint>
+#          </demandhint>
+#        </problem>""")
+#
+#    it 'TITLE', ->
+#      data =  MarkdownEditingDescriptor.markdownToXml("""
+# (note the blank line before mushroom -- be sure to include this test case)
+#
+# >>Select the fruit from the list<<
+#
+#            () Mushroom	  	 {{ Mushroom is a fungus, not a fruit.}}
+#            () Potato
+#           (x) Apple     	 	 {{ OUTSTANDING::Apple is indeed a fruit.}}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# || 1) what time is it? ||
+#  || 2) why not? ||
+#   || 3) where are the lions? ||
+#
+#
+#
+#
+#
+#
+#        """)
+#      expect(data).toEqual("""<problem schema="edXML/1.0">
+#    <p>(note the blank line before mushroom -- be sure to include this test case)</p>
+#
+#    <p>Select the fruit from the list</p>
+#    <multiplechoiceresponse>
+#      <choicegroup label="Select the fruit from the list" type="MultipleChoice">
+#        <choice correct="false">Mushroom
+#            <choicehint  >Mushroom is a fungus, not a fruit.
+#            </choicehint>
+#        </choice>
+#        <choice correct="false">Potato</choice>
+#        <choice correct="true">Apple
+#            <choicehint  label="OUTSTANDING">Apple is indeed a fruit.
+#            </choicehint>
+#        </choice>
+#      </choicegroup>
+#    </multiplechoiceresponse>
+#    <p> </p>
+#    <p>  </p>
+#
+#
+#        <demandhint>
+#            <hint>  1) what time is it?
+#            </hint>
+#            <hint>  2) why not?
+#            </hint>
+#            <hint>  3) where are the lions?
+#            </hint>
+#        </demandhint>
+#    </problem>""")
+#
+#  it 'fred test', ->
+#    data = MarkdownEditingDescriptor.markdownToXml("""
+#Fred was here.
+#    """).replace(/[\r\n\s]+/gm, '~')
+#    expect(data).toEqual("""
+#<problem schema="edXML/1.0">
+#    <p>Fred was here.</p>
+#</problem>
+#    """.replace(/[\r\n\s]+/gm, '~'))
 
-         >>Select all the fruits from the list<<
+  it 'wilma test', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+                                                     Wilma was here.
+                  """).replace(/[\n\s]+/gm, '~')
+                  expect(data).toEqual("""
+              <problem schema="edXML/1.0">
+                  <p>Wilma was here.</p>
+              </problem>
+                  """.replace(/[\n\s]+/gm, '~'))
 
-            [x] Apple
-            [ ] Mushroom
-            [ ] Potato
+  it 'dino test', ->
+              data = MarkdownEditingDescriptor.markdownToXml("""
+                                                 Dino
+                                                 was
+                                                 here.
 
-            ||Remember that fruits always have seeds.||
-            ||In this set of choices there is a fungus included.||
-            ||In addition to the fungus distractor, there is also a root vegetable here.||
+              """).replace(/[\n\s]+/gm, '~')
+              expect(data).toEqual("""
+                            <problem schema="edXML/1.0"> <p>Dino</p> <p>was</p> <p>here.</p> </problem>
+              """.replace(/[\n\s]+/gm, '~'))
 
-        """)
-      expect(data).toEqual("""<problem schema="edXML/1.0">
+  it 'dino test 1', ->
+              data = MarkdownEditingDescriptor.markdownToXml("""
+                                                 Dino
+                                                 was
+                                                 here.
 
-    <p>Select all the fruits from the list</p>
-    <choiceresponse>
-        <checkboxgroup label="Select all the fruits from the list" direction="vertical">
-          <choice  correct="True">Apple</choice>
-          <choice  correct="False">Mushroom</choice>
-          <choice  correct="False">Potato</choice>
-        </checkboxgroup>
-    </choiceresponse>
+              """).replace(/[\n\s]+/gm, '~')
+              expect(data).toEqual("""
+                            <problem schema="edXML/1.0">
+                                <p>Dino</p>
+                                <p>was</p>
+                                <p>here.</p>
+                            </problem>
+              """.replace(/[\n\s]+/gm, '~'))
 
-    <p>   </p>
-    <p>   </p>
-    <p>   </p>
-        <demandhint>
-            <hint> Remember that fruits always have seeds.
-            </hint>
-            <hint> In this set of choices there is a fungus included.
-            </hint>
-            <hint> In addition to the fungus distractor, there is also a root vegetable here.
-            </hint>
-        </demandhint>
-    </problem>""")
+  it 'dino test 2', ->
+              data = MarkdownEditingDescriptor.markdownToXml("""
+                                                 Dino
+                                                 was
+                                                 here.
 
+              """).replace(/\s+/gm, '')
+              expect(data).toEqual("""
+                            <problem schema="edXML/1.0">
+                                <p>Dino</p>
+                                <p>was</p>
+                                <p>here.</p>
+                            </problem>
+              """.replace(/\s+/gm, ''))
 
+  it 'dino test 3', ->
+              data = MarkdownEditingDescriptor.markdownToXml("""
+                                                 Dino
 
+                                                 was
 
+                                                 here.
 
-    it 'multiple problem hints supplied plus one question', ->
-      data =  MarkdownEditingDescriptor.markdownToXml("""
+              """).replace(/\s+/gm, '')
+              expect(data).toEqual("""
+                            <problem schema="edXML/1.0">
+                                <p>Dino</p>
+                                <p>was</p>
+                                <p>here.</p>
+                            </problem>
+              """.replace(/[\n\s]+/gm, ''))
 
-                 >>Select all the fruits from the list<<
-
-            [x] Apple
-            [ ] Mushroom      {{ No, mushroom isn't a fruit. }}
-            [ ] Potato
-
-            ||Remember that fruits always have seeds.||
-            ||In this set of choices there is a fungus included.||
-            ||In addition to the fungus distractor, there is also a root vegetable here.||
-
-
-        """)
-      expect(data).toEqual("""<problem schema="edXML/1.0">
-      <p>         Select all the fruits from the list</p>
-      <choiceresponse>
-          <checkboxgroup label="Select all the fruits from the list" direction="vertical">
-            <choice  correct="False">Apple</choice>
-            <choice  correct="False">Mushroom</choice>
-            <choice  correct="False">Potato</choice>
-          </checkboxgroup>
-      </choiceresponse>
-
-      <p>            </p>
-      <p>            </p>
-      <p>            </p>
-          <demandhint>
-              <hint> Remember that fruits always have seeds.
-              </hint>
-              <hint> In this set of choices there is a fungus included.
-              </hint>
-              <hint> In addition to the fungus distractor, there is also a root vegetable here.
-              </hint>
-          </demandhint>
-        </problem>""")
-
-    it 'TITLE', ->
-      data =  MarkdownEditingDescriptor.markdownToXml("""
- (note the blank line before mushroom -- be sure to include this test case)
-
- >>Select the fruit from the list<<
-
-            () Mushroom	  	 {{ Mushroom is a fungus, not a fruit.}}
-            () Potato
-           (x) Apple     	 	 {{ OUTSTANDING::Apple is indeed a fruit.}}
-
-
-
-
-
-
-
-
-
-
- || 1) what time is it? ||
-  || 2) why not? ||
-   || 3) where are the lions? ||
-
-
-
-
-
-
-        """)
-      expect(data).toEqual("""<problem schema="edXML/1.0">
-    <p>(note the blank line before mushroom -- be sure to include this test case)</p>
-
-    <p>Select the fruit from the list</p>
-    <multiplechoiceresponse>
-      <choicegroup label="Select the fruit from the list" type="MultipleChoice">
-        <choice correct="false">Mushroom
-            <choicehint  >Mushroom is a fungus, not a fruit.
-            </choicehint>
-        </choice>
-        <choice correct="false">Potato</choice>
-        <choice correct="true">Apple
-            <choicehint  label="OUTSTANDING">Apple is indeed a fruit.
-            </choicehint>
-        </choice>
-      </choicegroup>
-    </multiplechoiceresponse>
-    <p> </p>
-    <p>  </p>
-
-
-        <demandhint>
-            <hint>  1) what time is it?
-            </hint>
-            <hint>  2) why not?
-            </hint>
-            <hint>  3) where are the lions?
-            </hint>
-        </demandhint>
-    </problem>""")
 
 #     it 'TITLE', ->
 #      data =  MarkdownEditingDescriptor.markdownToXml("""
