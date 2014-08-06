@@ -475,7 +475,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           operator = numericMatch[1].trim()
         if numericMatch[2]
           answerExpression = numericMatch[2].trim()
-          numericCheckMatch = answerExpression.match(/[\s\d+\-\%*/]+/)   # should include only numerics and whitespace
+          numericCheckMatch = answerExpression.match(/[\.\s\d+\-\%*/]+/)   # should include only numerics and whitespace
           if (numericCheckMatch is null) or (numericCheckMatch[0].length < answerExpression.length)
             operator = ''                                     # obliterate the operator to ignore this line
           firstCharacter = answerExpression.slice(0,1)

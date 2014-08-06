@@ -632,8 +632,6 @@ describe 'MarkdownEditingDescriptor', ->
       <responseparam type="tolerance" default=".02" />
       <formulaequationinput label="Enter the numerical value of Pi:" />
     </numericalresponse>
-    
-    
     </problem>""")
     it 'escapes entities in labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
