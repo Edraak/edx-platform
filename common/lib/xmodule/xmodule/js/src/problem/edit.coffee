@@ -259,7 +259,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   #
   @parseForProblemHints: (xmlString) ->
     MarkdownEditingDescriptor.problemHintStrings = []    # initialize the strings array
-   for line in xmlString.split('\n')
+    for line in xmlString.split('\n')
       matches = line.match( /\|\|(.+)\|\|/ )      # string surrounded by ||...|| is a match group
       if matches
         problemHint = matches[1]
