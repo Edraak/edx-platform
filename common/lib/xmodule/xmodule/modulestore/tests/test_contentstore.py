@@ -1,6 +1,7 @@
 """
  Test contentstore.mongo functionality
 """
+import os
 import logging
 from uuid import uuid4
 import unittest
@@ -21,7 +22,8 @@ from __builtin__ import delattr
 log = logging.getLogger(__name__)
 
 HOST = 'localhost'
-PORT = 27017
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
+PORT = int(MONGO_PORT_NUM)
 DB = 'test_mongo_%s' % uuid4().hex[:5]
 
 

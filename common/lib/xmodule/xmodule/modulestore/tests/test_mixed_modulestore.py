@@ -1,3 +1,4 @@
+import os
 import pymongo
 from uuid import uuid4
 import ddt
@@ -15,6 +16,9 @@ from xmodule.exceptions import InvalidVersionError
 
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from opaque_keys.edx.locator import BlockUsageLocator, CourseLocator
+
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
+
 # Mixed modulestore depends on django, so we'll manually configure some django settings
 # before importing the module
 # TODO remove this import and the configuration -- xmodule should not depend on django!
@@ -34,7 +38,7 @@ class TestMixedModuleStore(unittest.TestCase):
     Location-based dbs)
     """
     HOST = 'localhost'
-    PORT = 27017
+    PORT = int(MONGO_PORT_NUM)
     DB = 'test_mongo_%s' % uuid4().hex[:5]
     COLLECTION = 'modulestore'
     FS_ROOT = DATA_DIR
@@ -53,6 +57,7 @@ class TestMixedModuleStore(unittest.TestCase):
     }
     DOC_STORE_CONFIG = {
         'host': HOST,
+        'port': PORT,
         'db': DB,
         'collection': COLLECTION,
     }

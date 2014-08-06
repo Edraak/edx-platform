@@ -22,8 +22,11 @@ from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 import dashboard.git_import as git_import
 from dashboard.git_import import GitImportError
 
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
+
 TEST_MONGODB_LOG = {
     'host': 'localhost',
+    'port': int(MONGO_PORT_NUM),
     'user': '',
     'password': '',
     'db': 'test_xlog',

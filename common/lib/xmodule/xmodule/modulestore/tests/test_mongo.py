@@ -5,6 +5,7 @@ from nose.tools import assert_equals, assert_raises, \
     assert_not_equals, assert_false, assert_true, assert_greater, assert_is_instance, assert_is_none
 # pylint: enable=E0611
 from path import path
+import os
 import pymongo
 import logging
 import shutil
@@ -37,11 +38,12 @@ from git.test.lib.asserts import assert_not_none
 from xmodule.x_module import XModuleMixin
 from xmodule.modulestore.mongo.base import as_draft
 
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
 
 log = logging.getLogger(__name__)
 
 HOST = 'localhost'
-PORT = 27017
+PORT = int(MONGO_PORT_NUM)
 DB = 'test_mongo_%s' % uuid4().hex[:5]
 COLLECTION = 'modulestore'
 FS_ROOT = DATA_DIR  # TODO (vshnayder): will need a real fs_root for testing load_item
@@ -91,12 +93,13 @@ class TestMongoModuleStore(unittest.TestCase):
         # connect to the db
         doc_store_config = {
             'host': HOST,
+            'port': PORT,
             'db': DB,
             'collection': COLLECTION,
         }
         # since MongoModuleStore and MongoContentStore are basically assumed to be together, create this class
         # as well
-        content_store = MongoContentStore(HOST, DB)
+        content_store = MongoContentStore(HOST, DB, port=PORT)
         #
         # Also test draft store imports
         #
@@ -148,7 +151,7 @@ class TestMongoModuleStore(unittest.TestCase):
     def test_mongo_modulestore_type(self):
         store = DraftModuleStore(
             None,
-            {'host': HOST, 'db': DB, 'collection': COLLECTION},
+            {'host': HOST, 'db': DB, 'port': PORT, 'collection': COLLECTION},
             FS_ROOT, RENDER_TEMPLATE, default_class=DEFAULT_CLASS
         )
         assert_equals(store.get_modulestore_type(''), ModuleStoreEnum.Type.mongo)

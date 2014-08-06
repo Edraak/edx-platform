@@ -102,14 +102,14 @@ class SystemTestSuite(NoseTestSuite):
         if not self.fasttest:
             # TODO: Fix the tests so that collectstatic isn't needed ever
             # add --skip-collect to this when the tests are fixed
-            args = [self.root, '--settings=test']
+            args = [self.root, '--settings=test_parallel']
             call_task('pavelib.assets.update_assets', args=args)
 
     @property
     def cmd(self):
         cmd = (
             './manage.py {system} test --verbosity={verbosity} '
-            '{test_id} {test_opts} --traceback --settings=test'.format(
+            '{test_id} {test_opts} --traceback --settings=test_parallel'.format(
                 system=self.root,
                 verbosity=self.verbosity,
                 test_id=self.test_id,

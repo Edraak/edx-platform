@@ -1,6 +1,7 @@
 """
 Tests for XML importer.
 """
+import os
 import mock
 from xblock.core import XBlock
 from xblock.fields import String, Scope, ScopeIds
@@ -16,13 +17,15 @@ from uuid import uuid4
 import unittest
 import importlib
 
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
+
 
 class ModuleStoreNoSettings(unittest.TestCase):
     """
     A mixin to create a mongo modulestore that avoids settings
     """
     HOST = 'localhost'
-    PORT = 27017
+    PORT = int(MONGO_PORT_NUM)
     DB = 'test_mongo_%s' % uuid4().hex[:5]
     COLLECTION = 'modulestore'
     FS_ROOT = DATA_DIR
@@ -36,6 +39,7 @@ class ModuleStoreNoSettings(unittest.TestCase):
     }
     DOC_STORE_CONFIG = {
         'host': HOST,
+        'port': PORT,
         'db': DB,
         'collection': COLLECTION,
     }

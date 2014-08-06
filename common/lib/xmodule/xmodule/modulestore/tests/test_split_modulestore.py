@@ -1,6 +1,7 @@
 """
     Test split modulestore w/o using any django stuff.
 """
+import os
 import datetime
 import unittest
 import uuid
@@ -27,6 +28,7 @@ from xmodule.modulestore.tests.test_modulestore import check_has_course_method
 
 BRANCH_NAME_DRAFT = ModuleStoreEnum.BranchName.draft
 BRANCH_NAME_PUBLISHED = ModuleStoreEnum.BranchName.published
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
 
 
 class SplitModuleTest(unittest.TestCase):
@@ -39,6 +41,7 @@ class SplitModuleTest(unittest.TestCase):
     DOC_STORE_CONFIG = {
         'host': 'localhost',
         'db': 'test_xmodule',
+        'port': int(MONGO_PORT_NUM),
         'collection': 'modulestore{0}'.format(uuid.uuid4().hex[:5]),
     }
     modulestore_options = {

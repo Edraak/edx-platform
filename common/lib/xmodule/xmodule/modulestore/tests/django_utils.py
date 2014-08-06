@@ -2,7 +2,7 @@
 """
 Modulestore configuration for test cases.
 """
-
+import os
 from uuid import uuid4
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -13,6 +13,8 @@ import datetime
 import pytz
 from xmodule.tabs import CoursewareTab, CourseInfoTab, StaticTab, DiscussionTab, ProgressTab, WikiTab
 from xmodule.modulestore.tests.sample_courses import default_block_info_tree, TOY_BLOCK_INFO_TREE
+
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
 
 
 def mixed_store_config(data_dir, mappings):
@@ -68,6 +70,7 @@ def draft_mongo_store_config(data_dir):
             'ENGINE': 'xmodule.modulestore.mongo.draft.DraftModuleStore',
             'DOC_STORE_CONFIG': {
                 'host': 'localhost',
+                'port': int(MONGO_PORT_NUM),
                 'db': 'test_xmodule',
                 'collection': 'modulestore{0}'.format(uuid4().hex[:5]),
             },

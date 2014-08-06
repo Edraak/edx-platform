@@ -1,3 +1,4 @@
+import os
 import unittest
 import mock
 import datetime
@@ -9,6 +10,8 @@ from opaque_keys.edx.locator import CourseLocator, BlockUsageLocator
 from xmodule.modulestore.split_mongo.split import SplitMongoModuleStore
 from xmodule.modulestore.mongo import DraftMongoModuleStore
 from xmodule.modulestore import ModuleStoreEnum
+
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
 
 
 class SplitWMongoCourseBoostrapper(unittest.TestCase):
@@ -28,6 +31,7 @@ class SplitWMongoCourseBoostrapper(unittest.TestCase):
         # Snippet of what would be in the django settings envs file
     db_config = {
         'host': 'localhost',
+        'port': int(MONGO_PORT_NUM),
         'db': 'test_xmodule',
     }
 

@@ -3,6 +3,10 @@ Helper functions for test tasks
 """
 from paver.easy import sh, task
 from pavelib.utils.envs import Env
+import os
+
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
+
 
 __test__ = False  # do not collect
 
@@ -42,4 +46,7 @@ def clean_mongo():
     """
     Clean mongo test databases
     """
-    sh("mongo {repo_root}/scripts/delete-mongo-test-dbs.js".format(repo_root=Env.REPO_ROOT))
+    sh("mongo localhost:{port} {repo_root}/scripts/delete-mongo-test-dbs.js".format(
+        port=MONGO_PORT_NUM,
+        repo_root=Env.REPO_ROOT,
+    ))

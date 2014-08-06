@@ -11,7 +11,7 @@ and then for each combination of modulestores, performing the sequence:
     4) Compare all modules in the source and destination modulestores to make sure that they line up
 
 """
-
+import os
 import ddt
 import itertools
 import random
@@ -31,8 +31,11 @@ from xmodule.contentstore.mongo import MongoContentStore
 from xmodule.modulestore.xml_importer import import_from_xml
 from xmodule.modulestore.xml_exporter import export_to_xml
 
+MONGO_PORT_NUM = os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017')
+
 COMMON_DOCSTORE_CONFIG = {
-    'host': 'localhost'
+    'host': 'localhost',
+    'port': int(MONGO_PORT_NUM),
 }
 
 
