@@ -151,6 +151,7 @@ def import_handler(request, course_key_string):
                 })
 
             else:   # This was the last chunk.
+                log.info("Course import {0}: Upload complete".format(course_key))
                 session_status[key] = 1
                 request.session.save()
 
@@ -172,6 +173,7 @@ def import_handler(request, course_key_string):
                     finally:
                         tar_file.close()
 
+                    log.info("Course import {0}: Uploaded file extracted".format(course_key))
                     session_status[key] = 2
                     request.session.save()
 
@@ -197,9 +199,7 @@ def import_handler(request, course_key_string):
                         return None
 
                     fname = "course.xml"
-
                     dirpath = get_dir_for_fname(course_dir, fname)
-
                     if not dirpath:
                         return JsonResponse(
                             {
@@ -211,9 +211,9 @@ def import_handler(request, course_key_string):
                         )
 
                     dirpath = os.path.relpath(dirpath, data_root)
-
                     logging.debug('found course.xml at {0}'.format(dirpath))
 
+                    log.info("Course import {0}: Extracted file verified".format(course_key))
                     session_status[key] = 3
                     request.session.save()
 
@@ -230,6 +230,7 @@ def import_handler(request, course_key_string):
                     new_location = course_items[0].location
                     logging.debug('new course at {0}'.format(new_location))
 
+                    log.info("Course import {0}: Course import successful".format(course_key))
                     session_status[key] = 4
                     request.session.save()
 
@@ -248,6 +249,7 @@ def import_handler(request, course_key_string):
 
                 finally:
                     shutil.rmtree(course_dir)
+                    log.info("Course import {0}: Temp data cleared".format(course_key))
                     # set failed stage number with negative sign in case of unsuccessful import
                     if session_status[key] != 4:
                         session_status[key] = -session_status[key]

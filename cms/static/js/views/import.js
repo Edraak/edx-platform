@@ -52,17 +52,20 @@ define(
             if (CourseImport.stopGetStatus) { return ;}
 
             if (currentStage === 4) {
+                // Succeeded
                 CourseImport.stopGetStatus = true;
                 $('.view-import .choose-file-button').html(gettext("Choose new file")).show();
                 window.onbeforeunload = null;
                 CourseImport.displayFinishedImport();
             } else if (currentStage < 0) {
+                // Failed
                 CourseImport.stopGetStatus = true;
                 $('.view-import .choose-file-button').html(gettext("Choose new file")).show();
                 var errMsg = gettext("Error importing course")
                 var failedStage = Math.abs(currentStage)
                 CourseImport.stageError(failedStage, errMsg);
             } else {
+                // In progress
                 updateStage(currentStage);
             }
 
