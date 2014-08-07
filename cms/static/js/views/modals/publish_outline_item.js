@@ -40,7 +40,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/modals/base_mod
             getTitle: function () {
                 if (this.model.isChapter() || this.model.isSequential()) {
                     return _.template(
-                        gettext('Publish <%= sectionName %> Units'),
+                        gettext('Publish "<%= sectionName %>" Units'),
                         {sectionName: this.model.get('display_name')});
                 } else {
                     return '';

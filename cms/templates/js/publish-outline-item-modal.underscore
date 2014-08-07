@@ -3,7 +3,9 @@
 <ol class="list-units">
     <% _.each(xblockInfo.get('child_info').children, function(child) { %>
         <li class="outline-item outline-unit">
-            <span class="unit-title item-title"><%= child.get('display_name') %></span>
+            <span class="unit-title item-title"
+                <% if (!child.get('published')) { %>style="font-weight:bold"<% } %>
+            ><%= child.get('display_name') %></span>
         </li>
     <% }); %>
 </ol>
