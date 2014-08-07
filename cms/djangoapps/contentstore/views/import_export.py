@@ -217,6 +217,10 @@ def import_handler(request, course_key_string):
                     session_status[key] = 3
                     request.session.save()
 
+                    # This wait is just for testing behaviour when workers timeout. Not to be merged!
+                    import time
+                    time.sleep(200)
+
                     _module_store, course_items = import_from_xml(
                         modulestore(),
                         request.user.id,
