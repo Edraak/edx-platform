@@ -1,22 +1,9 @@
 <h3>Units to be published</h3>
 
 <ol class="list-units">
-    <li class="outline-item outline-unit">
-        <span class="unit-title item-title">Unit Title</span>
-    </li>
-    <li class="outline-item outline-unit">
-        <span class="unit-title item-title">Unit Title</span>
-    </li>
-    <li class="outline-item outline-unit">
-        <span class="unit-title item-title">Unit Title</span>
-    </li>
-    <li class="outline-item outline-unit">
-        <span class="unit-title item-title">Unit Title that is really really really long and may span more than just one visual line of text.</span>
-    </li>
-    <li class="outline-item outline-unit">
-        <span class="unit-title item-title">Unit Title</span>
-    </li>
-    <li class="outline-item outline-unit">
-        <span class="unit-title item-title">Unit Title</span>
-    </li>
+    <% _.each(xblockInfo.get('child_info').children, function(child) { %>
+        <li class="outline-item outline-unit">
+            <span class="unit-title item-title"><%= child.get('display_name') %></span>
+        </li>
+    <% }); %>
 </ol>
