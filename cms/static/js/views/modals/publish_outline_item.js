@@ -1,6 +1,5 @@
 /**
- * The PublishSectionXBlockModal is a Backbone view that shows an editor in a modal window.
- * It has nested views: for release date, due date and grading format.
+ * The PublishSectionXBlockModal is a Backbone view that shows an list of units to be published in a modal window.
  * It is invoked using the editXBlock method and uses xblock_info as a model,
  * and upon save parent invokes refresh function that fetches updated model and
  * re-renders edited course outline.
@@ -32,7 +31,8 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/modals/base_mod
             initialize: function() {
                 BaseModal.prototype.initialize.call(this);
                 this.events = _.extend({}, BaseModal.prototype.events, this.events);
-                this.template = this.loadTemplate('edit-outline-item-modal');
+                debugger;
+                this.template = this.loadTemplate('publish-outline-item-modal');
                 this.options.title = this.getTitle();
                 this.initializeComponents();
             },
@@ -40,7 +40,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/modals/base_mod
             getTitle: function () {
                 if (this.model.isChapter() || this.model.isSequential()) {
                     return _.template(
-                        gettext('<%= sectionName %> Settings'),
+                        gettext('Publish <%= sectionName %> Units'),
                         {sectionName: this.model.get('display_name')});
                 } else {
                     return '';
@@ -114,129 +114,6 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/modals/base_mod
              */
             initializeComponents: function () {
                 this.components = [];
-                this.components.push(
-                    new ReleaseDateView({
-                        selector: '.scheduled-date-input',
-                        parentView: this,
-                        model: this.model
-                    })
-                );
-
-                if (this.model.isSequential()) {
-                    this.components.push(
-                        new DueDateView({
-                            selector: '.due-date-input',
-                            parentView: this,
-                            model: this.model
-                        }),
-                        new GradingView({
-                            selector: '.edit-settings-grading',
-                            parentView: this,
-                            model: this.model
-                        })
-                    );
-                }
-            }
-        });
-
-        BaseDateView = Backbone.View.extend({
-            // Attribute name in the model, should be defined in children classes.
-            fieldName: null,
-
-            events : {
-                'click .clear-date': 'clearValue'
-            },
-
-            afterRender: function () {
-                this.setElement(this.options.parentView.$(this.options.selector).get(0));
-                this.$('input.date').datepicker({'dateFormat': 'm/d/yy'});
-                this.$('input.time').timepicker({
-                    'timeFormat' : 'H:i',
-                    'forceRoundTime': true
-                });
-                if (this.model.get(this.fieldName)) {
-                    DateUtils.setDate(
-                        this.$('input.date'), this.$('input.time'),
-                        this.model.get(this.fieldName)
-                    );
-                }
-            }
-        });
-
-        DueDateView = BaseDateView.extend({
-            fieldName: 'due',
-
-            getValue: function () {
-                return DateUtils.getDate(this.$('#due_date'), this.$('#due_time'));
-            },
-
-            clearValue: function (event) {
-                event.preventDefault();
-                this.$('#due_time, #due_date').val('');
-            },
-
-            getMetadata: function () {
-                return {
-                    'due': this.getValue()
-                };
-            }
-        });
-
-        ReleaseDateView = BaseDateView.extend({
-            fieldName: 'start',
-            startingReleaseDate: null,
-
-            afterRender: function () {
-                BaseDateView.prototype.afterRender.call(this);
-                // Store the starting date and time so that we can determine if the user
-                // actually changed it when "Save" is pressed.
-                this.startingReleaseDate = this.getValue();
-            },
-
-            getValue: function () {
-                return DateUtils.getDate(this.$('#start_date'), this.$('#start_time'));
-            },
-
-            clearValue: function (event) {
-                event.preventDefault();
-                this.$('#start_time, #start_date').val('');
-            },
-
-            getMetadata: function () {
-                var newReleaseDate = this.getValue();
-                if (JSON.stringify(newReleaseDate) === JSON.stringify(this.startingReleaseDate)) {
-                    return {};
-                }
-                return {
-                    'start': newReleaseDate
-                };
-            }
-        });
-
-        GradingView = Backbone.View.extend({
-            afterRender: function () {
-                this.setElement(this.options.parentView.$(this.options.selector).get(0));
-                this.setValue(this.model.get('format'));
-            },
-
-            setValue: function (value) {
-                this.$('#grading_type').val(value);
-            },
-
-            getValue: function () {
-                return this.$('#grading_type').val();
-            },
-
-            getRequestData: function () {
-                return {
-                    'graderType': this.getValue()
-                };
-            },
-
-            getContext: function () {
-                return {
-                    graderTypes: JSON.parse(this.model.get('course_graders'))
-                };
             }
         });
 

@@ -12,7 +12,7 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
         "js/models/xblock_outline_info",
         "js/views/modals/edit_outline_item", "js/views/modals/publish_outline_item", "js/utils/drag_and_drop"],
     function($, _, XBlockOutlineView, ViewUtils, XBlockOutlineInfo,
-        EditSectionXBlockModal, PublishSectionXblockModal, ContentDragger) {
+        EditSectionXBlockModal, PublishSectionXBlockModal, ContentDragger) {
 
         var CourseOutlineView = XBlockOutlineView.extend({
             // takes XBlockOutlineInfo as a model
