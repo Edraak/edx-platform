@@ -9,8 +9,10 @@
  *  - adding units will automatically redirect to the unit page rather than showing them inline
  */
 define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_utils",
-        "js/models/xblock_outline_info", "js/views/modals/edit_outline_item", "js/utils/drag_and_drop"],
-    function($, _, XBlockOutlineView, ViewUtils, XBlockOutlineInfo, EditSectionXBlockModal, ContentDragger) {
+        "js/models/xblock_outline_info",
+        "js/views/modals/edit_outline_item", "js/views/modals/publish_outline_item", "js/utils/drag_and_drop"],
+    function($, _, XBlockOutlineView, ViewUtils, XBlockOutlineInfo,
+        EditSectionXBlockModal, PublishSectionXblockModal, ContentDragger) {
 
         var CourseOutlineView = XBlockOutlineView.extend({
             // takes XBlockOutlineInfo as a model
@@ -148,12 +150,24 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
                     model: this.model,
                     onSave: this.refresh.bind(this)
                 });
+                modal.show();
+            },
 
+            publishXBlock: function() {
+                debugger;
+                var modal = new PublishSectionXBlockModal({
+                    model: this.model,
+                    onSave: this.refresh.bind(this)
+                });
                 modal.show();
             },
 
             addButtonActions: function(element) {
                 XBlockOutlineView.prototype.addButtonActions.apply(this, arguments);
+                element.find('.publish-button').click(function(event) {
+                    event.preventDefault();
+                    this.publishXBlock();
+                }.bind(this));
                 element.find('.configure-button').click(function(event) {
                     event.preventDefault();
                     this.editXBlock();
