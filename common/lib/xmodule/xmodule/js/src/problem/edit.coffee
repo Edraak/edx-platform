@@ -499,6 +499,10 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               if plusMinus and tolerance    # author has supplied a tolerance specification on the *first* answer
                 responseParameterElementString = '  <responseparam type="tolerance" default="' + tolerance + '" />\n'
 
+        if operator == 'or='        # this is a weird case because we have to discard this answer--it isn't
+                                    # yet supported in the code although it will be soon
+          returnXmlString = returnXmlString.replace(line, '')     # just throw it away for now
+
     if answerString
       returnXmlString  = '<numericalresponse answer="' + answerString  + '">\n'
       returnXmlString += responseParameterElementString
@@ -654,7 +658,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-  ////    xml = xml.replace( /(^\s*(or)?=[^\n]+)+/gm, function(match) {
       xml = xml.replace( /(^\s*(or)?=[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
@@ -663,7 +666,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // drop down questions
       //
-/////      xml = xml.replace(/(^\s*\[\[([^\]]+)\]\])+/g, function(match, p) {
       xml = xml.replace(/(\s*\[\[[^\]]+]])+/g, function(match, p) {
         return MarkdownEditingDescriptor.parseForDropdown(match);
       });

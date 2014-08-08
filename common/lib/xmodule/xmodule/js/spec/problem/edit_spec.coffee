@@ -209,6 +209,7 @@ describe 'MarkdownEditingDescriptor', ->
           <responseparam type="tolerance" default=".02" />
           <formulaequationinput />
         </numericalresponse>
+
         </problem>""")
     it 'converts multiple choice to xml', ->
       data = MarkdownEditingDescriptor.markdownToXml("""A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.
