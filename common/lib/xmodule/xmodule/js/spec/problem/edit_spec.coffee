@@ -325,6 +325,7 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">c</choice>
           </choicegroup>
         </multiplechoiceresponse>
+
         <p>yatta</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -333,6 +334,7 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="true">z</choice>
           </choicegroup>
         </multiplechoiceresponse>
+
         <p>testa</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -559,6 +561,7 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
+
     </problem>""")
     it 'tests multiple questions with only one label', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
@@ -593,6 +596,7 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
+
     </problem>""")
     it 'tests malformed labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
@@ -623,6 +627,7 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
+
     </problem>""")
     it 'adds labels to formulae', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
@@ -664,7 +669,6 @@ describe 'MarkdownEditingDescriptor', ->
         [ ] option1 [x]
         [x] correct
         [x] redundant
-        [(] distractor
         [] no space
 
         Option with multiple correct ones
@@ -719,7 +723,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">option1 [x]</choice>
             <choice correct="true">correct</choice>
             <choice correct="true">redundant</choice>
-            <choice correct="false">distractor</choice>
             <choice correct="false">no space</choice>
           </checkboxgroup>
         </choiceresponse>
