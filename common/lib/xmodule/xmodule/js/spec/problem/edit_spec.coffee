@@ -229,9 +229,7 @@ describe 'MarkdownEditingDescriptor', ->
         """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.</p>
-
         <p>One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.</p>
-
         <p>What Apple device competed with the portable CD player?</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -243,6 +241,7 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">The Beatles</choice>
           </choicegroup>
         </multiplechoiceresponse>
+
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -270,9 +269,7 @@ describe 'MarkdownEditingDescriptor', ->
         """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.</p>
-        
         <p>One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.</p>
-        
         <p>What Apple device competed with the portable CD player?</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -284,6 +281,7 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false" fixed="true">The Beatles</choice>
           </choicegroup>
         </multiplechoiceresponse>
+
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -335,6 +333,7 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="true">iii</choice>
           </choicegroup>
         </multiplechoiceresponse>
+
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -342,7 +341,6 @@ describe 'MarkdownEditingDescriptor', ->
         
         </div>
         </solution>
-
         </problem>""")
 
     it 'converts OptionResponse to xml', ->
