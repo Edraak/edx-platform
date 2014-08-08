@@ -654,7 +654,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // text input questions
       //
-      xml = xml.replace( /(^\s*(or)?=[^\n]+)+/gm, function(match) {
+  ////    xml = xml.replace( /(^\s*(or)?=[^\n]+)+/gm, function(match) {
+      xml = xml.replace( /(^\s*(or)?=[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForText(match);
       });
 

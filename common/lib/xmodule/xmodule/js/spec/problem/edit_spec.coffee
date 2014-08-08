@@ -169,11 +169,9 @@ describe 'MarkdownEditingDescriptor', ->
         <stringresponse answer="(7), 7" type="ci" >
           <textline size="20"/>
         </stringresponse>
-
         <stringresponse answer="(1+2" type="ci" >
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -408,7 +406,6 @@ describe 'MarkdownEditingDescriptor', ->
         <stringresponse answer="Michigan" type="ci" >
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -431,11 +428,9 @@ describe 'MarkdownEditingDescriptor', ->
         <stringresponse answer="\w*\.?\s*Luther King\s*.*" type="ci regexp" >
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Test Explanation.</p>
 
         </div>
@@ -460,11 +455,9 @@ describe 'MarkdownEditingDescriptor', ->
           <additional_answer>Martin Luther King Junior</additional_answer>
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Test Explanation.</p>
 
         </div>
@@ -489,11 +482,9 @@ describe 'MarkdownEditingDescriptor', ->
           <additional_answer>^4|Four$</additional_answer>
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Test Explanation.</p>
 
         </div>
@@ -513,11 +504,9 @@ describe 'MarkdownEditingDescriptor', ->
     <stringresponse answer="w*.?s*Luther Kings*.*" type="ci regexp" >
       <textline label="Who lead the civil right movement in the United States of America?" size="20"/>
     </stringresponse>
-    
     <solution>
     <div class="detailed-solution">
     <p>Explanation</p>
-    
     <p>Test Explanation.</p>
     
     </div>
@@ -634,7 +623,6 @@ describe 'MarkdownEditingDescriptor', ->
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the &quot;capital&quot; of France &amp; the &apos;best&apos; &gt; place &lt; to live&quot;?" size="20"/>
     </stringresponse>
-    
     </problem>""")
     # test oddities
     it 'converts headers and oddities to xml', ->
