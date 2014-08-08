@@ -530,7 +530,6 @@ describe 'MarkdownEditingDescriptor', ->
         = Paris
         
         Germany is a country in Europe, too.
-        
         >>What is the capital of Germany?<<
         ( ) Bonn
         ( ) Hamburg
@@ -544,7 +543,6 @@ describe 'MarkdownEditingDescriptor', ->
       <textline label="What is the capital of France?" size="20"/>
     </stringresponse>
     <p>Germany is a country in Europe, too.</p>
-    
     <p>What is the capital of Germany?</p>
     <multiplechoiceresponse>
       <choicegroup label="What is the capital of Germany?" type="MultipleChoice">
@@ -576,7 +574,6 @@ describe 'MarkdownEditingDescriptor', ->
       <textline label="What is the capital of France?" size="20"/>
     </stringresponse>
     <p>Germany is a country in Europe, too.</p>
-    
     <p>What is the capital of Germany?</p>
     <multiplechoiceresponse>
       <choicegroup type="MultipleChoice">
