@@ -246,7 +246,6 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.</p>
 
         </div>
@@ -288,7 +287,6 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-        
         <p>The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.</p>
 
         </div>
@@ -340,7 +338,6 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-        
         <p>When the student is ready, the explanation appears.</p>
         
         </div>
@@ -362,9 +359,7 @@ describe 'MarkdownEditingDescriptor', ->
         """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>OptionResponse gives a limited set of options for students to respond with, and presents those options in a format that encourages them to search for a specific answer rather than being immediately presented with options from which to recognize the correct answer.</p>
-
         <p>The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag.</p>
-
         <p>Translation between Option Response and __________ is extremely straightforward:</p>
         <optionresponse>
             <optioninput options="('Multiple Choice'),'String Response','Numerical Response','External Response','Image Response'" correct="Multiple Choice">
@@ -379,7 +374,6 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Multiple Choice also allows students to select from a variety of pre-written responses, although the format makes it easier for students to read very long response options. Optionresponse also differs slightly because students are more likely to think of an answer and then search for it rather than relying purely on recognition to answer the question.</p>
 
         </div>
@@ -399,9 +393,7 @@ describe 'MarkdownEditingDescriptor', ->
         """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A string response problem accepts a line of text input from the student, and evaluates the input for correctness based on an expected answer within each input box.</p>
-
         <p>The answer is correct if it matches every character of the expected answer. This can be a problem with international spelling, dates, or anything where the format of the answer is not clear.</p>
-
         <p>Which US state has Lansing as its capital?</p>
         <stringresponse answer="Michigan" type="ci" >
           <textline size="20"/>
@@ -409,7 +401,6 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Lansing is the capital of Michigan, although it is not Michgan's largest city, or even the seat of the county in which it resides.</p>
 
         </div>
