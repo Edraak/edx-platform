@@ -312,7 +312,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     if dropdownMatches                            # the xml has an opening and closing double bracket [[...]]
       reducedXmlString = xmlString.replace(dropdownMatches[0], '')
       returnXmlString = MarkdownEditingDescriptor.insertParagraphText(xmlString, reducedXmlString)
-      returnXmlString +=  '<optionresponse>\n'
+      returnXmlString +=  '\n<optionresponse>\n'
       returnXmlString += '    <optioninput options="OPTIONS_PLACEHOLDER" correct="CORRECT_PLACEHOLDER">\n'
 
       optionsString = ''
@@ -386,6 +386,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       hintTextUnselected = ''
 
       choiceMatches = line.match(/(\s*\[\s*x?\s*\])([^\n]+)/)
+      ####choiceMatches = line.match(/(\s*\[.*])([^\n]+)/)
+      ####choiceMatches = line.match(/(\s*\[[^\[]*])([^\n]+)/)   too lenient
       if choiceMatches           # this line includes '[...]' so it must be a checkbox choice
         line = choiceMatches[2]  # remove the [..] phrase, else it will be displayed to student
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
@@ -404,17 +406,17 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             hintTextSelected = selectedMatches[1]
             hintTextUnselected = unselectedMatches[1]
 
-        correctnessText = 'False'
+        correctnessText = 'false'
         if choiceMatches[1].match(/X/i)
-          correctnessText = 'True'
+          correctnessText = 'true'
 
-        choiceString += '      <choice  correct="' + correctnessText + '">' + line.trim()
+        choiceString += '    <choice correct="' + correctnessText + '">' + line.trim()
         if hintTextSelected.length > 0 and hintTextUnselected.length > 0
           choiceString += '\n'
-          choiceString += '           <choicehint selected="True">' + hintTextSelected + '\n'
-          choiceString += '           </choicehint>\n'
-          choiceString += '           <choicehint selected="False">' + hintTextUnselected + '\n'
-          choiceString += '           </choicehint>\n    '
+          choiceString += '               <choicehint selected="true">' + hintTextSelected + '\n'
+          choiceString += '               </choicehint>\n'
+          choiceString += '               <choicehint selected="false">' + hintTextUnselected + '\n'
+          choiceString += '               </choicehint>\n    '
         choiceString += '</choice>\n'
 
       else                        # this line is not a checkbox choice, but it may be a combination hint spec line
@@ -431,14 +433,14 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
     if choiceString
       returnXmlString =  '<choiceresponse>\n'
-      returnXmlString += '    <checkboxgroup direction="vertical">\n'
+      returnXmlString += '  <checkboxgroup direction="vertical">\n'
       returnXmlString += choiceString
       index = 0
       for booleanExpression in booleanExpressionStrings
         booleanHintPhrase = booleanHintPhrases[index++]
         returnXmlString += '    <booleanhint value="' + booleanExpression + '">' + booleanHintPhrase + '\n'
         returnXmlString += '    </booleanhint>\n'
-      returnXmlString += '    </checkboxgroup>\n'
+      returnXmlString += '  </checkboxgroup>\n'
 
       returnXmlString += '</choiceresponse>\n'
 
@@ -570,7 +572,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           i, splits, scriptFlag;
 
       // replace headers
-      xml = xml.replace(/(^.*?$)(?=\n\=\=+$)/gm, '<h1>$1</h1>');
+      xml = xml.replace(/(^.*?$)(?=\n\=\=+$)/gm, '<h1>$1</h1>\n');
       xml = xml.replace(/\n^\=\=+$/gm, '');
       xml = xml + '\n';       // add a blank line at the end of the string (just belt and suspenders)
 
@@ -635,7 +637,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // checkbox questions
       //
-      xml = xml.replace(/(^\s*(\[[\sx]+]|[0-9_]+)\s*[^\n]+\n)+/gm, function(match) {
+////////     xml = xml.replace(/(^\s*(\[[\sx]+]|[0-9_]+)\s*[^\n]+\n)+/gm, function(match) {
+      xml = xml.replace(/(^\s*(\[.*]|[0-9_]+)\s*[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForCheckbox(match);
       });
 
@@ -659,7 +662,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // drop down questions
       //
-      xml = xml.replace(/(^\s*\[\[([^\]]+)\]\])+/g, function(match, p) {
+/////      xml = xml.replace(/(^\s*\[\[([^\]]+)\]\])+/g, function(match, p) {
+      xml = xml.replace(/(\s*\[\[[^\]]+]])+/g, function(match, p) {
         return MarkdownEditingDescriptor.parseForDropdown(match);
       });
 
@@ -715,13 +719,15 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           }
 
           if(!scriptFlag) {
-              splits[i] = splits[i].replace(/(^(?!\s*\<|$).*$)/gm, '<p>$1</p>');
+              splits[i] = splits[i].replace(/^\s*((?!\s*\<|$).*$)/gm, '<p>$1</p>');
           }
 
           if(/\<\/(script|pre)/.test(splits[i])) {
               scriptFlag = false;
           }
       }
+
+      xml = xml.replace(/(<p>\s*<\/p>)/gm, '');      // remove empty paragraph tags
 
       xml = splits.join('');
 

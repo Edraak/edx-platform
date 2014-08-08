@@ -706,7 +706,6 @@ describe 'MarkdownEditingDescriptor', ->
       expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Not a header</p>
         <h1>A header</h1>
-
         <p>Multiple choice w/ parentheticals</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -716,7 +715,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">no space b4 close paren</choice>
           </choicegroup>
         </multiplechoiceresponse>
-
         <p>Choice checks</p>
         <choiceresponse>
           <checkboxgroup direction="vertical">
@@ -726,7 +724,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">no space</choice>
           </checkboxgroup>
         </choiceresponse>
-
         <p>Option with multiple correct ones</p>
         <optionresponse>
             <optioninput options="'one option',('correct one'),('should not be correct')" correct="correct one">
@@ -753,25 +750,19 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>see</p>
         </div>
         </solution>
-
         <p>[explanation]</p>
         <p>orphaned start</p>
-
         <p>No p tags in the below</p>
         <script type='javascript'>
            var two = 2;
 
            console.log(two * 2);
-        </script>
-
-        <p>But in this there should be</p>
+        </script><p>But in this there should be</p>
         <div>
         <p>Great ideas require offsetting.</p>
-
         <p>bad tests require drivel</p>
         </div>
 
