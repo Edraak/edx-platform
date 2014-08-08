@@ -245,7 +245,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">The Beatles</choice>
           </choicegroup>
         </multiplechoiceresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -288,7 +287,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false" fixed="true">The Beatles</choice>
           </choicegroup>
         </multiplechoiceresponse>
-        
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -325,7 +323,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">c</choice>
           </choicegroup>
         </multiplechoiceresponse>
-
         <p>yatta</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -334,7 +331,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="true">z</choice>
           </choicegroup>
         </multiplechoiceresponse>
-
         <p>testa</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -343,7 +339,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="true">iii</choice>
           </choicegroup>
         </multiplechoiceresponse>
-        
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
@@ -531,7 +526,6 @@ describe 'MarkdownEditingDescriptor', ->
     it 'handles multiple questions with labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
         France is a country in Europe.
-        
         >>What is the capital of France?<<
         = Paris
         
@@ -545,7 +539,6 @@ describe 'MarkdownEditingDescriptor', ->
       """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
-    
     <p>What is the capital of France?</p>
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the capital of France?" size="20"/>
@@ -561,12 +554,10 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-
     </problem>""")
     it 'tests multiple questions with only one label', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
         France is a country in Europe.
-
         >>What is the capital of France?<<
         = Paris
 
@@ -580,7 +571,6 @@ describe 'MarkdownEditingDescriptor', ->
         """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
-    
     <p>What is the capital of France?</p>
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the capital of France?" size="20"/>
@@ -596,12 +586,10 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-
     </problem>""")
     it 'tests malformed labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
         France is a country in Europe.
-
         >>What is the capital of France?<
         = Paris
 
@@ -613,7 +601,6 @@ describe 'MarkdownEditingDescriptor', ->
       """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
-    
     <p>>>What is the capital of France?<</p>
     <stringresponse answer="Paris" type="ci" >
       <textline size="20"/>
@@ -627,7 +614,6 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-
     </problem>""")
     it 'adds labels to formulae', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
