@@ -523,7 +523,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     additionalAnswerString = ''
     answerString = ''
     hintElementString = ''
-    textHintElementString = ''
     ciString = 'type="ci"'
 
     for line in xmlString.split('\n')
@@ -641,7 +640,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // checkbox questions
       //
-////////     xml = xml.replace(/(^\s*(\[[\sx]+]|[0-9_]+)\s*[^\n]+\n)+/gm, function(match) {
       xml = xml.replace(/(^\s*(\[.*]|[0-9_]+)\s*[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForCheckbox(match);
       });
