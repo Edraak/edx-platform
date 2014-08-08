@@ -133,6 +133,19 @@ def i_can_modify_the_display_name_with_special_chars(_step):
     verify_modified_display_name_with_special_chars()
 
 
+@step('I can specify html in the display name')
+def i_can_modify_the_display_name_with_html(_step):
+    index = world.get_setting_entry_index(DISPLAY_NAME)
+    world.set_field_value(index, "<script>alert('test')</script>")
+    verify_modified_display_name_with_html()
+    world.save_component()
+
+
+@step('Alert is not present on page')
+def verify_alert_is_not_present(_step):
+    world.verify_alert_not_present()
+
+
 @step('my special characters and persisted on save')
 def special_chars_persisted_on_save(step):
     world.save_component_and_reopen(step)
@@ -348,6 +361,10 @@ def verify_modified_display_name():
 
 def verify_modified_display_name_with_special_chars():
     world.verify_setting_entry(world.get_setting_entry(DISPLAY_NAME), DISPLAY_NAME, "updated ' \" &", True)
+
+
+def verify_modified_display_name_with_html():
+    world.verify_setting_entry(world.get_setting_entry(DISPLAY_NAME), DISPLAY_NAME, "<script>alert('test')</script>", True)
 
 
 def verify_unset_display_name():
