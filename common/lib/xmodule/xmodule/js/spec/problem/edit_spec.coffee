@@ -123,8 +123,10 @@ describe 'MarkdownEditingDescriptor', ->
         Range tolerance case 2
         = (1, 2)
 
-        If first and last symbols are not brackets, or they are not closed, stringresponse will appear.
+        If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 1.
         = (7), 7
+
+        If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 2.
         = (1+2
 
         [Explanation]
@@ -137,49 +139,42 @@ describe 'MarkdownEditingDescriptor', ->
         """)
       expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A numerical response problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.</p>
-
         <p>The answer is correct if it is within a specified numerical tolerance of the expected answer.</p>
-
         <p>Enter the numerical value of Pi:</p>
         <numericalresponse answer="3.14159">
           <responseparam type="tolerance" default=".02" />
           <formulaequationinput />
         </numericalresponse>
-
         <p>Enter the approximate value of 502*9:</p>
         <numericalresponse answer="502*9">
           <responseparam type="tolerance" default="15%" />
           <formulaequationinput />
         </numericalresponse>
-
         <p>Enter the number of fingers on a human hand:</p>
         <numericalresponse answer="5">
           <formulaequationinput />
         </numericalresponse>
-
-        <p>Range tolerance case</p>
-        <numericalresponse answer="[6, 7]">
-          <formulaequationinput />
-        </numericalresponse>
-        <numericalresponse answer="(1, 2)">
-          <formulaequationinput />
-        </numericalresponse>
-
-        <p>If first and last symbols are not brackets, or they are not closed, stringresponse will appear.</p>
+        <p>Range tolerance case 1</p>
+        <stringresponse answer="[6, 7]" type="ci" >
+          <textline size="20"/>
+        </stringresponse>
+        <p>Range tolerance case 2</p>
+        <stringresponse answer="(1, 2)" type="ci" >
+          <textline size="20"/>
+        </stringresponse>
+        <p>If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 1.</p>
         <stringresponse answer="(7), 7" type="ci" >
           <textline size="20"/>
         </stringresponse>
+        <p>If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 2.</p>
         <stringresponse answer="(1+2" type="ci" >
           <textline size="20"/>
         </stringresponse>
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Pi, or the the ratio between a circle's circumference to its diameter, is an irrational number known to extreme precision. It is value is approximately equal to 3.14.</p>
-
         <p>Although you can get an exact value by typing 502*9 into a calculator, the result will be close to 500*10, or 5,000. The grader accepts any response within 15% of the true value, 4518, so that you can use any estimation technique that you like.</p>
-
         <p>If you look at your hand, you can count that you have five fingers.</p>
 
         </div>
