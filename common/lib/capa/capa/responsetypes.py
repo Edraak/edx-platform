@@ -766,14 +766,17 @@ class ChoiceResponse(LoncapaResponse):
         :return:                   None
         """
         if problem_hint_shown:
+            _ = self.capa_system.i18n.ugettext
             if new_cmap[problem]['correctness'] == 'correct':
-                correctness_string = 'CORRECT'
+                correctness_string = _('CORRECT')
                 div_class = 'question_hint_correct'
             else:
-                correctness_string = 'INCORRECT'
+                correctness_string = _('INCORRECT')
                 div_class = 'question_hint_incorrect'
 
-            new_cmap[problem]['msg'] = '<div class="{0}">{1}{2}</div>'.format(div_class, correctness_string, new_cmap[problem]['msg'])
+            new_cmap[problem]['msg'] = '<div class="' + div_class + '">' + \
+                                       correctness_string + new_cmap[problem]['msg'] + \
+                                       '</div>'.format(div_class, correctness_string, new_cmap[problem]['msg'])
 
     def get_single_choice_hints(self, new_cmap, student_answers):
         '''

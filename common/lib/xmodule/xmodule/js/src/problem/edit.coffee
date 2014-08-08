@@ -232,8 +232,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   # if found, copy the text to an array for later insertion and remove that text
   # from the xmlString, replacing it with a unique marker for later restoration
   #
-  @parseForQuestionHints: (xmlString) ->
-    @questionHintStrings = []    # initialize the strings array
+  @extractDistractorHints: (xmlString) ->
+    @distractorHintStrings = []    # initialize the strings array
 
     DOUBLE_LEFT_BRACE_MARKER = '~~~'
     DOUBLE_RIGHT_BRACE_MARKER = '```'
@@ -241,14 +241,14 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     xmlString = xmlString.replace(/\{\{/g, DOUBLE_LEFT_BRACE_MARKER)   # replace all double left braces with '~~~~'
     xmlString = xmlString.replace(/}}/g, DOUBLE_RIGHT_BRACE_MARKER)    # replace all double right braces with '```'
 
-    questionHintMatches = xmlString.match(/~~~[^`]+```/gm)
-    if questionHintMatches
+    distractorHintMatches = xmlString.match(/~~~[^`]+```/gm)
+    if distractorHintMatches
       index = 0
-      for questionHintMatch in questionHintMatches
-        xmlString = xmlString.replace( questionHintMatch, '_' + index++ + '_')
-        questionHintMatch = questionHintMatch.replace(/~~~/gm, '')
-        questionHintMatch = questionHintMatch.replace(/```/gm, '')
-        @questionHintStrings.push(questionHintMatch)   # save the string but no delimiters
+      for distractorHintMatch in distractorHintMatches
+        xmlString = xmlString.replace( distractorHintMatch, '_' + index++ + '_')
+        distractorHintMatch = distractorHintMatch.replace(/~~~/gm, '')
+        distractorHintMatch = distractorHintMatch.replace(/```/gm, '')
+        @distractorHintStrings.push(distractorHintMatch)   # save the string but no delimiters
 
     return xmlString
 
@@ -257,7 +257,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   # if found, copy the text to an array for later insertion and remove that text
   # from the xmlString
   #
-  @parseForProblemHints: (xmlString) ->
+  @extractProblemHints: (xmlString) ->
     MarkdownEditingDescriptor.problemHintStrings = []    # initialize the strings array
     for line in xmlString.split('\n')
       matches = line.match( /\|\|(.+)\|\|/ )      # string surrounded by ||...|| is a match group
@@ -271,7 +271,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   # if any 'problem hint' entries were saved in the array, insert the 'demandhint'
   # element to the xml with a 'hint' element for each item
   #
-  @insertProblemHints: (xmlStringUnderConstruction) ->
+  @restoreProblemHints: (xmlStringUnderConstruction) ->
     if MarkdownEditingDescriptor.problemHintStrings
       if MarkdownEditingDescriptor.problemHintStrings.length > 0
         ondemandElement =  '    <demandhint>\n'
@@ -289,7 +289,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
   # no such commas are found, try to replace the very unique string *back* to
   # a comma.
   #
-  # the strategy here is to encapsulate this subsitution operation here in a
+  # the strategy is to encapsulate this subsitution operation here in a
   # single bi-directional function to make it easier to understand what's
   # going on.
   #
@@ -307,7 +307,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
   #________________________________________________________________________________
   @parseForDropdown: (xmlString) ->
-    # parse the supplied string knowing it is a drop down problem
+    # parse the supplied string knowing it is a drop down component
     dropdownMatches = xmlString.match( /\[\[([^\]]+)\]\]/ )   # try to match an opening and closing double bracket
     if dropdownMatches                            # the xml has an opening and closing double bracket [[...]]
       reducedXmlString = xmlString.replace(dropdownMatches[0], '')
@@ -332,7 +332,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           hintMatches = line.match( /_([0-9]+)_/ ); # check for an extracted hint string
           if hintMatches                            # if we found one
             hintIndex = parseInt(hintMatches[1])
-            hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
+            hintText = MarkdownEditingDescriptor.distractorHintStrings[ hintIndex ]
             hintText = hintText.trim()
             hintText = MarkdownEditingDescriptor.extractCustomLabel( hintText )
             line = line.replace(hintMatches[0], '')  # remove the hint marker, else it will be displayed
@@ -372,7 +372,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
   #________________________________________________________________________________
   @parseForCheckbox: (xmlString) ->
-    # parse the supplied string knowing it is a checkbox problem
+    # parse the supplied string knowing it is a checkbox component
     choiceString = ''
     reducedXmlString = ''
     booleanExpressionStrings = []
@@ -385,7 +385,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       hintTextSelected = ''
       hintTextUnselected = ''
 
-      choiceMatches = @matchCheckboxMarkerPattern( line )
+      choiceMatches = line.match(/(\s*\[\s*x?\s*\])([^\n]+)/)
       if choiceMatches           # this line includes '[...]' so it must be a checkbox choice
         line = choiceMatches[2]  # remove the [..] phrase, else it will be displayed to student
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
@@ -393,7 +393,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           line = line.replace(hintMatches[0], '')  # remove the {{...}} phrase, else it will be displayed to student
 
           hintIndex = parseInt(hintMatches[1])
-          combinedHintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
+          combinedHintText = MarkdownEditingDescriptor.distractorHintStrings[ hintIndex ]
           combinedHintText = combinedHintText.trim()
           combinedHintText = combinedHintText.replace( /(selected:|s:)/i, "S:")
           combinedHintText = combinedHintText.replace( /(unselected:|u:)/i, "U:")
@@ -420,9 +420,9 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       else                        # this line is not a checkbox choice, but it may be a combination hint spec line
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
         if hintMatches            # the line does contain an extracted hint string
-          line = line.replace(hintMatches[0], '')  # remove the phrase, else it will be displayed to student
+          returnXmlString = returnXmlString.replace(hintMatches[0], '')  # remove the phrase, else it will be displayed to student
           hintIndex = parseInt(hintMatches[1])
-          hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
+          hintText = MarkdownEditingDescriptor.distractorHintStrings[ hintIndex ]
           hintText = hintText.trim()
           combinationHintMatch = hintText.match( /\(\((.+)\)\)(.+)/ )
           if combinationHintMatch                   # the line does contain a combination hint phrase
@@ -447,7 +447,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
     
   #________________________________________________________________________________
   @parseForNumeric: (xmlString) ->
-    # parse the supplied string knowing it is a numeric problem
+    # parse the supplied string knowing it is a numeric component
     returnXmlString = xmlString
     operator = ''
     answerExpression = ''
@@ -486,7 +486,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               answerExpression = answerExpression.replace(hintMatches[0], '')
               answerExpression = answerExpression.trim()
               hintIndex = parseInt(hintMatches[1])
-              hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
+              hintText = MarkdownEditingDescriptor.distractorHintStrings[ hintIndex ]
               hintText = hintText.trim()
               hintText = MarkdownEditingDescriptor.extractCustomLabel( hintText )
 
@@ -536,7 +536,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
               answerExpression = answerExpression.replace(hintMatches[0], '')
               answerExpression = answerExpression.trim()
               hintIndex = parseInt(hintMatches[1])
-              hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ]
+              hintText = MarkdownEditingDescriptor.distractorHintStrings[ hintIndex ]
               hintText = hintText.trim()
               hintText = MarkdownEditingDescriptor.extractCustomLabel( hintText )
 
@@ -574,10 +574,9 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       xml = xml.replace(/\n^\=\=+$/gm, '');
       xml = xml + '\n';       // add a blank line at the end of the string (just belt and suspenders)
 
-      xml = MarkdownEditingDescriptor.parseForProblemHints(xml);    // pull out any problem hints
-      xml = MarkdownEditingDescriptor.parseForQuestionHints(xml);    // pull out any problem hints
+      xml = MarkdownEditingDescriptor.extractProblemHints(xml);    // pull out any problem hints
+      xml = MarkdownEditingDescriptor.extractDistractorHints(xml);    // pull out any problem hints
 
-      console.warn('\n\n\n>> xx')
       debugger
       //_____________________________________________________________________
       //
@@ -605,7 +604,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             hintMatches = options[i].match( /_([0-9]+)_/ ); // check for an extracted hint string
             if(hintMatches) {                               // if we found one
               hintIndex = parseInt(hintMatches[1]);
-              hintText = MarkdownEditingDescriptor.questionHintStrings[ hintIndex ];
+              hintText = MarkdownEditingDescriptor.distractorHintStrings[ hintIndex ];
               hintText = hintText.trim();
               hintText = MarkdownEditingDescriptor.extractCustomLabel( hintText );
               value = value.replace(hintMatches[0], '');  // remove the hint marker, else it will be displayed
@@ -636,7 +635,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       //
       // checkbox questions
       //
-      xml = xml.replace(/(^\s*\[[\sx]+]\s*[^\n]+\n)+/gm, function(match) {
+      xml = xml.replace(/(^\s*(\[[\sx]+]|[0-9_]+)\s*[^\n]+\n)+/gm, function(match) {
         return MarkdownEditingDescriptor.parseForCheckbox(match);
       });
 
@@ -729,7 +728,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       // remove superfluous lines
       xml = xml.replace(/\n\n\n/g, '\n');
 
-      xml = MarkdownEditingDescriptor.insertProblemHints(xml);      // insert any extracted problem hints
+      xml = MarkdownEditingDescriptor.restoreProblemHints(xml);      // insert any extracted problem hints
 
       // make all elements descendants of a single problem element
       xml = '<problem schema="edXML/1.0">\n' + xml + '</problem>';
