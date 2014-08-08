@@ -84,8 +84,13 @@ def import_handler(request, course_key_string):
                     },
                     status=415
                 )
-            temp_filepath = course_dir / filename
+            # Use sessions to keep info about import progress
+            session_status = request.session.setdefault("import_status", {})
+            key = unicode(course_key) + filename
+            session_status[key] = 0
+            request.session.save()
 
+            temp_filepath = course_dir / filename
             if not course_dir.isdir():
                 os.mkdir(course_dir)
 
@@ -131,11 +136,6 @@ def import_handler(request, course_key_string):
                     temp_file.write(chunk)
 
             size = os.path.getsize(temp_filepath)
-            # Use sessions to keep info about import progress
-            session_status = request.session.setdefault("import_status", {})
-            key = unicode(course_key) + filename
-            session_status[key] = 0
-            request.session.save()
 
             if int(content_range['stop']) != int(content_range['end']) - 1:
                 # More chunks coming

@@ -190,10 +190,13 @@ $('#fileupload').fileupload({
             submitBtn.click(function(e){
                 e.preventDefault();
                 submitBtn.hide();
+                CourseImport.startUploadFeedback();
                 data.submit().complete(function(result, textStatus, xhr) {
                     window.onbeforeunload = null;
                     if (xhr.status != 200) {
-                        if (!result.responseText) {
+                        try{
+                            var serverMsg = $.parseJSON(result.responseText);
+                        } catch (e) {
                             return;
                         }
                         var serverMsg = $.parseJSON(result.responseText);
@@ -230,10 +233,13 @@ $('#fileupload').fileupload({
         } else {
             doneAt = 99;
         }
-        CourseImport.startUploadFeedback();
         if (percentInt >= doneAt) {
             bar.hide();
-            CourseImport.startServerFeedback(feedbackUrl.replace("fillerName", file.name));
+            // Start feedback with delay so that current stage of import properly updates in session
+            setTimeout(
+                function() { CourseImport.startServerFeedback(feedbackUrl.replace('fillerName', file.name)) },
+                3000
+            );
         } else {
             bar.show();
             fill.width(percentVal);
