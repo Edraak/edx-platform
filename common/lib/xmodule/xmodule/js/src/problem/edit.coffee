@@ -582,7 +582,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       xml = MarkdownEditingDescriptor.extractProblemHints(xml);    // pull out any problem hints
       xml = MarkdownEditingDescriptor.extractDistractorHints(xml);    // pull out any problem hints
 
-      debugger
       //_____________________________________________________________________
       //
       // multiple choice questions
