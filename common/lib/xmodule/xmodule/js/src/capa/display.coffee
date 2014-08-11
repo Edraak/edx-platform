@@ -715,4 +715,4 @@ class @Problem
             break
 
     $.postWithPrefix "#{@url}/hint_button", next_hint_index: next_hint_index, input_id: @id,(response) =>
-        @render(response.contents)
+        @render(response.contents) 
