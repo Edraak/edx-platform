@@ -220,7 +220,7 @@ def instructor_dashboard(request, course_id):
             except Exception as err:  # pylint: disable=broad-except
                 msg += '<br/><p>Error: {0}</p>'.format(escape(err))
 
-    if action == 'Dump list of enrolled students' or action == 'List enrolled students':
+    if action == 'List enrolled students':
         log.debug(action)
         datatable = get_student_grade_summary_data(request, course, get_grades=False, use_offline=use_offline)
         datatable['title'] = _('List of students enrolled in {course_key}').format(course_key=course_key.to_deprecated_string())
@@ -252,11 +252,6 @@ def instructor_dashboard(request, course_id):
     elif 'Download CSV of answer distributions' in action:
         track.views.server_track(request, "dump-answer-dist-csv", {}, page="idashboard")
         return return_csv('answer_dist_{0}.csv'.format(course_key.to_deprecated_string()), get_answers_distribution(request, course_key))
-
-    elif 'Dump description of graded assignments configuration' in action:
-        # what is "graded assignments configuration"?
-        track.views.server_track(request, "dump-graded-assignments-config", {}, page="idashboard")
-        msg += dump_grading_context(course)
 
     #----------------------------------------
     # export grades to remote gradebook
@@ -1155,17 +1150,6 @@ def get_student_grade_summary_data(request, course, get_grades=True, get_raw_sco
 #-----------------------------------------------------------------------------
 
 # Gradebook has moved to instructor.api.spoc_gradebook #
-
-@cache_control(no_cache=True, no_store=True, must_revalidate=True)
-def grade_summary(request, course_key):
-    """Display the grade summary for a course."""
-    course = get_course_with_access(request.user, 'staff', course_key)
-
-    # For now, just a page
-    context = {'course': course,
-               'staff_access': True, }
-    return render_to_response('courseware/grade_summary.html', context)
-
 
 #-----------------------------------------------------------------------------
 # enrollment
