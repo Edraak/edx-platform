@@ -727,21 +727,3 @@ describe 'MarkdownEditingDescriptor', ->
         </code></pre>
         </problem>""")
     # failure tests
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
