@@ -258,16 +258,3 @@ def set_field_value(index, value):
     elem = world.css_find('.metadata_edit div.wrapper-comp-setting input.setting-input')[index]
     elem.value = value
     elem.type(Keys.TAB)
-
-
-@world.absorb
-def is_alert_present():
-    try:
-        world.switch_to_alert()
-        return True
-    except Exception:
-        return False
-
-@world.absorb
-def verify_alert_not_present():
-    assert_equal(world.is_alert_present(), False)

@@ -1,3 +1,4 @@
+import cgi
 import logging
 import os
 import sys
@@ -231,7 +232,7 @@ class XModuleMixin(XBlockMixin):
         name = self.display_name
         if name is None:
             name = self.url_name.replace('_', ' ')
-        return name
+        return cgi.escape(name)
 
     @property
     def xblock_kvs(self):

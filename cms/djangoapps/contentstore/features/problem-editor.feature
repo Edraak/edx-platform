@@ -33,9 +33,8 @@ Feature: CMS.Problem Editor
   Scenario: User can specify html in display name and it will be escaped
     Given I have created a Blank Common Problem
     When I edit and select Settings
-    Then I can specify html in the display name
+    Then I can specify html in the display name and save
     And the problem display name is "<script>alert('test')</script>"
-    And Alert is not present on page
 
   # IE will not click the revert button properly
   @skip_internetexplorer
