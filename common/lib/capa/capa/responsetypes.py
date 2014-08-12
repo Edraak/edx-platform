@@ -316,9 +316,9 @@ class LoncapaResponse(object):
         hintfn = None
         hint_function_provided = False
         hintgroup = self.xml.find('hintgroup')
-        if hintgroup:
+        if hintgroup is not None:
             hintfn = hintgroup.get('hintfn')
-            if hintfn:
+            if hintfn is not None:
                 hint_function_provided = True
 
         if hint_function_provided:
