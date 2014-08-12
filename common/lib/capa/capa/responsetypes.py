@@ -316,9 +316,9 @@ class LoncapaResponse(object):
         hintfn = None
         hint_function_provided = False
         hintgroup = self.xml.find('hintgroup')
-        if hintgroup:
+        if hintgroup is not None:
             hintfn = hintgroup.get('hintfn')
-            if hintfn:
+            if hintfn is not None:
                 hint_function_provided = True
 
         if hint_function_provided:
@@ -750,7 +750,7 @@ class ChoiceResponse(LoncapaResponse):
 
         self.assign_choice_names()
 
-        correct_xml = self.xml.xpath('//*[@id=$id]//choice[@correct="True" or @correct="true"]', id=self.xml.get('id'))
+        correct_xml = self.xml.xpath('//*[@id=$id]//choice[@correct="true" or @correct="true"]', id=self.xml.get('id'))
 
         self.correct_choices = set([choice.get(
             'name') for choice in correct_xml])
@@ -795,11 +795,11 @@ class ChoiceResponse(LoncapaResponse):
                 for choice_element in self.xml.findall('checkboxgroup/choice'):
                     hint = ''
                     if choice_element.get('name') in student_answer_list:    # if this choice was selected by student
-                        choicehints = choice_element.xpath('./choicehint [@selected="True"]')
+                        choicehints = choice_element.xpath('./choicehint [@selected="true"]')
                         if choicehints:
                             hint = choicehints[0].text
                     else:
-                        choicehints = choice_element.xpath('./choicehint [@selected="False"]')
+                        choicehints = choice_element.xpath('./choicehint [@selected="false"]')
                         if choicehints:
                             hint = choicehints[0].text
 
