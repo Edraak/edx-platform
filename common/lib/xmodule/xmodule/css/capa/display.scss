@@ -76,23 +76,17 @@ div.problem {
     width: auto !important;
     width: 100px;
 
-    label {
-      float: left;
-      clear: both;
-      margin-bottom: 5px;
-
-      &.choicegroup_correct {
-        &:after {
-          margin-left: 15px;
-          content: url('../images/correct-icon.png');
-        }
+    label.choicegroup_correct {
+      &:after {
+        margin-left: 15px;
+        content: url('../images/correct-icon.png');
       }
+    }
 
-      &.choicegroup_incorrect {
-        &:after {
-          margin-left: 15px;
-          content: url('../images/incorrect-icon.png');
-        }
+    label.choicegroup_incorrect {
+      &:after {
+        margin-left: 15px;
+        content: url('../images/incorrect-icon.png');
       }
     }
 
