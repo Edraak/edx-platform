@@ -12,6 +12,10 @@ August, 2014
 
    * - Date
      - Change
+   * - 08/26/14
+     - Updated documentation in :ref:`Developing Your Course Index`
+       for new capabilities to publish or hide multiple units 
+       from the outline.
    * - 08/20/14
      - Added :ref:`Browsers` to the :ref:`Getting Started Index` section
    * - 08/18/14
