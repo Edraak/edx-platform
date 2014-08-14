@@ -342,23 +342,21 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             correctnessText = 'True'
             itemText = correctChoiceMatch[1]
             returnXmlString = returnXmlString.replace('CORRECT_PLACEHOLDER', itemText)  # poke the correct value in
-            optionsString += delimiter + "('" + itemText.trim() + "')"
+            optionsString += delimiter + "(" + itemText.trim() + ")"
           else
             correctnessText = 'False'
-            itemText = line
-            itemText = "'" + itemText + "'"
-            optionsString += delimiter + itemText.trim()
+            itemText = line.trim()
+            optionsString += delimiter   + itemText.trim()
 
           if itemText[itemText.length-1] == ','     # check for an end-of-line comma
             itemText = itemText.slice(0, itemText.length-1) # suppress it
-          itemText = itemText.trim()
 
           returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText
           if hintText
             returnXmlString += '\n'
             returnXmlString += '               <optionhint ' + @customLabel + '>' + hintText + '\n'
             returnXmlString += '               </optionhint>\n'
-          returnXmlString += '</option>\n'
+          returnXmlString += '          </option>\n'
 
           delimiter = ','
 
