@@ -5,6 +5,7 @@ recommender system
 import json
 import tempfile
 import itertools
+from ddt import ddt, data
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
@@ -627,6 +628,7 @@ class TestRecommenderUserIdentity(TestRecommender):
         self.assertTrue(result['is_user_staff'])
 
 
+@ddt
 class TestRecommenderFileUploading(TestRecommender):
     """
     Check whether we can handle file uploading correctly
@@ -662,13 +664,13 @@ class TestRecommenderFileUploading(TestRecommender):
         self.assertEqual(response.content, test_case['response'])
         self.check_for_get_xblock_page_code(200)
 
-    def attempt_upload_files_and_verify_results(self, test_cases, xblock_name):
+#    def attempt_upload_files_and_verify_results(self, test_cases, xblock_name):
         """
         Running on a set of test cases and verifying that uploads
         happen or are rejected as expected.
         """
-        for test_case in test_cases:
-            self.attempt_upload_file_and_verify_result(test_case, xblock_name)
+#        for test_case in test_cases:
+#            self.attempt_upload_file_and_verify_result(test_case, xblock_name)
 
     def test_set_s3_info(self):
         """
@@ -684,71 +686,74 @@ class TestRecommenderFileUploading(TestRecommender):
         result = self.call_event('set_s3_info', self.s3_info)
         self.assertEqual(result['Success'], True)
 
-    def test_upload_screenshot_s3_not_set(self):
+    @data({
+        'suffixes': '.csv',
+        'magic_number': 'ffff',
+        'response': 'IMPROPER_S3_SETUP'
+    })
+    def test_upload_screenshot_s3_not_set(self, test_case):
         """
         Verify the file uploading fails correctly when the s3 is not set
         """
         self.enroll_staff(self.staff_user)
-        test_cases = [
-            {
-                'suffixes': '.csv',
-                'magic_number': 'ffff',
-                'response': 'IMPROPER_S3_SETUP'
-            }
-        ]
-        self.attempt_upload_files_and_verify_results(test_cases, self.xblock_names[0])
+        self.attempt_upload_file_and_verify_result(test_case, self.xblock_names[0])
 
-    def test_upload_screenshot_wrong_file_type(self):
+    @data(
+        {
+            'suffixes': '.csv',
+            'magic_number': 'ffff',
+            'response': 'FILE_TYPE_ERROR'
+        },  # Upload file with wrong extension name
+        {
+            'suffixes': '.gif',
+            'magic_number': '89504e470d0a1a0a',
+            'response': 'FILE_TYPE_ERROR'
+        },  # Upload file with wrong magic number
+        {
+            'suffixes': '.jpg',
+            'magic_number': '89504e470d0a1a0a',
+            'response': 'FILE_TYPE_ERROR'
+        },  # Upload file with wrong magic number
+        {
+            'suffixes': '.png',
+            'magic_number': '474946383761',
+            'response': 'FILE_TYPE_ERROR'
+        },  # Upload file with wrong magic number
+        {
+            'suffixes': '.jpg',
+            'magic_number': '474946383761',
+            'response': 'FILE_TYPE_ERROR'
+        },  # Upload file with wrong magic number
+        {
+            'suffixes': '.png',
+            'magic_number': 'ffd8ffd9',
+            'response': 'FILE_TYPE_ERROR'
+        },  # Upload file with wrong magic number
+        {
+            'suffixes': '.gif',
+            'magic_number': 'ffd8ffd9',
+            'response': 'FILE_TYPE_ERROR'
+        }
+    )
+    def test_upload_screenshot_wrong_file_type(self, test_case):
         """
         Verify the file uploading fails correctly when file with wrong type
         (extension/magic number) is provided
         """
         self.enroll_staff(self.staff_user)
         xblock_name = self.xblock_names[0]
-        test_cases = [
-            {
-                'suffixes': '.csv',
-                'magic_number': 'ffff',
-                'response': 'FILE_TYPE_ERROR'
-            },  # Upload file with wrong extension name
-            {
-                'suffixes': '.gif',
-                'magic_number': '89504e470d0a1a0a',
-                'response': 'FILE_TYPE_ERROR'
-            },  # Upload file with wrong magic number
-            {
-                'suffixes': '.jpg',
-                'magic_number': '89504e470d0a1a0a',
-                'response': 'FILE_TYPE_ERROR'
-            },  # Upload file with wrong magic number
-            {
-                'suffixes': '.png',
-                'magic_number': '474946383761',
-                'response': 'FILE_TYPE_ERROR'
-            },  # Upload file with wrong magic number
-            {
-                'suffixes': '.jpg',
-                'magic_number': '474946383761',
-                'response': 'FILE_TYPE_ERROR'
-            },  # Upload file with wrong magic number
-            {
-                'suffixes': '.png',
-                'magic_number': 'ffd8ffd9',
-                'response': 'FILE_TYPE_ERROR'
-            },  # Upload file with wrong magic number
-            {
-                'suffixes': '.gif',
-                'magic_number': 'ffd8ffd9',
-                'response': 'FILE_TYPE_ERROR'
-            }  # Upload file with wrong magic number
-        ]
         # Set fake s3 information for the first block
         # Assume correct, test in test_set_s3_info
         self.client.post(self.get_handler_url('set_s3_info', xblock_name), json.dumps(self.s3_info), '')
         # Upload file with wrong extension name or magic number
-        self.attempt_upload_files_and_verify_results(test_cases, xblock_name)
+        self.attempt_upload_file_and_verify_result(test_case, xblock_name)
 
-    def test_upload_screenshot_multiple_blocks(self):
+    @data({
+        'suffixes': '.csv',
+        'magic_number': 'ffff',
+        'response': 'IMPROPER_S3_SETUP'
+    })
+    def test_upload_screenshot_multiple_blocks(self, test_case):
         """
         Verify the s3 information setting and file uploading work independently
         in the two blocks
@@ -758,28 +763,31 @@ class TestRecommenderFileUploading(TestRecommender):
         # Assume correct, test in test_set_s3_info
         self.client.post(self.get_handler_url('set_s3_info', self.xblock_names[0]), json.dumps(self.s3_info), '')
         # Test on the second xblock
-        xblock_name = self.xblock_names[1]
-        test_cases = [
-            {
-                'suffixes': '.csv',
-                'magic_number': 'ffff',
-                'response': 'IMPROPER_S3_SETUP'
-            }
-        ]
-        self.attempt_upload_files_and_verify_results(test_cases, xblock_name)
-        # Set fake s3 information for the second xblock
-        # Assume correct, test in test_set_s3_info
-        self.client.post(self.get_handler_url('set_s3_info', xblock_name), json.dumps(self.s3_info), '')
-        test_cases = [
-            {
-                'suffixes': '.csv',
-                'magic_number': 'ffff',
-                'response': 'FILE_TYPE_ERROR'
-            }
-        ]
-        self.attempt_upload_files_and_verify_results(test_cases, xblock_name)
+        self.attempt_upload_file_and_verify_result(test_case, self.xblock_names[1])
 
-    def test_upload_screenshot_correct_file_type(self):
+    @data(
+        {
+            'suffixes': '.png',
+            'magic_number': '89504e470d0a1a0a',
+            'response': 'IMPROPER_S3_SETUP'
+        },
+        {
+            'suffixes': '.gif',
+            'magic_number': '474946383961',
+            'response': 'IMPROPER_S3_SETUP'
+        },
+        {
+            'suffixes': '.gif',
+            'magic_number': '474946383761',
+            'response': 'IMPROPER_S3_SETUP'
+        },
+        {
+            'suffixes': '.jpg',
+            'magic_number': 'ffd8ffd9',
+            'response': 'IMPROPER_S3_SETUP'
+        }
+    )
+    def test_upload_screenshot_correct_file_type(self, test_case):
         """
         Verify the file type checking in the file uploading method is
         successful. We don't check whether the file is uploaded successfully
@@ -792,26 +800,4 @@ class TestRecommenderFileUploading(TestRecommender):
         self.client.post(self.get_handler_url('set_s3_info', xblock_name), json.dumps(self.s3_info), '')
         # Upload file with correct extension name and magic number
         # It fails because we set fake s3 information here
-        test_cases = [
-            {
-                'suffixes': '.png',
-                'magic_number': '89504e470d0a1a0a',
-                'response': 'IMPROPER_S3_SETUP'
-            },
-            {
-                'suffixes': '.gif',
-                'magic_number': '474946383961',
-                'response': 'IMPROPER_S3_SETUP'
-            },
-            {
-                'suffixes': '.gif',
-                'magic_number': '474946383761',
-                'response': 'IMPROPER_S3_SETUP'
-            },
-            {
-                'suffixes': '.jpg',
-                'magic_number': 'ffd8ffd9',
-                'response': 'IMPROPER_S3_SETUP'
-            }
-        ]
-        self.attempt_upload_files_and_verify_results(test_cases, xblock_name)
+        self.attempt_upload_file_and_verify_result(test_case, xblock_name)
