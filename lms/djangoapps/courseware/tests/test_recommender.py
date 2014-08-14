@@ -664,14 +664,6 @@ class TestRecommenderFileUploading(TestRecommender):
         self.assertEqual(response.content, test_case['response'])
         self.check_for_get_xblock_page_code(200)
 
-#    def attempt_upload_files_and_verify_results(self, test_cases, xblock_name):
-        """
-        Running on a set of test cases and verifying that uploads
-        happen or are rejected as expected.
-        """
-#        for test_case in test_cases:
-#            self.attempt_upload_file_and_verify_result(test_case, xblock_name)
-
     def test_set_s3_info(self):
         """
         Verify the s3 information setting
