@@ -3,8 +3,8 @@ This test file will run through some XBlock test scenarios regarding the
 recommender system
 """
 import json
-import tempfile
 import itertools
+import StringIO
 from ddt import ddt, data
 from copy import deepcopy
 
@@ -173,12 +173,12 @@ class TestRecommender(ModuleStoreTestCase, LoginEnrollmentTestCase):
         for _ in range(0, times):
             self.client.post(url, json.dumps({'id': resource_id}), '')
 
-    def call_event(self, handler, data, xblock_name='recommender'):
+    def call_event(self, handler, event_data, xblock_name='recommender'):
         """
         Call a ajax event (edit, flag) on a resource by providing data
         """
         url = self.get_handler_url(handler, xblock_name)
-        resp = self.client.post(url, json.dumps(data), '')
+        resp = self.client.post(url, json.dumps(event_data), '')
         return json.loads(resp.content)
 
 
@@ -222,10 +222,10 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         """
         Generate the resource for edit
         """
-        data = {"id": resource_id}
+        event_data = {"id": resource_id}
         edited_recommendations = {key: value + " edited" for key, value in self.test_recommendations[0].iteritems()}
-        data.update(edited_recommendations)
-        return data
+        event_data.update(edited_recommendations)
+        return event_data
 
     def test_add_redundant_resource(self):
         """
@@ -323,9 +323,9 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         """
         # Test
         for suffix in ['', '#IAmSuffix', '%23IAmSuffix']:
-            data = self.generate_edit_resource(0)
-            data['url'] = self.test_recommendations[1]['url'] + suffix
-            resp = self.call_event('edit_resource', data)
+            event_data = self.generate_edit_resource(0)
+            event_data['url'] = self.test_recommendations[1]['url'] + suffix
+            resp = self.call_event('edit_resource', event_data)
             self.assertEqual(resp['error'], 'existing url')
             self.assertEqual(resp['dup_id'], 1)
 
@@ -344,9 +344,9 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         Check whether changing the content of resource is successful in two
         different xblocks
         """
-        data = self.generate_edit_resource(0)
+        event_data = self.generate_edit_resource(0)
         for xblock_name in self.xblock_names:
-            resp = self.call_event('edit_resource', data, xblock_name)
+            resp = self.call_event('edit_resource', event_data, xblock_name)
             self.assertEqual(resp['Success'], True)
             self.check_for_get_xblock_page_code(200)
 
@@ -548,9 +548,9 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         """
         Flag a resource as problematic, without providing the reason
         """
-        data = {'id': 0, 'isProblematic': True, 'reason': ''}
+        event_data = {'id': 0, 'isProblematic': True, 'reason': ''}
         # Test
-        resp = self.call_event('flag_resource', data)
+        resp = self.call_event('flag_resource', event_data)
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['reason'], '')
 
@@ -558,9 +558,9 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         """
         Flag a resource as problematic, with providing the reason
         """
-        data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
+        event_data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
         # Test
-        resp = self.call_event('flag_resource', data)
+        resp = self.call_event('flag_resource', event_data)
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['reason'], 'reason 0')
 
@@ -568,11 +568,11 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         """
         Flag a resource as problematic twice, with different reasons
         """
-        data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
-        resp = self.call_event('flag_resource', data)
+        event_data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
+        resp = self.call_event('flag_resource', event_data)
         # Test
-        data = {'id': 0, 'isProblematic': True, 'reason': 'reason 1'}
-        resp = self.call_event('flag_resource', data)
+        event_data = {'id': 0, 'isProblematic': True, 'reason': 'reason 1'}
+        resp = self.call_event('flag_resource', event_data)
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['oldReason'], 'reason 0')
         self.assertEqual(resp['reason'], 'reason 1')
@@ -581,10 +581,10 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         """
         Flag resources as problematic in two different xblocks
         """
-        data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
+        event_data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
         # Test
         for xblock_name in self.xblock_names:
-            resp = self.call_event('flag_resource', data, xblock_name)
+            resp = self.call_event('flag_resource', event_data, xblock_name)
             self.assertEqual(resp['Success'], True)
             self.assertEqual(resp['reason'], 'reason 0')
             self.check_for_get_xblock_page_code(200)
@@ -593,12 +593,12 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         """
         Different users can't see the flag result of each other
         """
-        data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
-        self.call_event('flag_resource', data)
+        event_data = {'id': 0, 'isProblematic': True, 'reason': 'reason 0'}
+        self.call_event('flag_resource', event_data)
         self.logout()
         self.enroll_student(self.STUDENT_INFO[0][0], self.STUDENT_INFO[0][1])
         # Test
-        resp = self.call_event('flag_resource', data)
+        resp = self.call_event('flag_resource', event_data)
         # The second user won't see the reason provided by the first user
         self.assertNotIn('oldReason', resp)
         self.assertEqual(resp['Success'], True)
@@ -651,16 +651,11 @@ class TestRecommenderFileUploading(TestRecommender):
         calling the corresponding ajax event, and verifying that upload
         happens or is rejected as expected.
         """
-        temp = tempfile.NamedTemporaryFile(
-            prefix='upload_',
-            suffix=test_case['suffixes'],
-            delete=False
-        )
-        temp.seek(0)
-        temp.write(test_case['magic_number'].decode('hex'))
-        temp.flush()
+        f_handler = StringIO.StringIO(test_case['magic_number'].decode('hex'))
+        f_handler.content_type = test_case['mimetypes']
+        f_handler.name = 'file' + test_case['suffixes']
         url = self.get_handler_url('upload_screenshot', xblock_name)
-        response = self.client.post(url, {'file': open(temp.name, 'r')})
+        response = self.client.post(url, {'file': f_handler})
         self.assertEqual(response.content, test_case['response'])
         self.check_for_get_xblock_page_code(200)
 
@@ -681,6 +676,7 @@ class TestRecommenderFileUploading(TestRecommender):
     @data({
         'suffixes': '.csv',
         'magic_number': 'ffff',
+        'mimetypes': 'text/plain',
         'response': 'IMPROPER_S3_SETUP'
     })
     def test_upload_screenshot_s3_not_set(self, test_case):
@@ -694,36 +690,43 @@ class TestRecommenderFileUploading(TestRecommender):
         {
             'suffixes': '.csv',
             'magic_number': 'ffff',
+            'mimetypes': 'text/plain',
             'response': 'FILE_TYPE_ERROR'
         },  # Upload file with wrong extension name
         {
             'suffixes': '.gif',
             'magic_number': '89504e470d0a1a0a',
+            'mimetypes': 'image/gif',
             'response': 'FILE_TYPE_ERROR'
         },  # Upload file with wrong magic number
         {
             'suffixes': '.jpg',
             'magic_number': '89504e470d0a1a0a',
+            'mimetypes': 'image/jpeg',
             'response': 'FILE_TYPE_ERROR'
         },  # Upload file with wrong magic number
         {
             'suffixes': '.png',
             'magic_number': '474946383761',
+            'mimetypes': 'image/png',
             'response': 'FILE_TYPE_ERROR'
         },  # Upload file with wrong magic number
         {
             'suffixes': '.jpg',
             'magic_number': '474946383761',
+            'mimetypes': 'image/jpeg',
             'response': 'FILE_TYPE_ERROR'
         },  # Upload file with wrong magic number
         {
             'suffixes': '.png',
             'magic_number': 'ffd8ffd9',
+            'mimetypes': 'image/png',
             'response': 'FILE_TYPE_ERROR'
         },  # Upload file with wrong magic number
         {
             'suffixes': '.gif',
             'magic_number': 'ffd8ffd9',
+            'mimetypes': 'image/gif',
             'response': 'FILE_TYPE_ERROR'
         }
     )
@@ -743,6 +746,7 @@ class TestRecommenderFileUploading(TestRecommender):
     @data({
         'suffixes': '.csv',
         'magic_number': 'ffff',
+        'mimetypes': 'text/plain',
         'response': 'IMPROPER_S3_SETUP'
     })
     def test_upload_screenshot_multiple_blocks(self, test_case):
@@ -761,21 +765,25 @@ class TestRecommenderFileUploading(TestRecommender):
         {
             'suffixes': '.png',
             'magic_number': '89504e470d0a1a0a',
+            'mimetypes': 'image/png',
             'response': 'IMPROPER_S3_SETUP'
         },
         {
             'suffixes': '.gif',
             'magic_number': '474946383961',
+            'mimetypes': 'image/gif',
             'response': 'IMPROPER_S3_SETUP'
         },
         {
             'suffixes': '.gif',
             'magic_number': '474946383761',
+            'mimetypes': 'image/gif',
             'response': 'IMPROPER_S3_SETUP'
         },
         {
             'suffixes': '.jpg',
             'magic_number': 'ffd8ffd9',
+            'mimetypes': 'image/jpeg',
             'response': 'IMPROPER_S3_SETUP'
         }
     )
