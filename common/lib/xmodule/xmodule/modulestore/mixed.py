@@ -308,6 +308,136 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         store = self._get_modulestore_for_courseid(course_key)
         return store.delete_course(course_key, user_id)
 
+    def save_asset_metadata(self, course_key, asset_metadata):
+        """
+        Saves the asset metadata for a particular course's asset.
+
+        :param course_key: (CourseKey): course identifier
+        :param asset_metadata: (AssetMetadata): data about the course asset data
+
+        :return: True if metadata save was successful, else False
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_metadata, AssetMetadata))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.save_asset_metadata(course_key, asset_metadata)
+
+    def find_asset_metadata(self, course_key, asset_key):
+        """
+        Find the metadata for a particular course asset.
+
+        :param: course_key (CourseKey): course identifier
+        :param: asset_key (AssetKey): locator containing original asset filename
+
+        :return: asset metadata (AssetMetadata) -or- None if not found
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.find_asset_metadata(course_key, asset_key)
+
+    def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
+        """
+        Returns a list of static assets for a course, followed by the total number of assets.
+        By default all assets are returned, but start and maxresults can be provided to limit the query.
+
+        The return format is a list of asset data dictionaries.
+        The asset data dictionaries have the following keys:
+            asset_key (:class:`opaque_keys.edx.AssetKey`): The key of the asset
+            displayname: The human-readable name of the asset
+            uploadDate (datetime.datetime): The date and time that the file was uploadDate
+            contentType: The mimetype string of the asset
+            md5: An md5 hash of the asset content
+        """
+        assert(isinstance(course_key, CourseKey))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.get_all_asset_metadata(course_key)
+
+    def delete_asset_metadata(self, course_key, asset_key):
+        """
+        Deletes a single asset's metadata.
+
+        :param: course_key (CourseKey): course identifier
+        :param: asset_id (AssetKey): locator containing original asset filename
+
+        :return: number of asset metadata entries deleted (0 or 1)
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.delete_asset_metadata(course_key, asset_key)
+
+    def delete_all_asset_metadata(self, course_key):
+        """
+        Delete all of the assets which use this course_key as an identifier
+        :param course_key:
+        """
+        assert(isinstance(course_key, CourseKey))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.delete_all_asset_metadata(course_key)
+
+    def copy_all_asset_metadata(self, source_course_key, dest_course_key):
+        """
+        Copy all the course assets from source_course_key to dest_course_key
+        """
+        assert(isinstance(source_course_key, CourseKey))
+        assert(isinstance(dest_course_key, CourseKey))
+        store = self._get_modulestore_for_courseid(source_course_key)
+        return store.copy_all_asset_metadata(source_course_key, dest_course_key)
+
+    def set_asset_metadata_attr(self, course_key, asset_key, attr, value=True):
+        """
+        Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
+
+        Raises NotFoundError if no such item exists
+        Raises AttributeError is attr is one of the build in attrs.
+
+        :param course_key: a CourseKey
+        :param asset_key: an AssetKey
+        :param attr: which attribute to set
+        :param value: the value to set it to (any type pymongo accepts such as datetime, number, string)
+
+        :return: Nothing
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.set_asset_metadata_attrs(course_key, asset_key, attr, value)
+
+    def set_asset_metadata_attrs(self, course_key, asset_key, attr_dict):
+        """
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.set_asset_metadata_attrs(course_key, asset_key, attr_dict)
+
+    def get_asset_metadata_attr(self, course_key, asset_key, attr, default=None):
+        """
+        Gets the given attr from the specified asset.
+
+        Raises NotFoundError if no such item exists
+
+        :param course_key: a CourseKey
+        :param asset_key: an AssetKey
+        :param attr: which attribute to get
+        :param default: the value to default the attr to if not found
+
+        :return: Attr value (or default)
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.get_asset_metadata_attrs(course_key, asset_key, attr, default)
+
+    def get_asset_metadata_attrs(self, course_key, asset_key, attr_dict):
+        """
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        store = self._get_modulestore_for_courseid(course_key)
+        return store.get_asset_metadata_attrs(course_key, asset_key, attr_dict)
+
     @strip_key
     def get_parent_location(self, location, **kwargs):
         """

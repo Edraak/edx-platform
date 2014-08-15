@@ -40,6 +40,7 @@ class TestMixedModuleStore(unittest.TestCase):
     PORT = MONGO_PORT_NUM
     DB = 'test_mongo_%s' % uuid4().hex[:5]
     COLLECTION = 'modulestore'
+    ASSET_COLLECTION = 'assetstore'
     FS_ROOT = DATA_DIR
     DEFAULT_CLASS = 'xmodule.raw_module.RawDescriptor'
     RENDER_TEMPLATE = lambda t_n, d, ctx = None, nsp = 'main': ''
@@ -59,6 +60,7 @@ class TestMixedModuleStore(unittest.TestCase):
         'port': PORT,
         'db': DB,
         'collection': COLLECTION,
+        'asset_collection': ASSET_COLLECTION,
     }
     OPTIONS = {
         'mappings': {

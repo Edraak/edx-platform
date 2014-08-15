@@ -41,8 +41,9 @@ from xmodule.modulestore.inheritance import own_metadata, InheritanceMixin, inhe
 from xblock.core import XBlock
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from opaque_keys.edx.locator import CourseLocator
-from opaque_keys.edx.keys import UsageKey, CourseKey
+from opaque_keys.edx.keys import UsageKey, CourseKey, AssetKey
 from xmodule.exceptions import HeartbeatFailure
+from xmodule.assetstore import AssetMetadata
 
 log = logging.getLogger(__name__)
 
@@ -374,7 +375,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         super(MongoModuleStore, self).__init__(contentstore=contentstore, **kwargs)
 
         def do_connection(
-            db, collection, host, port=27017, tz_aware=True, user=None, password=None, **kwargs
+            db, collection, host, port=27017, tz_aware=True, user=None, password=None, asset_collection=None, **kwargs
         ):
             """
             Create & open the connection, authenticate, and provide pointers to the collection
@@ -390,6 +391,11 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
                 db
             )
             self.collection = self.database[collection]
+
+            # Collection which stores asset metadata.
+            self.asset_collection = None
+            if asset_collection is not None:
+                self.asset_collection = self.database[asset_collection]
 
             if user is not None and password is not None:
                 self.database.authenticate(user, password)
@@ -1330,6 +1336,230 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
 
         field_data = KvsFieldData(kvs)
         return field_data
+
+    def _find_course_assets(self, course_key):
+        """
+        Internal; finds (or creates) course asset info about all assets for a particular course
+
+        :param course_key: (CourseKey): course identifier
+        :param asset_filename: (string): filename of the asset
+
+        :return: Asset info for the course, index of asset in list (None if asset does not exist)
+        """
+        matching_courses = list(self.collection.find(SON([
+                ('_id.tag', 'i4x'),
+                ('_id.org', course_key.org),
+                ('_id.course', course_key.course),
+                ('_id.name', course_key.run),
+                ('_id.category', 'course'),
+            ])).limit(1))
+
+        # Using the course_id, find or create the course asset metadata document.
+        # A single document exists per course to store the course asset metadata.
+        course = matching_courses[0]
+        course_assets = self.asset_collection.find({'course_id': course['_id']})
+
+        if course_assets.count() == 0:
+            # Not found, so create.
+            asset_id = self.asset_collection.insert({'course_id': course['_id'], 'storage': 'TODO', 'assets': [], 'thumbnails': []})
+            course_assets = self.asset_collection.find({'_id': asset_id})
+
+        return course_assets[0]
+
+    def _find_course_asset(self, course_key, asset_filename):
+        """
+        Internal; finds or creates course asset info -and- finds existing asset metadata.
+
+        :param course_key: (CourseKey): course identifier
+        :param asset_filename: (string): filename of the asset
+
+        :return: Asset info for the course, index of asset in list (None if asset does not exist)
+        """
+        course_assets = self._find_course_assets(course_key)
+
+        # See if this asset already exists by checking the external_filename.
+        # Studio doesn't currently support using multiple course assets with the same filename.
+        # So use the filename as the unique identifier.
+        all_assets = course_assets['assets']
+        existing_asset = [idx for idx, a in enumerate(all_assets) if a['filename'] == asset_filename]
+        assert len(existing_asset) in (0, 1)
+
+        # Set the index of the found asset -or- None if not found.
+        asset_idx = None
+        if len(existing_asset) == 1:
+            asset_idx = existing_asset[0]
+
+        return course_assets, asset_idx
+
+    def save_asset_metadata(self, course_key, asset_metadata):
+        """
+        Saves the asset metadata for a particular course's asset.
+
+        :param course_key: (CourseKey): course identifier
+        :param asset_metadata: (AssetMetadata): data about the course asset data
+
+        :return: True if metadata save was successful, else False
+        """
+        assert isinstance(course_key, CourseKey)
+        assert isinstance(asset_metadata, AssetMetadata)
+        if self.asset_collection is None:
+            return False
+
+        course_assets, asset_idx = self._find_course_asset(course_key, asset_metadata.upload_name)
+        all_assets = course_assets['assets']
+
+        # Translate metadata to Mongo format.
+        metadata_to_insert = asset_metadata.to_mongo()
+        if asset_idx is None:
+            # Append new metadata.
+            all_assets.append(metadata_to_insert)
+        else:
+            # Replace existing metadata.
+            all_assets[asset_idx] = metadata_to_insert
+
+        # Update the document.
+        self.asset_collection.update({'_id': course_assets['_id']}, {'$set': {'assets': all_assets}})
+        return True
+
+    def find_asset_metadata(self, course_key, asset_key):
+        """
+        Find the metadata for a particular course asset.
+
+        :param: course_key (CourseKey): course identifier
+        :param: asset_id (AssetKey): locator containing original asset filename
+
+        :return: asset metadata (AssetMetadata) -or- None if not found
+        """
+        assert isinstance(course_key, CourseKey)
+        assert isinstance(asset_key, AssetKey)
+        if self.asset_collection is None:
+            return None
+
+        course_assets, asset_idx = self._find_course_asset(course_key, asset_key.path)
+        if asset_idx is None:
+            return None
+
+        all_assets = course_assets['assets']
+        md = AssetMetadata(asset_key, asset_key.path)
+        md.from_mongo(all_assets[asset_idx])
+        return md
+
+    def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
+        """
+        Returns a list of static assets for a course, followed by the total number of assets.
+        By default all assets are returned, but start and maxresults can be provided to limit the query.
+
+        The return format is a list of asset data dictionaries.
+        The asset data dictionaries have the following keys:
+            asset_key (:class:`opaque_keys.edx.AssetKey`): The key of the asset
+            displayname: The human-readable name of the asset
+            uploadDate (datetime.datetime): The date and time that the file was uploadDate
+            contentType: The mimetype string of the asset
+            md5: An md5 hash of the asset content
+        """
+        assert isinstance(course_key, CourseKey)
+        if self.asset_collection is None:
+            return None
+
+        course_assets = self._find_course_assets(course_key)
+        all_assets = course_assets['assets']
+        ret_assets = []
+        # TODO: Respect start/maxresults/sort.
+        for asset in all_assets:
+            ret_assets.append({'asset_key': course_key.make_asset_key('asset', asset['filename']),
+                               'displayname': 'TODO',
+                               'uploadDate': asset['edit_info']['edited_on'],
+                               'contentType': 'TODO',
+                               'md5': 'TODO'})
+        return ret_assets
+
+    def set_asset_metadata_attr(self, course_key, asset_key, attr, value=True):
+        """
+        Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
+
+        Raises NotFoundError if no such item exists
+        Raises AttributeError is attr is one of the build in attrs.
+
+        :param course_key: a CourseKey
+        :param asset_key: an AssetKey
+        :param attr: which attribute to set
+        :param value: the value to set it to (any type pymongo accepts such as datetime, number, string)
+
+        :return: Nothing
+        """
+        return self.set_asset_metadata_attrs(course_key, asset_key, {attr: value})
+
+    def set_asset_metadata_attrs(self, course_key, asset_key, attr_dict):
+        """
+        """
+        assert(isinstance(course_key, CourseKey))
+        assert(isinstance(asset_key, AssetLocator))
+        if self.asset_collection is None:
+            return
+
+        course_assets, asset_idx = self._find_course_asset(course_key, asset_key.path)
+        if asset_idx is None:
+            raise NotFoundError(asset_key)
+
+        # Form an AssetMetadata.
+        # Set the attrs on it.
+        # Generate a Mongo doc from it.
+        # Update it.
+        all_assets = course_assets['assets']
+        md = AssetMetadata(asset_key, asset_key.path)
+        md.from_mongo(all_assets[asset_idx])
+        md.set_attrs(att_dict)
+        all_assets[asset_idx] = md.to_mongo()
+
+        self.asset_collection.update({'_id': course_assets['_id']}, {"$set": {'assets': all_assets}})
+
+    def delete_asset_metadata(self, course_key, asset_key):
+        """
+        Deletes a single asset's metadata.
+
+        :param: course_key (CourseKey): course identifier
+        :param: asset_id (AssetKey): locator containing original asset filename
+
+        :return: number of asset metadata entries deleted (0 or 1)
+        """
+        assert isinstance(course_key, CourseKey)
+        assert isinstance(asset_key, AssetKey)
+        if self.asset_collection is None:
+            return 0
+
+        course_assets, asset_idx = self._find_course_asset(course_key, asset_key.path)
+        if asset_idx is None:
+            return 0
+
+        all_assets = course_assets['assets']
+        all_assets.pop(asset_idx)
+
+        # Update the document.
+        self.asset_collection.update({'_id': course_assets['_id']}, {'$set': {'assets': all_assets}})
+        return 1
+
+    def delete_all_asset_metadata(self, course_key):
+        """
+        Delete all of the assets which use this course_key as an identifier.
+
+        Arguments:
+            :param: course_key (CourseKey): course_identifier
+        """
+        assert isinstance(course_key, CourseKey)
+        if self.asset_collection is None:
+            return
+
+        # Using the course_id, find the course asset metadata document.
+        # A single document exists per course to store the course asset metadata.
+        course_assets = self._find_course_assets(course_key)
+        self.asset_collection.remove(course_assets['_id'])
+
+    def copy_all_asset_metadata(self, source_course_key, dest_course_key):
+        """
+        Copy all the course assets from source_course_key to dest_course_key
+        """
+        assert isinstance(source_course_key, CourseKey)
+        assert isinstance(dest_course_key, CourseKey)
 
     def heartbeat(self):
         """

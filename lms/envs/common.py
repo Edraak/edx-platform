@@ -501,6 +501,7 @@ DOC_STORE_CONFIG = {
     'host': 'localhost',
     'db': 'xmodule',
     'collection': 'modulestore',
+    'asset_collection': 'assetstore',
 }
 MODULESTORE = {
     'default': {
