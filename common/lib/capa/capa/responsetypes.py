@@ -857,41 +857,66 @@ class ChoiceResponse(LoncapaResponse):
         """
         compound_hint_matched = False       # assume we won't find any matching rules
 
-        for student_answer in student_answers:
-            if self.answer_id == student_answer:
-                problem_hint_shown = False
-                selection_id_list = []              # create a list of all the student's selected id's
-                for student_answer in student_answers[student_answer]:
-                    choice_list = self.xml.xpath('checkboxgroup/choice [@name="' + str(student_answer) + '"]')
-                    if choice_list:             # if we found at least one choice element
-                        choice = choice_list[0]
-                        selection_id_list.append(choice.get('id').upper())
-                selection_id_list.sort()        # sort the list to make comparison easier
 
-                for boolean_hint_element in self.xml.xpath("//booleanhint"):
-                    boolean_condition_string = boolean_hint_element.get("value").upper()
-                    boolean_condition_string = boolean_condition_string.replace("AND", " ")  # delete optional 'AND' operator
-                    boolean_condition_string = boolean_condition_string.replace("*", " ")    # delete any '*' operator
 
-                    boolean_condition_list = []
-                    for boolean_conditon_token in boolean_condition_string.split(" "):
-                        if len(boolean_conditon_token.strip()) > 0:
-                            boolean_condition_list.append(boolean_conditon_token)
-                    boolean_condition_list.sort()   # sort the list to make comparison easier
+        # for student_answer_id in student_answers:
+        #     if unicode(self.answer_id) == student_answer_id:
+        #         choice_test = '[@id="' + student_answer_id + '"]'
+        #         for choice_element in self.xml.xpath('//checkboxgroup' + choice_test + '/choice'):
+        #             hint = ''
+        #             if choice_element.get('name') in student_answers[student_answer_id]:
+        #                 choicehints = choice_element.xpath('./choicehint [@selected="true"]')
+        #                 if choicehints:
+        #                     hint = choicehints[0].text
+        #             else:
+        #                  choicehints = choice_element.xpath('./choicehint [@selected="false"]')
+        #                  if choicehints:
+        #                      hint = choicehints[0].text
+        #
+        #             if hint:
+        #                  problem_hint_shown = True
+        #                  new_cmap[student_answer_id]['msg'] += '<div class="' + QUESTION_HINT_TEXT_STYLE + '">' + hint + '</div>'
+        #
+        #         self.wrap_hints_correct_or_incorrect(new_cmap, student_answer_id, problem_hint_shown)
 
-                    if boolean_condition_list == selection_id_list:
-                        compound_hint_matched = True
 
-                        hint_label = ''
-                        if boolean_hint_element.get('label'):
-                            hint_label = boolean_hint_element.get('label') + ': '
+        for student_answer_id in student_answers:
+            if unicode(self.answer_id) == student_answer_id:
+                choice_test = '[@id="' + student_answer_id + '"]'
+                for choice_element in self.xml.xpath('//checkboxgroup' + choice_test + '/choice'):
+                    problem_hint_shown = False
+                    selection_id_list = []              # create a list of all the student's selected id's
+                    for student_answer in student_answers[student_answer_id]:
+                        choice_list = self.xml.xpath('checkboxgroup/choice [@name="' + str(student_answer) + '"]')
+                        if choice_list:             # if we found at least one choice element
+                            choice = choice_list[0]
+                            selection_id_list.append(choice.get('id').upper())
+                    selection_id_list.sort()        # sort the list to make comparison easier
 
-                        new_cmap[self.answer_id]['msg'] = '<div class="' + QUESTION_HINT_TEXT_STYLE + '">' \
-                            + hint_label + boolean_hint_element.text.strip() + '</div>'
-                        problem_hint_shown = True
-                        break
+                    for boolean_hint_element in self.xml.xpath('//checkboxgroup' + choice_test + '/booleanhint'):
+                        boolean_condition_string = boolean_hint_element.get("value").upper()
+                        boolean_condition_string = boolean_condition_string.replace("AND", " ")  # delete optional 'AND' operator
+                        boolean_condition_string = boolean_condition_string.replace("*", " ")    # delete any '*' operator
 
-                self.wrap_hints_correct_or_incorrect(new_cmap, self.answer_id, problem_hint_shown)
+                        boolean_condition_list = []
+                        for boolean_conditon_token in boolean_condition_string.split(" "):
+                            if len(boolean_conditon_token.strip()) > 0:
+                                boolean_condition_list.append(boolean_conditon_token)
+                        boolean_condition_list.sort()   # sort the list to make comparison easier
+
+                        if boolean_condition_list == selection_id_list:
+                            compound_hint_matched = True
+
+                            hint_label = ''
+                            if boolean_hint_element.get('label'):
+                                hint_label = boolean_hint_element.get('label') + ': '
+
+                            new_cmap[self.answer_id]['msg'] = '<div class="' + QUESTION_HINT_TEXT_STYLE + '">' \
+                                + hint_label + boolean_hint_element.text.strip() + '</div>'
+                            problem_hint_shown = True
+                            break
+
+                    self.wrap_hints_correct_or_incorrect(new_cmap, self.answer_id, problem_hint_shown)
 
         return compound_hint_matched
 
