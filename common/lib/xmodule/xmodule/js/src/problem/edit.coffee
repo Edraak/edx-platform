@@ -351,7 +351,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
           if itemText[itemText.length-1] == ','     # check for an end-of-line comma
             itemText = itemText.slice(0, itemText.length-1) # suppress it
 
-          returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText.trim() 
+          returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText.trim()
           if hintText
             returnXmlString += '\n'
             returnXmlString += '               <optionhint ' + @customLabel + '>' + hintText + '\n'
