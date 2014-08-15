@@ -788,26 +788,26 @@ class ChoiceResponse(LoncapaResponse):
         :param student_answers: the set of answer choices made by the student
         :return:                nothing
         '''
-        problem_hint_shown = False
-        for problem_id in student_answers:
-            if self.answer_id == problem_id:
-                student_answer_list = student_answers[problem_id]
-                for choice_element in self.xml.findall('checkboxgroup/choice'):
+
+        for student_answer_id in student_answers:
+            if unicode(self.answer_id) == student_answer_id:
+                choice_test = '[@id="' + student_answer_id + '"]'
+                for choice_element in self.xml.xpath('//checkboxgroup' + choice_test + '/choice'):
                     hint = ''
-                    if choice_element.get('name') in student_answer_list:    # if this choice was selected by student
+                    if choice_element.get('name') in student_answers[student_answer_id]:
                         choicehints = choice_element.xpath('./choicehint [@selected="true"]')
                         if choicehints:
                             hint = choicehints[0].text
                     else:
-                        choicehints = choice_element.xpath('./choicehint [@selected="false"]')
-                        if choicehints:
-                            hint = choicehints[0].text
+                         choicehints = choice_element.xpath('./choicehint [@selected="false"]')
+                         if choicehints:
+                             hint = choicehints[0].text
 
                     if hint:
-                        problem_hint_shown = True
-                        new_cmap[problem_id]['msg'] += '<div class="' + QUESTION_HINT_TEXT_STYLE + '">' + hint + '</div>'
+                         problem_hint_shown = True
+                         new_cmap[student_answer_id]['msg'] += '<div class="' + QUESTION_HINT_TEXT_STYLE + '">' + hint + '</div>'
 
-                self.wrap_hints_correct_or_incorrect(new_cmap, problem_id, problem_hint_shown)
+                self.wrap_hints_correct_or_incorrect(new_cmap, student_answer_id, problem_hint_shown)
 
     def assign_choice_names(self):
         """
