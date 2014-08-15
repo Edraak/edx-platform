@@ -1,45 +1,26 @@
 if Backbone?
-  class @ThreadResponseShowView extends DiscussionContentView
-    events:
-        "click .vote-btn":
-          (event) -> @toggleVote(event)
-        "keydown .vote-btn":
-          (event) -> DiscussionUtil.activateOnSpace(event, @toggleVote)
-        "click .action-endorse": "toggleEndorse"
-        "click .action-delete": "_delete"
-        "click .action-edit": "edit"
-        "click .discussion-flag-abuse": "toggleFlagAbuse"
-        "keydown .discussion-flag-abuse":
-          (event) -> DiscussionUtil.activateOnSpace(event, @toggleFlagAbuse)
-
-    attrRenderer: $.extend({}, DiscussionContentView.prototype.attrRenderer, {
-      endorsed: (endorsed) ->
-        $endorseButton = @$(".action-endorse")
-        $endorseButton.toggleClass("is-clickable", @model.canBeEndorsed())
-        $endorseButton.toggleClass("is-endorsed", endorsed)
-        $endorseButton.toggle(endorsed || @model.canBeEndorsed())
-    })
-
-    $: (selector) ->
-        @$el.find(selector)
-
+  class @ThreadResponseShowView extends DiscussionContentShowView
     initialize: ->
         super()
         @listenTo(@model, "change", @render)
 
     renderTemplate: ->
         @template = _.template($("#thread-response-show-template").html())
-        @template(@model.toJSON())
+        context = _.extend(
+            {
+                author_display: @getAuthorDisplay(),
+                endorser_display: @getEndorserDisplay()
+            },
+            @model.attributes
+        )
+        @template(context)
 
     render: ->
       @$el.html(@renderTemplate())
       @delegateEvents()
-      @renderVote()
       @renderAttrs()
-      @renderFlagged()
       @$el.find(".posted-details .timeago").timeago()
       @convertMath()
-      @markAsStaff()
       @
 
     convertMath: ->
@@ -47,45 +28,12 @@ if Backbone?
       element.html DiscussionUtil.postMathJaxProcessor DiscussionUtil.markdownWithHighlight element.text()
       MathJax.Hub.Queue ["Typeset", MathJax.Hub, element[0]]
 
-    markAsStaff: ->
-      if DiscussionUtil.isStaff(@model.get("user_id"))
-        @$el.addClass("staff")
-        @$el.prepend('<div class="staff-banner">' + gettext('staff') + '</div>')
-      else if DiscussionUtil.isTA(@model.get("user_id"))
-        @$el.addClass("community-ta")
-        @$el.prepend('<div class="community-ta-banner">' + gettext('Community TA') + '</div>')
-
     edit: (event) ->
         @trigger "response:edit", event
 
     _delete: (event) ->
         @trigger "response:_delete", event
 
-    toggleEndorse: (event) ->
-      event.preventDefault()
-      if not @model.canBeEndorsed()
-        return
-      $elem = $(event.target)
-      url = @model.urlFor('endorse')
-      endorsed = @model.get('endorsed')
-      new_endorsed = not endorsed
-      data = { endorsed: new_endorsed }
-      endorsement = {
-        "username": window.user.get("username"),
-        "time": new Date().toISOString()
-      }
-      @model.set(
-        "endorsed": new_endorsed
-        "endorsement": if new_endorsed then endorsement else null
-      )
-      @trigger "comment:endorse", not endorsed
-      DiscussionUtil.safeAjax
-        $elem: $elem
-        url: url
-        data: data
-        type: "POST"
-
-            
     renderFlagged: =>
       if window.user.id in @model.get("abuse_flaggers") or (DiscussionUtil.isFlagModerator and @model.get("abuse_flaggers").length > 0)
         @$("[data-role=thread-flag]").addClass("flagged")  
