@@ -1300,8 +1300,7 @@ class CapaMixin(CapaFields):
 
             answer_response = None
             for response, responder in self.lcp.responders.iteritems():
-                for other_input_id in self.lcp.responder_answers[response]:
-                    if other_input_id == input_id:
+                if input_id in responder.answer_ids:
                         answer_response = responder
 
             if answer_response is None:

@@ -342,23 +342,21 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             correctnessText = 'True'
             itemText = correctChoiceMatch[1]
             returnXmlString = returnXmlString.replace('CORRECT_PLACEHOLDER', itemText)  # poke the correct value in
-            optionsString += delimiter + "('" + itemText.trim() + "')"
+            optionsString += delimiter + "(" + itemText.trim() + ")"
           else
             correctnessText = 'False'
-            itemText = line
-            itemText = "'" + itemText + "'"
-            optionsString += delimiter + itemText.trim()
+            itemText = line.trim()
+            optionsString += delimiter   + itemText.trim()
 
           if itemText[itemText.length-1] == ','     # check for an end-of-line comma
             itemText = itemText.slice(0, itemText.length-1) # suppress it
-          itemText = itemText.trim()
 
-          returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText
+          returnXmlString += '          <option  correct="' + correctnessText + '">' + itemText.trim()
           if hintText
             returnXmlString += '\n'
             returnXmlString += '               <optionhint ' + @customLabel + '>' + hintText + '\n'
             returnXmlString += '               </optionhint>\n'
-          returnXmlString += '</option>\n'
+          returnXmlString += '          </option>\n'
 
           delimiter = ','
 
@@ -386,8 +384,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       hintTextUnselected = ''
 
       choiceMatches = line.match(/(\s*\[\s*x?\s*\])([^\n]+)/)
-      ####choiceMatches = line.match(/(\s*\[.*])([^\n]+)/)
-      ####choiceMatches = line.match(/(\s*\[[^\[]*])([^\n]+)/)   too lenient
       if choiceMatches           # this line includes '[...]' so it must be a checkbox choice
         line = choiceMatches[2]  # remove the [..] phrase, else it will be displayed to student
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
