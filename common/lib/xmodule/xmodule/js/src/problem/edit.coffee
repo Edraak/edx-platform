@@ -384,8 +384,6 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
       hintTextUnselected = ''
 
       choiceMatches = line.match(/(\s*\[\s*x?\s*\])([^\n]+)/)
-      ####choiceMatches = line.match(/(\s*\[.*])([^\n]+)/)
-      ####choiceMatches = line.match(/(\s*\[[^\[]*])([^\n]+)/)   too lenient
       if choiceMatches           # this line includes '[...]' so it must be a checkbox choice
         line = choiceMatches[2]  # remove the [..] phrase, else it will be displayed to student
         hintMatches = line.match( /_([0-9]+)_/ )  # check for an extracted hint string
