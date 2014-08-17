@@ -356,12 +356,12 @@ describe 'MarkdownEditingDescriptor', ->
         <p>The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag.</p>
         <p>Translation between Option Response and __________ is extremely straightforward:</p>
         <optionresponse>
-            <optioninput options="('Multiple Choice'),'String Response','Numerical Response','External Response','Image Response'" correct="Multiple Choice">
+            <optioninput options="(Multiple Choice),String Response,Numerical Response,External Response,Image Response" correct="Multiple Choice">
                   <option  correct="True">Multiple Choice</option>
-                  <option  correct="False">'String Response'</option>
-                  <option  correct="False">'Numerical Response'</option>
-                  <option  correct="False">'External Response'</option>
-                  <option  correct="False">'Image Response'</option>
+                  <option  correct="False">String Response</option>
+                  <option  correct="False">Numerical Response</option>
+                  <option  correct="False">External Response</option>
+                  <option  correct="False">Image Response</option>
             </optioninput>
         </optionresponse>
 
@@ -682,24 +682,24 @@ describe 'MarkdownEditingDescriptor', ->
         </choiceresponse>
         <p>Option with multiple correct ones</p>
         <optionresponse>
-            <optioninput options="'one option',('correct one'),('should not be correct')" correct="correct one">
-                  <option  correct="False">'one option'</option>
+            <optioninput options="one option,(correct one),(should not be correct)" correct="correct one">
+                  <option  correct="False">one option</option>
                   <option  correct="True">correct one</option>
                   <option  correct="True">should not be correct</option>
             </optioninput>
         </optionresponse>
         <p>Option with embedded parens</p>
         <optionresponse>
-            <optioninput options="'My (heart)','another',('correct')" correct="correct">
-                  <option  correct="False">'My (heart)'</option>
-                  <option  correct="False">'another'</option>
+            <optioninput options="My (heart),another,(correct)" correct="correct">
+                  <option  correct="False">My (heart)</option>
+                  <option  correct="False">another</option>
                   <option  correct="True">correct</option>
             </optioninput>
         </optionresponse>
         <p>What happens w/ empty correct options?</p>
         <optionresponse>
-            <optioninput options="'()'" correct="CORRECT_PLACEHOLDER">
-                  <option  correct="False">'()'</option>
+            <optioninput options="()" correct="CORRECT_PLACEHOLDER">
+                  <option  correct="False">()</option>
             </optioninput>
         </optionresponse>
 

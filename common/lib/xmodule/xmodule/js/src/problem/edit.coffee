@@ -356,7 +356,7 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
             returnXmlString += '\n'
             returnXmlString += '               <optionhint ' + @customLabel + '>' + hintText + '\n'
             returnXmlString += '               </optionhint>\n'
-          returnXmlString += '          </option>\n'
+          returnXmlString += '</option>\n'
 
           delimiter = ','
 
@@ -577,6 +577,8 @@ class @MarkdownEditingDescriptor extends XModule.Descriptor
 
       xml = MarkdownEditingDescriptor.extractProblemHints(xml);    // pull out any problem hints
       xml = MarkdownEditingDescriptor.extractDistractorHints(xml);    // pull out any problem hints
+
+      debugger;
 
       //_____________________________________________________________________
       //
