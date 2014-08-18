@@ -1237,7 +1237,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
                         # looking for, from its list of children
                         self.collection.update(
                             {'_id': parent_loc.to_deprecated_son()},
-                            {'$pull': {'definition.children': location.to_deprecated_string()}},
+                            {'$pull': {'definition.children': unicode(location)}},
                             multi=False,
                             upsert=True,
                             safe=self.collection.safe

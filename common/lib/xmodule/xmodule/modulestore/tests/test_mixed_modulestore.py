@@ -909,11 +909,11 @@ class TestMixedModuleStore(unittest.TestCase):
         # add orphan vertical and sequential as another parents of problem "problem_x1a_1"
         mongo_store.collection.update(
             orphan_sequential.to_deprecated_son('_id.'),
-            {'$push': {'definition.children': self.problem_x1a_1.to_deprecated_string()}}
+            {'$push': {'definition.children': unicode(self.problem_x1a_1)}}
         )
         mongo_store.collection.update(
             orphan_vertical.to_deprecated_son('_id.'),
-            {'$push': {'definition.children': self.problem_x1a_1.to_deprecated_string()}}
+            {'$push': {'definition.children': unicode(self.problem_x1a_1)}}
         )
         # test that "get_parent_location" method of published branch still returns the correct non-orphan parent for
         # problem "problem_x1a_1" since the two other parents are orphans
@@ -924,7 +924,7 @@ class TestMixedModuleStore(unittest.TestCase):
         # now add valid published vertical as another parent of problem
         mongo_store.collection.update(
             self.sequential_x1.to_deprecated_son('_id.'),
-            {'$push': {'definition.children': self.problem_x1a_1.to_deprecated_string()}}
+            {'$push': {'definition.children': unicode(self.problem_x1a_1)}}
         )
         # now check that "get_parent_location" method of published branch raises "ReferentialIntegrityError" for
         # problem "problem_x1a_1" since it has now 2 valid published parents
