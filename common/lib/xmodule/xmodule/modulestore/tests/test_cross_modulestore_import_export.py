@@ -17,6 +17,7 @@ import random
 from contextlib import contextmanager, nested
 from shutil import rmtree
 from tempfile import mkdtemp
+from unittest import skip
 
 from xmodule.tests import CourseComparisonTest
 
@@ -236,6 +237,7 @@ COURSE_DATA_NAMES = (
 )
 
 
+@skip("These tests are too slow to run regularly (over 10 seconds each)")
 @ddt.ddt
 class CrossStoreXMLRoundtrip(CourseComparisonTest):
     """
