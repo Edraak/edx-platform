@@ -136,12 +136,12 @@ class TestMongoModuleStore(unittest.TestCase):
         # Destroy the test db.
         connection.drop_database(DB)
 
-    def setUp(self):
-        # make a copy for convenience
-        self.connection = TestMongoModuleStore.connection
-        self.dummy_user = ModuleStoreEnum.UserID.test
+    @classmethod
+    def setUp(cls):
+        cls.dummy_user = ModuleStoreEnum.UserID.test
 
-    def tearDown(self):
+    @classmethod
+    def tearDown(cls):
         pass
 
     def test_init(self):
@@ -201,109 +201,6 @@ class TestMongoModuleStore(unittest.TestCase):
             )
             assert_false(self.draft_store.has_course(mix_cased))
             assert_false(self.draft_store.has_course(mix_cased, ignore_case=True))
-
-    def _make_asset_metadata(self, asset_loc, filename):
-        return AssetMetadata(asset_loc, filename, internal_name='EKMND332DDBK', filepath='pictures/historical',
-                             locked=False, edited_by='CourseAuthor', edited_on=datetime.now(), curr_version='v1.0', prev_version='v0.95')
-
-    def _setup_asset_metadata(self):
-        """
-        Set up a quantity of test asset metadata for testing purposes.
-        """
-        ASSET_FIELDS = ('filename', 'internal_name', 'filepath', 'locked', 'edited_by', 'edited_on', 'curr_version', 'prev_version')
-        ASSET1_VALS = ('pic1.jpg', 'EKMND332DDBK', 'pix/archive', False, 'Author1', datetime.now(), '14', '13')
-        ASSET2_VALS = ('shout.ogg', 'KFMDONSKF39K', 'sounds', True, 'Author1', datetime.now(), '1', None)
-        ASSET3_VALS = ('code.tgz', 'ZZB2333YBDMW', 'exercises/14', False, 'Author2', datetime.now(), 'AB', 'AA')
-        ASSET4_VALS = ('dog.png', 'PUPY4242X', 'pictures/animals', True, 'Author3', datetime.now(), 5, 4)
-        ASSET5_VALS = ('not_here.txt', 'JJJCCC747', '/dev/null', False, 'Author4', datetime.now(), 50, 49)
-
-        ASSET1 = dict(zip(ASSET_FIELDS, ASSET1_VALS))
-        ASSET2 = dict(zip(ASSET_FIELDS, ASSET2_VALS))
-        ASSET3 = dict(zip(ASSET_FIELDS, ASSET3_VALS))
-        ASSET4 = dict(zip(ASSET_FIELDS, ASSET4_VALS))
-        NON_EXISTENT_ASSET = dict(zip(ASSET_FIELDS, ASSET5_VALS))
-
-        courses = self.draft_store.get_courses()
-        self.course1 = courses[0]
-        self.course2 = courses[1]
-
-        asset1_loc = self.course1.id.make_asset_key('asset', ASSET1['filename'])
-        asset2_loc = self.course1.id.make_asset_key('asset', ASSET2['filename'])
-        asset3_loc = self.course2.id.make_asset_key('asset', ASSET3['filename'])
-        asset4_loc = self.course2.id.make_asset_key('asset', ASSET4['filename'])
-        asset5_loc = self.course2.id.make_asset_key('asset', NON_EXISTENT_ASSET['filename'])
-
-        self.asset1_md = AssetMetadata(asset1_loc, asset1_loc.path, **ASSET1)
-        self.asset2_md = AssetMetadata(asset2_loc, asset2_loc.path, **ASSET2)
-        self.asset3_md = AssetMetadata(asset3_loc, asset3_loc.path, **ASSET3)
-        self.asset4_md = AssetMetadata(asset4_loc, asset4_loc.path, **ASSET4)
-        self.asset5_md = AssetMetadata(asset5_loc, asset5_loc.path, **NON_EXISTENT_ASSET)
-
-        assert_true(self.draft_store.save_asset_metadata(self.course1.id, self.asset1_md))
-        assert_true(self.draft_store.save_asset_metadata(self.course1.id, self.asset2_md))
-        assert_true(self.draft_store.save_asset_metadata(self.course2.id, self.asset3_md))
-        assert_true(self.draft_store.save_asset_metadata(self.course2.id, self.asset4_md))
-        # asset5 is not saved on purpose!
-
-    def _teardown_asset_metadata(self):
-        self.draft_store.delete_all_asset_metadata(self.course1.id)
-        self.draft_store.delete_all_asset_metadata(self.course2.id)
-
-    def test_asset_metadata_save_one_and_confirm(self):
-        courses = self.draft_store.get_courses()
-        course = courses[0]
-        ASSET_FILENAME = 'burnside.jpg'
-        new_asset_loc = course.id.make_asset_key('asset', ASSET_FILENAME)
-        # Confirm that the asset's metadata is not present.
-        assert_is_none(self.draft_store.find_asset_metadata(course.id, new_asset_loc))
-        # Save the asset's metadata.
-        new_asset_md = self._make_asset_metadata(new_asset_loc, ASSET_FILENAME)
-        assert_true(self.draft_store.save_asset_metadata(course.id, new_asset_md))
-        # Find the asset's metadata and confirm it's the same.
-        found_asset_md = self.draft_store.find_asset_metadata(course.id, new_asset_loc)
-        assert_not_none(found_asset_md)
-        assert_equals(new_asset_md, found_asset_md)
-        # Confirm that only one asset's metadata exists.
-        assert_equals(len(self.draft_store.get_all_asset_metadata(course.id)), 1)
-        # Delete all metadata and confirm it's gone.
-        self.draft_store.delete_all_asset_metadata(course.id)
-        assert_equals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
-
-    def test_asset_metadata_delete_all_without_creation(self):
-        courses = self.draft_store.get_courses()
-        course = courses[0]
-        # Confirm that no asset metadata exists.
-        assert_equals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
-        # Now delete the non-existent metadata.
-        self.draft_store.delete_all_asset_metadata(course.id)
-        assert_equals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
-
-    def test_asset_metadata_save_many_and_delete_one(self):
-        self._setup_asset_metadata()
-        # Make sure there's two assets.
-        assert_equals(len(self.draft_store.get_all_asset_metadata(self.course1.id)), 2)
-        # Delete one of the assets.
-        assert_equals(self.draft_store.delete_asset_metadata(self.course1.id, self.asset1_md.asset_id), 1)
-        # Attempt to delete an asset that doesn't exist.
-        assert_equals(self.draft_store.delete_asset_metadata(self.course1.id, self.asset5_md.asset_id), 0)
-        # Attempt to delete an asset from the wrong course.
-        assert_equals(self.draft_store.delete_asset_metadata(self.course2.id, self.asset2_md.asset_id), 0)
-        self._teardown_asset_metadata()
-
-    def test_asset_metadata_get_all_assets_with_paging(self):
-        pass
-
-    def test_asset_metadata_find_existing_and_non_existing_assets(self):
-        pass
-
-    def test_asset_metadata_add_same_asset_twice(self):
-        pass
-
-    def test_asset_metadata_lock_unlock_assets(self):
-        pass
-
-    def test_asset_metadata_copy_all_assets(self):
-        pass
 
     def test_loads(self):
         assert_not_none(
@@ -938,6 +835,178 @@ class TestMongoModuleStore(unittest.TestCase):
         self.assertEqual(component.published_date, published_date)
         self.assertEqual(component.published_by, published_by)
 
+
+class TestMongoAssetMetadataStorage(TestMongoModuleStore):
+    """
+    Tests for storing/querying course asset metadata from Mongo storage.
+    """
+    def _make_asset_metadata(self, asset_loc, filename):
+        return AssetMetadata(asset_loc, filename, internal_name='EKMND332DDBK', filepath='pictures/historical',
+                             locked=False, edited_by='CourseAuthor', edited_on=datetime.now(), curr_version='v1.0', prev_version='v0.95')
+
+    @classmethod
+    def setupClass(cls):
+        super(TestMongoAssetMetadataStorage, cls).setupClass()
+
+    @classmethod
+    def teardownClass(cls):
+        super(TestMongoAssetMetadataStorage, cls).teardownClass()
+
+    def setUp(self):
+        """
+        Set up a quantity of test asset metadata for testing purposes.
+        """
+        super(TestMongoAssetMetadataStorage, self).setUp()
+        ASSET_FIELDS = ('filename', 'internal_name', 'filepath', 'locked', 'edited_by', 'edited_on', 'curr_version', 'prev_version')
+        ASSET1_VALS = ('pic1.jpg', 'EKMND332DDBK', 'pix/archive', False, 'Author1', datetime.now(), '14', '13')
+        ASSET2_VALS = ('shout.ogg', 'KFMDONSKF39K', 'sounds', True, 'Author1', datetime.now(), '1', None)
+        ASSET3_VALS = ('code.tgz', 'ZZB2333YBDMW', 'exercises/14', False, 'Author2', datetime.now(), 'AB', 'AA')
+        ASSET4_VALS = ('dog.png', 'PUPY4242X', 'pictures/animals', True, 'Author3', datetime.now(), 5, 4)
+        ASSET5_VALS = ('not_here.txt', 'JJJCCC747', '/dev/null', False, 'Author4', datetime.now(), 50, 49)
+
+        ASSET1 = dict(zip(ASSET_FIELDS, ASSET1_VALS))
+        ASSET2 = dict(zip(ASSET_FIELDS, ASSET2_VALS))
+        ASSET3 = dict(zip(ASSET_FIELDS, ASSET3_VALS))
+        ASSET4 = dict(zip(ASSET_FIELDS, ASSET4_VALS))
+        NON_EXISTENT_ASSET = dict(zip(ASSET_FIELDS, ASSET5_VALS))
+
+        courses = self.draft_store.get_courses()
+        self.course1 = courses[0]
+        self.course2 = courses[1]
+
+        asset1_loc = self.course1.id.make_asset_key('asset', ASSET1['filename'])
+        asset2_loc = self.course1.id.make_asset_key('asset', ASSET2['filename'])
+        asset3_loc = self.course2.id.make_asset_key('asset', ASSET3['filename'])
+        asset4_loc = self.course2.id.make_asset_key('asset', ASSET4['filename'])
+        asset5_loc = self.course2.id.make_asset_key('asset', NON_EXISTENT_ASSET['filename'])
+
+        self.asset1_md = AssetMetadata(asset1_loc, asset1_loc.path, **ASSET1)
+        self.asset2_md = AssetMetadata(asset2_loc, asset2_loc.path, **ASSET2)
+        self.asset3_md = AssetMetadata(asset3_loc, asset3_loc.path, **ASSET3)
+        self.asset4_md = AssetMetadata(asset4_loc, asset4_loc.path, **ASSET4)
+        self.asset5_md = AssetMetadata(asset5_loc, asset5_loc.path, **NON_EXISTENT_ASSET)
+
+        self.assertTrue(self.draft_store.save_asset_metadata(self.course1.id, self.asset1_md))
+        self.assertTrue(self.draft_store.save_asset_metadata(self.course1.id, self.asset2_md))
+        self.assertTrue(self.draft_store.save_asset_metadata(self.course2.id, self.asset3_md))
+        self.assertTrue(self.draft_store.save_asset_metadata(self.course2.id, self.asset4_md))
+        # asset5 is not saved on purpose!
+
+    def tearDown(self):
+        self.draft_store.delete_all_asset_metadata(self.course1.id)
+        self.draft_store.delete_all_asset_metadata(self.course2.id)
+
+    def test_save_one_and_confirm(self):
+        courses = self.draft_store.get_courses()
+        course = courses[0]
+        ASSET_FILENAME = 'burnside.jpg'
+        new_asset_loc = course.id.make_asset_key('asset', ASSET_FILENAME)
+        # Confirm that the asset's metadata is not present.
+        assert_is_none(self.draft_store.find_asset_metadata(course.id, new_asset_loc))
+        # Save the asset's metadata.
+        new_asset_md = self._make_asset_metadata(new_asset_loc, ASSET_FILENAME)
+        self.assertTrue(self.draft_store.save_asset_metadata(course.id, new_asset_md))
+        # Find the asset's metadata and confirm it's the same.
+        found_asset_md = self.draft_store.find_asset_metadata(course.id, new_asset_loc)
+        assert_not_none(found_asset_md)
+        self.assertEquals(new_asset_md, found_asset_md)
+        # Confirm that only two setup plus one asset's metadata exists.
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 3)
+        # Delete all metadata and confirm it's gone.
+        self.draft_store.delete_all_asset_metadata(course.id)
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
+
+    def test_delete_all_without_creation(self):
+        courses = self.draft_store.get_courses()
+        course = courses[0]
+        # Confirm that only setup asset metadata exists.
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 2)
+        # Now delete the metadata.
+        self.draft_store.delete_all_asset_metadata(course.id)
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
+        # Now delete the non-existent metadata.
+        self.draft_store.delete_all_asset_metadata(course.id)
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
+
+    def test_save_many_and_delete_one(self):
+        # Make sure there's two assets.
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(self.course1.id)), 2)
+        # Delete one of the assets.
+        self.assertEquals(self.draft_store.delete_asset_metadata(self.course1.id, self.asset1_md.asset_id), 1)
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(self.course1.id)), 1)
+        # Attempt to delete an asset that doesn't exist.
+        self.assertEquals(self.draft_store.delete_asset_metadata(self.course1.id, self.asset5_md.asset_id), 0)
+        # Attempt to delete an asset from the wrong course.
+        self.assertEquals(self.draft_store.delete_asset_metadata(self.course2.id, self.asset2_md.asset_id), 0)
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(self.course1.id)), 1)
+
+    def test_get_all_assets_with_paging(self):
+        pass
+
+    def test_find_existing_and_non_existing_assets(self):
+        # Find existing asset metadata.
+        asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
+        assert_not_none(asset_md)
+        # Find non-existent asset metadata.
+        asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset5_md.asset_id)
+        assert_is_none(asset_md)
+
+    def test_add_same_asset_twice(self):
+        courses = self.draft_store.get_courses()
+        course = courses[0]
+        ASSET_FILENAME = 'burnside.jpg'
+        new_asset_loc = course.id.make_asset_key('asset', ASSET_FILENAME)
+        new_asset_md = self._make_asset_metadata(new_asset_loc, ASSET_FILENAME)
+        # Only the setup stuff here?
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 2)
+        # Add asset metadata.
+        self.assertTrue(self.draft_store.save_asset_metadata(course.id, new_asset_md))
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 3)
+        # Add *the same* asset metadata.
+        self.assertTrue(self.draft_store.save_asset_metadata(course.id, new_asset_md))
+        # Still one here?
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 3)
+        self.draft_store.delete_all_asset_metadata(course.id)
+        self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 0)
+
+    def test_lock_unlock_assets(self):
+        # Find a course asset and check its locked status.
+        asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
+        assert_not_none(asset_md)
+        locked_state = asset_md.locked
+        # Flip the course asset's locked status.
+        self.draft_store.set_asset_metadata_attr(self.course1.id, self.asset1_md.asset_id, "locked", not locked_state)
+        # Find the same course and check its locked status.
+        updated_asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
+        assert_not_none(updated_asset_md)
+        self.assertEquals(updated_asset_md.locked, not locked_state)
+        # Now flip it back.
+        self.draft_store.set_asset_metadata_attr(self.course1.id, self.asset1_md.asset_id, "locked", locked_state)
+        reupdated_asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
+        assert_not_none(reupdated_asset_md)
+        self.assertEquals(reupdated_asset_md.locked, locked_state)
+
+    def test_set_several_attrs(self):
+        # Find a course asset and check its locked status.
+        asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
+        assert_not_none(asset_md)
+        NEW_LOCKED = True
+        NEW_FILEPATH = '/new/path'
+        NEW_FIELD = 77
+        attrs = {'locked': NEW_LOCKED, 'basename': NEW_FILEPATH, 'new_field': NEW_FIELD}
+        # Flip the course asset's locked status.
+        self.draft_store.set_asset_metadata_attrs(self.course1.id, self.asset1_md.asset_id, attrs)
+        # Find the same course and check its changed attrs.
+        updated_asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
+        assert_not_none(updated_asset_md)
+        self.assertEquals(updated_asset_md.locked, NEW_LOCKED)
+        self.assertEquals(updated_asset_md.basename, NEW_FILEPATH)
+        # Make sure the unknown field was *not* added.
+        with assert_raises(AttributeError):
+            self.assertEquals(updated_asset_md.new_field, NEW_FIELD)
+
+    def test_copy_all_assets(self):
+        pass
 
 
 class TestMongoKeyValueStore(object):

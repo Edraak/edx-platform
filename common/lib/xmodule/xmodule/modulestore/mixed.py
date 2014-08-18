@@ -312,10 +312,12 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Saves the asset metadata for a particular course's asset.
 
-        :param course_key: (CourseKey): course identifier
-        :param asset_metadata: (AssetMetadata): data about the course asset data
+        Args:
+        course_key (CourseKey): course identifier
+        asset_metadata (AssetMetadata): data about the course asset data
 
-        :return: True if metadata save was successful, else False
+        Returns:
+            bool: True if metadata save was successful, else False
         """
         assert(isinstance(course_key, CourseKey))
         assert(isinstance(asset_metadata, AssetMetadata))
@@ -326,51 +328,66 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Find the metadata for a particular course asset.
 
-        :param: course_key (CourseKey): course identifier
-        :param: asset_key (AssetKey): locator containing original asset filename
+        Args:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): locator containing original asset filename
 
-        :return: asset metadata (AssetMetadata) -or- None if not found
+        Returns:
+            asset metadata (AssetMetadata) -or- None if not found
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.find_asset_metadata(course_key, asset_key)
 
     def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
         """
-        Returns a list of static assets for a course, followed by the total number of assets.
+        Returns a list of static assets for a course.
         By default all assets are returned, but start and maxresults can be provided to limit the query.
 
-        The return format is a list of asset data dictionaries.
-        The asset data dictionaries have the following keys:
-            asset_key (:class:`opaque_keys.edx.AssetKey`): The key of the asset
-            displayname: The human-readable name of the asset
-            uploadDate (datetime.datetime): The date and time that the file was uploadDate
-            contentType: The mimetype string of the asset
-            md5: An md5 hash of the asset content
+        Args:
+            course_key (CourseKey): course identifier
+            start (int): optional - start at this asset number
+            maxresults (int): optional - return at most this many, -1 means no limit
+            sort (array): optional - None means no sort
+                (sort_by (str), sort_order (str))
+                sort_by - one of 'uploadDate' or 'displayname'
+                sort_order - one of 'ascending' or 'descending'
+
+        Returns:
+            List of asset data dictionaries, which have the following keys:
+                asset_key (AssetKey): asset identifier
+                displayname: The human-readable name of the asset
+                uploadDate (datetime.datetime): The date and time that the file was uploaded
+                contentType: The mimetype string of the asset
+                md5: An md5 hash of the asset content
         """
         assert(isinstance(course_key, CourseKey))
         store = self._get_modulestore_for_courseid(course_key)
-        return store.get_all_asset_metadata(course_key)
+        return store.get_all_asset_metadata(course_key, start, maxresults, sort)
 
     def delete_asset_metadata(self, course_key, asset_key):
         """
         Deletes a single asset's metadata.
 
-        :param: course_key (CourseKey): course identifier
-        :param: asset_id (AssetKey): locator containing original asset filename
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_id (AssetKey): locator containing original asset filename
 
-        :return: number of asset metadata entries deleted (0 or 1)
+        Returns:
+            Number of asset metadata entries deleted (0 or 1)
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.delete_asset_metadata(course_key, asset_key)
 
     def delete_all_asset_metadata(self, course_key):
         """
-        Delete all of the assets which use this course_key as an identifier
-        :param course_key:
+        Delete all of the assets which use this course_key as an identifier.
+
+        Arguments:
+            course_key (CourseKey): course_identifier
         """
         assert(isinstance(course_key, CourseKey))
         store = self._get_modulestore_for_courseid(course_key)
@@ -378,7 +395,11 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
 
     def copy_all_asset_metadata(self, source_course_key, dest_course_key):
         """
-        Copy all the course assets from source_course_key to dest_course_key
+        Copy all the course assets from source_course_key to dest_course_key.
+
+        Arguments:
+            source_course_key (CourseKey): identifier of course to copy from
+            dest_course_key (CourseKey): identifier of course to copy to
         """
         assert(isinstance(source_course_key, CourseKey))
         assert(isinstance(dest_course_key, CourseKey))
@@ -389,26 +410,36 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
 
-        Raises NotFoundError if no such item exists
-        Raises AttributeError is attr is one of the build in attrs.
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): asset identifier
+            attr (str): which attribute to set
+            value: the value to set it to (any type pymongo accepts such as datetime, number, string)
 
-        :param course_key: a CourseKey
-        :param asset_key: an AssetKey
-        :param attr: which attribute to set
-        :param value: the value to set it to (any type pymongo accepts such as datetime, number, string)
-
-        :return: Nothing
+        Raises:
+            NotFoundError if no such item exists
+            AttributeError is attr is one of the build in attrs.
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.set_asset_metadata_attrs(course_key, asset_key, attr, value)
 
     def set_asset_metadata_attrs(self, course_key, asset_key, attr_dict):
         """
+        Add/set the given dict of attrs on the asset at the given location. Value can be any type which pymongo accepts.
+
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): asset identifier
+            attr_dict (dict): attribute/value pairs to set
+
+        Raises:
+            NotFoundError if no such item exists
+            AttributeError is attr is one of the build in attrs.
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.set_asset_metadata_attrs(course_key, asset_key, attr_dict)
 
@@ -416,25 +447,40 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Gets the given attr from the specified asset.
 
-        Raises NotFoundError if no such item exists
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): asset identifier
+            attr (str):  which attribute to get
+            default: the value to default the attr to if not found
 
-        :param course_key: a CourseKey
-        :param asset_key: an AssetKey
-        :param attr: which attribute to get
-        :param default: the value to default the attr to if not found
+        Returns:
+            Attr value (or default)
 
-        :return: Attr value (or default)
+        Raises:
+            NotFoundError if no such item exists
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.get_asset_metadata_attrs(course_key, asset_key, attr, default)
 
     def get_asset_metadata_attrs(self, course_key, asset_key, attr_dict):
         """
+        Gets the given attrs from the specified asset.
+
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): asset identifier
+            attr_dict (dict): attribute/value pairs to get
+
+        Returns:
+            Dict of attrs/values
+
+        Raises:
+            NotFoundError if no such item exists
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.get_asset_metadata_attrs(course_key, asset_key, attr_dict)
 

@@ -1341,39 +1341,41 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Internal; finds (or creates) course asset info about all assets for a particular course
 
-        :param course_key: (CourseKey): course identifier
-        :param asset_filename: (string): filename of the asset
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_filename (str): filename of the asset
 
-        :return: Asset info for the course, index of asset in list (None if asset does not exist)
+        Returns:
+            Asset info for the course, index of asset in list (None if asset does not exist)
         """
-        matching_courses = list(self.collection.find(SON([
-                ('_id.tag', 'i4x'),
-                ('_id.org', course_key.org),
-                ('_id.course', course_key.course),
-                ('_id.name', course_key.run),
-                ('_id.category', 'course'),
-            ])).limit(1))
-
-        # Using the course_id, find or create the course asset metadata document.
+        # Using the course_key, find or insert the course asset metadata document.
         # A single document exists per course to store the course asset metadata.
-        course = matching_courses[0]
-        course_assets = self.asset_collection.find({'course_id': course['_id']})
+        new_key = SON([
+            ('tag', 'i4x'),
+            ('org', course_key.org),
+            ('course', course_key.course),
+            ('name', course_key.run),
+            ('category', 'course'),
+        ])
+        course_assets = self.asset_collection.find_one({'course_id': new_key}, fields={'_id': True, 'assets': True})
 
-        if course_assets.count() == 0:
+        if course_assets is None:
             # Not found, so create.
-            asset_id = self.asset_collection.insert({'course_id': course['_id'], 'storage': 'TODO', 'assets': [], 'thumbnails': []})
-            course_assets = self.asset_collection.find({'_id': asset_id})
+            course_assets = {'course_id': new_key, 'storage': 'TODO', 'assets': [], 'thumbnails': []}
+            asset_id = self.asset_collection.insert(course_assets)
 
-        return course_assets[0]
+        return course_assets
 
     def _find_course_asset(self, course_key, asset_filename):
         """
         Internal; finds or creates course asset info -and- finds existing asset metadata.
 
-        :param course_key: (CourseKey): course identifier
-        :param asset_filename: (string): filename of the asset
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_filename (str): filename of the asset
 
-        :return: Asset info for the course, index of asset in list (None if asset does not exist)
+        Returns:
+            Asset info for the course, index of asset in list (None if asset does not exist)
         """
         course_assets = self._find_course_assets(course_key)
 
@@ -1395,17 +1397,19 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Saves the asset metadata for a particular course's asset.
 
-        :param course_key: (CourseKey): course identifier
-        :param asset_metadata: (AssetMetadata): data about the course asset data
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_metadata (AssetMetadata): data about the course asset data
 
-        :return: True if metadata save was successful, else False
+        Returns:
+            True if metadata save was successful, else False
         """
         assert isinstance(course_key, CourseKey)
         assert isinstance(asset_metadata, AssetMetadata)
         if self.asset_collection is None:
             return False
 
-        course_assets, asset_idx = self._find_course_asset(course_key, asset_metadata.upload_name)
+        course_assets, asset_idx = self._find_course_asset(course_key, asset_metadata.asset_id.path)
         all_assets = course_assets['assets']
 
         # Translate metadata to Mongo format.
@@ -1425,10 +1429,12 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Find the metadata for a particular course asset.
 
-        :param: course_key (CourseKey): course identifier
-        :param: asset_id (AssetKey): locator containing original asset filename
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_id (AssetKey): locator containing original asset filename
 
-        :return: asset metadata (AssetMetadata) -or- None if not found
+        Returns:
+            asset metadata (AssetMetadata) -or- None if not found
         """
         assert isinstance(course_key, CourseKey)
         assert isinstance(asset_key, AssetKey)
@@ -1446,16 +1452,25 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
 
     def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
         """
-        Returns a list of static assets for a course, followed by the total number of assets.
+        Returns a list of static assets for a course.
         By default all assets are returned, but start and maxresults can be provided to limit the query.
 
-        The return format is a list of asset data dictionaries.
-        The asset data dictionaries have the following keys:
-            asset_key (:class:`opaque_keys.edx.AssetKey`): The key of the asset
-            displayname: The human-readable name of the asset
-            uploadDate (datetime.datetime): The date and time that the file was uploadDate
-            contentType: The mimetype string of the asset
-            md5: An md5 hash of the asset content
+        Args:
+            course_key (CourseKey): course identifier
+            start (int): optional - start at this asset number
+            maxresults (int): optional - return at most this many, -1 means no limit
+            sort (array): optional - None means no sort
+                (sort_by (str), sort_order (str))
+                sort_by - one of 'uploadDate' or 'displayname'
+                sort_order - one of 'ascending' or 'descending'
+
+        Returns:
+            List of asset data dictionaries, which have the following keys:
+                asset_key (AssetKey): asset identifier
+                displayname: The human-readable name of the asset
+                uploadDate (datetime.datetime): The date and time that the file was uploaded
+                contentType: The mimetype string of the asset
+                md5: An md5 hash of the asset content
         """
         assert isinstance(course_key, CourseKey)
         if self.asset_collection is None:
@@ -1477,23 +1492,33 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
 
-        Raises NotFoundError if no such item exists
-        Raises AttributeError is attr is one of the build in attrs.
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): asset identifier
+            attr (str): which attribute to set
+            value: the value to set it to (any type pymongo accepts such as datetime, number, string)
 
-        :param course_key: a CourseKey
-        :param asset_key: an AssetKey
-        :param attr: which attribute to set
-        :param value: the value to set it to (any type pymongo accepts such as datetime, number, string)
-
-        :return: Nothing
+        Raises:
+            NotFoundError if no such item exists
+            AttributeError is attr is one of the build in attrs.
         """
         return self.set_asset_metadata_attrs(course_key, asset_key, {attr: value})
 
     def set_asset_metadata_attrs(self, course_key, asset_key, attr_dict):
         """
+        Add/set the given dict of attrs on the asset at the given location. Value can be any type which pymongo accepts.
+
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_key (AssetKey): asset identifier
+            attr_dict (dict): attribute: value pairs to set
+
+        Raises:
+            NotFoundError if no such item exists
+            AttributeError is attr is one of the build in attrs.
         """
         assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_key, AssetLocator))
+        assert(isinstance(asset_key, AssetKey))
         if self.asset_collection is None:
             return
 
@@ -1508,7 +1533,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         all_assets = course_assets['assets']
         md = AssetMetadata(asset_key, asset_key.path)
         md.from_mongo(all_assets[asset_idx])
-        md.set_attrs(att_dict)
+        md.set_attrs(attr_dict)
         all_assets[asset_idx] = md.to_mongo()
 
         self.asset_collection.update({'_id': course_assets['_id']}, {"$set": {'assets': all_assets}})
@@ -1517,10 +1542,12 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         Deletes a single asset's metadata.
 
-        :param: course_key (CourseKey): course identifier
-        :param: asset_id (AssetKey): locator containing original asset filename
+        Arguments:
+            course_key (CourseKey): course identifier
+            asset_id (AssetKey): locator containing original asset filename
 
-        :return: number of asset metadata entries deleted (0 or 1)
+        Returns:
+            Number of asset metadata entries deleted (0 or 1)
         """
         assert isinstance(course_key, CourseKey)
         assert isinstance(asset_key, AssetKey)
@@ -1543,7 +1570,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Delete all of the assets which use this course_key as an identifier.
 
         Arguments:
-            :param: course_key (CourseKey): course_identifier
+            course_key (CourseKey): course_identifier
         """
         assert isinstance(course_key, CourseKey)
         if self.asset_collection is None:
@@ -1556,7 +1583,11 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
 
     def copy_all_asset_metadata(self, source_course_key, dest_course_key):
         """
-        Copy all the course assets from source_course_key to dest_course_key
+        Copy all the course assets from source_course_key to dest_course_key.
+
+        Arguments:
+            source_course_key (CourseKey): identifier of course to copy from
+            dest_course_key (CourseKey): identifier of course to copy to
         """
         assert isinstance(source_course_key, CourseKey)
         assert isinstance(dest_course_key, CourseKey)
