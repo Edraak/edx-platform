@@ -1,3 +1,39 @@
+
+#
+# The pattern below provides a useful mechanism to test the conversion of markdown to XML
+# with some resilience built in to account for the fact that whitespace is ignored in both
+# markdown and XML. To use this pattern, just make a copy of the 8 lines of pattern code,
+# uncomment those 8 lines, and replace three keyword markers with strings appropriate to the
+# test you want to construct:
+#
+#   DESCRIPTION         -- a brief description of the main element(s) begin exercised by this test
+#   MARKDOWN_STRING     -- the markdown text which would be created in the simple editor
+#   EXPECTED_XML_STRING -- the resulting XML string which *should* be produced when the markdown is translated
+#
+# There are a several string replacement steps here that may not be obvious:
+#
+#   1) The single-quote character (') causes some problems when it appears as an apostrophe in the markdown
+#      text so the first replacement turns any such characters into a safer back-tick (`) character.
+#
+#   2) Then, all whitespace (carriage returns, tabs, linefeeds, spaces) are replaced by single spaces. That is,
+#      any run of 1 or more of these characters is replaced by a single space.
+#
+#   3) Any spaces at the beginning of the string is removed via the trim() function.
+#
+# All transforms are carried out on both the markdown string and the XML resulting string so that a simple
+# string comparison should match without regard to whitespace in either of the strings.
+#
+#      #____________________________________________________________________
+#      it 'DESCRIPTION', ->
+#                  data = MarkdownEditingDescriptor.markdownToXml("""
+#                        MARKDOWN_STRING
+#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+#                  expect(data).toEqual(("""
+#                        EXPECTED_XML_STRING
+#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+#
+#
+
 describe 'MarkdownEditingDescriptor', ->
   describe 'save stores the correct data', ->
     it 'saves markdown from markdown editor', ->
@@ -730,6 +766,8 @@ describe 'MarkdownEditingDescriptor', ->
 
     ################################################################ hinting tests
     describe 'hinting tests', ->
+      #____________________________________________________________________
+      #____________________________________________________________________
       describe 'drop down components', ->
         it 'multiple component drop down', ->
                   data = MarkdownEditingDescriptor.markdownToXml("""
@@ -844,6 +882,8 @@ describe 'MarkdownEditingDescriptor', ->
                                   </problem>
                   """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
 
+      #____________________________________________________________________
+      #____________________________________________________________________
       describe 'checkbox components', ->
         #____________________________________________________________________
         it 'multiple checkbox components', ->
@@ -1051,6 +1091,8 @@ describe 'MarkdownEditingDescriptor', ->
                                     </problem>
                   """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
 
+      #____________________________________________________________________
+      #____________________________________________________________________
       describe 'multiple choice components', ->
         #____________________________________________________________________
         it 'dual multiple choice components ', ->
@@ -1162,49 +1204,124 @@ describe 'MarkdownEditingDescriptor', ->
 
                   """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
 
-#      #____________________________________________________________________
-#      it 'DESCRIPTION', ->
-#                  data = MarkdownEditingDescriptor.markdownToXml("""
-#                        MARKDOWN_STRING
-#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
-#                  expect(data).toEqual(("""
-#                        EXPECTED_XML_STRING
-#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'text input components', ->
+        #____________________________________________________________________
+        it 'simple single text input component', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+                                      >>In which country would you find the city of Paris?<<
+
+                                      = France		{{ BRAVO::Viva la France! }}
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                      <problem schema="edXML/1.0">
+                                      <p>In which country would you find the city of Paris?</p>
+                                      <stringresponse answer="France" type="ci" >
+                                          <correcthint  label="BRAVO">Viva la France!
+                                          </correcthint>
+                                        <textline label="In which country would you find the city of Paris?" size="20"/>
+                                      </stringresponse>
+
+                                      </problem>
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+        #____________________________________________________________________
+        it 'simple single text input component, with problem hints', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+                                    >>In which country would you find the city of Paris?<<
+
+                                    = France		{{ BRAVO::Viva la France! }}
+
+
+                                    || There are actually two countries with cities named Paris. ||
+                                    || Paris is the capital of one of those countries. ||
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                    <problem schema="edXML/1.0">
+                                    <p>In which country would you find the city of Paris?</p>
+                                    <stringresponse answer="France" type="ci" >
+                                        <correcthint  label="BRAVO">Viva la France!
+                                        </correcthint>
+                                      <textline label="In which country would you find the city of Paris?" size="20"/>
+                                    </stringresponse>
+                                        <demandhint>
+                                            <hint>  There are actually two countries with cities named Paris.
+                                            </hint>
+                                            <hint>  Paris is the capital of one of those countries.
+                                            </hint>
+                                        </demandhint>
+                                    </problem>
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+        #____________________________________________________________________
+        it 'text input component, with an alternate correct answer', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+                                          >>In which country would you find the city of Paris?<<
+
+                                          = France		{{ BRAVO::Viva la France! }}
+                                      or= USA			{{ There is a town in Texas called Paris.}}
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                      <problem schema="edXML/1.0">
+                                      <p>In which country would you find the city of Paris?</p>
+                                      <stringresponse answer="France" type="ci" >
+                                          <correcthint  label="BRAVO">Viva la France!
+                                          </correcthint>
+                                          <additional_answer  answer="USA">There is a town in Texas called Paris.
+                                        </additional_answer>
+                                        <textline label="In which country would you find the city of Paris?" size="20"/>
+                                      </stringresponse>
+                                      </problem>
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'numeric input components', ->
+        #____________________________________________________________________
+        it 'simple single text input component', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+
+                                      >>Enter the numerical value of Pi:<<
+                                      = 3.14159 +- .02
+
+                                      >>Enter the approximate value of 502*9:<<
+                                      = 4518 +- 15%
+
+                                      >>Enter the number of fingers on a human hand<<
+                                      = 5
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                      <problem schema="edXML/1.0">
+                                      <p>Enter the numerical value of Pi:</p>
+                                      <numericalresponse answer="3.14159">
+                                        <responseparam type="tolerance" default=".02" />
+                                        <formulaequationinput label="Enter the numerical value of Pi:" />
+                                      </numericalresponse>
+                                      <p>Enter the approximate value of 502*9:</p>
+                                      <numericalresponse answer="4518">
+                                        <responseparam type="tolerance" default="15%" />
+                                        <formulaequationinput label="Enter the approximate value of 502*9:" />
+                                      </numericalresponse>
+                                      <p>Enter the number of fingers on a human hand</p>
+                                      <numericalresponse answer="5">
+                                        <formulaequationinput label="Enter the number of fingers on a human hand" />
+                                      </numericalresponse>
+                                      </problem>
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
 
 
 
-#
-# The pattern below provides a useful mechanism to test the conversion of markdown to XML
-# with some resilience built in to account for the fact that whitespace is ignored in both
-# markdown and XML. To use this pattern, just make a copy of the 8 lines of pattern code,
-# uncomment those 8 lines, and replace three keyword markers with strings appropriate to the
-# test you want to construct:
-#
-#   DESCRIPTION         -- a brief description of the main element(s) begin exercised by this test
-#   MARKDOWN_STRING     -- the markdown text which would be created in the simple editor
-#   EXPECTED_XML_STRING -- the resulting XML string which *should* be produced when the markdown is translated
-#
-# There are a several string replacement steps here that may not be obvious:
-#
-#   1) The single-quote character (') causes some problems when it appears as an apostrophe in the markdown
-#      text so the first replacement turns any such characters into a safer back-tick (`) character.
-#
-#   2) Then, all whitespace (carriage returns, tabs, linefeeds, spaces) are replaced by single spaces. That is,
-#      any run of 1 or more of these characters is replaced by a single space.
-#
-#   3) Any spaces at the beginning of the string is removed via the trim() function.
-#
-# All transforms are carried out on both the markdown string and the XML resulting string so that a simple
-# string comparison should match without regard to whitespace in either of the strings.
-#
-#      #____________________________________________________________________
-#      it 'DESCRIPTION', ->
-#                  data = MarkdownEditingDescriptor.markdownToXml("""
-#                        MARKDOWN_STRING
-#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
-#                  expect(data).toEqual(("""
-#                        EXPECTED_XML_STRING
-#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
 
 
 
