@@ -9,13 +9,13 @@ class AssetMetadata(object):
     in the modulestore.
     """
 
-    TOP_LEVEL_ATTRS = ['basename', 'internal_name', 'locked']
+    TOP_LEVEL_ATTRS = ['basename', 'internal_name', 'locked', 'contenttype', 'md5']
     EDIT_INFO_ATTRS = ['curr_version', 'prev_version', 'edited_by', 'edited_on']
     ALLOWED_ATTRS = TOP_LEVEL_ATTRS + EDIT_INFO_ATTRS
 
     def __init__(self, asset_id,
                  basename=None, internal_name=None,
-                 locked=None, contenttype=None,
+                 locked=None, contenttype=None, md5=None,
                  curr_version=None, prev_version=None,
                  edited_by=None, edited_on=None, **kwargs):
         """
@@ -37,23 +37,30 @@ class AssetMetadata(object):
         self.internal_name = internal_name
         self.locked = locked
         self.contenttype = contenttype
+        self.md5 = md5
         self.curr_version = curr_version
         self.prev_version = prev_version
         self.edited_by = edited_by
         self.edited_on = edited_on
 
     def __eq__(self, other):
-        return self.asset_id == other.asset_id
+        return other and self.asset_id == other.asset_id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.asset_id)
 
     def __repr__(self):
-        return """AssetMetadata('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')"""\
-                .format(self.asset_id,
-                        self.basename, self.internal_name,
-                        self.locked, self.contenttype,
-                        self.curr_version, self.prev_version,
-                        self.edited_by, self.edited_on)
+        return """AssetMetadata('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".format(
+            self.asset_id,
+            self.basename, self.internal_name,
+            self.locked, self.contenttype, self.md5,
+            self.curr_version, self.prev_version,
+            self.edited_by, self.edited_on)
 
-    def set_attrs(self, attr_dict):
+    def update(self, attr_dict):
         """
         Set the attributes on the metadata. Ignore all those outside the known fields.
 
@@ -74,6 +81,7 @@ class AssetMetadata(object):
             'internal_name': self.internal_name,
             'locked': self.locked,
             'contenttype': self.contenttype,
+            'md5': self.md5,
             'edit_info': {
                 'curr_version': self.curr_version,
                 'prev_version': self.prev_version,
@@ -95,6 +103,7 @@ class AssetMetadata(object):
         self.internal_name = asset_doc['internal_name']
         self.locked = asset_doc['locked']
         self.contenttype = asset_doc['contenttype']
+        self.md5 = asset_doc['md5']
         edit_info = asset_doc['edit_info']
         self.curr_version = edit_info['curr_version']
         self.prev_version = edit_info['prev_version']
@@ -121,8 +130,14 @@ class AssetThumbnailMetadata(object):
     def __eq__(self, other):
         return self.asset_id == other.asset_id
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.asset_id)
+
     def __repr__(self):
-        return """AssetMetadata('{0}', '{1}')""".format(self.asset_id, self.internal_name)
+        return """AssetMetadata('{}', '{}')""".format(self.asset_id, self.internal_name)
 
     def to_mongo(self):
         return {
