@@ -455,6 +455,9 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             source_course_key (CourseKey): identifier of course to copy from
             dest_course_key (CourseKey): identifier of course to copy to
         """
+        # When implementing this in https://openedx.atlassian.net/browse/PLAT-78 , consider this:
+        #  Check the modulestores of both the source and dest course_keys. If in different modulestores,
+        #  export all asset data from one modulestore and import it into the dest one.
         assert(isinstance(source_course_key, CourseKey))
         assert(isinstance(dest_course_key, CourseKey))
         store = self._get_modulestore_for_courseid(source_course_key)
