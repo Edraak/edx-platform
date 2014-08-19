@@ -30,7 +30,7 @@ from opaque_keys.edx.keys import UsageKey
 from xmodule.modulestore.xml_exporter import export_to_xml
 from xmodule.modulestore.xml_importer import import_from_xml, perform_xlint
 from xmodule.contentstore.mongo import MongoContentStore
-from xmodule.assetstore import AssetMetadata
+from xmodule.assetstore import AssetMetadata, AssetThumbnailMetadata
 
 from nose.tools import assert_in
 from xmodule.exceptions import NotFoundError
@@ -844,6 +844,9 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         return AssetMetadata(asset_loc, filename, internal_name='EKMND332DDBK', filepath='pictures/historical',
                              locked=False, edited_by='CourseAuthor', edited_on=datetime.now(), curr_version='v1.0', prev_version='v0.95')
 
+    def _make_asset_thumbnail_metadata(self, asset_key, filename):
+        return AssetThumbnailMetadata(asset_key, internal_name='ABC39XJUDN2')
+
     @classmethod
     def setupClass(cls):
         super(TestMongoAssetMetadataStorage, cls).setupClass()
@@ -870,27 +873,58 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         ASSET4 = dict(zip(ASSET_FIELDS, ASSET4_VALS))
         NON_EXISTENT_ASSET = dict(zip(ASSET_FIELDS, ASSET5_VALS))
 
+        THUMBNAIL_FIELDS = ('filename', 'internal_name')
+        THUMBNAIL1_VALS = ('cat_thumb.jpg', 'XYXYXYXYXYXY')
+        THUMBNAIL2_VALS = ('kitten_thumb.jpg', '123ABC123ABC')
+        THUMBNAIL3_VALS = ('puppy_thumb.jpg', 'ADAM12ADAM12')
+        THUMBNAIL4_VALS = ('meerkat_thumb.jpg', 'CHIPSPONCH14')
+        THUMBNAIL5_VALS = ('grimace_thumb.jpg', 'RON8LDXFFFF10')
+
+        THUMBNAIL1 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL1_VALS))
+        THUMBNAIL2 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL2_VALS))
+        THUMBNAIL3 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL3_VALS))
+        THUMBNAIL4 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL4_VALS))
+        NON_EXISTENT_THUMBNAIL = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL5_VALS))
+
         courses = self.draft_store.get_courses()
         self.course1 = courses[0]
         self.course2 = courses[1]
 
-        asset1_loc = self.course1.id.make_asset_key('asset', ASSET1['filename'])
-        asset2_loc = self.course1.id.make_asset_key('asset', ASSET2['filename'])
-        asset3_loc = self.course2.id.make_asset_key('asset', ASSET3['filename'])
-        asset4_loc = self.course2.id.make_asset_key('asset', ASSET4['filename'])
-        asset5_loc = self.course2.id.make_asset_key('asset', NON_EXISTENT_ASSET['filename'])
+        asset1_key = self.course1.id.make_asset_key('asset', ASSET1['filename'])
+        asset2_key = self.course1.id.make_asset_key('asset', ASSET2['filename'])
+        asset3_key = self.course2.id.make_asset_key('asset', ASSET3['filename'])
+        asset4_key = self.course2.id.make_asset_key('asset', ASSET4['filename'])
+        asset5_key = self.course2.id.make_asset_key('asset', NON_EXISTENT_ASSET['filename'])
 
-        self.asset1_md = AssetMetadata(asset1_loc, asset1_loc.path, **ASSET1)
-        self.asset2_md = AssetMetadata(asset2_loc, asset2_loc.path, **ASSET2)
-        self.asset3_md = AssetMetadata(asset3_loc, asset3_loc.path, **ASSET3)
-        self.asset4_md = AssetMetadata(asset4_loc, asset4_loc.path, **ASSET4)
-        self.asset5_md = AssetMetadata(asset5_loc, asset5_loc.path, **NON_EXISTENT_ASSET)
+        self.asset1_md = AssetMetadata(asset1_key, asset1_key.path, **ASSET1)
+        self.asset2_md = AssetMetadata(asset2_key, asset2_key.path, **ASSET2)
+        self.asset3_md = AssetMetadata(asset3_key, asset3_key.path, **ASSET3)
+        self.asset4_md = AssetMetadata(asset4_key, asset4_key.path, **ASSET4)
+        self.asset5_md = AssetMetadata(asset5_key, asset5_key.path, **NON_EXISTENT_ASSET)
 
         self.assertTrue(self.draft_store.save_asset_metadata(self.course1.id, self.asset1_md))
         self.assertTrue(self.draft_store.save_asset_metadata(self.course1.id, self.asset2_md))
         self.assertTrue(self.draft_store.save_asset_metadata(self.course2.id, self.asset3_md))
         self.assertTrue(self.draft_store.save_asset_metadata(self.course2.id, self.asset4_md))
         # asset5 is not saved on purpose!
+
+        thumb1_key = self.course1.id.make_asset_key('asset', THUMBNAIL1['filename'])
+        thumb2_key = self.course1.id.make_asset_key('asset', THUMBNAIL2['filename'])
+        thumb3_key = self.course2.id.make_asset_key('asset', THUMBNAIL3['filename'])
+        thumb4_key = self.course2.id.make_asset_key('asset', THUMBNAIL4['filename'])
+        thumb5_key = self.course2.id.make_asset_key('asset', NON_EXISTENT_THUMBNAIL['filename'])
+
+        self.thumb1_md = AssetThumbnailMetadata(thumb1_key, **THUMBNAIL1)
+        self.thumb2_md = AssetThumbnailMetadata(thumb2_key, **THUMBNAIL2)
+        self.thumb3_md = AssetThumbnailMetadata(thumb3_key, **THUMBNAIL3)
+        self.thumb4_md = AssetThumbnailMetadata(thumb4_key, **THUMBNAIL4)
+        self.thumb5_md = AssetThumbnailMetadata(thumb5_key, **NON_EXISTENT_THUMBNAIL)
+
+        self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course1.id, self.thumb1_md))
+        self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course1.id, self.thumb2_md))
+        self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course2.id, self.thumb3_md))
+        self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course2.id, self.thumb4_md))
+        # thumb5 is not saved on purpose!
 
     def tearDown(self):
         self.draft_store.delete_all_asset_metadata(self.course1.id)
@@ -902,13 +936,13 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         ASSET_FILENAME = 'burnside.jpg'
         new_asset_loc = course.id.make_asset_key('asset', ASSET_FILENAME)
         # Confirm that the asset's metadata is not present.
-        assert_is_none(self.draft_store.find_asset_metadata(course.id, new_asset_loc))
+        self.assertIsNone(self.draft_store.find_asset_metadata(course.id, new_asset_loc))
         # Save the asset's metadata.
         new_asset_md = self._make_asset_metadata(new_asset_loc, ASSET_FILENAME)
         self.assertTrue(self.draft_store.save_asset_metadata(course.id, new_asset_md))
         # Find the asset's metadata and confirm it's the same.
         found_asset_md = self.draft_store.find_asset_metadata(course.id, new_asset_loc)
-        assert_not_none(found_asset_md)
+        self.assertIsNotNone(found_asset_md)
         self.assertEquals(new_asset_md, found_asset_md)
         # Confirm that only two setup plus one asset's metadata exists.
         self.assertEquals(len(self.draft_store.get_all_asset_metadata(course.id)), 3)
@@ -946,10 +980,10 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
     def test_find_existing_and_non_existing_assets(self):
         # Find existing asset metadata.
         asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
-        assert_not_none(asset_md)
+        self.assertIsNotNone(asset_md)
         # Find non-existent asset metadata.
         asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset5_md.asset_id)
-        assert_is_none(asset_md)
+        self.assertIsNone(asset_md)
 
     def test_add_same_asset_twice(self):
         courses = self.draft_store.get_courses()
@@ -972,24 +1006,24 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
     def test_lock_unlock_assets(self):
         # Find a course asset and check its locked status.
         asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
-        assert_not_none(asset_md)
+        self.assertIsNotNone(asset_md)
         locked_state = asset_md.locked
         # Flip the course asset's locked status.
         self.draft_store.set_asset_metadata_attr(self.course1.id, self.asset1_md.asset_id, "locked", not locked_state)
         # Find the same course and check its locked status.
         updated_asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
-        assert_not_none(updated_asset_md)
+        self.assertIsNotNone(updated_asset_md)
         self.assertEquals(updated_asset_md.locked, not locked_state)
         # Now flip it back.
         self.draft_store.set_asset_metadata_attr(self.course1.id, self.asset1_md.asset_id, "locked", locked_state)
         reupdated_asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
-        assert_not_none(reupdated_asset_md)
+        self.assertIsNotNone(reupdated_asset_md)
         self.assertEquals(reupdated_asset_md.locked, locked_state)
 
     def test_set_several_attrs(self):
         # Find a course asset and check its locked status.
         asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
-        assert_not_none(asset_md)
+        self.assertIsNotNone(asset_md)
         NEW_LOCKED = True
         NEW_FILEPATH = '/new/path'
         NEW_FIELD = 77
@@ -998,12 +1032,31 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         self.draft_store.set_asset_metadata_attrs(self.course1.id, self.asset1_md.asset_id, attrs)
         # Find the same course and check its changed attrs.
         updated_asset_md = self.draft_store.find_asset_metadata(self.course1.id, self.asset1_md.asset_id)
-        assert_not_none(updated_asset_md)
+        self.assertIsNotNone(updated_asset_md)
         self.assertEquals(updated_asset_md.locked, NEW_LOCKED)
         self.assertEquals(updated_asset_md.basename, NEW_FILEPATH)
         # Make sure the unknown field was *not* added.
-        with assert_raises(AttributeError):
+        with self.assertRaises(AttributeError):
             self.assertEquals(updated_asset_md.new_field, NEW_FIELD)
+
+    def test_save_one_thumbnail_and_delete_one_thumbnail(self):
+        THUMBNAIL_FILENAME = 'burn_thumb.jpg'
+        asset_key = self.course1.id.make_asset_key('thumbnail', THUMBNAIL_FILENAME)
+        new_asset_thumbnail = self._make_asset_thumbnail_metadata(asset_key, THUMBNAIL_FILENAME)
+        self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 2)
+        self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course1.id, new_asset_thumbnail))
+        self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 3)
+        self.assertEquals(self.draft_store.delete_asset_thumbnail_metadata(self.course1.id, asset_key), 1)
+        self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 2)
+
+    def test_find_thumbnail(self):
+        self.assertIsNotNone(self.draft_store.find_asset_thumbnail_metadata(self.course1.id, self.thumb1_md.asset_id))
+        self.assertIsNone(self.draft_store.find_asset_thumbnail_metadata(self.course1.id, self.thumb5_md.asset_id))
+
+    def test_delete_all_thumbnails(self):
+        self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 2)
+        self.draft_store.delete_all_asset_metadata(self.course1.id)
+        self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 0)
 
     def test_copy_all_assets(self):
         pass

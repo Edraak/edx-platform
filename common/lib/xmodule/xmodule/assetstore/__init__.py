@@ -14,7 +14,8 @@ class AssetMetadata(object):
     ALLOWED_ATTRS = TOP_LEVEL_ATTRS + EDIT_INFO_ATTRS
 
     def __init__(self, asset_id,
-                 basename=None, internal_name=None, locked=None,
+                 basename=None, internal_name=None,
+                 locked=None, contenttype=None,
                  curr_version=None, prev_version=None,
                  edited_by=None, edited_on=None, **kwargs):
         """
@@ -25,6 +26,7 @@ class AssetMetadata(object):
             basename (str): Original path to file at asset upload time.
             internal_name (str): Name under which the file is stored internally.
             locked (bool): If True, only course participants can access the asset.
+            contenttype (str): MIME type of the asset.
             curr_version (str): Current version of the asset.
             prev_version (str): Previous version of the asset.
             edited_by (str): Username of last user to upload this asset.
@@ -34,6 +36,7 @@ class AssetMetadata(object):
         self.basename = basename  # Path w/o filename.
         self.internal_name = internal_name
         self.locked = locked
+        self.contenttype = contenttype
         self.curr_version = curr_version
         self.prev_version = prev_version
         self.edited_by = edited_by
@@ -43,9 +46,10 @@ class AssetMetadata(object):
         return self.asset_id == other.asset_id
 
     def __repr__(self):
-        return """AssetMetadata('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')"""\
+        return """AssetMetadata('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')"""\
                 .format(self.asset_id,
-                        self.basename, self.internal_name, self.locked,
+                        self.basename, self.internal_name,
+                        self.locked, self.contenttype,
                         self.curr_version, self.prev_version,
                         self.edited_by, self.edited_on)
 
@@ -65,17 +69,18 @@ class AssetMetadata(object):
         Converts metadata properties into a MongoDB-storable dict.
         """
         return {
-           'filename': self.asset_id.path,
-           'basename': self.basename,
-           'internal_name': self.internal_name,
-           'locked': self.locked,
-           'edit_info': {
-              'curr_version': self.curr_version,
-              'prev_version': self.prev_version,
-              'edited_by': self.edited_by,
-              'edited_on': self.edited_on
-              }
-           }
+            'filename': self.asset_id.path,
+            'basename': self.basename,
+            'internal_name': self.internal_name,
+            'locked': self.locked,
+            'contenttype': self.contenttype,
+            'edit_info': {
+                'curr_version': self.curr_version,
+                'prev_version': self.prev_version,
+                'edited_by': self.edited_by,
+                'edited_on': self.edited_on
+               }
+            }
 
     def from_mongo(self, asset_doc):
         """
@@ -89,6 +94,7 @@ class AssetMetadata(object):
         self.basename = asset_doc['basename']
         self.internal_name = asset_doc['internal_name']
         self.locked = asset_doc['locked']
+        self.contenttype = asset_doc['contenttype']
         edit_info = asset_doc['edit_info']
         self.curr_version = edit_info['curr_version']
         self.prev_version = edit_info['prev_version']
@@ -96,4 +102,34 @@ class AssetMetadata(object):
         self.edited_on = edit_info['edited_on']
 
 
+class AssetThumbnailMetadata(object):
+    """
+    Stores the metadata associated with the thumbnail of a course asset.
+    """
 
+    def __init__(self, asset_id, internal_name=None, **kwargs):
+        """
+        Construct a AssetThumbnailMetadata object.
+
+        Arguments:
+            asset_id (AssetKey): Key identifying this particular asset.
+            internal_name (str): Name under which the file is stored internally.
+        """
+        self.asset_id = asset_id
+        self.internal_name = internal_name
+
+    def __eq__(self, other):
+        return self.asset_id == other.asset_id
+
+    def __repr__(self):
+        return """AssetMetadata('{0}', '{1}')""".format(self.asset_id, self.internal_name)
+
+    def to_mongo(self):
+        return {
+            'filename': self.asset_id.path,
+            'internal_name': self.internal_name
+        }
+
+    def from_mongo(self, thumbnail_doc):
+        assert isinstance(thumbnail_doc, dict)
+        self.internal_name = thumbnail_doc['internal_name']
