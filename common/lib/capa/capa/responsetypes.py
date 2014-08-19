@@ -1736,7 +1736,7 @@ class StringResponse(LoncapaResponse):
         result = False
         if answer:
             if isinstance(answer, basestring):              # force answer to be a list
-                answer = list(answer)
+                answer = [answer]
 
             _ = self.capa_system.i18n.ugettext
             if use_regex:
@@ -1748,7 +1748,7 @@ class StringResponse(LoncapaResponse):
                     msg = _("Illegal regex expression: ") + pattern
                     raise ResponseError(msg)
             else:
-                result = unicode(pattern.upper() in answer[0].upper().strip())
+                result = pattern.upper() in answer[0].upper().strip()
         return result
 
     def check_string(self, expected, given):
