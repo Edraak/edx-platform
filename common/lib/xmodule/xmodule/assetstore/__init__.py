@@ -47,18 +47,19 @@ class AssetMetadata(object):
         return other and self.asset_id == other.asset_id
 
     def __ne__(self, other):
-        return not self.__eq__(other)
+        return not self == other
 
     def __hash__(self):
         return hash(self.asset_id)
 
     def __repr__(self):
-        return """AssetMetadata('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')""".format(
+        return """AssetMetadata('{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}')""".format(
             self.asset_id,
             self.basename, self.internal_name,
             self.locked, self.contenttype, self.md5,
             self.curr_version, self.prev_version,
-            self.edited_by, self.edited_on)
+            self.edited_by, self.edited_on
+            )
 
     def update(self, attr_dict):
         """
@@ -87,8 +88,8 @@ class AssetMetadata(object):
                 'prev_version': self.prev_version,
                 'edited_by': self.edited_by,
                 'edited_on': self.edited_on
-               }
             }
+        }
 
     def from_mongo(self, asset_doc):
         """
@@ -131,13 +132,13 @@ class AssetThumbnailMetadata(object):
         return self.asset_id == other.asset_id
 
     def __ne__(self, other):
-        return not self.__eq__(other)
+        return not self == other
 
     def __hash__(self):
         return hash(self.asset_id)
 
     def __repr__(self):
-        return """AssetMetadata('{}', '{}')""".format(self.asset_id, self.internal_name)
+        return """AssetMetadata('{!r}', '{!r}')""".format(self.asset_id, self.internal_name)
 
     def to_mongo(self):
         return {

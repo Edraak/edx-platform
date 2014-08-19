@@ -1349,8 +1349,10 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         """
         # Using the course_key, find or insert the course asset metadata document.
         # A single document exists per course to store the course asset metadata.
-        course_assets = self.asset_collection.find_one({'course_id': unicode(course_key)},
-                                                       fields={'_id': True, 'assets': True, 'thumbnails': True})
+        course_assets = self.asset_collection.find_one(
+            {'course_id': unicode(course_key)},
+            fields={'_id': True, 'assets': True, 'thumbnails': True}
+            )
 
         if course_assets is None:
             # Not found, so create.
