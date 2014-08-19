@@ -240,15 +240,16 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
         for group_id in self.group_id_to_child:
             child_location = self.group_id_to_child[group_id]
             child_descriptor = self.get_child_descriptor_by_location(child_location)
-            child = self.system.get_module(child_descriptor)
-            rendered_child = child.render(STUDENT_VIEW, context)
-            fragment.add_frag_resources(rendered_child)
+            if child_descriptor:  # render only existing children
+                child = self.system.get_module(child_descriptor)
+                rendered_child = child.render(STUDENT_VIEW, context)
+                fragment.add_frag_resources(rendered_child)
 
-            contents.append({
-                'group_id': group_id,
-                'id': child.location.to_deprecated_string(),
-                'content': rendered_child.content
-            })
+                contents.append({
+                    'group_id': group_id,
+                    'id': child.location.to_deprecated_string(),
+                    'content': rendered_child.content
+                })
 
         # Use the new template
         fragment.add_content(self.system.render_template('split_test_staff_view.html', {
