@@ -1073,7 +1073,7 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         self.assertEquals(getattr(updated_asset_md, attrPair[0], None), original_attr_val)
 
     @data(*UNKNOWN_ATTRS)
-    def test_set_disallowed_attrs(self, attrPair):
+    def test_set_unknown_attrs(self, attrPair):
         # Find a course asset.
         asset_md = self.draft_store.find_asset_metadata(self.asset1_md.asset_id)
         self.assertIsNotNone(asset_md)
