@@ -54,6 +54,15 @@ class TestRecommender(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         self.xblock_names = ['recommender', 'recommender_second']
 
+        self.course_url = reverse(
+            'courseware_section',
+            kwargs={
+                'course_id': self.course.id.to_deprecated_string(),
+                'chapter': 'Overview',
+                'section': 'Welcome',
+            }
+        )
+        
         self.test_recommendations = [
             {
                 "title": "Covalent bonding and periodic trends",
@@ -96,9 +105,6 @@ class TestRecommender(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         self.staff_user = GlobalStaffFactory()
 
-    def tearDown(self):
-        self.check_for_get_xblock_page_code(200)
-
     def get_handler_url(self, handler, xblock_name='recommender'):
         """
         Get url for the specified xblock handler
@@ -133,34 +139,6 @@ class TestRecommender(ModuleStoreTestCase, LoginEnrollmentTestCase):
         url = self.get_handler_url('add_resource', xblock_name)
         resp = self.client.post(url, json.dumps(resource), '')
         return json.loads(resp.content)
-
-    def check_for_get_xblock_page_code(self, code):
-        """
-        Check the response.status_code for getting the page where the XBlock
-        attached
-        """
-        url = reverse(
-            'courseware_section',
-            kwargs={
-                'course_id': self.course.id.to_deprecated_string(),
-                'chapter': 'Overview',
-                'section': 'Welcome',
-            }
-        )
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, code)
-
-    def set_up_resources(self):
-        """
-        Set up resources and enroll staff
-        """
-        self.logout()
-        self.enroll_staff(self.staff_user)
-        # Add resources, assume correct here, tested in test_add_resource
-        for resource, xblock_name in itertools.product(
-            self.test_recommendations, self.xblock_names
-        ):
-            self.add_resource(resource, xblock_name)
 
     def initialize_database_by_id(
         self, handler, resource_id, times, xblock_name='recommender'
@@ -206,17 +184,30 @@ class TestRecommenderCreateFromEmpty(TestRecommender):
                     expected_result[field] = resource[field]
 
                 self.assertDictEqual(result, expected_result)
-                self.check_for_get_xblock_page_code(200)
+                self.assert_request_status_code(200, self.course_url)
 
 
-class TestRecommenderCRUDWithResources(TestRecommender):
+class TestRecommenderWithResources(TestRecommender):
     """
-    Check whether we can add/edit/delete resources correctly
+    Check whether we can add/edit/delete resources, or evaluate a resource by
+    voting/endorsing/flagging correctly
     """
     def setUp(self):
         # call the setUp function from the superclass
-        super(TestRecommenderCRUDWithResources, self).setUp()
+        super(TestRecommenderWithResources, self).setUp()
         self.set_up_resources()
+
+    def set_up_resources(self):
+        """
+        Set up resources and enroll staff
+        """
+        self.logout()
+        self.enroll_staff(self.staff_user)
+        # Add resources, assume correct here, tested in test_add_resource
+        for resource, xblock_name in itertools.product(
+            self.test_recommendations, self.xblock_names
+        ):
+            self.add_resource(resource, xblock_name)
 
     def generate_edit_resource(self, resource_id):
         """
@@ -231,7 +222,6 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         """
         Verify the addition of a redundant resource (url) is rejected
         """
-        # Test
         for suffix in ['', '#IAmSuffix', '%23IAmSuffix']:
             resource = deepcopy(self.test_recommendations[0])
             resource['url'] += suffix
@@ -247,23 +237,23 @@ class TestRecommenderCRUDWithResources(TestRecommender):
                 expected_result['dup_' + field] = self.test_recommendations[0][field]
 
             self.assertDictEqual(result, expected_result)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_delete_resource_non_existing(self):
         """
         Delete a non-existing resource
         """
-        # Test
         resp = self.call_event('delete_resource', {'id': 100})
         self.assertEqual(resp['error'], 'bad id')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_delete_resource_once(self):
         """
         Delete a resource
         """
-        # Test
         resp = self.call_event('delete_resource', {'id': 1})
         self.assertEqual(resp['Success'], True)
+        self.assert_request_status_code(200, self.course_url)
 
     def test_delete_resource_twice(self):
         """
@@ -273,6 +263,7 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         # Test
         resp = self.call_event('delete_resource', {'id': 1})
         self.assertEqual(resp['error'], 'bad id')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_delete_different_resources(self):
         """
@@ -282,6 +273,7 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         # Test
         resp = self.call_event('delete_resource', {'id': 0})
         self.assertEqual(resp['Success'], True)
+        self.assert_request_status_code(200, self.course_url)
 
     def test_delete_resources_in_different_xblocks(self):
         """
@@ -295,6 +287,7 @@ class TestRecommenderCRUDWithResources(TestRecommender):
             xblock_name=self.xblock_names[1]
         )
         self.assertEqual(resp['Success'], True)
+        self.assert_request_status_code(200, self.course_url)
 
     def test_delete_resource_by_student(self):
         """
@@ -305,39 +298,40 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         # Test
         resp = self.call_event('delete_resource', {'id': 1})
         self.assertEqual(resp['error'], 'Delete resource without permission')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_edit_resource_non_existing(self):
         """
         Edit a non-existing resource
         """
-        # Test
         resp = self.call_event(
             'edit_resource', self.generate_edit_resource(100)
         )
         self.assertEqual(resp['error'], 'bad id')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_edit_redundant_resource(self):
         """
         Check whether changing the url to the one of 'another' resource is
         rejected
         """
-        # Test
         for suffix in ['', '#IAmSuffix', '%23IAmSuffix']:
             event_data = self.generate_edit_resource(0)
             event_data['url'] = self.test_recommendations[1]['url'] + suffix
             resp = self.call_event('edit_resource', event_data)
             self.assertEqual(resp['error'], 'existing url')
             self.assertEqual(resp['dup_id'], 1)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_edit_resource(self):
         """
         Check whether changing the content of resource is successful
         """
-        # Test
         resp = self.call_event(
             'edit_resource', self.generate_edit_resource(0)
         )
         self.assertEqual(resp['Success'], True)
+        self.assert_request_status_code(200, self.course_url)
 
     def test_edit_resources_in_different_xblocks(self):
         """
@@ -348,34 +342,23 @@ class TestRecommenderCRUDWithResources(TestRecommender):
         for xblock_name in self.xblock_names:
             resp = self.call_event('edit_resource', event_data, xblock_name)
             self.assertEqual(resp['Success'], True)
-            self.check_for_get_xblock_page_code(200)
-
-
-class TestRecommenderEvaluationWithResources(TestRecommender):
-    """
-    Check whether we can evaluate a resource by voting/endorsing/flagging
-    correctly
-    """
-    def setUp(self):
-        # call the setUp function from the superclass
-        super(TestRecommenderEvaluationWithResources, self).setUp()
-        self.set_up_resources()
+            self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_resource_non_existing(self):
         """
         Endorse a non-existing resource
         """
-        # Test
         resp = self.call_event('endorse_resource', {'id': 100})
         self.assertEqual(resp['error'], 'bad id')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_resource_once(self):
         """
         Endorse a resource
         """
-        # Test
         resp = self.call_event('endorse_resource', {'id': 1})
         self.assertEqual(resp['status'], 'endorsement')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_resource_twice(self):
         """
@@ -385,6 +368,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         # Test
         resp = self.call_event('endorse_resource', {'id': 1})
         self.assertEqual(resp['status'], 'undo endorsement')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_resource_thrice(self):
         """
@@ -394,6 +378,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         # Test
         resp = self.call_event('endorse_resource', {'id': 1})
         self.assertEqual(resp['status'], 'endorsement')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_different_resources(self):
         """
@@ -403,6 +388,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         # Test
         resp = self.call_event('endorse_resource', {'id': 0})
         self.assertEqual(resp['status'], 'endorsement')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_resources_in_different_xblocks(self):
         """
@@ -416,6 +402,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
             xblock_name=self.xblock_names[1]
         )
         self.assertEqual(resp['status'], 'endorsement')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_endorse_resource_by_student(self):
         """
@@ -426,28 +413,27 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         # Test
         resp = self.call_event('endorse_resource', {'id': 1})
         self.assertEqual(resp['error'], 'Endorse resource without permission')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_vote_resource_non_existing(self):
         """
         Vote a non-existing resource
         """
-        # Test
         for handler in ['handle_upvote', 'handle_downvote']:
             resp = self.call_event(handler, {'id': 100})
             self.assertEqual(resp['error'], 'bad id')
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_vote_resource_once(self):
         """
         Vote a resource
         """
-        # Test
         for handler, r_id, votes in zip(
             ['handle_upvote', 'handle_downvote'], [0, 1], [1, -1]
         ):
             resp = self.call_event(handler, {'id': r_id})
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_vote_resource_twice(self):
         """
@@ -461,7 +447,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         ):
             resp = self.call_event(handler, {'id': r_id})
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_vote_resource_thrice(self):
         """
@@ -475,7 +461,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         ):
             resp = self.call_event(handler, {'id': r_id})
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_switch_vote_resource(self):
         """
@@ -489,13 +475,12 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         ):
             resp = self.call_event(handler, {'id': r_id})
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_vote_different_resources(self):
         """
         Vote two different resources
         """
-        # Test
         for handler, r_id, votes in zip(
             [
                 'handle_upvote',
@@ -508,7 +493,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         ):
             resp = self.call_event(handler, {'id': r_id})
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_vote_resources_in_different_xblocks(self):
         """
@@ -526,7 +511,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
                 xblock_name=self.xblock_names[1]
             )
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_vote_resource_by_different_users(self):
         """
@@ -542,7 +527,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         ):
             resp = self.call_event(handler, {'id': r_id})
             self.assertEqual(resp['newVotes'], votes)
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_flag_resource_wo_reason(self):
         """
@@ -553,6 +538,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         resp = self.call_event('flag_resource', event_data)
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['reason'], '')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_flag_resource_w_reason(self):
         """
@@ -563,6 +549,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         resp = self.call_event('flag_resource', event_data)
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['reason'], 'reason 0')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_flag_resource_change_reason(self):
         """
@@ -576,6 +563,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['oldReason'], 'reason 0')
         self.assertEqual(resp['reason'], 'reason 1')
+        self.assert_request_status_code(200, self.course_url)
 
     def test_flag_resources_in_different_xblocks(self):
         """
@@ -587,7 +575,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
             resp = self.call_event('flag_resource', event_data, xblock_name)
             self.assertEqual(resp['Success'], True)
             self.assertEqual(resp['reason'], 'reason 0')
-            self.check_for_get_xblock_page_code(200)
+            self.assert_request_status_code(200, self.course_url)
 
     def test_flag_resources_by_different_users(self):
         """
@@ -603,6 +591,7 @@ class TestRecommenderEvaluationWithResources(TestRecommender):
         self.assertNotIn('oldReason', resp)
         self.assertEqual(resp['Success'], True)
         self.assertEqual(resp['reason'], 'reason 0')
+        self.assert_request_status_code(200, self.course_url)
 
 
 class TestRecommenderUserIdentity(TestRecommender):
@@ -617,6 +606,7 @@ class TestRecommenderUserIdentity(TestRecommender):
         url = self.get_handler_url('is_user_staff')
         result = json.loads(self.client.post(url, {}, '').content)
         self.assertFalse(result['is_user_staff'])
+        self.assert_request_status_code(200, self.course_url)
 
     def test_staff_is_user_staff(self):
         """
@@ -626,6 +616,7 @@ class TestRecommenderUserIdentity(TestRecommender):
         url = self.get_handler_url('is_user_staff')
         result = json.loads(self.client.post(url, {}, '').content)
         self.assertTrue(result['is_user_staff'])
+        self.assert_request_status_code(200, self.course_url)
 
 
 @ddt
@@ -657,7 +648,7 @@ class TestRecommenderFileUploading(TestRecommender):
         url = self.get_handler_url('upload_screenshot', xblock_name)
         response = self.client.post(url, {'file': f_handler})
         self.assertEqual(response.content, test_case['response'])
-        self.check_for_get_xblock_page_code(200)
+        self.assert_request_status_code(200, self.course_url)
 
     def test_set_s3_info(self):
         """
@@ -666,12 +657,13 @@ class TestRecommenderFileUploading(TestRecommender):
         self.enroll_student(self.STUDENT_INFO[0][0], self.STUDENT_INFO[0][1])
         result = self.call_event('set_s3_info', self.s3_info)
         self.assertEqual(result['Success'], False)
-        self.check_for_get_xblock_page_code(200)
+        self.assert_request_status_code(200, self.course_url)
 
         self.logout()
         self.enroll_staff(self.staff_user)
         result = self.call_event('set_s3_info', self.s3_info)
         self.assertEqual(result['Success'], True)
+        self.assert_request_status_code(200, self.course_url)
 
     @data({
         'suffixes': '.csv',
@@ -685,6 +677,7 @@ class TestRecommenderFileUploading(TestRecommender):
         """
         self.enroll_staff(self.staff_user)
         self.attempt_upload_file_and_verify_result(test_case, self.xblock_names[0])
+        self.assert_request_status_code(200, self.course_url)
 
     @data(
         {
@@ -742,6 +735,7 @@ class TestRecommenderFileUploading(TestRecommender):
         self.client.post(self.get_handler_url('set_s3_info', xblock_name), json.dumps(self.s3_info), '')
         # Upload file with wrong extension name or magic number
         self.attempt_upload_file_and_verify_result(test_case, xblock_name)
+        self.assert_request_status_code(200, self.course_url)
 
     @data({
         'suffixes': '.csv',
@@ -760,6 +754,7 @@ class TestRecommenderFileUploading(TestRecommender):
         self.client.post(self.get_handler_url('set_s3_info', self.xblock_names[0]), json.dumps(self.s3_info), '')
         # Test on the second xblock
         self.attempt_upload_file_and_verify_result(test_case, self.xblock_names[1])
+        self.assert_request_status_code(200, self.course_url)
 
     @data(
         {
@@ -801,3 +796,4 @@ class TestRecommenderFileUploading(TestRecommender):
         # Upload file with correct extension name and magic number
         # It fails because we set fake s3 information here
         self.attempt_upload_file_and_verify_result(test_case, xblock_name)
+        self.assert_request_status_code(200, self.course_url)
