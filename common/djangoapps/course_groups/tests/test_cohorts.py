@@ -1,12 +1,24 @@
 import django.test
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.http import Http404
 
 from django.test.utils import override_settings
 
 from course_groups.models import CourseUserGroup
-from course_groups.cohorts import (get_cohort, get_course_cohorts,
-                                   is_commentable_cohorted, get_cohort_by_name)
+from course_groups.cohorts import (
+    is_course_cohorted,
+    get_cohort,
+    get_course_cohorts,
+    is_commentable_cohorted,
+    get_cohort_by_name,
+    get_cohort_by_id,
+    get_cohort_id,
+    add_cohort,
+    add_user_to_cohort,
+    get_course_cohort_names,
+    delete_empty_cohort
+)
 
 from xmodule.modulestore.django import modulestore, clear_existing_modulestores
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
@@ -86,6 +98,40 @@ class TestCohorts(django.test.TestCase):
         """
         clear_existing_modulestores()
         self.toy_course_key = SlashSeparatedCourseKey("edX", "toy", "2012_Fall")
+
+    def test_is_course_cohorted(self):
+        """
+        Make sure is_course_cohorted() correctly reports if a course is cohorted or not.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        self.assertFalse(course.is_cohorted)
+        self.assertFalse(is_course_cohorted(course.id))
+
+        self.config_course_cohorts(course, [], cohorted=True)
+
+        self.assertTrue(course.is_cohorted)
+        self.assertTrue(is_course_cohorted(course.id))
+
+        # Make sure we get a Http404 if there's no course
+        fake_key = SlashSeparatedCourseKey('a', 'b', 'c')
+        self.assertRaises(Http404, lambda: is_course_cohorted(fake_key)) #  without lambda exception will not be caught
+
+    def test_get_cohort_id(self):
+        """
+        Make sure that get_cohort_id() correctly returns the cohort id.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        self.assertFalse(course.is_cohorted)
+
+        user = User.objects.create(username="test", email="a@b.com")
+        self.assertIsNone(get_cohort_id(user, course.id))
+
+        self.config_course_cohorts(course, [], cohorted=True)
+        cohort = CourseUserGroup.objects.create(name="TestCohort",
+                                                course_id=course.id,
+                                                group_type=CourseUserGroup.COHORT)
+        cohort.users.add(user)
+        self.assertEqual(get_cohort_id(user, course.id), cohort.id)
 
     def test_get_cohort(self):
         """
@@ -254,3 +300,171 @@ class TestCohorts(django.test.TestCase):
         self.assertTrue(
             is_commentable_cohorted(course.id, to_id("Feedback")),
             "Feedback was listed as cohorted.  Should be.")
+
+    def test_get_cohort_by_name(self):
+        """
+        Make sure get_cohort_by_name() properly finds a cohort by name for a
+        given course.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+
+        self.assertRaises(
+            CourseUserGroup.DoesNotExist,
+            lambda: get_cohort_by_name(course.id, "CohortDoesNotExist")
+        )
+
+        cohort = CourseUserGroup.objects.create(
+            name="MyCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+
+        self.assertEqual(get_cohort_by_name(course.id, "MyCohort"), cohort)
+
+    def test_get_cohort_by_id(self):
+        """
+        Make sure get_cohort_by_id() properly finds a cohort by id for a given
+        course.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        cohort = CourseUserGroup.objects.create(
+            name="MyCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+
+        self.assertEqual(get_cohort_by_id(course.id, cohort.id), cohort)
+
+        cohort.delete()
+
+        self.assertRaises(
+            CourseUserGroup.DoesNotExist,
+            lambda: get_cohort_by_id(course.id, cohort.id)
+        )
+
+    def test_add_cohort(self):
+        """
+        Make sure add_cohort() properly adds a cohort to a course and handles
+        errors.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        added_cohort = add_cohort(course.id, "My Cohort")
+
+        self.assertEqual(added_cohort.name, "My Cohort")
+        self.assertRaises(
+            ValueError,
+            lambda: add_cohort(course.id, "My Cohort")
+        )
+
+    def test_add_user_to_cohort(self):
+        """
+        Make sure add_user_to_cohort() properly adds a user to a cohort and
+        handles errors.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        first_cohort = CourseUserGroup.objects.create(
+            name="FirstCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+        second_cohort = CourseUserGroup.objects.create(
+            name="SecondCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+
+        self.assertRaises(
+            User.DoesNotExist,
+            lambda: add_user_to_cohort(first_cohort, "non_existent_username")
+        )
+
+        user = User.objects.create(username="Username", email="a@b.com")
+
+        # We shouldn't get back a previous cohort, since the user wasn't in one
+        self.assertEqual(
+            add_user_to_cohort(first_cohort, "Username"),
+            (user, None)
+        )
+
+        # Should get ValueError if user already in cohort
+        self.assertRaises(
+            ValueError,
+            lambda: add_user_to_cohort(first_cohort, "Username")
+        )
+
+        # Should get (user, previous_cohort_name) when moved from one cohort to
+        # another
+        self.assertEqual(
+            add_user_to_cohort(second_cohort, "Username"),
+            (user, "FirstCohort")
+        )
+
+    def test_get_course_cohort_names(self):
+        """
+        Make sure get_course_cohort_names() properly returns a list of cohort
+        names for a given course.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+
+        self.assertEqual(
+            get_course_cohort_names(course.id),
+            []
+        )
+
+        first_cohort = CourseUserGroup.objects.create(
+            name="FirstCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+
+        self.assertEqual(
+            get_course_cohort_names(course.id),
+            ["FirstCohort"]
+        )
+
+        second_cohort = CourseUserGroup.objects.create(
+            name="SecondCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+
+        self.assertEqual(
+            get_course_cohort_names(course.id),
+            ["FirstCohort", "SecondCohort"]
+        )
+
+    def test_delete_empty_cohort(self):
+        """
+        Make sure that delete_empty_cohort() properly removes an empty cohort
+        for a given course.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        user = User.objects.create(username="Username", email="a@b.com")
+        empty_cohort = CourseUserGroup.objects.create(
+            name="EmptyCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+        nonempty_cohort = CourseUserGroup.objects.create(
+            name="NonemptyCohort",
+            course_id=course.id,
+            group_type=CourseUserGroup.COHORT
+        )
+        nonempty_cohort.users.add(user)
+
+        delete_empty_cohort(course.id, "EmptyCohort")
+
+        # Make sure we cannot access the deleted cohort
+        self.assertRaises(
+            CourseUserGroup.DoesNotExist,
+            lambda: CourseUserGroup.objects.get(
+                course_id=course.id,
+                group_type=CourseUserGroup.COHORT,
+                id=empty_cohort.id
+            )
+        )
+
+        self.assertRaises(
+            ValueError,
+            lambda: delete_empty_cohort(course.id, "NonemptyCohort")
+        )
