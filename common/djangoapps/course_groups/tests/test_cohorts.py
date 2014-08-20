@@ -319,7 +319,7 @@ class TestCohorts(django.test.TestCase):
             cohorted=True,
             cohorted_discussions=["Feedback"]
         )
-        self.assertEqual(
+        self.assertItemsEqual(
             get_cohorted_commentables(course.id),
             set([self.topic_name_to_id(course, "Feedback")])
         )
@@ -329,7 +329,7 @@ class TestCohorts(django.test.TestCase):
             cohorted=True,
             cohorted_discussions=["General", "Feedback"]
         )
-        self.assertEqual(
+        self.assertItemsEqual(
             get_cohorted_commentables(course.id),
             set([self.topic_name_to_id(course, "General"),
                  self.topic_name_to_id(course, "Feedback")])
@@ -440,7 +440,7 @@ class TestCohorts(django.test.TestCase):
         """
         course = modulestore().get_course(self.toy_course_key)
 
-        self.assertEqual(
+        self.assertItemsEqual(
             get_course_cohort_names(course.id),
             []
         )
@@ -451,7 +451,7 @@ class TestCohorts(django.test.TestCase):
             group_type=CourseUserGroup.COHORT
         )
 
-        self.assertEqual(
+        self.assertItemsEqual(
             get_course_cohort_names(course.id),
             ["FirstCohort"]
         )
@@ -462,7 +462,7 @@ class TestCohorts(django.test.TestCase):
             group_type=CourseUserGroup.COHORT
         )
 
-        self.assertEqual(
+        self.assertItemsEqual(
             get_course_cohort_names(course.id),
             ["FirstCohort", "SecondCohort"]
         )
