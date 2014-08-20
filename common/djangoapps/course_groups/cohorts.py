@@ -93,7 +93,7 @@ def get_cohorted_commentables(course_key):
 
     if not course.is_cohorted:
         # this is the easy case :)
-        ans = []
+        ans = set([])
     else:
         ans = course.cohorted_discussions
 

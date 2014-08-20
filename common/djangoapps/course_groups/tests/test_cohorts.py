@@ -11,6 +11,7 @@ from course_groups.cohorts import (
     get_cohort,
     get_course_cohorts,
     is_commentable_cohorted,
+    get_cohorted_commentables,
     get_cohort_by_name,
     get_cohort_by_id,
     get_cohort_id,
@@ -300,6 +301,39 @@ class TestCohorts(django.test.TestCase):
         self.assertTrue(
             is_commentable_cohorted(course.id, to_id("Feedback")),
             "Feedback was listed as cohorted.  Should be.")
+
+    def test_get_cohorted_commentables(self):
+        """
+        Make sure get_cohorted_commentables() correctly returns a list of
+        strings representing cohorted commentables.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+
+        self.assertEqual(get_cohorted_commentables(course.id), set([]))
+
+        self.config_course_cohorts(course, [], cohorted=True)
+        self.assertEqual(get_cohorted_commentables(course.id), set([]))
+
+        self.config_course_cohorts(
+            course, ["General", "Feedback"],
+            cohorted=True,
+            cohorted_discussions=["Feedback"]
+        )
+        self.assertEqual(
+            get_cohorted_commentables(course.id),
+            set([self.topic_name_to_id(course, "Feedback")])
+        )
+
+        self.config_course_cohorts(
+            course, ["General", "Feedback"],
+            cohorted=True,
+            cohorted_discussions=["General", "Feedback"]
+        )
+        self.assertEqual(
+            get_cohorted_commentables(course.id),
+            set([self.topic_name_to_id(course, "General"),
+                 self.topic_name_to_id(course, "Feedback")])
+        )
 
     def test_get_cohort_by_name(self):
         """
