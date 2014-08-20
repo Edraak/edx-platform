@@ -520,15 +520,17 @@ class ChoiceGroup(InputTypeBase):
         _ = i18n.ugettext
 
         for choice in element:
-            if choice.tag != 'choice':
-                msg = u"[capa.inputtypes.extract_choices] {error_message}".format(
-                    # Translators: '<choice>' is a tag name and should not be translated.
-                    error_message=_("Expected a <choice> tag; got {given_tag} instead").format(
-                        given_tag=choice.tag
+            if choice.tag == 'choice':
+                choices.append((choice.get("name"), stringify_children(choice)))
+            else:
+                if choice.tag != 'booleanhint':
+                    msg = u"[capa.inputtypes.extract_choices] {error_message}".format(
+                        # Translators: '<choice>' and '<booleanhint>' are tag names and should not be translated.
+                        error_message=_("Expected a <choice> or <booleanhint> tag; got {given_tag} instead").format(
+                            given_tag=choice.tag
+                        )
                     )
-                )
-                raise Exception(msg)
-            choices.append((choice.get("name"), stringify_children(choice)))
+                    raise Exception(msg)
         return choices
 
     def get_user_visible_answer(self, internal_answer):
