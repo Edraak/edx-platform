@@ -387,8 +387,9 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
         xml_object = etree.Element('split_test')
         renderable_groups = {}
         # json.dumps doesn't know how to handle Location objects
-        for group in self.group_id_to_child:
-            renderable_groups[group] = self.group_id_to_child[group].to_deprecated_string()
+        for group_id, usage_key in self.group_id_to_child.items():
+            if usage_key in self.children:
+                renderable_groups[group] = self.group_id_to_child[group_id].to_deprecated_string()
         xml_object.set('group_id_to_child', json.dumps(renderable_groups))
         xml_object.set('user_partition_id', str(self.user_partition_id))
         for child in self.get_children():
@@ -415,6 +416,11 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
                 msg = "Unable to load child when parsing split_test module."
                 log.exception(msg)
                 system.error_tracker(msg)
+
+        # If children referenced in group_id_to_child do not exist, remove them from the map.
+        for str_group_id, usage_key in group_id_to_child.items():
+            if usage_key not in children:  # pylint: disable=no-member
+                del group_id_to_child[str_group_id]
 
         return ({
             'group_id_to_child': group_id_to_child,
