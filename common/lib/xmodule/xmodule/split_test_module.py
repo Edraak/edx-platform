@@ -237,18 +237,18 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
         fragment = Fragment()
         contents = []
 
-        for child_location in self.children:
+        for child_location in self.children:  # pylint: disable=no-member
             child_descriptor = self.get_child_descriptor_by_location(child_location)
             child = self.system.get_module(child_descriptor)
             rendered_child = child.render(STUDENT_VIEW, context)
             fragment.add_frag_resources(rendered_child)
-            group_name, updated_group_id  = self.get_data_for_vertical(child)
+            group_name, updated_group_id = self.get_data_for_vertical(child)
             active_group = _(u'Yes')
 
             if updated_group_id is None:  # inactive group
                 active_group = _(u'No')
                 group_name = child.display_name
-                updated_group_id = [id for id, loc in self.group_id_to_child.items() if loc == child_location]
+                updated_group_id = [g_id for g_id, loc in self.group_id_to_child.items() if loc == child_location]
 
             contents.append({
                 'group_name': group_name,

@@ -982,9 +982,9 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         self.page.create()  # Create new group configuration
         config = self.page.group_configurations[0]
         config.name = "New Group Configuration Name"
-        config.add_group() # Add new group
+        config.add_group()  # Add new group
         config.groups[2].name = "New group"
-        config.save() # Save the configuration
+        config.save()  # Save the configuration
 
         split_test = self._add_split_test_to_vertical(number=0)
         container = ContainerPage(self.browser, split_test.locator)
