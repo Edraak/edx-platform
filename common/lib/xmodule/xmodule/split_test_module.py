@@ -424,10 +424,10 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
                 log.exception(msg)
                 system.error_tracker(msg)
 
-
         # If children referenced in group_id_to_child do not exist, remove them from the map.
-        for str_group_id, usage_key in group_id_to_child.items():
-            if usage_key not in children:  # pylint: disable=no-member
+        children_locations = [key.to_deprecated_string() for key in children]
+        for str_group_id, usage_key_serialized in group_id_to_child.items():
+            if usage_key_serialized not in children_locations:  # pylint: disable=no-member
                 del group_id_to_child[str_group_id]
 
         return ({
