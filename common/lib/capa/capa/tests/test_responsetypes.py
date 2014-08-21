@@ -154,7 +154,7 @@ class CheckboxHintsTest(ResponseTest):
         resulting_cmap = self.problem.grade_answers(answers=student_answers)
         return resulting_cmap.cmap[id]['msg']
 
-    def test_simple_choice_hints_choice_apple(self):
+    def test_checkbox_simple_choice_hints_choice_apple(self):
         """
         The student selects only the Apple choice.
         """
@@ -162,7 +162,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that apple is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_mushroom(self):
+    def test_checkbox_simple_choice_hints_choice_mushroom(self):
         """
         The student selects only the Mushroom choice.
         """
@@ -170,7 +170,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a fruit.\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_grape(self):
+    def test_checkbox_simple_choice_hints_choice_grape(self):
         """
         The student selects only the Grape choice.
         """
@@ -178,7 +178,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">You are right that grape is a fruit\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_mustang(self):
+    def test_checkbox_simple_choice_hints_choice_mustang(self):
         """
         The student selects only the Mustang choice.
         """
@@ -186,7 +186,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_camero(self):
+    def test_checkbox_simple_choice_hints_choice_camero(self):
         """
         The student selects only the Camero choice.
         """
@@ -194,7 +194,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">I do not know what a Camero is but it is not a fruit.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_apple_mushroom(self):
+    def test_checkbox_simple_choice_hints_choice_apple_mushroom(self):
         """
         The student selects the Apple and Mushroom choices.
         """
@@ -202,7 +202,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that apple is a fruit, but there is one you are missing. Also, mushroom is not a fruit.</div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_mushroom_grape(self):
+    def test_checkbox_simple_choice_hints_choice_mushroom_grape(self):
         """
         The student selects the Mushroom and Grape choices.
         """
@@ -210,7 +210,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that grape is a fruit, but there is one you are missing. Also, mushroom is not a fruit.</div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_apple_grape(self):
+    def test_checkbox_simple_choice_hints_choice_apple_grape(self):
         """
         The student selects the Apple and Grape choices.
         """
@@ -218,7 +218,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_correct">CORRECT<div class="question_hint_text">You are right that apple is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">You are right that grape is a fruit\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_banana(self):
+    def test_checkbox_simple_choice_hints_choice_banana(self):
         """
         The student selects only the Banana choice.
         """
@@ -226,7 +226,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">No, sorry, a banana is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_icecream(self):
+    def test_checkbox_simple_choice_hints_choice_icecream(self):
         """
         The student selects only the Ice Cream choice.
         """
@@ -234,7 +234,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_mushroom(self):
+    def test_checkbox_simple_choice_hints_choice_mushroom(self):
         """
         The student selects only the Mushroom choice.
         """
@@ -242,7 +242,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a vegetable.\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_brusselsprout(self):
+    def test_checkbox_simple_choice_hints_choice_brusselsprout(self):
         """
         The student selects only the Brussel Sprout choice.
         """
@@ -250,7 +250,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_correct">CORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprouts are vegetables.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_brusselsprout(self):
+    def test_checkbox_simple_choice_hints_choice_brusselsprout(self):
         """
         The student selects only the Brussel Sprout choice.
         """
@@ -258,7 +258,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_banana_icecream(self):
+    def test_checkbox_simple_choice_hints_choice_banana_icecream(self):
         """
         The student selects the Banana and Ice Cream choices.
         """
@@ -266,7 +266,7 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Making a banana split?</div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_icecream_mushroom(self):
+    def test_checkbox_simple_choice_hints_choice_icecream_mushroom(self):
         """
         The student selects the Ice Cream and Mushroom choices.
         """
@@ -274,13 +274,94 @@ class CheckboxHintsTest(ResponseTest):
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a vegetable.\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-    def test_simple_choice_hints_choice_banana_mushroom(self):
+    def test_checkbox_simple_choice_hints_choice_banana_mushroom(self):
         """
         The student selects the Banana and Mushroom choices.
         """
         message_text = self._grade_problem( u'1_3_1', [u'choice_0', u'choice_2'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">No, sorry, a banana is a fruit.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a vegetable.\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
+
+
+
+
+
+
+
+
+
+
+
+class MultpleChoiceHintsTest(ResponseTest):
+    """
+    This class consists of a suite of test cases to be run on the multiple problem represented by the XML below.
+    """
+    xml = """
+            <problem schema="edXML/1.0">
+            <p>Select the fruit from the list</p>
+            <multiplechoiceresponse>
+              <choicegroup label="Select the fruit from the list" type="MultipleChoice">
+                <choice correct="false">Mushroom
+                    <choicehint>Mushroom is a fungus, not a fruit.
+                    </choicehint>
+                </choice>
+                <choice correct="false">Potato</choice>
+                <choice correct="true">Apple
+                    <choicehint label="OUTSTANDING">Apple is indeed a fruit.
+                    </choicehint>
+                </choice>
+              </choicegroup>
+            </multiplechoiceresponse>
+            </problem>
+    """
+    problem = new_loncapa_problem(xml)
+
+    def _grade_problem(self, id, choice):
+        """
+        Given a set of student choices for our problem, return the hint message to be shown (if any)
+        :param      choice_list: a list of choice names made by the student (e.g. [u'choice_0', u'choice_1'])
+        :return:    the hint message string to be shown
+        """
+        student_answers = {id: choice}
+        resulting_cmap = self.problem.grade_answers(answers=student_answers)
+        return resulting_cmap.cmap[id]['msg']
+
+    def test_multiple_choice_simple_choice_hints_choice_mushroom(self):
+        """
+        The student selects only the Mushroom choice.
+        """
+        message_text = self._grade_problem( u'1_2_1', u'choice_0')
+        expected_string = '<div class="question_hint_incorrect">INCORRECT: Mushroom is a fungus, not a fruit.</div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
+
+    def test_multiple_choice_simple_choice_hints_choice_potato(self):
+        """
+        The student selects only the Potato choice.
+        """
+        message_text = self._grade_problem( u'1_2_1', u'choice_1')
+        expected_string = ''
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
+
+    def test_multiple_choice_simple_choice_hints_choice_apple(self):
+        """
+        The student selects only the Apple choice.
+        """
+        message_text = self._grade_problem( u'1_2_1', u'choice_2')
+        expected_string = '<div class="question_hint_correct">OUTSTANDING: Apple is indeed a fruit.</div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
