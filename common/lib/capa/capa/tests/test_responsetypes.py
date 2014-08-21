@@ -72,15 +72,10 @@ class ResponseTest(unittest.TestCase):
         rand = random.Random(seed_value)
         return str(rand.randint(0, 1e9))
 
-
-
-
-
-
-
-
-
 class CheckboxHintsTest(ResponseTest):
+    """
+    This class consists of a suite of test cases to be run on the checkbox problem represented by the XML below.
+    """
     xml = """
         <problem schema="edXML/1.0">
             <p>Select all the fruits from the list</p>
@@ -145,120 +140,147 @@ class CheckboxHintsTest(ResponseTest):
                 </booleanhint>
               </checkboxgroup>
             </choiceresponse>
-            <p> </p>
-                <demandhint>
-                    <hint>  Hint one.
-                    </hint>
-                    <hint>  Hint two.
-                    </hint>
-                    <hint>  Hint three.
-                    </hint>
-                </demandhint>
         </problem>
     """
     problem = new_loncapa_problem(xml)
 
-    def _grade_problem(self, choice_list):
+    def _grade_problem(self, id, choice_list):
         """
         Given a set of student choices for our problem, return the hint message to be shown (if any)
         :param      choice_list: a list of choice names made by the student (e.g. [u'choice_0', u'choice_1'])
         :return:    the hint message string to be shown
         """
-        student_answers = {u'1_2_1': choice_list}
+        student_answers = {id: choice_list}
         resulting_cmap = self.problem.grade_answers(answers=student_answers)
-        return resulting_cmap.cmap[u'1_2_1']['msg']
+        return resulting_cmap.cmap[id]['msg']
 
     def test_simple_choice_hints_choice_apple(self):
         """
         The student selects only the Apple choice.
         """
-        message_text = self._grade_problem([u'choice_0'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_0'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that apple is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
     def test_simple_choice_hints_choice_mushroom(self):
         """
         The student selects only the Mushroom choice.
         """
-        message_text = self._grade_problem([u'choice_1'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_1'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a fruit.\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
     def test_simple_choice_hints_choice_grape(self):
         """
         The student selects only the Grape choice.
         """
-        message_text = self._grade_problem([u'choice_2'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_2'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">You are right that grape is a fruit\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
-
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
     def test_simple_choice_hints_choice_mustang(self):
         """
         The student selects only the Mustang choice.
         """
-        message_text = self._grade_problem([u'choice_3'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_3'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
-
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
     def test_simple_choice_hints_choice_camero(self):
         """
         The student selects only the Camero choice.
         """
-        message_text = self._grade_problem([u'choice_4'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_4'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Remember that apple is also a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">I do not know what a Camero is but it is not a fruit.\n                           </div></div>'
-
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
     def test_simple_choice_hints_choice_apple_mushroom(self):
         """
         The student selects the Apple and Mushroom choices.
         """
-        message_text = self._grade_problem([u'choice_0', u'choice_1'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_0', u'choice_1'])
         expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that apple is a fruit, but there is one you are missing. Also, mushroom is not a fruit.</div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+    def test_simple_choice_hints_choice_mushroom_grape(self):
+        """
+        The student selects the Mushroom and Grape choices.
+        """
+        message_text = self._grade_problem( u'1_2_1', [u'choice_1', u'choice_2'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that grape is a fruit, but there is one you are missing. Also, mushroom is not a fruit.</div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
     def test_simple_choice_hints_choice_apple_grape(self):
         """
         The student selects the Apple and Grape choices.
         """
-        message_text = self._grade_problem([u'choice_0', u'choice_2'])
+        message_text = self._grade_problem( u'1_2_1', [u'choice_0', u'choice_2'])
         expected_string = u'<div class="question_hint_correct">CORRECT<div class="question_hint_text">You are right that apple is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">You are right that grape is a fruit\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
-
-    def test_simple_choice_hints_choice_apple_mustang(self):
+    def test_simple_choice_hints_choice_banana(self):
         """
-        The student selects the Apple and Mustang choices.
+        The student selects only the Banana choice.
         """
-        message_text = self._grade_problem([u'choice_0', u'choice_3'])
-        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that apple is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">What is a camero anyway?\n                           </div></div>'
+        message_text = self._grade_problem( u'1_3_1', [u'choice_0'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">No, sorry, a banana is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
-
-    def test_simple_choice_hints_choice_apple_camero(self):
+    def test_simple_choice_hints_choice_icecream(self):
         """
-        The student selects the Apple and Camero choices.
+        The student selects only the Ice Cream choice.
         """
-        message_text = self._grade_problem([u'choice_0', u'choice_4'])
-        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">You are right that apple is a fruit.\n                           </div><div class="question_hint_text">You are right that mushrooms are not fruit\n                           </div><div class="question_hint_text">Remember that grape is also a fruit.\n                           </div><div class="question_hint_text">I do not know what a Camero is but it is not a fruit.\n                           </div></div>'
+        message_text = self._grade_problem( u'1_3_1', [u'choice_1'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
-        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' +
-                         message_text + '\nDoes not match the expected HTML: ' + expected_string)
+    def test_simple_choice_hints_choice_mushroom(self):
+        """
+        The student selects only the Mushroom choice.
+        """
+        message_text = self._grade_problem( u'1_3_1', [u'choice_2'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a vegetable.\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
+    def test_simple_choice_hints_choice_brusselsprout(self):
+        """
+        The student selects only the Brussel Sprout choice.
+        """
+        message_text = self._grade_problem( u'1_3_1', [u'choice_3'])
+        expected_string = u'<div class="question_hint_correct">CORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprouts are vegetables.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
+    def test_simple_choice_hints_choice_brusselsprout(self):
+        """
+        The student selects only the Brussel Sprout choice.
+        """
+        message_text = self._grade_problem( u'1_3_1', [u'choice_4'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">You are right that mushrooms are not vegatbles\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
+    def test_simple_choice_hints_choice_banana_icecream(self):
+        """
+        The student selects the Banana and Ice Cream choices.
+        """
+        message_text = self._grade_problem( u'1_3_1', [u'choice_0', u'choice_1'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">Making a banana split?</div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
+    def test_simple_choice_hints_choice_icecream_mushroom(self):
+        """
+        The student selects the Ice Cream and Mushroom choices.
+        """
+        message_text = self._grade_problem( u'1_3_1', [u'choice_1', u'choice_2'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">poor banana.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a vegetable.\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
+
+    def test_simple_choice_hints_choice_banana_mushroom(self):
+        """
+        The student selects the Banana and Mushroom choices.
+        """
+        message_text = self._grade_problem( u'1_3_1', [u'choice_0', u'choice_2'])
+        expected_string = u'<div class="question_hint_incorrect">INCORRECT<div class="question_hint_text">No, sorry, a banana is a fruit.\n                           </div><div class="question_hint_text">Mushroom is a fungus, not a vegetable.\n                           </div><div class="question_hint_text">Brussel sprout is the only vegetable in this list.\n                           </div></div>'
+        self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string: ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
 
 
 
