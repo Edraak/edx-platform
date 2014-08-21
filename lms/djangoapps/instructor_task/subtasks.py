@@ -48,7 +48,7 @@ def _get_number_of_subtasks(total_num_items, items_per_task):
 
 
 @contextmanager
-def track_memory_usage(metric):
+def track_memory_usage(metric, course_id):
     """
     Context manager to track how much memory (in bytes) a given process uses.
     Metrics will look like: 'course_email.subtask_generation.memory.rss'
@@ -61,12 +61,21 @@ def track_memory_usage(metric):
     for memory_type, baseline_usage in zip(memory_types, baseline_usages):
         total_usage = getattr(process.get_memory_info(), memory_type)
         memory_used = total_usage - baseline_usage
-        args = [metric + "." + memory_type, memory_used]
-        dog_stats_api.increment(*args)
-        dog_stats_api.histogram(*args)
+        dog_stats_api.histogram(
+            metric + "." + memory_type,
+            memory_used,
+            tags=["course_id:{}".format(course_id)],
+        )
 
 
-def _generate_items_for_subtask(item_queryset, item_fields, total_num_items, items_per_task, total_num_subtasks):
+def _generate_items_for_subtask(
+    item_queryset,
+    item_fields,
+    total_num_items,
+    items_per_task,
+    total_num_subtasks,
+    course_id,
+):
     """
     Generates a chunk of "items" that should be passed into a subtask.
 
@@ -77,6 +86,7 @@ def _generate_items_for_subtask(item_queryset, item_fields, total_num_items, ite
         `total_num_items` : the result of item_queryset.count().
         `items_per_query` : size of chunks to break the query operation into.
         `items_per_task` : maximum size of chunks to break each query chunk into for use by a subtask.
+        `course_id` : course_id of the course. Only needed for the track_memory_usage context manager.
 
     Returns:  yields a list of dicts, where each dict contains the fields in `item_fields`, plus the 'pk' field.
 
@@ -89,7 +99,7 @@ def _generate_items_for_subtask(item_queryset, item_fields, total_num_items, ite
 
     items_for_task = []
 
-    with track_memory_usage('course_email.subtask_generation.memory'):
+    with track_memory_usage('course_email.subtask_generation.memory', course_id):
         for item in item_queryset.values(*all_item_fields).iterator():
             if len(items_for_task) == items_per_task and num_subtasks < total_num_subtasks - 1:
                 yield items_for_task
@@ -301,6 +311,7 @@ def queue_subtasks_for_query(entry, action_name, create_subtask_fcn, item_querys
         total_num_items,
         items_per_task,
         total_num_subtasks,
+        entry.course_id,
     )
 
     # Now create the subtasks, and start them running.
