@@ -67,13 +67,13 @@ class SplitMigrator(object):
                 **kwargs
             )
 
-            with self.split_modulestore.bulk_write_operations(new_course.id):
-                self._copy_published_modules_to_course(
-                    new_course, original_course.location, source_course_key, user_id, **kwargs
-                )
+            self._copy_published_modules_to_course(
+                new_course, original_course.location, source_course_key, user_id, **kwargs
+            )
 
-                # create a new version for the drafts
-                self._add_draft_modules_to_course(new_course.location, source_course_key, user_id, **kwargs)
+        # create a new version for the drafts
+        with self.split_modulestore.bulk_write_operations(new_course.id):
+            self._add_draft_modules_to_course(new_course.location, source_course_key, user_id, **kwargs)
 
         return new_course.id
 
