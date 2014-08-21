@@ -1,3 +1,39 @@
+
+#
+# The pattern below provides a useful mechanism to test the conversion of markdown to XML
+# with some resilience built in to account for the fact that whitespace is ignored in both
+# markdown and XML. To use this pattern, just make a copy of the 8 lines of pattern code,
+# uncomment those 8 lines, and replace three keyword markers with strings appropriate to the
+# test you want to construct:
+#
+#   DESCRIPTION         -- a brief description of the main element(s) begin exercised by this test
+#   MARKDOWN_STRING     -- the markdown text which would be created in the simple editor
+#   EXPECTED_XML_STRING -- the resulting XML string which *should* be produced when the markdown is translated
+#
+# There are a several string replacement steps here that may not be obvious:
+#
+#   1) The single-quote character (') causes some problems when it appears as an apostrophe in the markdown
+#      text so the first replacement turns any such characters into a safer back-tick (`) character.
+#
+#   2) Then, all whitespace (carriage returns, tabs, linefeeds, spaces) are replaced by single spaces. That is,
+#      any run of 1 or more of these characters is replaced by a single space.
+#
+#   3) Any spaces at the beginning of the string is removed via the trim() function.
+#
+# All transforms are carried out on both the markdown string and the XML resulting string so that a simple
+# string comparison should match without regard to whitespace in either of the strings.
+#
+#      #____________________________________________________________________
+#      it 'DESCRIPTION', ->
+#                  data = MarkdownEditingDescriptor.markdownToXml("""
+#                        MARKDOWN_STRING
+#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+#                  expect(data).toEqual(("""
+#                        EXPECTED_XML_STRING
+#                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+#
+#
+
 describe 'MarkdownEditingDescriptor', ->
   describe 'save stores the correct data', ->
     it 'saves markdown from markdown editor', ->
@@ -5,7 +41,7 @@ describe 'MarkdownEditingDescriptor', ->
       @descriptor = new MarkdownEditingDescriptor($('.problem-editor'))
       saveResult = @descriptor.save()
       expect(saveResult.metadata.markdown).toEqual('markdown')
-      expect(saveResult.data).toEqual('<problem>\n<p>markdown</p>\n</problem>')
+      expect(saveResult.data).toEqual('<problem schema="edXML/1.0">\n<p>markdown</p>\n</problem>')
     it 'clears markdown when xml editor is selected', ->
       loadFixtures 'problem-with-markdown.html'
       @descriptor = new MarkdownEditingDescriptor($('.problem-editor'))
@@ -101,7 +137,7 @@ describe 'MarkdownEditingDescriptor', ->
   describe 'markdownToXml', ->
     it 'converts raw text to paragraph', ->
       data = MarkdownEditingDescriptor.markdownToXml('foo')
-      expect(data).toEqual('<problem>\n<p>foo</p>\n</problem>')
+      expect(data).toEqual('<problem schema="edXML/1.0">\n<p>foo</p>\n</problem>')
     # test default templates
     it 'converts numerical response to xml', ->
       data = MarkdownEditingDescriptor.markdownToXml("""A numerical response problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.
@@ -117,12 +153,16 @@ describe 'MarkdownEditingDescriptor', ->
         Enter the number of fingers on a human hand:
         = 5
 
-        Range tolerance case
+        Range tolerance case 1
         = [6, 7]
+
+        Range tolerance case 2
         = (1, 2)
 
-        If first and last symbols are not brackets, or they are not closed, stringresponse will appear.
+        If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 1.
         = (7), 7
+
+        If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 2.
         = (1+2
 
         [Explanation]
@@ -133,52 +173,44 @@ describe 'MarkdownEditingDescriptor', ->
         If you look at your hand, you can count that you have five fingers.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A numerical response problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.</p>
-
         <p>The answer is correct if it is within a specified numerical tolerance of the expected answer.</p>
-
         <p>Enter the numerical value of Pi:</p>
         <numericalresponse answer="3.14159">
           <responseparam type="tolerance" default=".02" />
           <formulaequationinput />
         </numericalresponse>
-
         <p>Enter the approximate value of 502*9:</p>
         <numericalresponse answer="502*9">
           <responseparam type="tolerance" default="15%" />
           <formulaequationinput />
         </numericalresponse>
-
         <p>Enter the number of fingers on a human hand:</p>
         <numericalresponse answer="5">
           <formulaequationinput />
         </numericalresponse>
-
-        <p>Range tolerance case</p>
-        <numericalresponse answer="[6, 7]">
-          <formulaequationinput />
-        </numericalresponse>
-        <numericalresponse answer="(1, 2)">
-          <formulaequationinput />
-        </numericalresponse>
-
-        <p>If first and last symbols are not brackets, or they are not closed, stringresponse will appear.</p>
+        <p>Range tolerance case 1</p>
+        <stringresponse answer="[6, 7]" type="ci" >
+          <textline size="20"/>
+        </stringresponse>
+        <p>Range tolerance case 2</p>
+        <stringresponse answer="(1, 2)" type="ci" >
+          <textline size="20"/>
+        </stringresponse>
+        <p>If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 1.</p>
         <stringresponse answer="(7), 7" type="ci" >
           <textline size="20"/>
         </stringresponse>
+        <p>If first and last symbols are not brackets, or they are not closed, stringresponse will appear, case 2.</p>
         <stringresponse answer="(1+2" type="ci" >
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Pi, or the the ratio between a circle's circumference to its diameter, is an irrational number known to extreme precision. It is value is approximately equal to 3.14.</p>
-
         <p>Although you can get an exact value by typing 502*9 into a calculator, the result will be close to 500*10, or 5,000. The grader accepts any response within 15% of the true value, 4518, so that you can use any estimation technique that you like.</p>
-
         <p>If you look at your hand, you can count that you have five fingers.</p>
 
         </div>
@@ -189,14 +221,12 @@ describe 'MarkdownEditingDescriptor', ->
         Enter 0 with a tolerance:
         = 0 +- .02
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Enter 0 with a tolerance:</p>
         <numericalresponse answer="0">
           <responseparam type="tolerance" default=".02" />
           <formulaequationinput />
         </numericalresponse>
-
-
         </problem>""")
     it 'markup with multiple answers doesn\'t break numerical response', ->
       data =  MarkdownEditingDescriptor.markdownToXml("""
@@ -204,13 +234,12 @@ describe 'MarkdownEditingDescriptor', ->
         = 1 +- .02
         or= 2 +- 5%
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Enter 1 with a tolerance:</p>
         <numericalresponse answer="1">
           <responseparam type="tolerance" default=".02" />
           <formulaequationinput />
         </numericalresponse>
-
 
         </problem>""")
     it 'converts multiple choice to xml', ->
@@ -230,11 +259,9 @@ describe 'MarkdownEditingDescriptor', ->
         The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.</p>
-
         <p>One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.</p>
-
         <p>What Apple device competed with the portable CD player?</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -250,7 +277,6 @@ describe 'MarkdownEditingDescriptor', ->
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.</p>
 
         </div>
@@ -273,11 +299,9 @@ describe 'MarkdownEditingDescriptor', ->
         The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.</p>
-        
         <p>One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.</p>
-        
         <p>What Apple device competed with the portable CD player?</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -289,11 +313,10 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false" fixed="true">The Beatles</choice>
           </choicegroup>
         </multiplechoiceresponse>
-        
+
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-        
         <p>The release of the iPod allowed consumers to carry their entire music library with them in a format that did not rely on fragile and energy-intensive spinning disks.</p>
 
         </div>
@@ -317,7 +340,7 @@ describe 'MarkdownEditingDescriptor', ->
         When the student is ready, the explanation appears.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>bleh</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -326,7 +349,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">c</choice>
           </choicegroup>
         </multiplechoiceresponse>
-        
         <p>yatta</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -335,7 +357,6 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="true">z</choice>
           </choicegroup>
         </multiplechoiceresponse>
-        
         <p>testa</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice" shuffle="true">
@@ -344,11 +365,10 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="true">iii</choice>
           </choicegroup>
         </multiplechoiceresponse>
-        
+
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-        
         <p>When the student is ready, the explanation appears.</p>
         
         </div>
@@ -367,21 +387,23 @@ describe 'MarkdownEditingDescriptor', ->
         Multiple Choice also allows students to select from a variety of pre-written responses, although the format makes it easier for students to read very long response options. Optionresponse also differs slightly because students are more likely to think of an answer and then search for it rather than relying purely on recognition to answer the question.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>OptionResponse gives a limited set of options for students to respond with, and presents those options in a format that encourages them to search for a specific answer rather than being immediately presented with options from which to recognize the correct answer.</p>
-
         <p>The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag.</p>
-
         <p>Translation between Option Response and __________ is extremely straightforward:</p>
-
         <optionresponse>
-          <optioninput options="('Multiple Choice','String Response','Numerical Response','External Response','Image Response')" correct="Multiple Choice"></optioninput>
+            <optioninput options="(Multiple Choice),String Response,Numerical Response,External Response,Image Response" correct="Multiple Choice">
+                  <option  correct="True">Multiple Choice</option>
+                  <option  correct="False">String Response</option>
+                  <option  correct="False">Numerical Response</option>
+                  <option  correct="False">External Response</option>
+                  <option  correct="False">Image Response</option>
+            </optioninput>
         </optionresponse>
 
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Multiple Choice also allows students to select from a variety of pre-written responses, although the format makes it easier for students to read very long response options. Optionresponse also differs slightly because students are more likely to think of an answer and then search for it rather than relying purely on recognition to answer the question.</p>
 
         </div>
@@ -399,20 +421,16 @@ describe 'MarkdownEditingDescriptor', ->
         Lansing is the capital of Michigan, although it is not Michgan's largest city, or even the seat of the county in which it resides.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>A string response problem accepts a line of text input from the student, and evaluates the input for correctness based on an expected answer within each input box.</p>
-
         <p>The answer is correct if it matches every character of the expected answer. This can be a problem with international spelling, dates, or anything where the format of the answer is not clear.</p>
-
         <p>Which US state has Lansing as its capital?</p>
         <stringresponse answer="Michigan" type="ci" >
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Lansing is the capital of Michigan, although it is not Michgan's largest city, or even the seat of the county in which it resides.</p>
 
         </div>
@@ -426,16 +444,14 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Who lead the civil right movement in the United States of America?</p>
         <stringresponse answer="\w*\.?\s*Luther King\s*.*" type="ci regexp" >
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Test Explanation.</p>
 
         </div>
@@ -452,7 +468,7 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Who lead the civil right movement in the United States of America?</p>
         <stringresponse answer="Dr. Martin Luther King Jr." type="ci" >
           <additional_answer>Doctor Martin Luther King Junior</additional_answer>
@@ -460,11 +476,9 @@ describe 'MarkdownEditingDescriptor', ->
           <additional_answer>Martin Luther King Junior</additional_answer>
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Test Explanation.</p>
 
         </div>
@@ -481,7 +495,7 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Write a number from 1 to 4.</p>
         <stringresponse answer="^One$" type="ci regexp" >
           <additional_answer>two</additional_answer>
@@ -489,11 +503,9 @@ describe 'MarkdownEditingDescriptor', ->
           <additional_answer>^4|Four$</additional_answer>
           <textline size="20"/>
         </stringresponse>
-
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>Test Explanation.</p>
 
         </div>
@@ -508,16 +520,14 @@ describe 'MarkdownEditingDescriptor', ->
         Test Explanation.
         [Explanation]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>Who lead the civil right movement in the United States of America?</p>
     <stringresponse answer="w*.?s*Luther Kings*.*" type="ci regexp" >
       <textline label="Who lead the civil right movement in the United States of America?" size="20"/>
     </stringresponse>
-    
     <solution>
     <div class="detailed-solution">
     <p>Explanation</p>
-    
     <p>Test Explanation.</p>
     
     </div>
@@ -526,28 +536,23 @@ describe 'MarkdownEditingDescriptor', ->
     it 'handles multiple questions with labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
         France is a country in Europe.
-        
         >>What is the capital of France?<<
         = Paris
         
         Germany is a country in Europe, too.
-        
         >>What is the capital of Germany?<<
         ( ) Bonn
         ( ) Hamburg
         (x) Berlin
         ( ) Donut
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
-    
     <p>What is the capital of France?</p>
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the capital of France?" size="20"/>
     </stringresponse>
-    
     <p>Germany is a country in Europe, too.</p>
-    
     <p>What is the capital of Germany?</p>
     <multiplechoiceresponse>
       <choicegroup label="What is the capital of Germany?" type="MultipleChoice">
@@ -557,13 +562,10 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-    
-    
     </problem>""")
     it 'tests multiple questions with only one label', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
         France is a country in Europe.
-
         >>What is the capital of France?<<
         = Paris
 
@@ -575,16 +577,13 @@ describe 'MarkdownEditingDescriptor', ->
         (x) Berlin
         ( ) Donut
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
-    
     <p>What is the capital of France?</p>
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the capital of France?" size="20"/>
     </stringresponse>
-    
     <p>Germany is a country in Europe, too.</p>
-    
     <p>What is the capital of Germany?</p>
     <multiplechoiceresponse>
       <choicegroup type="MultipleChoice">
@@ -594,13 +593,10 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-    
-    
     </problem>""")
     it 'tests malformed labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
         France is a country in Europe.
-
         >>What is the capital of France?<
         = Paris
 
@@ -610,14 +606,12 @@ describe 'MarkdownEditingDescriptor', ->
         (x) Berlin
         ( ) Donut
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>France is a country in Europe.</p>
-    
     <p>>>What is the capital of France?<</p>
     <stringresponse answer="Paris" type="ci" >
       <textline size="20"/>
     </stringresponse>
-    
     <p>blahWhat is the capital of Germany?</p>
     <multiplechoiceresponse>
       <choicegroup label="What is the capital of &lt;&lt;Germany?" type="MultipleChoice">
@@ -627,35 +621,29 @@ describe 'MarkdownEditingDescriptor', ->
         <choice correct="false">Donut</choice>
       </choicegroup>
     </multiplechoiceresponse>
-    
-    
     </problem>""")
     it 'adds labels to formulae', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
       >>Enter the numerical value of Pi:<<
       = 3.14159 +- .02
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>Enter the numerical value of Pi:</p>
     <numericalresponse answer="3.14159">
       <responseparam type="tolerance" default=".02" />
       <formulaequationinput label="Enter the numerical value of Pi:" />
     </numericalresponse>
-    
-    
     </problem>""")
     it 'escapes entities in labels', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
       >>What is the "capital" of France & the 'best' > place < to live"?<<
       = Paris
       """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
     <p>What is the "capital" of France & the 'best' > place < to live"?</p>
     <stringresponse answer="Paris" type="ci" >
       <textline label="What is the &quot;capital&quot; of France &amp; the &apos;best&apos; &gt; place &lt; to live&quot;?" size="20"/>
     </stringresponse>
-    
-    
     </problem>""")
     # test oddities
     it 'converts headers and oddities to xml', ->
@@ -673,7 +661,6 @@ describe 'MarkdownEditingDescriptor', ->
         [ ] option1 [x]
         [x] correct
         [x] redundant
-        [(] distractor
         [] no space
 
         Option with multiple correct ones
@@ -708,10 +695,9 @@ describe 'MarkdownEditingDescriptor', ->
         Code should be nicely monospaced.
         [/code]
         """)
-      expect(data).toEqual("""<problem>
+      expect(data).toEqual("""<problem schema="edXML/1.0">
         <p>Not a header</p>
         <h1>A header</h1>
-
         <p>Multiple choice w/ parentheticals</p>
         <multiplechoiceresponse>
           <choicegroup type="MultipleChoice">
@@ -721,58 +707,54 @@ describe 'MarkdownEditingDescriptor', ->
             <choice correct="false">no space b4 close paren</choice>
           </choicegroup>
         </multiplechoiceresponse>
-
         <p>Choice checks</p>
         <choiceresponse>
           <checkboxgroup direction="vertical">
             <choice correct="false">option1 [x]</choice>
             <choice correct="true">correct</choice>
             <choice correct="true">redundant</choice>
-            <choice correct="false">distractor</choice>
             <choice correct="false">no space</choice>
           </checkboxgroup>
         </choiceresponse>
-
         <p>Option with multiple correct ones</p>
-
         <optionresponse>
-          <optioninput options="('one option','correct one','should not be correct')" correct="correct one"></optioninput>
+            <optioninput options="one option,(correct one),(should not be correct)" correct="correct one">
+                  <option  correct="False">one option</option>
+                  <option  correct="True">correct one</option>
+                  <option  correct="True">should not be correct</option>
+            </optioninput>
         </optionresponse>
-
         <p>Option with embedded parens</p>
-
         <optionresponse>
-          <optioninput options="('My (heart)','another','correct')" correct="correct"></optioninput>
+            <optioninput options="My (heart),another,(correct)" correct="correct">
+                  <option  correct="False">My (heart)</option>
+                  <option  correct="False">another</option>
+                  <option  correct="True">correct</option>
+            </optioninput>
         </optionresponse>
-
         <p>What happens w/ empty correct options?</p>
-
         <optionresponse>
-          <optioninput options="('')" correct=""></optioninput>
+            <optioninput options="()" correct="CORRECT_PLACEHOLDER">
+                  <option  correct="False">()</option>
+            </optioninput>
         </optionresponse>
 
         <solution>
         <div class="detailed-solution">
         <p>Explanation</p>
-
         <p>see</p>
         </div>
         </solution>
-
         <p>[explanation]</p>
         <p>orphaned start</p>
-
         <p>No p tags in the below</p>
         <script type='javascript'>
            var two = 2;
 
            console.log(two * 2);
-        </script>
-
-        <p>But in this there should be</p>
+        </script><p>But in this there should be</p>
         <div>
         <p>Great ideas require offsetting.</p>
-
         <p>bad tests require drivel</p>
         </div>
 
@@ -781,3 +763,566 @@ describe 'MarkdownEditingDescriptor', ->
         </code></pre>
         </problem>""")
     # failure tests
+
+    ################################################################ hinting tests
+    describe 'hinting tests', ->
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'drop down components', ->
+        it 'multiple component drop down', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+                                   Translation between Dropdown and ________ is straightforward.
+
+                                  [[
+                                     (Multiple Choice) 	 {{ Good Job::Yes, multiple choice is the right answer. }}
+                                     Text Input	                  {{ No, text input problems don't present options. }}
+                                     Numerical Input	 {{ No, numerical input problems don't present options. }}
+                                  ]]
+
+
+
+
+                                Clowns have funny _________ to make people laugh.
+                                [[
+                                  dogs		{{ NOPE::Not dogs, not cats, not toads }}
+                                  (FACES)	{{ With lots of makeup, doncha know?}}
+                                  money       {{ Clowns don't have any money, of course }}
+                                  donkeys     {{don't be an ass.}}
+                                  -no hint-
+                                ]]
+
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim()
+                  expect(data).toEqual(("""
+                                <problem schema="edXML/1.0">
+                                <p>Translation between Dropdown and ________ is straightforward.</p>
+                                <optionresponse>
+                                    <optioninput options="(Multiple Choice),Text Input,Numerical Input" correct="Multiple Choice">
+                                          <option  correct="True">Multiple Choice
+                                               <optionhint  label="Good Job">Yes, multiple choice is the right answer.
+                                               </optionhint>
+                                </option>
+                                          <option  correct="False">Text Input
+                                               <optionhint  >No, text input problems don't present options.
+                                               </optionhint>
+                                </option>
+                                          <option  correct="False">Numerical Input
+                                               <optionhint  >No, numerical input problems don't present options.
+                                               </optionhint>
+                                </option>
+                                    </optioninput>
+                                </optionresponse>
+                                <p>Clowns have funny _________ to make people laugh.</p>
+                                <optionresponse>
+                                    <optioninput options="dogs,(FACES),money,donkeys,-no hint-" correct="FACES">
+                                          <option  correct="False">dogs
+                                               <optionhint  label="NOPE">Not dogs, not cats, not toads
+                                               </optionhint>
+                                </option>
+                                          <option  correct="True">FACES
+                                               <optionhint  >With lots of makeup, doncha know?
+                                               </optionhint>
+                                </option>
+                                          <option  correct="False">money
+                                               <optionhint  >Clowns don't have any money, of course
+                                               </optionhint>
+                                </option>
+                                          <option  correct="False">donkeys
+                                               <optionhint  >don't be an ass.
+                                               </optionhint>
+                                </option>
+                                          <option  correct="False">-no hint-</option>
+                                    </optioninput>
+                                </optionresponse>
+                                </problem>
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
+
+        #____________________________________________________________________
+        it 'simple dropdown, including 3 problem hints', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+                                   Translation between Dropdown and ________ is straightforward.
+
+                                  [[
+                                     (Multiple Choice) 	 {{ Good Job::Yes, multiple choice is the right answer. }}
+                                     Text Input	                  {{ No, text input problems do not present options. }}
+                                     Numerical Input	 {{ No, numerical input problems do not present options. }}
+                                  ]]
+
+                                  || 0) your mother wears army boots. ||
+                                  || 1) roses are red. ||
+                                  || 2) violets are blue. ||
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim()
+                  expect(data).toEqual(("""
+                                  <problem schema="edXML/1.0">
+                                  <p>Translation between Dropdown and ________ is straightforward.</p>
+                                  <optionresponse>
+                                      <optioninput options="(Multiple Choice),Text Input,Numerical Input" correct="Multiple Choice">
+                                            <option  correct="True">Multiple Choice
+                                                 <optionhint  label="Good Job">Yes, multiple choice is the right answer.
+                                                 </optionhint>
+                                  </option>
+                                            <option  correct="False">Text Input
+                                                 <optionhint  >No, text input problems do not present options.
+                                                 </optionhint>
+                                  </option>
+                                            <option  correct="False">Numerical Input
+                                                 <optionhint  >No, numerical input problems do not present options.
+                                                 </optionhint>
+                                  </option>
+                                      </optioninput>
+                                  </optionresponse>
+
+                                      <demandhint>
+                                          <hint>  0) your mother wears army boots.
+                                          </hint>
+                                          <hint>  1) roses are red.
+                                          </hint>
+                                          <hint>  2) violets are blue.
+                                          </hint>
+                                      </demandhint>
+                                  </problem>
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
+
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'checkbox components', ->
+        #____________________________________________________________________
+        it 'multiple checkbox components', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+                                  >>Select all the fruits from the list<<
+
+                                          [x] Apple     	 	 {{ selected: You’re right that apple is a fruit. }, {unselected: Remember that apple is also a fruit.}}
+                                          [ ] Mushroom	   	 {{U: You’re right that mushrooms aren’t fruit}, { selected: Mushroom is a fungus, not a fruit.}}
+                                          [x] Grape		     {{ selected: You’re right that grape is a fruit }, {unselected: Remember that grape is also a fruit.}}
+                                          [ ] Mustang
+                                          [ ] Camero            {{S:I don't know what a Camero is but it isn't a fruit.},{U:What is a camero anyway?}}
+
+
+                                          {{ ((A*B)) You’re right that apple is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.}}
+                                          {{ ((B*C)) You’re right that grape is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.}}
+
+
+
+                                   >>Select all the vegetables from the list<<
+
+                                          [ ] Banana     	 	 {{ selected: No, sorry, a banana is a fruit. }, {unselected: poor banana.}}
+                                          [ ] Ice Cream
+                                          [ ] Mushroom	   	 {{U: You’re right that mushrooms aren’t vegatbles}, { selected: Mushroom is a fungus, not a vegetable.}}
+                                          [x] Brussel Sprout	 {{S: Brussel sprouts are vegetables.}, {u: Brussel sprout is the only vegetable in this list.}}
+
+
+                                          {{ ((A*B)) Making a banana split? }}
+                                          {{ ((B*D)) That will make a horrible dessert: a brussel sprout split? }}
+
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim()
+                  expect(data).toEqual(("""
+                                    <problem schema="edXML/1.0">
+                                      <p>Select all the fruits from the list</p>
+                                      <choiceresponse>
+                                        <checkboxgroup label="Select all the fruits from the list" direction="vertical">
+                                          <choice correct="true">Apple
+                                                     <choicehint selected="true">You’re right that apple is a fruit.
+                                                     </choicehint>
+                                                     <choicehint selected="false">Remember that apple is also a fruit.
+                                                     </choicehint>
+                                          </choice>
+                                          <choice correct="false">Mushroom
+                                                     <choicehint selected="true">Mushroom is a fungus, not a fruit.
+                                                     </choicehint>
+                                                     <choicehint selected="false">You’re right that mushrooms aren’t fruit
+                                                     </choicehint>
+                                          </choice>
+                                          <choice correct="true">Grape
+                                                     <choicehint selected="true">You’re right that grape is a fruit
+                                                     </choicehint>
+                                                     <choicehint selected="false">Remember that grape is also a fruit.
+                                                     </choicehint>
+                                          </choice>
+                                          <choice correct="false">Mustang</choice>
+                                          <choice correct="false">Camero
+                                                     <choicehint selected="true">I don't know what a Camero is but it isn't a fruit.
+                                                     </choicehint>
+                                                     <choicehint selected="false">What is a camero anyway?
+                                                     </choicehint>
+                                          </choice>
+                                          <booleanhint value="A*B"> You’re right that apple is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.
+                                          </booleanhint>
+                                          <booleanhint value="B*C"> You’re right that grape is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.
+                                          </booleanhint>
+                                        </checkboxgroup>
+                                      </choiceresponse>
+                                      <p>Select all the vegetables from the list</p>
+                                      <choiceresponse>
+                                        <checkboxgroup label="Select all the vegetables from the list" direction="vertical">
+                                          <choice correct="false">Banana
+                                                     <choicehint selected="true">No, sorry, a banana is a fruit.
+                                                     </choicehint>
+                                                     <choicehint selected="false">poor banana.
+                                                     </choicehint>
+                                          </choice>
+                                          <choice correct="false">Ice Cream</choice>
+                                          <choice correct="false">Mushroom
+                                                     <choicehint selected="true">Mushroom is a fungus, not a vegetable.
+                                                     </choicehint>
+                                                     <choicehint selected="false">You’re right that mushrooms aren’t vegatbles
+                                                     </choicehint>
+                                          </choice>
+                                          <choice correct="true">Brussel Sprout
+                                                     <choicehint selected="true">Brussel sprouts are vegetables.
+                                                     </choicehint>
+                                                     <choicehint selected="false">Brussel sprout is the only vegetable in this list.
+                                                     </choicehint>
+                                          </choice>
+                                          <booleanhint value="A*B"> Making a banana split?
+                                          </booleanhint>
+                                          <booleanhint value="B*D"> That will make a horrible dessert: a brussel sprout split?
+                                          </booleanhint>
+                                        </checkboxgroup>
+                                      </choiceresponse>
+                                    </problem>
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
+
+        #____________________________________________________________________
+        it 'multiple checkbox components, including 3 problem hints', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+                                  >>Select all the fruits from the list<<
+
+                                          [x] Apple     	 	 {{ selected: You’re right that apple is a fruit. }, {unselected: Remember that apple is also a fruit.}}
+                                          [ ] Mushroom	   	 {{U: You’re right that mushrooms aren’t fruit}, { selected: Mushroom is a fungus, not a fruit.}}
+                                          [x] Grape		     {{ selected: You’re right that grape is a fruit }, {unselected: Remember that grape is also a fruit.}}
+                                          [ ] Mustang
+                                          [ ] Camero            {{S:I don't know what a Camero is but it isn't a fruit.},{U:What is a camero anyway?}}
+
+
+                                          {{ ((A*B)) You’re right that apple is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.}}
+                                          {{ ((B*C)) You’re right that grape is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.}}
+
+
+
+                                   >>Select all the vegetables from the list<<
+
+                                          [ ] Banana     	 	 {{ selected: No, sorry, a banana is a fruit. }, {unselected: poor banana.}}
+                                          [ ] Ice Cream
+                                          [ ] Mushroom	   	 {{U: You’re right that mushrooms aren’t vegatbles}, { selected: Mushroom is a fungus, not a vegetable.}}
+                                          [x] Brussel Sprout	 {{S: Brussel sprouts are vegetables.}, {u: Brussel sprout is the only vegetable in this list.}}
+
+
+                                          {{ ((A*B)) Making a banana split? }}
+                                          {{ ((B*D)) That will make a horrible dessert: a brussel sprout split? }}
+
+
+
+
+                                  || Hint one.||
+                                  || Hint two. ||
+                                  || Hint three. ||
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim()
+                  expect(data).toEqual(("""
+                                    <problem schema="edXML/1.0">
+                                    <p>Select all the fruits from the list</p>
+                                    <choiceresponse>
+                                      <checkboxgroup label="Select all the fruits from the list" direction="vertical">
+                                        <choice correct="true">Apple
+                                                   <choicehint selected="true">You’re right that apple is a fruit.
+                                                   </choicehint>
+                                                   <choicehint selected="false">Remember that apple is also a fruit.
+                                                   </choicehint>
+                                        </choice>
+                                        <choice correct="false">Mushroom
+                                                   <choicehint selected="true">Mushroom is a fungus, not a fruit.
+                                                   </choicehint>
+                                                   <choicehint selected="false">You’re right that mushrooms aren’t fruit
+                                                   </choicehint>
+                                        </choice>
+                                        <choice correct="true">Grape
+                                                   <choicehint selected="true">You’re right that grape is a fruit
+                                                   </choicehint>
+                                                   <choicehint selected="false">Remember that grape is also a fruit.
+                                                   </choicehint>
+                                        </choice>
+                                        <choice correct="false">Mustang</choice>
+                                        <choice correct="false">Camero
+                                                   <choicehint selected="true">I don't know what a Camero is but it isn't a fruit.
+                                                   </choicehint>
+                                                   <choicehint selected="false">What is a camero anyway?
+                                                   </choicehint>
+                                        </choice>
+                                        <booleanhint value="A*B"> You’re right that apple is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.
+                                        </booleanhint>
+                                        <booleanhint value="B*C"> You’re right that grape is a fruit, but there’s one you’re missing. Also, mushroom is not a fruit.
+                                        </booleanhint>
+                                      </checkboxgroup>
+                                    </choiceresponse>
+                                    <p>Select all the vegetables from the list</p>
+                                    <choiceresponse>
+                                      <checkboxgroup label="Select all the vegetables from the list" direction="vertical">
+                                        <choice correct="false">Banana
+                                                   <choicehint selected="true">No, sorry, a banana is a fruit.
+                                                   </choicehint>
+                                                   <choicehint selected="false">poor banana.
+                                                   </choicehint>
+                                        </choice>
+                                        <choice correct="false">Ice Cream</choice>
+                                        <choice correct="false">Mushroom
+                                                   <choicehint selected="true">Mushroom is a fungus, not a vegetable.
+                                                   </choicehint>
+                                                   <choicehint selected="false">You’re right that mushrooms aren’t vegatbles
+                                                   </choicehint>
+                                        </choice>
+                                        <choice correct="true">Brussel Sprout
+                                                   <choicehint selected="true">Brussel sprouts are vegetables.
+                                                   </choicehint>
+                                                   <choicehint selected="false">Brussel sprout is the only vegetable in this list.
+                                                   </choicehint>
+                                        </choice>
+                                        <booleanhint value="A*B"> Making a banana split?
+                                        </booleanhint>
+                                        <booleanhint value="B*D"> That will make a horrible dessert: a brussel sprout split?
+                                        </booleanhint>
+                                      </checkboxgroup>
+                                    </choiceresponse>
+                                    <demandhint>
+                                        <hint>  Hint one.
+                                        </hint>
+                                        <hint>  Hint two.
+                                        </hint>
+                                        <hint>  Hint three.
+                                        </hint>
+                                    </demandhint>
+                                    </problem>
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
+
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'multiple choice components', ->
+        #____________________________________________________________________
+        it 'dual multiple choice components ', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+                                   >>Select the fruit from the list<<
+
+                                              () Mushroom	  	 {{ Mushroom is a fungus, not a fruit.}}
+                                              () Potato
+                                             (x) Apple     	 	 {{ OUTSTANDING::Apple is indeed a fruit.}}
+
+                                   >>Select the vegetables from the list<<
+
+                                              () Mushroom	  	 {{ Mushroom is a fungus, not a vegetable.}}
+                                              (x) Potato	                 {{ Potato is a root vegetable. }}
+                                              () Apple     	 	 {{ OOPS::Apple is a fruit.}}
+
+
+
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim()
+                  expect(data).toEqual(("""
+
+                                  <problem schema="edXML/1.0">
+                                      <p>Select the fruit from the list</p>
+                                      <multiplechoiceresponse>
+                                        <choicegroup label="Select the fruit from the list" type="MultipleChoice">
+                                          <choice correct="false">Mushroom
+                                              <choicehint>Mushroom is a fungus, not a fruit.
+                                              </choicehint>
+                                          </choice>
+                                          <choice correct="false">Potato</choice>
+                                          <choice correct="true">Apple
+                                              <choicehint  label="OUTSTANDING">Apple is indeed a fruit.
+                                              </choicehint>
+                                          </choice>
+                                        </choicegroup>
+                                      </multiplechoiceresponse>
+                                      <p>Select the vegetables from the list</p>
+                                      <multiplechoiceresponse>
+                                        <choicegroup label="Select the vegetables from the list" type="MultipleChoice">
+                                          <choice correct="false">Mushroom
+                                              <choicehint>Mushroom is a fungus, not a vegetable.
+                                              </choicehint>
+                                          </choice>
+                                          <choice correct="true">Potato
+                                              <choicehint>Potato is a root vegetable.
+                                              </choicehint>
+                                          </choice>
+                                          <choice correct="false">Apple
+                                              <choicehint  label="OOPS">Apple is a fruit.
+                                              </choicehint>
+                                          </choice>
+                                        </choicegroup>
+                                      </multiplechoiceresponse>
+                                   </problem>
+
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
+
+        #____________________________________________________________________
+        it 'dual multiple choice components, including 2 problem hints ', ->
+                  data = MarkdownEditingDescriptor.markdownToXml("""
+
+                                   >>Select the fruit from the list<<
+
+                                              () Mushroom	  	 {{ Mushroom is a fungus, not a fruit.}}
+                                              () Potato
+                                             (x) Apple     	 	 {{ OUTSTANDING::Apple is indeed a fruit.}}
+
+
+                                  || 0) your mother wears army boots. ||
+                                  || 1) roses are red. ||
+                                   >>Select the vegetables from the list<<
+
+                                              () Mushroom	  	 {{ Mushroom is a fungus, not a vegetable.}}
+                                              (x) Potato	                 {{ Potato is a root vegetable. }}
+                                              () Apple     	 	 {{ OOPS::Apple is a fruit.}}
+
+
+                                   || 2) where are the lions? ||
+
+
+
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim()
+                  expect(data).toEqual(("""
+
+                                    <problem schema="edXML/1.0">
+                                        <p>Select the fruit from the list</p>
+                                        <multiplechoiceresponse>
+                                            <choicegroup label="Select the fruit from the list" type="MultipleChoice">
+                                                <choice correct="false">Mushroom <choicehint>Mushroom is a fungus, not a fruit. </choicehint> </choice>
+                                                <choice correct="false">Potato</choice>
+                                                <choice correct="true">Apple <choicehint label="OUTSTANDING">Apple is indeed a fruit. </choicehint> </choice>
+                                            </choicegroup>
+                                        </multiplechoiceresponse>
+                                        <p>Select the vegetables from the list</p>
+                                        <multiplechoiceresponse>
+                                            <choicegroup label="Select the vegetables from the list" type="MultipleChoice">
+                                                <choice correct="false">Mushroom <choicehint>Mushroom is a fungus, not a vegetable. </choicehint> </choice>
+                                                <choice correct="true">Potato <choicehint>Potato is a root vegetable. </choicehint> </choice>
+                                                <choice correct="false">Apple <choicehint label="OOPS">Apple is a fruit. </choicehint> </choice>
+                                            </choicegroup>
+                                        </multiplechoiceresponse>
+                                        <p> </p>
+                                        <demandhint>
+                                            <hint> 0) your mother wears army boots. </hint>
+                                            <hint> 1) roses are red. </hint>
+                                            <hint> 2) where are the lions? </hint>
+                                        </demandhint>
+                                    </problem>
+
+                  """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim())
+
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'text input components', ->
+        #____________________________________________________________________
+        it 'simple single text input component', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+                                      >>In which country would you find the city of Paris?<<
+
+                                      = France		{{ BRAVO::Viva la France! }}
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                      <problem schema="edXML/1.0">
+                                      <p>In which country would you find the city of Paris?</p>
+                                      <stringresponse answer="France" type="ci" >
+                                          <correcthint  label="BRAVO">Viva la France!
+                                          </correcthint>
+                                        <textline label="In which country would you find the city of Paris?" size="20"/>
+                                      </stringresponse>
+
+                                      </problem>
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+        #____________________________________________________________________
+        it 'simple single text input component, with problem hints', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+                                    >>In which country would you find the city of Paris?<<
+
+                                    = France		{{ BRAVO::Viva la France! }}
+
+
+                                    || There are actually two countries with cities named Paris. ||
+                                    || Paris is the capital of one of those countries. ||
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                    <problem schema="edXML/1.0">
+                                    <p>In which country would you find the city of Paris?</p>
+                                    <stringresponse answer="France" type="ci" >
+                                        <correcthint  label="BRAVO">Viva la France!
+                                        </correcthint>
+                                      <textline label="In which country would you find the city of Paris?" size="20"/>
+                                    </stringresponse>
+                                        <demandhint>
+                                            <hint>  There are actually two countries with cities named Paris.
+                                            </hint>
+                                            <hint>  Paris is the capital of one of those countries.
+                                            </hint>
+                                        </demandhint>
+                                    </problem>
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+        #____________________________________________________________________
+        it 'text input component, with an alternate correct answer', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+                                          >>In which country would you find the city of Paris?<<
+
+                                          = France		{{ BRAVO::Viva la France! }}
+                                      or= USA			{{ There is a town in Texas called Paris.}}
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                      <problem schema="edXML/1.0">
+                                      <p>In which country would you find the city of Paris?</p>
+                                      <stringresponse answer="France" type="ci" >
+                                          <correcthint  label="BRAVO">Viva la France!
+                                          </correcthint>
+                                          <additional_answer  answer="USA">There is a town in Texas called Paris.
+                                        </additional_answer>
+                                        <textline label="In which country would you find the city of Paris?" size="20"/>
+                                      </stringresponse>
+                                      </problem>
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+      #____________________________________________________________________
+      #____________________________________________________________________
+      describe 'numeric input components', ->
+        #____________________________________________________________________
+        it 'simple single text input component', ->
+                    data = MarkdownEditingDescriptor.markdownToXml("""
+
+                                      >>Enter the numerical value of Pi:<<
+                                      = 3.14159 +- .02
+
+                                      >>Enter the approximate value of 502*9:<<
+                                      = 4518 +- 15%
+
+                                      >>Enter the number of fingers on a human hand<<
+                                      = 5
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim()
+                    expect(data).toEqual(("""
+
+                                      <problem schema="edXML/1.0">
+                                      <p>Enter the numerical value of Pi:</p>
+                                      <numericalresponse answer="3.14159">
+                                        <responseparam type="tolerance" default=".02" />
+                                        <formulaequationinput label="Enter the numerical value of Pi:" />
+                                      </numericalresponse>
+                                      <p>Enter the approximate value of 502*9:</p>
+                                      <numericalresponse answer="4518">
+                                        <responseparam type="tolerance" default="15%" />
+                                        <formulaequationinput label="Enter the approximate value of 502*9:" />
+                                      </numericalresponse>
+                                      <p>Enter the number of fingers on a human hand</p>
+                                      <numericalresponse answer="5">
+                                        <formulaequationinput label="Enter the number of fingers on a human hand" />
+                                      </numericalresponse>
+                                      </problem>
+
+                    """).replace(/'/gm, '`').replace(/\s+/gm, ' ').trim().trim())
+
+
+
+
+
+
+
