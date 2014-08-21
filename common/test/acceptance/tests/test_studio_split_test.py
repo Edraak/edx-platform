@@ -17,8 +17,9 @@ from ..pages.studio.overview import CourseOutlinePage, CourseOutlineUnit
 from ..pages.studio.settings_advanced import AdvancedSettingsPage
 from ..pages.studio.container import ContainerPage
 from ..pages.studio.settings_group_configurations import GroupConfigurationsPage
-from ..pages.studio.utils import add_advanced_component
+from ..pages.studio.utils import add_advanced_component, click_css
 from ..pages.xblock.utils import wait_for_xblock_initialization
+from ..pages.lms.courseware import CoursewarePage
 
 from .base_studio_test import StudioCourseTest
 
@@ -236,7 +237,7 @@ class SettingsMenuTest(StudioCourseTest):
 
 
 @attr('shard_1')
-@skipUnless(os.environ.get('FEATURE_GROUP_CONFIGURATIONS'), 'Tests Group Configurations feature')
+# @skipUnless(os.environ.get('FEATURE_GROUP_CONFIGURATIONS'), 'Tests Group Configurations feature')
 class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
     """
     Tests that Group Configurations page works correctly with previously
@@ -957,3 +958,83 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
             "This configuration is currently used in content experiments. If you make changes to the groups, you may need to edit those experiments.",
             config.edit_warning_message_text
         )
+
+    def test_split_test_LMS_staff_view(self):
+        """
+        Scenario: Ensure that split test is correctly rendered in LMS staff mode as it is
+                  and after inactive group removal.
+
+        Given I have a course without group configurations
+        When I create new group configuration
+        And I set new name and add a new group and save the group configuration
+        And I go to the unit page in Studio
+        And I add new advanced module "Content Experiment"
+        And I assign created group configuration to the module
+        Then I see the module has correct groups
+        And I publish and view in LMS in staff view
+        Then It is rendered correctly
+        Then I go to group configuration and delete group
+        Then I go to split test and delete inactive vertical
+        Then I publish unit and view unit in LMS in staff view
+        And it is rendered correctly
+        """
+        self.page.visit()
+        self.page.create()  # Create new group configuration
+        config = self.page.group_configurations[0]
+        config.name = "New Group Configuration Name"
+        config.add_group() # Add new group
+        config.groups[2].name = "New group"
+        config.save() # Save the configuration
+
+        split_test = self._add_split_test_to_vertical(number=0)
+        container = ContainerPage(self.browser, split_test.locator)
+        container.visit()
+        container.edit()
+        component_editor = ComponentEditorView(self.browser, container.locator)
+        component_editor.set_select_value_and_save('Group Configuration', 'New Group Configuration Name')
+        self.verify_groups(container, ['Group A', 'Group B', 'New group'], [])
+
+        # render in LMS correctly
+        courseware = CoursewarePage(self.browser, self.course_id)
+        self.course_outline_page = CourseOutlinePage(
+            self.browser, self.course_info['org'], self.course_info['number'], self.course_info['run']
+        )
+        self.course_outline_page.visit()
+        self.course_outline_page.expand_all_subsections()
+        section = self.course_outline_page.section_at(0)
+        unit = section.subsection_at(0).unit_at(0).go_to()
+
+        # I publish and view in LMS and it is rendered correctly
+        unit.publish_action.click()
+        unit.view_published_version()
+        self.assertEqual(len(self.browser.window_handles), 2)
+        courseware.wait_for_page()
+        self.assertEqual(u'split_test', courseware.xblock_component_type())
+        self.assertTrue(courseware.q(css=".split-test-select").is_present())
+
+        # I go to group configuration and delete group
+        self.page.visit()
+        self.page.q(css='.group-toggle').first.click()
+        config.edit()
+        config.groups[2].remove()
+        config.save()
+        self.page.q(css='.group-toggle').first.click()
+        self._assert_fields(config, name="New Group Configuration Name", description="", groups=["Group A", "Group B"])
+        self.browser.close()
+        self.browser.switch_to_window(self.browser.window_handles[0])
+
+        # I go to split test and delete inactive vertical
+        container.visit()
+        container.delete(0)
+
+        # render in LMS again
+        self.course_outline_page.visit()
+        self.course_outline_page.expand_all_subsections()
+        section = self.course_outline_page.section_at(0)
+        unit = section.subsection_at(0).unit_at(0).go_to()
+        unit.publish_action.click()
+        unit.view_published_version()
+        self.assertEqual(len(self.browser.window_handles), 2)
+        courseware.wait_for_page()
+        self.assertEqual(u'split_test', courseware.xblock_component_type())
+        self.assertTrue(courseware.q(css=".split-test-select").is_present())
