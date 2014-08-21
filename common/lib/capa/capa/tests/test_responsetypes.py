@@ -284,7 +284,7 @@ class CheckboxHintsTest(ResponseTest):
 
 class MultpleChoiceHintsTest(ResponseTest):
     """
-    This class consists of a suite of test cases to be run on the multiple problem represented by the XML below.
+    This class consists of a suite of test cases to be run on the multiple choice problem represented by the XML below.
     """
     xml = """
               <problem schema="edXML/1.0">
@@ -368,7 +368,7 @@ class MultpleChoiceHintsTest(ResponseTest):
 
 class DropdownHintsTest(ResponseTest):
     """
-    This class consists of a suite of test cases to be run on the multiple problem represented by the XML below.
+    This class consists of a suite of test cases to be run on the drop down problem represented by the XML below.
     """
     xml = """
             <problem schema="edXML/1.0">
@@ -453,31 +453,6 @@ class DropdownHintsTest(ResponseTest):
         message_text = self._grade_problem( u'1_3_1', 'dogs')
         expected_string = '<div class="question_hint_incorrect">NOPE: Not dogs, not cats, not toads</div>'
         self.assertEqual(expected_string, message_text, '\nThe produced HTML hint string:    ' + message_text + '\nDoes not match the expected HTML: ' + expected_string)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class MultiChoiceResponseTest(ResponseTest):
     from capa.tests.response_xml_factory import MultipleChoiceResponseXMLFactory
