@@ -292,7 +292,7 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
 
     def _add_split_test_to_vertical(self, number, group_configuration_metadata=None):
         """
-        Add split test to vertical #`number`. 
+        Add split test to vertical #`number`.
 
         If `group_configuration_metadata` is not None, use it to assign group configuration to split test.
         """
@@ -972,7 +972,7 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         And I assign created group configuration to the module
         Then I see the module has correct groups
         And I publish and view in LMS in staff view
-        Then It is rendered correctly
+        Then it is rendered correctly
         Then I go to group configuration and delete group
         Then I go to split test and delete inactive vertical
         Then I publish unit and view unit in LMS in staff view
