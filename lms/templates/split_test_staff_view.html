@@ -4,7 +4,7 @@
     <select class="split-test-select">
         % for idx, item in enumerate(items):
         ## Translators: The 'Group' here refers to the group of users that has been sorted into group_id
-        <option value="${item['group_id']}">${_("{group_name}, active: {active_group}").format(group_name=item['group_name'], active_group=item['active_group'])}</option>
+        <option value="${item['group_id']}">${_("{group_name}").format(group_name=item['group_name'])}</option>
         %endfor
     </select>
 
