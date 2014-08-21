@@ -725,8 +725,9 @@ class TestMixedModuleStore(unittest.TestCase):
     #        - load inheritance data
 
     # TODO: LMS-11220: Document why draft send count is 4
+    # TODO: LMS-11220: Document why draft find count is 18
     # TODO: LMS-11220: Document why split find count is 16
-    @ddt.data(('draft', [14, 4], 0), ('split', [16, 6], 0))
+    @ddt.data(('draft', [18, 4], 0), ('split', [16, 6], 0))
     @ddt.unpack
     def test_path_to_location(self, default_ms, num_finds, num_sends):
         """
