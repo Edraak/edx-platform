@@ -61,7 +61,7 @@ def track_memory_usage(metric, course_id):
     for memory_type, baseline_usage in zip(memory_types, baseline_usages):
         total_usage = getattr(process.get_memory_info(), memory_type)
         memory_used = total_usage - baseline_usage
-        dog_stats_api.histogram(
+        dog_stats_api.increment(
             metric + "." + memory_type,
             memory_used,
             tags=["course_id:{}".format(course_id)],
