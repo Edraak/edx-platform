@@ -245,7 +245,7 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
             group_name, updated_group_id  = self.get_data_for_vertical(child)
             active_group = _(u'Yes')
 
-            if not updated_group_id:  # inactive group
+            if updated_group_id is None:  # inactive group
                 active_group = _(u'No')
                 group_name = child.display_name
                 updated_group_id = [id for id, loc in self.group_id_to_child.items() if loc == child_location]
