@@ -237,19 +237,26 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
         fragment = Fragment()
         contents = []
 
-        for group_id in self.group_id_to_child:
-            child_location = self.group_id_to_child[group_id]
+        for child_location in self.children:
             child_descriptor = self.get_child_descriptor_by_location(child_location)
-            if child_descriptor:  # render only existing children
-                child = self.system.get_module(child_descriptor)
-                rendered_child = child.render(STUDENT_VIEW, context)
-                fragment.add_frag_resources(rendered_child)
+            child = self.system.get_module(child_descriptor)
+            rendered_child = child.render(STUDENT_VIEW, context)
+            fragment.add_frag_resources(rendered_child)
+            group_name, updated_group_id  = self.get_data_for_vertical(child)
+            active_group = _(u'Yes')
 
-                contents.append({
-                    'group_id': group_id,
-                    'id': child.location.to_deprecated_string(),
-                    'content': rendered_child.content
-                })
+            if not updated_group_id:  # inactive group
+                active_group = _(u'No')
+                group_name = child.display_name
+                updated_group_id = [id for id, loc in self.group_id_to_child.items() if loc == child_location]
+
+            contents.append({
+                'group_name': group_name,
+                'id': child.location.to_deprecated_string(),
+                'content': rendered_child.content,
+                'active_group': active_group,
+                'group_id': updated_group_id,
+            })
 
         # Use the new template
         fragment.add_content(self.system.render_template('split_test_staff_view.html', {
@@ -416,6 +423,7 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
                 msg = "Unable to load child when parsing split_test module."
                 log.exception(msg)
                 system.error_tracker(msg)
+
 
         # If children referenced in group_id_to_child do not exist, remove them from the map.
         for str_group_id, usage_key in group_id_to_child.items():
