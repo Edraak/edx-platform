@@ -3,7 +3,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.utils.translation import ugettext as _
 import json
 import logging
 import re
@@ -115,17 +116,18 @@ def users_in_cohort(request, course_key_string, cohort_id):
     cohort = cohorts.get_cohort_by_id(course_key, int(cohort_id))
 
     paginator = Paginator(cohort.users.all(), 100)
-    page = request.GET.get('page')
+    try:
+        page = int(request.GET.get('page'))
+    except ValueError:
+        return HttpResponseBadRequest(_('Requested page must be numeric'))
+    else:
+        if page < 0:
+            return HttpResponseBadRequest(_('Requested page must be greater than zero'))
+
     try:
         users = paginator.page(page)
-    except PageNotAnInteger:
-        # return the first page
-        page = 1
-        users = paginator.page(page)
     except EmptyPage:
-        # Page is out of range.  Return last page
-        page = paginator.num_pages
-        contacts = paginator.page(page)
+        users = []  # When page > number of pages, return a blank page
 
     user_info = [{'username': u.username,
                   'email': u.email,
