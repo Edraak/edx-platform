@@ -250,7 +250,7 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
                 group_name = child.display_name
                 updated_group_id = [g_id for g_id, loc in self.group_id_to_child.items() if loc == child_location]
                 inactive_contents.append({
-                    'group_name': group_name + ' (' + _('inactive') + ')',
+                    'group_name': '{group_name} (inactive)'.format(group_name=group_name),
                     'id': child.location.to_deprecated_string(),
                     'content': rendered_child.content,
                     'group_id': updated_group_id,
