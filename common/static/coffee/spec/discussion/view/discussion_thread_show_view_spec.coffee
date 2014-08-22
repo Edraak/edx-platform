@@ -3,83 +3,68 @@ describe "DiscussionThreadShowView", ->
         DiscussionSpecHelper.setUpGlobals()
         DiscussionSpecHelper.setUnderscoreFixtures()
 
+        @user = DiscussionUtil.getUser()
         @threadData = {
             id: "dummy",
-            user_id: DiscussionUtil.getUser().id,
-            username: DiscussionUtil.getUser().get('username'),
+            user_id: @user.id,
+            username: @user.get('username'),
             course_id: $$course_id,
             body: "this is a thread",
             created_at: "2013-04-03T20:08:39Z",
             abuse_flaggers: [],
-            votes: {up_count: "42"},
+            votes: {up_count: 42},
             thread_type: "discussion",
             closed: false,
-            pinned: false
+            pinned: false,
+            type: "thread" # TODO - silly that this needs to be explicitly set
         }
         @thread = new Thread(@threadData)
         @view = new DiscussionThreadShowView({ model: @thread })
         @view.setElement($("#fixture-element"))
         @spyOn(@view, "convertMath")
 
-    it "renders the vote correctly", ->
-        DiscussionViewSpecHelper.checkRenderVote(@view, @thread)
+    describe "voting", ->
 
-    it "votes correctly", ->
-        DiscussionViewSpecHelper.checkVote(@view, @thread, @threadData, true)
+        it "renders the vote state correctly", ->
+            DiscussionViewSpecHelper.checkRenderVote(@view, @thread)
 
-    it "unvotes correctly", ->
-        DiscussionViewSpecHelper.checkUnvote(@view, @thread, @threadData, true)
+        it "votes correctly via click", ->
+            DiscussionViewSpecHelper.checkUpvote(@view, @thread, @user, $.Event("click"))
 
-    it 'toggles the vote correctly', ->
-        DiscussionViewSpecHelper.checkToggleVote(@view, @thread)
+        it "votes correctly via spacebar", ->
+            DiscussionViewSpecHelper.checkUpvote(@view, @thread, @user, $.Event("keydown", {which: 32}))
 
-    it "vote button activates on appropriate events", ->
-        DiscussionViewSpecHelper.checkVoteButtonEvents(@view)
+        it "unvotes correctly via click", ->
+            DiscussionViewSpecHelper.checkUnvote(@view, @thread, @user, $.Event("click"))
 
-    describe "renderPinned", ->
-        describe "for an unpinned thread", ->
-            it "renders correctly when pinning is allowed", ->
-                @thread.updateInfo({ability: {can_openclose: true}})
-                @view.render()
-                pinElem = @view.$(".discussion-pin")
-                expect(pinElem.length).toEqual(1)
-                expect(pinElem).not.toHaveClass("pinned")
-                expect(pinElem).toHaveClass("notpinned")
-                expect(pinElem.find(".pin-label")).toHaveHtml("Pin Thread")
-                expect(pinElem).not.toHaveAttr("data-tooltip")
-                expect(pinElem).toHaveAttr("aria-pressed", "false")
+        it "unvotes correctly via spacebar", ->
+            DiscussionViewSpecHelper.checkUnvote(@view, @thread, @user, $.Event("keydown", {which: 32}))
 
-            # If pinning is not allowed, the pinning UI is not present, so no
-            # test is needed
+    describe "pinning", ->
 
-        describe "for a pinned thread", ->
-            beforeEach ->
-                @thread.set("pinned", true)
+        expectPinnedRendered = (view, model) ->
+            pinned = model.get('pinned')
+            button = view.$el.find(".action-pin")
+            expect(button.hasClass("is-checked")).toBe(pinned)
+            expect(button.attr("aria-checked")).toEqual(pinned.toString())
 
-            it "renders correctly when unpinning is allowed", ->
-                @thread.updateInfo({ability: {can_openclose: true}})
-                @view.render()
-                pinElem = @view.$(".discussion-pin")
-                expect(pinElem.length).toEqual(1)
-                expect(pinElem).toHaveClass("pinned")
-                expect(pinElem).not.toHaveClass("notpinned")
-                expect(pinElem.find(".pin-label")).toHaveHtml("Pinned<span class='sr'>, click to unpin</span>")
-                expect(pinElem).toHaveAttr("data-tooltip", "Click to unpin")
-                expect(pinElem).toHaveAttr("aria-pressed", "true")
+        it "renders the pinned state correctly", ->
+            @view.render()
+            expectPinnedRendered(@view, @thread)
+            @thread.set('pinned', false)
+            @view.render()
+            expectPinnedRendered(@view, @thread)
+            @thread.set('pinned', true)
+            @view.render()
+            expectPinnedRendered(@view, @thread)
 
-            it "renders correctly when unpinning is not allowed", ->
-                @view.render()
-                pinElem = @view.$(".discussion-pin")
-                expect(pinElem.length).toEqual(1)
-                expect(pinElem).toHaveClass("pinned")
-                expect(pinElem).not.toHaveClass("notpinned")
-                expect(pinElem.find(".pin-label")).toHaveHtml("Pinned")
-                expect(pinElem).not.toHaveAttr("data-tooltip")
-                expect(pinElem).not.toHaveAttr("aria-pressed")
-                
-
-    it "pinning button activates on appropriate events", ->
-        DiscussionViewSpecHelper.checkButtonEvents(@view, "togglePin", ".admin-pin")
+        it "exposes the pinning control only to authorized users", ->
+            @thread.updateInfo({ability: {can_openclose: false}})
+            @view.render()
+            expect(@view.$el.find(".action-pin").parent()).toHaveClass("is-hidden")
+            @thread.updateInfo({ability: {can_openclose: true}})
+            @view.render()
+            expect(@view.$el.find(".action-pin").parent()).not.toHaveClass("is-hidden")
 
     describe "labels", ->
 

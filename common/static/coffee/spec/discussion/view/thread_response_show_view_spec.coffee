@@ -3,6 +3,7 @@ describe "ThreadResponseShowView", ->
         DiscussionSpecHelper.setUpGlobals()
         DiscussionSpecHelper.setUnderscoreFixtures()
 
+        @user = DiscussionUtil.getUser()
         @thread = new Thread({"thread_type": "discussion"})
         @commentData = {
             id: "dummy",
@@ -12,7 +13,8 @@ describe "ThreadResponseShowView", ->
             created_at: "2013-04-03T20:08:39Z",
             endorsed: false,
             abuse_flaggers: [],
-            votes: {up_count: "42"}
+            votes: {up_count: 42},
+            type: "comment"
         }
         @comment = new Comment(@commentData)
         @comment.set("thread", @thread)
@@ -23,20 +25,22 @@ describe "ThreadResponseShowView", ->
 
         @view.render()
 
-    it "renders the vote correctly", ->
-        DiscussionViewSpecHelper.checkRenderVote(@view, @comment)
+    describe "voting", ->
 
-    it "votes correctly", ->
-        DiscussionViewSpecHelper.checkVote(@view, @comment, @commentData, true)
+        it "renders the vote state correctly", ->
+            DiscussionViewSpecHelper.checkRenderVote(@view, @comment)
 
-    it "unvotes correctly", ->
-        DiscussionViewSpecHelper.checkUnvote(@view, @comment, @commentData, true)
+        it "votes correctly via click", ->
+            DiscussionViewSpecHelper.checkUpvote(@view, @comment, @user, $.Event("click"))
 
-    it 'toggles the vote correctly', ->
-        DiscussionViewSpecHelper.checkToggleVote(@view, @comment)
+        it "votes correctly via spacebar", ->
+            DiscussionViewSpecHelper.checkUpvote(@view, @comment, @user, $.Event("keydown", {which: 32}))
 
-    it "vote button activates on appropriate events", ->
-        DiscussionViewSpecHelper.checkVoteButtonEvents(@view)
+        it "unvotes correctly via click", ->
+            DiscussionViewSpecHelper.checkUnvote(@view, @comment, @user, $.Event("click"))
+
+        it "unvotes correctly via spacebar", ->
+            DiscussionViewSpecHelper.checkUnvote(@view, @comment, @user, $.Event("keydown", {which: 32}))
 
     it "renders endorsement correctly for a marked answer in a question thread", ->
         endorsement = {

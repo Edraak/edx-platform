@@ -41,15 +41,3 @@ describe "DiscussionContentView", ->
         @thread.set("abuse_flaggers",temp_array)
         @thread.unflagAbuse()
         expect(@thread.get 'abuse_flaggers').toEqual []
-
-    it 'renders the vote button properly', ->
-        DiscussionViewSpecHelper.checkRenderVote(@view, @thread)
-
-    it 'votes correctly', ->
-        DiscussionViewSpecHelper.checkVote(@view, @thread, @threadData, false)
-
-    it 'unvotes correctly', ->
-        DiscussionViewSpecHelper.checkUnvote(@view, @thread, @threadData, false)
-
-    it 'toggles the vote correctly', ->
-        DiscussionViewSpecHelper.checkToggleVote(@view, @thread)
