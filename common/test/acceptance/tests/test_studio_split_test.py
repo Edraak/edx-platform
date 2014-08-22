@@ -1023,7 +1023,6 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         # render in LMS to see how inactive vertical is rendered
         self.publish_unit_in_LMS_and_view(courseware_page)
         self.assertEqual(u'split_test', courseware_page.xblock_component_type())
-        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
         self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
         rendered_group_names = self.get_select_options(page=courseware_page, selector=".split-test-select")
         self.assertListEqual([u'Group A', u'Group B', u'Group ID 2 (inactive)'], rendered_group_names)
@@ -1037,7 +1036,6 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
 
         # render in LMS again
         self.publish_unit_in_LMS_and_view(courseware_page)
-        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
         self.assertEqual(u'split_test', courseware_page.xblock_component_type())
         self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
         rendered_group_names = self.get_select_options(page=courseware_page, selector=".split-test-select")
