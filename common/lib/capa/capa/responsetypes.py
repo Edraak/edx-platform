@@ -299,8 +299,9 @@ class LoncapaResponse(object):
         if len(student_answers) > 0:                        # if the student has supplied at least one selection
             if self._using_new_style_hints():               # if we are using new style hints
                 new_style_hints_found = True                # note that new style hints may be used
-                if not self.get_compound_condition_hints(new_cmap, student_answers):   # if no compound rules matched
-                    self.get_single_choice_hints(new_cmap, student_answers)      # check for any single selection hints
+                compound_rule_matched = self.get_compound_condition_hints(new_cmap, student_answers)    # add hint text to 'new_cmap', if any
+                if not compound_rule_matched:               # if no compound rules matched
+                    self.get_single_choice_hints(new_cmap, student_answers)      # add hint text to 'new_cmap', if any
         return new_style_hints_found
 
     def get_hints(self, student_answers, new_cmap, old_cmap):
