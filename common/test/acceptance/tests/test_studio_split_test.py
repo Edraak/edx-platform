@@ -7,6 +7,7 @@ import os
 import math
 from unittest import skip, skipUnless
 from nose.plugins.attrib import attr
+from selenium.webdriver.support.ui import Select
 
 from xmodule.partitions.partitions import Group, UserPartition
 from bok_choy.promise import Promise, EmptyPromise
@@ -358,6 +359,14 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         unit.view_published_version()
         self.assertEqual(len(self.browser.window_handles), 2)
         courseware_page.wait_for_page()
+
+    def get_select_options(self, page, selector):
+        """
+        Get list of options of dropdown that is specified by selector on a given page.
+        """
+        select_element = page.q(css=selector)
+        self.assertTrue(select_element.is_present())
+        return [option.text for option in Select(select_element[0]).options]
 
     def test_no_group_configurations_added(self):
         """
@@ -995,7 +1004,8 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         courseware_page = CoursewarePage(self.browser, self.course_id)
         self.publish_unit_in_LMS_and_view(courseware_page)
         self.assertEqual(u'split_test', courseware_page.xblock_component_type())
-        self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
+        rendered_group_names = self.get_select_options(page=courseware_page, selector=".split-test-select")
+        self.assertListEqual([u'Group A', u'Group B', u'Group C'], rendered_group_names)
 
         # I go to group configuration and delete group
         self.page.visit()
@@ -1008,6 +1018,17 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         self.browser.close()
         self.browser.switch_to_window(self.browser.window_handles[0])
 
+        # render in LMS to see how inactive vertical is rendered
+        self.publish_unit_in_LMS_and_view(courseware_page)
+        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
+        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
+        self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
+        rendered_group_names = self.get_select_options(page=courseware_page, selector=".split-test-select")
+        self.assertListEqual([u'Group A', u'Group B', u'Group ID 2 (inactive)'], rendered_group_names)
+
+        self.browser.close()
+        self.browser.switch_to_window(self.browser.window_handles[0])
+
         # I go to split test and delete inactive vertical
         container.visit()
         container.delete(0)
@@ -1017,3 +1038,5 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         self.assertEqual(u'split_test', courseware_page.xblock_component_type())
         self.assertEqual(u'split_test', courseware_page.xblock_component_type())
         self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
+        rendered_group_names = self.get_select_options(page=courseware_page, selector=".split-test-select")
+        self.assertListEqual([u'Group A', u'Group B'], rendered_group_names)
