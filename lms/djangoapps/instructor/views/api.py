@@ -104,13 +104,13 @@ def common_exceptions_400(func):
     return wrapped
 
 
-def require_query_params(*args, **kwargs):
+def require_query_params(method='GET', *args, **kwargs):
     """
     Checks for required paremters or renders a 400 error.
     (decorator with arguments)
 
-    `args` is a *list of required GET parameter names.
-    `kwargs` is a **dict of required GET parameter names
+    `args` is a *list of required GET/POST parameter names.
+    `kwargs` is a **dict of required GET/POST parameter names
         to string explanations of the parameter
     """
     required_params = []
@@ -130,7 +130,10 @@ def require_query_params(*args, **kwargs):
 
             for (param, extra) in required_params:
                 default = object()
-                if request.GET.get(param, default) == default:
+                required_param = request.GET.get(param, default)
+                if method == 'POST':
+                    required_param = request.POST.get(param, default)
+                if required_param == default:
                     error_response_data['parameters'].append(param)
                     error_response_data['info'][param] = extra
 
@@ -208,10 +211,11 @@ def require_level(level):
     return decorator
 
 
+@require_POST
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_level('staff')
-@require_query_params(action="enroll or unenroll", identifiers="stringified list of emails and/or usernames")
+@require_query_params(method='POST', action="enroll or unenroll", identifiers="stringified list of emails and/or usernames")
 def students_update_enrollment(request, course_id):
     """
     Enroll or unenroll students by email.
@@ -250,12 +254,11 @@ def students_update_enrollment(request, course_id):
     }
     """
     course_id = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-
-    action = request.GET.get('action')
-    identifiers_raw = request.GET.get('identifiers')
+    action = request.POST.get('action')
+    identifiers_raw = request.POST.get('identifiers')
     identifiers = _split_input_list(identifiers_raw)
-    auto_enroll = request.GET.get('auto_enroll') in ['true', 'True', True]
-    email_students = request.GET.get('email_students') in ['true', 'True', True]
+    auto_enroll = request.POST.get('auto_enroll') in ['true', 'True', True]
+    email_students = request.POST.get('email_students') in ['true', 'True', True]
 
     email_params = {}
     if email_students:
@@ -322,11 +325,13 @@ def students_update_enrollment(request, course_id):
     return JsonResponse(response_payload)
 
 
+@require_POST
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_level('instructor')
 @common_exceptions_400
 @require_query_params(
+    method='POST',
     identifiers="stringified list of emails and/or usernames",
     action="add or remove",
 )
@@ -340,11 +345,11 @@ def bulk_beta_modify_access(request, course_id):
     - action is one of ['add', 'remove']
     """
     course_id = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    action = request.GET.get('action')
-    identifiers_raw = request.GET.get('identifiers')
+    action = request.POST.get('action')
+    identifiers_raw = request.POST.get('identifiers')
     identifiers = _split_input_list(identifiers_raw)
-    email_students = request.GET.get('email_students') in ['true', 'True', True]
-    auto_enroll = request.GET.get('auto_enroll') in ['true', 'True', True]
+    email_students = request.POST.get('email_students') in ['true', 'True', True]
+    auto_enroll = request.POST.get('auto_enroll') in ['true', 'True', True]
     results = []
     rolename = 'beta'
     course = get_course_by_id(course_id)
