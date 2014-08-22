@@ -380,8 +380,8 @@ class OptionInput(InputTypeBase):
         it did previously so no code is broken.
         :return: None
         """
-        problem_element_list = self.xml.xpath('//problem')
-        if problem_element_list:
+        problem_element_list = self.xml.xpath('/problem')           # get the root element <problem>
+        if problem_element_list:                                    # if there is a root element (belt and suspenders)
             problem_element = problem_element_list[0]
 
             if 'schema' in problem_element.attrib:
