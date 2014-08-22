@@ -316,7 +316,7 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
             )
         )
 
-    def create_group_configuration_experiment(self, groups, associate_experiment):
+    def create_group_configuration_experiment(self, groups, associate_experiment, return_split_test=False):
         """
         Creates a Group Configuration containing a list of groups.
         Optionally creates a Content Experiment and associates it with previous Group Configuration.
@@ -333,15 +333,31 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         if associate_experiment:
             # Assign newly created group configuration to experiment
             vertical = self.course_fixture.get_nested_xblocks(category="vertical")[0]
-            self.course_fixture.create_xblock(
-                vertical.locator,
-                XBlockFixtureDesc('split_test', 'Test Content Experiment', metadata={'user_partition_id': 0})
-            )
+            split_test = XBlockFixtureDesc('split_test', 'Test Content Experiment', metadata={'user_partition_id': 0})
+            self.course_fixture.create_xblock(vertical.locator, split_test)
 
         # Go to the Group Configuration Page
         self.page.visit()
         config = self.page.group_configurations[0]
+
+        if associate_experiment and return_split_test:
+            return config, split_test
         return config
+
+    def publish_unit_in_LMS_and_view(self, courseware_page):
+        """
+        Given course outline page, publish first unit and view it in LMS
+        """
+        self.outline_page.visit()
+        self.outline_page.expand_all_subsections()
+        section = self.outline_page.section_at(0)
+        unit = section.subsection_at(0).unit_at(0).go_to()
+
+        # I publish and view in LMS and it is rendered correctly
+        unit.publish_action.click()
+        unit.view_published_version()
+        self.assertEqual(len(self.browser.window_handles), 2)
+        courseware_page.wait_for_page()
 
     def test_no_group_configurations_added(self):
         """
@@ -964,53 +980,22 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         Scenario: Ensure that split test is correctly rendered in LMS staff mode as it is
                   and after inactive group removal.
 
-        Given I have a course without group configurations
-        When I create new group configuration
-        And I set new name and add a new group and save the group configuration
-        And I go to the unit page in Studio
-        And I add new advanced module "Content Experiment"
-        And I assign created group configuration to the module
-        Then I see the module has correct groups
-        And I publish and view in LMS in staff view
-        Then it is rendered correctly
+        Given I have a course with group configurations and split test that assigned to first group configuration
+        Then I publish split test and view it in LMS in staff view
+        And it is rendered correctly
         Then I go to group configuration and delete group
         Then I go to split test and delete inactive vertical
         Then I publish unit and view unit in LMS in staff view
         And it is rendered correctly
         """
-        self.page.visit()
-        self.page.create()  # Create new group configuration
-        config = self.page.group_configurations[0]
-        config.name = "New Group Configuration Name"
-        config.add_group()  # Add new group
-        config.groups[2].name = "New group"
-        config.save()  # Save the configuration
-
-        split_test = self._add_split_test_to_vertical(number=0)
+        config, split_test = self.create_group_configuration_experiment([Group("0", "Group A"), Group("1", "Group B"), Group("2", "Group C")], True, True)
         container = ContainerPage(self.browser, split_test.locator)
-        container.visit()
-        container.edit()
-        component_editor = ComponentEditorView(self.browser, container.locator)
-        component_editor.set_select_value_and_save('Group Configuration', 'New Group Configuration Name')
-        self.verify_groups(container, ['Group A', 'Group B', 'New group'], [])
 
         # render in LMS correctly
-        courseware = CoursewarePage(self.browser, self.course_id)
-        self.course_outline_page = CourseOutlinePage(
-            self.browser, self.course_info['org'], self.course_info['number'], self.course_info['run']
-        )
-        self.course_outline_page.visit()
-        self.course_outline_page.expand_all_subsections()
-        section = self.course_outline_page.section_at(0)
-        unit = section.subsection_at(0).unit_at(0).go_to()
-
-        # I publish and view in LMS and it is rendered correctly
-        unit.publish_action.click()
-        unit.view_published_version()
-        self.assertEqual(len(self.browser.window_handles), 2)
-        courseware.wait_for_page()
-        self.assertEqual(u'split_test', courseware.xblock_component_type())
-        self.assertTrue(courseware.q(css=".split-test-select").is_present())
+        courseware_page = CoursewarePage(self.browser, self.course_id)
+        self.publish_unit_in_LMS_and_view(courseware_page)
+        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
+        self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
 
         # I go to group configuration and delete group
         self.page.visit()
@@ -1019,7 +1004,7 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         config.groups[2].remove()
         config.save()
         self.page.q(css='.group-toggle').first.click()
-        self._assert_fields(config, name="New Group Configuration Name", description="", groups=["Group A", "Group B"])
+        self._assert_fields(config, name="Name", description="Description", groups=["Group A", "Group B"])
         self.browser.close()
         self.browser.switch_to_window(self.browser.window_handles[0])
 
@@ -1028,13 +1013,7 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         container.delete(0)
 
         # render in LMS again
-        self.course_outline_page.visit()
-        self.course_outline_page.expand_all_subsections()
-        section = self.course_outline_page.section_at(0)
-        unit = section.subsection_at(0).unit_at(0).go_to()
-        unit.publish_action.click()
-        unit.view_published_version()
-        self.assertEqual(len(self.browser.window_handles), 2)
-        courseware.wait_for_page()
-        self.assertEqual(u'split_test', courseware.xblock_component_type())
-        self.assertTrue(courseware.q(css=".split-test-select").is_present())
+        self.publish_unit_in_LMS_and_view(courseware_page)
+        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
+        self.assertEqual(u'split_test', courseware_page.xblock_component_type())
+        self.assertTrue(courseware_page.q(css=".split-test-select").is_present())
