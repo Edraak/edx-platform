@@ -792,6 +792,7 @@ class ChoiceResponse(LoncapaResponse):
         for student_answer_id in student_answers:
             if unicode(self.answer_id) == student_answer_id:
                 choice_test = '[@id="' + student_answer_id + '"]'
+                problem_hint_shown = False
                 for choice_element in self.xml.xpath('//checkboxgroup' + choice_test + '/choice'):
                     hint = ''
                     if choice_element.get('name') in student_answers[student_answer_id]:
