@@ -265,8 +265,8 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
             })
 
         # Sort active and inactive contents by group name.
-        sorted_active_contents = sorted(active_contents, key=itemgetter('group_name')) 
-        sorted_inactive_contents = sorted(inactive_contents, key=itemgetter('group_name')) 
+        sorted_active_contents = sorted(active_contents, key=itemgetter('group_name'))
+        sorted_inactive_contents = sorted(inactive_contents, key=itemgetter('group_name'))
 
         # Use the new template
         fragment.add_content(self.system.render_template('split_test_staff_view.html', {

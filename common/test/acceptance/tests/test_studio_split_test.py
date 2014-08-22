@@ -993,6 +993,8 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         Then I publish split test and view it in LMS in staff view
         And it is rendered correctly
         Then I go to group configuration and delete group
+        Then I publish split test and view it in LMS in staff view
+        And it is rendered correctly
         Then I go to split test and delete inactive vertical
         Then I publish unit and view unit in LMS in staff view
         And it is rendered correctly
