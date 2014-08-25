@@ -3,5 +3,6 @@ python:
   - "2.7"
 install:
   - pip install -r requirements/edx/paver.txt
+  - pip install python-memcached
 script:
   - paver test
