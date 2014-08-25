@@ -13,7 +13,7 @@ before_install: # Installing scipy deps: http://stackoverflow.com/a/14541175
 install:
   - pip install -r requirements/edx/paver.txt
   - pip install python-memcached
-  - pip install scipy==0.11.0
+  - paver install_prereqs
 
 script:
   - paver test
