@@ -6,6 +6,10 @@ notifications:
 python:
   - "2.7"
   
+before_install: # Installing scipy deps: http://stackoverflow.com/a/14541175
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq gfortran libopenblas-dev liblapack-dev
+
 install:
   - pip install -r requirements/edx/paver.txt
   - pip install python-memcached
