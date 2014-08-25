@@ -1,5 +1,15 @@
 language: python
 
+cache:
+  directories:
+    - $HOME/.pip-cache/
+
+env:
+ - "PIP_DOWNLOAD_CACHE=$HOME/.pip-cache/"
+
+services:
+  - mongodb
+
 notifications:
   email: false
   
@@ -13,7 +23,6 @@ before_install: # Installing scipy deps: http://stackoverflow.com/a/14541175
 install:
   - pip install -r requirements/edx/paver.txt
   - pip install python-memcached
-  - paver install_prereqs
 
 script:
   - paver test
