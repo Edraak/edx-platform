@@ -20,6 +20,7 @@ before_install:
 install:
   - pip install -r requirements/edx/paver.txt
   - pip install python-memcached
+  - pip install scipy==0.11.0
 
 # Install packages
 install:
