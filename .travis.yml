@@ -21,8 +21,8 @@ before_install: # Installing scipy deps: http://stackoverflow.com/a/14541175
  - sudo apt-get install -qq gfortran libopenblas-dev liblapack-dev
 
 install:
-  - pip install -r requirements/edx/paver.txt
-  - pip install python-memcached
+  - pip install -q --exists-action w -r requirements/edx/paver.txt
+  - pip install -q --exists-action w python-memcached
 
 script:
   - paver test
