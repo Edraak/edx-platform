@@ -3,6 +3,7 @@ language: python
 cache:
   directories:
     - $HOME/.pip-cache/
+    - $HOME/Edraak/edx-platform/.prereqs_cache
 
 env:
  - "PIP_DOWNLOAD_CACHE=$HOME/.pip-cache/"
