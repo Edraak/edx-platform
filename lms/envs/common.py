@@ -282,21 +282,8 @@ FEATURES = {
     # when the styles appropriately match the edX.org website.
     'ENABLE_NEW_EDX_HEADER': False,
 
-    # When a logged in user goes to the homepage ('/') should the user be
-    # redirected to the dashboard - this is default Open edX behavior. Set to
-    # False to not redirect the user
-    'ALWAYS_REDIRECT_HOMEPAGE_TO_DASHBOARD_FOR_AUTHENTICATED_USER': True,
-
-    # Expose Mobile REST API. Note that if you use this, you must also set
-    # ENABLE_OAUTH2_PROVIDER to True
-    'ENABLE_MOBILE_REST_API': False,
-
-    # Video Abstraction Layer used to allow video teams to manage video assets
-    # independently of courseware. https://github.com/edx/edx-val
-    'ENABLE_VIDEO_ABSTRACTION_LAYER_API': False,
-
-    # Enable the new dashboard, account, and profile pages
-    'ENABLE_NEW_DASHBOARD': False,
+    # Enable RTL compilation and layout switching based on the user's preferred language
+    'ENABLE_RTL': False,
 }
 
 # Ignore static asset files on import which match this pattern
