@@ -1481,6 +1481,9 @@ INSTALLED_APPS = (
 
     # Surveys
     'survey',
+
+    # Edraak specific modules
+    'edraak',
 )
 
 ######################### MARKETING SITE ###############################
