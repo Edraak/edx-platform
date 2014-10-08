@@ -1484,6 +1484,7 @@ INSTALLED_APPS = (
 
     # Edraak specific modules
     'edraak',
+    'edraak_misc',
 )
 
 ######################### MARKETING SITE ###############################
