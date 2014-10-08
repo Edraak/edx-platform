@@ -1483,6 +1483,9 @@ INSTALLED_APPS = (
 
     # edX Mobile API
     'mobile_api',
+
+     # Edraak specific modules
+    'edraak',
 )
 
 ######################### MARKETING SITE ###############################
