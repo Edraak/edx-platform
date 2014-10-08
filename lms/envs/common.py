@@ -1485,7 +1485,7 @@ INSTALLED_APPS = (
     'mobile_api',
 
      # Edraak specific modules
-    'edraak',
+    'edraak_misc',
 )
 
 ######################### MARKETING SITE ###############################
