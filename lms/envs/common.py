@@ -1489,6 +1489,7 @@ INSTALLED_APPS = (
     # Edraak specific modules
     'edraak',
     'edraak_misc',
+    'edraak_contact',
     'edraak_bayt',
 )
 
