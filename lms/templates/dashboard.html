@@ -175,6 +175,12 @@
       accessible_modal(trigger, "#unenroll-modal .close-modal", "#unenroll-modal", "#dashboard-main");
     });
   });
+
+  function EdraakDisplayPopUp(course_name, course_id) {
+    jQuery('#track-info').html("Do you want to share your certificate on Bayt");
+    jQuery('#course_name').val(course_name);
+    jQuery('#course_id').val(course_id);
+  }
   </script>
 </%block>
 
@@ -531,3 +537,4 @@
 
 ## Available in Edraak theme
 <%include file="bayt/_dashboard_popups.html" />
+<%include file="edraak_certificates/_dashboard_popups.html" />
