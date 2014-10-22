@@ -19,7 +19,7 @@ from django.contrib import messages
 from django.core.context_processors import csrf
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.core.validators import validate_email, validate_slug, ValidationError
+from django.core.validators import validate_email, ValidationError
 from django.db import IntegrityError, transaction
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
                          Http404)
@@ -99,6 +99,8 @@ from shoppingcart.models import CourseRegistrationCode
 
 import analytics
 from eventtracking import tracker
+
+from edraak_validation import validate_username
 
 
 log = logging.getLogger("edx.student")
@@ -1450,9 +1452,10 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
         return JsonResponse(js, status=400)
 
     try:
-        validate_slug(post_vars['username'])
+        # Edraak Unicode support to usernames in LMS
+        validate_username(post_vars['username'])
     except ValidationError:
-        js['value'] = _("Username should only consist of A-Z and 0-9, with no spaces.")
+        js['value'] = _("Enter a valid 'username' consisting of letters, numbers, spaces, underscores or hyphens.")
         js['field'] = 'username'
         return JsonResponse(js, status=400)
 
