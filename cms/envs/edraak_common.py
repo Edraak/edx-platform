@@ -1,0 +1,20 @@
+# -*- coding: utf-8 -*-
+from .aws import FEATURES
+
+from lms.envs.edraak_common import (
+    PLATFORM_NAME,
+    LANGUAGE_CODE,
+    SITE_NAME,
+    TIME_ZONE,
+    FEEDBACK_SUBMISSION_EMAIL,
+    PAYMENT_SUPPORT_EMAIL,
+    SERVER_EMAIL,
+    BUGS_EMAIL,
+    PRESS_EMAIL,
+    CONTACT_EMAIL,
+    COLLABORATE_EMAIL,
+    TECH_SUPPORT_EMAIL,
+    UNIVERSITY_EMAIL,
+    WIKI_ENABLED,
+    LANGUAGES,
+)
