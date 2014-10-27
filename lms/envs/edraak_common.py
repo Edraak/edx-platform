@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from .aws import FEATURES
 
+# WARNING: Don't just add/delete settings from here. Make sure the settings are
+# reflected in `cms/envs/edraak_common.py` and `cms/envs/edraak_aws.py`
+
 FEATURES['ENABLE_DISCUSSION_HOME_PANEL'] = False
 FEATURES['AUTH_USE_OPENID_PROVIDER'] = True
 
@@ -17,6 +20,7 @@ PLATFORM_TWITTER_ACCOUNT = "@edraak"
 FEEDBACK_SUBMISSION_EMAIL = "info@edraak.or"
 PAYMENT_SUPPORT_EMAIL = "info@edraak.org"
 SERVER_EMAIL = "dev@qrf.org"
+BUGS_EMAIL = "dev@qrf.org"
 PRESS_EMAIL = "syacoub@qrf.org"
 CONTACT_EMAIL = "info@edraak.org"
 COLLABORATE_EMAIL = "info@edraak.org"

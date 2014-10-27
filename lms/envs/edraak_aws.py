@@ -1,6 +1,9 @@
 from .aws import *
 from .edraak_common import *
 
+# WARNING: Don't just add/delete settings from here. Make sure the settings are
+# reflected in `cms/envs/edraak_aws.py`
+
 SESSION_COOKIE_DOMAIN = ".edraak.org"
 LMS_BASE = "edraak.org"
 STATIC_ROOT_BASE = "/edx/var/edxapp/staticfiles",
