@@ -1487,7 +1487,6 @@ INSTALLED_APPS = (
     'survey',
 
     # Edraak specific modules
-    'edraak',
     'edraak_misc',
     'edraak_contact',
     'edraak_bayt',
