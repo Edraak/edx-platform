@@ -14,9 +14,13 @@ log = logging.getLogger(__name__)
 @ensure_csrf_cookie
 def contact(request):
     if request.method == 'POST':
-        if not (request.POST['firstname'] or request.POST['lastname'] or request.POST['email'] or request.POST['message']):
-            return render_to_response("static_templates/theme-contact.html", {'error': True})
+        post = request.POST  # shortcut
 
+        missing_contact_field = not all([post['firstname'], post['lastname'], post['email'], post['message']])
+        missing_inquiry_type_in_help = (request.GET['form'] == 'help' and not post['inquiry-type'])
+
+        if missing_contact_field or missing_inquiry_type_in_help:
+            return render_to_response("static_templates/theme-contact.html", {'error': True})
 
         ##################################### We will need this #####################################
         # import urllib, urllib2                                                                    #
@@ -27,8 +31,8 @@ def contact(request):
         # recaptcha_server_form = 'https://www.google.com/recaptcha/api/challenge'                  #
         #                                                                                           #
         # client_ip_address = get_client_ip(request)                                                #
-        # recaptcha_challenge_field = request.POST['recaptcha_challenge_field']                     #
-        # recaptcha_response_field = request.POST['recaptcha_response_field']                       #
+        # recaptcha_challenge_field = post['recaptcha_challenge_field']                             #
+        # recaptcha_response_field = post['recaptcha_response_field']                               #
         #                                                                                           #
         # params = urllib.urlencode(dict(privatekey=recaptcha_private_key,                          #
         #                            remoteip=client_ip_address,                                    #
@@ -53,44 +57,38 @@ def contact(request):
 
         # send e-mail
         if request.GET['form'] == 'help':
-            context = {
-                'firstname': request.POST['firstname'],
-                'lastname': request.POST['lastname'],
-                'email': request.POST['email'],
-                'profession': '',
-                'interest': '',
-                'instorg': '',
-                'institution': '',
-                'discipline': '',
-                'course_title': '',
-                'country': '',
-                'message': request.POST['message'],
-            }
             dest_addr = settings.CONTACT_EMAIL
         else:
-
-            context = {
-                'firstname': request.POST['firstname'],
-                'lastname': request.POST['lastname'],
-                'email': request.POST['email'],
-                'profession': request.POST['profession'],
-                'interest': request.POST['interest'],
-                'instorg': request.POST['instorg'],
-                'institution': request.POST['institution'],
-                'discipline': request.POST['discipline'],
-                'course_title': request.POST['course-title'],
-                'country': request.POST['country'],
-                'message': request.POST['message'],
-            }
             dest_addr = settings.COLLABORATE_EMAIL
 
+        context = {
+                'firstname': post.get('firstname', ''),
+                'lastname': post.get('lastname', ''),
+                'email': post.get('email', ''),
+                'inquiry_type': post.get('inquiry-type', ''),
+                'message': post.get('message', ''),
+                'profession': post.get('profession', ''),
+                'interest': post.get('interest', ''),
+                'instorg': post.get('instorg', ''),
+                'institution': post.get('institution', ''),
+                'discipline': post.get('discipline', ''),
+                'course_title': post.get('course-title'),
+                'country': post.get('country', ''),
+        }
+
         message = render_to_string('contact/email.txt', context)
-        subject = 'Request from Edraak.org'
-        from_address = request.POST['email']
+
+        # Meaningful email subject for community manager
+        subject_sliced = post['message'].decode('utf-8')[:25]
+        full_name = '%s, %s' % (post['firstname'], post['lastname'])
+        full_subject = '%s: %s' % (full_name, subject_sliced.encode('utf-8'))
+
+        from_address = post['email']
+
         js = {}
 
         try:
-            send_mail(subject, message, from_address, [dest_addr], fail_silently=False)
+            send_mail(full_subject, message, from_address, [dest_addr], fail_silently=False)
         except Exception:  # pylint: disable=broad-except
             log.warning('Unable to send contact email', exc_info=True)
             js['error'] = 'e-mail not sent...e-mail exception'
