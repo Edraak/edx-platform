@@ -1,5 +1,4 @@
-from django.views.i18n import set_language as django_set_language
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from xmodule.modulestore.django import modulestore
 from courseware.access import has_access
 from util.json_request import JsonResponse
@@ -10,10 +9,6 @@ from django.conf import settings
 from courseware.courses import get_courses, sort_by_announcement
 from edxmako.shortcuts import render_to_response
 from django.contrib.auth.models import AnonymousUser
-
-@csrf_exempt
-def set_language(request):
-    return django_set_language(request)
 
 
 def check_student_grades(request):

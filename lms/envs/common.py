@@ -920,8 +920,8 @@ MIDDLEWARE_CLASSES = (
     'splash.middleware.SplashMiddleware',
 
     # Make Arabic language the default one
-    'edraak_misc.middleware.ForceLangMiddleware',
-    'edraak_misc.middleware.SessionBasedLocaleMiddleware',
+    'edraak_i18n.middleware.ForceLangMiddleware',
+    'edraak_i18n.middleware.SessionBasedLocaleMiddleware',
 
     # Allows us to dark-launch particular languages
     'dark_lang.middleware.DarkLangMiddleware',
@@ -1488,6 +1488,7 @@ INSTALLED_APPS = (
 
     # Edraak specific modules
     'edraak_misc',
+    'edraak_i18n',
     'edraak_contact',
     'edraak_bayt',
     'edraak_certificates',
