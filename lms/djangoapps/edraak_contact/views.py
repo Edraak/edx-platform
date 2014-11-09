@@ -79,9 +79,9 @@ def contact(request):
         message = render_to_string('contact/email.txt', context)
 
         # Meaningful email subject for community manager
-        subject_sliced = post['message'].decode('utf-8')[:25]
-        full_name = '%s, %s' % (post['firstname'], post['lastname'])
-        full_subject = '%s: %s' % (full_name, subject_sliced.encode('utf-8'))
+        subject_sliced = post['message'][:25]
+        full_name = u'%s, %s' % (post['firstname'], post['lastname'])
+        full_subject = u'%s: %s' % (full_name, subject_sliced)
 
         from_address = post['email']
 
