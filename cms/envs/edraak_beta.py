@@ -1,6 +1,5 @@
-from .aws import *
-from .edraak_common import *
-from lms.envs.edraak_aws import (
+from .edraak_aws import *
+from lms.envs.edraak_beta import (
     LMS_BASE,
     CMS_BASE,
     SESSION_COOKIE_DOMAIN,
