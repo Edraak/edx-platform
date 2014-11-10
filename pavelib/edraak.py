@@ -4,8 +4,6 @@ Edraak internationalization tasks
 from path import path
 from paver.easy import task, needs, sh
 import polib
-import os
-import shutil
 from git import Repo
 
 PLATFORM_ROOT = path('.')
@@ -28,8 +26,7 @@ def edraak_remove_empty_messages():
     for entry in reversed(pofile):
         if not entry.msgstr.strip():
             pofile.remove(entry)
-        elif entry.msgid == 'About {course.display_number_with_default}':
-            print "Something`s wrong!"
+            print 'Removed empty translation: ', entry.msgid, '=>', entry.msgstr
 
     pofile.save()
 

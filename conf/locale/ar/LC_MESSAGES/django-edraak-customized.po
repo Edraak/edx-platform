@@ -18269,6 +18269,32 @@ msgstr ""
 "تم إنشاء مراجعة جديدة: بالإمكان الدمج ما بين المراجعة #%(r1)d والمراجعة "
 "#%(r2)d "
 
+#. Translators: Used all around the site
+#: templates/i18n/emails.html:4
+msgid "Edraak"
+msgstr "إدراك"
+
+#. Translators: Used in lms/templates/registration/password_reset_email.html:2
+#: templates/i18n/emails.html:7
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr "تعليمات تغيير كلمة المرور على %(site_name)s"
+
+#. Translators: Used in lms/templates/registration/password_reset_email.html:2
+#: templates/i18n/emails.html:10
+msgid ""
+"You're receiving this e-mail because you requested a password reset for your"
+" user account at edraak.org."
+msgstr ""
+"تم إرسال هذا البريد الإلكتروني لك بناءً على طلبك لتغيير كلمة المرور الخاصة "
+"بك على موقع edraak.org."
+
+#. Translators: Used in
+#. lms/templates/registration/password_reset_email.html:13
+#: templates/i18n/emails.html:13
+msgid "The Edraak Team"
+msgstr "فريق عمل إدراك"
+
 #: templates/static_templates/theme-contact.html:24
 msgid "Hi!"
 msgstr "مرحبا!"
@@ -18288,12 +18314,12 @@ msgid ""
 "Still need help or want to give us general feedback (which we welcome)? "
 "Please fill in the form below"
 msgstr ""
-"لا تزال بحاجة إلى مساعدة أو تريد أن تزودنا باقترحات عامة (التي نحن نرحب "
-"بها)،  الرجاء تعبئة النموذج أدناه."
+"لا تزال بحاجة إلى مساعدة أو تريد أن تزودنا باقترحات عامة (التي نرحب بها "
+"دائما)،  الرجاء تعبئة النموذج أدناه."
 
 #: templates/static_templates/theme-contact.html:37
 msgid "You have entered a wrong captcha. Your message was not sent."
-msgstr " الرجاء إدخال كلمات عبور (captcha) صحيحة"
+msgstr " الرجاء إدخال كابتشا صحيحة"
 
 #: templates/static_templates/theme-contact.html:39
 msgid "All fields That end with an asterisk (*) are required."
@@ -18375,7 +18401,7 @@ msgstr ""
 
 #: templates/static_templates/theme-contact.html:122
 msgid "I am a..."
-msgstr "أنا..."
+msgstr "أنا…"
 
 #: templates/static_templates/theme-contact.html:125
 msgid "Professor"
@@ -18415,7 +18441,7 @@ msgstr "رعاية مساق"
 
 #: templates/static_templates/theme-contact.html:142
 msgid "Supporting Edraak as a partner"
-msgstr "دعم إدراك  كشريك"
+msgstr "دعم إدراك كشريك"
 
 #: templates/static_templates/theme-contact.html:147
 msgid "Affiliated Institution/Organization"
@@ -18431,7 +18457,7 @@ msgstr "القسم/ مجال التخصص"
 
 #: templates/static_templates/theme-contact.html:162
 msgid "Course title or topic"
-msgstr "عنوان أو الموضوع  المساق"
+msgstr "عنوان أو الموضوع المساق"
 
 #: templates/static_templates/theme-contact.html:167
 msgid "Country"
@@ -18439,4 +18465,4 @@ msgstr "الدولة"
 
 #: templates/static_templates/theme-contact.html:183
 msgid "Send Message"
-msgstr "الرسالة"
+msgstr "أرسل الرسالة"
