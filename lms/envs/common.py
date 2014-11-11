@@ -1492,6 +1492,7 @@ INSTALLED_APPS = (
     'edraak_contact',
     'edraak_bayt',
     'edraak_certificates',
+    'edraak_url_rewrites',
 )
 
 ######################### MARKETING SITE ###############################
