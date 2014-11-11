@@ -18269,6 +18269,14 @@ msgstr ""
 "تم إنشاء مراجعة جديدة: بالإمكان الدمج ما بين المراجعة #%(r1)d والمراجعة "
 "#%(r2)d "
 
+#. Translators: Used in common/djangoapps/student/edraak_validation.py:40
+#: templates/i18n/auth.html:4
+msgid ""
+"Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
+" or hyphens."
+msgstr ""
+"أدخل اسم مستخدم صحيح، متكوّن من الحروف والأرقام والمسافات والشرطات (- و _)."
+
 #. Translators: Used all around the site
 #: templates/i18n/emails.html:4
 msgid "Edraak"
@@ -18294,6 +18302,18 @@ msgstr ""
 #: templates/i18n/emails.html:13
 msgid "The Edraak Team"
 msgstr "فريق عمل إدراك"
+
+#. Translators: This is temporary until Qordoba fixes it.
+#. Translators: Used in lms/templates/dashboard.html:160
+#: templates/i18n/overrides.html:5
+msgid "Link"
+msgstr "اربط"
+
+#. Translators: This is temporary until Qordoba fixes it
+#. Tanslators: in edx-platform repo. Used in lms/templates/dashboard.html:155
+#: templates/i18n/overrides.html:9
+msgid "Unlink"
+msgstr "افصل"
 
 #: templates/static_templates/theme-contact.html:24
 msgid "Hi!"
