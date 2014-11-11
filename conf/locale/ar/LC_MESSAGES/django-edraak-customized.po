@@ -18269,6 +18269,14 @@ msgstr ""
 "تم إنشاء مراجعة جديدة: بالإمكان الدمج ما بين المراجعة #%(r1)d والمراجعة "
 "#%(r2)d "
 
+#. Translators: Used in common/djangoapps/student/edraak_validation.py:40
+#: templates/i18n/auth.html:4
+msgid ""
+"Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
+" or hyphens."
+msgstr ""
+"أدخل اسم مستخدم صحيح، متكوّن من الحروف والأرقام والمسافات والشرطات (- و _)."
+
 #. Translators: Used all around the site
 #: templates/i18n/emails.html:4
 msgid "Edraak"
