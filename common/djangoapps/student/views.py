@@ -269,7 +269,7 @@ def get_course_enrollment_pairs(user, course_org_filter, org_filter_out_set):
 
                 yield (course, enrollment)
             else:
-                log.error("User {0} enrolled in {2} course {1}".format(
+                log.error(u"User {0} enrolled in {2} course {1}".format(
                     user.username, enrollment.course_id, "broken" if course else "non-existent"
                 ))
 
