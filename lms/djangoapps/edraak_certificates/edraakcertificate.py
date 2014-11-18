@@ -167,7 +167,7 @@ class EdraakCertificate(object):
     def is_unicode(self,string):
         try:
             string.decode('ascii')
-        except UnicodeDecodeError:
+        except (UnicodeDecodeError, UnicodeEncodeError) as e:
             return True
         else:
             return False
