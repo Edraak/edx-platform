@@ -616,6 +616,9 @@ INSTALLED_APPS = (
     # Monitoring signals
     'monitoring',
 
+    # Edraak specific modules
+    'edraak_i18n',
+
     # Course action state
     'course_action_state',
 

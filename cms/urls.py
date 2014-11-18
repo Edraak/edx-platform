@@ -36,6 +36,8 @@ urlpatterns = patterns('',  # nopep8
     # noop to squelch ajax errors
     url(r'^event$', 'contentstore.views.event', name='event'),
 
+    url(r'', include('edraak_i18n.urls')),
+
     url(r'^xmodule/', include('pipeline_js.urls')),
     url(r'^heartbeat$', include('heartbeat.urls')),
 
