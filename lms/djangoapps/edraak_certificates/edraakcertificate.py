@@ -66,9 +66,7 @@ class EdraakCertificate(object):
         self.instructor = instructor
         self.course_end_date = course_end_date
         self.course_org = course_org
-
         self.temp_file = NamedTemporaryFile(suffix='-cert.pdf')
-
         self.ctx = None
 
     def init_context(self):
@@ -86,7 +84,6 @@ class EdraakCertificate(object):
             font = "DIN Next LT Arabic Bold"
         else:
             font = "DIN Next LT Arabic Light"
-
         self.ctx.setFont(font, size)
         self.ctx.setFillColorRGB(66 / 255.0, 74 / 255.0, 82 / 255.0)
 
@@ -95,9 +92,7 @@ class EdraakCertificate(object):
         y *= inch
         size *= inch
         max_width *= inch
-
         text = text_to_bidi(text)
-
         while True:
             self._set_font(size, bold)
             lines = list(self._wrap_text(text, max_width))
@@ -114,14 +109,23 @@ class EdraakCertificate(object):
         size *= inch
         max_width *= inch
         line_height = size * lh_factor
-
         self._set_font(size, bold)
-
         text = text_to_bidi(text)
-
         for line in self._wrap_text(text, max_width):
             self.ctx.drawRightString(x, y, line)
             y -= line_height
+
+    def draw_bidi_text_english(self, text, x, y, size, bold=False, max_width=7.494, lh_factor=1.3):
+        x *= inch
+        y *= inch
+        size *= inch
+        max_width *= inch
+        line_height = size * lh_factor 
+        self._set_font(size, bold) 
+        text = text_to_bidi(text)
+        for line in self._wrap_text(text, max_width):
+            self.ctx.drawString(x, y, line)
+            y += line_height   
 
     def add_course_org_logo(self, course_org):
         if course_org:
@@ -136,13 +140,13 @@ class EdraakCertificate(object):
 
         line = u''
         for next_word in words:
-            next_width = self.ctx.stringWidth(line + u' ' + next_word)
+            next_width = self.ctx.stringWidth(line.strip() + u' ' + next_word.strip())
 
             if next_width >= max_width:
                 yield de_reverse(line).strip()
-                line = next_word
-            else:
-                line += u' ' + next_word
+                line = next_word            
+            else:                
+                line += u' ' + next_word.strip()
 
         if line:
             yield de_reverse(line).strip()
@@ -150,24 +154,34 @@ class EdraakCertificate(object):
     def save(self):
         self.ctx.showPage()
         self.ctx.save()
+        
+    def is_unicode(self,string):
+        try:
+            string.decode('ascii')
+        except (UnicodeDecodeError, UnicodeEncodeError) as e:
+            return True
+        else:
+            return False
 
     def generate_and_save(self):
         self.init_context()
-
         x = 10.8
         self.add_certificate_bg()
         self.add_course_org_logo(self.course_org)
-
         self.draw_bidi_text(u'تم منح شهادة إتمام المساق هذﮦ إلى:', x, 5.8, size=0.25)
+        self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)   
+        self.draw_bidi_text(u'لإتمام المساق التالي بنجاح:', x, 4.63, size=0.25)      
+        if self.is_unicode(self.course_name):
+            self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
+        else:
+            self.draw_bidi_text_english(self.course_name, x-7, 4.1, size=0.33, bold=True)
 
-        self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)
-
-        self.draw_bidi_text(u'لإتمام المساق التالي بنجاح:', x, 4.63, size=0.25)
-        self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
-        self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
+        if self.is_unicode(self.course_desc):
+            self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)          
+        else:
+            self.draw_bidi_text_english(self.course_desc, x-7, 2.90, size=0.16)
 
         self.draw_single_line_bidi_text(self.instructor, x, 1.8, size=0.26, bold=True)
         self.draw_bidi_text(course_org_disclaimer(self.course_org), x, 1.48, size=0.16)
         self.draw_bidi_text(self.course_end_date, 2.7, 4.82, size=0.27)
-
         self.save()
