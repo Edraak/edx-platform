@@ -1,0 +1,25 @@
+<%!
+from django.utils import translation
+from django.core.urlresolvers import reverse
+%>
+
+<form id="edraak-language-form" action="${reverse('edraak_setlang')}"
+      method="POST" style="display: none">
+
+    % if translation.get_language() == 'ar':
+        <input type="hidden" name="language" value="en">
+    % else:
+        <input type="hidden" name="language" value="ar">
+    % endif
+    <input type="submit" value="Go"/>
+</form>
+
+<a class="edraak-language-switch"
+   onclick="jQuery('#edraak-language-form').submit(); return false;"
+   href="#language-switch">
+    % if translation.get_language() == 'ar':
+        En
+    % else:
+        عربي
+    % endif
+</a>

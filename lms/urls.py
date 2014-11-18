@@ -11,6 +11,10 @@ if settings.DEBUG or settings.FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
     admin.autodiscover()
 
 urlpatterns = ('',  # nopep8
+    # Edraak.org SEO-friendly URL re-writes.
+    # Keep it on top to let it get the requests first
+    url(r'', include('edraak_url_rewrites.urls')),
+
     # certificate view
     url(r'^update_certificate$', 'certificates.views.update_certificate'),
     url(r'^request_certificate$', 'certificates.views.request_certificate'),
@@ -69,6 +73,7 @@ urlpatterns = ('',  # nopep8
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'', include('edraak_misc.urls')),
+    url(r'', include('edraak_i18n.urls')),
     url(r'', include('edraak_contact.urls')),
     url(r'', include('edraak_bayt.urls')),
     url(r'^certificate/', include('edraak_certificates.urls')),

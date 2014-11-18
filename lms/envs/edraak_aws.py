@@ -6,6 +6,7 @@ from .edraak_common import *
 
 SESSION_COOKIE_DOMAIN = ".edraak.org"
 LMS_BASE = "edraak.org"
+CMS_BASE = "studio.edraak.org"
 STATIC_ROOT_BASE = "/edx/var/edxapp/staticfiles",
 STATIC_URL_BASE = "https://d2q9s3qze1y77b.cloudfront.net/static/",
 

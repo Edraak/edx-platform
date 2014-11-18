@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PROJECT project.
 # 
 # Translators:
+# qrfahasan <ahasan@qrf.org>, 2014
 # omarithawi <oithawi@qrf.org>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-04 12:45+0200\n"
-"PO-Revision-Date: 2014-11-07 06:43+0000\n"
-"Last-Translator: omarithawi <oithawi@qrf.org>\n"
+"POT-Creation-Date: 2014-11-11 16:55+0200\n"
+"PO-Revision-Date: 2014-11-11 15:00+0000\n"
+"Last-Translator: qrfahasan <ahasan@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,6 +19,52 @@ msgstr ""
 "Generated-By: Babel 1.3\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. Translators: Used in common/djangoapps/student/edraak_validation.py:40
+#: templates/i18n/auth.html:4
+msgid ""
+"Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
+" or hyphens."
+msgstr ""
+"أدخل اسم مستخدم صحيح، متكوّن من الحروف والأرقام والمسافات والشرطات (- و _)."
+
+#. Translators: Used all around the site
+#: templates/i18n/emails.html:4
+msgid "Edraak"
+msgstr "إدراك"
+
+#. Translators: Used in lms/templates/registration/password_reset_email.html:2
+#: templates/i18n/emails.html:7
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr "تعليمات تغيير كلمة المرور على %(site_name)s"
+
+#. Translators: Used in lms/templates/registration/password_reset_email.html:2
+#: templates/i18n/emails.html:10
+msgid ""
+"You're receiving this e-mail because you requested a password reset for your"
+" user account at edraak.org."
+msgstr ""
+"تم إرسال هذا البريد الإلكتروني لك بناءً على طلبك لتغيير كلمة المرور الخاصة "
+"بك على موقع edraak.org."
+
+#. Translators: Used in
+#. lms/templates/registration/password_reset_email.html:13
+#: templates/i18n/emails.html:13
+msgid "The Edraak Team"
+msgstr "فريق عمل إدراك"
+
+#. Translators: This is temporary until Qordoba fixes it.
+#. Translators: Used in lms/templates/dashboard.html:160
+#: templates/i18n/overrides.html:5
+msgid "Link"
+msgstr "اربط"
+
+#. Translators: This is temporary until Qordoba fixes it
+#. Tanslators: in edx-platform repo. Used in lms/templates/dashboard.html:155
+#: templates/i18n/overrides.html:9
+msgid "Unlink"
+msgstr "افصل"
 
 #: templates/static_templates/theme-contact.html:24
 msgid "Hi!"
@@ -38,12 +85,12 @@ msgid ""
 "Still need help or want to give us general feedback (which we welcome)? "
 "Please fill in the form below"
 msgstr ""
-"لا تزال بحاجة إلى مساعدة أو تريد أن تزودنا باقترحات عامة (التي نحن نرحب "
-"بها)،  الرجاء تعبئة النموذج أدناه."
+"لا تزال بحاجة إلى مساعدة أو تريد أن تزودنا باقترحات عامة (التي نرحب بها "
+"دائما)،  الرجاء تعبئة النموذج أدناه."
 
 #: templates/static_templates/theme-contact.html:37
 msgid "You have entered a wrong captcha. Your message was not sent."
-msgstr " الرجاء إدخال كلمات عبور (captcha) صحيحة"
+msgstr " الرجاء إدخال كابتشا صحيحة"
 
 #: templates/static_templates/theme-contact.html:39
 msgid "All fields That end with an asterisk (*) are required."
@@ -125,7 +172,7 @@ msgstr ""
 
 #: templates/static_templates/theme-contact.html:122
 msgid "I am a..."
-msgstr "أنا..."
+msgstr "أنا…"
 
 #: templates/static_templates/theme-contact.html:125
 msgid "Professor"
@@ -165,7 +212,7 @@ msgstr "رعاية مساق"
 
 #: templates/static_templates/theme-contact.html:142
 msgid "Supporting Edraak as a partner"
-msgstr "دعم إدراك  كشريك"
+msgstr "دعم إدراك كشريك"
 
 #: templates/static_templates/theme-contact.html:147
 msgid "Affiliated Institution/Organization"
@@ -181,7 +228,7 @@ msgstr "القسم/ مجال التخصص"
 
 #: templates/static_templates/theme-contact.html:162
 msgid "Course title or topic"
-msgstr "عنوان أو الموضوع  المساق"
+msgstr "عنوان أو الموضوع المساق"
 
 #: templates/static_templates/theme-contact.html:167
 msgid "Country"
@@ -189,4 +236,4 @@ msgstr "الدولة"
 
 #: templates/static_templates/theme-contact.html:183
 msgid "Send Message"
-msgstr "الرسالة"
+msgstr "أرسل الرسالة"
