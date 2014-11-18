@@ -122,7 +122,21 @@ class EdraakCertificate(object):
         for line in self._wrap_text(text, max_width):
             self.ctx.drawRightString(x, y, line)
             y -= line_height
-
+        
+    def draw_bidi_text1(self, text, x, y, size, bold=False, max_width=7.494, lh_factor=1.3):
+            x *= inch
+            y *= inch
+            size *= inch
+            max_width *= inch
+            line_height = size * lh_factor
+    
+            self._set_font(size, bold)
+    
+            text = text_to_bidi(text)
+    
+            for line in self._wrap_text(text, max_width):
+                self.ctx.drawString(x, y, line)
+                y += line_height        
     def add_course_org_logo(self, course_org):
         if course_org:
             image = path.join(static_dir, course_org_to_logo(course_org))
@@ -163,8 +177,9 @@ class EdraakCertificate(object):
         self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)
 
         self.draw_bidi_text(u'لإتمام المساق التالي بنجاح:', x, 4.63, size=0.25)
-        self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
-        self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
+        self.draw_bidi_text1(self.course_name, x-7, 4.1, size=0.33, bold=True)
+        #self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
+        self.draw_bidi_text1(self.course_desc, x-7, 2.90, size=0.16)
 
         self.draw_single_line_bidi_text(self.instructor, x, 1.8, size=0.26, bold=True)
         self.draw_bidi_text(course_org_disclaimer(self.course_org), x, 1.48, size=0.16)
