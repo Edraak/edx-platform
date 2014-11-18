@@ -123,7 +123,7 @@ class EdraakCertificate(object):
             self.ctx.drawRightString(x, y, line)
             y -= line_height
         
-    def draw_bidi_text1(self, text, x, y, size, bold=False, max_width=7.494, lh_factor=1.3):
+    def draw_bidi_text_english(self, text, x, y, size, bold=False, max_width=7.494, lh_factor=1.3):
             x *= inch
             y *= inch
             size *= inch
@@ -150,21 +150,27 @@ class EdraakCertificate(object):
 
         line = u''
         for next_word in words:
-            next_width = self.ctx.stringWidth(line + u' ' + next_word)
-
+            next_width = self.ctx.stringWidth(line.strip() + u' ' + next_word.strip())
+                  
             if next_width >= max_width:
                 yield de_reverse(line).strip()
-                line = next_word
-            else:
-                line += u' ' + next_word
-
+                line = next_word            
+            else:                
+                line += u' ' + next_word.strip()
+                
         if line:
             yield de_reverse(line).strip()
 
     def save(self):
         self.ctx.showPage()
         self.ctx.save()
-
+    def is_unicode(self,string):
+        try:
+            string.decode('ascii')
+        except UnicodeDecodeError:
+            return True
+        else:
+            return False
     def generate_and_save(self):
         self.init_context()
 
@@ -176,10 +182,18 @@ class EdraakCertificate(object):
 
         self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)
 
+        
         self.draw_bidi_text(u'لإتمام المساق التالي بنجاح:', x, 4.63, size=0.25)
-        self.draw_bidi_text1(self.course_name, x-7, 4.1, size=0.33, bold=True)
-        #self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
-        self.draw_bidi_text1(self.course_desc, x-7, 2.90, size=0.16)
+        
+        if self.is_unicode(self.course_name):
+            self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
+        else:
+            self.draw_bidi_text_english(self.course_name, x-7, 4.1, size=0.33, bold=True)
+                   
+        if self.is_unicode(self.course_desc):
+            self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)          
+        else:
+            self.draw_bidi_text_english(self.course_desc, x-7, 2.90, size=0.16)
 
         self.draw_single_line_bidi_text(self.instructor, x, 1.8, size=0.26, bold=True)
         self.draw_bidi_text(course_org_disclaimer(self.course_org), x, 1.48, size=0.16)
