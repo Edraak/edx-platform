@@ -96,6 +96,7 @@ if Backbone?
       event.preventDefault()
       url = @model.urlFor('reply')
       body = @getWmdContent("comment-body")
+      follow = false || @$(".discussion-js-follow").is(":checked")
       return if not body.trim().length
       @setWmdContent("comment-body", "")
       comment = new Comment(body: body, created_at: (new Date()).toISOString(), username: window.user.get("username"), abuse_flaggers:[], user_id: window.user.get("id"), id:"unsaved")
@@ -110,6 +111,8 @@ if Backbone?
         dataType: 'json'
         data:
           body: body
+          auto_subscribe: follow
+
         success: (response, textStatus) ->
           comment.set(response.content)
           comment.updateInfo(response.annotated_content_info)
