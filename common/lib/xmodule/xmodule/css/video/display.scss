@@ -615,8 +615,15 @@ div.video {
       line-height: lh();
 
       &.current {
-        color: #333;
+        color: white;
         font-weight: 700;
+        position: absolute;
+        top: 366px;
+        left: 50%;
+        margin-left: -410px;
+        width: 530px;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 5px;
       }
 
       &.focused {
