@@ -207,9 +207,9 @@ function (Sjson, AsyncProcess) {
         *         specified for the Youtube type player.
         */
         fetchCaption: function () {
-            console.log('Omar2: this', this);
+            console.log('Omar3: this', this);
 
-            console.log('Omar2: this.subtitlesEl', this.subtitlesEl);
+            console.log('Omar3: this.subtitlesEl', this.subtitlesEl);
 
 
             var self = this,
@@ -339,6 +339,10 @@ function (Sjson, AsyncProcess) {
                 .height(this.topSpacingHeight()).end()
                 .find('.spacing').last()
                 .height(this.bottomSpacingHeight());
+
+
+
+            console.log('Omar: on resize');
 
             this.scrollCaption();
             this.setSubtitlesHeight();
@@ -655,9 +659,9 @@ function (Sjson, AsyncProcess) {
         *
         */
         updatePlayTime: function (time) {
-            console.log('Omar2: this', this);
+            console.log('Omar3: this', this);
 
-            console.log('Omar2: this.subtitlesEl', this.subtitlesEl);
+            console.log('Omar3: this.subtitlesEl', this.subtitlesEl);
 
             var state = this.state,
                 newIndex;
@@ -682,13 +686,19 @@ function (Sjson, AsyncProcess) {
                     }
 
 
+                    var parentEl = this.container.closest('.video-wrapper');
+                    var siblingEl = parentEl.find('.video-controls');
+
+                    parentEl.find('.current-caption').remove();
 
                     var currentEl = this.subtitlesEl.find("li[data-index='" + newIndex + "']");
                     currentEl.addClass('current');
 
-//                    var captionEl = $('<div>').text(currentEl.text());
-//                    captionEl.addClass('current-caption');
-//                    captionEl.appendTo(document.body);
+                    var currentCaptionEl = $('<section>').text(currentEl.text());
+                    currentCaptionEl.addClass('current-caption');
+                    siblingEl.before(currentCaptionEl);
+
+                    console.log('Omar: currentCaptionEl', currentCaptionEl);
 
 
                     this.currentIndex = newIndex;

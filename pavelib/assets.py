@@ -236,42 +236,7 @@ def update_assets(args):
     compile_templated_sass(args.system, args.settings)
     process_xmodule_assets()
     compile_coffeescript()
-    compile_sass(args.debug)
-
-    if args.collect:
-        collect_assets(args.system, args.settings)
-
-    if args.watch:
-        call_task('watch_assets', options={'background': not args.debug})
-
-
-@task
-@consume_args
-def update_xmodules(args):
-    """
-    Compile CoffeeScript and Sass, then collect static assets.
-    """
-    parser = argparse.ArgumentParser(prog='paver update_assets')
-    parser.add_argument(
-        'system', type=str, nargs='*', default=['lms', 'studio'],
-        help="lms or studio",
-    )
-    parser.add_argument(
-        '--settings', type=str, default="devstack",
-        help="Django settings module",
-    )
-    parser.add_argument(
-        '--skip-collect', dest='collect', action='store_false', default=True,
-        help="Skip collection of static assets",
-    )
-    parser.add_argument(
-        '--watch', action='store_true', default=False,
-        help="Watch files for changes",
-    )
-    args = parser.parse_args(args)
-
-    process_xmodule_assets()
-    compile_coffeescript()
+    # compile_sass(args.debug)
 
     if args.collect:
         collect_assets(args.system, args.settings)
