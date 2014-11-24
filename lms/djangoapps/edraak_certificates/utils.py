@@ -30,7 +30,7 @@ def generate_certificate(request, course_id):
 
     cert = EdraakCertificate(course_name=course_name,
                              user_profile_name=user.profile.name,
-                             course_org=course.display_organization,
+                             course_org=course.org,
                              course_end_date=course_end_date,
                              course_desc=course_short_desc,
                              instructor=instructor_name)

@@ -24,16 +24,19 @@ SIZE = landscape(A4)
 
 
 def course_org_to_logo(course_org):
-    if course_org == 'MITX' or course_org == 'HarvardX':
+    course_org = course_org.lower()
+    if course_org == 'mitx' or course_org == 'harvardx' or course_org == 'qrf':
         return 'edx.png'
-    elif course_org == u'بيت.كوم':
+    elif course_org == u'bayt.com':
         return 'bayt-logo2-en.png'
-    elif course_org == u'إدراك':
+    elif course_org == u'qrta':
         return 'qrta_logo.jpg'
-    elif course_org == 'AUB':
-        return 'Full-AUB-Seal.jpg'
+    elif course_org == 'aub':
+        return 'Full-AUB-Seal.jpg' 
+    elif course_org =="csbe":
+        return 'csbe.png'
     else:
-        return ''
+        return None
 
 
 def text_to_bidi(text):
@@ -123,10 +126,24 @@ class EdraakCertificate(object):
             self.ctx.drawRightString(x, y, line)
             y -= line_height
 
+    def draw_bidi_text_english(self, text, x, y, size, bold=False, max_width=7.494, lh_factor=1.3):
+        x *= inch
+        y *= inch
+        size *= inch
+        max_width *= inch
+        line_height = size * lh_factor
+        self._set_font(size, bold)
+        text = text_to_bidi(text)
+        for line in self._wrap_text(text, max_width):
+            self.ctx.drawString(x, y, line)
+            y += line_height
+
     def add_course_org_logo(self, course_org):
         if course_org:
-            image = path.join(static_dir, course_org_to_logo(course_org))
-            self.ctx.drawImage(image, 3.519 * inch, 6.444 * inch, 2.467 * inch, 1.378 * inch)
+            logo = course_org_to_logo(course_org)  
+            if logo:
+                image = path.join(static_dir, logo)
+                self.ctx.drawImage(image, 3.519 * inch, 6.444 * inch, 2.467 * inch, 1.378 * inch)
 
     def _wrap_text(self, text, max_width):
         words = reversed(text.split(u' '))
@@ -136,13 +153,13 @@ class EdraakCertificate(object):
 
         line = u''
         for next_word in words:
-            next_width = self.ctx.stringWidth(line + u' ' + next_word)
+            next_width = self.ctx.stringWidth(line.strip() + u' ' + next_word.strip())
 
             if next_width >= max_width:
                 yield de_reverse(line).strip()
-                line = next_word
-            else:
-                line += u' ' + next_word
+                line = next_word            
+            else:                
+                line += u' ' + next_word.strip()
 
         if line:
             yield de_reverse(line).strip()
@@ -150,6 +167,14 @@ class EdraakCertificate(object):
     def save(self):
         self.ctx.showPage()
         self.ctx.save()
+        
+    def is_unicode(self,string):
+        try:
+            string.decode('ascii')
+        except (UnicodeDecodeError, UnicodeEncodeError) as e:
+            return True
+        else:
+            return False
 
     def generate_and_save(self):
         self.init_context()
@@ -163,8 +188,15 @@ class EdraakCertificate(object):
         self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)
 
         self.draw_bidi_text(u'لإتمام المساق التالي بنجاح:', x, 4.63, size=0.25)
-        self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
-        self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
+        if self.is_unicode(self.course_name):
+            self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
+        else:
+            self.draw_bidi_text_english(self.course_name, x-7, 4.1, size=0.33, bold=True)
+
+        if self.is_unicode(self.course_desc):
+            self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)          
+        else:
+            self.draw_bidi_text_english(self.course_desc, x-7, 2.90, size=0.16)
 
         self.draw_single_line_bidi_text(self.instructor, x, 1.8, size=0.26, bold=True)
         self.draw_bidi_text(course_org_disclaimer(self.course_org), x, 1.48, size=0.16)
