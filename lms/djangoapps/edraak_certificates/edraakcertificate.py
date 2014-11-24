@@ -24,16 +24,19 @@ SIZE = landscape(A4)
 
 
 def course_org_to_logo(course_org):
-    if course_org == 'MITX' or course_org == 'HarvardX':
+    course_org = course_org.lower()
+    if course_org == 'mitx' or course_org == 'harvardx' or course_org == 'qrf':
         return 'edx.png'
-    elif course_org == u'بيت.كوم':
+    elif course_org == u'bayt.com':
         return 'bayt-logo2-en.png'
-    elif course_org == u'إدراك':
+    elif course_org == u'qrta':
         return 'qrta_logo.jpg'
-    elif course_org == 'AUB':
-        return 'Full-AUB-Seal.jpg'
+    elif course_org == 'aub':
+        return 'Full-AUB-Seal.jpg' 
+    elif course_org =="csbe":
+        return 'csbe.png'
     else:
-        return ''
+        return None
 
 
 def text_to_bidi(text):
@@ -129,8 +132,10 @@ class EdraakCertificate(object):
 
     def add_course_org_logo(self, course_org):
         if course_org:
-            image = path.join(static_dir, course_org_to_logo(course_org))
-            self.ctx.drawImage(image, 3.519 * inch, 6.444 * inch, 2.467 * inch, 1.378 * inch)
+            logo = course_org_to_logo(course_org)  
+            if logo:
+                image = path.join(static_dir, logo)
+                self.ctx.drawImage(image, 3.519 * inch, 6.444 * inch, 2.467 * inch, 1.378 * inch)
 
     def _wrap_text(self, text, max_width):
         words = reversed(text.split(u' '))
