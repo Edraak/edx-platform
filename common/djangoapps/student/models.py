@@ -936,7 +936,7 @@ class CourseEnrollment(models.Model):
                 raise CourseFullError
         if CourseEnrollment.is_enrolled(user, course_key):
             log.warning(
-                "User {0} attempted to enroll in {1}, but they were already enrolled".format(
+                u"User {0} attempted to enroll in {1}, but they were already enrolled".format(
                     user.username,
                     course_key.to_deprecated_string()
                 )
