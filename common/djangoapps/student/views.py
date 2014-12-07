@@ -22,7 +22,7 @@ from django.core.urlresolvers import reverse
 from django.core.validators import validate_email, ValidationError
 from django.db import IntegrityError, transaction
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
-                         Http404)
+                         Http404, HttpResponseRedirect)
 from django.shortcuts import redirect
 from django.utils.translation import ungettext
 from django_future.csrf import ensure_csrf_cookie
@@ -100,8 +100,12 @@ from shoppingcart.models import CourseRegistrationCode
 import analytics
 from eventtracking import tracker
 
+from urllib import urlencode
+from edraak_forus.models import ForusProfile
+from edraak_forus.utils import validate_forus_params, ForusHmacError, HttpResponseBadForusRequest
 from edraak_validation import validate_username
 
+from edraak_forus.models import ForusProfile
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -737,6 +741,40 @@ def try_change_enrollment(request):
             log.exception("Exception automatically enrolling after login: %s", exc)
 
 
+def enroll(user, course_key, check_access=False):
+    # Make sure the course exists
+    # We don't do this check on unenroll, or a bad course id can't be unenrolled from
+    if not modulestore().has_course(course_key):
+        log.warning("User {0} tried to enroll in non-existent course {1}"
+                    .format(user.username, course_key))
+        return HttpResponseBadRequest(_("Course id is invalid"))
+
+    available_modes = CourseMode.modes_for_course_dict(course_key)
+
+    # Check that auto enrollment is allowed for this course
+    # (= the course is NOT behind a paywall)
+    if CourseMode.can_auto_enroll(course_key):
+        # Enroll the user using the default mode (honor)
+        # We're assuming that users of the course enrollment table
+        # will NOT try to look up the course enrollment model
+        # by its slug.  If they do, it's possible (based on the state of the database)
+        # for no such model to exist, even though we've set the enrollment type
+        # to "honor".
+
+        # Could raise an Exception, and should be handled as failed enrolment.
+        CourseEnrollment.enroll(user, course_key, check_access=check_access)
+
+    # If we have more than one course mode or professional ed is enabled,
+    # then send the user to the choose your track page.
+    # (In the case of professional ed, this will redirect to a page that
+    # funnels users directly into the verification / payment flow)
+    if CourseMode.has_verified_mode(available_modes):
+        return reverse("course_modes_choose", kwargs={'course_id': unicode(course_key)})
+
+    # Otherwise, there is only one mode available (the default)
+    return None
+
+
 @require_POST
 @commit_on_success_with_read_committed
 def change_enrollment(request, check_access=True):
@@ -795,40 +833,15 @@ def change_enrollment(request, check_access=True):
         return HttpResponseBadRequest(_("Invalid course id"))
 
     if action == "enroll":
-        # Make sure the course exists
-        # We don't do this check on unenroll, or a bad course id can't be unenrolled from
-        if not modulestore().has_course(course_id):
-            log.warning("User {0} tried to enroll in non-existent course {1}"
-                        .format(user.username, course_id))
-            return HttpResponseBadRequest(_("Course id is invalid"))
+        try:
+            url = enroll(user, course_id, check_access)
 
-        available_modes = CourseMode.modes_for_course_dict(course_id)
+            if not url:
+                return HttpResponse()
 
-        # Check that auto enrollment is allowed for this course
-        # (= the course is NOT behind a paywall)
-        if CourseMode.can_auto_enroll(course_id):
-            # Enroll the user using the default mode (honor)
-            # We're assuming that users of the course enrollment table
-            # will NOT try to look up the course enrollment model
-            # by its slug.  If they do, it's possible (based on the state of the database)
-            # for no such model to exist, even though we've set the enrollment type
-            # to "honor".
-            try:
-                CourseEnrollment.enroll(user, course_id, check_access=check_access)
-            except Exception:
-                return HttpResponseBadRequest(_("Could not enroll"))
-
-        # If we have more than one course mode or professional ed is enabled,
-        # then send the user to the choose your track page.
-        # (In the case of professional ed, this will redirect to a page that
-        # funnels users directly into the verification / payment flow)
-        if CourseMode.has_verified_mode(available_modes):
-            return HttpResponse(
-                reverse("course_modes_choose", kwargs={'course_id': unicode(course_id)})
-            )
-
-        # Otherwise, there is only one mode available (the default)
-        return HttpResponse()
+            return HttpResponseRedirect(url)
+        except Exception:
+            return HttpResponseBadRequest(_("Could not enroll"))
 
     elif action == "add_to_cart":
         # Pass the request handling to shoppingcart.views
@@ -1015,6 +1028,9 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
     # advantage of the ratelimited backend
     username = user.username if user else ""
 
+    # Keep it here, because `authenticate()` bellow may remove this reference
+    is_forus_user = ForusProfile.is_forus_user(user)
+
     if not third_party_auth_successful:
         try:
             user = authenticate(username=username, password=password, request=request)
@@ -1038,9 +1054,17 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
                 AUDIT_LOG.warning(u"Login failed - password for user.id: {0} is invalid".format(loggable_id))
             else:
                 AUDIT_LOG.warning(u"Login failed - password for {0} is invalid".format(email))
+
+        if is_forus_user:
+            error_message = _("Email or password is incorrect. You can request a new password, or you "
+                              "can use your ForUs account to login to {platform_name} "
+                              "directly.").format(platform_name=settings.PLATFORM_NAME)
+        else:
+            error_message = _('Email or password is incorrect.')
+
         return JsonResponse({
             "success": False,
-            "value": _('Email or password is incorrect.'),
+            "value": error_message,
         })  # TODO: this should be status code 400  # pylint: disable=fixme
 
     # successful login, clear failed login attempts counters, if applicable
@@ -1266,7 +1290,14 @@ def _do_create_account(post_vars, extended_profile=None):
     # TODO: Rearrange so that if part of the process fails, the whole process fails.
     # Right now, we can have e.g. no registration e-mail sent out and a zombie account
     try:
-        user.save()
+        if post_vars.get('forus_hmac'):  # Detect if this is a Forus registration
+            validate_forus_params(post_vars)
+            user.save()
+
+            ForusProfile.create_for_user(user)
+        else:
+            user.save()
+
     except IntegrityError:
         # Figure out the cause of the integrity error
         if len(User.objects.filter(username=post_vars['username'])) > 0:
@@ -1499,8 +1530,16 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
             ret = _do_create_account(post_vars, extended_profile)
     except AccountValidationError as exc:
         return JsonResponse({'success': False, 'value': exc.message, 'field': exc.field}, status=400)
+    except ForusHmacError as e:
+        return HttpResponseBadForusRequest(e.message)
 
     (user, profile, registration) = ret
+
+    valid_forus_user = False
+    if post_vars.get('forus_hmac'):  # Detect if this is a Forus registration
+        valid_forus_user = True  # `validate_forus_params` didn't raise anything
+        user.is_active = True
+        user.save()
 
     dog_stats_api.increment("common.student.account_created")
 
@@ -1553,7 +1592,8 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     # or external auth with bypass activated
     send_email = (
         not settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING') and
-        not (do_external_auth and settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH'))
+        not (do_external_auth and settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH')) and
+        not valid_forus_user
     )
     if send_email:
         from_address = microsite.get_value(

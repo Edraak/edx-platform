@@ -1493,6 +1493,7 @@ INSTALLED_APPS = (
     'edraak_bayt',
     'edraak_certificates',
     'edraak_url_rewrites',
+    'edraak_forus',
 )
 
 ######################### MARKETING SITE ###############################

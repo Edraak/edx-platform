@@ -919,7 +919,7 @@ class CourseEnrollment(models.Model):
                 raise NonExistentCourseError
             if not has_access(user, 'enroll', course):
                 log.warning(
-                    "User {0} failed to enroll in course {1} because enrollment is closed".format(
+                    u"User {0} failed to enroll in course {1} because enrollment is closed".format(
                         user.username,
                         course_key.to_deprecated_string()
                     )
