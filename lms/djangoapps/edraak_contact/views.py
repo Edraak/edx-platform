@@ -1,10 +1,10 @@
 import logging
+import re
 
 from django.conf import settings
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import send_mail
 
-from .utils import get_client_ip
 from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
 
@@ -81,7 +81,9 @@ def contact(request):
         # Meaningful email subject for community manager
         subject_sliced = post['message'][:25]
         full_name = u'%s, %s' % (post['firstname'], post['lastname'])
+
         full_subject = u'%s: %s' % (full_name, subject_sliced)
+        full_subject = re.sub('\s+', ' ', full_subject).strip()
 
         from_address = post['email']
 
