@@ -1,7 +1,29 @@
 <%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
+    from django.utils.translation import ugettext as _, get_language
+    from edraak_bayt.utils import check_user_publish
+    from edraak_misc.utils import is_certificate_allowed
 %>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+
+<%page args="course" />
+
+% if is_certificate_allowed(user, course):
+    % if not check_user_publish(user.id, course.id):
+        <a href="#bayt-modal" class="email-settings post-to-bayt" rel="leanModal"
+           data-course-id="${course.id}" data-course-number="${course.number}"
+           onclick="EdraakDisplayPopUp('${course.display_name_with_default.replace('"', '')}', '${course.id}');">
+            % if get_language() == 'ar':
+                نشر على Bayt.com
+            % else:
+                Post To Bayt
+            % endif
+        </a>
+    % else:
+        <a class="email-settings" href="javascript:void(0)">
+            % if get_language() == 'ar':
+                نشرت مسبقا على بيت
+            % else:
+                Already Posted to bayt
+            % endif
+        </a>
+    % endif
+% endif

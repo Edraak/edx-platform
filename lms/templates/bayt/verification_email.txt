@@ -1,7 +1,31 @@
-<%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
-%>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+<%namespace file="../main.html" import="stanford_theme_enabled" />
+<%! from django.utils.translation import ugettext as _, get_language %>
+<%! import urllib %>
+
+% if get_language() == 'ar':
+    Thank you for posting your certificate on Bayt.com
+    To proceed in process please click on the link below
+% else:
+    شكرا لك على نشر شهادتك على بيت, لإكمال انقر على الرابط في الأسفل
+% endif
+
+% if is_secure:
+https://${encoded_url}
+% else:
+http://${encoded_url}
+% endif
+
+% if get_language() == 'en':
+    ## Temporary hack until we develop a better way to adjust language
+    % if stanford_theme_enabled():
+      ${_("If you didn't request this, you don't need to do anything; you won't "
+          "receive any more email from us. Please do not reply to this e-mail; "
+          "if you require assistance, check the about section of the "
+          "{platform_name} Courses web site.").format(platform_name=settings.PLATFORM_NAME)}
+    % else:
+      ${_("If you didn't request this, you don't need to do anything; you won't "
+          "receive any more email from us. Please do not reply to this e-mail; "
+          "if you require assistance, check the help section of the "
+          "{platform_name} web site.").format(platform_name=settings.PLATFORM_NAME)}
+    % endif
+% endif
