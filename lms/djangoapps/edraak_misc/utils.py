@@ -3,6 +3,7 @@ from django.conf import settings
 
 
 def is_certificate_allowed(user, course):
-    return (course.has_ended()
-            and settings.FEATURES.get('ENABLE_ISSUE_CERTIFICATE')
-            or has_access(user, 'staff', course.id))
+    if not settings.FEATURES.get('ENABLE_ISSUE_CERTIFICATE'):
+        return False
+
+    return course.has_ended() or has_access(user, 'staff', course.id)
