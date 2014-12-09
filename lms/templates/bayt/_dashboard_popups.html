@@ -1,5 +1,6 @@
-<%! from django.utils.translation import ugettext as _, get_language %>
+<%! from django.utils.translation import ugettext as _ %>
 <%! from django.core.urlresolvers import reverse %>
+
 <script type="text/javascript">
     jQuery(function ($) {
         $('.post-to-bayt').click(function () {
@@ -9,29 +10,25 @@
             $('.bayt-server-error').hide();
             $('.bayt-passed').hide();
             var course_id = $(this).attr('data-course-id');
-            $.post("${reverse('edraak_check_student_grades')}",
-                    { 'course_id': course_id },
-                    function (data) {
-                        $('.post-to-bayt').removeClass('disabled');
-                        if (data.success) {
-                            $('.bayt-waiting').hide();
-                            $('.bayt-fail').hide();
-                            $('.bayt-server-error').hide();
-                            $('.bayt-passed').show();
-                        }
-                        else if (!data.success && !data.error) {
-                            $('.bayt-waiting').hide();
-                            $('.bayt-fail').show();
-                            $('.bayt-server-error').hide();
-                            $('.bayt-passed').hide();
-                        }
-                        else if (!data.success && data.error) {
-                            $('.bayt-waiting').hide();
-                            $('.bayt-fail').hide();
-                            $('.bayt-server-error').show();
-                            $('.bayt-passed').hire();
-                        }
-                    })
+            $.post("${reverse('edraak_check_student_grades')}", {'course_id': course_id}, function (data) {
+                $('.post-to-bayt').removeClass('disabled');
+                if (data.success) {
+                    $('.bayt-waiting').hide();
+                    $('.bayt-fail').hide();
+                    $('.bayt-server-error').hide();
+                    $('.bayt-passed').show();
+                } else if (!data.success && !data.error) {
+                    $('.bayt-waiting').hide();
+                    $('.bayt-fail').show();
+                    $('.bayt-server-error').hide();
+                    $('.bayt-passed').hide();
+                } else if (!data.success && data.error) {
+                    $('.bayt-waiting').hide();
+                    $('.bayt-fail').hide();
+                    $('.bayt-server-error').show();
+                    $('.bayt-passed').hire();
+                }
+            })
         });
 
         $("#bayt_form").submit(function () {
@@ -39,26 +36,23 @@
             var course_name = $('#course_name').val();
             var course_id = $('#course_id').val();
             var user_id = $('#user_id').val();
-            $.post('${reverse('edraak_bayt_get_student_email')}',
-                    {"bayt_email": bayt_email, "course_name": course_name, "user_id": user_id, "course_id": course_id},
-                    function (data) {
-                        if (data.success) {
-                            if (data.redirect_to) {
-                                window.location.replace("http://www.bayt.com/en/register-j/");
-                            }
-                            else {
-                                $(".close-modal").click();
-                                location.reload();
-                            }
+            $.post('${reverse('edraak_bayt_get_student_email')}', {
+                    "bayt_email": bayt_email,
+                    "course_name": course_name,
+                    "user_id": user_id,
+                    "course_id": course_id
+                }, function (data) {
+                    if (data.success) {
+                        if (data.redirect_to) {
+                            window.location.replace("${settings.BAYT_BASE | j}/en/register-j/");
                         } else {
-                                if (data.error == 'Invalid Email')
-                            % if get_language() == 'ar':
-                                $("#bayt_error").html('البريد الإلكتروني غير صحيح').stop().css("display", "block");
-                            % else:
-                                $("#bayt_error").html(data.error).stop().css("display", "block");
-                            % endif
+                            $(".close-modal").click();
+                            location.reload();
                         }
-                    });
+                    } else {
+                        $("#bayt_error").text(data.error).stop().css("display", "block");
+                    }
+                });
             return false;
         });
     });
@@ -77,93 +71,64 @@
 
         <header>
             <h2 id="bayt-modal-title" class="bayt-passed" style="display: none">
-                % if get_language() == 'ar':
-                    هل تريد نشر شهادتك على موقع Bayt ؟
-                % else:
-                    Do you want to post your certificate on Bayt?
-                % endif
+                ## Translators: Edraak-specific
+                ${_("Do you want to post your certificate on Bayt?")}
             </h2>
 
             <h2 class="bayt-waiting">
-                % if get_language() == 'ar':
-                    الرجاء الإنتظار...
-                % else:
-                    Please wait!
-                % endif
+                ## Translators: Edraak-specific
+                ${_("Please wait!")}
             </h2>
 
             <h2 class="bayt-server-error" style="display: none">
-                % if get_language() == 'ar':
-                    حدث خطأ!
-                % else:
-                    Error!
-                % endif
+                ## Translators: Edraak-specific
+                ${_("Error!")}
             </h2>
 
             <h2 class="bayt-fail" style="display: none">
-                % if get_language() == 'ar':
-                    لم تكمل هذا المساق
-                % else:
-                    You have Not completed this course
-                % endif
+                ## Translators: Edraak-specific
+                ${_("You have not completed this course")}
             </h2>
             <hr/>
         </header>
 
         <p class="bayt-waiting">
-            % if get_language() == 'ar':
-                نحن نقوم بحساب علاماتك لهذا المساق. قد تأخذ هذه العملية حتى دقيقة واحدة.
-            % else:
-                We are calculating your grade. This may take up-tp one minute. Please wait!
-            % endif
+            ## Translators: Edraak-specific
+            ${_("We are calculating your grade. This may take up-tp one minute. Please wait!")}
         </p>
 
         <p class="bayt-server-error" style="display: none">
-            % if get_language() == 'ar':
-                لقد وجهنا مشكلة في تنفيذ طلبك. الرجاء التواصل مع فريق إدراك لمزيد من المعلومات.
-            % else:
-                We have encountered an error while processing your request. Please contact the Edraak team for further
-                information.
-            % endif
+            ## Translators: Edraak-specific
+            ${_("We have encountered an error while processing your request. Please contact the Edraak team for further information.")}
         </p>
 
         <p class="bayt-fail" style="display: none">
-            % if get_language() == 'ar':
-                نأسف، لم تكمل في المساق. لن تتمكن من نشر هذا المساق على بيت.كوم.
-            % else:
-                Unfortunatley, you have not completed this course, you will not be able to post this to Bayt.
-            % endif
+            ## Translators: Edraak-specific
+            ${_("Unfortunately, you have not completed this course. You will not be able to post this to Bayt.1")}
         </p>
 
         <form id="bayt_form" class="bayt-passed" style="display: none">
             <div id="bayt_error" class="modal-form-error"></div>
             <div>
                 <label style="margin-bottom: 20px;">
-                    % if get_language() == 'ar':
-                        أدخل البريد البريد الإلكتروني المستخدم أو الذي تريد استخدمه في Bayt<br/>
-                        <span style="font-size: 14px; font-style: italic">سيتم نشر المساق الذي أتممته على سيرتك الذاتية على Bayt</span>
-                    % else:
-                        Enter or Confirm your Bayt email.<br/>
-                        <span style="font-size: 14px; font-style: italic">This will post the course completed on your Bayt CV.</span>
-                    % endif
+                    ## Translators: Edraak-specific
+                    ${_("Enter or Confirm your Bayt email")}.<br/>
+                    <span style="font-size: 14px; font-style: italic">
+                        ## Translators: Edraak-specific
+                        ${_("This will post the course completed on your Bayt CV.")}
+                    </span>
                 </label><br>
                 <label>
-                    % if get_language() == 'ar':
-                        البريد الإلكتروني المستخدم أو تريد استخدامه على Bayt:
-                    % else:
-                        Bayt Email:
-                    % endif
+                    ## Translators: Edraak-specific
+                    ${_("Bayt Email")}:
                 </label>
                 <input type="email" id="bayt_email" name="bayt_email" value="${user.email}">
                 <input type="hidden" id="user_id" name="user_id" value="${user.id}">
                 <input type="hidden" id="course_name" name="course_name" value="">
                 <input type="hidden" id="course_id" name="course_id" value=""></div>
             <div class="submit">
-                % if get_language() == 'ar':
-                    <input name="submit" type="submit" value="أنشر الآن"/>
-                % else:
-                    <input name="submit" type="submit" value="Post"/>
-                % endif
+                ## Translators: Edraak-specific
+                <input name="submit" type="submit" value="${_('Post')}"/>
             </div>
         </form>
     </div>

@@ -1,7 +1,8 @@
 <%!
-    from django.utils.translation import ugettext as _, get_language
+    from django.utils.translation import ugettext as _
     from edraak_bayt.utils import check_user_publish
     from edraak_misc.utils import is_certificate_allowed
+    from edraak_forus.models import ForusProfile
 %>
 
 <%page args="course" />
@@ -11,19 +12,18 @@
         <a href="#bayt-modal" class="email-settings post-to-bayt" rel="leanModal"
            data-course-id="${course.id}" data-course-number="${course.number}"
            onclick="EdraakDisplayPopUp('${course.display_name_with_default.replace('"', '')}', '${course.id}');">
-            % if get_language() == 'ar':
-                نشر على Bayt.com
+            % if ForusProfile.is_forus_user(user):
+                ## Translators: Edraak-specific
+                ${_("Post on ForUs and Bayt")}
             % else:
-                Post To Bayt
+                ## Translators: Edraak-specific
+                ${_("Post to Bayt")}
             % endif
         </a>
     % else:
         <a class="email-settings" href="javascript:void(0)">
-            % if get_language() == 'ar':
-                نشرت مسبقا على بيت
-            % else:
-                Already Posted to bayt
-            % endif
+            ## Translators: Edraak-specific
+            ${_("Already posted to Bayt")}}
         </a>
     % endif
 % endif

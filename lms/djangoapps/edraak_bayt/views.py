@@ -13,6 +13,7 @@ import logging
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from simplejson.scanner import JSONDecodeError
+from django.core.urlresolvers import reverse
 
 from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
@@ -33,13 +34,15 @@ def get_student_email(request):
     try:
         validate_email(user_email)
     except ValidationError:
+        ## Translators: Edraak-specific
         return JsonResponse({"success": False, "error": _('Invalid Email')})
 
     try:
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
         ## close the pop-up because there is sth wrong
-        return JsonResponse({"success": False, "error": 'Invalid ID'})
+        ## Translators: Edraak-specific
+        return JsonResponse({"success": False, "error": _('Invalid ID')})
     if user.email == user_email:
         h = Http()
         param = {
@@ -48,7 +51,7 @@ def get_student_email(request):
             'certificate_name': course_name.encode('UTF-8'),
             'email_address': user_email
         }
-        url = "https://api.bayt.com/api/edraak-api/post.adp?" + urllib.urlencode(param)
+        url = settings.BAYT_API_BASE + "/api/edraak-api/post.adp?" + urllib.urlencode(param)
         print url
         resp, content = h.request(url)
         json_content = simplejson.loads(content)
@@ -68,10 +71,8 @@ def get_student_email(request):
             'course_id': course_id.encode('UTF-8'),
             'user_id': user_id
         }
-        if not settings.DEBUG:
-            url = "https://edraak.org/bayt-activation?" + urllib.urlencode(param)
-        else:
-            url = request.META['HTTP_HOST'] + "/bayt-activation?" + urllib.urlencode(param)
+
+        url = settings.LMS_BASE + reverse('bayt_activation') + "?" + urllib.urlencode(param)
         context = {
             'encoded_url': url
         }
@@ -79,7 +80,8 @@ def get_student_email(request):
         if not (settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING')):
             from_address = microsite.get_value('email_from_address', settings.DEFAULT_FROM_EMAIL)
             try:
-                send_mail('Bayt Edraak Verification', message, from_address, [user_email], fail_silently=False)
+                ## Translators: Edraak-specific
+                send_mail(_('Bayt Edraak Verification'), message, from_address, [user_email], fail_silently=False)
                 # here we have to send an auth email to user email that contains a link to
                 # get back to here and then post the certificate
                 return JsonResponse({"success": True, "error": False, "redirect_to": False})
@@ -107,7 +109,7 @@ def activation(request):
             'certificate_name': course_name.encode('UTF-8'),
             'email_address': user_email
         }
-        url = "https://api.bayt.com/api/edraak-api/post.adp?" + urllib.urlencode(param)
+        url = settings.BAYT_API_BASE + "/api/edraak-api/post.adp?" + urllib.urlencode(param)
         resp, content = h.request(url)
 
         json_content = simplejson.loads(content)

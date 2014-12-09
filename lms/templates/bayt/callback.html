@@ -1,31 +1,37 @@
-<%! from django.utils.translation import ugettext as _, get_language %>
+<%! from django.utils.translation import ugettext as _ %>
 
 <%inherit file="main.html" />
 
 <section class="container activation">
-
   <section class="message">
-    <h1 >Bayt Activation</h1>
+    ## Translators: Edraak-specific
+    <h1>${_("Bayt Activation")}</h1>
     <hr class="horizontal-divider">
-% if get_language() == 'ar':
-    % if status:
-        <p>لقد تم نشر شهادتك على  BAYT بنجاح ,سوف تعود الى إدراك خلال 5 ثواني, إن لم يحدث ذلك انقر<a href="https://www.edraak.org/"> هنا</a></p>
-    % else:
-        <p>الرجاء النقر <a href="http://www.bayt.com/en/register-j/"> هنا</a></p>
-    % endif
-% else:
-    % if status:
-        <p>your certificate has been posted to Bayt successfully. you well redirect to Edraak in 5 seconds.if not click <a href="https://www.edraak.org/">here</a></p>
-    % else:
-        <p>please click <a href="http://www.bayt.com/en/register-j/">here</a></p>
-    % endif
-% endif
+      % if status:
+        <p>
+          ## Translators: Edraak-specific
+          ${_("Your certificate has been posted to Bayt successfully. "
+              "You well redirect to Edraak in 5 seconds. "
+              "If not click {link_start}here{link_end}").format(
+                 link_start='<a href="{}">'.format(settings.LMS_BASE),
+                 link_end='</a>',
+          )}
+        </p>
+      % else:
+        <p>
+          ## Translators: Edraak-specific
+          ${_("Please click {link_start}here{link_end}").format(
+                 link_start='<a href="{}/en/register-j/">'.format(settings.BAYT_BASE),
+                 link_end='</a>',
+          )}
+        </p>
+      % endif
   </section>
 </section>
 <script>
         % if status:
-            setTimeout("window.location='https://edraak.org/'",5000);
+            setTimeout("window.location='${settings.LMS_BASE | j}'", 5000);
         % else:
-            setTimeout("window.location='http://www.bayt.com/en/register-j/'",500);
+            setTimeout("window.location='${settings.BAYT_BASE | j}/en/register-j/'", 500);
         % endif
 </script>
