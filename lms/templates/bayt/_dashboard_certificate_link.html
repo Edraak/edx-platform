@@ -8,16 +8,18 @@
 <%page args="course" />
 
 % if is_certificate_allowed(user, course):
-    % if not check_user_publish(user.id, course.id):
-        <a href="#bayt-modal" class="email-settings post-to-bayt" rel="leanModal"
+    <% is_forus_user = ForusProfile.is_forus_user(user) %>
+    % if is_forus_user or not check_user_publish(user.id, course.id):
+        <a href="#${'forus-or-bayt-modal' if is_forus_user else 'bayt-modal'}"
+           class="email-settings post-to-bayt" rel="leanModal"
            data-course-id="${course.id}" data-course-number="${course.number}"
            onclick="EdraakDisplayPopUp('${course.display_name_with_default.replace('"', '')}', '${course.id}');">
-            % if ForusProfile.is_forus_user(user):
+            % if is_forus_user:
                 ## Translators: Edraak-specific
-                ${_("Post on ForUs and Bayt")}
+                ${_("Share certificate")}
             % else:
                 ## Translators: Edraak-specific
-                ${_("Post to Bayt")}
+                ${_("Post to Bayt.com")}
             % endif
         </a>
     % else:

@@ -11,12 +11,14 @@ class ForusProfileForNonStudentsError(Exception):
 
 class ForusProfile(models.Model):
     user = models.ForeignKey(User, unique=True, db_index=True)
+    # Translators: Edraak-specific
     date_created = models.DateTimeField(_('date forus profile created'), default=timezone.now)
 
     @staticmethod
     def create_for_user(user):
 
         if user.is_staff or user.is_superuser:
+            # Translators: Edraak-specific
             raise ForusProfileForNonStudentsError(_("ForUs profile cannot be created for admins and staff."))
 
         forus_profile = ForusProfile(user=user)

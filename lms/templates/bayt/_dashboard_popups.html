@@ -44,7 +44,7 @@
                 }, function (data) {
                     if (data.success) {
                         if (data.redirect_to) {
-                            window.location.replace("${settings.BAYT_BASE | j}/en/register-j/");
+                            window.location.replace("${settings.BAYT_BASE}/en/register-j/");
                         } else {
                             $(".close-modal").click();
                             location.reload();
@@ -104,7 +104,7 @@
 
         <p class="bayt-fail" style="display: none">
             ## Translators: Edraak-specific
-            ${_("Unfortunately, you have not completed this course. You will not be able to post this to Bayt.1")}
+            ${_("Unfortunately, you have not completed this course. You will not be able to post this to Bayt.")}
         </p>
 
         <form id="bayt_form" class="bayt-passed" style="display: none">

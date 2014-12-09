@@ -30,8 +30,8 @@
 </section>
 <script>
         % if status:
-            setTimeout("window.location='${settings.LMS_BASE | j}'", 5000);
+            setTimeout("window.location='${settings.LMS_BASE}'", 5000);
         % else:
-            setTimeout("window.location='${settings.BAYT_BASE | j}/en/register-j/'", 500);
+            setTimeout("window.location='${settings.BAYT_BASE}/en/register-j/'", 500);
         % endif
 </script>
