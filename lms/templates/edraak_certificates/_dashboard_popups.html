@@ -1,7 +1,124 @@
-<%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
-%>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+<%! from django.utils.translation import ugettext as _, get_language %>
+<%! from django.core.urlresolvers import reverse %>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('.issue_certificate').click(function () {
+            var course_id = $(this).attr('data-course-id');
+            $('.issue_certificate').addClass('disabled');
+            $('.post-to-bayt').addClass('disabled');
+            if ($('#certificate-modal-submit'))
+                $('#certificate-modal-submit').children().remove();
+            % if get_language() == 'ar':
+                $('#certificate-modal-message-header').text('الرجاء الإنتظار...');
+                $('#certificate-modal-message').text('نحن نقوم بحساب علاماتك لهذا المساق. قد تأخذ هذه العملية حتى دقيقة واحدة.');
+            % else:
+                $('#certificate-modal-message-header').text('Please wait...');
+                $('#certificate-modal-message').text('We are calculating your grades. This may take up-to one minute.');
+            % endif
+            $.post("${reverse('edraak_check_student_grades')}",
+                    { 'course_id': course_id },
+                    function (data) {
+                        $('.issue_certificate').removeClass('disabled');
+                        $('.post-to-bayt').removeClass('disabled');
+                        if (data.success) {
+                            $('#certificate_course_id').val(course_id);
+                            % if get_language() == 'ar':
+                                $('#certificate-modal-message-header').text('لقد نجحت!');
+                                $('#certificate-modal-message').text('يمكنك الآن تحميل شهادتك');
+                                $('#certificate-modal-submit').append("<input name='submit' type='submit' value='استعراض وتحميل الشهادة' />");
+                            % else:
+                                $('#certificate-modal-message-header').text('You have Passed!');
+                                $('#certificate-modal-message').text('You can download your certificate now');
+                                $('#certificate-modal-submit').append("<input name='submit' type='submit' value='Preview and Download' />");
+                            % endif
+                        }
+                        else if (!data.success && !data.error) {
+                            % if get_language() == 'ar':
+                                $('#certificate-modal-message-header').text('لم تكمل هذا المساق');
+                                $('#certificate-modal-message').text('نأسف، لم تكمل هذا المساق. لن تتمكن من إصدار شهادة.');
+                            % else:
+                                $('#certificate-modal-message-header').text('You have Not completed this course');
+                                $('#certificate-modal-message').text('Unfortunatley, you have not completed this course, you will not be able to issue a certificate.');
+
+                            % endif
+                        }
+                        else if (!data.success && data.error) {
+                            % if get_language() == 'ar':
+                                $('#certificate-modal-message-header').text('حدث خطأ!');
+                                $('#certificate-modal-messaage').text('لقد وجهنا مشكلة في تنفيذ طلبك. الرجاء التواصل مع فريق إدراك لمزيد من المعلومات.')
+                            % else:
+                                $('#certificate-modal-message-header').text('Error!');
+                                $('#certificate-modal-messaage').text('We have encountered an error while processing your request. Please contact the Edraak team for further information.')
+
+                            % endif
+                        }
+                    }
+            );
+        });
+    });
+</script>
+
+
+<section id="certificate-modal" class="modal certificate-modal" aria-hidden="true">
+    <div class="inner-wrapper" id="certificate-inner-wrapper" role="alertdialog"
+         aria-labelledy="certificate-modal-title">
+        <button class="close-modal">
+            <i class="icon-remove"></i>
+      <span class="sr">
+        ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
+        ${_('Close')}
+      </span>
+        </button>
+
+        <header>
+            <h2 id="certificate-modal-message-header"></h2>
+            <hr/>
+        </header>
+
+        <form style="" id="certificate_form" class="certificate_form" method="POST"
+              action="${reverse('edraak_certificates_issue')}" target="_blank">
+            <p id="certificate-modal-message"></p>
+            <br/>
+            <br/>
+            <input type="hidden" id="certificate_course_id" name="certificate_course_id" value="">
+
+            % if get_language() == 'ar':
+                <div class="submit" id="certificate-modal-submit" style="text-align: center"></div>
+            % else:
+                <div class="submit" id="certificate-modal-submit" style="text-align: center"></div>
+            % endif
+        </form>
+
+    </div>
+</section>
+
+<section id="certificate-not-available-modal" class="modal certificate-not-available-modal" aria-hidden="true">
+    <div class="inner-wrapper" id="certificate-inner-wrapper" role="alertdialog"
+         aria-labelledy="certificate-modal-title">
+        <button class="close-modal">
+            <i class="icon-remove"></i>
+      <span class="sr">
+        ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
+        ${_('Close')}
+      </span>
+        </button>
+
+        <header>
+            % if get_language() == 'ar':
+                <h2 id="certificate-modal-message-header">نأسف!</h2>
+            % else:
+                <h2 id="certificate-modal-message-header">Sorry!</h2>
+            % endif
+            <hr/>
+        </header>
+        % if get_language() == 'ar':
+            <p id="certificate-modal-message">لن تتمكن من إصدار شهادتك الأن. هذه مشكلة من جهتنا نحن. الرجاء المحاولة مرة
+                أخرى في الأيام القادمة. نعتذر لهذا الخطأ.</p>
+        % else:
+            <p id="certificate-modal-message">You cannot issue a certificate now. This is a problem from our side,
+                please try again in the next few days. We apologize for the inconvenience.</p>
+        % endif
+        <br/>
+
+    </div>
+</section>

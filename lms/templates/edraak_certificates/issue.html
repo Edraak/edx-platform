@@ -1,7 +1,72 @@
 <%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
+    from django.utils.translation import ugettext as _, get_language, get_language_bidi
+    from django.core.urlresolvers import reverse
 %>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+<%inherit file="../main.html" />
+<%block name="pagetitle">
+    % if get_language() == 'ar':
+        شهادة إتمام المساق
+    % else:
+        Course Completion Certificate
+    % endif
+</%block>
+<%block name='bodyclass'>certificate-issue</%block>
+<section class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div id="about_tab_1">
+                    <div class="row">
+                        <h1>
+                            % if get_language() == 'ar':
+                                شهادة إتمام المساق
+                            % else:
+                                Course Completion Certificate
+                            % endif
+                        </h1>
+
+                        <a class="preview-certificate" href="${reverse('edraak_certificates_download', args=[course_id])}">
+                            <img src="${reverse('edraak_certificates_preview', args=[course_id])}"
+                                 width="445" height="315"/>
+                        </a>
+
+                        <p>
+                            % if get_language() == 'ar':
+                                يرجى العلم أنه سيتم اصدار الشهادة بإستخدام الإسم الذي تم تزويده أثناء التسجيل والذي يظهر
+                                على
+
+                                <a target="_blank" href="${reverse('dashboard')}">
+                                    صفحة معلوماتك</a>
+                                على الموقع. الرجاء التأكد من صحته والتأكد من كتابته باللغة العربية. يمكنك تغيره عبر
+                                الضغط
+                                على (تعديل) الموجودة بجانب الإسم الكامل على
+                                <a target="_blank" href="${reverse('dashboard')}">
+                                    صفحة معلوماتك</a>.
+                            % else:
+                                Please note that the certificate will be issued with your name on it as provided on your
+                                <a target="_blank" href="${reverse('dashboard')}">dashboard</a>.
+                                Please double check the spelling and we prefer that the name is written in Arabic.
+                                To change it, go to the <a target="_blank" href="${reverse('dashboard')}">dashboard</a> and
+                                click on (edit) link beside your name.
+                            % endif
+                        </p>
+
+                        <p>
+                            <br/>
+
+                        <form action="${reverse('edraak_certificates_download', args=[course_id])}" method="get">
+                            % if get_language() == 'ar':
+                                <input type="submit" value="حمّل الشهادة كملف PDF"/>
+                            % else:
+                                <input type="submit" value="Download as PDF"/>
+                            % endif
+                        </form>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
