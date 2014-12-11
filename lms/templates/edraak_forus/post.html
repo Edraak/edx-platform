@@ -1,0 +1,39 @@
+<%!
+    from django.utils.translation import ugettext as _
+%>
+
+<%inherit file="../main.html" />
+
+## TODO: Add title
+
+% if success:
+    ## Translators: Edraak-specific
+    <h1>${_("Posted Successfully to ForUs")}</h1>
+    <p>
+        ## Translators: Edraak-specific
+        ${_("Redirecting...")}
+    </p>
+
+    <script type="text/javascript">
+       setTimeout(function(){
+           window.history.back();
+       }, 5000);
+    </script>
+% else:
+    ## Translators: Edraak-specific
+    <h1>${_("Failed due to the Following Reason")}</h1>
+    <p>
+        ${message}
+    </p>
+
+    <p>
+        ## Translators: Edraak-specific
+        ${_("Redirecting...")}
+    </p>
+
+    <script type="text/javascript">
+       setTimeout(function(){
+           window.history.back();
+       }, 5000);
+    </script>
+% endif

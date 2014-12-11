@@ -39,7 +39,7 @@ def post_to_bayt(email, course_name, secret_key=settings.BAYT_SECRET_KEY, api_ba
 
     if json_content['status'] == "NOT EXISTS":
         # Translators: Edraak-specific
-        message = _("There's no user in Bayt the ({email}) email").format(email=email)
+        message = _("There's no user in Bayt the with the following email ({email})").format(email=email)
         log.warn(message)
         raise BaytApiError(message)
 

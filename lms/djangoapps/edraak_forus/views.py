@@ -115,12 +115,13 @@ def publish(request, course_id):
         )
     except BaytApiError as e:
         return render_to_response('edraak_forus/post.html', {
-            "status": e.message
+            "success": False,
+            "message": e.message,
         })
 
     ForusPublishedCertificate.objects.create(user_id=int(request.user.id), course_id=course.id)
     # TODO: Handle duplicate exception
 
     return render_to_response('edraak_forus/post.html', {
-        "status": "success"
+        "success": True
     })
