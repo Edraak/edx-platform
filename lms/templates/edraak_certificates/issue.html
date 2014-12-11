@@ -1,15 +1,17 @@
 <%!
-    from django.utils.translation import ugettext as _, get_language, get_language_bidi
+    from django.utils.translation import ugettext as _
     from django.core.urlresolvers import reverse
+    from edraak_bayt.utils import check_user_publish
+    from edraak_forus.models import ForusProfile, ForusPublishedCertificate
 %>
+
 <%inherit file="../main.html" />
+
 <%block name="pagetitle">
-    % if get_language() == 'ar':
-        شهادة إتمام المساق
-    % else:
-        Course Completion Certificate
-    % endif
+    ## Translators: Edraak-specific
+    ${_("Course Completion Certificate")}
 </%block>
+
 <%block name='bodyclass'>certificate-issue</%block>
 <section class="container">
     <div class="row">
@@ -19,49 +21,64 @@
                 <div id="about_tab_1">
                     <div class="row">
                         <h1>
-                            % if get_language() == 'ar':
-                                شهادة إتمام المساق
-                            % else:
-                                Course Completion Certificate
-                            % endif
+                            ## Translators: Edraak-specific
+                            ${_("Course Completion Certificate")}
                         </h1>
 
-                        <a class="preview-certificate" href="${reverse('edraak_certificates_download', args=[course_id])}">
-                            <img src="${reverse('edraak_certificates_preview', args=[course_id])}"
+                        <a class="preview-certificate"
+                           href="${reverse('edraak_certificates_download', args=[course.id])}">
+                            <img src="${reverse('edraak_certificates_preview', args=[course.id])}"
                                  width="445" height="315"/>
                         </a>
 
                         <p>
-                            % if get_language() == 'ar':
-                                يرجى العلم أنه سيتم اصدار الشهادة بإستخدام الإسم الذي تم تزويده أثناء التسجيل والذي يظهر
-                                على
-
-                                <a target="_blank" href="${reverse('dashboard')}">
-                                    صفحة معلوماتك</a>
-                                على الموقع. الرجاء التأكد من صحته والتأكد من كتابته باللغة العربية. يمكنك تغيره عبر
-                                الضغط
-                                على (تعديل) الموجودة بجانب الإسم الكامل على
-                                <a target="_blank" href="${reverse('dashboard')}">
-                                    صفحة معلوماتك</a>.
-                            % else:
-                                Please note that the certificate will be issued with your name on it as provided on your
-                                <a target="_blank" href="${reverse('dashboard')}">dashboard</a>.
-                                Please double check the spelling and we prefer that the name is written in Arabic.
-                                To change it, go to the <a target="_blank" href="${reverse('dashboard')}">dashboard</a> and
-                                click on (edit) link beside your name.
-                            % endif
+                            ## Translators: Edraak-specific
+                            ${_("Please note that the certificate will be issued with your name on it as provided "
+                            "on your {link_start}dashboard{link_end}. Please double check the spelling. and we "
+                            "prefer that the name is written in the same language you're issuing the certificate "
+                            "with. To change it, go to the {link_start}dashboard{link_end} and click on (edit) "
+                            "link beside your name.").format(
+                              link_start='<a target="_blank" href="{}">'.format(reverse('dashboard')),
+                              link_end='</a>',
+                            )}`
                         </p>
 
-                        <p>
-                            <br/>
-
-                        <form action="${reverse('edraak_certificates_download', args=[course_id])}" method="get">
-                            % if get_language() == 'ar':
-                                <input type="submit" value="حمّل الشهادة كملف PDF"/>
-                            % else:
-                                <input type="submit" value="Download as PDF"/>
-                            % endif
+                        <form action="${reverse('edraak_certificates_download', args=[course.id])}" method="get">
+                            <p>
+                                <br/>
+                                ## Translators: Edraak-specific
+                                <input type="submit" value="${_('Download as PDF')}"/>
+                            </p>
                         </form>
+
+                        <hr />
+
+                        <p>
+                            % if ForusProfile.is_forus_user(user):
+                               % if ForusPublishedCertificate.is_published(user.id, course.id):
+                                   ## Translators: Edraak-specific
+                                   ${_('Already posted to Forus')}
+                                   <br />
+                               % else:
+                                    <a href="${reverse('forus_publish', args=[course.id])}"
+                                       class="button share-option">
+                                        ## Translators: Edraak-specific
+                                        ${_('Post to Forus')}
+                                   </a>
+                               % endif
+                            % endif
+
+                            % if check_user_publish(user.id, course.id):
+                                ## Translators: Edraak-specific
+                                ${_("Already posted to Bayt.com")}
+                                <br />
+                            % else:
+                                <a href="#bayt-modal" rel="leanModal"
+                                    class="button share-option">
+                                    ## Translators: Edraak-specific
+                                    ${_('Post to Bayt.com')}
+                                </a>
+                            % endif
                         </p>
                     </div>
                 </div>
@@ -70,3 +87,124 @@
     </div>
 </section>
 
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.core.urlresolvers import reverse %>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#bayt_form").submit(function () {
+            var bayt_email = $('#bayt_email').val();
+            var course_name = $('#course_name').val();
+            var course_id = $('#course_id').val();
+            var user_id = $('#user_id').val();
+            $.post('${reverse('edraak_bayt_get_student_email')}', {
+                "bayt_email": bayt_email,
+                "course_name": course_name,
+                "user_id": user_id,
+                "course_id": course_id
+            }, function (data) {
+                if (data.success) {
+                    if (data.redirect_to) {
+                        window.location.replace("${settings.BAYT_BASE}/en/register-j/");
+                    } else {
+                        $(".close-modal").click();
+                        location.reload();
+                    }
+                } else {
+                    $("#bayt_error").text(data.error).stop().css("display", "block");
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<section id="bayt-modal" class="modal bayt-modal" aria-hidden="true">
+    <div class="inner-wrapper" role="alertdialog" aria-labelledy="bayt-modal-title">
+        <button class="close-modal">
+            <i class="icon-remove"></i>
+      <span class="sr">
+        ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
+        ${_('Close')}
+      </span>
+        </button>
+
+        <header>
+            <h2 id="bayt-modal-title" class="bayt-passed">
+                ## Translators: Edraak-specific
+                ${_("Do you want to post your certificate on Bayt?")}
+            </h2>
+            <hr/>
+        </header>
+
+        <form id="bayt_form" class="bayt-passed">
+            <div id="bayt_error" class="modal-form-error"></div>
+            <div>
+                <label style="margin-bottom: 20px;">
+                    ## Translators: Edraak-specific
+                    ${_("Enter or Confirm your Bayt email")}.<br/>
+                    <span style="font-size: 14px; font-style: italic">
+                        ## Translators: Edraak-specific
+                        ${_("This will post the course completed on your Bayt CV.")}
+                    </span>
+                </label><br>
+                <label>
+                    ## Translators: Edraak-specific
+                    ${_("Bayt Email")}:
+                </label>
+                <input type="email" id="bayt_email" name="bayt_email" value="${user.email | h}">
+                <input type="hidden" id="user_id" name="user_id" value="${user.id | h}">
+                <input type="hidden" id="course_name" name="course_name" value="${course.display_name | h}">
+                <input type="hidden" id="course_id" name="course_id" value="${course.id | h}"></div>
+            <div class="submit">
+                ## Translators: Edraak-specific
+                <input name="submit" type="submit" value="${_('Post')}"/>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section id="error-modal" class="modal bayt-modal" aria-hidden="true">
+    <div class="inner-wrapper" role="alertdialog" aria-labelledy="bayt-modal-title">
+        <button class="close-modal">
+            <i class="icon-remove"></i>
+      <span class="sr">
+        ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
+        ${_('Close')}
+      </span>
+        </button>
+
+        <header>
+            <h2 id="bayt-modal-title" class="bayt-passed">
+                ## Translators: Edraak-specific
+                ${_("Do you want to post your certificate on Bayt?")}
+            </h2>
+            <hr/>
+        </header>
+
+        <form id="bayt_form" class="bayt-passed">
+            <div id="bayt_error" class="modal-form-error"></div>
+            <div>
+                <label style="margin-bottom: 20px;">
+                    ## Translators: Edraak-specific
+                    ${_("Enter or Confirm your Bayt email")}.<br/>
+                    <span style="font-size: 14px; font-style: italic">
+                        ## Translators: Edraak-specific
+                        ${_("This will post the course completed on your Bayt CV.")}
+                    </span>
+                </label><br>
+                <label>
+                    ## Translators: Edraak-specific
+                    ${_("Bayt Email")}:
+                </label>
+                <input type="email" id="bayt_email" name="bayt_email" value="${user.email | h}">
+                <input type="hidden" id="user_id" name="user_id" value="${user.id | h}">
+                <input type="hidden" id="course_name" name="course_name" value="${course.display_name | h}">
+                <input type="hidden" id="course_id" name="course_id" value="${course.id | h}"></div>
+            <div class="submit">
+                ## Translators: Edraak-specific
+                <input name="submit" type="submit" value="${_('Post')}"/>
+            </div>
+        </form>
+    </div>
+</section>

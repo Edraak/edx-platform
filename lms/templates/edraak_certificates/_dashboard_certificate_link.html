@@ -6,15 +6,13 @@
 
 <%page args="course" />
 
-% if is_certificate_allowed(user, course):
+## TODO: Activate this
+##% if is_certificate_allowed(user, course):
     <a href="#certificate-modal" class="email-settings issue_certificate" rel="leanModal" data-course-id="${course.id}"
        data-course-number="${course.number}"
        onclick="EdraakDisplayBaytPopUp('${course.display_name_with_default.replace('"', '')}', '${course.id}');">
 
-    % if get_language() == 'ar':
-        إصدار الشهادة
-    % else:
-        issue certificate
-    % endif
+    ## Translators: Edraak-specific
+    ${_("Completion Certificate")}
     </a>
-% endif
+##% endif

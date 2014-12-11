@@ -35,3 +35,22 @@ class ForusProfile(models.Model):
             return False
         else:
             return True
+
+
+class ForusPublishedCertificate(models.Model):
+    user = models.ForeignKey(User)
+    course_id = CourseKeyField(max_length=255, db_index=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
+
+    class Meta:
+        unique_together = (('user', 'course_id'),)
+        ordering = ('user', 'course_id')
+
+    @classmethod
+    def is_published(cls, user_id, course_id):
+        return cls.objects.filter(user_id=user_id, course_id=course_id).count() > 0
+
+    def __unicode__(self):
+        return (
+            "[ForusPublishedCertificate] {}: {} ({});"
+        ).format(self.user, self.course_id, self.date_created)

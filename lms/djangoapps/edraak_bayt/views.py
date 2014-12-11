@@ -19,6 +19,7 @@ from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
 from microsite_configuration import microsite
 from .models import BaytPublishedCertificate
+from .utils import post_to_bayt, BaytApiError
 
 log = logging.getLogger(__name__)
 
@@ -44,22 +45,14 @@ def get_student_email(request):
         ## Translators: Edraak-specific
         return JsonResponse({"success": False, "error": _('Invalid ID')})
     if user.email == user_email:
-        h = Http()
-        param = {
-            'secret_key': settings.BAYT_SECRET_KEY,
-            'valid_until': '06-2015',
-            'certificate_name': course_name.encode('UTF-8'),
-            'email_address': user_email
-        }
-        url = settings.BAYT_API_BASE + "/api/edraak-api/post.adp?" + urllib.urlencode(param)
-        print url
-        resp, content = h.request(url)
-        json_content = simplejson.loads(content)
-        if json_content['status'] == "NOT EXISTS":
-            return JsonResponse({"success": True, "error": False, "redirect_to": True, "response": content})
+        try:
+            post_to_bayt(user_email, course_name)
+        except BaytApiError:
+            return JsonResponse({"success": True, "error": False, "redirect_to": False})
         else:
             BaytPublishedCertificate.objects.create(user_id=int(user_id), course_id=course_id)
-            return JsonResponse({"success": True, "error": False, "redirect_to": False, "response": content})
+            return JsonResponse({"success": True, "error": False, "redirect_to": True})
+
     else:
         secret_key = settings.BAYT_SECRET_KEY
         my_string = user_email + course_name + secret_key
@@ -102,22 +95,13 @@ def activation(request):
     my_string = user_email + course_name + secret_key
     current_access_token = hashlib.md5(my_string.encode('UTF-8')).hexdigest()
     if current_access_token == access_token:
-        h = Http()
-        param = {
-            'secret_key': settings.BAYT_SECRET_KEY,
-            'valid_until': '06-2015',
-            'certificate_name': course_name.encode('UTF-8'),
-            'email_address': user_email
-        }
-        url = settings.BAYT_API_BASE + "/api/edraak-api/post.adp?" + urllib.urlencode(param)
-        resp, content = h.request(url)
-
-        json_content = simplejson.loads(content)
-
-        if json_content['status'] == "NOT EXISTS":
+        try:
+            post_to_bayt(user_email, course_name)
+        except BaytApiError:
             # redirect user to bayt registration
             return render_to_response("bayt/callback.html", {"status": False})
-        BaytPublishedCertificate.objects.create(user_id=user_id, course_id=course_id)
-        return render_to_response("bayt/callback.html", {"status": True})
+        else:
+            BaytPublishedCertificate.objects.create(user_id=user_id, course_id=course_id)
+            return render_to_response("bayt/callback.html", {"status": True})
     else:
         return JsonResponse({"success": False, "error": True, "redirect_to": False})

@@ -8,21 +8,21 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from opaque_keys import InvalidKeyError
+from django.contrib.auth.decorators import login_required
 
 from edxmako.shortcuts import render_to_response
 from third_party_auth import pipeline
 from microsite_configuration import microsite
 from courseware.courses import get_course_with_access
 
-from student.views import create_account as csrf_create_account
 from student.helpers import auth_pipeline_urls
 from student.models import AlreadyEnrolledError
 from student.views import enroll, create_account as edx_create_account
 
-from .models import ForusProfile
-from .utils import validate_forus_params, ordered_hmac_keys, ForusHmacError, HttpResponseBadForusRequest
+from edraak_bayt.utils import post_to_bayt, BaytApiError
 
-create_account = csrf_exempt(csrf_create_account)
+from .models import ForusProfile, ForusPublishedCertificate
+from .utils import validate_forus_params, ordered_hmac_keys, ForusHmacError, HttpResponseBadForusRequest
 
 import logging
 
@@ -50,7 +50,7 @@ def auth(request):
             u"User {username} tried to {action} with invalid course id: {course_id}".format(
                 username=request.GET.get("username"),
                 action=request.GET.get("enrollment_action"),
-                course_id=course_string_id
+                course_id=course_string_id,
             )
         )
         return HttpResponseBadForusRequest(_("Invalid course id"))
@@ -99,3 +99,28 @@ def auth(request):
 def create_account(request):
     validate_forus_params(request.POST)
     return edx_create_account(request)
+
+
+@login_required
+def publish(request, course_id):
+    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+    course = get_course_with_access(AnonymousUser(), 'load', course_key)
+
+    try:
+        post_to_bayt(
+            email=request.user.email,
+            course_name=course.display_name,
+            secret_key=settings.FORUS_SECRET_KEY,
+            api_base=settings.FORUS_API_BASE,
+        )
+    except BaytApiError as e:
+        return render_to_response('edraak_forus/post.html', {
+            "status": e.message
+        })
+
+    ForusPublishedCertificate.objects.create(user_id=int(request.user.id), course_id=course.id)
+    # TODO: Handle duplicate exception
+
+    return render_to_response('edraak_forus/post.html', {
+        "status": "success"
+    })
