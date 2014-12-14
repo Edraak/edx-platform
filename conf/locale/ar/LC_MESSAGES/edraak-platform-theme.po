@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-11 16:55+0200\n"
-"PO-Revision-Date: 2014-11-11 15:00+0000\n"
-"Last-Translator: qrfahasan <ahasan@qrf.org>\n"
+"POT-Creation-Date: 2014-12-14 17:45+0200\n"
+"PO-Revision-Date: 2014-12-14 15:50+0000\n"
+"Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,6 +27,48 @@ msgid ""
 " or hyphens."
 msgstr ""
 "أدخل اسم مستخدم صحيح، متكوّن من الحروف والأرقام والمسافات والشرطات (- و _)."
+
+#. Translators: Used in
+#. lms/djangoapps/edraak_certificates/edraakcertificate.py:54
+#: templates/i18n/certificates.html:5
+msgid ""
+"A course of study offered by Edraak with cooperation from MITx. The learning"
+" experience has been supervised and managed by the course team."
+msgstr ""
+"تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديمين الذين اشرفوا على"
+" تعليم وإدارة النقاش وتقييم الأجوبة والإمتحانات، و ذلك بالتعاون مع معهد "
+"ماسشوستس للتكنولوجيا."
+
+#. Translators: Used in
+#. lms/djangoapps/edraak_certificates/edraakcertificate.py:58
+#: templates/i18n/certificates.html:9
+msgid ""
+"A course of study offered by Edraak. The learning experience has been "
+"supervised and managed by the course team."
+msgstr ""
+"تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديمين الذين اشرفوا "
+"على تعليم وإدارة النقاش وتقييم الأجوبة والإمتحانات."
+
+#. Translators: Used in
+#. lms/djangoapps/edraak_certificates/edraakcertificate.py:245
+#: templates/i18n/certificates.html:13
+msgid "This is to certify that:"
+msgstr "تم منح شهادة إتمام المساق هذﮦ إلى:"
+
+#. Translators: Used in
+#. lms/djangoapps/edraak_certificates/edraakcertificate.py:250
+#. Translators: Used in
+#. lms/djangoapps/edraak_certificates/edraakcertificate.py:253
+#: templates/i18n/certificates.html:16 templates/i18n/certificates.html:19
+msgid "Successfully completed:"
+msgstr "لإتمام المساق التالي بنجاح:"
+
+#. Translators: Keep {new_line} for formatting, Edraak-specific
+#. Translators: Used in
+#. lms/djangoapps/edraak_certificates/edraakcertificate.py:265
+#: templates/i18n/certificates.html:23
+msgid "Course{new_line}Certificate{new_line}of Completion"
+msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
 #. Translators: Used all around the site
 #: templates/i18n/emails.html:4
@@ -53,6 +95,61 @@ msgstr ""
 #: templates/i18n/emails.html:13
 msgid "The Edraak Team"
 msgstr "فريق عمل إدراك"
+
+#. Translators: Used in lms/templates/edraak_forus/auth.html:99
+#: templates/i18n/forus_auth.html:2
+msgid "Welcome, {username}!"
+msgstr "مرحباً، {username}!"
+
+#. Translators: Used in lms/templates/edraak_forus/auth.html:101
+#: templates/i18n/forus_auth.html:5
+msgid "You're one step away from accessing {course_name} course."
+msgstr "أنت على بعد خطوة واحدة من الوصول إلى مساق {course_name}."
+
+#. Translators: Used in lms/templates/edraak_forus/auth.html:123
+#: templates/i18n/forus_auth.html:8
+msgid "You're creating a new {platform_name} account using ForUs."
+msgstr ""
+"أنت تقوم بإنشاء حساباً جديداً على {platform_name}، باستخدام موقع فُرص."
+
+#. Translators: Used in lms/templates/edraak_forus/auth.html:126
+#: templates/i18n/forus_auth.html:11
+msgid ""
+"Your {platform_name} profile will be created using the same registration "
+"information used for your profile/account on ForUs. To access the course, "
+"please fill out the following form."
+msgstr ""
+"سيتم استخدام نفس المعلومات التي سجلت بها على موقع فُرص. لإنشاء حسابك على "
+"{platform_name}. للوصول إلى المساق، يُرجى إكمال النموذج التالي."
+
+#. Translators: Used in lms/templates/edraak_forus/auth.html:173
+#: templates/i18n/forus_auth.html:16
+msgid "Please let us know why you're interested in {platform_name}'s courses."
+msgstr "يُرجى إخبارنا عن سبب اهتمامك بمساقات {platform_name}."
+
+#. Translators: Used in lms/djangoapps/edraak_forus/utils.py:55
+#: templates/i18n/forus_auth.html:19
+msgid "HMAC is incorrect"
+msgstr "رمز الحماية خاطئ"
+
+#. Translators: Used in lms/djangoapps/edraak_forus/utils.py:43
+#: templates/i18n/forus_auth.html:22
+msgid "HMAC is missing"
+msgstr "رمز الحماية غير موجود"
+
+#. Translators: Used in lms/djangoapps/edraak_forus/models.py:20
+#: templates/i18n/forus_auth.html:25
+msgid "ForUs profile cannot be created for admins and staff."
+msgstr "لا يمكن لمشرفي وأعضاء تدريس إدراك استخدام حسابات فُرص."
+
+#. Translators: Used in common/djangoapps/student/views.py:1058
+#: templates/i18n/forus_auth.html:28
+msgid ""
+"Email or password is incorrect. You can request a new password, or you can "
+"use your ForUs account to login to {platform_name} directly."
+msgstr ""
+"البريد الإلكتروني أو كلمة السر غير صحيحة. يمكنك طلب كلمة سر جديدة، أو الذهاب"
+" إلى حسابك في موقع فُرص للدخول إلى {platform_name} مباشرةً."
 
 #. Translators: This is temporary until Qordoba fixes it.
 #. Translators: Used in lms/templates/dashboard.html:160

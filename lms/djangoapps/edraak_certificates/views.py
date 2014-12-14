@@ -55,7 +55,7 @@ def preview(request, course_id):
 
         with Image(filename=pdf_file.name) as img:
             with img.clone() as i:
-                i.resize(445, 315)
+                # i.resize(445, 315)
                 i.save(filename=image_file.name)
 
         wrapper = FileWrapper(image_file)
