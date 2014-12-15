@@ -11,7 +11,6 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from subprocess import call
-import logging
 
 
 class Command(BaseCommand):
@@ -26,5 +25,6 @@ class Command(BaseCommand):
                 call(script_path)
                 return
 
-        print "Skipping theme push. Are you sure the config is correct? Press <Enter> to continue without theme..."
+        print "Error: theme files not found."
+        print "Are you sure the config is correct? Press <Enter> to continue without theme i18n..."
         raw_input()
