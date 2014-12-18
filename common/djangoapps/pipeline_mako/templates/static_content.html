@@ -11,6 +11,18 @@ except:
     url = file
 %>${url}${"?raw" if raw else ""}</%def>
 
+
+<%def name='absolute_url(file, raw=False)'><%
+    try:
+        url = staticfiles_storage.url(file)
+    except:
+        url = file
+
+
+    schema = 'https' if is_secure else 'http'
+    host = request.environ['HTTP_HOST']
+%>${schema}://${host}${url}${"?raw" if raw else ""}</%def>
+
 <%def name='css(group, raw=False)'>
   <%
       rtl_group = '{}-rtl'.format(group)
