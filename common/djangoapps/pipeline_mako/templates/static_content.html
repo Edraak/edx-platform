@@ -2,6 +2,7 @@
 from staticfiles.storage import staticfiles_storage
 from pipeline_mako import compressed_css, compressed_js
 from django.utils.translation import get_language_bidi
+from urlparse import urlparse
 %>
 
 <%def name='url(file, raw=False)'><%
@@ -18,10 +19,14 @@ except:
     except:
         url = file
 
+    if urlparse(url).netloc:  # is absolute URL
+        prefix = ''
+    else:
+        schema = 'https' if is_secure else 'http'
+        prefix = '{schema}://{host}'.format(schema=schema, host=request.environ['HTTP_HOST'])
 
-    schema = 'https' if is_secure else 'http'
-    host = request.environ['HTTP_HOST']
-%>${schema}://${host}${url}${"?raw" if raw else ""}</%def>
+
+%>${prefix}${url}${"?raw" if raw else ""}</%def>
 
 <%def name='css(group, raw=False)'>
   <%
