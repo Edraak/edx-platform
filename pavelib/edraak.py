@@ -18,23 +18,6 @@ except ImportError:
 
 
 @task
-def edraak_remove_empty_messages():
-    ar_po_directory = PLATFORM_ROOT / 'conf/locale/ar/LC_MESSAGES'
-
-    for resource in ('edraak-platform.po', 'edraak-platform-theme.po'):
-        pofile = polib.pofile(ar_po_directory / resource)
-
-        # `reversed()` is used to allow removing from the bottom
-        # instead of changing the index and introducing bugs
-        for entry in reversed(pofile):
-            if not entry.msgstr.strip():
-                pofile.remove(entry)
-                print 'Removed empty translation: ', entry.msgid, '=>', entry.msgstr
-
-        pofile.save()
-
-
-@task
 def edraak_transifex_pull():
     # Start with clean translation state
     clean_git_repo_msg = "The repo has local modifications. Please stash or commit your changes."
@@ -73,7 +56,6 @@ def edraak_generate_files():
 @task
 @needs(
     'pavelib.edraak.edraak_transifex_pull',
-    'pavelib.edraak.edraak_remove_empty_messages',
     'pavelib.edraak.edraak_generate_files',
 )
 def edraak_i18n_pull():
