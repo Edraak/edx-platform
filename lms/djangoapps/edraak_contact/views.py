@@ -56,10 +56,7 @@ def contact(request):
 
 
         # send e-mail
-        if request.GET['form'] == 'help':
-            dest_addr = settings.CONTACT_EMAIL
-        else:
-            dest_addr = settings.COLLABORATE_EMAIL
+        dest_addr = settings.CONTACT_EMAIL
 
         context = {
                 'firstname': post.get('firstname', ''),
