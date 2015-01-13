@@ -1,12 +1,11 @@
 from django.utils.translation import ugettext as _
 from django.db import models
-from xmodule_django.models import CourseKeyField
 from django.contrib.auth.models import User
 
 
 class CourseTrackingCodeUsage(models.Model):
     user = models.ForeignKey(User)
-    course_id = CourseKeyField(max_length=255, db_index=True)
+    course_id = models.CharField(max_length=255, db_index=True)
 
     class Meta:
         unique_together = (('user', 'course_id'),)
@@ -29,7 +28,7 @@ class CourseTrackingCodeUsage(models.Model):
 
 
 class CourseTrackingCode(models.Model):
-    course_id = CourseKeyField(max_length=255, db_index=True, unique=True, primary_key=True)
+    course_id = models.CharField(max_length=255, db_index=True, unique=True, primary_key=True)
     code = models.TextField()
 
     def __unicode__(self):
