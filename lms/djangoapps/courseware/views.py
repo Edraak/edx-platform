@@ -61,6 +61,8 @@ import survey.utils
 import survey.views
 
 from util.views import ensure_valid_course_key
+from edraak_misc.utils import sort_closed_courses_to_bottom
+
 log = logging.getLogger("edx.courseware")
 
 template_imports = {'urllib': urllib}
@@ -100,6 +102,7 @@ def courses(request):
     # Hardcoded `AnonymousUser()` to hide unpublished courses always
     courses = get_courses(AnonymousUser(), request.META.get('HTTP_HOST'))
     courses = sort_by_announcement(courses)
+    courses = sort_closed_courses_to_bottom(courses)
 
     return render_to_response("courseware/courses.html", {'courses': courses})
 
@@ -761,6 +764,7 @@ def course_about(request, course_id):
         'in_cart': in_cart,
         'reg_then_add_to_cart_link': reg_then_add_to_cart_link,
         'show_courseware_link': show_courseware_link,
+        'has_course_ended': course.has_ended(),
         'is_course_full': is_course_full,
         'can_enroll': can_enroll,
         'invitation_only': invitation_only,

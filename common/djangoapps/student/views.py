@@ -101,7 +101,7 @@ import analytics
 from eventtracking import tracker
 
 from edraak_validation import validate_username
-
+from edraak_misc.utils import sort_closed_courses_to_bottom
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -141,6 +141,7 @@ def index(request, extra_context=None, user=AnonymousUser()):
     courses = get_courses(AnonymousUser(), domain=domain)
 
     courses = sort_by_announcement(courses)
+    courses = sort_closed_courses_to_bottom(courses)
 
     context = {'courses': courses}
 
