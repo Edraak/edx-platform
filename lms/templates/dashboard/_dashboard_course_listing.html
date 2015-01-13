@@ -2,9 +2,10 @@
 
 <%! from django.utils.translation import ugettext as _ %>
 <%!
-  from django.core.urlresolvers import reverse
-  from courseware.courses import course_image_url, get_course_about_section
+from django.core.urlresolvers import reverse
+from courseware.courses import course_image_url, get_course_about_section
 %>
+<%! from edraak_tracking.models import CourseTrackingCode %>
 
 <%
   cert_name_short = course.cert_name_short
@@ -224,10 +225,15 @@
         % endif
 % endif
 
+
+<div class="tracking-code">
+    ${CourseTrackingCode.get_tracking_code_once(user, course.id)}
+</div>
+
+
 ## Available in Edraak theme
 <%include file="../bayt/_dashboard_certificate_link.html" args="course=course" />
 <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course=course" />
-
 
   </section>
 </article>
