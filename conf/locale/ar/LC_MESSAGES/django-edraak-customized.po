@@ -18271,11 +18271,11 @@ msgstr ""
 
 #. Translators: Edraak-specific
 #: common/djangoapps/student/edraak_validation.py:41
-#: common/djangoapps/student/views.py:1458
+#: common/djangoapps/student/views.py:1459
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
-msgstr ""
+msgstr "أدخل اسم مستخدم صحيح، متكوّن من حروف وأرقام ومسافات وشرطات (- و _)."
 
 #. Translators: Edraak-specific
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py:243
@@ -18283,6 +18283,9 @@ msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr ""
+"تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديمين الذين اشرفوا على"
+" تعليم وإدارة النقاش وتقييم الأجوبة والإمتحانات، و ذلك بالتعاون مع معهد "
+"ماسشوستس للتكنولوجيا."
 
 #. Translators: Edraak-specific
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py:247
@@ -18290,22 +18293,24 @@ msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr ""
+"تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديمين الذين اشرفوا "
+"على تعليم وإدارة النقاش وتقييم الأجوبة والإمتحانات."
 
 #. Translators: Edraak-specific
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py:258
 msgid "This is to certify that:"
-msgstr ""
+msgstr " تم منح شهادة إتمام المساق هذﮦ إلى:"
 
 #. Translators: Edraak-specific
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py:263
 msgid "Successfully completed:"
-msgstr ""
+msgstr "لإتمام المساق التالي بنجاح:"
 
 #. Translators: Keep newlines for formatting, Edraak-specific
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py:275
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
-msgstr ""
+msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
 #. Translators: Edraak-specific
 #: lms/templates/registration/password_reset_email.html:3
@@ -18313,11 +18318,13 @@ msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at edraak.org."
 msgstr ""
+"تم إرسال هذا البريد الإلكتروني لك بناءً على طلبك لتغيير كلمة المرور الخاصة "
+"بك على موقع edraak.org."
 
 #. Translators: Edraak-specific
 #: lms/templates/registration/password_reset_email.html:15
 msgid "The Edraak Team"
-msgstr ""
+msgstr "فريق عمل إدراك"
 
 #. Translators: Used in common/djangoapps/student/edraak_validation.py:40
 #: templates/i18n/auth.html:4
