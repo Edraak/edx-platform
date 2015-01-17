@@ -3075,11 +3075,7 @@ msgstr "الكتب"
 #: lms/templates/instructor/staff_grading.html
 #, fuzzy
 msgid "Staff grading"
-msgstr ""
-"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
-"تقييم طاقم المساق\n"
-"#-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#\n"
-"تقييم طاقم المساق "
+msgstr "تقييم طاقم المساق "
 
 #. Translators: "Peer grading" appears on a tab that allows
 #. students to view open-ended problems that require grading
@@ -3928,11 +3924,7 @@ msgstr "اسم المستخدم"
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #, fuzzy
 msgid "Grade"
-msgstr ""
-"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
-"الدرجة \n"
-"#-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#\n"
-"الدرجة"
+msgstr "الدرجة"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
@@ -4667,11 +4659,7 @@ msgstr[5] "لم تنجح عملية إرسال {num_emails}"
 #: lms/templates/verify_student/midcourse_reverify_dash.html
 #, fuzzy
 msgid "Complete"
-msgstr ""
-"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
-"تم استكمال البيانات\n"
-"#-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#\n"
-"تم استكمال العملية"
+msgstr "تم استكمال العملية"
 
 #: lms/djangoapps/instructor/views/instructor_task_helpers.py
 msgid "Incomplete"
@@ -5450,11 +5438,7 @@ msgstr "رقم الطلب"
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #, fuzzy
 msgid "Status"
-msgstr ""
-"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
-"الحالة\n"
-"#-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#\n"
-"حالة"
+msgstr "الحالة"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Quantity"
@@ -6474,9 +6458,6 @@ msgstr "المساعدة الخاصة بإعادة ضبط كلمة السر"
 #, fuzzy
 msgid "Need Help?"
 msgstr ""
-"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
-"تحتاج إلى مساعدة؟\n"
-"#-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#\n"
 "هل تحتاج مساعدة؟"
 
 #: lms/templates/registration/password_reset_confirm.html
