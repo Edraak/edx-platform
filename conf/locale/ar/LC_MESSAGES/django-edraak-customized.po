@@ -5490,11 +5490,7 @@ msgstr "تاريخ الإعلان عن المساق "
 #: lms/djangoapps/shoppingcart/reports.py cms/templates/settings.html
 #, fuzzy
 msgid "Course Start Date"
-msgstr ""
-"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
-"تاريخ بدء المساق \n"
-"#-#-#-#-#  mako-studio.po (edx-platform)  #-#-#-#-#\n"
-"تاريخ بدء المساق"
+msgstr "تاريخ بدء المساق"
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Course Registration Close Date"
