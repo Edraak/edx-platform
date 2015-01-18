@@ -172,7 +172,14 @@
                 urls.changeName,
                 {"new_name":new_name, "rationale":rationale},
                 function(data) {
-                    if(data.success) {
+                    if (data.success && data.notice && data.title) {
+                        $("#change-name-title")
+                            .find("span:not(.sr)").text(data.title);
+
+                        $("#change_name_form").html(
+                            $('<p></p').text(data.notice)
+                        );
+                    } else if (data.success) {
                         location.reload();
                     } else {
                         $("#change_name_error").html(data.error).stop().css("display", "block");

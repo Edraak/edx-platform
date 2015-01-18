@@ -378,8 +378,17 @@
     <div id="change_name_body">
       <form id="change_name_form">
         <div id="change_name_error" class="modal-form-error"> </div>
-        ## Translators: note that {platform} {cert_name_short} will look something like: "edX certificate". Please do not change the order of these placeholders.
-        <p>${_("To uphold the credibility of your {platform} {cert_name_short}, all name changes will be recorded.").format(platform=settings.PLATFORM_NAME, cert_name_short=cert_name_short)}</p>
+
+        % if user.get_profile().is_name_review_required():
+          <p>
+            ## Translators: Edraak-specific
+            ${_("Please note that you've reached the maximum number of times allowed to change your name."
+                "Your name change request will be reviewed by the community manager.")}
+          </p>
+        % else:
+            ## Translators: note that {platform} {cert_name_short} will look something like: "edX certificate". Please do not change the order of these placeholders, Edraak-specific
+            <p>${_("To uphold the credibility of your {platform} {cert_name_short}, all name changes will be recorded.").format(platform=settings.PLATFORM_NAME, cert_name_short=cert_name_short)}</p>
+        % endif
         <br/>
         <fieldset>
           <div class="input-group">

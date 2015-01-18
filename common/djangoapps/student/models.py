@@ -281,6 +281,22 @@ class UserProfile(models.Model):
         self.set_meta(meta)
         self.save()
 
+    def is_name_review_required(self):
+        """
+        Checks if the manual name change review is required.
+        It is when the user has reached the maximum allowed quick name changes.
+        """
+        return self.count_name_changes() <= settings.ALLOWED_QUICK_NAME_CHANGE
+
+    def count_name_changes(self):
+        """
+        Returns the number of the previous full_name changes by the user.
+        """
+        meta = self.get_meta()
+        old_names = meta.get('old_names', [])
+
+        return len(old_names)
+
     @transaction.commit_on_success
     def update_name(self, new_name):
         """Update the user's name, storing the old name in the history.

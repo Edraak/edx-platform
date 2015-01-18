@@ -2160,14 +2160,16 @@ def confirm_email_change(request, key):  # pylint: disable=unused-argument
 @require_POST
 def change_name_request(request):
     """ Log a request for a new name. """
-    if not request.user.is_authenticated():
+    user = request.user
+
+    if not user.is_authenticated():
         raise Http404
 
     try:
-        pnc = PendingNameChange.objects.get(user=request.user.id)
+        pnc = PendingNameChange.objects.filter(user=user.id).latest('id')
     except PendingNameChange.DoesNotExist:
         pnc = PendingNameChange()
-    pnc.user = request.user
+    pnc.user = user
     pnc.new_name = request.POST['new_name'].strip()
     pnc.rationale = request.POST['rationale']
     if len(pnc.new_name) < 2:
@@ -2177,11 +2179,19 @@ def change_name_request(request):
         })  # TODO: this should be status code 400  # pylint: disable=fixme
     pnc.save()
 
-    # The following automatically accepts name change requests. Remove this to
-    # go back to the old system where it gets queued up for admin approval.
-    accept_name_change_by_id(pnc.id)
-
-    return JsonResponse({"success": True})
+    if user.get_profile().is_name_review_required():
+        return JsonResponse({
+            "success": True,
+            # Translators: Edraak-specific
+            "title": _("Name Change Request"),
+            # Translators: Edraak-specific
+            "notice": _("Your request has been submitted for review. Please expect to hear "
+                        "from us within 3 working days."),
+        })
+    else:
+        # Edraak-customized: only automatically accept name changes up to 3 times, then require Admin approval.
+        accept_name_change_by_id(pnc.id)
+        return JsonResponse({"success": True})
 
 
 @ensure_csrf_cookie
