@@ -117,10 +117,7 @@ class EdraakCertificate(object):
         self.ctx.drawImage(background_path, 0, 0, width, height)
 
     def _set_font(self, size, is_bold):
-        if is_bold:
-            font = "DIN Next LT Arabic Bold"
-        else:
-            font = "DIN Next LT Arabic Light"
+        font = "DIN Next LT Arabic Light"
 
         self.ctx.setFont(font, size)
         self.ctx.setFillColorRGB(66 / 255.0, 74 / 255.0, 82 / 255.0)
