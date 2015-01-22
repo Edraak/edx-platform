@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 """Tests for the change enrollment step of the pipeline. """
+from collections import namedtuple
 
 import datetime
 import unittest
 import ddt
 import pytz
 from third_party_auth import pipeline
-from shoppingcart.models import Order, PaidCourseRegistration  # pylint: disable=F0401
+from shoppingcart.models import Order, PaidCourseRegistration  # pylint: disable=import-error
 from social.apps.django_app import utils as social_utils
 from django.conf import settings
 from django.contrib.sessions.backends import cache
@@ -17,6 +19,7 @@ from student.models import CourseEnrollment
 from xmodule.modulestore.tests.django_utils import (
     ModuleStoreTestCase, mixed_store_config
 )
+from openedx.core.djangoapps.user_api.models import UserOrgTag
 
 
 MODULESTORE_CONFIG = mixed_store_config(settings.COMMON_TEST_DATA_ROOT, {}, include_xml=False)
@@ -42,12 +45,12 @@ class PipelineEnrollmentTest(ModuleStoreTestCase):
         self.user = UserFactory.create()
 
     @ddt.data(
-        ([], "honor"),
-        (["honor", "verified", "audit"], "honor"),
-        (["professional"], None)
+        ([], "honor", u"False", u"False"),
+        (["honor", "verified", "audit"], "honor", u"True", u"True"),
+        (["professional"], None, u"Fålsœ", u"False")
     )
     @ddt.unpack
-    def test_auto_enroll_step(self, course_modes, enrollment_mode):
+    def test_auto_enroll_step(self, course_modes, enrollment_mode, email_opt_in, email_opt_in_result):
         # Create the course modes for the test case
         for mode_slug in course_modes:
             CourseModeFactory.create(
@@ -61,8 +64,9 @@ class PipelineEnrollmentTest(ModuleStoreTestCase):
         # when they started the auth process.
         strategy = self._fake_strategy()
         strategy.session_set('enroll_course_id', unicode(self.course.id))
+        strategy.session_set('email_opt_in', email_opt_in)
 
-        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=E1111,E1124
+        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=assignment-from-no-return,redundant-keyword-arg
         self.assertEqual(result, {})
 
         # Check that the user was or was not enrolled
@@ -73,6 +77,11 @@ class PipelineEnrollmentTest(ModuleStoreTestCase):
             self.assertEqual(actual_mode, enrollment_mode)
         else:
             self.assertFalse(CourseEnrollment.is_enrolled(self.user, self.course.id))
+
+        # Check that the Email Opt In option was set
+        tag = UserOrgTag.objects.get(user=self.user)
+        self.assertIsNotNone(tag)
+        self.assertEquals(tag.value, email_opt_in_result)
 
     def test_add_white_label_to_cart(self):
         # Create a white label course (honor with a minimum price)
@@ -86,7 +95,7 @@ class PipelineEnrollmentTest(ModuleStoreTestCase):
         # Simulate the pipeline step for enrolling in this course
         strategy = self._fake_strategy()
         strategy.session_set('enroll_course_id', unicode(self.course.id))
-        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=E1111,E1124
+        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=assignment-from-no-return,redundant-keyword-arg
         self.assertEqual(result, {})
 
         # Expect that the uesr is NOT enrolled in the course
@@ -109,7 +118,7 @@ class PipelineEnrollmentTest(ModuleStoreTestCase):
         # This should fail silently, with no exception
         strategy = self._fake_strategy()
         strategy.session_set('enroll_course_id', unicode(self.course.id))
-        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=E1111,E1124
+        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=assignment-from-no-return,redundant-keyword-arg
         self.assertEqual(result, {})
 
         # Verify that we were NOT enrolled
@@ -117,9 +126,32 @@ class PipelineEnrollmentTest(ModuleStoreTestCase):
 
     def test_no_course_id_skips_enroll(self):
         strategy = self._fake_strategy()
-        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=E1111,E1124
+        result = pipeline.change_enrollment(strategy, 1, user=self.user)  # pylint: disable=assignment-from-no-return,redundant-keyword-arg
         self.assertEqual(result, {})
         self.assertFalse(CourseEnrollment.is_enrolled(self.user, self.course.id))
+
+    def test_url_creation(self):
+        strategy = self._fake_strategy()
+        strategy.session_set('enroll_course_id', unicode(self.course.id))
+        strategy.session_set('email_opt_in', u"False")
+        backend = namedtuple('backend', 'name')
+        backend.name = self.BACKEND_NAME
+        response = pipeline.ensure_user_information(
+            strategy=strategy,
+            pipeline_index=1,
+            details=None,
+            response=None,
+            uid=None,
+            is_register=True,
+            backend=backend
+        )
+        self.assertIsNotNone(response)
+        self.assertEquals(response.status_code, 302)
+
+        # Get the location
+        _, url = response._headers['location']  # pylint: disable=W0212
+        self.assertIn("email_opt_in=False", url)
+        self.assertIn("course_id=".format(id=unicode(self.course.id)), url)
 
     def _fake_strategy(self):
         """Simulate the strategy passed to the pipeline step. """

@@ -22,7 +22,7 @@
         <% ctx_loc = context_course.location %>
         ${context_course.display_name_with_default | h} |
         % endif
-        edX Studio
+        ${settings.STUDIO_NAME}
     </title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -40,7 +40,7 @@
     <%block name="header_extras"></%block>
   </head>
 
-  <body class="${dir_rtl} <%block name='bodyclass'></%block> hide-wip lang_${LANGUAGE_CODE}">
+  <body class="${dir_rtl} <%block name='bodyclass'></%block> lang_${LANGUAGE_CODE}">
   <%block name="view_notes"></%block>
 
     <a class="nav-skip" href="#content">${_("Skip to this view's content")}</a>

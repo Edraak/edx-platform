@@ -2,41 +2,35 @@
 """
 Integration tests for submitting problem responses and getting grades.
 """
-# text processing dependencies
 import json
 import os
 from textwrap import dedent
 
-from mock import patch
-
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
+from django.test.client import RequestFactory
 from django.test.utils import override_settings
+from mock import patch
 
-# Need access to internal func to put users in the right group
-from courseware import grades
-from courseware.models import StudentModule
-
-#import factories and parent testcase modules
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from capa.tests.response_xml_factory import (
     OptionResponseXMLFactory, CustomResponseXMLFactory, SchematicResponseXMLFactory,
     CodeResponseXMLFactory,
 )
+from courseware import grades
+from courseware.models import StudentModule
 from courseware.tests.helpers import LoginEnrollmentTestCase
-from courseware.tests.modulestore_config import TEST_DATA_MIXED_MODULESTORE
-from lms.lib.xblock.runtime import quote_slashes
+from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
+from lms.djangoapps.lms_xblock.runtime import quote_slashes
 from student.tests.factories import UserFactory
 from student.models import anonymous_id_for_user
-
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.partitions.partitions import Group, UserPartition
-from user_api.tests.factories import UserCourseTagFactory
+from openedx.core.djangoapps.user_api.tests.factories import UserCourseTagFactory
 
 
-@override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
+@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestSubmittingProblems(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Check that a course gets graded properly.
@@ -339,18 +333,20 @@ class TestCourseGrader(TestSubmittingProblems):
         """
 
         grading_policy = {
-            "GRADER": [{
-                "type": "Homework",
-                "min_count": 1,
-                "drop_count": 0,
-                "short_label": "HW",
-                "weight": 0.25
-            }, {
-                "type": "Final",
-                "name": "Final Section",
-                "short_label": "Final",
-                "weight": 0.75
-            }]
+            "GRADER": [
+                {
+                    "type": "Homework",
+                    "min_count": 1,
+                    "drop_count": 0,
+                    "short_label": "HW",
+                    "weight": 0.25
+                }, {
+                    "type": "Final",
+                    "name": "Final Section",
+                    "short_label": "Final",
+                    "weight": 0.75
+                }
+            ]
         }
         self.add_grading_policy(grading_policy)
 
@@ -367,13 +363,14 @@ class TestCourseGrader(TestSubmittingProblems):
 
         grading_policy = {
             "GRADER": [
-            {
-                "type": "Homework",
-                "min_count": 3,
-                "drop_count": 1,
-                "short_label": "HW",
-                "weight": 1
-            }]
+                {
+                    "type": "Homework",
+                    "min_count": 3,
+                    "drop_count": 1,
+                    "short_label": "HW",
+                    "weight": 1
+                }
+            ]
         }
         self.add_grading_policy(grading_policy)
 
@@ -651,6 +648,7 @@ class ProblemWithUploadedFilesTest(TestSubmittingProblems):
         self.assertItemsEqual(kwargs['files'].keys(), filenames.split())
 
 
+@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestPythonGradedResponse(TestSubmittingProblems):
     """
     Check that we can submit a schematic and custom response, and it answers properly.

@@ -11,8 +11,8 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from util.testing import UrlResetMixin
-from user_api.api import account as account_api
-from user_api.api import profile as profile_api
+from openedx.core.djangoapps.user_api.api import account as account_api
+from openedx.core.djangoapps.user_api.api import profile as profile_api
 from lang_pref import LANGUAGE_KEY, api as language_api
 
 
@@ -35,7 +35,7 @@ class StudentProfileViewTest(UrlResetMixin, TestCase):
 
     @patch.dict(settings.FEATURES, {'ENABLE_NEW_DASHBOARD': True})
     def setUp(self):
-        super(StudentProfileViewTest, self).setUp()
+        super(StudentProfileViewTest, self).setUp("student_profile.urls")
 
         # Create/activate a new account
         activation_key = account_api.create_account(self.USERNAME, self.PASSWORD, self.EMAIL)

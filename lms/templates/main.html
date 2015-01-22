@@ -11,6 +11,9 @@
 <head dir="${dir_rtl}">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    % if responsive:
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    % endif
 <%! from django.utils.translation import ugettext as _ %>
 <%! from microsite_configuration import microsite %>
 <%! from microsite_configuration import page_title_breadcrumbs %>
@@ -70,6 +73,23 @@
     <%static:js group='main_vendor'/>
   % endif
 
+  <script>
+    window.baseUrl = "${settings.STATIC_URL}";
+    (function (require) {
+    % if settings.DEBUG is True:
+        ## Using what amounts to a random number in the Development environment for cache-busting
+        var urlArgs = "bust=" + (new Date()).getTime();
+    % else:
+        var urlArgs = "v=${settings.EDX_PLATFORM_REVISION}";
+    % endif
+      require.config({
+          baseUrl: baseUrl,
+          urlArgs: urlArgs
+      });
+    }).call(this, require || RequireJS.require);
+  </script>
+  <script type="text/javascript" src="${static.url("require-config-lms.js")}"></script>
+
   <%block name="headextra"/>
 
 <%
@@ -77,7 +97,6 @@
     header_extra_file = 'theme-head-extra.html'
     header_file = 'theme-header.html'
     google_analytics_file = 'theme-google-analytics.html'
-    footer_file = 'theme-footer.html'
 
     style_overrides_file = None
 
@@ -91,12 +110,6 @@
 
     google_analytics_file = microsite.get_template_path('google_analytics.html')
 
-    if settings.FEATURES['IS_EDX_DOMAIN'] and not is_microsite():
-        footer_file = microsite.get_template_path('footer-edx-new.html')
-
-    else:
-      footer_file = microsite.get_template_path('footer.html')
-
     style_overrides_file = microsite.get_value('css_overrides_file')
 %>
 
@@ -109,12 +122,12 @@
   <![endif]-->
 
   <%include file="widgets/optimizely.html" />
+  <%include file="widgets/segment-io.html" />
 
   <meta name="path_prefix" content="${EDX_ROOT_URL}">
   <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
 
   <%include file="${google_analytics_file}" />
-
 
 % if style_overrides_file:
   <link rel="stylesheet" type="text/css" href="${static.url(style_overrides_file)}" />
@@ -128,18 +141,25 @@
 
     <%include file="mathjax_accessible.html" />
 
-  % if not suppress_toplevel_navigation:
     <%include file="${header_file}" />
-  %endif
 
     <div class="content-wrapper" id="content">
       ${self.body()}
       <%block name="bodyextra"/>
     </div>
 
-  % if not suppress_toplevel_navigation:
-    <%include file="${footer_file}" />
-  % endif
+    <%block name="footer">
+      ## Can be overridden by child templates wanting to hide the footer. 
+      <%
+        if theme_enabled() and not is_microsite():
+          footer_file = 'theme-footer.html'
+        elif settings.FEATURES.get('IS_EDX_DOMAIN', False) and not is_microsite():
+          footer_file = microsite.get_template_path('footer-edx-new.html')
+        else:
+          footer_file = microsite.get_template_path('footer.html')
+      %>
+      <%include file="${footer_file}" />
+    </%block>
 
   </div>
 
@@ -150,14 +170,16 @@
   % endif
 
   <%block name="js_extra"/>
-
-  <%include file="widgets/segment-io.html" />
 </body>
 </html>
 
 <%def name="login_query()">${
-  u"?course_id={0}&enrollment_action={1}".format(
+  u"?course_id={0}&enrollment_action={1}{email_opt_in}".format(
     urlquote_plus(course_id),
-    urlquote_plus(enrollment_action)
+    urlquote_plus(enrollment_action),
+    email_opt_in=(
+      u"&email_opt_in=" + urlquote_plus(email_opt_in)
+      if email_opt_in else ""
+    )
   ) if course_id and enrollment_action else ""
 }</%def>

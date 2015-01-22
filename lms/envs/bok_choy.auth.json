@@ -26,7 +26,7 @@
         "default": {
             "ENGINE": "django.db.backends.mysql",
             "HOST": "localhost",
-            "NAME": "test",
+            "NAME": "edxtest",
             "PASSWORD": "",
             "PORT": "3306",
             "USER": "root"
@@ -108,6 +108,13 @@
             "SOCIAL_AUTH_FACEBOOK_KEY": "test",
             "SOCIAL_AUTH_FACEBOOK_SECRET": "test"
         }
+    },
+    "DJFS": {
+            "type": "s3fs",
+            "bucket": "test",
+            "prefix": "test",
+            "aws_access_key_id": "test",
+            "aws_secret_access_key": "test"
     },
     "XQUEUE_INTERFACE": {
         "basic_auth": [

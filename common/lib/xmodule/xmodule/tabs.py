@@ -225,6 +225,7 @@ class StaffTab(AuthenticatedCourseTab):
     def can_display(self, course, settings, is_user_authenticated, is_user_staff, is_user_enrolled):  # pylint: disable=unused-argument
         return is_user_staff
 
+
 class EnrolledOrStaffTab(CourseTab):
     """
     Abstract class for tabs that can be accessed by only users with staff access
@@ -869,10 +870,13 @@ class CourseTabList(List):
         """
         count = sum(1 for tab in tabs if tab.get('type') == tab_type)
         if count > max_num:
-            raise InvalidTabsException(
-                "Tab of type '{0}' appears {1} time(s). Expected maximum of {2} time(s).".format(
-                tab_type, count, max_num
-                ))
+            msg = (
+                "Tab of type '{type}' appears {count} time(s). "
+                "Expected maximum of {max} time(s)."
+            ).format(
+                type=tab_type, count=count, max=max_num,
+            )
+            raise InvalidTabsException(msg)
 
     def to_json(self, values):
         """

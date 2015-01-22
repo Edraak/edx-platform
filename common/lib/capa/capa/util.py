@@ -5,6 +5,7 @@ import bleach
 
 from calc import evaluator
 from cmath import isinf
+from decimal import Decimal
 #-----------------------------------------------------------------------------
 #
 # Utility functions used in CAPA responsetypes
@@ -67,7 +68,21 @@ def compare_with_tolerance(student_complex, instructor_complex, tolerance=defaul
     else:
         # v1 and v2 are, in general, complex numbers:
         # there are some notes about backward compatibility issue: see responsetypes.get_staff_ans()).
-        return abs(student_complex - instructor_complex) <= tolerance
+        decimal_places = None
+        # count the "decimal_places" for "student_complex". e.g, for
+        # "student_complex" value "152.3667" the "decimal_places" will be
+        # 4 as there are 4 digits "3667" after decimal
+        if isinstance(student_complex, float):
+            decimal_places = Decimal(str(student_complex)).as_tuple().exponent * -1   # pylint: disable=E1103
+
+        abs_value = abs(student_complex - instructor_complex)
+
+        # decimal_places could be NaN in some cases
+        if decimal_places and isinstance(decimal_places, int):
+            # abs_value contains 17 digits exponent value so
+            # round it up to "decimal_places"
+            abs_value = round(abs_value, decimal_places)
+        return abs_value <= tolerance
 
 
 def contextualize_text(text, context):  # private
@@ -156,7 +171,8 @@ def sanitize_html(html_code):
         'audio': ['controls', 'autobuffer', 'autoplay', 'src'],
         'img': ['src', 'width', 'height', 'class']
     })
-    output = bleach.clean(html_code,
+    output = bleach.clean(
+        html_code,
         tags=bleach.ALLOWED_TAGS + ['div', 'p', 'audio', 'pre', 'img', 'span'],
         styles=['white-space'],
         attributes=attributes

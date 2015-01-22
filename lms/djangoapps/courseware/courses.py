@@ -16,6 +16,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError
 from static_replace import replace_static_urls
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.x_module import STUDENT_VIEW
+from microsite_configuration import microsite
 
 from courseware.access import has_access
 from courseware.model_data import FieldDataCache
@@ -256,7 +257,8 @@ def get_course_info_section_module(request, course, section_key):
         log_if_not_found=False,
         wrap_xmodule_display=False,
         static_asset_path=course.static_asset_path
-    )    
+    )
+
 
 def get_course_info_section(request, course, section_key):
     """
@@ -345,7 +347,13 @@ def get_courses(user, domain=None):
     Returns a list of courses available, sorted by course.number
     '''
     courses = branding.get_visible_courses()
-    courses = [c for c in courses if has_access(user, 'see_exists', c)]
+
+    permission_name = microsite.get_value(
+        'COURSE_CATALOG_VISIBILITY_PERMISSION',
+        settings.COURSE_CATALOG_VISIBILITY_PERMISSION
+    )
+
+    courses = [c for c in courses if has_access(user, permission_name, c)]
 
     courses = sorted(courses, key=lambda course: course.number)
 
@@ -361,6 +369,15 @@ def sort_by_announcement(courses):
     # Sort courses by how far are they from they start day
     key = lambda course: course.sorting_score
     courses = sorted(courses, key=key)
+
+    return courses
+
+
+def sort_by_start_date(courses):
+    """
+    Returns a list of courses sorted by their start date, latest first.
+    """
+    courses = sorted(courses, key=lambda course: (course.start is None, course.start), reverse=False)
 
     return courses
 

@@ -26,13 +26,16 @@ class EmailEnrollmentState(object):
         exists_user = User.objects.filter(email=email).exists()
         if exists_user:
             user = User.objects.get(email=email)
-            exists_ce = CourseEnrollment.is_enrolled(user, course_id)
+            mode, is_active = CourseEnrollment.enrollment_mode_for_user(user, course_id)
+            # is_active is `None` if the user is not enrolled in the course
+            exists_ce = is_active is not None and is_active
             full_name = user.profile.name
         else:
+            mode = None
             exists_ce = False
             full_name = None
         ceas = CourseEnrollmentAllowed.objects.filter(course_id=course_id, email=email).all()
-        exists_allowed = len(ceas) > 0
+        exists_allowed = ceas.exists()
         state_auto_enroll = exists_allowed and ceas[0].auto_enroll
 
         self.user = exists_user
@@ -40,6 +43,7 @@ class EmailEnrollmentState(object):
         self.allowed = exists_allowed
         self.auto_enroll = bool(state_auto_enroll)
         self.full_name = full_name
+        self.mode = mode
 
     def __repr__(self):
         return "{}(user={}, enrollment={}, allowed={}, auto_enroll={})".format(
@@ -84,7 +88,13 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
     previous_state = EmailEnrollmentState(course_id, student_email)
 
     if previous_state.user:
-        CourseEnrollment.enroll_by_email(student_email, course_id)
+        # if the student is currently unenrolled, don't enroll them in their
+        # previous mode
+        course_mode = u"honor"
+        if previous_state.enrollment:
+            course_mode = previous_state.mode
+
+        CourseEnrollment.enroll_by_email(student_email, course_id, course_mode)
         if email_students:
             email_params['message'] = 'enrolled_enroll'
             email_params['email_address'] = student_email

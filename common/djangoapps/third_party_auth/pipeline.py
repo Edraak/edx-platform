@@ -66,14 +66,15 @@ from eventtracking import tracker
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from social.apps.django_app.default import models
 from social.exceptions import AuthException
 from social.pipeline import partial
 
 import student
-from shoppingcart.models import Order, PaidCourseRegistration  # pylint: disable=F0401
-from shoppingcart.exceptions import (  # pylint: disable=F0401
+from shoppingcart.models import Order, PaidCourseRegistration  # pylint: disable=import-error
+from shoppingcart.exceptions import (  # pylint: disable=import-error
     CourseDoesNotExistException,
     ItemAlreadyInCartException,
     AlreadyEnrolledInCourseException
@@ -100,21 +101,68 @@ from . import provider
 # `AUTH_ENROLL_COURSE_ID_KEY` provides the course ID that a student
 # is trying to enroll in, used to generate analytics events
 # and auto-enroll students.
+from openedx.core.djangoapps.user_api.api import profile
 
 AUTH_ENTRY_KEY = 'auth_entry'
 AUTH_REDIRECT_KEY = 'next'
 AUTH_ENROLL_COURSE_ID_KEY = 'enroll_course_id'
+AUTH_EMAIL_OPT_IN_KEY = 'email_opt_in'
 
 AUTH_ENTRY_DASHBOARD = 'dashboard'
 AUTH_ENTRY_LOGIN = 'login'
 AUTH_ENTRY_PROFILE = 'profile'
 AUTH_ENTRY_REGISTER = 'register'
+
+# pylint: disable=fixme
+# TODO (ECOM-369): Replace `AUTH_ENTRY_LOGIN` and `AUTH_ENTRY_REGISTER`
+# with these values once the A/B test completes, then delete
+# these constants.
+AUTH_ENTRY_LOGIN_2 = 'account_login'
+AUTH_ENTRY_REGISTER_2 = 'account_register'
+
+AUTH_ENTRY_API = 'api'
+
+# URLs associated with auth entry points
+# These are used to request additional user information
+# (for example, account credentials when logging in),
+# and when the user cancels the auth process
+# (e.g., refusing to grant permission on the provider's login page).
+# We don't use "reverse" here because doing so may cause modules
+# to load that depend on this module.
+AUTH_DISPATCH_URLS = {
+    AUTH_ENTRY_DASHBOARD: '/dashboard',
+    AUTH_ENTRY_LOGIN: '/login',
+    AUTH_ENTRY_REGISTER: '/register',
+
+    # TODO (ECOM-369): Replace the dispatch URLs
+    # for `AUTH_ENTRY_LOGIN` and `AUTH_ENTRY_REGISTER`
+    # with these values, but DO NOT DELETE THESE KEYS.
+    AUTH_ENTRY_LOGIN_2: '/account/login/',
+    AUTH_ENTRY_REGISTER_2: '/account/register/',
+
+    # If linking/unlinking an account from the new student profile
+    # page, redirect to the profile page.  Only used if
+    # `FEATURES['ENABLE_NEW_DASHBOARD']` is true.
+    AUTH_ENTRY_PROFILE: '/profile/',
+}
+
 _AUTH_ENTRY_CHOICES = frozenset([
     AUTH_ENTRY_DASHBOARD,
     AUTH_ENTRY_LOGIN,
     AUTH_ENTRY_PROFILE,
-    AUTH_ENTRY_REGISTER
+    AUTH_ENTRY_REGISTER,
+
+    # TODO (ECOM-369): For the A/B test of the combined
+    # login/registration, we needed to introduce two
+    # additional end-points.  Once the test completes,
+    # delete these constants from the choices list.
+    # pylint: disable=fixme
+    AUTH_ENTRY_LOGIN_2,
+    AUTH_ENTRY_REGISTER_2,
+
+    AUTH_ENTRY_API,
 ])
+
 _DEFAULT_RANDOM_PASSWORD_LENGTH = 12
 _PASSWORD_CHARSET = string.letters + string.digits
 
@@ -204,7 +252,7 @@ def _get_enabled_provider_by_name(provider_name):
     return enabled_provider
 
 
-def _get_url(view_name, backend_name, auth_entry=None, redirect_url=None, enroll_course_id=None):
+def _get_url(view_name, backend_name, auth_entry=None, redirect_url=None, enroll_course_id=None, email_opt_in=None):
     """Creates a URL to hook into social auth endpoints."""
     kwargs = {'backend': backend_name}
     url = reverse(view_name, kwargs=kwargs)
@@ -218,6 +266,9 @@ def _get_url(view_name, backend_name, auth_entry=None, redirect_url=None, enroll
 
     if enroll_course_id:
         query_params[AUTH_ENROLL_COURSE_ID_KEY] = enroll_course_id
+
+    if email_opt_in:
+        query_params[AUTH_EMAIL_OPT_IN_KEY] = email_opt_in
 
     return u"{url}?{params}".format(
         url=url,
@@ -263,7 +314,7 @@ def get_disconnect_url(provider_name):
     return _get_url('social:disconnect', enabled_provider.BACKEND_CLASS.name)
 
 
-def get_login_url(provider_name, auth_entry, redirect_url=None, enroll_course_id=None):
+def get_login_url(provider_name, auth_entry, redirect_url=None, enroll_course_id=None, email_opt_in=None):
     """Gets the login URL for the endpoint that kicks off auth with a provider.
 
     Args:
@@ -280,6 +331,11 @@ def get_login_url(provider_name, auth_entry, redirect_url=None, enroll_course_id
         enroll_course_id (string): If provided, auto-enroll the user in this
             course upon successful authentication.
 
+        email_opt_in (string): If set to 'true' (case insensitive), user will
+            be opted into organization-wide email. Any other string will
+            equate to False, and the user will be opted out of organization-wide
+            email.
+
     Returns:
         String. URL that starts the auth pipeline for a provider.
 
@@ -293,7 +349,8 @@ def get_login_url(provider_name, auth_entry, redirect_url=None, enroll_course_id
         enabled_provider.BACKEND_CLASS.name,
         auth_entry=auth_entry,
         redirect_url=redirect_url,
-        enroll_course_id=enroll_course_id
+        enroll_course_id=enroll_course_id,
+        email_opt_in=email_opt_in
     )
 
 
@@ -379,7 +436,6 @@ def running(request):
 def parse_query_params(strategy, response, *args, **kwargs):
     """Reads whitelisted query params, transforms them into pipeline args."""
     auth_entry = strategy.session.get(AUTH_ENTRY_KEY)
-
     if not (auth_entry and auth_entry in _AUTH_ENTRY_CHOICES):
         raise AuthEntryError(strategy.backend, 'auth_entry missing or invalid')
 
@@ -396,15 +452,50 @@ def parse_query_params(strategy, response, *args, **kwargs):
         'is_register': auth_entry == AUTH_ENTRY_REGISTER,
         # Whether the auth pipeline entered from /profile.
         'is_profile': auth_entry == AUTH_ENTRY_PROFILE,
+        # Whether the auth pipeline entered from an API
+        'is_api': auth_entry == AUTH_ENTRY_API,
+
+        # TODO (ECOM-369): Delete these once the A/B test
+        # for the combined login/registration form completes.
+        # pylint: disable=fixme
+        'is_login_2': auth_entry == AUTH_ENTRY_LOGIN_2,
+        'is_register_2': auth_entry == AUTH_ENTRY_REGISTER_2,
     }
 
 
+# TODO (ECOM-369): Once the A/B test of the combined login/registration
+# form completes, we will be able to remove the extra login/registration
+# end-points.  HOWEVER, users who used the new forms during the A/B
+# test may still have values for "is_login_2" and "is_register_2"
+# in their sessions.  For this reason, we need to continue accepting
+# these kwargs in `redirect_to_supplementary_form`, but
+# these should redirect to the same location as "is_login" and "is_register"
+# (whichever login/registration end-points win in the test).
+# pylint: disable=fixme
 @partial.partial
-def redirect_to_supplementary_form(strategy, details, response, uid, is_dashboard=None, is_login=None, is_profile=None, is_register=None, user=None, *args, **kwargs):
-    """Dispatches user to views outside the pipeline if necessary."""
+def ensure_user_information(
+    strategy,
+    details,
+    response,
+    uid,
+    is_dashboard=None,
+    is_login=None,
+    is_profile=None,
+    is_register=None,
+    is_login_2=None,
+    is_register_2=None,
+    is_api=None,
+    user=None,
+    *args,
+    **kwargs
+):
+    """
+    Ensure that we have the necessary information about a user (either an
+    existing account or registration data) to proceed with the pipeline.
+    """
 
     # We're deliberately verbose here to make it clear what the intended
-    # dispatch behavior is for the four pipeline entry points, given the
+    # dispatch behavior is for the various pipeline entry points, given the
     # current state of the pipeline. Keep in mind the pipeline is re-entrant
     # and values will change on repeated invocations (for example, the first
     # time through the login flow the user will be None so we dispatch to the
@@ -414,23 +505,78 @@ def redirect_to_supplementary_form(strategy, details, response, uid, is_dashboar
     # It is important that we always execute the entire pipeline. Even if
     # behavior appears correct without executing a step, it means important
     # invariants have been violated and future misbehavior is likely.
-
     user_inactive = user and not user.is_active
     user_unset = user is None
     dispatch_to_login = is_login and (user_unset or user_inactive)
+    reject_api_request = is_api and (user_unset or user_inactive)
+    if reject_api_request:
+        # Content doesn't matter; we just want to exit the pipeline
+        return HttpResponseBadRequest()
+
+    # TODO (ECOM-369): Consolidate this with `dispatch_to_login`
+    # once the A/B test completes. # pylint: disable=fixme
+    dispatch_to_login_2 = is_login_2 and (user_unset or user_inactive)
 
     if is_dashboard or is_profile:
         return
 
     if dispatch_to_login:
-        return redirect('/login', name='signin_user')
+        return redirect(_create_redirect_url(AUTH_DISPATCH_URLS[AUTH_ENTRY_LOGIN], strategy))
+
+    # TODO (ECOM-369): Consolidate this with `dispatch_to_login`
+    # once the A/B test completes. # pylint: disable=fixme
+    if dispatch_to_login_2:
+        return redirect(_create_redirect_url(AUTH_DISPATCH_URLS[AUTH_ENTRY_LOGIN_2], strategy))
 
     if is_register and user_unset:
-        return redirect('/register', name='register_user')
+        return redirect(_create_redirect_url(AUTH_DISPATCH_URLS[AUTH_ENTRY_REGISTER], strategy))
+
+    # TODO (ECOM-369): Consolidate this with `is_register`
+    # once the A/B test completes. # pylint: disable=fixme
+    if is_register_2 and user_unset:
+        return redirect(_create_redirect_url(AUTH_DISPATCH_URLS[AUTH_ENTRY_REGISTER_2], strategy))
+
+    # If the user has a linked account, but has not yet activated
+    # we should send them to the login page.  The login page
+    # will tell them that they need to activate their account.
+    if is_register and user_inactive:
+        return redirect(_create_redirect_url(AUTH_DISPATCH_URLS[AUTH_ENTRY_LOGIN], strategy))
+
+    if is_register_2 and user_inactive:
+        return redirect(_create_redirect_url(AUTH_DISPATCH_URLS[AUTH_ENTRY_LOGIN_2], strategy))
+
+
+def _create_redirect_url(url, strategy):
+    """ Given a URL and a Strategy, construct the appropriate redirect URL.
+
+    Construct a redirect URL and append the URL parameters that should be preserved.
+
+    Args:
+        url (string): The base URL to use for the redirect.
+        strategy (Strategy): Used to determine which URL parameters to append to the redirect.
+
+    Returns:
+        A string representation of the URL, with parameters, for redirect.
+    """
+    url_params = {}
+    enroll_course_id = strategy.session_get(AUTH_ENROLL_COURSE_ID_KEY)
+    if enroll_course_id:
+        url_params['course_id'] = enroll_course_id
+        url_params['enrollment_action'] = 'enroll'
+    email_opt_in = strategy.session_get(AUTH_EMAIL_OPT_IN_KEY)
+    if email_opt_in:
+        url_params[AUTH_EMAIL_OPT_IN_KEY] = email_opt_in
+    if url_params:
+        return u'{url}?{params}'.format(
+            url=url,
+            params=urllib.urlencode(url_params)
+        )
+    else:
+        return url
 
 
 @partial.partial
-def set_logged_in_cookie(backend=None, user=None, request=None, *args, **kwargs):
+def set_logged_in_cookie(backend=None, user=None, request=None, is_api=None, *args, **kwargs):
     """This pipeline step sets the "logged in" cookie for authenticated users.
 
     Some installations have a marketing site front-end separate from
@@ -455,7 +601,7 @@ def set_logged_in_cookie(backend=None, user=None, request=None, *args, **kwargs)
     to the next pipeline step.
 
     """
-    if user is not None and user.is_authenticated():
+    if user is not None and user.is_authenticated() and not is_api:
         if request is not None:
             # Check that the cookie isn't already set.
             # This ensures that we allow the user to continue to the next
@@ -483,6 +629,12 @@ def login_analytics(strategy, *args, **kwargs):
         'is_login': 'edx.bi.user.account.authenticated',
         'is_dashboard': 'edx.bi.user.account.linked',
         'is_profile': 'edx.bi.user.account.linked',
+
+        # Backwards compatibility: during an A/B test for the combined
+        # login/registration form, we introduced a new login end-point.
+        # Since users may continue to have this in their sessions after
+        # the test concludes, we need to continue accepting this action.
+        'is_login_2': 'edx.bi.user.account.authenticated',
     }
 
     # Note: we assume only one of the `action` kwargs (is_dashboard, is_login) to be
@@ -534,6 +686,11 @@ def change_enrollment(strategy, user=None, *args, **kwargs):
     if enroll_course_id:
         course_id = CourseKey.from_string(enroll_course_id)
         modes = CourseMode.modes_for_course_dict(course_id)
+        # If the email opt in parameter is found, set the preference.
+        email_opt_in = strategy.session_get(AUTH_EMAIL_OPT_IN_KEY)
+        if email_opt_in:
+            opt_in = email_opt_in.lower() == 'true'
+            profile.update_email_opt_in(user.username, course_id.org, opt_in)
         if CourseMode.can_auto_enroll(course_id, modes_dict=modes):
             try:
                 CourseEnrollment.enroll(user, course_id, check_access=True)

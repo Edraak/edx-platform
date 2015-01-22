@@ -254,7 +254,7 @@ option to skip those tasks. This option can also be used with any of the test sp
 
 To run a single test, specify the name of the test file. For example:
 
-    paver test_bokchoy -t test_lms.py
+    paver test_bokchoy -t lms/test_lms.py
 
 Notice the test file location is relative to common/test/acceptance/tests. For example:
 
@@ -271,7 +271,7 @@ To test only a certain feature, specify the file and the testcase class:
 To execute only a certain test case, specify the file name, class, and
 test case method:
 
-    paver test_bokchoy -t test_lms.py:RegistrationTest.test_register
+    paver test_bokchoy -t lms/test_lms.py:RegistrationTest.test_register
 
 During acceptance test execution, log files and also screenshots of failed tests
 are captured in test_root/log.
@@ -404,6 +404,10 @@ More specific options are below.
 
 		paver run_quality --percentage=100
 
+* Note that 'fixme' violations are not counted with run_quality. To see all 'TODO' lines, use:
+
+		paver find_fixme --system=lms
+`system` is an optional argument here. It defaults to `cms,lms,common`.
 
 
 ## Testing using queue servers

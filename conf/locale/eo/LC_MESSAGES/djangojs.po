@@ -1,33 +1,33 @@
 # #-#-#-#-#  djangojs-partial.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2014 EdX
+# Copyright (C) 2015 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2014.
+# EdX Team <info@edx.org>, 2015.
 # 
 # #-#-#-#-#  djangojs-studio.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2014 EdX
+# Copyright (C) 2015 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2014.
+# EdX Team <info@edx.org>, 2015.
 # 
 # #-#-#-#-#  underscore.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2014 edX
+# Copyright (C) 2015 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2014.
+# EdX Team <info@edx.org>, 2015.
 # 
 # #-#-#-#-#  underscore-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2014 edX
+# Copyright (C) 2015 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2014.
+# EdX Team <info@edx.org>, 2015.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-10-27 11:01-0400\n"
-"PO-Revision-Date: 2014-10-27 15:02:51.591584\n"
+"POT-Creation-Date: 2015-01-12 15:44+0000\n"
+"PO-Revision-Date: 2015-01-12 15:46:00.244239\n"
 "Last-Translator: \n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -59,8 +59,6 @@ msgstr "ÖK Ⱡ'#"
 #: cms/static/js/views/modals/course_outline_modals.js
 #: cms/static/js/views/utils/view_utils.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 #: cms/templates/js/add-xblock-component-menu.underscore
 #: cms/templates/js/course_info_handouts.underscore
@@ -108,8 +106,22 @@ msgstr "Délété Ⱡ'σяєм ιρѕ#"
 #: cms/static/js/views/assets.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: cms/templates/js/asset-library.underscore
+#: cms/templates/js/previous-video-upload-list.underscore
 msgid "Name"
 msgstr "Nämé Ⱡ'σяєм#"
+
+#: cms/static/js/views/metadata.js lms/static/js/views/file_uploader.js
+msgid "Upload File"
+msgstr "Ûplöäd Fïlé Ⱡ#"
+
+#. Translators: This message will be added to the front of messages of type
+#. error,
+#. e.g. "Error: required field is missing".
+#: cms/static/js/views/xblock_validation.js
+#: lms/static/js/verify_student/views/payment_confirmation_step_view.js
+#: lms/static/js/verify_student/views/step_view.js
+msgid "Error"
+msgstr "Érrör Ⱡ'σяєм ι#"
 
 #. #-#-#-#-#  djangojs-partial.po (0.1a)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -634,6 +646,7 @@ msgstr "Délété täßlé Ⱡ#"
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: cms/templates/js/group-configuration-edit.underscore
+#: lms/templates/verify_student/payment_confirmation_step.underscore
 msgid "Description"
 msgstr "Désçrïptïön Ⱡ#"
 
@@ -2233,173 +2246,6 @@ msgstr "Réplý Ⱡ'σяєм ι#"
 msgid "Tags:"
 msgstr "Tägs: Ⱡ'σяєм ι#"
 
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Available %s"
-msgstr "Àväïläßlé %s Ⱡ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid ""
-"This is the list of available %s. You may choose some by selecting them in "
-"the box below and then clicking the \"Choose\" arrow between the two boxes."
-msgstr ""
-"Thïs ïs thé lïst öf äväïläßlé %s. Ýöü mäý çhöösé sömé ßý séléçtïng thém ïn "
-"thé ßöx ßélöw änd thén çlïçkïng thé \"Çhöösé\" ärröw ßétwéén thé twö ßöxés. "
-"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιρι#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Type into this box to filter down the list of available %s."
-msgstr ""
-"Týpé ïntö thïs ßöx tö fïltér döwn thé lïst öf äväïläßlé %s. Ⱡ'σяєм ιρѕυм "
-"∂σłσ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Filter"
-msgstr "Fïltér Ⱡ'σяєм ιρѕ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Choose all"
-msgstr "Çhöösé äll Ⱡ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Click to choose all %s at once."
-msgstr "Çlïçk tö çhöösé äll %s ät önçé. Ⱡ'σяєм ι#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Choose"
-msgstr "Çhöösé Ⱡ'σяєм ιρѕ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-#: cms/templates/js/video/metadata-translations-item.underscore
-msgid "Remove"
-msgstr "Rémövé Ⱡ'σяєм ιρѕ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Chosen %s"
-msgstr "Çhösén %s #"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid ""
-"This is the list of chosen %s. You may remove some by selecting them in the "
-"box below and then clicking the \"Remove\" arrow between the two boxes."
-msgstr ""
-"Thïs ïs thé lïst öf çhösén %s. Ýöü mäý rémövé sömé ßý séléçtïng thém ïn thé "
-"ßöx ßélöw änd thén çlïçkïng thé \"Rémövé\" ärröw ßétwéén thé twö ßöxés. "
-"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιρ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Remove all"
-msgstr "Rémövé äll Ⱡ#"
-
-#: lms/static/admin/js/SelectFilter2.js
-msgid "Click to remove all chosen %s at once."
-msgstr "Çlïçk tö rémövé äll çhösén %s ät önçé. Ⱡ'σяєм ιρѕ#"
-
-#: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
-msgid "%(sel)s of %(cnt)s selected"
-msgid_plural "%(sel)s of %(cnt)s selected"
-msgstr[0] "%(sel)s öf %(cnt)s séléçtéd Ⱡ'σя#"
-msgstr[1] "%(sel)s öf %(cnt)s séléçtéd Ⱡ'σя#"
-
-#: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
-msgid ""
-"You have unsaved changes on individual editable fields. If you run an "
-"action, your unsaved changes will be lost."
-msgstr ""
-"Ýöü hävé ünsävéd çhängés ön ïndïvïdüäl édïtäßlé fïélds. Ìf ýöü rün än "
-"äçtïön, ýöür ünsävéd çhängés wïll ßé löst. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
-"¢σηѕє#"
-
-#: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
-msgid ""
-"You have selected an action, but you haven't saved your changes to "
-"individual fields yet. Please click OK to save. You'll need to re-run the "
-"action."
-msgstr ""
-"Ýöü hävé séléçtéd än äçtïön, ßüt ýöü hävén't sävéd ýöür çhängés tö "
-"ïndïvïdüäl fïélds ýét. Pléäsé çlïçk ÖK tö sävé. Ýöü'll nééd tö ré-rün thé "
-"äçtïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιρι#"
-
-#: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
-msgid ""
-"You have selected an action, and you haven't made any changes on individual "
-"fields. You're probably looking for the Go button rather than the Save "
-"button."
-msgstr ""
-"Ýöü hävé séléçtéd än äçtïön, änd ýöü hävén't mädé äný çhängés ön ïndïvïdüäl "
-"fïélds. Ýöü'ré prößäßlý löökïng för thé Gö ßüttön räthér thän thé Sävé "
-"ßüttön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι#"
-
-#. Translators: the names of months, keep the pipe (|) separators.
-#: lms/static/admin/js/calendar.js lms/static/admin/js/dateparse.js
-msgid ""
-"January|February|March|April|May|June|July|August|September|October|November|December"
-msgstr ""
-"Jänüärý|Féßrüärý|Märçh|Àprïl|Mäý|Jüné|Jülý|Àügüst|Séptémßér|Öçtößér|Növémßér|Déçémßér"
-" Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмє#"
-
-#. Translators: abbreviations for days of the week, keep the pipe (|)
-#. separators.
-#: lms/static/admin/js/calendar.js
-msgid "S|M|T|W|T|F|S"
-msgstr "S|M|T|W|T|F|S Ⱡ'#"
-
-#: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.js.c
-#: lms/static/admin/js/collapse.min.js
-msgid "Show"
-msgstr "Shöw Ⱡ'σяєм#"
-
-#: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.min.js
-msgid "Hide"
-msgstr "Hïdé Ⱡ'σяєм#"
-
-#. Translators: the names of days, keep the pipe (|) separators.
-#: lms/static/admin/js/dateparse.js
-msgid "Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday"
-msgstr ""
-"Sündäý|Möndäý|Tüésdäý|Wédnésdäý|Thürsdäý|Frïdäý|Sätürdäý Ⱡ'σяєм ιρѕυм ∂σł#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Now"
-msgstr "Nöw Ⱡ'σя#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Clock"
-msgstr "Çlöçk Ⱡ'σяєм ι#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Choose a time"
-msgstr "Çhöösé ä tïmé Ⱡ'#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Midnight"
-msgstr "Mïdnïght #"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "6 a.m."
-msgstr "6 ä.m. Ⱡ'σяєм ιρѕ#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Noon"
-msgstr "Nöön Ⱡ'σяєм#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Today"
-msgstr "Tödäý Ⱡ'σяєм ι#"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Calendar"
-msgstr "Çäléndär #"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Yesterday"
-msgstr "Ýéstérdäý #"
-
-#: lms/static/admin/js/admin/DateTimeShortcuts.js
-msgid "Tomorrow"
-msgstr "Tömörröw #"
-
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"
 msgstr "Öpén Çälçülätör Ⱡ'#"
@@ -2411,33 +2257,6 @@ msgstr "Çlösé Çälçülätör Ⱡ'σ#"
 #: lms/static/coffee/src/customwmd.js
 msgid "Post body"
 msgstr "Pöst ßödý #"
-
-#. Translators: "Distribution" refers to a grade distribution. This error
-#. message appears when there is an error getting the data on grade
-#. distribution.;
-#: lms/static/coffee/src/instructor_dashboard/analytics.js
-msgid "Error fetching distribution."
-msgstr "Érrör fétçhïng dïstrïßütïön. Ⱡ'σяєм #"
-
-#: lms/static/coffee/src/instructor_dashboard/analytics.js
-#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
-msgid "Unavailable metric display."
-msgstr "Ûnäväïläßlé métrïç dïspläý. Ⱡ'σяєм#"
-
-#: lms/static/coffee/src/instructor_dashboard/analytics.js
-#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
-msgid "Error fetching grade distributions."
-msgstr "Érrör fétçhïng grädé dïstrïßütïöns. Ⱡ'σяєм ιρ#"
-
-#: lms/static/coffee/src/instructor_dashboard/analytics.js
-#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
-msgid "Last Updated: <%= timestamp %>"
-msgstr "Läst Ûpdätéd: <%= timestamp %> Ⱡ'σ#"
-
-#: lms/static/coffee/src/instructor_dashboard/analytics.js
-#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
-msgid "<%= num_students %> students scored."
-msgstr "<%= num_students %> stüdénts sçöréd. Ⱡ'σя#"
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error generating student profile information. Please try again."
@@ -2473,6 +2292,22 @@ msgid ""
 msgstr ""
 "Lïnks äré générätéd ön démänd änd éxpïré wïthïn 5 mïnütés düé tö thé "
 "sénsïtïvé nätüré öf stüdént ïnförmätïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
+
+#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
+msgid "Unavailable metric display."
+msgstr "Ûnäväïläßlé métrïç dïspläý. Ⱡ'σяєм#"
+
+#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
+msgid "Error fetching grade distributions."
+msgstr "Érrör fétçhïng grädé dïstrïßütïöns. Ⱡ'σяєм ιρ#"
+
+#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
+msgid "Last Updated: <%= timestamp %>"
+msgstr "Läst Ûpdätéd: <%= timestamp %> Ⱡ'σ#"
+
+#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
+msgid "<%= num_students %> students scored."
+msgstr "<%= num_students %> stüdénts sçöréd. Ⱡ'σя#"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Username"
@@ -2524,12 +2359,24 @@ msgstr ""
 "∂σłσ#"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Errors"
+msgstr "Érrörs Ⱡ'σяєм ιρѕ#"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "The following errors were generated:"
 msgstr "Thé föllöwïng érrörs wéré générätéd: Ⱡ'σяєм ιρ#"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Warnings"
+msgstr "Wärnïngs #"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "The following warnings were generated:"
 msgstr "Thé föllöwïng wärnïngs wéré générätéd: Ⱡ'σяєм ιρѕ#"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Success"
+msgstr "Süççéss #"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "All accounts were created successfully."
@@ -2658,6 +2505,14 @@ msgstr "Ýöür méssägé müst hävé ä süßjéçt. Ⱡ'σяєм ι#"
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your message cannot be blank."
 msgstr "Ýöür méssägé çännöt ßé ßlänk. Ⱡ'σяєм #"
+
+#: lms/static/coffee/src/instructor_dashboard/send_email.js
+msgid ""
+"There are invalid keywords in your email. Please check the following "
+"keywords and try again:"
+msgstr ""
+"Théré äré ïnvälïd kéýwörds ïn ýöür émäïl. Pléäsé çhéçk thé föllöwïng "
+"kéýwörds änd trý ägäïn: Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your email was successfully queued for sending."
@@ -3146,6 +3001,10 @@ msgstr "Héädïng #"
 msgid "You have been logged out of your edX account. "
 msgstr "Ýöü hävé ßéén löggéd öüt öf ýöür édX äççöünt.  Ⱡ'σяєм ιρѕυм #"
 
+#: lms/static/js/course_survey.js
+msgid "There has been an error processing your survey."
+msgstr "Théré häs ßéén än érrör pröçéssïng ýöür sürvéý. Ⱡ'σяєм ιρѕυм #"
+
 #: lms/static/js/staff_debug_actions.js
 msgid "Unknown Error Occurred."
 msgstr "Ûnknöwn Érrör Öççürréd. Ⱡ'σяє#"
@@ -3244,6 +3103,70 @@ msgstr "Wé çöüldn't pöpüläté thé lïst öf längüägé çhöïçés. �
 msgid "Saved"
 msgstr "Sävéd Ⱡ'σяєм ι#"
 
+#: lms/static/js/verify_student/views/make_payment_step_view.js
+msgid "An error has occurred. Please try again."
+msgstr "Àn érrör häs öççürréd. Pléäsé trý ägäïn. Ⱡ'σяєм ιρѕυ#"
+
+#: lms/static/js/verify_student/views/make_payment_step_view.js
+msgid "Could not submit order"
+msgstr "Çöüld nöt süßmït ördér Ⱡ'σяє#"
+
+#: lms/static/js/verify_student/views/payment_confirmation_step_view.js
+msgid "Could not retrieve payment information"
+msgstr "Çöüld nöt rétrïévé päýmént ïnförmätïön Ⱡ'σяєм ιρѕ#"
+
+#: lms/static/js/verify_student/views/review_photos_step_view.js
+msgid "An error has occurred. Please try again later."
+msgstr "Àn érrör häs öççürréd. Pléäsé trý ägäïn lätér. Ⱡ'σяєм ιρѕυм #"
+
+#: lms/static/js/verify_student/views/review_photos_step_view.js
+msgid "Could not submit photos"
+msgstr "Çöüld nöt süßmït phötös Ⱡ'σяє#"
+
+#: lms/static/js/verify_student/views/step_view.js
+msgid "An error has occurred. Please try reloading the page."
+msgstr ""
+"Àn érrör häs öççürréd. Pléäsé trý rélöädïng thé pägé. Ⱡ'σяєм ιρѕυм ∂σ#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "Video Capture Error"
+msgstr "Vïdéö Çäptüré Érrör Ⱡ'σя#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid ""
+"Please verify that your webcam is connected and that you have allowed your "
+"browser to access it."
+msgstr ""
+"Pléäsé vérïfý thät ýöür wéßçäm ïs çönnéçtéd änd thät ýöü hävé ällöwéd ýöür "
+"ßröwsér tö äççéss ït. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "No Webcam Detected"
+msgstr "Nö Wéßçäm Détéçtéd Ⱡ'σ#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "You don't seem to have a webcam connected."
+msgstr "Ýöü dön't séém tö hävé ä wéßçäm çönnéçtéd. Ⱡ'σяєм ιρѕυ#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "Double-check that your webcam is connected and working to continue."
+msgstr ""
+"Döüßlé-çhéçk thät ýöür wéßçäm ïs çönnéçtéd änd wörkïng tö çöntïnüé. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕ#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "Flash Not Detected"
+msgstr "Fläsh Nöt Détéçtéd Ⱡ'σ#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "You don't seem to have Flash installed."
+msgstr "Ýöü dön't séém tö hävé Fläsh ïnställéd. Ⱡ'σяєм ιρѕ#"
+
+#: lms/static/js/verify_student/views/webcam_photo_view.js
+msgid "%(a_start)s Get Flash %(a_end)s to continue your enrollment."
+msgstr ""
+"%(a_start)s Gét Fläsh %(a_end)s tö çöntïnüé ýöür énröllmént. Ⱡ'σяєм ιρѕυм #"
+
 #: lms/static/js/views/cohort_editor.js
 msgid "Error adding students."
 msgstr "Érrör äddïng stüdénts. Ⱡ'σяє#"
@@ -3312,6 +3235,39 @@ msgstr ""
 #: lms/static/js/views/cohorts.js
 msgid "Please enter a name for your new cohort group."
 msgstr "Pléäsé éntér ä nämé för ýöür néw çöhört gröüp. Ⱡ'σяєм ιρѕυм #"
+
+#: lms/static/js/views/cohorts.js
+msgid "Assign students to cohort groups by uploading a CSV file."
+msgstr ""
+"Àssïgn stüdénts tö çöhört gröüps ßý üplöädïng ä ÇSV fïlé. Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: lms/static/js/views/cohorts.js
+msgid "Choose a .csv file"
+msgstr "Çhöösé ä .çsv fïlé Ⱡ'σ#"
+
+#: lms/static/js/views/cohorts.js
+msgid "Only properly formatted .csv files will be accepted."
+msgstr "Önlý pröpérlý förmättéd .çsv fïlés wïll ßé äççéptéd. Ⱡ'σяєм ιρѕυм ∂σ#"
+
+#: lms/static/js/views/cohorts.js
+msgid "Upload File and Assign Students"
+msgstr "Ûplöäd Fïlé änd Àssïgn Stüdénts Ⱡ'σяєм ι#"
+
+#: lms/static/js/views/cohorts.js
+msgid ""
+"Your file '{file}' has been uploaded. Please allow a few minutes for "
+"processing."
+msgstr ""
+"Ýöür fïlé '{file}' häs ßéén üplöädéd. Pléäsé ällöw ä féw mïnütés för "
+"pröçéssïng. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
+
+#: lms/static/js/views/file_uploader.js
+msgid "Your upload of '{file}' succeeded."
+msgstr "Ýöür üplöäd öf '{file}' süççéédéd. Ⱡ'σяєм ι#"
+
+#: lms/static/js/views/file_uploader.js
+msgid "Your upload of '{file}' failed."
+msgstr "Ýöür üplöäd öf '{file}' fäïléd. Ⱡ'σяєм #"
 
 #: lms/templates/class_dashboard/all_section_metrics.js
 #: lms/templates/class_dashboard/all_section_metrics.js
@@ -3389,14 +3345,6 @@ msgstr "ÖpénÀsséssmént Sävé Érrör Ⱡ'σяєм#"
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
 msgstr "Thïs lïnk wïll öpén ïn ä mödäl wïndöw Ⱡ'σяєм ιρѕ#"
-
-#: cms/static/js/sock.js
-msgid "Hide Studio Help"
-msgstr "Hïdé Stüdïö Hélp Ⱡ'σ#"
-
-#: cms/static/js/sock.js
-msgid "Looking for Help with Studio?"
-msgstr "Löökïng för Hélp wïth Stüdïö? Ⱡ'σяєм #"
 
 #: cms/static/js/collections/group.js
 msgid "Group %s"
@@ -3488,12 +3436,6 @@ msgstr "Ýöür ïmpört häs fäïléd. Ⱡ'σяє#"
 msgid "Choose new file"
 msgstr "Çhöösé néw fïlé Ⱡ'#"
 
-#: cms/static/js/factories/import.js
-msgid "Your import is in progress; navigating away will abort it."
-msgstr ""
-"Ýöür ïmpört ïs ïn prögréss; nävïgätïng äwäý wïll äßört ït. Ⱡ'σяєм ιρѕυм "
-"∂σłσ#"
-
 #: cms/static/js/factories/manage_users.js
 msgid "A valid email address is required"
 msgstr "À välïd émäïl äddréss ïs réqüïréd Ⱡ'σяєм ι#"
@@ -3567,6 +3509,28 @@ msgstr ""
 "Ýöü hävé ünsävéd çhängés. Dö ýöü réällý wänt tö léävé thïs pägé? Ⱡ'σяєм "
 "ιρѕυм ∂σłσя #"
 
+#. Translators: This is the status of a video upload that is queued
+#. waiting for other uploads to complete
+#: cms/static/js/models/active_video_upload.js
+msgid "Queued"
+msgstr "Qüéüéd Ⱡ'σяєм ιρѕ#"
+
+#. Translators: This is the status of an active video upload
+#: cms/static/js/models/active_video_upload.js cms/static/js/views/assets.js
+msgid "Uploading"
+msgstr "Ûplöädïng #"
+
+#. Translators: This is the status of a video upload that has
+#. completed successfully
+#: cms/static/js/models/active_video_upload.js
+msgid "Upload completed"
+msgstr "Ûplöäd çömplétéd Ⱡ'σ#"
+
+#. Translators: This is the status of a video upload that has failed
+#: cms/static/js/models/active_video_upload.js
+msgid "Upload failed"
+msgstr "Ûplöäd fäïléd Ⱡ'#"
+
 #: cms/static/js/models/course.js cms/static/js/models/section.js
 msgid "You must specify a name"
 msgstr "Ýöü müst spéçïfý ä nämé Ⱡ'σяє#"
@@ -3606,6 +3570,10 @@ msgstr ""
 #: cms/static/js/models/uploads.js
 msgid "or"
 msgstr "ör Ⱡ'#"
+
+#: cms/static/js/models/xblock_validation.js
+msgid "This component has validation issues."
+msgstr "Thïs çömpönént häs välïdätïön ïssüés. Ⱡ'σяєм ιρѕ#"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course must have an assigned start date."
@@ -3683,24 +3651,42 @@ msgid "Your file has been deleted."
 msgstr "Ýöür fïlé häs ßéén délétéd. Ⱡ'σяєм#"
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
+#: cms/templates/js/previous-video-upload-list.underscore
 msgid "Date Added"
 msgstr "Däté Àddéd Ⱡ#"
 
 #: cms/static/js/views/assets.js
-msgid "Uploading…"
-msgstr "Ûplöädïng… Ⱡ#"
+msgid "File {filename} exceeds maximum size of {maxFileSizeInMBs} MB"
+msgstr ""
+"Fïlé {filename} éxçééds mäxïmüm sïzé öf {maxFileSizeInMBs} MB Ⱡ'σяєм ιρѕ#"
+
+#: cms/static/js/views/assets.js
+msgid ""
+"Please follow the instructions here to upload a file elsewhere and link to "
+"it: {maxFileSizeRedirectUrl}"
+msgstr ""
+"Pléäsé föllöw thé ïnstrüçtïöns héré tö üplöäd ä fïlé élséwhéré änd lïnk tö "
+"ït: {maxFileSizeRedirectUrl} Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: cms/static/js/views/assets.js
+msgid "Your file could not be uploaded"
+msgstr "Ýöür fïlé çöüld nöt ßé üplöädéd Ⱡ'σяєм ι#"
+
+#: cms/static/js/views/assets.js
+msgid "Max file size exceeded"
+msgstr "Mäx fïlé sïzé éxçéédéd Ⱡ'σяє#"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Choose File"
 msgstr "Çhöösé Fïlé Ⱡ#"
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/static/js/views/assets.js.c
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Upload New File"
 msgstr "Ûplöäd Néw Fïlé Ⱡ'#"
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/static/js/views/assets.js.c
 msgid "Load Another File"
 msgstr "Löäd Ànöthér Fïlé Ⱡ'σ#"
 
@@ -3799,10 +3785,6 @@ msgstr ""
 "Fïlé förmät nöt süppörtéd. Pléäsé üplöäd ä fïlé wïth ä <code>tär.gz</code> "
 "éxténsïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
 
-#: cms/static/js/views/metadata.js
-msgid "Upload File"
-msgstr "Ûplöäd Fïlé Ⱡ#"
-
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
 msgstr "Çölläpsé Àll Séçtïöns Ⱡ'σя#"
@@ -3854,6 +3836,13 @@ msgstr ""
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
 msgstr "%(total_items)s tötäl #"
+
+#. Translators: This is listed as the duration for a video
+#. that has not yet reached the point in its processing by
+#. the servers where its duration is determined.
+#: cms/static/js/views/previous_video_upload.js
+msgid "Pending"
+msgstr "Péndïng #"
 
 #: cms/static/js/views/show_textbook.js
 msgid "Delete “<%= name %>”?"
@@ -3919,6 +3908,13 @@ msgstr "Séttïngs #"
 #: cms/static/js/views/xblock_outline.js
 msgid "New %(component_type)s"
 msgstr "Néw %(component_type)s #"
+
+#. Translators: This message will be added to the front of messages of type
+#. warning,
+#. e.g. "Warning: this component has not been configured yet".
+#: cms/static/js/views/xblock_validation.js
+msgid "Warning"
+msgstr "Wärnïng #"
 
 #: cms/static/js/views/components/add_xblock.js
 #: cms/static/js/views/utils/xblock_utils.js
@@ -4125,6 +4121,11 @@ msgstr ""
 msgid "Upload translation"
 msgstr "Ûplöäd tränslätïön Ⱡ'σ#"
 
+#: cms/templates/js/previous-video-upload-list.underscore
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Status"
+msgstr "Stätüs Ⱡ'σяєм ιρѕ#"
+
 #: common/templates/js/image-modal.underscore
 msgid "Large"
 msgstr "Lärgé Ⱡ'σяєм ι#"
@@ -4264,6 +4265,10 @@ msgid "Cohort Management"
 msgstr "Çöhört Mänägémént Ⱡ'σ#"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Assign students to cohort groups manually"
+msgstr "Àssïgn stüdénts tö çöhört gröüps mänüällý Ⱡ'σяєм ιρѕυ#"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Select a cohort group to manage"
 msgstr "Séléçt ä çöhört gröüp tö mänägé Ⱡ'σяєм ι#"
 
@@ -4272,13 +4277,28 @@ msgid "View Cohort Group"
 msgstr "Vïéw Çöhört Gröüp Ⱡ'σ#"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
-msgid ""
-"To review all student cohort group assignments, download course profile "
-"information on %(link_start)s the Data Download page. %(link_end)s"
+msgid "Assign students to cohort groups by uploading a CSV file"
 msgstr ""
-"Tö révïéw äll stüdént çöhört gröüp ässïgnménts, döwnlöäd çöürsé pröfïlé "
-"ïnförmätïön ön %(link_start)s thé Dätä Döwnlöäd pägé. %(link_end)s Ⱡ'σяєм "
-"ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢т#"
+"Àssïgn stüdénts tö çöhört gröüps ßý üplöädïng ä ÇSV fïlé Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid ""
+"To review student cohort group assignments or see the results of uploading a"
+" CSV file, download course profile information or cohort results on "
+"%(link_start)s the Data Download page. %(link_end)s"
+msgstr ""
+"Tö révïéw stüdént çöhört gröüp ässïgnménts ör séé thé résülts öf üplöädïng ä"
+" ÇSV fïlé, döwnlöäd çöürsé pröfïlé ïnförmätïön ör çöhört résülts ön "
+"%(link_start)s thé Dätä Döwnlöäd pägé. %(link_end)s Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єł#"
+
+#: lms/templates/student_account/access.underscore
+msgid ""
+"Sorry, we're having some technical problems. Wait a few minutes and try "
+"again."
+msgstr ""
+"Sörrý, wé'ré hävïng sömé téçhnïçäl prößléms. Wäït ä féw mïnütés änd trý "
+"ägäïn. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт #"
 
 #: lms/templates/student_account/account.underscore
 msgid "New Address"
@@ -4296,6 +4316,111 @@ msgstr "Çhängé Mý Émäïl Àddréss Ⱡ'σяє#"
 msgid "Reset Password"
 msgstr "Rését Pässwörd Ⱡ'#"
 
+#: lms/templates/student_account/form_field.underscore
+msgid "Forgot password?"
+msgstr "Förgöt pässwörd? Ⱡ'σ#"
+
+#: lms/templates/student_account/login.underscore
+msgid ""
+"You've successfully signed into %(currentProvider)s, but your "
+"%(currentProvider)s account isn't linked with an %(platformName)s account. "
+"To link your accounts, go to your %(platformName)s dashboard."
+msgstr ""
+"Ýöü'vé süççéssfüllý sïgnéd ïntö %(currentProvider)s, ßüt ýöür "
+"%(currentProvider)s äççöünt ïsn't lïnkéd wïth än %(platformName)s äççöünt. "
+"Tö lïnk ýöür äççöünts, gö tö ýöür %(platformName)s däshßöärd. Ⱡ'σяєм ιρѕυм "
+"∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ι#"
+
+#: lms/templates/student_account/login.underscore
+msgid "Password Reset Email Sent"
+msgstr "Pässwörd Rését Émäïl Sént Ⱡ'σяєм#"
+
+#: lms/templates/student_account/login.underscore
+msgid ""
+"We've sent instructions for resetting your password to the email address you"
+" provided."
+msgstr ""
+"Wé'vé sént ïnstrüçtïöns för réséttïng ýöür pässwörd tö thé émäïl äddréss ýöü"
+" prövïdéd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмє#"
+
+#: lms/templates/student_account/login.underscore
+msgid "We couldn't sign you in."
+msgstr "Wé çöüldn't sïgn ýöü ïn. Ⱡ'σяє#"
+
+#: lms/templates/student_account/login.underscore
+#: lms/templates/student_account/login.underscore
+#: lms/templates/student_account/register.underscore
+msgid "Sign in"
+msgstr "Sïgn ïn #"
+
+#: lms/templates/student_account/login.underscore
+msgid "or sign in with"
+msgstr "ör sïgn ïn wïth Ⱡ'#"
+
+#: lms/templates/student_account/login.underscore
+msgid "New to %(platformName)s?"
+msgstr "Néw tö %(platformName)s? Ⱡ#"
+
+#: lms/templates/student_account/login.underscore
+msgid "Create an account"
+msgstr "Çréäté än äççöünt Ⱡ'σ#"
+
+#: lms/templates/student_account/password_reset.underscore
+msgid "An error occurred."
+msgstr "Àn érrör öççürréd. Ⱡ'σ#"
+
+#: lms/templates/student_account/password_reset.underscore
+msgid "Password assistance"
+msgstr "Pässwörd ässïstänçé Ⱡ'σя#"
+
+#: lms/templates/student_account/password_reset.underscore
+msgid ""
+"Please enter your email address below and we will send you instructions for "
+"setting a new password."
+msgstr ""
+"Pléäsé éntér ýöür émäïl äddréss ßélöw änd wé wïll sénd ýöü ïnstrüçtïöns för "
+"séttïng ä néw pässwörd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: lms/templates/student_account/password_reset.underscore
+msgid "Reset my password"
+msgstr "Rését mý pässwörd Ⱡ'σ#"
+
+#: lms/templates/student_account/register.underscore
+msgid "We couldn't create your account."
+msgstr "Wé çöüldn't çréäté ýöür äççöünt. Ⱡ'σяєм ι#"
+
+#: lms/templates/student_account/register.underscore
+msgid "You've successfully signed into %(currentProvider)s."
+msgstr "Ýöü'vé süççéssfüllý sïgnéd ïntö %(currentProvider)s. Ⱡ'σяєм ιρ#"
+
+#: lms/templates/student_account/register.underscore
+msgid ""
+"We just need a little more information before you start learning with "
+"%(platformName)s."
+msgstr ""
+"Wé jüst nééd ä lïttlé möré ïnförmätïön ßéföré ýöü stärt léärnïng wïth "
+"%(platformName)s. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт#"
+
+#: lms/templates/student_account/register.underscore
+msgid "Create an account using"
+msgstr "Çréäté än äççöünt üsïng Ⱡ'σяє#"
+
+#: lms/templates/student_account/register.underscore
+msgid "or create a new one here"
+msgstr "ör çréäté ä néw öné héré Ⱡ'σяє#"
+
+#: lms/templates/student_account/register.underscore
+msgid "Create your account"
+msgstr "Çréäté ýöür äççöünt Ⱡ'σя#"
+
+#: lms/templates/student_account/register.underscore
+msgid "Required field"
+msgstr "Réqüïréd fïéld Ⱡ'#"
+
+#: lms/templates/student_account/register.underscore
+msgid "Already have an account?"
+msgstr "Àlréädý hävé än äççöünt? Ⱡ'σяє#"
+
 #: lms/templates/student_profile/profile.underscore
 msgid "Full Name"
 msgstr "Füll Nämé #"
@@ -4307,6 +4432,473 @@ msgstr "Préférréd Längüägé Ⱡ'σ#"
 #: lms/templates/student_profile/profile.underscore
 msgid "Update Profile"
 msgstr "Ûpdäté Pröfïlé Ⱡ'#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Congratulations! You are now verified on %(platformName)s!"
+msgstr ""
+"Çöngrätülätïöns! Ýöü äré nöw vérïfïéd ön %(platformName)s! Ⱡ'σяєм ιρѕυм#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "You are now enrolled as a verified student for:"
+msgstr "Ýöü äré nöw énrölléd äs ä vérïfïéd stüdént för: Ⱡ'σяєм ιρѕυм #"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "A list of courses you have just enrolled in as a verified student"
+msgstr ""
+"À lïst öf çöürsés ýöü hävé jüst énrölléd ïn äs ä vérïfïéd stüdént Ⱡ'σяєм "
+"ιρѕυм ∂σłσя #"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Course"
+msgstr "Çöürsé Ⱡ'σяєм ιρѕ#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Starts: %(start)s"
+msgstr "Stärts: %(start)s Ⱡ#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Explore your course!"
+msgstr "Éxplöré ýöür çöürsé! Ⱡ'σя#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Go to your Dashboard"
+msgstr "Gö tö ýöür Däshßöärd Ⱡ'σя#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid "Verified Status"
+msgstr "Vérïfïéd Stätüs Ⱡ'#"
+
+#: lms/templates/verify_student/enrollment_confirmation_step.underscore
+msgid ""
+"Thank you for submitting your photos. We will review them shortly. You can "
+"now sign up for any %(platformName)s course that offers verified "
+"certificates. Verification is good for one year. After one year, you must "
+"submit photos for verification again."
+msgstr ""
+"Thänk ýöü för süßmïttïng ýöür phötös. Wé wïll révïéw thém shörtlý. Ýöü çän "
+"nöw sïgn üp för äný %(platformName)s çöürsé thät öfférs vérïfïéd "
+"çértïfïçätés. Vérïfïçätïön ïs gööd för öné ýéär. Àftér öné ýéär, ýöü müst "
+"süßmït phötös för vérïfïçätïön ägäïn. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єιυѕмσ∂ тє#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+msgid "Take Your Photo"
+msgstr "Täké Ýöür Phötö Ⱡ'#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+msgid ""
+"Use your webcam to take a photo of your face. We will match this photo with "
+"the photo on your ID."
+msgstr ""
+"Ûsé ýöür wéßçäm tö täké ä phötö öf ýöür fäçé. Wé wïll mätçh thïs phötö wïth "
+"thé phötö ön ýöür ÌD. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Tips on taking a successful photo"
+msgstr "Tïps ön täkïng ä süççéssfül phötö Ⱡ'σяєм ι#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+msgid "Make sure your face is well-lit"
+msgstr "Mäké süré ýöür fäçé ïs wéll-lït Ⱡ'σяєм ι#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+msgid "Be sure your entire face is inside the frame"
+msgstr "Bé süré ýöür éntïré fäçé ïs ïnsïdé thé främé Ⱡ'σяєм ιρѕυм#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+msgid "Once in position, use the camera button %(icon)s to capture your photo"
+msgstr ""
+"Önçé ïn pösïtïön, üsé thé çämérä ßüttön %(icon)s tö çäptüré ýöür phötö "
+"Ⱡ'σяєм ιρѕυм ∂σłσя #"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+msgid "Can we match the photo you took with the one on your ID?"
+msgstr ""
+"Çän wé mätçh thé phötö ýöü töök wïth thé öné ön ýöür ÌD? Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Use the retake photo button if you are not pleased with your photo"
+msgstr ""
+"Ûsé thé rétäké phötö ßüttön ïf ýöü äré nöt pléäséd wïth ýöür phötö Ⱡ'σяєм "
+"ιρѕυм ∂σłσя #"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Frequently Asked Questions"
+msgstr "Fréqüéntlý Àskéd Qüéstïöns Ⱡ'σяєм#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Why does %(platformName)s need my photo?"
+msgstr "Whý döés %(platformName)s nééd mý phötö? Ⱡ'σяєм#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid ""
+"As part of the verification process, you take a photo of both your face and "
+"a government-issued photo ID. Our authorization service confirms your "
+"identity by comparing the photo you take with the photo on your ID."
+msgstr ""
+"Às pärt öf thé vérïfïçätïön pröçéss, ýöü täké ä phötö öf ßöth ýöür fäçé änd "
+"ä gövérnmént-ïssüéd phötö ÌD. Öür äüthörïzätïön sérvïçé çönfïrms ýöür "
+"ïdéntïtý ßý çömpärïng thé phötö ýöü täké wïth thé phötö ön ýöür ÌD. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg єłιт, ѕє∂ ∂σ єι#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "What does %(platformName)s do with this photo?"
+msgstr "Whät döés %(platformName)s dö wïth thïs phötö? Ⱡ'σяєм ι#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid ""
+"We use the highest levels of security available to encrypt your photo and "
+"send it to our authorization service for review. Your photo and information "
+"are not saved or visible anywhere on %(platformName)s after the verification"
+" process is complete."
+msgstr ""
+"Wé üsé thé hïghést lévéls öf séçürïtý äväïläßlé tö énçrýpt ýöür phötö änd "
+"sénd ït tö öür äüthörïzätïön sérvïçé för révïéw. Ýöür phötö änd ïnförmätïön "
+"äré nöt sävéd ör vïsïßlé änýwhéré ön %(platformName)s äftér thé vérïfïçätïön"
+" pröçéss ïs çömplété. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg "
+"єłιт, ѕє∂ ∂σ єιυѕмσ∂ т#"
+
+#: lms/templates/verify_student/face_photo_step.underscore
+#: lms/templates/verify_student/id_photo_step.underscore
+#: lms/templates/verify_student/intro_step.underscore
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Next: %(nextStepTitle)s"
+msgstr "Néxt: %(nextStepTitle)s #"
+
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Take a Photo of Your ID"
+msgstr "Täké ä Phötö öf Ýöür ÌD Ⱡ'σяє#"
+
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid ""
+"Use your webcam to take a photo of your ID. We will match this photo with "
+"the photo of your face and the name on your account."
+msgstr ""
+"Ûsé ýöür wéßçäm tö täké ä phötö öf ýöür ÌD. Wé wïll mätçh thïs phötö wïth "
+"thé phötö öf ýöür fäçé änd thé nämé ön ýöür äççöünt. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєтυ#"
+
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid ""
+"You need an ID with your name and photo. A driver's license, passport, or "
+"other government-issued IDs are all acceptable."
+msgstr ""
+"Ýöü nééd än ÌD wïth ýöür nämé änd phötö. À drïvér's lïçénsé, pässpört, ör "
+"öthér gövérnmént-ïssüéd ÌDs äré äll äççéptäßlé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,"
+" ¢σηѕє¢тє#"
+
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Ensure that you can see your photo and read your name"
+msgstr ""
+"Énsüré thät ýöü çän séé ýöür phötö änd réäd ýöür nämé Ⱡ'σяєм ιρѕυм ∂σ#"
+
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Make sure your ID is well-lit"
+msgstr "Mäké süré ýöür ÌD ïs wéll-lït Ⱡ'σяєм #"
+
+#: lms/templates/verify_student/id_photo_step.underscore
+msgid "Once in position, use the camera button %(icon)s to capture your ID"
+msgstr ""
+"Önçé ïn pösïtïön, üsé thé çämérä ßüttön %(icon)s tö çäptüré ýöür ÌD Ⱡ'σяєм "
+"ιρѕυм ∂σłσя#"
+
+#: lms/templates/verify_student/intro_step.underscore
+msgid "Thanks for returning to verify your ID in: %(courseName)s"
+msgstr ""
+"Thänks för rétürnïng tö vérïfý ýöür ÌD ïn: %(courseName)s Ⱡ'σяєм ιρѕυм #"
+
+#: lms/templates/verify_student/intro_step.underscore
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid ""
+"You need to activate your account before you can enroll in courses. Check "
+"your inbox for an activation email. After you complete activation you can "
+"return and refresh this page."
+msgstr ""
+"Ýöü nééd tö äçtïväté ýöür äççöünt ßéföré ýöü çän énröll ïn çöürsés. Çhéçk "
+"ýöür ïnßöx för än äçtïvätïön émäïl. Àftér ýöü çömplété äçtïvätïön ýöü çän "
+"rétürn änd réfrésh thïs pägé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя "
+"α∂ιριѕι¢ιηg єłι#"
+
+#: lms/templates/verify_student/intro_step.underscore
+#: lms/templates/verify_student/make_payment_step.underscore
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Activate Your Account"
+msgstr "Àçtïväté Ýöür Àççöünt Ⱡ'σя#"
+
+#: lms/templates/verify_student/intro_step.underscore
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Check Your Email"
+msgstr "Çhéçk Ýöür Émäïl Ⱡ'σ#"
+
+#: lms/templates/verify_student/intro_step.underscore
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Photo ID"
+msgstr "Phötö ÌD #"
+
+#: lms/templates/verify_student/intro_step.underscore
+msgid ""
+"A driver's license, passport, or other government-issued ID with your name "
+"and photo"
+msgstr ""
+"À drïvér's lïçénsé, pässpört, ör öthér gövérnmént-ïssüéd ÌD wïth ýöür nämé "
+"änd phötö Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: lms/templates/verify_student/intro_step.underscore
+#: lms/templates/verify_student/make_payment_step.underscore
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Webcam"
+msgstr "Wéßçäm Ⱡ'σяєм ιρѕ#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "You are enrolling in: %(courseName)s"
+msgstr "Ýöü äré énröllïng ïn: %(courseName)s Ⱡ'σяєм#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "You are upgrading your enrollment for: %(courseName)s"
+msgstr "Ýöü äré üpgrädïng ýöür énröllmént för: %(courseName)s Ⱡ'σяєм ιρѕυ#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid ""
+"We have successfully verified your identity. You can now enter your payment "
+"information and complete your enrollment."
+msgstr ""
+"Wé hävé süççéssfüllý vérïfïéd ýöür ïdéntïtý. Ýöü çän nöw éntér ýöür päýmént "
+"ïnförmätïön änd çömplété ýöür énröllmént. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢т#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Choose your contribution for your Verified Track upgrade"
+msgstr ""
+"Çhöösé ýöür çöntrïßütïön för ýöür Vérïfïéd Träçk üpgrädé Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Enter Your Contribution Level"
+msgstr "Éntér Ýöür Çöntrïßütïön Lévél Ⱡ'σяєм #"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid ""
+"Please confirm your contribution for this course (min. $ %(minPrice)s "
+"%(currency)s)"
+msgstr ""
+"Pléäsé çönfïrm ýöür çöntrïßütïön för thïs çöürsé (mïn. $ %(minPrice)s "
+"%(currency)s) Ⱡ'σяєм ιρѕυм ∂σłσя #"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Your Total Contribution"
+msgstr "Ýöür Tötäl Çöntrïßütïön Ⱡ'σяє#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "To complete your enrollment, you will need to pay:"
+msgstr "Tö çömplété ýöür énröllmént, ýöü wïll nééd tö päý: Ⱡ'σяєм ιρѕυм ∂#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid ""
+"You can pay now even if you don't have the following items available, but "
+"you will need to have these by %(date)s to qualify to earn a Verified "
+"Certificate."
+msgstr ""
+"Ýöü çän päý nöw évén ïf ýöü dön't hävé thé föllöwïng ïtéms äväïläßlé, ßüt "
+"ýöü wïll nééd tö hävé thésé ßý %(date)s tö qüälïfý tö éärn ä Vérïfïéd "
+"Çértïfïçäté. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕ#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid ""
+"You can pay now even if you don't have the following items available, but "
+"you will need to have these to qualify to earn a Verified Certificate."
+msgstr ""
+"Ýöü çän päý nöw évén ïf ýöü dön't hävé thé föllöwïng ïtéms äväïläßlé, ßüt "
+"ýöü wïll nééd tö hävé thésé tö qüälïfý tö éärn ä Vérïfïéd Çértïfïçäté. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιρ#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Government-Issued Photo ID"
+msgstr "Gövérnmént-Ìssüéd Phötö ÌD Ⱡ'σяєм#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Next: Make payment"
+msgstr "Néxt: Mäké päýmént Ⱡ'σ#"
+
+#: lms/templates/verify_student/make_payment_step.underscore
+msgid "Continue to payment"
+msgstr "Çöntïnüé tö päýmént Ⱡ'σя#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Thank you! We have received your payment for %(courseName)s."
+msgstr ""
+"Thänk ýöü! Wé hävé réçéïvéd ýöür päýmént för %(courseName)s. Ⱡ'σяєм ιρѕυм ∂#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid ""
+"Please print this page for your records; it serves as your receipt. You will"
+" also receive an email with the same information."
+msgstr ""
+"Pléäsé prïnt thïs pägé för ýöür réçörds; ït sérvés äs ýöür réçéïpt. Ýöü wïll"
+" älsö réçéïvé än émäïl wïth thé sämé ïnförmätïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт "
+"αмєт, ¢σηѕє¢тєтυ#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Order No."
+msgstr "Ördér Nö. #"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Date"
+msgstr "Däté Ⱡ'σяєм#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Amount"
+msgstr "Àmöünt Ⱡ'σяєм ιρѕ#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Total"
+msgstr "Tötäl Ⱡ'σяєм ι#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Please Note"
+msgstr "Pléäsé Nöté Ⱡ#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Crossed out items have been refunded."
+msgstr "Çrösséd öüt ïtéms hävé ßéén réfündéd. Ⱡ'σяєм ιρѕ#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Billed to"
+msgstr "Bïlléd tö #"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "No receipt available"
+msgstr "Nö réçéïpt äväïläßlé Ⱡ'σя#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Next Step: Confirm your identity"
+msgstr "Néxt Stép: Çönfïrm ýöür ïdéntïtý Ⱡ'σяєм ι#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Check your email"
+msgstr "Çhéçk ýöür émäïl Ⱡ'σ#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid ""
+"You need to activate your account before you can enroll in courses. Check "
+"your inbox for an activation email."
+msgstr ""
+"Ýöü nééd tö äçtïväté ýöür äççöünt ßéföré ýöü çän énröll ïn çöürsés. Çhéçk "
+"ýöür ïnßöx för än äçtïvätïön émäïl. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid ""
+"A driver's license, passport, or government-issued ID with your name and "
+"photo."
+msgstr ""
+"À drïvér's lïçénsé, pässpört, ör gövérnmént-ïssüéd ÌD wïth ýöür nämé änd "
+"phötö. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid ""
+"If you don't verify your identity now, you can still explore your course "
+"from your dashboard. You will receive periodic reminders from "
+"%(platformName)s to verify your identity."
+msgstr ""
+"Ìf ýöü dön't vérïfý ýöür ïdéntïtý nöw, ýöü çän stïll éxplöré ýöür çöürsé "
+"fröm ýöür däshßöärd. Ýöü wïll réçéïvé pérïödïç rémïndérs fröm "
+"%(platformName)s tö vérïfý ýöür ïdéntïtý. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тєтυя α∂ιριѕι¢ιη#"
+
+#: lms/templates/verify_student/payment_confirmation_step.underscore
+msgid "Want to confirm your identity later?"
+msgstr "Wänt tö çönfïrm ýöür ïdéntïtý lätér? Ⱡ'σяєм ιρ#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Review Your Photos"
+msgstr "Révïéw Ýöür Phötös Ⱡ'σ#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid ""
+"Make sure we can verify your identity with the photos and information you "
+"have provided."
+msgstr ""
+"Mäké süré wé çän vérïfý ýöür ïdéntïtý wïth thé phötös änd ïnförmätïön ýöü "
+"hävé prövïdéd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Photo requirements:"
+msgstr "Phötö réqüïréménts: Ⱡ'σя#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Does the photo of you show your whole face?"
+msgstr "Döés thé phötö öf ýöü shöw ýöür whölé fäçé? Ⱡ'σяєм ιρѕυм#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Does the photo of you match your ID photo?"
+msgstr "Döés thé phötö öf ýöü mätçh ýöür ÌD phötö? Ⱡ'σяєм ιρѕυ#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Is your name on your ID readable?"
+msgstr "Ìs ýöür nämé ön ýöür ÌD réädäßlé? Ⱡ'σяєм ι#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Does the name on your ID match your account name: %(fullName)s?"
+msgstr ""
+"Döés thé nämé ön ýöür ÌD mätçh ýöür äççöünt nämé: %(fullName)s? Ⱡ'σяєм ιρѕυм"
+" ∂σ#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Edit Your Name"
+msgstr "Édït Ýöür Nämé Ⱡ'#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid ""
+"Make sure that the full name on your account matches the name on your ID."
+msgstr ""
+"Mäké süré thät thé füll nämé ön ýöür äççöünt mätçhés thé nämé ön ýöür ÌD. "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Photos don't meet the requirements?"
+msgstr "Phötös dön't méét thé réqüïréménts? Ⱡ'σяєм ιρ#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Retake Your Photos"
+msgstr "Rétäké Ýöür Phötös Ⱡ'σ#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Before proceeding, please confirm that your details match"
+msgstr ""
+"Béföré pröçéédïng, pléäsé çönfïrm thät ýöür détäïls mätçh Ⱡ'σяєм ιρѕυм ∂σł#"
+
+#: lms/templates/verify_student/review_photos_step.underscore
+msgid "Confirm"
+msgstr "Çönfïrm #"
+
+#: lms/templates/verify_student/webcam_photo.underscore
+msgid ""
+"Don't see your picture? Make sure to allow your browser to use your camera "
+"when it asks for permission."
+msgstr ""
+"Dön't séé ýöür pïçtüré? Mäké süré tö ällöw ýöür ßröwsér tö üsé ýöür çämérä "
+"whén ït äsks för pérmïssïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σ#"
+
+#: lms/templates/verify_student/webcam_photo.underscore
+msgid "Retake Photo"
+msgstr "Rétäké Phötö Ⱡ#"
+
+#: lms/templates/verify_student/webcam_photo.underscore
+msgid "Take Photo"
+msgstr "Täké Phötö Ⱡ#"
+
+#: cms/templates/js/active-video-upload-list.underscore
+msgid "Drag and drop or click here to upload video files."
+msgstr "Dräg änd dröp ör çlïçk héré tö üplöäd vïdéö fïlés. Ⱡ'σяєм ιρѕυм ∂#"
+
+#: cms/templates/js/active-video-upload.underscore
+msgid "status"
+msgstr "stätüs Ⱡ'σяєм ιρѕ#"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problem Types"
@@ -4731,6 +5323,22 @@ msgstr "Prévïöüs #"
 msgid "Page number"
 msgstr "Pägé nümßér Ⱡ#"
 
+#: cms/templates/js/previous-video-upload-list.underscore
+msgid "Previous Uploads"
+msgstr "Prévïöüs Ûplöäds Ⱡ'σ#"
+
+#: cms/templates/js/previous-video-upload-list.underscore
+msgid "Download available encodings (.csv)"
+msgstr "Döwnlöäd äväïläßlé énçödïngs (.çsv) Ⱡ'σяєм ιρ#"
+
+#: cms/templates/js/previous-video-upload-list.underscore
+msgid "Duration"
+msgstr "Dürätïön #"
+
+#: cms/templates/js/previous-video-upload-list.underscore
+msgid "Video ID"
+msgstr "Vïdéö ÌD #"
+
 #: cms/templates/js/publish-history.underscore
 msgid "Never published"
 msgstr "Névér püßlïshéd Ⱡ'#"
@@ -4933,6 +5541,10 @@ msgstr "Pägé Àçtïöns Ⱡ#"
 #: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "New Group Configuration"
 msgstr "Néw Gröüp Çönfïgürätïön Ⱡ'σяє#"
+
+#: cms/templates/js/video/metadata-translations-item.underscore
+msgid "Remove"
+msgstr "Rémövé Ⱡ'σяєм ιρѕ#"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Add URLs for additional versions"

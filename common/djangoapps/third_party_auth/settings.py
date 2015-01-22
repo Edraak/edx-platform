@@ -46,7 +46,7 @@ If true, it:
 from . import provider
 
 
-_FIELDS_STORED_IN_SESSION = ['auth_entry', 'next', 'enroll_course_id']
+_FIELDS_STORED_IN_SESSION = ['auth_entry', 'next', 'enroll_course_id', 'email_opt_in']
 _MIDDLEWARE_CLASSES = (
     'third_party_auth.middleware.ExceptionMiddleware',
 )
@@ -111,7 +111,7 @@ def _set_global_settings(django_settings):
         'social.pipeline.social_auth.auth_allowed',
         'social.pipeline.social_auth.social_user',
         'social.pipeline.user.get_username',
-        'third_party_auth.pipeline.redirect_to_supplementary_form',
+        'third_party_auth.pipeline.ensure_user_information',
         'social.pipeline.user.create_user',
         'social.pipeline.social_auth.associate_user',
         'social.pipeline.social_auth.load_extra_data',

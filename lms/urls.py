@@ -20,6 +20,8 @@ urlpatterns = ('',  # nopep8
     url(r'^request_certificate$', 'certificates.views.request_certificate'),
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
+    url(r'^login_ajax$', 'student.views.login_user', name="login"),
+    url(r'^login_ajax/(?P<error>[^/]*)$', 'student.views.login_user'),
     url(r'^login$', 'student.views.signin_user', name="signin_user"),
     url(r'^register$', 'student.views.register_user', name="register_user"),
 
@@ -32,7 +34,7 @@ urlpatterns = ('',  # nopep8
     url(r'^reject_name_change$', 'student.views.reject_name_change'),
     url(r'^pending_name_changes$', 'student.views.pending_name_changes'),
     url(r'^event$', 'track.views.user_track'),
-    url(r'^segmentio/event$', 'track.views.segmentio.track_segmentio_event'),
+    url(r'^segmentio/event$', 'track.views.segmentio.segmentio_event'),
     url(r'^t/(?P<template>[^/]*)$', 'static_template_view.views.index'),   # TODO: Is this used anymore? What is STATIC_GRAB?
 
     url(r'^accounts/login$', 'student.views.accounts_login', name="accounts_login"),
@@ -41,8 +43,6 @@ urlpatterns = ('',  # nopep8
     url(r'^accounts/disable_account_ajax$', 'student.views.disable_account_ajax',
         name="disable_account_ajax"),
 
-    url(r'^login_ajax$', 'student.views.login_user', name="login"),
-    url(r'^login_ajax/(?P<error>[^/]*)$', 'student.views.login_user'),
     url(r'^logout$', 'student.views.logout_user', name='logout'),
     url(r'^create_account$', 'student.views.create_account', name='create_account'),
     url(r'^activate/(?P<key>[^/]*)$', 'student.views.activate_account', name="activate"),
@@ -64,7 +64,7 @@ urlpatterns = ('',  # nopep8
 
     url(r'^heartbeat$', include('heartbeat.urls')),
 
-    url(r'^user_api/', include('user_api.urls')),
+    url(r'^user_api/', include('openedx.core.djangoapps.user_api.urls')),
 
     url(r'^notifier_api/', include('notifier_api.urls')),
 
@@ -82,6 +82,12 @@ urlpatterns = ('',  # nopep8
 
     # Feedback Form endpoint
     url(r'^submit_feedback$', 'util.views.submit_feedback'),
+
+    # Enrollment API RESTful endpoints
+    url(r'^api/enrollment/v1/', include('enrollment.urls')),
+
+    # CourseInfo API RESTful endpoints
+    url(r'^api/course/details/v0/', include('course_about.urls')),
 
 )
 
@@ -132,7 +138,7 @@ favicon_path = microsite.get_value('favicon_path', settings.FAVICON_PATH)
 urlpatterns += ((
     r'^favicon\.ico$',
     'django.views.generic.simple.redirect_to',
-    {'url':  settings.STATIC_URL + favicon_path}
+    {'url': settings.STATIC_URL + favicon_path}
 ),)
 
 # Semi-static views only used by edX, not by themes
@@ -163,7 +169,7 @@ if not settings.FEATURES["USE_CUSTOM_THEME"]:
 
         # Press releases
         url(r'^press/([_a-zA-Z0-9-]+)$', 'static_template_view.views.render_press_release', name='press_release'),
-)
+    )
 
 # Only enable URLs for those marketing links actually enabled in the
 # settings. Disable URLs by marking them as None.
@@ -350,21 +356,21 @@ if settings.COURSEWARE_ENABLED:
 
         # Cohorts management
         url(r'^courses/{}/cohorts$'.format(settings.COURSE_KEY_PATTERN),
-            'course_groups.views.list_cohorts', name="cohorts"),
+            'openedx.core.djangoapps.course_groups.views.list_cohorts', name="cohorts"),
         url(r'^courses/{}/cohorts/add$'.format(settings.COURSE_KEY_PATTERN),
-            'course_groups.views.add_cohort',
+            'openedx.core.djangoapps.course_groups.views.add_cohort',
             name="add_cohort"),
         url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)$'.format(settings.COURSE_KEY_PATTERN),
-            'course_groups.views.users_in_cohort',
+            'openedx.core.djangoapps.course_groups.views.users_in_cohort',
             name="list_cohort"),
         url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)/add$'.format(settings.COURSE_KEY_PATTERN),
-            'course_groups.views.add_users_to_cohort',
+            'openedx.core.djangoapps.course_groups.views.add_users_to_cohort',
             name="add_to_cohort"),
         url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)/delete$'.format(settings.COURSE_KEY_PATTERN),
-            'course_groups.views.remove_user_from_cohort',
+            'openedx.core.djangoapps.course_groups.views.remove_user_from_cohort',
             name="remove_from_cohort"),
         url(r'^courses/{}/cohorts/debug$'.format(settings.COURSE_KEY_PATTERN),
-            'course_groups.views.debug_cohort_mgmt',
+            'openedx.core.djangoapps.course_groups.views.debug_cohort_mgmt',
             name="debug_cohort_mgmt"),
 
         # Open Ended Notifications
@@ -380,6 +386,10 @@ if settings.COURSEWARE_ENABLED:
         # LTI endpoints listing
         url(r'^courses/{}/lti_rest_endpoints/'.format(settings.COURSE_ID_PATTERN),
             'courseware.views.get_course_lti_endpoints', name='lti_rest_endpoints'),
+
+        # Student account and profile
+        url(r'^account/', include('student_account.urls')),
+        url(r'^profile/', include('student_profile.urls')),
     )
 
     # allow course staff to change to student view of courseware
@@ -544,14 +554,9 @@ if settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING'):
 if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
     urlpatterns += (
         url(r'', include('third_party_auth.urls')),
+        url(r'^login_oauth_token/(?P<backend>[^/]+)/$', 'student.views.login_oauth_token'),
     )
 
-# If enabled, expose the URLs for the new dashboard, account, and profile pages
-if settings.FEATURES.get('ENABLE_NEW_DASHBOARD'):
-    urlpatterns += (
-        url(r'^profile/', include('student_profile.urls')),
-        url(r'^account/', include('student_account.urls')),
-    )
 
 urlpatterns = patterns(*urlpatterns)
 

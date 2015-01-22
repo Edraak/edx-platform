@@ -4,7 +4,7 @@ This is the default template for our main set of AWS servers.
 
 # We intentionally define lots of variables that aren't used, and
 # want to import all variables from base settings files
-# pylint: disable=W0401, W0614
+# pylint: disable=wildcard-import, unused-wildcard-import
 
 import json
 
@@ -14,7 +14,6 @@ from logsettings import get_logger_config
 import os
 
 from path import path
-from dealer.git import git
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
 
 # SERVICE_VARIANT specifies name of the variant used, which decides what JSON
@@ -95,7 +94,7 @@ if STATIC_URL_BASE:
     STATIC_URL = STATIC_URL_BASE.encode('ascii')
     if not STATIC_URL.endswith("/"):
         STATIC_URL += "/"
-    STATIC_URL += git.revision + "/"
+    STATIC_URL += EDX_PLATFORM_REVISION + "/"
 
 # GITHUB_REPO_ROOT is the base directory
 # for course data
@@ -106,7 +105,7 @@ GITHUB_REPO_ROOT = ENV_TOKENS.get('GITHUB_REPO_ROOT', GITHUB_REPO_ROOT)
 
 STATIC_ROOT_BASE = ENV_TOKENS.get('STATIC_ROOT_BASE', None)
 if STATIC_ROOT_BASE:
-    STATIC_ROOT = path(STATIC_ROOT_BASE) / git.revision
+    STATIC_ROOT = path(STATIC_ROOT_BASE) / EDX_PLATFORM_REVISION
 
 EMAIL_BACKEND = ENV_TOKENS.get('EMAIL_BACKEND', EMAIL_BACKEND)
 EMAIL_FILE_PATH = ENV_TOKENS.get('EMAIL_FILE_PATH', None)
@@ -185,6 +184,7 @@ LOGGING = get_logger_config(LOG_DIR,
 
 #theming start:
 PLATFORM_NAME = ENV_TOKENS.get('PLATFORM_NAME', 'edX')
+STUDIO_NAME = ENV_TOKENS.get('STUDIO_NAME', 'edX Studio')
 
 # Event Tracking
 if "TRACKING_IGNORE_URL_PATTERNS" in ENV_TOKENS:
@@ -215,14 +215,8 @@ with open(CONFIG_ROOT / CONFIG_PREFIX + "auth.json") as auth_file:
     AUTH_TOKENS = json.load(auth_file)
 
 ############### XBlock filesystem field config ##########
-if 'XBLOCK_FS_STORAGE_BUCKET' in ENV_TOKENS:
-    DJFS = {
-        'type' : 's3fs',
-        'bucket' : ENV_TOKENS.get('XBLOCK_FS_STORAGE_BUCKET', None),
-        'prefix' : ENV_TOKENS.get('XBLOCK_FS_STORAGE_PREFIX', '/xblock-storage/'),
-        'aws_access_key_id' : AUTH_TOKENS.get('AWS_ACCESS_KEY_ID', None),
-        'aws_secret_access_key' : AUTH_TOKENS.get('AWS_SECRET_ACCESS_KEY', None)
-    }
+if 'DJFS' in AUTH_TOKENS and AUTH_TOKENS['DJFS'] is not None:
+    DJFS = AUTH_TOKENS['DJFS']
 
 EMAIL_HOST_USER = AUTH_TOKENS.get('EMAIL_HOST_USER', EMAIL_HOST_USER)
 EMAIL_HOST_PASSWORD = AUTH_TOKENS.get('EMAIL_HOST_PASSWORD', EMAIL_HOST_PASSWORD)
@@ -301,3 +295,14 @@ ADVANCED_SECURITY_CONFIG = ENV_TOKENS.get('ADVANCED_SECURITY_CONFIG', {})
 
 ADVANCED_COMPONENT_TYPES = ENV_TOKENS.get('ADVANCED_COMPONENT_TYPES', ADVANCED_COMPONENT_TYPES)
 ADVANCED_PROBLEM_TYPES = ENV_TOKENS.get('ADVANCED_PROBLEM_TYPES', ADVANCED_PROBLEM_TYPES)
+DEPRECATED_ADVANCED_COMPONENT_TYPES = ENV_TOKENS.get(
+    'DEPRECATED_ADVANCED_COMPONENT_TYPES', DEPRECATED_ADVANCED_COMPONENT_TYPES
+)
+
+################ VIDEO UPLOAD PIPELINE ###############
+
+VIDEO_UPLOAD_PIPELINE = ENV_TOKENS.get('VIDEO_UPLOAD_PIPELINE', VIDEO_UPLOAD_PIPELINE)
+
+#date format the api will be formatting the datetime values
+API_DATE_FORMAT = '%Y-%m-%d'
+API_DATE_FORMAT = ENV_TOKENS.get('API_DATE_FORMAT', API_DATE_FORMAT)

@@ -1,9 +1,9 @@
 define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views/assets",
-    "js/models/asset", "js/collections/asset", "js/spec_helpers/view_helpers" ],
+    "js/models/asset", "js/collections/asset", "js/spec_helpers/view_helpers"],
     function ($, AjaxHelpers, AssetView, AssetsView, AssetModel, AssetCollection, ViewHelpers) {
 
         describe("Assets", function() {
-            var assetsView, mockEmptyAssetsResponse, mockAssetUploadResponse,
+            var assetsView, mockEmptyAssetsResponse, mockAssetUploadResponse, mockFileUpload,
                 assetLibraryTpl, assetTpl, pagingFooterTpl, pagingHeaderTpl, uploadModalTpl;
 
             assetLibraryTpl = readFixtures('asset-library.underscore');
@@ -19,6 +19,8 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                 appendSetFixtures($("<script>", { id: "paging-footer-tpl", type: "text/template" }).text(pagingFooterTpl));
                 appendSetFixtures(uploadModalTpl);
                 appendSetFixtures(sandbox({ id: "asset_table_body" }));
+
+                spyOn($.fn, "fileupload").andReturn("");
 
                 var collection = new AssetCollection();
                 collection.url = "assets-url";
@@ -53,8 +55,8 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                 msg: "Upload completed"
             };
 
-            $.fn.fileupload = function() {
-                return '';
+            mockFileUpload = {
+                files: [{name: 'largefile', size: 0}]
             };
 
             var event = {}
@@ -95,6 +97,15 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                     expect($('.upload-modal').is(':visible')).toBe(false);
                 });
 
+                it('has properly initialized constants for handling upload file errors', function() {
+                    expect(assetsView).toBeDefined();
+                    expect(assetsView.uploadChunkSizeInMBs).toBeDefined();
+                    expect(assetsView.maxFileSizeInMBs).toBeDefined();
+                    expect(assetsView.uploadChunkSizeInBytes).toBeDefined();
+                    expect(assetsView.maxFileSizeInBytes).toBeDefined();
+                    expect(assetsView.largeFileErrorMsg).toBeNull();
+                });
+
                 it('uploads file properly', function () {
                     var requests = setup.call(this);
                     expect(assetsView).toBeDefined();
@@ -121,6 +132,42 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
 
                     expect($('#asset_table_body').html()).toContain("dummy.jpg");
                     expect(assetsView.collection.length).toBe(1);
+                });
+
+                it('blocks file uploads larger than the max file size', function() {
+                    expect(assetsView).toBeDefined();
+
+                    mockFileUpload.files[0].size = assetsView.maxFileSize * 10;
+
+                    $('.choose-file-button').click();
+                    $(".upload-modal .file-chooser").fileupload('add', mockFileUpload);
+                    expect($('.upload-modal h1').text()).not.toContain("Uploading");
+
+                    expect(assetsView.largeFileErrorMsg).toBeDefined();
+                    expect($('div.progress-bar').text()).not.toContain("Upload completed");
+                    expect($('div.progress-fill').width()).toBe(0);
+                });
+
+                it('allows file uploads equal in size to the max file size', function() {
+                    expect(assetsView).toBeDefined();
+
+                    mockFileUpload.files[0].size = assetsView.maxFileSize;
+
+                    $('.choose-file-button').click();
+                    $(".upload-modal .file-chooser").fileupload('add', mockFileUpload);
+
+                    expect(assetsView.largeFileErrorMsg).toBeNull();
+                });
+
+                it('allows file uploads smaller than the max file size', function() {
+                    expect(assetsView).toBeDefined();
+
+                    mockFileUpload.files[0].size = assetsView.maxFileSize / 100;
+
+                    $('.choose-file-button').click();
+                    $(".upload-modal .file-chooser").fileupload('add', mockFileUpload);
+
+                    expect(assetsView.largeFileErrorMsg).toBeNull();
                 });
             });
         });

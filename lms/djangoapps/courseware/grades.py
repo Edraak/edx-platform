@@ -140,6 +140,7 @@ def answer_distributions(course_key):
 
     return answer_counts
 
+
 @transaction.commit_manually
 def grade(student, request, course, keep_raw_scores=False):
     """
@@ -259,8 +260,10 @@ def _grade(student, request, course, keep_raw_scores):
             if graded_total.possible > 0:
                 format_scores.append(graded_total)
             else:
-                log.info("Unable to grade a section with a total possible score of zero. " +
-                              str(section_descriptor.location))
+                log.info(
+                    "Unable to grade a section with a total possible score of zero. " +
+                    str(section_descriptor.location)
+                )
 
         totaled_scores[section_format] = format_scores
 
@@ -274,8 +277,9 @@ def _grade(student, request, course, keep_raw_scores):
     grade_summary['grade'] = letter_grade
     grade_summary['totaled_scores'] = totaled_scores  	# make this available, eg for instructor download & debugging
     if keep_raw_scores:
-        grade_summary['raw_scores'] = raw_scores        # way to get all RAW scores out to instructor
-                                                        # so grader can be double-checked
+        # way to get all RAW scores out to instructor
+        # so grader can be double-checked
+        grade_summary['raw_scores'] = raw_scores
     return grade_summary
 
 
