@@ -188,7 +188,6 @@ msgstr "الوحدة"
 #: cms/djangoapps/contentstore/views/videos.py
 #: lms/djangoapps/instructor/views/instructor_task_helpers.py
 #: lms/templates/verify_student/midcourse_reverify_dash.html
-#, fuzzy
 msgid "Complete"
 msgstr "اكتملت البيانات"
 
@@ -213,7 +212,6 @@ msgstr "الاسم "
 #: lms/templates/open_ended_problems/open_ended_problems.html
 #: lms/templates/shoppingcart/receipt.html
 #: lms/templates/shoppingcart/verified_cert_receipt.html
-#, fuzzy
 msgid "Status"
 msgstr "الحالة"
 
@@ -247,7 +245,6 @@ msgstr "مشرف المنتدى"
 
 #: common/djangoapps/django_comment_common/models.py
 #: lms/templates/discussion/_underscore_templates.html
-#, fuzzy
 msgid "Community TA"
 msgstr "مساعد أستاذ لشؤون المتعلّمين"
 
@@ -395,7 +392,6 @@ msgid "Too many failed login attempts. Try again later."
 msgstr "محاولات فاشلة كثيرة لتسجيل الدخول. يُرجى إعادة المحاولة لاحقًا. "
 
 #: common/djangoapps/student/views.py lms/templates/provider_login.html
-#, fuzzy
 msgid "Email or password is incorrect."
 msgstr "يوجد خطأ إمّا في عنوان البريد الإلكتروني أو في كلمة السر."
 
@@ -1368,7 +1364,6 @@ msgstr "بيانات XML للملاحظات التوضيحية"
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 #: cms/templates/container.html
-#, fuzzy
 msgid "Display Name"
 msgstr "اسم العرض"
 
@@ -1438,7 +1433,6 @@ msgstr "المدّة التي ستُقبل فيها التقديمات بعد ت
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 #: lms/templates/problem.html
-#, fuzzy
 msgid "Show Answer"
 msgstr "إظهار الإجابة"
 
@@ -1744,7 +1738,6 @@ msgstr " الخطوة التي يعمل عليها الطالب ضمن المه�
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 #: lms/templates/peer_grading/peer_grading.html
-#, fuzzy
 msgid "Graded"
 msgstr "جرى التقييم"
 
@@ -2622,7 +2615,6 @@ msgstr "كلاهما"
 #: lms/templates/footer-edx-new.html lms/templates/footer.html
 #: lms/templates/static_templates/about.html
 #: lms/templates/static_templates/about.html
-#, fuzzy
 msgid "About"
 msgstr "لمحة عن"
 
@@ -3151,7 +3143,6 @@ msgstr "هناك مشاكل في تجربة المحتوى هذه تؤثّر ع�
 #. the content of a course
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/templates/courseware/courseware-error.html
-#, fuzzy
 msgid "Courseware"
 msgstr "محتويات المساق"
 
@@ -3166,7 +3157,6 @@ msgstr "معلومات المساق "
 #. Translators: "Progress" is the name of the student's course progress page
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/templates/peer_grading/peer_grading.html
-#, fuzzy
 msgid "Progress"
 msgstr "التقدّم  "
 
@@ -3186,7 +3176,6 @@ msgstr "الكتب"
 #. staff to view open-ended problems that require staff grading
 #: common/lib/xmodule/xmodule/tabs.py
 #: lms/templates/instructor/staff_grading.html
-#, fuzzy
 msgid "Staff grading"
 msgstr "التقييم من قبل طاقم المساق"
 
@@ -3200,7 +3189,6 @@ msgstr "تقييم يجريه الزملاء"
 #. Translators: "Syllabus" appears on a tab that, when clicked, opens the
 #. syllabus of the course.
 #: common/lib/xmodule/xmodule/tabs.py lms/templates/courseware/syllabus.html
-#, fuzzy
 msgid "Syllabus"
 msgstr "مخطّط المنهج الدراسي"
 
@@ -4034,7 +4022,6 @@ msgstr "اسم المستخدم"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
-#, fuzzy
 msgid "Grade"
 msgstr "الدرجة "
 
@@ -4396,7 +4383,6 @@ msgstr "الأخطاء في المساق {course_name} الذي جرى تحمي�
 #: lms/djangoapps/dashboard/sysadmin.py lms/djangoapps/dashboard/sysadmin.py
 #: cms/templates/course-create-rerun.html cms/templates/index.html
 #: lms/templates/shoppingcart/receipt.html
-#, fuzzy
 msgid "Course Name"
 msgstr "اسم المساق "
 
@@ -4593,7 +4579,6 @@ msgstr "رقم المستخدم"
 #: lms/templates/courseware/legacy_instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
-#, fuzzy
 msgid "Email"
 msgstr "عنوان البريد الإلكتروني"
 
@@ -4944,7 +4929,6 @@ msgstr "الرقم التعريفي"
 #: lms/templates/signup_modal.html lms/templates/sysadmin_dashboard.html
 #: lms/templates/verify_student/_modal_editname.html
 #: lms/templates/verify_student/face_upload.html
-#, fuzzy
 msgid "Full Name"
 msgstr "الاسم الكامل"
 
@@ -5028,7 +5012,6 @@ msgstr "إعادة الضبط"
 #. messages as {action}.
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/templates/wiki/plugins/attachments/index.html wiki/models/article.py
-#, fuzzy
 msgid "deleted"
 msgstr "الحذف"
 
@@ -5514,7 +5497,6 @@ msgid "Course Announce Date"
 msgstr "تاريخ الإعلان عن المساق "
 
 #: lms/djangoapps/shoppingcart/reports.py cms/templates/settings.html
-#, fuzzy
 msgid "Course Start Date"
 msgstr "تاريخ بدء المساق "
 
@@ -6187,13 +6169,11 @@ msgstr ""
 
 #: lms/djangoapps/shoppingcart/tests/test_views.py
 #: lms/templates/shoppingcart/download_report.html
-#, fuzzy
 msgid "Download CSV Reports"
 msgstr "تنزيل تقارير CSV "
 
 #: lms/djangoapps/shoppingcart/tests/test_views.py
 #: lms/templates/shoppingcart/download_report.html
-#, fuzzy
 msgid ""
 "There was an error in your date input.  It should be formatted as YYYY-MM-DD"
 msgstr ""
@@ -6229,7 +6209,6 @@ msgstr "نأسف لحدوث خطأ أثناء التحقّق من صور بطا�
 #: lms/templates/shoppingcart/verified_cert_receipt.html
 #: lms/templates/verify_student/photo_verification.html
 #: lms/templates/verify_student/show_requirements.html
-#, fuzzy
 msgid "Intro"
 msgstr "المقدّمة "
 
@@ -6247,7 +6226,6 @@ msgstr "تأكيد الدفعة"
 #: lms/templates/verify_student/photo_reverification.html
 #: lms/templates/verify_student/photo_verification.html
 #: lms/templates/verify_student/photo_verification.html
-#, fuzzy
 msgid "Take photo"
 msgstr "التقاط صورة  "
 
@@ -6306,7 +6284,6 @@ msgstr "تايوان"
 
 #: lms/templates/main_django.html cms/templates/base.html
 #: lms/templates/main.html
-#, fuzzy
 msgid "Skip to this view's content"
 msgstr "الانتقال مباشرةً إلى محتوى الخاص هذا المنظور"
 
@@ -6486,7 +6463,6 @@ msgstr "المساعدة في إعادة ضبط كلمة السر"
 #: lms/templates/registration/password_reset_confirm.html
 #: cms/templates/login.html lms/templates/login-sidebar.html
 #: lms/templates/register-sidebar.html
-#, fuzzy
 msgid "Need Help?"
 msgstr "هل تحتاج إلى مساعدة؟"
 
@@ -6873,7 +6849,6 @@ msgstr ""
 
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
-#, fuzzy
 msgid "Attachments"
 msgstr "المرفقات"
 
@@ -7073,7 +7048,6 @@ msgstr "المدينة"
 #: openedx/core/djangoapps/user_api/views.py lms/templates/register.html
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
 #: lms/templates/shoppingcart/receipt.html
-#, fuzzy
 msgid "Country"
 msgstr "البلد"
 
@@ -7086,7 +7060,6 @@ msgstr "يُرجى تحديد بلدك."
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/static_templates/honor.html
 #: lms/templates/static_templates/honor.html
-#, fuzzy
 msgid "Honor Code"
 msgstr "ميثاق الشرف "
 
@@ -7094,7 +7067,6 @@ msgstr "ميثاق الشرف "
 #. Translators: This is a legal document users must agree to
 #. in order to register a new account.
 #: openedx/core/djangoapps/user_api/views.py lms/templates/footer-edx-new.html
-#, fuzzy
 msgid "Terms of Service and Honor Code"
 msgstr "شروط الخدمة وميثاق الشرف"
 
