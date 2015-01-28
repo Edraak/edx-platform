@@ -48,6 +48,10 @@ def cleanup_po_entry_conflicts(entry):
 
         if line.startswith(conflict_mark):
             entry.msgstr = u'\n'.join(lines[1:i])
+
+            while 'fuzzy' in entry.flags:
+                entry.flags.remove('fuzzy')
+
             return entry
 
     raise Exception('Undefined behaviour')
