@@ -18485,7 +18485,7 @@ msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة
 
 #. Translators: Edraak-specific
 #: common/djangoapps/student/edraak_validation.py:41
-#: common/djangoapps/student/views.py:1459
+#: common/djangoapps/student/views.py:1564
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
@@ -18527,18 +18527,9 @@ msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
 #. Translators: Edraak-specific
-#: lms/templates/registration/password_reset_email.html:3
-msgid ""
-"You're receiving this e-mail because you requested a password reset for your"
-" user account at edraak.org."
-msgstr ""
-"تم إرسال هذا البريد الإلكتروني لك بناءً على طلبك لتغيير كلمة المرور الخاصة "
-"بك على موقع edraak.org."
-
-#. Translators: Edraak-specific
-#: lms/templates/registration/password_reset_email.html:15
-msgid "The Edraak Team"
-msgstr "فريق عمل إدراك"
+#: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68
+msgid "Course Updates &amp; News"
+msgstr "تحديثات وأخبار المساق"
 
 #: templates/course.html:68 templates/courseware/course_about.html:155
 msgid "Enrollment is closed"

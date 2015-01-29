@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-01-15 14:52+0000\n"
-"Last-Translator: qrfahasan <ahasan@qrf.org>\n"
+"PO-Revision-Date: 2015-01-29 11:40+0000\n"
+"Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Translators: Edraak-specific
 #: common/djangoapps/student/edraak_validation.py:41
-#: common/djangoapps/student/views.py:1459
+#: common/djangoapps/student/views.py:1564
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
@@ -56,13 +56,6 @@ msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
 #. Translators: Edraak-specific
-#: lms/templates/registration/password_reset_email.html:3
-msgid ""
-"You're receiving this e-mail because you requested a password reset for your"
-" user account at edraak.org."
-msgstr "تم إرسال هذا البريد الإلكتروني لك بناءً على طلبك لتغيير كلمة المرور الخاصة بك على موقع edraak.org."
-
-#. Translators: Edraak-specific
-#: lms/templates/registration/password_reset_email.html:15
-msgid "The Edraak Team"
-msgstr "فريق عمل إدراك"
+#: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68
+msgid "Course Updates &amp; News"
+msgstr "تحديثات وأخبار المساق"
