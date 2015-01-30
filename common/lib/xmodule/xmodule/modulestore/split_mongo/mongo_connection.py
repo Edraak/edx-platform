@@ -2,15 +2,13 @@
 Segregation of pymongo functions from the data modeling mechanisms for split modulestore.
 """
 import re
+from mongodb_proxy import autoretry_read, MongoProxy
 import pymongo
-import time
 
 # Import this just to export it
 from pymongo.errors import DuplicateKeyError  # pylint: disable=unused-import
 
 from contracts import check
-from functools import wraps
-from pymongo.errors import AutoReconnect
 from xmodule.exceptions import HeartbeatFailure
 from xmodule.modulestore.split_mongo import BlockKey
 import datetime
@@ -68,55 +66,29 @@ def structure_to_mongo(structure):
     return new_structure
 
 
-def autoretry_read(wait=0.1, retries=5):
-    """
-    Automatically retry a read-only method in the case of a pymongo
-    AutoReconnect exception.
-
-    See http://emptysqua.re/blog/save-the-monkey-reliably-writing-to-mongodb/
-    for a discussion of this technique.
-    """
-    def decorate(fn):
-        @wraps(fn)
-        def wrapper(*args, **kwargs):
-            for attempt in xrange(retries):
-                try:
-                    return fn(*args, **kwargs)
-                    break
-                except AutoReconnect:
-                    # Reraise if we failed on our last attempt
-                    if attempt == retries - 1:
-                        raise
-
-                    if wait:
-                        time.sleep(wait)
-        return wrapper
-    return decorate
-
-
 class MongoConnection(object):
     """
     Segregation of pymongo functions from the data modeling mechanisms for split modulestore.
     """
     def __init__(
-        self, db, collection, host, port=27017, tz_aware=True, user=None, password=None, asset_collection=None, **kwargs
+        self, db, collection, host, port=27017, tz_aware=True, user=None, password=None,
+        asset_collection=None, retry_wait_time=0.1, **kwargs
     ):
         """
         Create & open the connection, authenticate, and provide pointers to the collections
         """
-        self.database = pymongo.database.Database(
-            pymongo.MongoClient(
-                host=host,
-                port=port,
-                tz_aware=tz_aware,
-                **kwargs
+        self.database = MongoProxy(
+            pymongo.database.Database(
+                pymongo.MongoClient(
+                    host=host,
+                    port=port,
+                    tz_aware=tz_aware,
+                    **kwargs
+                ),
+                db
             ),
-            db
+            wait_time=retry_wait_time
         )
-
-        # Remove when adding official Split support for asset metadata storage.
-        if asset_collection:
-            pass
 
         if user is not None and password is not None:
             self.database.authenticate(user, password)
@@ -142,7 +114,6 @@ class MongoConnection(object):
         else:
             raise HeartbeatFailure("Can't connect to {}".format(self.database.name))
 
-    @autoretry_read()
     def get_structure(self, key):
         """
         Get the structure from the persistence mechanism whose id is the given key
@@ -178,16 +149,21 @@ class MongoConnection(object):
             original_version (str or ObjectID): The id of a structure
             block_key (BlockKey): The id of the block in question
         """
-        return [structure_from_mongo(structure) for structure in self.structures.find({
-            'original_version': original_version,
-            'blocks': {
-                '$elemMatch': {
-                    'block_id': block_key.id,
-                    'block_type': block_key.type,
-                    'edit_info.update_version': {'$exists': True},
-                }
-            }
-        })]
+        return [
+            structure_from_mongo(structure)
+            for structure in self.structures.find({
+                'original_version': original_version,
+                'blocks': {
+                    '$elemMatch': {
+                        'block_id': block_key.id,
+                        'block_type': block_key.type,
+                        'edit_info.update_version': {
+                            '$exists': True,
+                        },
+                    },
+                },
+            })
+        ]
 
     def insert_structure(self, structure):
         """
@@ -195,7 +171,6 @@ class MongoConnection(object):
         """
         self.structures.insert(structure_to_mongo(structure))
 
-    @autoretry_read()
     def get_course_index(self, key, ignore_case=False):
         """
         Get the course_index from the persistence mechanism whose id is the given key
@@ -212,7 +187,6 @@ class MongoConnection(object):
             }
         return self.course_index.find_one(query)
 
-    @autoretry_read()
     def find_matching_course_indexes(self, branch=None, search_targets=None):
         """
         Find the course_index matching particular conditions.
@@ -261,24 +235,22 @@ class MongoConnection(object):
         course_index['last_update'] = datetime.datetime.now(pytz.utc)
         self.course_index.update(query, course_index, upsert=False,)
 
-    def delete_course_index(self, course_index):
+    def delete_course_index(self, course_key):
         """
         Delete the course_index from the persistence mechanism whose id is the given course_index
         """
-        return self.course_index.remove({
-            'org': course_index['org'],
-            'course': course_index['course'],
-            'run': course_index['run'],
-        })
+        query = {
+            key_attr: getattr(course_key, key_attr)
+            for key_attr in ('org', 'course', 'run')
+        }
+        return self.course_index.remove(query)
 
-    @autoretry_read()
     def get_definition(self, key):
         """
         Get the definition from the persistence mechanism whose id is the given key
         """
         return self.definitions.find_one({'_id': key})
 
-    @autoretry_read()
     def get_definitions(self, definitions):
         """
         Retrieve all definitions listed in `definitions`.

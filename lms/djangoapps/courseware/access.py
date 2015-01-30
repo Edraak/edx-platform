@@ -8,7 +8,9 @@ import pytz
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 
-from xmodule.course_module import CourseDescriptor
+from xmodule.course_module import (
+    CourseDescriptor, CATALOG_VISIBILITY_CATALOG_AND_ABOUT,
+    CATALOG_VISIBILITY_ABOUT)
 from xmodule.error_module import ErrorDescriptor
 from xmodule.x_module import XModule
 
@@ -17,6 +19,7 @@ from xblock.core import XBlock
 from external_auth.models import ExternalAuthMap
 from courseware.masquerade import is_masquerading_as_student
 from django.utils.timezone import UTC
+from student import auth
 from student.roles import (
     GlobalStaff, CourseStaffRole, CourseInstructorRole,
     OrgStaffRole, OrgInstructorRole, CourseBetaTesterRole
@@ -44,6 +47,7 @@ def has_access(user, action, obj, course_key=None):
     - visible_to_staff_only for modules
     - DISABLE_START_DATES
     - different access for instructor, staff, course staff, and students.
+    - mobile_available flag for course modules
 
     user: a Django user object. May be anonymous. If none is passed,
                     anonymous is assumed
@@ -106,10 +110,14 @@ def _has_access_course_desc(user, action, course):
 
     'load' -- load the courseware, see inside the course
     'load_forum' -- can load and contribute to the forums (one access level for now)
+    'load_mobile' -- can load from a mobile context
+    'load_mobile_no_enrollment_check' -- can load from a mobile context without checking for enrollment
     'enroll' -- enroll.  Checks for enrollment window,
                   ACCESS_REQUIRE_STAFF_FOR_COURSE,
     'see_exists' -- can see that the course exists.
     'staff' -- staff access to course.
+    'see_in_catalog' -- user is able to see the course listed in the course catalog.
+    'see_about_page' -- user is able to see the course about page.
     """
     def can_load():
         """
@@ -132,6 +140,36 @@ def _has_access_course_desc(user, action, course):
             )
         )
 
+    def can_load_mobile():
+        """
+        Can this user access this course from a mobile device?
+        """
+        return (
+            # check mobile requirements
+            can_load_mobile_no_enroll_check() and
+            # check enrollment
+            (
+                CourseEnrollment.is_enrolled(user, course.id) or
+                _has_staff_access_to_descriptor(user, course, course.id)
+            )
+        )
+
+    def can_load_mobile_no_enroll_check():
+        """
+        Can this enrolled user access this course from a mobile device?
+        Note: does not check for enrollment since it is assumed the caller has done so.
+        """
+        return (
+            # check start date
+            can_load() and
+            # check mobile_available flag
+            (
+                course.mobile_available or
+                auth.has_access(user, CourseBetaTesterRole(course.id)) or
+                _has_staff_access_to_descriptor(user, course, course.id)
+            )
+        )
+
     def can_enroll():
         """
         First check if restriction of enrollment by login method is enabled, both
@@ -150,7 +188,7 @@ def _has_access_course_desc(user, action, course):
         # if using registration method to restrict (say shibboleth)
         if settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
             if user is not None and user.is_authenticated() and \
-                ExternalAuthMap.objects.filter(user=user, external_domain=course.enrollment_domain):
+                    ExternalAuthMap.objects.filter(user=user, external_domain=course.enrollment_domain):
                 debug("Allow: external_auth of " + course.enrollment_domain)
                 reg_method_ok = True
             else:
@@ -204,13 +242,40 @@ def _has_access_course_desc(user, action, course):
 
         return can_enroll() or can_load()
 
+    def can_see_in_catalog():
+        """
+        Implements the "can see course in catalog" logic if a course should be visible in the main course catalog
+        In this case we use the catalog_visibility property on the course descriptor
+        but also allow course staff to see this.
+        """
+        return (
+            course.catalog_visibility == CATALOG_VISIBILITY_CATALOG_AND_ABOUT or
+            _has_staff_access_to_descriptor(user, course, course.id)
+        )
+
+    def can_see_about_page():
+        """
+        Implements the "can see course about page" logic if a course about page should be visible
+        In this case we use the catalog_visibility property on the course descriptor
+        but also allow course staff to see this.
+        """
+        return (
+            course.catalog_visibility == CATALOG_VISIBILITY_CATALOG_AND_ABOUT or
+            course.catalog_visibility == CATALOG_VISIBILITY_ABOUT or
+            _has_staff_access_to_descriptor(user, course, course.id)
+        )
+
     checkers = {
         'load': can_load,
         'load_forum': can_load_forum,
+        'load_mobile': can_load_mobile,
+        'load_mobile_no_enrollment_check': can_load_mobile_no_enroll_check,
         'enroll': can_enroll,
         'see_exists': see_exists,
         'staff': lambda: _has_staff_access_to_descriptor(user, course, course.id),
         'instructor': lambda: _has_instructor_access_to_descriptor(user, course, course.id),
+        'see_in_catalog': can_see_in_catalog,
+        'see_about_page': can_see_about_page,
     }
 
     return _dispatch(checkers, action, user, course)

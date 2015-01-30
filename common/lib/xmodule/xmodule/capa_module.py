@@ -88,11 +88,11 @@ class CapaModule(CapaMixin, XModule):
 
         except NotFoundError as err:
             _, _, traceback_obj = sys.exc_info()  # pylint: disable=redefined-outer-name
-            raise ProcessingError, (not_found_error_message, err), traceback_obj
+            raise ProcessingError(not_found_error_message), None, traceback_obj
 
         except Exception as err:
             _, _, traceback_obj = sys.exc_info()  # pylint: disable=redefined-outer-name
-            raise ProcessingError, (generic_error_message, err), traceback_obj
+            raise ProcessingError(generic_error_message), None, traceback_obj
 
         after = self.get_progress()
 
@@ -138,7 +138,7 @@ class CapaDescriptor(CapaFields, RawDescriptor):
         Show them only if use_latex_compiler is set to True in
         course settings.
         """
-        return (not 'latex' in template['template_id'] or course.use_latex_compiler)
+        return ('latex' not in template['template_id'] or course.use_latex_compiler)
 
     def get_context(self):
         _context = RawDescriptor.get_context(self)

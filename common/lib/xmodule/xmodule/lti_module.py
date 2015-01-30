@@ -752,7 +752,6 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         log.debug("[LTI]: Incorrect action.")
         return Response(response_xml_template.format(**unsupported_values), content_type='application/xml')
 
-
     @classmethod
     def parse_grade_xml_body(cls, body):
         """
@@ -774,7 +773,7 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         imsx_messageIdentifier = root.xpath("//def:imsx_messageIdentifier", namespaces=namespaces)[0].text or ''
         sourcedId = root.xpath("//def:sourcedId", namespaces=namespaces)[0].text
         score = root.xpath("//def:textString", namespaces=namespaces)[0].text
-        action = root.xpath("//def:imsx_POXBody", namespaces=namespaces)[0].getchildren()[0].tag.replace('{'+lti_spec_namespace+'}', '')
+        action = root.xpath("//def:imsx_POXBody", namespaces=namespaces)[0].getchildren()[0].tag.replace('{' + lti_spec_namespace + '}', '')
         # Raise exception if score is not float or not in range 0.0-1.0 regarding spec.
         score = float(score)
         if not 0 <= score <= 1:
@@ -810,18 +809,39 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         oauth_params = signature.collect_parameters(headers=headers, exclude_oauth_signature=False)
         oauth_headers = dict(oauth_params)
         oauth_signature = oauth_headers.pop('oauth_signature')
-        mock_request = mock.Mock(
+        mock_request_lti_1 = mock.Mock(
+            uri=unicode(urllib.unquote(self.get_outcome_service_url())),
+            http_method=unicode(request.method),
+            params=oauth_headers.items(),
+            signature=oauth_signature
+        )
+        mock_request_lti_2 = mock.Mock(
             uri=unicode(urllib.unquote(request.url)),
             http_method=unicode(request.method),
             params=oauth_headers.items(),
             signature=oauth_signature
         )
-
         if oauth_body_hash != oauth_headers.get('oauth_body_hash'):
+            log.error(
+                "OAuth body hash verification failed, provided: {}, "
+                "calculated: {}, for url: {}, body is: {}".format(
+                    oauth_headers.get('oauth_body_hash'),
+                    oauth_body_hash,
+                    self.get_outcome_service_url(),
+                    request.body
+                )
+            )
             raise LTIError("OAuth body hash verification is failed.")
 
-        if not signature.verify_hmac_sha1(mock_request, client_secret):
-            raise LTIError("OAuth signature verification is failed.")
+        if (not signature.verify_hmac_sha1(mock_request_lti_1, client_secret) and not
+                signature.verify_hmac_sha1(mock_request_lti_2, client_secret)):
+            log.error("OAuth signature verification failed, for "
+                      "headers:{} url:{} method:{}".format(
+                          oauth_headers,
+                          self.get_outcome_service_url(),
+                          unicode(request.method)
+                      ))
+            raise LTIError("OAuth signature verification has failed.")
 
     def get_client_key_secret(self):
         """
@@ -841,6 +861,7 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
             if lti_id == self.lti_id.strip():
                 return key, secret
         return '', ''
+
 
 class LTIDescriptor(LTIFields, MetadataOnlyEditingDescriptor, EmptyDataRawDescriptor):
     """

@@ -1,3 +1,8 @@
+"""
+Views handling read (GET) requests for the Discussion tab and inline discussions.
+"""
+
+from functools import wraps
 import json
 import logging
 import xml.sax.saxutils as saxutils
@@ -11,8 +16,14 @@ import newrelic.agent
 
 from edxmako.shortcuts import render_to_response
 from courseware.courses import get_course_with_access
-from course_groups.cohorts import is_course_cohorted, get_cohort_id, get_course_cohorts, is_commentable_cohorted
+from openedx.core.djangoapps.course_groups.cohorts import (
+    is_course_cohorted,
+    get_cohort_id,
+    get_course_cohorts,
+    is_commentable_cohorted
+)
 from courseware.access import has_access
+from xmodule.modulestore.django import modulestore
 
 from django_comment_client.permissions import cached_has_permission
 from django_comment_client.utils import (
@@ -25,7 +36,7 @@ from django_comment_client.utils import (
 import django_comment_client.utils as utils
 import lms.lib.comment_client as cc
 
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from opaque_keys.edx.keys import CourseKey
 
 THREADS_PER_PAGE = 20
 INLINE_THREADS_PER_PAGE = 20
@@ -38,6 +49,7 @@ def _attr_safe_json(obj):
     return a JSON string for obj which is safe to embed as the value of an attribute in a DOM node
     """
     return saxutils.escape(json.dumps(obj), {'"': '&quot;'})
+
 
 @newrelic.agent.function_trace()
 def make_course_settings(course):
@@ -55,6 +67,7 @@ def make_course_settings(course):
     }
 
     return obj
+
 
 @newrelic.agent.function_trace()
 def get_threads(request, course_key, discussion_id=None, per_page=THREADS_PER_PAGE):
@@ -112,8 +125,8 @@ def get_threads(request, course_key, discussion_id=None, per_page=THREADS_PER_PA
     threads, page, num_pages, corrected_text = cc.Thread.search(query_params)
 
     for thread in threads:
-        #patch for backward compatibility to comments service
-        if not 'pinned' in thread:
+        # patch for backward compatibility to comments service
+        if 'pinned' not in thread:
             thread['pinned'] = False
 
     query_params['page'] = page
@@ -123,13 +136,27 @@ def get_threads(request, course_key, discussion_id=None, per_page=THREADS_PER_PA
     return threads, query_params
 
 
+def use_bulk_ops(view_func):
+    """
+    Wraps internal request handling inside a modulestore bulk op, significantly
+    reducing redundant database calls.  Also converts the course_id parsed from
+    the request uri to a CourseKey before passing to the view.
+    """
+    @wraps(view_func)
+    def wrapped_view(request, course_id, *args, **kwargs):  # pylint: disable=missing-docstring
+        course_key = CourseKey.from_string(course_id)
+        with modulestore().bulk_operations(course_key):
+            return view_func(request, course_key, *args, **kwargs)
+    return wrapped_view
+
+
 @login_required
-def inline_discussion(request, course_id, discussion_id):
+@use_bulk_ops
+def inline_discussion(request, course_key, discussion_id):
     """
     Renders JSON for DiscussionModules
     """
     nr_transaction = newrelic.agent.current_transaction()
-    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
 
     course = get_course_with_access(request.user, 'load_forum', course_key)
     cc_user = cc.User.from_django_user(request.user)
@@ -147,6 +174,7 @@ def inline_discussion(request, course_id, discussion_id):
     with newrelic.agent.FunctionTrace(nr_transaction, "add_courseware_context"):
         add_courseware_context(threads, course)
     return utils.JsonResponse({
+        'is_commentable_cohorted': is_commentable_cohorted(course_key, discussion_id),
         'discussion_data': threads,
         'user_info': user_info,
         'annotated_content_info': annotated_content_info,
@@ -156,12 +184,13 @@ def inline_discussion(request, course_id, discussion_id):
         'course_settings': make_course_settings(course)
     })
 
+
 @login_required
-def forum_form_discussion(request, course_id):
+@use_bulk_ops
+def forum_form_discussion(request, course_key):
     """
     Renders the main Discussion page, potentially filtered by a search query
     """
-    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     nr_transaction = newrelic.agent.current_transaction()
 
     course = get_course_with_access(request.user, 'load_forum', course_key, check_if_enrolled=True)
@@ -212,7 +241,7 @@ def forum_form_discussion(request, course_id):
             'roles': _attr_safe_json(utils.get_role_ids(course_key)),
             'is_moderator': cached_has_permission(request.user, "see_all_cohorts", course_key),
             'cohorts': course_settings["cohorts"],  # still needed to render _thread_list_template
-            'user_cohort': user_cohort_id, # read from container in NewPostView
+            'user_cohort': user_cohort_id,  # read from container in NewPostView
             'is_course_cohorted': is_course_cohorted(course_key),  # still needed to render _thread_list_template
             'sort_preference': user.default_sort_key,
             'category_map': course_settings["category_map"],
@@ -224,8 +253,12 @@ def forum_form_discussion(request, course_id):
 
 @require_GET
 @login_required
-def single_thread(request, course_id, discussion_id, thread_id):
-    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+@use_bulk_ops
+def single_thread(request, course_key, discussion_id, thread_id):
+    """
+    Renders a response to display a single discussion thread.
+    """
+
     nr_transaction = newrelic.agent.current_transaction()
 
     course = get_course_with_access(request.user, 'load_forum', course_key)
@@ -278,8 +311,8 @@ def single_thread(request, course_id, discussion_id, thread_id):
             add_courseware_context(threads, course)
 
         for thread in threads:
-            #patch for backward compatibility with comments service
-            if not "pinned" in thread:
+            # patch for backward compatibility with comments service
+            if "pinned" not in thread:
                 thread["pinned"] = False
 
         threads = [utils.prepare_content(thread, course_key, is_staff) for thread in threads]
@@ -314,10 +347,16 @@ def single_thread(request, course_id, discussion_id, thread_id):
         }
         return render_to_response('discussion/index.html', context)
 
+
 @require_GET
 @login_required
-def user_profile(request, course_id, user_id):
-    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+@use_bulk_ops
+def user_profile(request, course_key, user_id):
+    """
+    Renders a response to display the user profile page (shown after clicking
+    on a post author's username).
+    """
+
     nr_transaction = newrelic.agent.current_transaction()
 
     #TODO: Allow sorting?
@@ -374,8 +413,12 @@ def user_profile(request, course_id, user_id):
 
 
 @login_required
-def followed_threads(request, course_id, user_id):
-    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+@use_bulk_ops
+def followed_threads(request, course_key, user_id):
+    """
+    Ajax-only endpoint retrieving the threads followed by a specific user.
+    """
+
     nr_transaction = newrelic.agent.current_transaction()
 
     course = get_course_with_access(request.user, 'load_forum', course_key)

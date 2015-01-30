@@ -22,7 +22,7 @@ Longer TODO:
 
 # We intentionally define lots of variables that aren't used, and
 # want to import all variables from base settings files
-# pylint: disable=W0401, W0611, W0614, C0103
+# pylint: disable=wildcard-import, unused-import, unused-wildcard-import, invalid-name
 
 import sys
 import os
@@ -33,13 +33,16 @@ from warnings import simplefilter
 from django.utils.translation import ugettext_lazy as _
 
 from .discussionsettings import *
+import dealer.git
 from xmodule.modulestore.modulestore_settings import update_module_store_settings
-from lms.lib.xblock.mixin import LmsBlockMixin
+from lms.djangoapps.lms_xblock.mixin import LmsBlockMixin
 
 ################################### FEATURES ###################################
 # The display name of the platform to be used in templates/emails/etc.
 PLATFORM_NAME = "Your Platform Name Here"
 CC_MERCHANT_NAME = PLATFORM_NAME
+# Shows up in the platform footer, eg "(c) COPYRIGHT_YEAR"
+COPYRIGHT_YEAR = "2015"
 
 PLATFORM_FACEBOOK_ACCOUNT = "http://www.facebook.com/YourPlatformFacebookAccount"
 PLATFORM_TWITTER_ACCOUNT = "@YourPlatformTwitterAccount"
@@ -183,7 +186,8 @@ FEATURES = {
 
     # Enable legacy instructor dashboard
     'ENABLE_INSTRUCTOR_LEGACY_DASHBOARD': True,
-    # Is this an edX-owned domain? (used on instructor dashboard)
+
+    # Is this an edX-owned domain? (used for edX specific messaging and images)
     'IS_EDX_DOMAIN': False,
 
     # Toggle to enable certificates of courses on dashboard
@@ -268,14 +272,15 @@ FEATURES = {
     # nonzero grade cutoff is met
     'SHOW_PROGRESS_SUCCESS_BUTTON': False,
 
-    # Analytics Data API (for active student count)
-    # Default to false here b/c dev environments won't have the api, will override in aws.py
-    'ENABLE_ANALYTICS_ACTIVE_COUNT': False,
-
     # When a logged in user goes to the homepage ('/') should the user be
     # redirected to the dashboard - this is default Open edX behavior. Set to
     # False to not redirect the user
     'ALWAYS_REDIRECT_HOMEPAGE_TO_DASHBOARD_FOR_AUTHENTICATED_USER': True,
+
+    # When a user goes to the homepage ('/') the user see the
+    # courses listed in the announcement dates order - this is default Open edX behavior.
+    # Set to True to change the course sorting behavior by their start dates, latest first.
+    'ENABLE_COURSE_SORTING_BY_START_DATE': False,
 
     # Expose Mobile REST API. Note that if you use this, you must also set
     # ENABLE_OAUTH2_PROVIDER to True
@@ -284,10 +289,28 @@ FEATURES = {
     # Enable the new dashboard, account, and profile pages
     'ENABLE_NEW_DASHBOARD': False,
 
+    # Enable the combined login/registration form
+    'ENABLE_COMBINED_LOGIN_REGISTRATION': False,
+
+    # Enable organizational email opt-in
+    'ENABLE_MKTG_EMAIL_OPT_IN': False,
+
     # Show a section in the membership tab of the instructor dashboard
     # to allow an upload of a CSV file that contains a list of new accounts to create
     # and register for course.
     'ALLOW_AUTOMATED_SIGNUPS': False,
+
+    # Display demographic data on the analytics tab in the instructor dashboard.
+    'DISPLAY_ANALYTICS_DEMOGRAPHICS': True,
+
+    # Enable display of enrollment counts in instructor and legacy analytics dashboard
+    'DISPLAY_ANALYTICS_ENROLLMENTS': True,
+
+    # Separate the verification flow from the payment flow
+    'SEPARATE_VERIFICATION_FROM_PAYMENT': False,
+
+    # Show the mobile app links in the footer
+    'ENABLE_FOOTER_MOBILE_APP_LINKS': False,
 }
 
 # Ignore static asset files on import which match this pattern
@@ -507,6 +530,9 @@ EVENT_TRACKING_BACKENDS = {
 EVENT_TRACKING_PROCESSORS = [
     {
         'ENGINE': 'track.shim.LegacyFieldMappingProcessor'
+    },
+    {
+        'ENGINE': 'track.shim.VideoEventProcessor'
     }
 ]
 
@@ -525,8 +551,12 @@ if FEATURES.get('ENABLE_SQL_TRACKING_LOGS'):
     })
 
 TRACKING_SEGMENTIO_WEBHOOK_SECRET = None
-TRACKING_SEGMENTIO_ALLOWED_ACTIONS = ['Track', 'Screen']
-TRACKING_SEGMENTIO_ALLOWED_CHANNELS = ['mobile']
+TRACKING_SEGMENTIO_ALLOWED_TYPES = ['track']
+TRACKING_SEGMENTIO_DISALLOWED_SUBSTRING_NAMES = ['.bi.']
+TRACKING_SEGMENTIO_SOURCE_MAP = {
+    'analytics-android': 'mobile',
+    'analytics-ios': 'mobile',
+}
 
 ######################## GOOGLE ANALYTICS ###########################
 GOOGLE_ANALYTICS_ACCOUNT = None
@@ -562,7 +592,9 @@ DOC_STORE_CONFIG = {
     'host': 'localhost',
     'db': 'xmodule',
     'collection': 'modulestore',
-    'asset_collection': 'assetstore',
+    # If 'asset_collection' defined, it'll be used
+    # as the collection name for asset metadata.
+    # Otherwise, a default collection name will be used.
 }
 MODULESTORE = {
     'default': {
@@ -655,12 +687,22 @@ CONTACT_EMAIL = 'info@example.com'
 BUGS_EMAIL = 'bugs@example.com'
 UNIVERSITY_EMAIL = 'university@example.com'
 PRESS_EMAIL = 'press@example.com'
+FINANCE_EMAIL = ''
 ADMINS = ()
 MANAGERS = ADMINS
 
+EDX_PLATFORM_REVISION = os.environ.get('EDX_PLATFORM_REVISION')
+
+if not EDX_PLATFORM_REVISION:
+    try:
+        # Get git revision of the current file
+        EDX_PLATFORM_REVISION = dealer.git.Backend(path=REPO_ROOT).revision
+    except TypeError:
+        # Not a git repository
+        EDX_PLATFORM_REVISION = 'unknown'
+
 # Static content
 STATIC_URL = '/static/'
-ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATIC_ROOT = ENV_ROOT / "staticfiles"
 
 STATICFILES_DIRS = [
@@ -912,7 +954,7 @@ MIDDLEWARE_CLASSES = (
 
     # Adds user tags to tracking events
     # Must go before TrackMiddleware, to get the context set up
-    'user_api.middleware.UserTagsEventContextMiddleware',
+    'openedx.core.djangoapps.user_api.middleware.UserTagsEventContextMiddleware',
 
     'django.contrib.messages.middleware.MessageMiddleware',
     'track.middleware.TrackMiddleware',
@@ -956,6 +998,9 @@ MIDDLEWARE_CLASSES = (
     'courseware.middleware.RedirectUnenrolledMiddleware',
 
     'course_wiki.middleware.WikiAccessMiddleware',
+
+    # This must be last
+    'microsite_configuration.middleware.MicrositeSessionCookieDomainMiddleware',
 )
 
 # Clickjacking protection can be enabled by setting this to 'DENY'
@@ -989,40 +1034,24 @@ courseware_js = (
 base_vendor_js = [
     'js/vendor/jquery.min.js',
     'js/vendor/jquery.cookie.js',
-    'js/vendor/underscore-min.js'
+    'js/vendor/url.min.js',
+    'js/vendor/underscore-min.js',
+    'js/vendor/require.js',
+    'js/RequireJS-namespace-undefine.js',
 ]
 
 main_vendor_js = base_vendor_js + [
-    'js/vendor/require.js',
-    'js/RequireJS-namespace-undefine.js',
     'js/vendor/json2.js',
     'js/vendor/jquery-ui.min.js',
     'js/vendor/jquery.qtip.min.js',
     'js/vendor/swfobject/swfobject.js',
     'js/vendor/jquery.ba-bbq.min.js',
-    'js/vendor/ova/annotator-full.js',
-    'js/vendor/ova/annotator-full-firebase-auth.js',
-    'js/vendor/ova/video.dev.js',
-    'js/vendor/ova/vjs.youtube.js',
-    'js/vendor/ova/rangeslider.js',
-    'js/vendor/ova/share-annotator.js',
-    'js/vendor/ova/richText-annotator.js',
-    'js/vendor/ova/reply-annotator.js',
-    'js/vendor/ova/tags-annotator.js',
-    'js/vendor/ova/flagging-annotator.js',
-    'js/vendor/ova/diacritic-annotator.js',
-    'js/vendor/ova/grouping-annotator.js',
-    'js/vendor/ova/jquery-Watch.js',
-    'js/vendor/ova/openseadragon.js',
-    'js/vendor/ova/OpenSeaDragonAnnotation.js',
-    'js/vendor/ova/ova.js',
-    'js/vendor/ova/catch/js/catch.js',
-    'js/vendor/ova/catch/js/handlebars-1.1.2.js',
     'js/vendor/URI.min.js',
 ]
 
 dashboard_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js'))
 discussion_js = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
+rwd_header_footer_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/common_helpers/rwd_header_footer.js'))
 staff_grading_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.js'))
 open_ended_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/open_ended/**/*.js'))
 notes_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/notes/**/*.js'))
@@ -1031,8 +1060,58 @@ instructor_dash_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/ins
 # JavaScript used by the student account and profile pages
 # These are not courseware, so they do not need many of the courseware-specific
 # JavaScript modules.
-student_account_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/student_account/**/*.js'))
+student_account_js = [
+    'js/utils/rwd_header_footer.js',
+    'js/utils/edx.utils.validate.js',
+    'js/form.ext.js',
+    'js/my_courses_dropdown.js',
+    'js/toggle_login_modal.js',
+    'js/sticky_filter.js',
+    'js/query-params.js',
+    'js/src/utility.js',
+    'js/src/accessibility_tools.js',
+    'js/src/ie_shim.js',
+    'js/src/string_utils.js',
+    'js/student_account/enrollment.js',
+    'js/student_account/emailoptin.js',
+    'js/student_account/shoppingcart.js',
+    'js/student_account/models/LoginModel.js',
+    'js/student_account/models/RegisterModel.js',
+    'js/student_account/models/PasswordResetModel.js',
+    'js/student_account/views/FormView.js',
+    'js/student_account/views/LoginView.js',
+    'js/student_account/views/RegisterView.js',
+    'js/student_account/views/PasswordResetView.js',
+    'js/student_account/views/AccessView.js',
+    'js/student_account/accessApp.js',
+]
+
 student_profile_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/student_profile/**/*.js'))
+
+verify_student_js = [
+    'js/form.ext.js',
+    'js/my_courses_dropdown.js',
+    'js/toggle_login_modal.js',
+    'js/sticky_filter.js',
+    'js/query-params.js',
+    'js/src/utility.js',
+    'js/src/accessibility_tools.js',
+    'js/src/ie_shim.js',
+    'js/src/string_utils.js',
+    'js/verify_student/models/verification_model.js',
+    'js/verify_student/views/error_view.js',
+    'js/verify_student/views/webcam_photo_view.js',
+    'js/verify_student/views/step_view.js',
+    'js/verify_student/views/intro_step_view.js',
+    'js/verify_student/views/make_payment_step_view.js',
+    'js/verify_student/views/payment_confirmation_step_view.js',
+    'js/verify_student/views/face_photo_step_view.js',
+    'js/verify_student/views/id_photo_step_view.js',
+    'js/verify_student/views/review_photos_step_view.js',
+    'js/verify_student/views/enrollment_confirmation_step_view.js',
+    'js/verify_student/views/pay_and_verify_view.js',
+    'js/verify_student/pay_and_verify.js',
+]
 
 PIPELINE_CSS = {
     'style-vendor': {
@@ -1144,7 +1223,7 @@ PIPELINE_JS = {
     'application': {
 
         # Application will contain all paths not in courseware_only_js
-        'source_filenames': sorted(common_js) + sorted(project_js) + [
+        'source_filenames': ['js/xblock/core.js'] + sorted(common_js) + sorted(project_js) + [
             'js/form.ext.js',
             'js/my_courses_dropdown.js',
             'js/toggle_login_modal.js',
@@ -1201,6 +1280,10 @@ PIPELINE_JS = {
         'source_filenames': dashboard_js,
         'output_filename': 'js/dashboard.js'
     },
+    'rwd_header_footer': {
+        'source_filenames': rwd_header_footer_js,
+        'output_filename': 'js/rwd_header_footer.js'
+    },
     'student_account': {
         'source_filenames': student_account_js,
         'output_filename': 'js/student_account.js'
@@ -1209,6 +1292,10 @@ PIPELINE_JS = {
         'source_filenames': student_profile_js,
         'output_filename': 'js/student_profile.js'
     },
+    'verify_student': {
+        'source_filenames': verify_student_js,
+        'output_filename': 'js/verify_student.js'
+    }
 }
 
 PIPELINE_DISABLE_WRAPPER = True
@@ -1245,7 +1332,7 @@ STATICFILES_IGNORE_PATTERNS = (
     "common_static",
 )
 
-PIPELINE_UGLIFYJS_BINARY='node_modules/.bin/uglifyjs'
+PIPELINE_UGLIFYJS_BINARY = 'node_modules/.bin/uglifyjs'
 
 # Setting that will only affect the edX version of django-pipeline until our changes are merged upstream
 PIPELINE_COMPILE_INPLACE = True
@@ -1335,6 +1422,10 @@ BULK_EMAIL_LOG_SENT_EMAILS = False
 # parallel, and what the SES rate is.
 BULK_EMAIL_RETRY_DELAY_BETWEEN_SENDS = 0.02
 
+############################# Email Opt In ####################################
+
+# Minimum age for organization-wide email opt in
+EMAIL_OPTIN_MINIMUM_AGE = 13
 
 ############################## Video ##########################################
 
@@ -1397,7 +1488,7 @@ INSTALLED_APPS = (
     'open_ended_grading',
     'psychometrics',
     'licenses',
-    'course_groups',
+    'openedx.core.djangoapps.course_groups',
     'bulk_email',
 
     # External auth (OpenID, shib)
@@ -1441,7 +1532,7 @@ INSTALLED_APPS = (
 
     # User API
     'rest_framework',
-    'user_api',
+    'openedx.core.djangoapps.user_api',
 
     # Shopping cart
     'shoppingcart',
@@ -1494,30 +1585,36 @@ INSTALLED_APPS = (
     'edraak_bayt',
     'edraak_certificates',
     'edraak_url_rewrites',
+    'lms.djangoapps.lms_xblock',
 )
 
 ######################### MARKETING SITE ###############################
 EDXMKTG_COOKIE_NAME = 'edxloggedin'
 MKTG_URLS = {}
 MKTG_URL_LINK_MAP = {
-    'ABOUT': 'about_edx',
+    'ABOUT': 'about',
     'CONTACT': 'contact',
-    'FAQ': 'help_edx',
+    'FAQ': 'help',
     'COURSES': 'courses',
     'ROOT': 'root',
     'TOS': 'tos',
-    'HONOR': 'honor',
-    'PRIVACY': 'privacy_edx',
-    'JOBS': 'jobs',
-    'NEWS': 'news',
+    'HONOR': 'honor',  # If your site does not have an honor code, simply delete this line.
+    'PRIVACY': 'privacy',
     'PRESS': 'press',
-    'BLOG': 'edx-blog',
+    'BLOG': 'blog',
     'DONATE': 'donate',
 
     # Verified Certificates
     'WHAT_IS_VERIFIED_CERT': 'verified-certificate',
 }
 
+################# Mobile URLS ##########################
+
+# These are URLs to the app store for mobile.
+MOBILE_STORE_URLS = {
+    'apple': '#',
+    'google': '#'
+}
 
 ################# Student Verification #################
 VERIFY_STUDENT = {
@@ -1554,6 +1651,7 @@ REGISTRATION_EXTRA_FIELDS = {
     'mailing_address': 'optional',
     'goals': 'optional',
     'honor_code': 'required',
+    'terms_of_service': 'hidden',
     'city': 'hidden',
     'country': 'hidden',
 }
@@ -1586,14 +1684,6 @@ PASSWORD_DICTIONARY = []
 
 ##################### LinkedIn #####################
 INSTALLED_APPS += ('django_openid_auth',)
-
-
-############################ LinkedIn Integration #############################
-INSTALLED_APPS += ('linkedin',)
-LINKEDIN_API = {
-    'EMAIL_WHITELIST': [],
-    'COMPANY_ID': '2746406',
-}
 
 
 ############################ ORA 2 ############################################
@@ -1845,7 +1935,7 @@ ADVANCED_SECURITY_CONFIG = {}
 SHIBBOLETH_DOMAIN_PREFIX = 'shib:'
 OPENID_DOMAIN_PREFIX = 'openid:'
 
-### Analytics data api settings
+### Analytics Data API + Dashboard (Insights) settings
 ANALYTICS_DATA_URL = ""
 ANALYTICS_DATA_TOKEN = ""
 ANALYTICS_DASHBOARD_URL = ""
@@ -1860,3 +1950,14 @@ INVOICE_PAYMENT_INSTRUCTIONS = "This is where you can\nput directions on how peo
 COUNTRIES_OVERRIDE = {
     "TW": _("Taiwan"),
 }
+
+# which access.py permission name to check in order to determine if a course is visible in
+# the course catalog. We default this to the legacy permission 'see_exists'.
+COURSE_CATALOG_VISIBILITY_PERMISSION = 'see_exists'
+
+# which access.py permission name to check in order to determine if a course about page is
+# visible. We default this to the legacy permission 'see_exists'.
+COURSE_ABOUT_VISIBILITY_PERMISSION = 'see_exists'
+
+#date format the api will be formatting the datetime values
+API_DATE_FORMAT = '%Y-%m-%d'

@@ -2,7 +2,7 @@ div.calc-main {
   bottom: -126px;
   left: 0;
   position: fixed;
-  @include transition(bottom 0.75s linear 0s);
+  @include transition(bottom $tmg-avg linear 0s);
   -webkit-appearance: none;
   width: 100%;
   z-index: 99;
@@ -12,15 +12,15 @@ div.calc-main {
   }
 
   a.calc {
+    @include text-hide();
     background: url("../images/calc-icon.png") rgba(#111, .9) no-repeat center;
     border-bottom: 0;
     border-radius: 3px 3px 0 0;
-    color: #fff;
+    color: $white;
     float: right;
     height: 20px;
-    @include hide-text;
     display: inline-block;
-    margin-right: 10px;
+    margin-right: ($baseline/2);
     padding: 8px 12px;
     position: relative;
     top: -45px;
@@ -43,6 +43,17 @@ div.calc-main {
     position: relative;
     top: -36px;
 
+    // UI: input help table
+    .calculator-input-help-table {
+      margin: ($baseline/2) 0;
+
+      tr th, tr td {
+        vertical-align: top;
+        border: 1px solid $gray-l4;
+        padding: ($baseline/2);
+      }
+    }
+
     form {
       @extend .clearfix;
       @include box-sizing(border-box);
@@ -50,11 +61,11 @@ div.calc-main {
 
       input#calculator_button {
         background: #111;
-        border: 1px solid #000;
+        border: 1px solid $black;
         border-radius: 0;
         box-shadow: none;
         @include box-sizing(border-box);
-        color: #fff;
+        color: $white;
         float: left;
         font-size: 30px;
         font-weight: bold;
@@ -75,7 +86,7 @@ div.calc-main {
         border: 0;
         box-shadow: none;
         @include box-sizing(border-box);
-        color: #fff;
+        color: $white;
         float: left;
         font-size: 16px;
         font-weight: bold;
@@ -125,7 +136,7 @@ div.calc-main {
 
           .help {
             @include transition(none);
-            background: #fff;
+            background: $white;
             border-radius: 3px;
             box-shadow: 0 0 3px #999;
             color: #333;
@@ -151,14 +162,6 @@ div.calc-main {
 
             p, p+p {
               margin: 0;
-            }
-
-            table {
-              margin: 10px 0;
-
-              td, th {
-                padding: 2px 5px;
-              }
             }
 
             .calc-postfixes {

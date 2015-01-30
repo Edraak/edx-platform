@@ -41,7 +41,7 @@ class AnnotationComponentPage(PageObject):
         Return css selector for current active problem with sub_selector.
         """
         return 'div[data-problem-id="{}"] {}'.format(
-            self.q(css='.vert-{}'.format(self.active_problem+1)).map(
+            self.q(css='.vert-{}'.format(self.active_problem + 1)).map(
                 lambda el: el.get_attribute('data-id')).results[0],
             sub_selector,
         )
@@ -65,8 +65,16 @@ class AnnotationComponentPage(PageObject):
         Submit correct answer for active problem.
         """
         self.q(css=self.active_problem_selector('.comment')).fill('Test Response')
-        self.q(css=self.active_problem_selector('.tag[data-id="{}"]'.format(self.active_problem))).click()
+
+        answer_css = self.active_problem_selector('.tag[data-id="{}"]'.format(self.active_problem))
+        # Selenium will first move the element into view then click on it.
+        self.q(css=answer_css).click()
+        # Wait for the click to take effect, which is after the class is applied.
+        self.wait_for(lambda: 'selected' in self.q(css=answer_css).attrs('class')[0], description='answer selected')
+        # Click the "Check" button.
         self.q(css=self.active_problem_selector('.check')).click()
+        # This will trigger a POST to problem_check so wait until the response is returned.
+        self.wait_for_ajax()
 
     def check_feedback(self):
         """

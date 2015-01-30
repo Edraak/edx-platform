@@ -301,12 +301,6 @@ class @Problem
 
     Logger.log 'problem_check', @answers
 
-    # Segment.io
-    analytics.track "edx.bi.course.problem.checked",
-      category: "courseware"
-      problem_id: @id
-      answers: @answers
-
     $.postWithPrefix("#{@url}/problem_check", @answers, (response) =>
       switch response.success
         when 'incorrect', 'correct'
@@ -679,9 +673,11 @@ class @Problem
     # Used to disable check button to reduce chance of accidental double-submissions.
     if enable
       @checkButton.removeClass 'is-disabled'
+      @checkButton.attr({'aria-disabled': 'false'})
       @checkButton.val(@checkButtonCheckText)
     else
       @checkButton.addClass 'is-disabled'
+      @checkButton.attr({'aria-disabled': 'true'})
       @checkButton.val(@checkButtonCheckingText)
 
   enableCheckButtonAfterResponse: =>

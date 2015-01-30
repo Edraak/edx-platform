@@ -34,7 +34,7 @@ def check_student_grades(request):
 
 
 @ensure_csrf_cookie
-@cache_if_anonymous
+@cache_if_anonymous()
 def all_courses(request, extra_context={}, user=AnonymousUser()):
     """
     Render the edX main page.

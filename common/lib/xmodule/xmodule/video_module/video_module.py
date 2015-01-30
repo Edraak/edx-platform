@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=W0223
+# pylint: disable=abstract-method
 """Video is ungraded Xmodule for support video content.
 It's new improved video module, which support additional feature:
 
@@ -18,7 +18,6 @@ Examples of html5 videos for manual testing:
 import copy
 import json
 import logging
-import os.path
 from collections import OrderedDict
 from operator import itemgetter
 
@@ -30,14 +29,13 @@ from django.conf import settings
 from xblock.fields import ScopeIds
 from xblock.runtime import KvsFieldData
 
-from xmodule.exceptions import NotFoundError
 from xmodule.modulestore.inheritance import InheritanceKeyValueStore, own_metadata
 from xmodule.x_module import XModule, module_attr
 from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
 
-from .transcripts_utils import Transcript, VideoTranscriptsMixin
+from .transcripts_utils import VideoTranscriptsMixin
 from .video_utils import create_youtube_string, get_video_from_cdn
 from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
@@ -132,7 +130,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
     def get_transcripts_for_student(self):
         """Return transcript information necessary for rendering the XModule student view.
 
-        This is more or less a direct extraction from `get_html`. 
+        This is more or less a direct extraction from `get_html`.
 
         Returns:
             Tuple of (track_url, transcript_language, sorted_languages)
@@ -176,6 +174,40 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
         transcript_download_format = self.transcript_download_format if not (self.download_track and self.track) else None
         sources = filter(None, self.html5_sources)
 
+        download_video_link = None
+        youtube_streams = ""
+
+        # If we have an edx_video_id, we prefer its values over what we store
+        # internally for download links (source, html5_sources) and the youtube
+        # stream.
+        if self.edx_video_id and edxval_api:
+            try:
+                val_profiles = ["youtube", "desktop_webm", "desktop_mp4"]
+                val_video_urls = edxval_api.get_urls_for_profiles(self.edx_video_id, val_profiles)
+
+                # VAL will always give us the keys for the profiles we asked for, but
+                # if it doesn't have an encoded video entry for that Video + Profile, the
+                # value will map to `None`
+
+                # add the non-youtube urls to the list of alternative sources
+                # use the last non-None non-youtube url as the link to download the video
+                for url in [val_video_urls[p] for p in val_profiles if p != "youtube"]:
+                    if url:
+                        if url not in sources:
+                            sources.append(url)
+                        if self.download_video:
+                            download_video_link = url
+
+                # set the youtube url
+                if val_video_urls["youtube"]:
+                    youtube_streams = "1.00:{}".format(val_video_urls["youtube"])
+
+            except edxval_api.ValInternalError:
+                # VAL raises this exception if it can't find data for the edx video ID. This can happen if the
+                # course data is ported to a machine that does not have the VAL data. So for now, pass on this
+                # exception and fallback to whatever we find in the VideoDescriptor.
+                log.warning("Could not retrieve information from VAL for edx Video ID: %s.", self.edx_video_id)
+
         # If the user comes from China use China CDN for html5 videos.
         # 'CN' is China ISO 3166-1 country code.
         # Video caching is disabled for Studio. User_location is always None in Studio.
@@ -187,30 +219,6 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
                 new_url = get_video_from_cdn(cdn_url, source_url)
                 if new_url:
                     sources[index] = new_url
-
-        download_video_link = None
-        youtube_streams = ""
-
-        # If we have an edx_video_id, we prefer its values over what we store
-        # internally for download links (source, html5_sources) and the youtube
-        # stream.
-        if self.edx_video_id and edxval_api:
-            try:
-                val_video_urls = edxval_api.get_urls_for_profiles(
-                    self.edx_video_id, ["desktop_mp4", "youtube"]
-                )
-                # VAL will always give us the keys for the profiles we asked for, but
-                # if it doesn't have an encoded video entry for that Video + Profile, the
-                # value will map to `None`
-                if val_video_urls["desktop_mp4"] and self.download_video:
-                    download_video_link = val_video_urls["desktop_mp4"]
-                if val_video_urls["youtube"]:
-                    youtube_streams = "1.00:{}".format(val_video_urls["youtube"])
-            except edxval_api.ValInternalError:
-                # VAL raises this exception if it can't find data for the edx video ID. This can happen if the
-                # course data is ported to a machine that does not have the VAL data. So for now, pass on this
-                # exception and fallback to whatever we find in the VideoDescriptor.
-                log.warning("Could not retrieve information from VAL for edx Video ID: %s.", self.edx_video_id)
 
         # If there was no edx_video_id, or if there was no download specified
         # for it, we fall back on whatever we find in the VideoDescriptor
@@ -290,7 +298,7 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         super(VideoDescriptor, self).__init__(*args, **kwargs)
         # For backwards compatibility -- if we've got XML data, parse it out and set the metadata fields
         if self.data:
-            field_data = self._parse_video_xml(self.data)
+            field_data = self._parse_video_xml(etree.fromstring(self.data))
             self._field_data.set_many(self, field_data)
             del self.data
 
@@ -396,8 +404,9 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         usage_id = id_generator.create_usage(definition_id)
         if is_pointer_tag(xml_object):
             filepath = cls._format_filepath(xml_object.tag, name_to_pathname(url_name))
-            xml_data = etree.tostring(cls.load_file(filepath, system.resources_fs, usage_id))
-        field_data = cls._parse_video_xml(xml_data)
+            xml_object = cls.load_file(filepath, system.resources_fs, usage_id)
+            system.parse_asides(xml_object, definition_id, usage_id, id_generator)
+        field_data = cls._parse_video_xml(xml_object)
         kvs = InheritanceKeyValueStore(initial_values=field_data)
         field_data = KvsFieldData(kvs)
         video = system.construct_xblock_from_class(
@@ -533,12 +542,11 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         return ret
 
     @classmethod
-    def _parse_video_xml(cls, xml_data):
+    def _parse_video_xml(cls, xml):
         """
         Parse video fields out of xml_data. The fields are set if they are
         present in the XML.
         """
-        xml = etree.fromstring(xml_data)
         field_data = {}
 
         # Convert between key types for certain attributes --

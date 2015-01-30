@@ -97,7 +97,7 @@ if Backbone?
       else
         @$el.append($discussion)
 
-      @newPostForm = $('.new-post-article')
+      @newPostForm = this.$el.find('.new-post-article')
       @threadviews = @discussion.map (thread) =>
         view = new DiscussionThreadView(
           el: @$("article#thread_#{thread.id}"),
@@ -116,7 +116,8 @@ if Backbone?
         el: @newPostForm,
         collection: @discussion,
         course_settings: @course_settings,
-        topicId: discussionId
+        topicId: discussionId,
+        is_commentable_cohorted: response.is_commentable_cohorted
       )
       @newPostView.render()
       @listenTo( @newPostView, 'newPost:cancel', @hideNewPost )

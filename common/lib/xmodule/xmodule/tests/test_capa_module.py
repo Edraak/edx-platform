@@ -2,10 +2,8 @@
 """
 Tests of the Capa XModule
 """
-# pylint: disable=C0111
-# pylint: disable=R0904
-# pylint: disable=C0103
-# pylint: disable=C0302
+# pylint: disable=missing-docstring
+# pylint: disable=invalid-name
 
 import datetime
 import json
@@ -15,7 +13,7 @@ import textwrap
 import unittest
 import ddt
 
-from mock import Mock, patch
+from mock import Mock, patch, DEFAULT
 import webob
 from webob.multidict import MultiDict
 
@@ -141,6 +139,7 @@ class CapaFactory(object):
                 module.get_score = lambda: {'score': 0, 'total': 1}
 
         return module
+
 
 class CapaFactoryWithFiles(CapaFactory):
     """
@@ -583,26 +582,27 @@ class CapaModuleTest(unittest.TestCase):
         module = CapaFactory.create(attempts=1)
 
         # Simulate that the problem is queued
-        with patch('capa.capa_problem.LoncapaProblem.is_queued') \
-                as mock_is_queued, \
-            patch('capa.capa_problem.LoncapaProblem.get_recentmost_queuetime') \
-                as mock_get_queuetime:
-
-            mock_is_queued.return_value = True
-            mock_get_queuetime.return_value = datetime.datetime.now(UTC)
+        multipatch = patch.multiple(
+            'capa.capa_problem.LoncapaProblem',
+            is_queued=DEFAULT,
+            get_recentmost_queuetime=DEFAULT
+        )
+        with multipatch as values:
+            values['is_queued'].return_value = True
+            values['get_recentmost_queuetime'].return_value = datetime.datetime.now(UTC)
 
             get_request_dict = {CapaFactory.input_key(): '3.14'}
             result = module.check_problem(get_request_dict)
 
             # Expect an AJAX alert message in 'success'
-            self.assertTrue('You must wait' in result['success'])
+            self.assertIn('You must wait', result['success'])
 
         # Expect that the number of attempts is NOT incremented
         self.assertEqual(module.attempts, 1)
 
     def test_check_problem_with_files(self):
         # Check a problem with uploaded files, using the check_problem API.
-        # pylint: disable=W0212
+        # pylint: disable=protected-access
 
         # The files we'll be uploading.
         fnames = ["prog1.py", "prog2.py", "prog3.py"]
@@ -651,7 +651,7 @@ class CapaModuleTest(unittest.TestCase):
 
     def test_check_problem_with_files_as_xblock(self):
         # Check a problem with uploaded files, using the XBlock API.
-        # pylint: disable=W0212
+        # pylint: disable=protected-access
 
         # The files we'll be uploading.
         fnames = ["prog1.py", "prog2.py", "prog3.py"]
@@ -1394,7 +1394,6 @@ class CapaModuleTest(unittest.TestCase):
         Run the test for each possible rerandomize value
         """
 
-
         def _reset_and_get_seed(module):
             """
             Reset the XModule and return the module's seed
@@ -1890,3 +1889,29 @@ class TestProblemCheckTracking(unittest.TestCase):
                 'variant': ''
             }
         })
+
+    def test_get_answer_with_jump_to_id_urls(self):
+        """
+        Make sure replace_jump_to_id_urls() is called in get_answer.
+        """
+        problem_xml = textwrap.dedent("""
+        <problem>
+            <p>What is 1+4?</p>
+                <numericalresponse answer="5">
+                  <formulaequationinput />
+                </numericalresponse>
+
+                <solution>
+                <div class="detailed-solution">
+                <p>Explanation</p>
+                <a href="/jump_to_id/c0f8d54964bc44a4a1deb8ecce561ecd">here's the same link to the hint page.</a>
+                </div>
+                </solution>
+        </problem>
+        """)
+
+        data = dict()
+        problem = CapaFactory.create(showanswer='always', xml=problem_xml)
+        problem.runtime.replace_jump_to_id_urls = Mock()
+        problem.get_answer(data)
+        self.assertTrue(problem.runtime.replace_jump_to_id_urls.called)

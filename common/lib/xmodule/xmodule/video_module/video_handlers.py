@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 
 
 # Disable no-member warning:
-# pylint: disable=E1101
+# pylint: disable=no-member
 
 
 class VideoStudentViewHandlers(object):
@@ -55,7 +55,7 @@ class VideoStudentViewHandlers(object):
 
         if dispatch == 'save_user_state':
             for key in data:
-                if hasattr(self, key) and key in accepted_keys:
+                if key in accepted_keys:
                     if key in conversions:
                         value = conversions[key](data[key])
                     else:
@@ -300,7 +300,14 @@ class VideoStudioViewHandlers(object):
 
             if request.method == 'POST':
                 subtitles = request.POST['file']
-                save_to_store(subtitles.file.read(), unicode(subtitles.filename), 'application/x-subrip', self.location)
+                try:
+                    file_data = subtitles.file.read()
+                    unicode(file_data, "utf-8", "strict")
+                except UnicodeDecodeError:
+                    log.info("Invalid encoding type for transcript file: {}".format(subtitles.filename))
+                    msg = _("Invalid encoding type, transcripts should be UTF-8 encoded.")
+                    return Response(msg, status=400)
+                save_to_store(file_data, unicode(subtitles.filename), 'application/x-subrip', self.location)
                 generate_sjson_for_all_speeds(self, unicode(subtitles.filename), {}, language)
                 response = {'filename': unicode(subtitles.filename), 'status': 'Success'}
                 return Response(json.dumps(response), status=201)

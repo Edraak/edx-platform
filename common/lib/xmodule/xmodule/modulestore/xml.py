@@ -18,22 +18,21 @@ from contextlib import contextmanager
 from xmodule.error_module import ErrorDescriptor
 from xmodule.errortracker import make_error_tracker, exc_info_to_str
 from xmodule.mako_module import MakoDescriptorSystem
-from xmodule.x_module import XMLParsingSystem, policy_key
+from xmodule.x_module import XMLParsingSystem, policy_key, OpaqueKeyReader, AsideKeyGenerator
 from xmodule.modulestore.xml_exporter import DEFAULT_CONTENT_FIELDS
 from xmodule.modulestore import ModuleStoreEnum, ModuleStoreReadBase
 from xmodule.tabs import CourseTabList
-from opaque_keys.edx.keys import UsageKey
 from opaque_keys.edx.locations import SlashSeparatedCourseKey, Location
 from opaque_keys.edx.locator import CourseLocator
 
 from xblock.field_data import DictFieldData
-from xblock.runtime import DictKeyValueStore, IdGenerator
+from xblock.runtime import DictKeyValueStore
 
 
 from .exceptions import ItemNotFoundError
 from .inheritance import compute_inherited_metadata, inheriting_field_data
 
-from xblock.fields import ScopeIds, Reference, ReferenceList, ReferenceValueDict
+from xblock.fields import ScopeIds
 
 edx_xml_parser = etree.XMLParser(dtd_validation=False, load_dtd=False,
                                  remove_comments=True, remove_blank_text=True)
@@ -64,7 +63,6 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
         """
         self.unnamed = defaultdict(int)  # category -> num of new url_names for that category
         self.used_names = defaultdict(set)  # category -> set of used url_names
-        id_generator = CourseLocationGenerator(course_id)
 
         # cdodge: adding the course_id as passed in for later reference rather than having to recomine the org/course/url_name
         self.course_id = course_id
@@ -172,10 +170,10 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
 
                 make_name_unique(xml_data)
 
-                descriptor = create_block_from_xml(
-                    etree.tostring(xml_data, encoding='unicode'),
-                    self,
-                    id_generator,
+                descriptor = self.xblock_from_node(
+                    xml_data,
+                    None,  # parent_id
+                    id_manager,
                 )
             except Exception as err:  # pylint: disable=broad-except
                 if not self.load_error_modules:
@@ -201,7 +199,7 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
                 descriptor = ErrorDescriptor.from_xml(
                     xml,
                     self,
-                    id_generator,
+                    id_manager,
                     err_msg
                 )
 
@@ -229,12 +227,16 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
 
         resources_fs = OSFS(xmlstore.data_dir / course_dir)
 
+        id_manager = CourseLocationManager(course_id)
+
         super(ImportSystem, self).__init__(
             load_item=load_item,
             resources_fs=resources_fs,
             render_template=render_template,
             error_tracker=error_tracker,
             process_xml=process_xml,
+            id_generator=id_manager,
+            id_reader=id_manager,
             **kwargs
         )
 
@@ -245,12 +247,13 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
         block.children.append(child_block.scope_ids.usage_id)
 
 
-class CourseLocationGenerator(IdGenerator):
+class CourseLocationManager(OpaqueKeyReader, AsideKeyGenerator):
     """
     IdGenerator for Location-based definition ids and usage ids
     based within a course
     """
     def __init__(self, course_id):
+        super(CourseLocationManager, self).__init__()
         self.course_id = course_id
         self.autogen_ids = itertools.count(0)
 
@@ -263,70 +266,16 @@ class CourseLocationGenerator(IdGenerator):
             slug = 'autogen_{}_{}'.format(block_type, self.autogen_ids.next())
         return self.course_id.make_usage_key(block_type, slug)
 
+    def get_definition_id(self, usage_id):
+        """Retrieve the definition that a usage is derived from.
 
-def _make_usage_key(course_key, value):
-    """
-    Makes value into a UsageKey inside the specified course.
-    If value is already a UsageKey, returns that.
-    """
-    if isinstance(value, UsageKey):
-        return value
-    return course_key.make_usage_key_from_deprecated_string(value)
+        Args:
+            usage_id: The id of the usage to query
 
-
-def _convert_reference_fields_to_keys(xblock):  # pylint: disable=invalid-name
-    """
-    Find all fields of type reference and convert the payload into UsageKeys
-    """
-    course_key = xblock.scope_ids.usage_id.course_key
-
-    for field in xblock.fields.itervalues():
-        if field.is_set_on(xblock):
-            field_value = getattr(xblock, field.name)
-            if isinstance(field, Reference):
-                setattr(xblock, field.name, _make_usage_key(course_key, field_value))
-            elif isinstance(field, ReferenceList):
-                setattr(xblock, field.name, [_make_usage_key(course_key, ele) for ele in field_value])
-            elif isinstance(field, ReferenceValueDict):
-                for key, subvalue in field_value.iteritems():
-                    assert isinstance(subvalue, basestring)
-                    field_value[key] = _make_usage_key(course_key, subvalue)
-                setattr(xblock, field.name, field_value)
-
-
-def create_block_from_xml(xml_data, system, id_generator):
-    """
-    Create an XBlock instance from XML data.
-
-    Args:
-        xml_data (string): A string containing valid xml.
-        system (XMLParsingSystem): The :class:`.XMLParsingSystem` used to connect the block
-            to the outside world.
-        id_generator (IdGenerator): An :class:`~xblock.runtime.IdGenerator` that
-            will be used to construct the usage_id and definition_id for the block.
-
-    Returns:
-        XBlock: The fully instantiated :class:`~xblock.core.XBlock`.
-
-    """
-    node = etree.fromstring(xml_data)
-    raw_class = system.load_block_type(node.tag)
-    xblock_class = system.mixologist.mix(raw_class)
-
-    # leave next line commented out - useful for low-level debugging
-    # log.debug('[create_block_from_xml] tag=%s, class=%s' % (node.tag, xblock_class))
-
-    block_type = node.tag
-    url_name = node.get('url_name')
-    def_id = id_generator.create_definition(block_type, url_name)
-    usage_id = id_generator.create_usage(def_id)
-
-    scope_ids = ScopeIds(None, block_type, def_id, usage_id)
-    xblock = xblock_class.parse_xml(node, system, scope_ids, id_generator)
-
-    _convert_reference_fields_to_keys(xblock)
-
-    return xblock
+        Returns:
+            The `definition_id` the usage is derived from
+        """
+        return usage_id
 
 
 class ParentTracker(object):
@@ -846,3 +795,27 @@ class XMLModuleStore(ModuleStoreReadBase):
         if branch_setting != ModuleStoreEnum.Branch.published_only:
             raise ValueError(u"Cannot set branch setting to {} on a ReadOnly store".format(branch_setting))
         yield
+
+    def _find_course_asset(self, asset_key):
+        """
+        For now this is not implemented, but others should feel free to implement using the asset.json
+        which export produces.
+        """
+        log.warning("_find_course_asset request of XML modulestore - not implemented.")
+        return (None, None)
+
+    def find_asset_metadata(self, asset_key, **kwargs):
+        """
+        For now this is not implemented, but others should feel free to implement using the asset.json
+        which export produces.
+        """
+        log.warning("find_asset_metadata request of XML modulestore - not implemented.")
+        return None
+
+    def get_all_asset_metadata(self, course_key, asset_type, start=0, maxresults=-1, sort=None, **kwargs):
+        """
+        For now this is not implemented, but others should feel free to implement using the asset.json
+        which export produces.
+        """
+        log.warning("get_all_asset_metadata request of XML modulestore - not implemented.")
+        return []

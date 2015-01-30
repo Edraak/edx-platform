@@ -16,6 +16,7 @@ class ContainerPage(PageObject):
     NAME_SELECTOR = '.page-header-title'
     NAME_INPUT_SELECTOR = '.page-header .xblock-field-input'
     NAME_FIELD_WRAPPER_SELECTOR = '.page-header .wrapper-xblock-field'
+    ADD_MISSING_GROUPS_SELECTOR = '.notification-action-button[data-notification-action="add-missing-groups"]'
 
     def __init__(self, browser, locator):
         super(ContainerPage, self).__init__(browser)
@@ -50,7 +51,7 @@ class ContainerPage(PageObject):
                 num_wrappers = len(self.q(css='{} [data-request-token="{}"]'.format(XBlockWrapper.BODY_SELECTOR, request_token)).results)
                 # Wait until all components have been loaded and marked as either initialized or failed.
                 # See:
-                #   - common/static/coffee/src/xblock/core.coffee which adds the class "xblock-initialized"
+                #   - common/static/js/xblock/core.js which adds the class "xblock-initialized"
                 #     at the end of initializeBlock.
                 #   - common/static/js/views/xblock.js which adds the class "xblock-initialization-failed"
                 #     if the xblock threw an error while initializing.
@@ -169,7 +170,10 @@ class ContainerPage(PageObject):
     @property
     def is_staff_locked(self):
         """ Returns True if staff lock is currently enabled, False otherwise """
-        return 'icon-check' in self.q(css='a.action-staff-lock>i').attrs('class')
+        for attr in self.q(css='a.action-staff-lock>i').attrs('class'):
+            if 'fa-check-square-o' in attr:
+                return True
+        return False
 
     def toggle_staff_lock(self, inherits_staff_lock=False):
         """
@@ -246,7 +250,7 @@ class ContainerPage(PageObject):
         Click the "add missing groups" link.
         Note that this does an ajax call.
         """
-        self.q(css='.add-missing-groups-button').first.click()
+        self.q(css=self.ADD_MISSING_GROUPS_SELECTOR).first.click()
         self.wait_for_ajax()
 
         # Wait until all xblocks rendered.
@@ -256,7 +260,7 @@ class ContainerPage(PageObject):
         """
         Returns True if the "add missing groups" button is present.
         """
-        return self.q(css='.add-missing-groups-button').present
+        return self.q(css=self.ADD_MISSING_GROUPS_SELECTOR).present
 
     def get_xblock_information_message(self):
         """
@@ -330,7 +334,7 @@ class XBlockWrapper(PageObject):
             grandkids.extend(descendant.children)
 
         grand_locators = [grandkid.locator for grandkid in grandkids]
-        return [descendant for descendant in descendants if not descendant.locator in grand_locators]
+        return [descendant for descendant in descendants if descendant.locator not in grand_locators]
 
     @property
     def preview_selector(self):

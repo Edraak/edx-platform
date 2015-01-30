@@ -155,6 +155,7 @@ class DraftModuleStore(MongoModuleStore):
         # delete all of the db records for the course
         course_query = self._course_key_to_son(course_key)
         self.collection.remove(course_query, multi=True)
+        self.delete_all_asset_metadata(course_key, user_id)
 
     def clone_course(self, source_course_id, dest_course_id, user_id, fields=None, **kwargs):
         """
@@ -540,7 +541,7 @@ class DraftModuleStore(MongoModuleStore):
             )
         self._delete_subtree(location, as_functions)
 
-    def _delete_subtree(self, location, as_functions):
+    def _delete_subtree(self, location, as_functions, draft_only=False):
         """
         Internal method for deleting all of the subtree whose revisions match the as_functions
         """
@@ -554,10 +555,23 @@ class DraftModuleStore(MongoModuleStore):
             next_tier = []
             for child_loc in current_entry.get('definition', {}).get('children', []):
                 child_loc = course_key.make_usage_key_from_deprecated_string(child_loc)
-                for rev_func in as_functions:
-                    current_loc = rev_func(child_loc)
-                    current_son = current_loc.to_deprecated_son()
-                    next_tier.append(current_son)
+
+                # single parent can have 2 versions: draft and published
+                # get draft parents only while deleting draft module
+                if draft_only:
+                    revision = MongoRevisionKey.draft
+                else:
+                    revision = ModuleStoreEnum.RevisionOption.all
+
+                parents = self._get_raw_parent_locations(child_loc, revision)
+                # Don't delete modules if one of its parents shouldn't be deleted
+                # This should only be an issue for courses have ended up in
+                # a state where modules have multiple parents
+                if all(parent.to_deprecated_son() in to_be_deleted for parent in parents):
+                    for rev_func in as_functions:
+                        current_loc = rev_func(child_loc)
+                        current_son = current_loc.to_deprecated_son()
+                        next_tier.append(current_son)
 
             return next_tier
 
@@ -610,6 +624,9 @@ class DraftModuleStore(MongoModuleStore):
             return True
         # if this block doesn't have changes, then check its children
         elif xblock.has_children:
+            # fix a bug where dangling pointers should imply a change
+            if len(xblock.children) > len(xblock.get_children()):
+                return True
             return any([self.has_changes(child) for child in xblock.get_children()])
         # otherwise there are no changes
         else:
@@ -737,7 +754,7 @@ class DraftModuleStore(MongoModuleStore):
             # If 2 versions versions exist, we can assume one is a published version. Go ahead and do the delete
             # of the draft version.
             if versions_found.count() > 1:
-                self._delete_subtree(root_location, [as_draft])
+                self._delete_subtree(root_location, [as_draft], draft_only=True)
             elif versions_found.count() == 1:
                 # Since this method cannot be called on something in DIRECT_ONLY_CATEGORIES and we call
                 # delete_subtree as soon as we find an item with a draft version, if there is only 1 version

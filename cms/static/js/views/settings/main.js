@@ -20,7 +20,7 @@ var DetailsView = ValidatingView.extend({
     },
 
     initialize : function() {
-        this.fileAnchorTemplate = _.template('<a href="<%= fullpath %>"> <i class="icon-file"></i><%= filename %></a>');
+        this.fileAnchorTemplate = _.template('<a href="<%= fullpath %>"> <i class="icon fa fa-file"></i><%= filename %></a>');
         // fill in fields
         this.$el.find("#course-organization").val(this.model.get('org'));
         this.$el.find("#course-number").val(this.model.get('course_id'));
@@ -97,9 +97,10 @@ var DetailsView = ValidatingView.extend({
         var timefield = $(div).find("input:.time");
         var cachethis = this;
         var setfield = function () {
-            var newVal = DateUtils.getDate(datefield, timefield);
+            var newVal = DateUtils.getDate(datefield, timefield),
+                oldTime = new Date(cacheModel.get(fieldName)).getTime();
             if (newVal) {
-                if (!cacheModel.has(fieldName) || cacheModel.get(fieldName).getTime() !== newVal.getTime()) {
+                if (!cacheModel.has(fieldName) || oldTime !== newVal.getTime()) {
                     cachethis.clearValidationErrors();
                     cachethis.setAndValidate(fieldName, newVal);
                 }

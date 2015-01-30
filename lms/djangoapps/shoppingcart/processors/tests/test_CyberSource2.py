@@ -4,6 +4,7 @@ Tests for the newer CyberSource API implementation.
 """
 from mock import patch
 from django.test import TestCase
+from django.conf import settings
 import ddt
 
 from student.tests.factories import UserFactory
@@ -12,7 +13,13 @@ from shoppingcart.processors.CyberSource2 import (
     processor_hash,
     process_postpay_callback,
     render_purchase_form_html,
-    get_signed_purchase_params
+    get_signed_purchase_params,
+    _get_processor_exception_html
+)
+from shoppingcart.processors.exceptions import (
+    CCProcessorSignatureException,
+    CCProcessorDataException,
+    CCProcessorWrongAmountException
 )
 
 
@@ -30,6 +37,7 @@ class CyberSource2Test(TestCase):
 
     COST = "10.00"
     CALLBACK_URL = "/test_callback_url"
+    FAILED_DECISIONS = ["DECLINE", "CANCEL", "ERROR"]
 
     def setUp(self):
         """ Create a user and an order. """
@@ -41,6 +49,13 @@ class CyberSource2Test(TestCase):
             unit_cost=self.COST,
             line_cost=self.COST
         )
+
+    def assert_dump_recorded(self, order):
+        """
+        Verify that this order does have a dump of information from the
+        payment processor.
+        """
+        self.assertNotEqual(order.processor_reply_dump, '')
 
     def test_render_purchase_form_html(self):
         # Verify that the HTML form renders with the payment URL specified
@@ -124,15 +139,17 @@ class CyberSource2Test(TestCase):
 
         # Expect that the order has been marked as purchased
         self.assertEqual(result['order'].status, 'purchased')
+        self.assert_dump_recorded(result['order'])
 
     def test_process_payment_rejected(self):
         # Simulate a callback from CyberSource indicating that the payment was rejected
-        params = self._signed_callback_params(self.order.id, self.COST, self.COST, accepted=False)
+        params = self._signed_callback_params(self.order.id, self.COST, self.COST, decision='REJECT')
         result = process_postpay_callback(params)
 
         # Expect that we get an error message
         self.assertFalse(result['success'])
         self.assertIn(u"did not accept your payment", result['error_html'])
+        self.assert_dump_recorded(result['order'])
 
     def test_process_payment_invalid_signature(self):
         # Simulate a callback from CyberSource indicating that the payment was rejected
@@ -160,6 +177,9 @@ class CyberSource2Test(TestCase):
         # Expect an error
         self.assertFalse(result['success'])
         self.assertIn(u"different amount than the order total", result['error_html'])
+        # refresh data for current order
+        order = Order.objects.get(id=self.order.id)
+        self.assert_dump_recorded(order)
 
     def test_process_amount_paid_not_decimal(self):
         # Change the payment amount to a non-decimal
@@ -195,6 +215,7 @@ class CyberSource2Test(TestCase):
             msg="Payment was not successful: {error}".format(error=result.get('error_html'))
         )
         self.assertEqual(result['error_html'], '')
+        self.assert_dump_recorded(result['order'])
 
         # Expect that the order has placeholders for the missing credit card digits
         self.assertEqual(result['order'].bill_to_ccnum, '####')
@@ -226,10 +247,24 @@ class CyberSource2Test(TestCase):
         # Verify that this executes without a unicode error
         result = process_postpay_callback(params)
         self.assertTrue(result['success'])
+        self.assert_dump_recorded(result['order'])
+
+    @ddt.data('string', u'üñîçø∂é')
+    def test_get_processor_exception_html(self, error_string):
+        """
+        Tests the processor exception html message
+        """
+        for exception_type in [CCProcessorSignatureException, CCProcessorWrongAmountException, CCProcessorDataException]:
+            error_msg = error_string
+            exception = exception_type(error_msg)
+            html = _get_processor_exception_html(exception)
+            self.assertIn(settings.PAYMENT_SUPPORT_EMAIL, html)
+            self.assertIn('Sorry!', html)
+            self.assertIn(error_msg, html)
 
     def _signed_callback_params(
         self, order_id, order_amount, paid_amount,
-        accepted=True, signature=None, card_number='xxxxxxxxxxxx1111',
+        decision='ACCEPT', signature=None, card_number='xxxxxxxxxxxx1111',
         first_name='John'
     ):
         """
@@ -247,7 +282,7 @@ class CyberSource2Test(TestCase):
 
         Keyword Args:
 
-            accepted (bool): Whether the payment was accepted or rejected.
+            decision (string): Whether the payment was accepted or rejected or declined.
             signature (string): If provided, use this value instead of calculating the signature.
             card_numer (string): If provided, use this value instead of the default credit card number.
             first_name (string): If provided, the first name of the user.
@@ -258,9 +293,51 @@ class CyberSource2Test(TestCase):
         """
         # Parameters sent from CyberSource to our callback implementation
         # These were captured from the CC test server.
+
+        signed_field_names = ["transaction_id",
+                              "decision",
+                              "req_access_key",
+                              "req_profile_id",
+                              "req_transaction_uuid",
+                              "req_transaction_type",
+                              "req_reference_number",
+                              "req_amount",
+                              "req_currency",
+                              "req_locale",
+                              "req_payment_method",
+                              "req_override_custom_receipt_page",
+                              "req_bill_to_forename",
+                              "req_bill_to_surname",
+                              "req_bill_to_email",
+                              "req_bill_to_address_line1",
+                              "req_bill_to_address_city",
+                              "req_bill_to_address_state",
+                              "req_bill_to_address_country",
+                              "req_bill_to_address_postal_code",
+                              "req_card_number",
+                              "req_card_type",
+                              "req_card_expiry_date",
+                              "message",
+                              "reason_code",
+                              "auth_avs_code",
+                              "auth_avs_code_raw",
+                              "auth_response",
+                              "auth_amount",
+                              "auth_code",
+                              "auth_trans_ref_no",
+                              "auth_time",
+                              "bill_trans_ref_no",
+                              "signed_field_names",
+                              "signed_date_time"]
+
+        # if decision is in FAILED_DECISIONS list then remove  auth_amount from
+        # signed_field_names list.
+        if decision in self.FAILED_DECISIONS:
+            signed_field_names.remove("auth_amount")
+
         params = {
             # Parameters that change based on the test
-            "decision": "ACCEPT" if accepted else "REJECT",
+            "decision": decision,
             "req_reference_number": str(order_id),
             "req_amount": order_amount,
             "auth_amount": paid_amount,
@@ -273,43 +350,7 @@ class CyberSource2Test(TestCase):
             "req_card_expiry_date": "01-2018",
             "bill_trans_ref_no": "85080648RYI23S6I",
             "req_bill_to_address_state": "MA",
-            "signed_field_names": ",".join([
-                "transaction_id",
-                "decision",
-                "req_access_key",
-                "req_profile_id",
-                "req_transaction_uuid",
-                "req_transaction_type",
-                "req_reference_number",
-                "req_amount",
-                "req_currency",
-                "req_locale",
-                "req_payment_method",
-                "req_override_custom_receipt_page",
-                "req_bill_to_forename",
-                "req_bill_to_surname",
-                "req_bill_to_email",
-                "req_bill_to_address_line1",
-                "req_bill_to_address_city",
-                "req_bill_to_address_state",
-                "req_bill_to_address_country",
-                "req_bill_to_address_postal_code",
-                "req_card_number",
-                "req_card_type",
-                "req_card_expiry_date",
-                "message",
-                "reason_code",
-                "auth_avs_code",
-                "auth_avs_code_raw",
-                "auth_response",
-                "auth_amount",
-                "auth_code",
-                "auth_trans_ref_no",
-                "auth_time",
-                "bill_trans_ref_no",
-                "signed_field_names",
-                "signed_date_time"
-            ]),
+            "signed_field_names": ",".join(signed_field_names),
             "req_payment_method": "card",
             "req_transaction_type": "sale",
             "auth_code": "888888",
@@ -335,6 +376,11 @@ class CyberSource2Test(TestCase):
             "req_override_custom_receipt_page": "http://localhost:8000/shoppingcart/postpay_callback/",
             "req_access_key": "abcd12345",
         }
+
+        # if decision is in FAILED_DECISIONS list then remove the auth_amount from params dict
+
+        if decision in self.FAILED_DECISIONS:
+            del params["auth_amount"]
 
         # Calculate the signature
         params['signature'] = signature if signature is not None else self._signature(params)
@@ -364,3 +410,12 @@ class CyberSource2Test(TestCase):
                 in params['signed_field_names'].split(u",")
             ])
         )
+
+    def test_process_payment_declined(self):
+        # Simulate a callback from CyberSource indicating that the payment was declined
+        params = self._signed_callback_params(self.order.id, self.COST, self.COST, decision='DECLINE')
+        result = process_postpay_callback(params)
+
+        # Expect that we get an error message
+        self.assertFalse(result['success'])
+        self.assertIn(u"payment was declined", result['error_html'])
