@@ -19,7 +19,7 @@ from django.contrib import messages
 from django.core.context_processors import csrf
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.core.validators import validate_email, ValidationError
+from django.core.validators import ValidationError
 from django.db import IntegrityError, transaction
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
                          Http404)
@@ -40,6 +40,8 @@ from django.template.response import TemplateResponse
 from ratelimitbackend.exceptions import RateLimitException
 
 from requests import HTTPError
+
+from edraak_misc.utils import validate_email
 
 from social.apps.django_app import utils as social_utils
 from social.backends import oauth as social_oauth
@@ -1451,11 +1453,12 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     do_external_auth = 'ExternalAuthMap' in request.session
     if do_external_auth:
         eamap = request.session['ExternalAuthMap']
-        try:
-            validate_email(eamap.external_email)
+
+        if validate_email(eamap.external_email):
             email = eamap.external_email
-        except ValidationError:
+        else:
             email = post_vars.get('email', '')
+
         if eamap.external_name.strip() == '':
             name = post_vars.get('name', '')
         else:
@@ -1550,9 +1553,9 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
             js['field'] = field_name
             return JsonResponse(js, status=400)
 
-    try:
-        validate_email(post_vars['email'])
-    except ValidationError:
+
+
+    if not validate_email(post_vars['email']):
         js['value'] = _("Valid e-mail is required.")
         js['field'] = 'email'
         return JsonResponse(js, status=400)
@@ -2029,9 +2032,7 @@ def change_email_request(request):
         })  # TODO: this should be status code 400  # pylint: disable=fixme
 
     new_email = request.POST['new_email']
-    try:
-        validate_email(new_email)
-    except ValidationError:
+    if not validate_email(new_email):
         return JsonResponse({
             "success": False,
             "error": _('Valid e-mail address required.'),

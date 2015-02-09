@@ -10,9 +10,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from httplib2 import Http
 import logging
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-from simplejson.scanner import JSONDecodeError
+
+from edraak_misc.utils import validate_email
 
 from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
@@ -30,9 +29,7 @@ def get_student_email(request):
     course_id = request.POST['course_id']
     user_id = request.user.id
 
-    try:
-        validate_email(user_email)
-    except ValidationError:
+    if not validate_email(user_email):
         return JsonResponse({"success": False, "error": _('Invalid Email')})
 
     try:
