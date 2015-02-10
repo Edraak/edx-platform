@@ -8,8 +8,8 @@ from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from edxmako.shortcuts import render_to_response
-
 from wand.image import Image
 from .utils import generate_certificate
 
@@ -19,6 +19,9 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 @login_required
 def issue(request):
+    if 'certificate_course_id' not in request.POST:
+        return redirect(reverse('dashboard'))
+
     course_id = request.POST['certificate_course_id']
 
     if request.session.get('course_pass_%s' % course_id):
