@@ -36,7 +36,7 @@ from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
 
 from .transcripts_utils import VideoTranscriptsMixin
-from .video_utils import create_youtube_string, get_video_from_cdn
+from .video_utils import create_youtube_string, get_video_from_cdn, should_disable_youtube, NoHTML5SourcesForFreeAccess
 from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
 
@@ -230,6 +230,18 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
 
         track_url, transcript_language, sorted_languages = self.get_transcripts_for_student()
 
+        if not youtube_streams:
+            youtube_streams = create_youtube_string(self)
+
+        display_free_access_disclaimer = False
+
+        try:
+            if should_disable_youtube(sources, youtube_streams):
+                # Disable YouTube for free-access users
+                youtube_streams = ""
+        except NoHTML5SourcesForFreeAccess:
+            display_free_access_disclaimer = True
+
         return self.system.render_template('video.html', {
             'ajax_url': self.system.ajax_url + '/save_user_state',
             'autoplay': settings.FEATURES.get('AUTOPLAY_VIDEOS', False),
@@ -245,11 +257,12 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
             'sources': json.dumps(sources),
             'speed': json.dumps(self.speed),
             'general_speed': self.global_speed,
+            'display_free_access_disclaimer': display_free_access_disclaimer,
             'saved_video_position': self.saved_video_position.total_seconds(),
             'start': self.start_time.total_seconds(),
             'sub': self.sub,
             'track': track_url,
-            'youtube_streams': youtube_streams or create_youtube_string(self),
+            'youtube_streams': youtube_streams,
             # TODO: Later on the value 1500 should be taken from some global
             # configuration setting field.
             'yt_test_timeout': 1500,

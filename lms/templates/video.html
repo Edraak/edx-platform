@@ -1,7 +1,21 @@
 <%! from django.utils.translation import ugettext as _ %>
+<%! from django.core.urlresolvers import reverse %>
 
 % if display_name is not UNDEFINED and display_name is not None:
     <h2>${display_name}</h2>
+% endif
+
+% if display_free_access_disclaimer:
+    <div class="message message-warning">
+      <p class="message-copy">
+        ## Translators: Edraak-specific
+        ${_("<strong>Warning:</strong> Sorry! We're unable to display this video free of charge. "
+            "Please {link_start}report this problem{link_end} to us. You can still play this video anyway.".format(
+                link_start='<a href="{}">'.format(reverse('contact')),
+                link_end='</a>',
+        ))}
+      </p>
+    </div>
 % endif
 
 <div
