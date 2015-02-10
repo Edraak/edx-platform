@@ -1,7 +1,35 @@
 <%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
+    from django.utils.translation import ugettext as _
+    from django.core.urlresolvers import reverse
+    from edraak_bayt.utils import check_user_publish
 %>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+
+<%inherit file="../main.html" />
+
+<%block name="headerextra">
+    <meta http-equiv="refresh" content="5; url=${reverse('edraak_certificates_view', args=[course_id])}" />
+</%block>
+
+<%block name="pagetitle">
+    ## Translators: Edraak-specific
+    ${_("Please wait...")}
+</%block>
+
+<%block name='bodyclass'>certificate-issue</%block>
+
+<section class="container issue-certificate-wait">
+  <section class="message">
+    <h1 class="valid">
+        ## Translators: Edraak-specific
+        ${_("Please wait...")}
+    </h1>
+    <hr class="horizontal-divider">
+
+    <p>
+        <span class="loading-animation"></span>
+        <br />
+        ## Translators: Edraak-specific
+        ${_("We are calculating your grades. This may take up-to one minute.")}
+    </p>
+  </section>
+</section>

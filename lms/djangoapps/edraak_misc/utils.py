@@ -1,11 +1,63 @@
 import logging
 
-from courseware.access import has_access
 from django.conf import settings
 from django.core.validators import validate_email as django_validate_email, ValidationError as DjangoValidationError
 from validate_email import validate_email as strict_validate_email
+from django.core.cache import cache
+from xmodule.modulestore.django import modulestore
+
+from courseware.access import has_access
+from courseware.grades import grade
+from opaque_keys.edx import locator
 
 log = logging.getLogger(__name__)
+
+
+def cached_function(cache_key_format, timeout=30):
+    """
+    Decorator to cache heavy functions.
+
+    Use it as the following:
+    @cached_function("module.add_numbers.{0}.{1}", 30)
+    def add_numbers(a, b):
+        return a + b
+
+    """
+    def the_decorator(func):
+
+        def cached_func(*args, **kwargs):
+            cache_key = cache_key_format.format(*args, **kwargs)
+            cached_result = cache.get(cache_key)
+
+            if cached_result is not None:
+                return cached_result
+            else:
+                result = func(*args, **kwargs)
+                cache.set(cache_key, result, timeout)
+                return result
+
+        return cached_func
+
+    return the_decorator
+
+
+@cached_function(
+    cache_key_format='edraak_misc.utils.is_student_pass.{0.id}.{2}',
+    timeout=60*5  # Cache up to 5 minutes
+)
+def is_student_pass(user, request, course_id):
+    course_key = locator.CourseLocator.from_string(course_id)
+    course = modulestore().get_course(course_key)
+
+    if not settings.FEATURES.get('ENABLE_ISSUE_CERTIFICATE'):
+        return False
+
+    # If user is course staff don't grade the user
+    if has_access(user, 'staff', course):
+        return True
+
+    return bool(grade(user, request, course)['grade'])
+
 
 def is_certificate_allowed(user, course):
     if not settings.FEATURES.get('ENABLE_ISSUE_CERTIFICATE'):

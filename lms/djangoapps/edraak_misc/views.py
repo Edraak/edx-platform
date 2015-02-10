@@ -1,36 +1,21 @@
 from django.views.decorators.csrf import ensure_csrf_cookie
-from xmodule.modulestore.django import modulestore
-from courseware.access import has_access
 from util.json_request import JsonResponse
-from courseware.grades import grade
-from opaque_keys.edx import locator
 from util.cache import cache_if_anonymous
 from django.conf import settings
 from courseware.courses import get_courses, sort_by_announcement
 from edxmako.shortcuts import render_to_response
 from django.contrib.auth.models import AnonymousUser
-from edraak_misc.utils import sort_closed_courses_to_bottom
+from .utils import is_student_pass, sort_closed_courses_to_bottom
 
 
 def check_student_grades(request):
     user = request.user
     course_id = request.POST['course_id']
-    course_key = locator.CourseLocator.from_string(course_id)
-    course = modulestore().get_course(course_key)
 
-    # If user is course staff don't grade the user
-    if has_access(user, 'staff', course):
-        request.session['course_pass_%s' % course_id] = True
-        return JsonResponse({'success': True, 'error': False})
-
-    try:
-        if grade(user, request, course)['grade']:
-            request.session['course_pass_%s' % course_id] = True
-            return JsonResponse({'success': True, 'error': False})
-        else:
-            return JsonResponse({'success': False, 'error': False})
-    except:
-        return JsonResponse({'success': False, 'error': True})
+    return JsonResponse({
+        'success': False,
+        'error': is_student_pass(user, request, course_id)
+    })
 
 
 @ensure_csrf_cookie

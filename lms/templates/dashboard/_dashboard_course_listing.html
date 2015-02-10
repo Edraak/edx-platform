@@ -143,7 +143,8 @@ from student.helpers import (
         </h3>
       </hgroup>
 
-      % if course.may_certify() and cert_status:
+      ## Bellow is disabled, till we get edX certificate running
+      % if False:  ## course.may_certify() and cert_status:
       <%include file='_dashboard_certificate_information.html' args='cert_status=cert_status,course=course, enrollment=enrollment'/>
       % endif
 
@@ -329,7 +330,6 @@ from student.helpers import (
 
 
 ## Available in Edraak theme
-<%include file="../bayt/_dashboard_certificate_link.html" args="course=course" />
 <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course=course" />
 
   </section>
