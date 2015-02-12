@@ -4329,7 +4329,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid "e.g. johndoe@example.com, JaneDoe, joeydoe@example.com"
-msgstr "مثلًا: johndoe@example.com، جين دو، joeydoe@example.com"
+msgstr "مثلًا: kkamal@example.com، خالد كمال، kkamal@example.com"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid ""
