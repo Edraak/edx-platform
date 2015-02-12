@@ -4,11 +4,13 @@ import sys
 from functools import wraps
 
 from django.conf import settings
-from django.core.validators import ValidationError, validate_email
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.defaults import server_error
 from django.http import (Http404, HttpResponse, HttpResponseNotAllowed,
                          HttpResponseServerError)
+
+from edraak_misc.utils import validate_email
+
 import dogstats_wrapper as dog_stats_api
 from edxmako.shortcuts import render_to_response
 import zendesk
@@ -225,9 +227,7 @@ def submit_feedback(request):
     else:
         realname = request.POST["name"]
         email = request.POST["email"]
-        try:
-            validate_email(email)
-        except ValidationError:
+        if not validate_email(email):
             return build_error_response(400, "email", required_field_errs["email"])
 
     for header, pretty in [

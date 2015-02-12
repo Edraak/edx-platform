@@ -8,8 +8,10 @@ information and preferences).
 """
 from django.conf import settings
 from django.db import transaction, IntegrityError
-from django.core.validators import validate_email, validate_slug, ValidationError
+from django.core.validators import validate_slug, ValidationError
 from django.contrib.auth.forms import PasswordResetForm
+
+from edraak_misc.utils import validate_email
 
 from ..models import User, UserProfile, Registration, PendingEmailChange
 from ..helpers import intercept_errors
@@ -477,9 +479,7 @@ def _validate_email(email):
             )
         )
 
-    try:
-        validate_email(email)
-    except ValidationError:
+    if not validate_email(email):
         raise AccountEmailInvalid(
             u"Email '{email}' format is not valid".format(email=email)
         )

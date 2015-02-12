@@ -11,13 +11,12 @@ import urllib
 from textwrap import dedent
 from external_auth.models import ExternalAuthMap
 from external_auth.djangostore import DjangoOpenIDStore
+from edraak_misc.utils import validate_email
 
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate, login
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
 
 if settings.FEATURES.get('AUTH_USE_CAS'):
     from django_cas.views import login as django_cas_login
@@ -326,11 +325,7 @@ def _signup(request, eamap, retfun=None):
     context['ask_for_fullname'] = eamap.external_name.strip() == ''
 
     # validate provided mail and if it's not valid ask the user
-    try:
-        validate_email(eamap.external_email)
-        context['ask_for_email'] = False
-    except ValidationError:
-        context['ask_for_email'] = True
+    context['ask_for_email'] = not validate_email(eamap.external_email)
 
     log.info(u'EXTAUTH: Doing signup for %s', eamap.external_id)
 
