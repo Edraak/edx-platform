@@ -199,7 +199,7 @@
   .icon {
     display: inline-block;
     vertical-align: middle;
-    margin-right: ($baseline/4);
+    @include margin-right($baseline/4);
   }
 }
 
@@ -327,7 +327,7 @@
     @include transition(all $tmg-f2 ease-in-out 0s);
     @extend %t-action1;
     display: inline-block;
-    margin-right: ($baseline/4);
+    @include margin-right($baseline/4);
     color: $gray-l3;
     vertical-align: middle;
   }
