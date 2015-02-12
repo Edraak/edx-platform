@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext as _
-from django.db import models
+from django.db import models, IntegrityError
 from django.contrib.auth.models import User
 
 
@@ -13,7 +13,13 @@ class CourseTrackingCodeUsage(models.Model):
     @classmethod
     def record_usage(cls, user, course_id):
         view = cls(user=user, course_id=course_id)
-        view.save()
+
+        try:
+            view.save()
+        except IntegrityError as e:
+            if u'duplicate entry' not in unicode(e):
+                # This should ignore duplicate entry SQL errors, while keep failing on other potential errors
+                raise
 
     def __unicode__(self):
         # # Translators: Edraak-specific
