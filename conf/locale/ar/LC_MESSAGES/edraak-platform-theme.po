@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-01-29 06:36-0500\n"
-"PO-Revision-Date: 2015-01-15 14:50+0000\n"
-"Last-Translator: qrfahasan <ahasan@qrf.org>\n"
+"POT-Creation-Date: 2015-02-26 04:36-0500\n"
+"PO-Revision-Date: 2015-02-26 09:40+0000\n"
+"Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,6 +23,10 @@ msgstr ""
 #: templates/course.html:68 templates/courseware/course_about.html:155
 msgid "Enrollment is closed"
 msgstr "بابُ التسجيل مغلق"
+
+#: templates/index.html:19
+msgid "Free online courses in Arabic for anyone, anywhere, anytime"
+msgstr "مساقات إلكترونية مجانية باللغة العربية"
 
 #. Translators: Edraak-specific
 #: templates/courseware/course_about.html:160

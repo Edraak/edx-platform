@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-01-29 11:40+0000\n"
+"PO-Revision-Date: 2015-02-26 09:39+0000\n"
 "Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Translators: Edraak-specific
 #: common/djangoapps/student/edraak_validation.py:41
-#: common/djangoapps/student/views.py:1564
+#: common/djangoapps/student/views.py:1567
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
@@ -54,6 +54,12 @@ msgstr "لإتمام المساق التالي بنجاح:"
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
+
+#. Translators: This is the Edraak platform name, keep it only on word.
+#. Edraak-specific.
+#: lms/envs/aws.py:131
+msgid "Edraak"
+msgstr "إدراك"
 
 #. Translators: Edraak-specific
 #: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68

@@ -18485,7 +18485,7 @@ msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة
 
 #. Translators: Edraak-specific
 #: common/djangoapps/student/edraak_validation.py:41
-#: common/djangoapps/student/views.py:1564
+#: common/djangoapps/student/views.py:1567
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
@@ -18526,6 +18526,12 @@ msgstr "لإتمام المساق التالي بنجاح:"
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
+#. Translators: This is the Edraak platform name, keep it only on word.
+#. Edraak-specific.
+#: lms/envs/aws.py:131
+msgid "Edraak"
+msgstr "إدراك"
+
 #. Translators: Edraak-specific
 #: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68
 msgid "Course Updates &amp; News"
@@ -18534,6 +18540,10 @@ msgstr "تحديثات وأخبار المساق"
 #: templates/course.html:68 templates/courseware/course_about.html:155
 msgid "Enrollment is closed"
 msgstr "بابُ التسجيل مغلق"
+
+#: templates/index.html:19
+msgid "Free online courses in Arabic for anyone, anywhere, anytime"
+msgstr "مساقات إلكترونية مجانية باللغة العربية"
 
 #. Translators: Edraak-specific
 #: templates/courseware/course_about.html:160
@@ -18581,13 +18591,18 @@ msgid ""
 "If you are an enrolled student and have any questions, feedback, bug "
 "reports, suggestions, or any other issues specific to a particular class, "
 "please post on the discussion forums of that class."
-msgstr "إذا كنت منتسب إلى إحدى مساقات إدراك ولديك أي أسئلة، أو أي اقتراحات، أو أي مشاكل تقنية, أو أي قضايا أخرى تخص مساق معين، الرجاء نشر ذلك على منتديات المناقشة الخاصة بذلك المساق."
+msgstr ""
+"إذا كنت منتسب إلى إحدى مساقات إدراك ولديك أي أسئلة، أو أي اقتراحات، أو أي "
+"مشاكل تقنية, أو أي قضايا أخرى تخص مساق معين، الرجاء نشر ذلك على منتديات "
+"المناقشة الخاصة بذلك المساق."
 
 #: templates/static_templates/theme-contact.html:31
 msgid ""
 "Still need help or want to give us general feedback (which we welcome)? "
 "Please fill in the form below"
-msgstr "لا تزال بحاجة إلى مساعدة أو تريد أن تزودنا باقترحات عامة (التي نرحب بها دائما)،  الرجاء تعبئة النموذج أدناه."
+msgstr ""
+"لا تزال بحاجة إلى مساعدة أو تريد أن تزودنا باقترحات عامة (التي نرحب بها "
+"دائما)،  الرجاء تعبئة النموذج أدناه."
 
 #: templates/static_templates/theme-contact.html:37
 msgid "You have entered a wrong captcha. Your message was not sent."
@@ -18667,7 +18682,9 @@ msgid ""
 "We are always looking for new opportunities of collaboration. Please fill in"
 " the form below, so we  can learn more about your interests. We look forward"
 " to hearing from you!"
-msgstr "نحن نبحث دائما عن فرص جديدة للتعاون. يرجى ملء النموذج أدناه، حتى نتمكن من معرفة المزيد عن اهتماماتك."
+msgstr ""
+"نحن نبحث دائما عن فرص جديدة للتعاون. يرجى ملء النموذج أدناه، حتى نتمكن من "
+"معرفة المزيد عن اهتماماتك."
 
 #: templates/static_templates/theme-contact.html:122
 msgid "I am a..."
