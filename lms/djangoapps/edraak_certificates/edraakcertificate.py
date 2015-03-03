@@ -239,11 +239,9 @@ class EdraakCertificate(object):
 
     def course_org_disclaimer(self):
         if self.course_org == 'MITX':
-            # Translators: Edraak-specific
             return self._("A course of study offered by Edraak with cooperation from MITx. "
                           "The learning experience has been supervised and managed by the course team.")
         else:
-            # Translators: Edraak-specific
             return self._("A course of study offered by Edraak. The learning experience has been supervised and "
                           "managed by the course team.")
 
@@ -254,12 +252,10 @@ class EdraakCertificate(object):
         self.add_certificate_bg()
         self.add_course_org_logo(self.course_org)
 
-        # Translators: Edraak-specific
         self.draw_bidi_text(self._("This is to certify that:"), x, 5.8, size=0.25)
 
         self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)
 
-        # Translators: Edraak-specific
         self.draw_bidi_text(self._("Successfully completed:"), x, 4.63, size=0.25)
 
         self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
@@ -271,7 +267,7 @@ class EdraakCertificate(object):
 
         date_x = 2.01
 
-        # Translators: Keep newlines for formatting, Edraak-specific
+        # Translators: Keep newlines for formatting
         words = self._("Course{new_line}Certificate{new_line}of Completion").split('{new_line}')
 
         for idx, word in enumerate(words):

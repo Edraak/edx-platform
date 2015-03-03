@@ -127,7 +127,7 @@ if STATIC_URL_BASE:
     if not STATIC_URL.endswith("/"):
         STATIC_URL += "/"
 
-# Translators: This is the Edraak platform name, keep it only on word. Edraak-specific.
+# Translators: This is the Edraak platform name, keep it only on word
 PLATFORM_NAME = _("Edraak")
 
 # For displaying on the receipt. At Stanford PLATFORM_NAME != MERCHANT_NAME, but PLATFORM_NAME is a fine default

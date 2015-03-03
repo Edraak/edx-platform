@@ -5,7 +5,6 @@ from path import path
 from paver.easy import task, needs, sh
 import polib
 from git import Repo
-import os
 from .utils.cmd import django_cmd
 
 PLATFORM_ROOT = path('.')
@@ -92,7 +91,7 @@ def edraak_generate_files():
 )
 def edraak_i18n_pull():
     """
-    Pulls Edraak-specific translation files.
+    Pulls Edraak translation files.
     """
     files_to_add = (
         'conf/locale/ar/LC_MESSAGES/edraak-platform-theme.po',
@@ -112,6 +111,7 @@ def edraak_i18n_theme_push():
     """
     sh(django_cmd('lms', 'devstack', 'edraak_i18n_theme_push'))
 
+
 @task
 @needs(
     'pavelib.edraak.edraak_i18n_theme_push',
@@ -119,20 +119,25 @@ def edraak_i18n_theme_push():
 )
 def edraak_i18n_push():
     """
-    Extracts Edraak-specific translation strings and append it to the provided .PO file.
+    Pushes the interesting Edraak entries to Transifex.
 
-    It searches for translation strings that are marked
-    with "# Translators: Edraak-specific" comment.
+    interesting_entries = all_translatable_entries - translated_arabic_msgids
     """
-    english_po_dir = PLATFORM_ROOT / 'conf/locale/en/LC_MESSAGES'
+    po_dir = PLATFORM_ROOT / 'conf/locale'
+    english_po_dir = po_dir / 'en/LC_MESSAGES'
 
-    edraak_specific_path = english_po_dir / 'edraak-platform.po'
-    if edraak_specific_path.exists():
-        edraak_specific_path.unlink()
+    arabic_entries = polib.pofile(po_dir / 'ar/LC_MESSAGES/django.po')
+    interesting_entries_pofile = po_dir / 'en/LC_MESSAGES/edraak-platform.po'
 
-    edraak_specific = polib.POFile()
+    translated_arabic_msgids = {}
+    for entry in arabic_entries:
+        if entry.msgstr:
+            translated_arabic_msgids[entry.msgid] = True
 
-    edraak_specific.metadata = {
+    interesting_entries = polib.POFile()
+
+    # Just dummy values for Transifex to accept it
+    interesting_entries.metadata = {
         "Project-Id-Version": "Edraak 1",
         "Report-Msgid-Bugs-To": "dev@qrf.org",
         "POT-Creation-Date": "2014-12-15 11:17+0200",
@@ -145,20 +150,24 @@ def edraak_i18n_push():
         "Generated-By": "Paver",
     }
 
-    for po_path in sorted(os.listdir(english_po_dir)):
+    for po_path in sorted(english_po_dir.files()):
         # Avoid .mo files
         if not po_path.endswith('.po'):
             continue
 
-        if po_path == 'edraak-platform.po':
+        if 'edraak' in po_path:
             continue
 
-        pofile = polib.pofile(english_po_dir / po_path)
+        pofile = polib.pofile(po_path)
 
         for entry in pofile:
-            if 'edraak-specific' in entry.comment.lower():
-                edraak_specific.append(entry)
+            if not translated_arabic_msgids.get(entry.msgid, False):
 
-    edraak_specific.save(edraak_specific_path)
+                # Avoid inserting duplicate entries
+                translated_arabic_msgids[entry.msgid] = True
+
+                interesting_entries.append(entry)
+
+    interesting_entries.save(interesting_entries_pofile)
 
     sh("tx push -l en -s -r edraak.edraak-platform")

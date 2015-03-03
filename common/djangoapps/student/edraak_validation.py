@@ -37,7 +37,6 @@ class UnicodeUserAdmin(UserAdmin):
 
 validate_username = RegexValidator(
     unicode_username_re,
-    # Translators: Edraak-specific
     _("Enter a valid 'username' consisting of letters, numbers, spaces, underscores or hyphens."),
     'invalid'
 )
