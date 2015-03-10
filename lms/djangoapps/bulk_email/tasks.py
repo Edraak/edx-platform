@@ -150,7 +150,7 @@ def _get_course_email_context(course):
         'course_url': course_url,
         'course_image_url': image_url,
         'account_settings_url': 'https://{}{}'.format(settings.SITE_NAME, reverse('dashboard')),
-        'platform_name': settings.PLATFORM_NAME,
+        'platform_name': unicode(settings.PLATFORM_NAME),
     }
     return email_context
 
