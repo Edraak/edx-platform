@@ -188,6 +188,7 @@ div.video {
         border-width: 0 1px;
         border-style: solid;
         border-color: $black;
+        box-sizing: content-box;
 
         &:hover, &:focus {
           background-color: #444;
@@ -527,6 +528,27 @@ div.video {
           }
         }
 
+        a.sign-language {
+          @extend %video-button;
+          display: none;
+
+          border-left: none;
+          float: left;
+          padding: 0 11px;
+          width: 30px;
+          height: 46px;
+
+          background: url('../images/sign-language.png') center no-repeat;
+
+          &.attention-grabbing {
+            // Make the inset shadow bolder
+            $shadow-specs: inset 0 0 5px #F00;
+            box-shadow: $shadow-specs, $shadow-specs, $shadow-specs;
+
+            margin-left: 1px;
+          }
+        }
+
         a.add-fullscreen {
           @extend %video-button;
           background: url(../images/fullscreen.png) center no-repeat;
@@ -575,6 +597,52 @@ div.video {
           .menu.langs-list {
             right: -1px;
             width: 150px;
+          }
+        }
+
+        .sign-language-popover-container {
+          width: 0;
+          height: 0;
+          overflow: visible;
+          float: left;
+
+          > .popover {
+            position: relative;
+
+            // Remove the default .popover attributes
+            top: auto;
+            left: auto;
+            width: 276px;
+            max-width: none;
+
+            // Position it at the bottom of the sign-language video
+
+            @include rtl {
+              margin-right: -112px;
+            }
+
+            @include ltr {
+              margin-left: -163px;
+            }
+
+            .close {
+              font-weight: bold;
+              font-size: 16px;
+              line-height: 16px;
+              text-align: right;
+
+              span {
+                cursor: pointer;
+              }
+            }
+
+            .icon {
+              background: #00a3a6 url('../images/sign-language.png') no-repeat center center;
+              width: 36px;
+              height: 36px;
+              border-radius: 20px;
+              margin: -21px auto 0;
+            }
           }
         }
       }
@@ -775,5 +843,3 @@ div.video {
     }
   }
 }
-
-
