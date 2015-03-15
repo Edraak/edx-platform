@@ -14,8 +14,8 @@
 
 define(
 'video/01_initialize.js',
-['video/03_video_player.js', 'video/00_video_storage.js', 'video/00_i18n.js'],
-function (VideoPlayer, VideoStorage, i18n) {
+['video/03_video_player.js', 'video/00_video_storage.js', 'video/00_i18n.js', 'video/00_sign_language_state.js'],
+function (VideoPlayer, VideoStorage, i18n, SignLanguageState) {
     /**
      * @function
      *
@@ -48,8 +48,9 @@ function (VideoPlayer, VideoStorage, i18n) {
                                 state.trigger('videoControl.show', null);
                             }));
                         } else {
-                        // On PC show controls immediately.
+                            // On PC show controls immediately.
                             state.trigger('videoControl.show', null);
+                            state.trigger('signLanguageControl.showTooltip', null);
                         }
 
                         _hideWaitPlaceholder(state);
@@ -571,6 +572,9 @@ function (VideoPlayer, VideoStorage, i18n) {
                             // In-browser HTML5 player does not support quality
                             // control.
                             el.find('a.quality_control').hide();
+
+                            // In-browser HTML5 player does not support sign-language control.
+                            el.find('a.sign-language').hide();
                         }
                     } else {
                         console.log(
@@ -746,6 +750,10 @@ function (VideoPlayer, VideoStorage, i18n) {
 
     function youtubeId(speed) {
         var currentSpeed = this.isFlashMode() ? this.speed : '1.0';
+
+        if (this.config.nonSignLanguageVideoId && !SignLanguageState.getIsActive()) {
+            return this.config.nonSignLanguageVideoId;
+        }
 
         return  this.videos[speed] ||
                 this.videos[currentSpeed] ||

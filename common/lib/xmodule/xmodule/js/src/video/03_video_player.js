@@ -17,6 +17,7 @@ function (HTML5Video, Resizer) {
         methodsDict = {
             duration: duration,
             handlePlaybackQualityChange: handlePlaybackQualityChange,
+            handleSignLanguageChange: handleSignLanguageChange,
 
             // Added for finer graded seeking control.
             // Please see:
@@ -591,6 +592,22 @@ function (HTML5Video, Resizer) {
         this.trigger('videoQualityControl.onQualityChange', quality);
 
         this.el.trigger('qualitychange', arguments);
+    }
+
+    function handleSignLanguageChange(isSignLanguage) {
+        var youtubeId, wasPlaying;
+        if (isSignLanguage) {
+            this.videoPlayer.log('selected_sign_language_video');
+        } else {
+            this.videoPlayer.log('selected_non_sign_language_video');
+        }
+
+        this.videoPlayer.player.loadVideoById({
+            'videoId': this.youtubeId(),
+            'startSeconds': this.videoPlayer.currentTime
+        });
+
+        this.videoPlayer.player.setPlaybackRate(this.speed);
     }
 
     function onReady() {

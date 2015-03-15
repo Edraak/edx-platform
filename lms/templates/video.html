@@ -30,6 +30,7 @@
     data-yt-test-url="${yt_test_url}"
     data-transcript-translation-url="${transcript_translation_url}"
     data-transcript-available-translations-url="${transcript_available_translations_url}"
+    data-non-sign-language-video-id="${non_sign_language_video_id | h}"
 
     ## For now, the option "data-autohide-html5" is hard coded. This option
     ## either enables or disables autohiding of controls and captions on mouse
@@ -81,6 +82,30 @@
                               <div class="volume-slider"></div>
                           </div>
                       </div>
+                      ## Translators: Edraak-specific
+                      <a href="#" title="${_('Toggle Sign Language')}" class="sign-language is-hidden" role="button" aria-disabled="true">
+                         ## This isn't really usefull for blind people anyway, right?
+                         ## Translators: Edraak-specific
+                         ${_('Toggle Sign Language')}
+                      </a>
+
+                      <div class="sign-language-popover-container">
+                        <div class="popover top">
+                          <div class="arrow"></div>
+                          <div class="popover-content">
+                            <div class="close">
+                                <span>&times;</span>
+                            </div>
+                            <div class="icon"></div>
+
+                            <p>
+                                ${_("Click on the sign language button to disable "
+                                    "and enable the sign language subtitling.")}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
                       <a href="#" class="add-fullscreen" title="${_('Fill browser')}" role="button" aria-disabled="false">${_('Fill browser')}</a>
                       <a href="#" class="quality-control is-hidden" title="${_('HD off')}" role="button" aria-disabled="false">${_('HD off')}</a>
 
