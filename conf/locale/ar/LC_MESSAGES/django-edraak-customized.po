@@ -18533,6 +18533,20 @@ msgid "Edraak"
 msgstr "إدراك"
 
 #. Translators: Edraak-specific
+#: lms/templates/video.html:86 lms/templates/video.html:89
+msgid "Toggle Sign Language"
+msgstr "فعِّل أو عطِّل فيديو لغة الإشارة"
+
+#. Translators: Edraak-specific
+#: lms/templates/video.html:103
+#: lms/templates/video_sign_language_popover.html:9
+msgid ""
+"Click on the sign language button to disable and enable the sign language "
+"subtitling."
+msgstr ""
+"إضغط على زر لغة الإشارة لتفعيل أو تعطيل الترجمة بلغة الإشارة في هذا الفيديو."
+
+#. Translators: Edraak-specific
 #: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68
 msgid "Course Updates &amp; News"
 msgstr "تحديثات وأخبار المساق"
