@@ -157,8 +157,10 @@ class VideoFields(object):
         default="",
     )
     non_sign_language_video_id = String(
+        # Translators: Edraak-specific
         help=_("The default assumption is all the videos have sign-language enabled. "
                "This option allows the course authors to provide alternative video without sign-language subtitling."),
+        # Translators: Edraak-specific
         display_name=_("Youtube ID for non-sign language version"),
         scope=Scope.settings,
         default="",
