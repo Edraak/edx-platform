@@ -379,7 +379,7 @@
       <form id="change_name_form">
         <div id="change_name_error" class="modal-form-error"> </div>
 
-        % if user.get_profile().is_name_review_required():
+        % if user.profile.is_name_review_required():
           <p>
             ## Translators: Edraak-specific
             ${_("Please note that you've reached the maximum number of times allowed to change your name."

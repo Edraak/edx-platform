@@ -2179,7 +2179,7 @@ def change_name_request(request):
         })  # TODO: this should be status code 400  # pylint: disable=fixme
     pnc.save()
 
-    if user.get_profile().is_name_review_required():
+    if user.profile.is_name_review_required():
         return JsonResponse({
             "success": True,
             # Translators: Edraak-specific
