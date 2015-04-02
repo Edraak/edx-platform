@@ -1,7 +1,37 @@
-<%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
-%>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+<%! from django.utils.translation import ugettext as _ %>
+
+<%inherit file="main.html" />
+
+<section class="container activation">
+  <section class="message">
+    ## Translators: Edraak-specific
+    <h1>${_("Bayt Activation")}</h1>
+    <hr class="horizontal-divider">
+      % if status:
+        <p>
+          ## Translators: Edraak-specific
+          ${_("Your certificate has been posted to Bayt successfully. "
+              "You well redirect to Edraak in 5 seconds. "
+              "If not click {link_start}here{link_end}").format(
+                 link_start='<a href="{}">'.format(settings.LMS_BASE),
+                 link_end='</a>',
+          )}
+        </p>
+      % else:
+        <p>
+          ## Translators: Edraak-specific
+          ${_("Please click {link_start}here{link_end}").format(
+                 link_start='<a href="{}/en/register-j/">'.format(settings.BAYT_BASE),
+                 link_end='</a>',
+          )}
+        </p>
+      % endif
+  </section>
+</section>
+<script>
+        % if status:
+            setTimeout("window.location='${settings.LMS_BASE}'", 5000);
+        % else:
+            setTimeout("window.location='${settings.BAYT_BASE}/en/register-j/'", 500);
+        % endif
+</script>

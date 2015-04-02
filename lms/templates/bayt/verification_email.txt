@@ -1,7 +1,18 @@
-<%!
-    import logging
-    log = logging.getLogger(__name__)
-    log.error('Edraak theme is required for this module to work. Please use Edraak theme.')
-%>
-## Just an empty placeholder
-## Actual implementation is available in Edraak theme
+<%namespace file="../main.html" import="stanford_theme_enabled" />
+<%! from django.utils.translation import ugettext as _ %>
+<%! import urllib %>
+
+## Translators: Edraak-specific
+${_("Thank you for posting your certificate on Bayt.com \n"
+    "To proceed in process please click on the link below")}
+
+% if is_secure:
+https://${encoded_url}
+% else:
+http://${encoded_url}
+% endif
+
+${_("If you didn't request this, you don't need to do anything; you won't "
+    "receive any more email from us. Please do not reply to this e-mail; "
+    "if you require assistance, check the help section of the "
+    "{platform_name} web site.").format(platform_name=settings.PLATFORM_NAME)}
