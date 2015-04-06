@@ -1,13 +1,14 @@
 # 
 # Translators:
 # qrfahasan <ahasan@qrf.org>, 2015
+# moayyad yaghi <moayyad.yaghi@gmail.com>, 2015
 # omarithawi <oithawi@qrf.org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-03-18 09:43+0000\n"
+"PO-Revision-Date: 2015-04-06 14:21+0000\n"
 "Last-Translator: qrfahasan <ahasan@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -87,6 +88,120 @@ msgid ""
 msgstr "إضغط على زر لغة الإشارة لتفعيل أو تعطيل الترجمة بلغة الإشارة في هذا الفيديو."
 
 #. Translators: Edraak-specific
+#: lms/templates/bayt/callback.html:8
+msgid "Bayt Activation"
+msgstr "تفعيل حساب بيت.كوم"
+
+#. Translators: Edraak-specific
+#: lms/templates/bayt/callback.html:13
+msgid ""
+"Your certificate has been posted to Bayt successfully. You well redirect to "
+"Edraak in 5 seconds. If not click {link_start}here{link_end}"
+msgstr "لقد تم نشر شهادتك على  BAYT بنجاح ,سوف تعود الى إدراك خلال 5 ثواني, إن لم يحدث ذلك انقر {link_start}هنا{link_end}"
+
+#. Translators: Edraak-specific
+#: lms/templates/bayt/callback.html:23
+msgid "Please click {link_start}here{link_end}"
+msgstr "الرجاء النقر {link_start}هنا{link_end}"
+
+#. Translators: Edraak-specific
 #: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68
 msgid "Course Updates &amp; News"
 msgstr "تحديثات وأخبار المساق"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/_dashboard_certificate_link.html:15
+msgid "Completion Certificate"
+msgstr "الشهادة "
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/fail.html:11
+#: lms/templates/edraak_certificates/issue.html:15
+#: lms/templates/edraak_certificates/issue.html:24
+msgid "Please wait..."
+msgstr "الرجاء الانتظار"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/fail.html:24
+msgid "You have Not completed this course"
+msgstr "لم تكمل هذا المساق بنجاح بعد"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/fail.html:30
+msgid ""
+"Unfortunately, you have not completed this course, you will not be able to "
+"issue a certificate."
+msgstr "نعتذر، لم تكمل هذا المساق بنجاح، لذلك لم نتمكن من اصدار الشهادة"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/fail.html:35
+msgid ""
+"You will be redirected to your {link_start}dashboard{link_end} in 10 "
+"seconds."
+msgstr "سيتم اعادة توجيهك الى {link_start}لوحة التحكم{link_end} الخاصة بك بعد 10 ثوان"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/issue.html:32
+msgid "We are calculating your grades. This may take up-to one minute."
+msgstr "يتم حاليا حساب علامتك، قد تستمر هذه العملية ما يقارب الدقيقة"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:11
+#: lms/templates/edraak_certificates/view.html:24
+msgid "Course Completion Certificate"
+msgstr "شهادة إكمال المساق"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:34
+msgid ""
+"Please note that the certificate will be issued with your name on it as "
+"provided on your {link_start}dashboard{link_end}. Please double check the "
+"spelling. and we prefer that the name is written in the same language you're"
+" issuing the certificate with. To change it, go to the "
+"{link_start}dashboard{link_end} and click on (edit) link beside your name."
+msgstr "نرجو ملاحظة ان الشهادة أصدرت باستخدام اسمك الكامل والموجود على {link_start}لوحة المعلومات{link_end}، تأكد ان اسمك مكتوب بشكل صحيح وبنفس لغة اصدار الشهادة، لتعديل اسمك يرجى التوجه الى {link_start}لوحة المعلومات{link_end} والضغط على (تعديل) بجانب اسمك."
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:48
+msgid "Download as PDF"
+msgstr "حمل بصيغة PDF"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:58
+msgid "Already posted to Bayt.com"
+msgstr "منشور على بيت.كوم"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:65
+msgid "Post to Bayt.com"
+msgstr "نشر على بيت.كوم"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:117
+#: lms/templates/edraak_certificates/view.html:162
+msgid "Do you want to post your certificate on Bayt?"
+msgstr "هل تريد ان تنشر شهادتك على بيت.كوم"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:127
+#: lms/templates/edraak_certificates/view.html:172
+msgid "Enter or Confirm your Bayt email"
+msgstr "يرجى تأكيد بريدك الاكتروني المسجل على بيت.كوم"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:130
+#: lms/templates/edraak_certificates/view.html:175
+msgid "This will post the course completed on your Bayt CV."
+msgstr "سيتم اضافة هذه الشهادة الى سيرتك الذاتية"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:135
+#: lms/templates/edraak_certificates/view.html:180
+msgid "Bayt Email"
+msgstr "البريد الاكتروني"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_certificates/view.html:143
+#: lms/templates/edraak_certificates/view.html:188
+msgid "Post"
+msgstr "نشر"
