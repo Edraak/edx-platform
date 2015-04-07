@@ -127,7 +127,7 @@ if Backbone?
         $loading: elem
         takeFocus: true
         complete: =>
-          @responseRequest = null
+          @responsesRequest = null
         success: (data, textStatus, xhr) =>
           Content.loadContentInfos(data['annotated_content_info'])
           if @isQuestion()
@@ -144,6 +144,7 @@ if Backbone?
           )
           @trigger "thread:responses:rendered"
           @loadedResponses = true
+          $(".thread-wrapper").focus() # Sends focus to the conversation once the thread finishes loading
         error: (xhr, textStatus) =>
           return if textStatus == 'abort'
 

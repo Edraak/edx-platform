@@ -9,6 +9,7 @@ import json
 import datetime
 from uuid import uuid4
 
+from pytz import UTC
 from collections import namedtuple, defaultdict
 import collections
 from contextlib import contextmanager
@@ -36,7 +37,10 @@ log = logging.getLogger('edx.modulestore')
 new_contract('CourseKey', CourseKey)
 new_contract('AssetKey', AssetKey)
 new_contract('AssetMetadata', AssetMetadata)
-new_contract('SortedListWithKey', SortedListWithKey)
+new_contract('XBlock', XBlock)
+
+LIBRARY_ROOT = 'library.xml'
+COURSE_ROOT = 'course.xml'
 
 
 class ModuleStoreEnum(object):
@@ -169,7 +173,7 @@ class BulkOperationsMixin(object):
         self._active_bulk_ops = ActiveBulkThread(self._bulk_ops_record_type)
 
     @contextmanager
-    def bulk_operations(self, course_id):
+    def bulk_operations(self, course_id, emit_signals=True):
         """
         A context manager for notifying the store of bulk operations. This affects only the current thread.
 
@@ -180,7 +184,7 @@ class BulkOperationsMixin(object):
             self._begin_bulk_operation(course_id)
             yield
         finally:
-            self._end_bulk_operation(course_id)
+            self._end_bulk_operation(course_id, emit_signals)
 
     # the relevant type of bulk_ops_record for the mixin (overriding classes should override
     # this variable)
@@ -196,12 +200,14 @@ class BulkOperationsMixin(object):
         # Retrieve the bulk record based on matching org/course/run (possibly ignoring case)
         if ignore_case:
             for key, record in self._active_bulk_ops.records.iteritems():
-                if (
+                # Shortcut: check basic equivalence for cases where org/course/run might be None.
+                if key == course_key or (
                     key.org.lower() == course_key.org.lower() and
                     key.course.lower() == course_key.course.lower() and
                     key.run.lower() == course_key.run.lower()
                 ):
                     return record
+
         return self._active_bulk_ops.records[course_key.for_branch(None)]
 
     @property
@@ -241,7 +247,7 @@ class BulkOperationsMixin(object):
         if bulk_ops_record.is_root:
             self._start_outermost_bulk_operation(bulk_ops_record, course_key)
 
-    def _end_outermost_bulk_operation(self, bulk_ops_record, course_key):
+    def _end_outermost_bulk_operation(self, bulk_ops_record, course_key, emit_signals=True):
         """
         The outermost nested bulk_operation call: do the actual end of the bulk operation.
 
@@ -249,7 +255,7 @@ class BulkOperationsMixin(object):
         """
         pass
 
-    def _end_bulk_operation(self, course_key):
+    def _end_bulk_operation(self, course_key, emit_signals=True):
         """
         End the active bulk operation on course_key.
         """
@@ -265,7 +271,7 @@ class BulkOperationsMixin(object):
         if bulk_ops_record.active:
             return
 
-        self._end_outermost_bulk_operation(bulk_ops_record, course_key)
+        self._end_outermost_bulk_operation(bulk_ops_record, course_key, emit_signals)
 
         self._clear_bulk_ops_record(course_key)
 
@@ -276,27 +282,183 @@ class BulkOperationsMixin(object):
         return self._get_bulk_ops_record(course_key, ignore_case).active
 
 
-class ModuleStoreAssetInterface(object):
+class EditInfo(object):
     """
-    The methods for accessing assets and their metadata
+    Encapsulates the editing info of a block.
     """
-    @contract(asset_list='SortedListWithKey', asset_id='AssetKey')
-    def _find_asset_in_list(self, asset_list, asset_id):
+    def __init__(self, **kwargs):
+        self.from_storable(kwargs)
+
+        # For details, see caching_descriptor_system.py get_subtree_edited_by/on.
+        self._subtree_edited_on = kwargs.get('_subtree_edited_on', None)
+        self._subtree_edited_by = kwargs.get('_subtree_edited_by', None)
+
+    def to_storable(self):
         """
-        Given a asset list that's a SortedListWithKey, find the index of a particular asset.
+        Serialize to a Mongo-storable format.
+        """
+        return {
+            'previous_version': self.previous_version,
+            'update_version': self.update_version,
+            'source_version': self.source_version,
+            'edited_on': self.edited_on,
+            'edited_by': self.edited_by,
+            'original_usage': self.original_usage,
+            'original_usage_version': self.original_usage_version,
+        }
+
+    def from_storable(self, edit_info):
+        """
+        De-serialize from Mongo-storable format to an object.
+        """
+        # Guid for the structure which previously changed this XBlock.
+        # (Will be the previous value of 'update_version'.)
+        self.previous_version = edit_info.get('previous_version', None)
+
+        # Guid for the structure where this XBlock got its current field values.
+        # May point to a structure not in this structure's history (e.g., to a draft
+        # branch from which this version was published).
+        self.update_version = edit_info.get('update_version', None)
+
+        self.source_version = edit_info.get('source_version', None)
+
+        # Datetime when this XBlock's fields last changed.
+        self.edited_on = edit_info.get('edited_on', None)
+        # User ID which changed this XBlock last.
+        self.edited_by = edit_info.get('edited_by', None)
+
+        # If this block has been copied from a library using copy_from_template,
+        # these fields point to the original block in the library, for analytics.
+        self.original_usage = edit_info.get('original_usage', None)
+        self.original_usage_version = edit_info.get('original_usage_version', None)
+
+    def __str__(self):
+        return ("EditInfo(previous_version={0.previous_version}, "
+                "update_version={0.update_version}, "
+                "source_version={0.source_version}, "
+                "edited_on={0.edited_on}, "
+                "edited_by={0.edited_by}, "
+                "original_usage={0.original_usage}, "
+                "original_usage_version={0.original_usage_version}, "
+                "_subtree_edited_on={0._subtree_edited_on}, "
+                "_subtree_edited_by={0._subtree_edited_by})").format(self)
+
+
+class BlockData(object):
+    """
+    Wrap the block data in an object instead of using a straight Python dictionary.
+    Allows the storing of meta-information about a structure that doesn't persist along with
+    the structure itself.
+    """
+    def __init__(self, **kwargs):
+        # Has the definition been loaded?
+        self.definition_loaded = False
+        self.from_storable(kwargs)
+
+    def to_storable(self):
+        """
+        Serialize to a Mongo-storable format.
+        """
+        return {
+            'fields': self.fields,
+            'block_type': self.block_type,
+            'definition': self.definition,
+            'defaults': self.defaults,
+            'edit_info': self.edit_info.to_storable()
+        }
+
+    def from_storable(self, block_data):
+        """
+        De-serialize from Mongo-storable format to an object.
+        """
+        # Contains the Scope.settings and 'children' field values.
+        # 'children' are stored as a list of (block_type, block_id) pairs.
+        self.fields = block_data.get('fields', {})
+
+        # XBlock type ID.
+        self.block_type = block_data.get('block_type', None)
+
+        # DB id of the record containing the content of this XBlock.
+        self.definition = block_data.get('definition', None)
+
+        # Scope.settings default values copied from a template block (used e.g. when
+        # blocks are copied from a library to a course)
+        self.defaults = block_data.get('defaults', {})
+
+        # EditInfo object containing all versioning/editing data.
+        self.edit_info = EditInfo(**block_data.get('edit_info', {}))
+
+    def __str__(self):
+        return ("BlockData(fields={0.fields}, "
+                "block_type={0.block_type}, "
+                "definition={0.definition}, "
+                "definition_loaded={0.definition_loaded}, "
+                "defaults={0.defaults}, "
+                "edit_info={0.edit_info})").format(self)
+
+
+new_contract('BlockData', BlockData)
+
+
+class IncorrectlySortedList(Exception):
+    """
+    Thrown when calling find() on a SortedAssetList not sorted by filename.
+    """
+    pass
+
+
+class SortedAssetList(SortedListWithKey):
+    """
+    List of assets that is sorted based on an asset attribute.
+    """
+    def __init__(self, **kwargs):
+        self.filename_sort = False
+        key_func = kwargs.get('key', None)
+        if key_func is None:
+            kwargs['key'] = itemgetter('filename')
+            self.filename_sort = True
+        super(SortedAssetList, self).__init__(**kwargs)
+
+    @contract(asset_id=AssetKey)
+    def find(self, asset_id):
+        """
+        Find the index of a particular asset in the list. This method is only functional for lists
+        sorted by filename. If the list is sorted on any other key, find() raises a
         Returns: Index of asset, if found. None if not found.
         """
+        # Don't attempt to find an asset by filename in a list that's not sorted by filename.
+        if not self.filename_sort:
+            raise IncorrectlySortedList()
         # See if this asset already exists by checking the external_filename.
         # Studio doesn't currently support using multiple course assets with the same filename.
         # So use the filename as the unique identifier.
         idx = None
-        idx_left = asset_list.bisect_left({'filename': asset_id.path})
-        idx_right = asset_list.bisect_right({'filename': asset_id.path})
+        idx_left = self.bisect_left({'filename': asset_id.path})
+        idx_right = self.bisect_right({'filename': asset_id.path})
         if idx_left != idx_right:
             # Asset was found in the list.
             idx = idx_left
         return idx
 
+    @contract(asset_md=AssetMetadata)
+    def insert_or_update(self, asset_md):
+        """
+        Insert asset metadata if asset is not present. Update asset metadata if asset is already present.
+        """
+        metadata_to_insert = asset_md.to_storable()
+        asset_idx = self.find(asset_md.asset_id)
+        if asset_idx is None:
+            # Add new metadata sorted into the list.
+            self.add(metadata_to_insert)
+        else:
+            # Replace existing metadata.
+            self[asset_idx] = metadata_to_insert
+
+
+class ModuleStoreAssetBase(object):
+    """
+    The methods for accessing assets and their metadata
+    """
     def _find_course_asset(self, asset_key):
         """
         Returns same as _find_course_assets plus the index to the given asset or None. Does not convert
@@ -311,11 +473,11 @@ class ModuleStoreAssetInterface(object):
             - the index of asset in list (None if asset does not exist)
         """
         course_assets = self._find_course_assets(asset_key.course_key)
-        all_assets = SortedListWithKey([], key=itemgetter('filename'))
+        all_assets = SortedAssetList(iterable=[])
         # Assets should be pre-sorted, so add them efficiently without sorting.
         # extend() will raise a ValueError if the passed-in list is not sorted.
         all_assets.extend(course_assets.setdefault(asset_key.block_type, []))
-        idx = self._find_asset_in_list(all_assets, asset_key)
+        idx = all_assets.find(asset_key)
 
         return course_assets, idx
 
@@ -334,9 +496,8 @@ class ModuleStoreAssetInterface(object):
         if asset_idx is None:
             return None
 
-        info = asset_key.block_type
         mdata = AssetMetadata(asset_key, asset_key.path, **kwargs)
-        all_assets = course_assets[info]
+        all_assets = course_assets[asset_key.asset_type]
         mdata.from_storable(all_assets[asset_idx])
         return mdata
 
@@ -364,7 +525,7 @@ class ModuleStoreAssetInterface(object):
         course_assets = self._find_course_assets(course_key)
 
         # Determine the proper sort - with defaults of ('displayname', SortOrder.ascending).
-        key_func = itemgetter('filename')
+        key_func = None
         sort_order = ModuleStoreEnum.SortOrder.ascending
         if sort:
             if sort[0] == 'uploadDate':
@@ -374,12 +535,12 @@ class ModuleStoreAssetInterface(object):
 
         if asset_type is None:
             # Add assets of all types to the sorted list.
-            all_assets = SortedListWithKey([], key=key_func)
+            all_assets = SortedAssetList(iterable=[], key=key_func)
             for asset_type, val in course_assets.iteritems():
                 all_assets.update(val)
         else:
             # Add assets of a single type to the sorted list.
-            all_assets = SortedListWithKey(course_assets.get(asset_type, []), key=key_func)
+            all_assets = SortedAssetList(iterable=course_assets.get(asset_type, []), key=key_func)
         num_assets = len(all_assets)
 
         start_idx = start
@@ -404,11 +565,44 @@ class ModuleStoreAssetInterface(object):
             ret_assets.append(new_asset)
         return ret_assets
 
+    # pylint: disable=unused-argument
+    def check_supports(self, course_key, method):
+        """
+        Verifies that a modulestore supports a particular method.
 
-class ModuleStoreAssetWriteInterface(ModuleStoreAssetInterface):
+        Some modulestores may differ based on the course_key, such
+        as mixed (since it has to find the underlying modulestore),
+        so it's required as part of the method signature.
+        """
+        return hasattr(self, method)
+
+
+class ModuleStoreAssetWriteInterface(ModuleStoreAssetBase):
     """
     The write operations for assets and asset metadata
     """
+    def _save_assets_by_type(self, course_key, asset_metadata_list, course_assets, user_id, import_only):
+        """
+        Common private method that saves/updates asset metadata items in the internal modulestore
+        structure used to store asset metadata items.
+        """
+        # Lazily create a sorted list if not already created.
+        assets_by_type = defaultdict(lambda: SortedAssetList(iterable=course_assets.get(asset_type, [])))
+
+        for asset_md in asset_metadata_list:
+            if asset_md.asset_id.course_key != course_key:
+                # pylint: disable=logging-format-interpolation
+                log.warning("Asset's course {} does not match other assets for course {} - not saved.".format(
+                    asset_md.asset_id.course_key, course_key
+                ))
+                continue
+            if not import_only:
+                asset_md.update({'edited_by': user_id, 'edited_on': datetime.datetime.now(UTC)})
+            asset_type = asset_md.asset_id.asset_type
+            all_assets = assets_by_type[asset_type]
+            all_assets.insert_or_update(asset_md)
+        return assets_by_type
+
     @contract(asset_metadata='AssetMetadata')
     def save_asset_metadata(self, asset_metadata, user_id, import_only):
         """
@@ -485,7 +679,7 @@ class ModuleStoreAssetWriteInterface(ModuleStoreAssetInterface):
 
 
 # pylint: disable=abstract-method
-class ModuleStoreRead(ModuleStoreAssetInterface):
+class ModuleStoreRead(ModuleStoreAssetBase):
     """
     An abstract interface for a database backend that stores XModuleDescriptor
     instances and extends read-only functionality
@@ -501,7 +695,7 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
         pass
 
     @abstractmethod
-    def get_item(self, usage_key, depth=0, **kwargs):
+    def get_item(self, usage_key, depth=0, using_descriptor_system=None, **kwargs):
         """
         Returns an XModuleDescriptor instance for the item at location.
 
@@ -545,27 +739,32 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
         """
         pass
 
-    def _block_matches(self, fields_or_xblock, qualifiers):
-        '''
+    @contract(block='XBlock | BlockData | dict', qualifiers=dict)
+    def _block_matches(self, block, qualifiers):
+        """
         Return True or False depending on whether the field value (block contents)
-        matches the qualifiers as per get_items. Note, only finds directly set not
-        inherited nor default value matches.
-        For substring matching pass a regex object.
-        for arbitrary function comparison such as date time comparison, pass
-        the function as in start=lambda x: x < datetime.datetime(2014, 1, 1, 0, tzinfo=pytz.UTC)
+        matches the qualifiers as per get_items.
+        NOTE: Method only finds directly set value matches - not inherited nor default value matches.
+        For substring matching:
+            pass a regex object.
+        For arbitrary function comparison such as date time comparison:
+            pass the function as in start=lambda x: x < datetime.datetime(2014, 1, 1, 0, tzinfo=pytz.UTC)
 
         Args:
-            fields_or_xblock (dict or XBlock): either the json blob (from the db or get_explicitly_set_fields)
-                or the xblock.fields() value or the XBlock from which to get those values
-             qualifiers (dict): field: searchvalue pairs.
-        '''
-        if isinstance(fields_or_xblock, XBlock):
-            fields = fields_or_xblock.fields
-            xblock = fields_or_xblock
-            is_xblock = True
+            block (dict, XBlock, or BlockData): either the BlockData (transformed from the db) -or-
+                a dict (from BlockData.fields or get_explicitly_set_fields_by_scope) -or-
+                the xblock.fields() value -or-
+                the XBlock from which to get the 'fields' value.
+             qualifiers (dict): {field: value} search pairs.
+        """
+        if isinstance(block, XBlock):
+            # If an XBlock is passed-in, just match its fields.
+            xblock, fields = (block, block.fields)
+        elif isinstance(block, BlockData):
+            # BlockData is an object - compare its attributes in dict form.
+            xblock, fields = (None, block.__dict__)
         else:
-            fields = fields_or_xblock
-            is_xblock = False
+            xblock, fields = (None, block)
 
         def _is_set_on(key):
             """
@@ -576,13 +775,15 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
             if key not in fields:
                 return False, None
             field = fields[key]
-            if is_xblock:
-                return field.is_set_on(fields_or_xblock), getattr(xblock, key)
+            if xblock is not None:
+                return field.is_set_on(block), getattr(xblock, key)
             else:
                 return True, field
 
         for key, criteria in qualifiers.iteritems():
             is_set, value = _is_set_on(key)
+            if isinstance(criteria, dict) and '$exists' in criteria and criteria['$exists'] == is_set:
+                continue
             if not is_set:
                 return False
             if not self._value_matches(value, criteria):
@@ -590,7 +791,7 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
         return True
 
     def _value_matches(self, target, criteria):
-        '''
+        """
         helper for _block_matches: does the target (field value) match the criteria?
 
         If target is a list, do any of the list elements meet the criteria
@@ -598,7 +799,7 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
         If the criteria is a function, does invoking it on the target yield something truthy?
         If criteria is a dict {($nin|$in): []}, then do (none|any) of the list elements meet the criteria
         Otherwise, is the target == criteria
-        '''
+        """
         if isinstance(target, list):
             return any(self._value_matches(ele, criteria) for ele in target)
         elif isinstance(criteria, re._pattern_type):  # pylint: disable=protected-access
@@ -628,7 +829,9 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
     def get_courses(self, **kwargs):
         '''
         Returns a list containing the top level XModuleDescriptors of the courses
-        in this modulestore.
+        in this modulestore. This method can take an optional argument 'org' which
+        will efficiently apply a filter so that only the courses of the specified
+        ORG in the CourseKey will be fetched.
         '''
         pass
 
@@ -708,7 +911,7 @@ class ModuleStoreRead(ModuleStoreAssetInterface):
         pass
 
     @contextmanager
-    def bulk_operations(self, course_id):
+    def bulk_operations(self, course_id, emit_signals=True):    # pylint: disable=unused-argument
         """
         A context manager for notifying the store of bulk operations. This affects only the current thread.
         """
@@ -1050,10 +1253,11 @@ class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
         This base method just copies the assets. The lower level impls must do the actual cloning of
         content.
         """
-        # copy the assets
-        if self.contentstore:
-            self.contentstore.copy_all_course_assets(source_course_id, dest_course_id)
-        return dest_course_id
+        with self.bulk_operations(dest_course_id):
+            # copy the assets
+            if self.contentstore:
+                self.contentstore.copy_all_course_assets(source_course_id, dest_course_id)
+            return dest_course_id
 
     def delete_course(self, course_key, user_id, **kwargs):
         """

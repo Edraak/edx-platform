@@ -2,6 +2,7 @@
 Tests for student enrollment.
 """
 import ddt
+from django.core.cache import cache
 from nose.tools import raises
 import unittest
 from django.test import TestCase
@@ -24,6 +25,7 @@ class EnrollmentTest(TestCase):
 
     def setUp(self):
         fake_data_api.reset()
+        cache.clear()
 
     @ddt.data(
         # Default (no course modes in the database)
@@ -36,7 +38,8 @@ class EnrollmentTest(TestCase):
         (['honor', 'verified', 'audit'], 'honor'),
 
         # Check for professional ed happy path.
-        (['professional'], 'professional')
+        (['professional'], 'professional'),
+        (['no-id-professional'], 'no-id-professional')
     )
     @ddt.unpack
     def test_enroll(self, course_modes, mode):
@@ -70,7 +73,8 @@ class EnrollmentTest(TestCase):
         (['honor', 'verified', 'audit'], 'honor'),
 
         # Check for professional ed happy path.
-        (['professional'], 'professional')
+        (['professional'], 'professional'),
+        (['no-id-professional'], 'no-id-professional')
     )
     @ddt.unpack
     def test_unenroll(self, course_modes, mode):
@@ -125,7 +129,7 @@ class EnrollmentTest(TestCase):
             )
 
     def test_update_enrollment(self):
-        # Add a fake course enrollment information to the fake data API
+        # Add fake course enrollment information to the fake data API
         fake_data_api.add_course(self.COURSE_ID, course_modes=['honor', 'verified', 'audit'])
         # Enroll in the course and verify the URL we get sent to
         result = api.add_enrollment(self.USERNAME, self.COURSE_ID, mode='audit')
@@ -150,3 +154,18 @@ class EnrollmentTest(TestCase):
     def test_data_api_config_error(self):
         # Enroll in the course and verify the URL we get sent to
         api.add_enrollment(self.USERNAME, self.COURSE_ID, mode='audit')
+
+    def test_caching(self):
+        # Add fake course enrollment information to the fake data API
+        fake_data_api.add_course(self.COURSE_ID, course_modes=['honor', 'verified', 'audit'])
+
+        # Hit the fake data API.
+        details = api.get_course_enrollment_details(self.COURSE_ID)
+
+        # Reset the fake data API, should rely on the cache.
+        fake_data_api.reset()
+        cached_details = api.get_course_enrollment_details(self.COURSE_ID)
+
+        # The data matches
+        self.assertEqual(len(details['course_modes']), 3)
+        self.assertEqual(details, cached_details)

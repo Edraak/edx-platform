@@ -23,6 +23,10 @@ from courseware.model_data import FieldDataCache
 from courseware.module_render import get_module
 from student.models import CourseEnrollment
 import branding
+from util.milestones_helpers import get_required_content, calculate_entrance_exam_score
+from util.module_utils import yield_dynamic_descriptor_descendents
+from opaque_keys.edx.keys import UsageKey
+from .module_render import get_module_for_descriptor
 
 log = logging.getLogger(__name__)
 
@@ -130,6 +134,10 @@ def course_image_url(course):
             url += '/' + course.course_image
         else:
             url += '/images/course_image.jpg'
+    elif course.course_image == '':
+        # if course_image is empty the url will be blank as location
+        # of the course_image does not exist
+        url = ''
     else:
         loc = StaticContent.compute_location(course.id, course.course_image)
         url = StaticContent.serialize_asset_key_with_slash(loc)
@@ -415,3 +423,73 @@ def get_studio_url(course, page):
     if is_studio_course and is_mongo_course:
         studio_link = get_cms_course_link(course, page)
     return studio_link
+
+
+def get_problems_in_section(section):
+    """
+    This returns a dict having problems in a section.
+    Returning dict has problem location as keys and problem
+    descriptor as values.
+    """
+
+    problem_descriptors = defaultdict()
+    if not isinstance(section, UsageKey):
+        section_key = UsageKey.from_string(section)
+    else:
+        section_key = section
+    # it will be a Mongo performance boost, if you pass in a depth=3 argument here
+    # as it will optimize round trips to the database to fetch all children for the current node
+    section_descriptor = modulestore().get_item(section_key, depth=3)
+
+    # iterate over section, sub-section, vertical
+    for subsection in section_descriptor.get_children():
+        for vertical in subsection.get_children():
+            for component in vertical.get_children():
+                if component.location.category == 'problem' and getattr(component, 'has_score', False):
+                    problem_descriptors[unicode(component.location)] = component
+
+    return problem_descriptors
+
+
+def get_entrance_exam_score(request, course):
+    """
+    Get entrance exam score
+    """
+    exam_key = UsageKey.from_string(course.entrance_exam_id)
+    exam_descriptor = modulestore().get_item(exam_key)
+
+    def inner_get_module(descriptor):
+        """
+        Delegate to get_module_for_descriptor.
+        """
+        field_data_cache = FieldDataCache([descriptor], course.id, request.user)
+        return get_module_for_descriptor(request.user, request, descriptor, field_data_cache, course.id)
+
+    exam_module_generators = yield_dynamic_descriptor_descendents(
+        exam_descriptor,
+        inner_get_module
+    )
+    exam_modules = [module for module in exam_module_generators]
+    return calculate_entrance_exam_score(request.user, course, exam_modules)
+
+
+def get_entrance_exam_content_info(request, course):
+    """
+    Get the entrance exam content information e.g. chapter, exam passing state.
+    return exam chapter and its passing state.
+    """
+    required_content = get_required_content(course, request.user)
+    exam_chapter = None
+    is_exam_passed = True
+    # Iterating the list of required content of this course.
+    for content in required_content:
+        # database lookup to required content pointer
+        usage_key = course.id.make_usage_key_from_deprecated_string(content)
+        module_item = modulestore().get_item(usage_key)
+        if not module_item.hide_from_toc and module_item.is_entrance_exam:
+            # Here we are looking for entrance exam module/chapter in required_content.
+            # If module_item is an entrance exam chapter then set and return its info e.g. exam chapter, exam state.
+            exam_chapter = module_item
+            is_exam_passed = False
+            break
+    return exam_chapter, is_exam_passed

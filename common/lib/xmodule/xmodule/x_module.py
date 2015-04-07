@@ -3,6 +3,7 @@ import os
 import sys
 import yaml
 
+from contracts import contract, new_contract
 from functools import partial
 from lxml import etree
 from collections import namedtuple
@@ -16,8 +17,11 @@ from webob import Response
 from webob.multidict import MultiDict
 
 from xblock.core import XBlock, XBlockAside
-from xblock.fields import Scope, Integer, Float, List, XBlockMixin, String, Dict, ScopeIds, Reference, \
-    ReferenceList, ReferenceValueDict
+from xblock.fields import (
+    Scope, Integer, Float, List, XBlockMixin,
+    String, Dict, ScopeIds, Reference, ReferenceList,
+    ReferenceValueDict, UserScope
+)
 from xblock.fragment import Fragment
 from xblock.runtime import Runtime, IdReader, IdGenerator
 from xmodule.fields import RelativeTime
@@ -33,6 +37,9 @@ import dogstats_wrapper as dog_stats_api
 log = logging.getLogger(__name__)
 
 XMODULE_METRIC_NAME = 'edxapp.xmodule'
+
+# Stats event sent to DataDog in order to determine if old XML parsing can be deprecated.
+DEPRECATION_VSCOMPAT_EVENT = 'deprecation.vscompat'
 
 # xblock view names
 
@@ -280,6 +287,8 @@ class XModuleMixin(XBlockMixin):
 
     def __init__(self, *args, **kwargs):
         self.xmodule_runtime = None
+        self._child_instances = None
+
         super(XModuleMixin, self).__init__(*args, **kwargs)
 
     @property
@@ -355,7 +364,7 @@ class XModuleMixin(XBlockMixin):
         return result
 
     def has_children_at_depth(self, depth):
-        """
+        r"""
         Returns true if self has children at the given depth. depth==0 returns
         false if self is a leaf, true otherwise.
 
@@ -378,7 +387,7 @@ class XModuleMixin(XBlockMixin):
             return any(child.has_children_at_depth(depth - 1) for child in self.get_children())
 
     def get_content_titles(self):
-        """
+        r"""
         Returns list of content titles for all of self's children.
 
                          SEQUENCE
@@ -402,16 +411,19 @@ class XModuleMixin(XBlockMixin):
         else:
             return [self.display_name_with_default]
 
-    def get_children(self):
+    def get_children(self, usage_key_filter=None):
         """Returns a list of XBlock instances for the children of
         this module"""
 
         if not self.has_children:
             return []
 
-        if getattr(self, '_child_instances', None) is None:
+        if self._child_instances is None:
             self._child_instances = []  # pylint: disable=attribute-defined-outside-init
             for child_loc in self.children:
+                # Skip if it doesn't satisfy the filter function
+                if usage_key_filter and not usage_key_filter(child_loc):
+                    continue
                 try:
                     child = self.runtime.get_block(child_loc)
                     if child is None:
@@ -521,15 +533,39 @@ class XModuleMixin(XBlockMixin):
         """
         return None
 
-    def bind_for_student(self, xmodule_runtime, field_data):
+    def bind_for_student(self, xmodule_runtime, field_data, user_id):
         """
         Set up this XBlock to act as an XModule instead of an XModuleDescriptor.
 
         Arguments:
             xmodule_runtime (:class:`ModuleSystem'): the runtime to use when accessing student facing methods
             field_data (:class:`FieldData`): The :class:`FieldData` to use for all subsequent data access
+            user_id: The user_id to set in scope_ids
         """
         # pylint: disable=attribute-defined-outside-init
+
+        # Skip rebinding if we're already bound a user, and it's this user.
+        if self.scope_ids.user_id is not None and user_id == self.scope_ids.user_id:
+            return
+
+        # If we are switching users mid-request, save the data from the old user.
+        self.save()
+
+        # Update scope_ids to point to the new user.
+        self.scope_ids = self.scope_ids._replace(user_id=user_id)
+
+        # Clear out any cached instantiated children.
+        self._child_instances = None
+
+        # Clear out any cached field data scoped to the old user.
+        for field in self.fields.values():
+            if field.scope in (Scope.parent, Scope.children):
+                continue
+
+            if field.scope.user == UserScope.ONE:
+                field._del_cached_value(self)  # pylint: disable=protected-access
+
+        # Set the new xmodule_runtime and field_data (which are user-specific)
         self.xmodule_runtime = xmodule_runtime
         self._field_data = field_data
 
@@ -611,9 +647,18 @@ class XModule(XModuleMixin, HTMLSnippet, XBlock):  # pylint: disable=abstract-me
 
         # Set the descriptor first so that we can proxy to it
         self.descriptor = descriptor
-        super(XModule, self).__init__(*args, **kwargs)
         self._loaded_children = None
+        self._runtime = None
+        super(XModule, self).__init__(*args, **kwargs)
         self.runtime.xmodule_instance = self
+
+    @property
+    def runtime(self):
+        return CombinedSystem(self._runtime, self.descriptor._runtime)  # pylint: disable=protected-access
+
+    @runtime.setter
+    def runtime(self, value):  # pylint: disable=arguments-differ
+        self._runtime = value
 
     def __unicode__(self):
         return u'<x_module(id={0})>'.format(self.id)
@@ -654,26 +699,6 @@ class XModule(XModuleMixin, HTMLSnippet, XBlock):  # pylint: disable=abstract-me
 
         response_data = self.handle_ajax(suffix, request_post)
         return Response(response_data, content_type='application/json')
-
-    def get_children(self):
-        """
-        Return module instances for all the children of this module.
-        """
-        if self._loaded_children is None:
-            child_descriptors = self.get_child_descriptors()
-
-            # This deliberately uses system.get_module, rather than runtime.get_block,
-            # because we're looking at XModule children, rather than XModuleDescriptor children.
-            # That means it can use the deprecated XModule apis, rather than future XBlock apis
-
-            # TODO: Once we're in a system where this returns a mix of XModuleDescriptors
-            # and XBlocks, we're likely to have to change this more
-            children = [self.system.get_module(descriptor) for descriptor in child_descriptors]
-            # get_module returns None if the current user doesn't have access
-            # to the location.
-            self._loaded_children = [c for c in children if c is not None]
-
-        return self._loaded_children
 
     def get_child_descriptors(self):
         """
@@ -838,6 +863,11 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
     @classmethod
     def _translate(cls, key):
         'VS[compat]'
+        if key in cls.metadata_translations:
+            dog_stats_api.increment(
+                DEPRECATION_VSCOMPAT_EVENT,
+                tags=["location:xmodule_descriptor_translate"]
+            )
         return cls.metadata_translations.get(key, key)
 
     # ================================= XML PARSING ============================
@@ -918,7 +948,8 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
 
     # =============================== BUILTIN METHODS ==========================
     def __eq__(self, other):
-        return (self.scope_ids == other.scope_ids and
+        return (hasattr(other, 'scope_ids') and
+                self.scope_ids == other.scope_ids and
                 self.fields.keys() == other.fields.keys() and
                 all(getattr(self, field.name) == getattr(other, field.name)
                     for field in self.fields.values()))
@@ -998,6 +1029,8 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
         # 3. A generic string editor for anything else (editing JSON representation of the value).
         editor_type = "Generic"
         values = field.values
+        if "values_provider" in field.runtime_options:
+            values = field.runtime_options['values_provider'](self)
         if isinstance(values, (tuple, list)) and len(values) > 0:
             editor_type = "Select"
             values = [jsonify_value(field, json_choice) for json_choice in values]
@@ -1250,6 +1283,7 @@ class DescriptorSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # p
         :param xblock:
         :param field:
         """
+        # pylint: disable=protected-access
         # in runtime b/c runtime contains app-specific xblock behavior. Studio's the only app
         # which needs this level of introspection right now. runtime also is 'allowed' to know
         # about the kvs, dbmodel, etc.
@@ -1257,12 +1291,8 @@ class DescriptorSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # p
         result = {}
         result['explicitly_set'] = xblock._field_data.has(xblock, field.name)
         try:
-            block_inherited = xblock.xblock_kvs.inherited_settings
-        except AttributeError:  # if inherited_settings doesn't exist on kvs
-            block_inherited = {}
-        if field.name in block_inherited:
-            result['default_value'] = block_inherited[field.name]
-        else:
+            result['default_value'] = xblock._field_data.default(xblock, field.name)
+        except KeyError:
             result['default_value'] = field.to_json(field.default)
         return result
 
@@ -1307,6 +1337,9 @@ class DescriptorSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # p
     def publish(self, block, event_type, event):
         # A stub publish method that doesn't emit any events from XModuleDescriptors.
         pass
+
+
+new_contract('DescriptorSystem', DescriptorSystem)
 
 
 class XMLParsingSystem(DescriptorSystem):
@@ -1429,6 +1462,8 @@ class ModuleSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # pylin
     Note that these functions can be closures over e.g. a django request
     and user, or other environment-specific info.
     """
+
+    @contract(descriptor_runtime='DescriptorSystem')
     def __init__(
             self, static_url, track_function, get_module, render_template,
             replace_urls, descriptor_runtime, user=None, filestore=None,
@@ -1558,8 +1593,13 @@ class ModuleSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # pylin
         """provide uniform access to attributes (like etree)"""
         self.__dict__[attr] = val
 
-    def __str__(self):
-        return str(self.__dict__)
+    def __repr__(self):
+        kwargs = self.__dict__.copy()
+
+        # Remove value set transiently by XBlock
+        kwargs.pop('_view_name')
+
+        return "{}{}".format(self.__class__.__name__, kwargs)
 
     @property
     def ajax_url(self):

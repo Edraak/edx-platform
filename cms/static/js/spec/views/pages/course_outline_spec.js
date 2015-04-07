@@ -1,14 +1,14 @@
-define(["jquery", "js/common_helpers/ajax_helpers", "js/views/utils/view_utils", "js/views/pages/course_outline",
+define(["jquery", "sinon", "js/common_helpers/ajax_helpers", "js/views/utils/view_utils", "js/views/pages/course_outline",
         "js/models/xblock_outline_info", "js/utils/date_utils", "js/spec_helpers/edit_helpers",
         "js/common_helpers/template_helpers"],
-    function($, AjaxHelpers, ViewUtils, CourseOutlinePage, XBlockOutlineInfo, DateUtils, EditHelpers, TemplateHelpers) {
+    function($, Sinon, AjaxHelpers, ViewUtils, CourseOutlinePage, XBlockOutlineInfo, DateUtils, EditHelpers, TemplateHelpers) {
 
         describe("CourseOutlinePage", function() {
             var createCourseOutlinePage, displayNameInput, model, outlinePage, requests,
                 getItemsOfType, getItemHeaders, verifyItemsExpanded, expandItemsAndVerifyState,
                 collapseItemsAndVerifyState, createMockCourseJSON, createMockSectionJSON, createMockSubsectionJSON,
                 verifyTypePublishable, mockCourseJSON, mockEmptyCourseJSON, mockSingleSectionCourseJSON,
-                createMockVerticalJSON,
+                createMockVerticalJSON, createMockIndexJSON, mockCourseEntranceExamJSON
                 mockOutlinePage = readFixtures('mock/mock-course-outline-page.underscore'),
                 mockRerunNotification = readFixtures('mock/mock-course-rerun-notification.underscore');
 
@@ -86,6 +86,21 @@ define(["jquery", "js/common_helpers/ajax_helpers", "js/views/utils/view_utils",
                     edited_on: 'Jul 02, 2014 at 20:56 UTC',
                     edited_by: 'MockUser'
                 }, options);
+            };
+
+            createMockIndexJSON = function(option) {
+                if(option){
+                    return JSON.stringify({
+                        "developer_message" : "Course has been successfully reindexed.",
+                        "user_message": "Course has been successfully reindexed."
+                    });
+                }
+                else {
+                    return JSON.stringify({
+                        "developer_message" : "Could not reindex course.",
+                        "user_message": "Could not reindex course."
+                    });
+                }
             };
 
             getItemsOfType = function(type) {
@@ -213,6 +228,14 @@ define(["jquery", "js/common_helpers/ajax_helpers", "js/views/utils/view_utils",
                 mockSingleSectionCourseJSON = createMockCourseJSON({}, [
                     createMockSectionJSON()
                 ]);
+                mockCourseEntranceExamJSON = createMockCourseJSON({}, [
+                    createMockSectionJSON({}, [
+                        createMockSubsectionJSON({'is_header_visible': false}, [
+                            createMockVerticalJSON()
+                        ])
+                    ])
+                ]);
+
             });
 
             afterEach(function () {
@@ -243,6 +266,11 @@ define(["jquery", "js/common_helpers/ajax_helpers", "js/views/utils/view_utils",
                     createCourseOutlinePage(this, mockCourseJSON);
                     verifyItemsExpanded('subsection', false);
                     expect(getItemsOfType('unit')).not.toExist();
+                });
+
+                it('unit initially exist for entrance exam', function() {
+                    createCourseOutlinePage(this, mockCourseEntranceExamJSON);
+                    expect(getItemsOfType('unit')).toExist();
                 });
             });
 
@@ -307,6 +335,34 @@ define(["jquery", "js/common_helpers/ajax_helpers", "js/views/utils/view_utils",
                     verifyItemsExpanded('section', false);
                     outlinePage.$('.nav-actions .button-toggle-expand-collapse .expand-all').click();
                     verifyItemsExpanded('section', true);
+                });
+
+                it('can start reindex of a course', function() {
+                    createCourseOutlinePage(this, mockSingleSectionCourseJSON);
+                    var reindexSpy = spyOn(outlinePage, 'startReIndex').andCallThrough();
+                    var successSpy = spyOn(outlinePage, 'onIndexSuccess').andCallThrough();
+                    var reindexButton = outlinePage.$('.button.button-reindex');
+                    var test_url = '/course/5/search_reindex';
+                    reindexButton.attr('href', test_url)
+                    reindexButton.trigger('click');
+                    AjaxHelpers.expectJsonRequest(requests, 'GET', test_url);
+                    AjaxHelpers.respondWithJson(requests, createMockIndexJSON(true));
+                    expect(reindexSpy).toHaveBeenCalled();
+                    expect(successSpy).toHaveBeenCalled();
+                });
+
+                it('shows an error message when reindexing fails', function() {
+                    createCourseOutlinePage(this, mockSingleSectionCourseJSON);
+                    var reindexSpy = spyOn(outlinePage, 'startReIndex').andCallThrough();
+                    var errorSpy = spyOn(outlinePage, 'onIndexError').andCallThrough();
+                    var reindexButton = outlinePage.$('.button.button-reindex');
+                    var test_url = '/course/5/search_reindex';
+                    reindexButton.attr('href', test_url)
+                    reindexButton.trigger('click');
+                    AjaxHelpers.expectJsonRequest(requests, 'GET', test_url);
+                    AjaxHelpers.respondWithError(requests, 500, createMockIndexJSON(false));
+                    expect(reindexSpy).toHaveBeenCalled();
+                    expect(errorSpy).toHaveBeenCalled();
                 });
             });
 

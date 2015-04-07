@@ -53,7 +53,8 @@ VIDEO_MENUS = {
 }
 
 
-@js_defined('window.Video', 'window.RequireJS.require', 'window.jQuery')
+@js_defined('window.Video', 'window.RequireJS.require', 'window.jQuery',
+            'window.MathJax', 'window.MathJax.isReady')
 class VideoPage(PageObject):
     """
     Video player in the courseware.
@@ -355,10 +356,6 @@ class VideoPage(PageObject):
             self.wait_for(lambda: self.state != 'buffering', 'Player is Ready for Pause')
 
         self.q(css=button_selector).first.click()
-
-        button_states = {'play': 'playing', 'pause': 'pause'}
-        if button in button_states:
-            self.wait_for_state(button_states[button])
 
         self.wait_for_ajax()
 
@@ -677,7 +674,7 @@ class VideoPage(PageObject):
         elif 'is-ended' in current_state:
             return 'finished'
 
-    def _wait_for(self, check_func, desc, result=False, timeout=200):
+    def _wait_for(self, check_func, desc, result=False, timeout=200, try_interval=0.2):
         """
         Calls the method provided as an argument until the Promise satisfied or BrokenPromise
 
@@ -689,9 +686,9 @@ class VideoPage(PageObject):
 
         """
         if result:
-            return Promise(check_func, desc, timeout=timeout).fulfill()
+            return Promise(check_func, desc, timeout=timeout, try_interval=try_interval).fulfill()
         else:
-            return EmptyPromise(check_func, desc, timeout=timeout).fulfill()
+            return EmptyPromise(check_func, desc, timeout=timeout, try_interval=try_interval).fulfill()
 
     def wait_for_state(self, state):
         """

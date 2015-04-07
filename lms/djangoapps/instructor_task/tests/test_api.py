@@ -73,6 +73,8 @@ class InstructorTaskModuleSubmitTest(InstructorTaskModuleTestCase):
     """Tests API methods that involve the submission of module-based background tasks."""
 
     def setUp(self):
+        super(InstructorTaskModuleSubmitTest, self).setUp()
+
         self.initialize_course()
         self.student = UserFactory.create(username="student", email="student@edx.org")
         self.instructor = UserFactory.create(username="instructor", email="instructor@edx.org")
@@ -80,7 +82,6 @@ class InstructorTaskModuleSubmitTest(InstructorTaskModuleTestCase):
     def test_submit_nonexistent_modules(self):
         # confirm that a rescore of a non-existent module returns an exception
         problem_url = InstructorTaskModuleTestCase.problem_location("NonexistentProblem")
-        course_id = self.course.id
         request = None
         with self.assertRaises(ItemNotFoundError):
             submit_rescore_problem_for_student(request, problem_url, self.student)
@@ -96,7 +97,6 @@ class InstructorTaskModuleSubmitTest(InstructorTaskModuleTestCase):
         # (Note that it is easier to test a scoreable but non-rescorable module in test_tasks,
         # where we are creating real modules.)
         problem_url = self.problem_section.location
-        course_id = self.course.id
         request = None
         with self.assertRaises(NotImplementedError):
             submit_rescore_problem_for_student(request, problem_url, self.student)
@@ -164,6 +164,8 @@ class InstructorTaskCourseSubmitTest(TestReportMixin, InstructorTaskCourseTestCa
     """Tests API methods that involve the submission of course-based background tasks."""
 
     def setUp(self):
+        super(InstructorTaskCourseSubmitTest, self).setUp()
+
         self.initialize_course()
         self.student = UserFactory.create(username="student", email="student@edx.org")
         self.instructor = UserFactory.create(username="instructor", email="instructor@edx.org")

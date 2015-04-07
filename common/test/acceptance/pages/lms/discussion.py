@@ -311,13 +311,15 @@ class DiscussionSortPreferencePage(CoursePage):
 
 
 class DiscussionTabSingleThreadPage(CoursePage):
-    def __init__(self, browser, course_id, thread_id):
+    def __init__(self, browser, course_id, discussion_id, thread_id):
         super(DiscussionTabSingleThreadPage, self).__init__(browser, course_id)
         self.thread_page = DiscussionThreadPage(
             browser,
             "body.discussion .discussion-article[data-id='{thread_id}']".format(thread_id=thread_id)
         )
-        self.url_path = "discussion/forum/dummy/threads/" + thread_id
+        self.url_path = "discussion/forum/{discussion_id}/threads/{thread_id}".format(
+            discussion_id=discussion_id, thread_id=thread_id
+        )
 
     def is_browser_on_page(self):
         return self.thread_page.is_browser_on_page()
@@ -552,3 +554,31 @@ class DiscussionTabHomePage(CoursePage, DiscussionPageMixin):
             lambda: _match_messages(text).results == [],
             "waiting for dismissed alerts to disappear"
         ).fulfill()
+
+    def click_new_post_button(self):
+        """
+        Clicks the 'New Post' button.
+        """
+        self.new_post_button.click()
+        EmptyPromise(
+            lambda: (
+                self.new_post_form
+            ),
+            "New post action succeeded"
+        ).fulfill()
+
+    @property
+    def new_post_button(self):
+        """
+        Returns the new post button.
+        """
+        elements = self.q(css="ol.course-tabs .new-post-btn")
+        return elements.first if elements.visible and len(elements) == 1 else None
+
+    @property
+    def new_post_form(self):
+        """
+        Returns the new post form.
+        """
+        elements = self.q(css=".forum-new-post-form")
+        return elements[0] if elements.visible and len(elements) == 1 else None

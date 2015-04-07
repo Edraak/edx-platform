@@ -51,16 +51,19 @@ class BokChoyTestSuite(TestSuite):
         self.har_dir.makedirs_p()
         self.report_dir.makedirs_p()
         test_utils.clean_reports_dir()
-        test_utils.clean_test_files()
+
+        if not self.skip_clean:
+            test_utils.clean_test_files()
 
         msg = colorize('green', "Checking for mongo, memchache, and mysql...")
         print(msg)
         bokchoy_utils.check_services()
 
+        sh("{}/scripts/reset-test-db.sh".format(Env.REPO_ROOT))
+
         if not self.fasttest:
             # Process assets and set up database for bok-choy tests
             # Reset the database
-            sh("{}/scripts/reset-test-db.sh".format(Env.REPO_ROOT))
 
             # Collect static assets
             sh("paver update_assets --settings=bok_choy")

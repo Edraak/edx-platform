@@ -4,6 +4,8 @@ Instructor Dashboard Views
 
 import logging
 import datetime
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
 import uuid
 import pytz
 
@@ -15,7 +17,7 @@ from django.views.decorators.cache import cache_control
 from edxmako.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.utils.html import escape
-from django.http import Http404
+from django.http import Http404, HttpResponseServerError
 from django.conf import settings
 from util.json_request import JsonResponse
 from mock import patch
@@ -33,7 +35,9 @@ from django_comment_common.models import FORUM_ROLE_ADMINISTRATOR
 from student.models import CourseEnrollment
 from shoppingcart.models import Coupon, PaidCourseRegistration
 from course_modes.models import CourseMode, CourseModesArchive
-from student.roles import CourseFinanceAdminRole
+from student.roles import CourseFinanceAdminRole, CourseSalesAdminRole
+from certificates.models import CertificateGenerationConfiguration
+from certificates import api as certs_api
 
 from class_dashboard.dashboard_data import get_section_display_name, get_array_section_has_problem
 from .tools import get_units_with_due_date, title_or_url, bulk_email_is_enabled_for_course
@@ -47,17 +51,21 @@ log = logging.getLogger(__name__)
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 def instructor_dashboard_2(request, course_id):
     """ Display the instructor dashboard for a course. """
-    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    course = get_course_by_id(course_key, depth=None)
+    try:
+        course_key = CourseKey.from_string(course_id)
+    except InvalidKeyError:
+        log.error(u"Unable to find course with course key %s while loading the Instructor Dashboard.", course_id)
+        return HttpResponseServerError()
+
+    course = get_course_by_id(course_key, depth=0)
 
     access = {
         'admin': request.user.is_staff,
         'instructor': has_access(request.user, 'instructor', course),
         'finance_admin': CourseFinanceAdminRole(course_key).has_user(request.user),
+        'sales_admin': CourseSalesAdminRole(course_key).has_user(request.user),
         'staff': has_access(request.user, 'staff', course),
-        'forum_admin': has_forum_access(
-            request.user, course_key, FORUM_ROLE_ADMINISTRATOR
-        ),
+        'forum_admin': has_forum_access(request.user, course_key, FORUM_ROLE_ADMINISTRATOR),
     }
 
     if not access['staff']:
@@ -66,16 +74,25 @@ def instructor_dashboard_2(request, course_id):
     sections = [
         _section_course_info(course, access),
         _section_membership(course, access),
+        _section_cohort_management(course, access),
         _section_student_admin(course, access),
         _section_data_download(course, access),
         _section_analytics(course, access),
     ]
 
     #check if there is corresponding entry in the CourseMode Table related to the Instructor Dashboard course
-    course_honor_mode = CourseMode.mode_for_course(course_key, 'honor')
     course_mode_has_price = False
-    if course_honor_mode and course_honor_mode.min_price > 0:
+    paid_modes = CourseMode.paid_modes_for_course(course_key)
+    if len(paid_modes) == 1:
         course_mode_has_price = True
+    elif len(paid_modes) > 1:
+        log.error(
+            u"Course %s has %s course modes with payment options. Course must only have "
+            u"one paid course mode to enable eCommerce options.",
+            unicode(course_key), len(paid_modes)
+        )
+
+    is_white_label = CourseMode.is_white_label(course_key)
 
     if (settings.FEATURES.get('INDIVIDUAL_DUE_DATES') and access['instructor']):
         sections.insert(3, _section_extensions(course))
@@ -89,8 +106,15 @@ def instructor_dashboard_2(request, course_id):
         sections.append(_section_metrics(course, access))
 
     # Gate access to Ecommerce tab
-    if course_mode_has_price:
-        sections.append(_section_e_commerce(course, access))
+    if course_mode_has_price and (access['finance_admin'] or access['sales_admin']):
+        sections.append(_section_e_commerce(course, access, paid_modes[0], is_white_label))
+
+    # Certificates panel
+    # This is used to generate example certificates
+    # and enable self-generated certificates for a course.
+    certs_enabled = CertificateGenerationConfiguration.current().enabled
+    if certs_enabled and access['admin']:
+        sections.append(_section_certificates(course))
 
     disable_buttons = not _is_small_course(course_key)
 
@@ -126,15 +150,13 @@ def instructor_dashboard_2(request, course_id):
 ## section_display_name will be used to generate link titles in the nav bar.
 
 
-def _section_e_commerce(course, access):
+def _section_e_commerce(course, access, paid_mode, coupons_enabled):
     """ Provide data for the corresponding dashboard section """
     course_key = course.id
     coupons = Coupon.objects.filter(course_id=course_key).order_by('-is_active')
-    course_price = None
+    course_price = paid_mode.min_price
+
     total_amount = None
-    course_honor_mode = CourseMode.mode_for_course(course_key, 'honor')
-    if course_honor_mode and course_honor_mode.min_price > 0:
-        course_price = course_honor_mode.min_price
     if access['finance_admin']:
         total_amount = PaidCourseRegistration.get_total_amount_of_purchased_item(course_key)
 
@@ -160,10 +182,59 @@ def _section_e_commerce(course, access):
         'set_course_mode_url': reverse('set_course_mode_price', kwargs={'course_id': unicode(course_key)}),
         'download_coupon_codes_url': reverse('get_coupon_codes', kwargs={'course_id': unicode(course_key)}),
         'coupons': coupons,
+        'sales_admin': access['sales_admin'],
+        'coupons_enabled': coupons_enabled,
         'course_price': course_price,
         'total_amount': total_amount
     }
     return section_data
+
+
+def _section_certificates(course):
+    """Section information for the certificates panel.
+
+    The certificates panel allows global staff to generate
+    example certificates and enable self-generated certificates
+    for a course.
+
+    Arguments:
+        course (Course)
+
+    Returns:
+        dict
+
+    """
+    example_cert_status = certs_api.example_certificates_status(course.id)
+
+    # Allow the user to enable self-generated certificates for students
+    # *only* once a set of example certificates has been successfully generated.
+    # If certificates have been misconfigured for the course (for example, if
+    # the PDF template hasn't been uploaded yet), then we don't want
+    # to turn on self-generated certificates for students!
+    can_enable_for_course = (
+        example_cert_status is not None and
+        all(
+            cert_status['status'] == 'success'
+            for cert_status in example_cert_status
+        )
+    )
+    return {
+        'section_key': 'certificates',
+        'section_display_name': _('Certificates'),
+        'example_certificate_status': example_cert_status,
+        'can_enable_for_course': can_enable_for_course,
+        'enabled_for_course': certs_api.cert_generation_enabled(course.id),
+        'urls': {
+            'generate_example_certificates': reverse(
+                'generate_example_certificates',
+                kwargs={'course_id': course.id}
+            ),
+            'enable_certificate_generation': reverse(
+                'enable_certificate_generation',
+                kwargs={'course_id': course.id}
+            )
+        }
+    }
 
 
 @ensure_csrf_cookie
@@ -225,6 +296,9 @@ def _section_course_info(course, access):
         message = _("Enrollment data is now available in {dashboard_link}.").format(dashboard_link=dashboard_link)
         section_data['enrollment_message'] = message
 
+    if settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD'):
+        section_data['detailed_gitlogs_url'] = reverse('gitlogs_detail', kwargs={'course_id': unicode(course_key)})
+
     try:
         advance = lambda memo, (letter, score): "{}: {}, ".format(letter, score) + memo
         section_data['grade_cutoffs'] = reduce(advance, course.grade_cutoffs.items(), "")[:-2]
@@ -255,9 +329,24 @@ def _section_membership(course, access):
         'modify_access_url': reverse('modify_access', kwargs={'course_id': unicode(course_key)}),
         'list_forum_members_url': reverse('list_forum_members', kwargs={'course_id': unicode(course_key)}),
         'update_forum_role_membership_url': reverse('update_forum_role_membership', kwargs={'course_id': unicode(course_key)}),
-        'cohorts_ajax_url': reverse('cohorts', kwargs={'course_key_string': unicode(course_key)}),
-        'advanced_settings_url': get_studio_url(course, 'settings/advanced'),
+    }
+    return section_data
+
+
+def _section_cohort_management(course, access):
+    """ Provide data for the corresponding cohort management section """
+    course_key = course.id
+    section_data = {
+        'section_key': 'cohort_management',
+        'section_display_name': _('Cohorts'),
+        'access': access,
+        'course_cohort_settings_url': reverse(
+            'course_cohort_settings',
+            kwargs={'course_key_string': unicode(course_key)}
+        ),
+        'cohorts_url': reverse('cohorts', kwargs={'course_key_string': unicode(course_key)}),
         'upload_cohorts_csv_url': reverse('add_users_to_cohorts', kwargs={'course_id': unicode(course_key)}),
+        'discussion_topics_url': reverse('cohort_discussion_topics', kwargs={'course_key_string': unicode(course_key)}),
     }
     return section_data
 
@@ -285,8 +374,19 @@ def _section_student_admin(course, access):
         'get_student_progress_url_url': reverse('get_student_progress_url', kwargs={'course_id': unicode(course_key)}),
         'enrollment_url': reverse('students_update_enrollment', kwargs={'course_id': unicode(course_key)}),
         'reset_student_attempts_url': reverse('reset_student_attempts', kwargs={'course_id': unicode(course_key)}),
+        'reset_student_attempts_for_entrance_exam_url': reverse(
+            'reset_student_attempts_for_entrance_exam',
+            kwargs={'course_id': unicode(course_key)},
+        ),
         'rescore_problem_url': reverse('rescore_problem', kwargs={'course_id': unicode(course_key)}),
+        'rescore_entrance_exam_url': reverse('rescore_entrance_exam', kwargs={'course_id': unicode(course_key)}),
+        'student_can_skip_entrance_exam_url': reverse(
+            'mark_student_can_skip_entrance_exam',
+            kwargs={'course_id': unicode(course_key)},
+        ),
         'list_instructor_tasks_url': reverse('list_instructor_tasks', kwargs={'course_id': unicode(course_key)}),
+        'list_entrace_exam_instructor_tasks_url': reverse('list_entrance_exam_instructor_tasks',
+                                                          kwargs={'course_id': unicode(course_key)}),
         'spoc_gradebook_url': reverse('spoc_gradebook', kwargs={'course_id': unicode(course_key)}),
     }
     return section_data

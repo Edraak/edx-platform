@@ -26,15 +26,6 @@ from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 
 
-# A tuple of Role Types and Boolean values that indicate whether access should be given to that role.
-ROLE_CASES = (
-    (auth.CourseBetaTesterRole, True),
-    (auth.CourseStaffRole, True),
-    (auth.CourseInstructorRole, True),
-    (None, False)
-)
-
-
 class MobileAPITestCase(ModuleStoreTestCase, APITestCase):
     """
     Base class for testing Mobile APIs.
@@ -44,7 +35,7 @@ class MobileAPITestCase(ModuleStoreTestCase, APITestCase):
     """
     def setUp(self):
         super(MobileAPITestCase, self).setUp()
-        self.course = CourseFactory.create(mobile_available=True)
+        self.course = CourseFactory.create(mobile_available=True, static_asset_path="needed_for_split")
         self.user = UserFactory.create()
         self.password = 'test'
         self.username = self.user.username
@@ -114,7 +105,7 @@ class MobileAuthUserTestMixin(MobileAuthTestMixin):
     """
     def test_invalid_user(self):
         self.login_and_enroll()
-        self.api_response(expected_response_code=403, username='no_user')
+        self.api_response(expected_response_code=404, username='no_user')
 
     def test_other_user(self):
         # login and enroll as the test user
@@ -129,7 +120,7 @@ class MobileAuthUserTestMixin(MobileAuthTestMixin):
 
         # now login and call the API as the test user
         self.login()
-        self.api_response(expected_response_code=403, username=other.username)
+        self.api_response(expected_response_code=404, username=other.username)
 
 
 @ddt.ddt
@@ -140,6 +131,8 @@ class MobileCourseAccessTestMixin(object):
     Subclasses are expected to inherit from MobileAPITestCase.
     Subclasses can override verify_success, verify_failure, and init_course_access methods.
     """
+    ALLOW_ACCESS_TO_UNRELEASED_COURSE = False  # pylint: disable=invalid-name
+
     def verify_success(self, response):
         """Base implementation of verifying a successful response."""
         self.assertEqual(response.status_code, 200)
@@ -170,9 +163,18 @@ class MobileCourseAccessTestMixin(object):
         self.init_course_access()
 
         response = self.api_response(expected_response_code=None)
-        self.verify_failure(response)  # allow subclasses to override verification
+        if self.ALLOW_ACCESS_TO_UNRELEASED_COURSE:
+            self.verify_success(response)
+        else:
+            self.verify_failure(response)
 
-    @ddt.data(*ROLE_CASES)
+    # A tuple of Role Types and Boolean values that indicate whether access should be given to that role.
+    @ddt.data(
+        (auth.CourseBetaTesterRole, True),
+        (auth.CourseStaffRole, True),
+        (auth.CourseInstructorRole, True),
+        (None, False)
+    )
     @ddt.unpack
     def test_non_mobile_available(self, role, should_succeed):
         self.init_course_access()

@@ -6,23 +6,21 @@ import unittest
 
 from django.test import TestCase
 from django.test.client import Client
-from django.test.utils import override_settings
 from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponseBadRequest, HttpResponse
-from external_auth.models import ExternalAuthMap
 import httpretty
 from mock import patch
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from social.apps.django_app.default.models import UserSocialAuth
 
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
+from external_auth.models import ExternalAuthMap
 from student.tests.factories import UserFactory, RegistrationFactory, UserProfileFactory
-from student.views import (
-    _parse_course_id_from_string,
-    _get_course_enrollment_domain,
-    login_oauth_token,
+from student.views import login_oauth_token
+from third_party_auth.tests.utils import (
+    ThirdPartyOAuthTestMixin,
+    ThirdPartyOAuthTestMixinFacebook,
+    ThirdPartyOAuthTestMixinGoogle
 )
 from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
@@ -77,6 +75,14 @@ class LoginTest(TestCase):
         self._assert_audit_log(mock_audit_log, 'info', [u'Login success', unicode_email])
 
     def test_login_fail_no_user_exists(self):
+        nonexistent_email = u'not_a_user@edx.org'
+        response, mock_audit_log = self._login_response(nonexistent_email, 'test_password')
+        self._assert_response(response, success=False,
+                              value='Email or password is incorrect')
+        self._assert_audit_log(mock_audit_log, 'warning', [u'Login failed', u'Unknown user email', nonexistent_email])
+
+    @patch.dict("django.conf.settings.FEATURES", {'ADVANCED_SECURITY': True})
+    def test_login_fail_incorrect_email_with_advanced_security(self):
         nonexistent_email = u'not_a_user@edx.org'
         response, mock_audit_log = self._login_response(nonexistent_email, 'test_password')
         self._assert_response(response, success=False,
@@ -192,6 +198,9 @@ class LoginTest(TestCase):
         response = client1.post(self.url, creds)
         self._assert_response(response, success=True)
 
+        # Reload the user from the database
+        self.user = UserFactory.FACTORY_FOR.objects.get(pk=self.user.pk)
+
         self.assertEqual(self.user.profile.get_meta()['session_id'], client1.session.session_key)
 
         # second login should log out the first
@@ -207,6 +216,29 @@ class LoginTest(TestCase):
             url = reverse('upload_transcripts')
         response = client1.get(url)
         # client1 will be logged out
+        self.assertEqual(response.status_code, 302)
+
+    @patch.dict("django.conf.settings.FEATURES", {'PREVENT_CONCURRENT_LOGINS': True})
+    def test_single_session_with_url_not_having_login_required_decorator(self):
+        # accessing logout url as it does not have login-required decorator it will avoid redirect
+        # and go inside the enforce_single_login
+
+        creds = {'email': 'test@edx.org', 'password': 'test_password'}
+        client1 = Client()
+        client2 = Client()
+
+        response = client1.post(self.url, creds)
+        self._assert_response(response, success=True)
+
+        self.assertEqual(self.user.profile.get_meta()['session_id'], client1.session.session_key)
+
+        # second login should log out the first
+        response = client2.post(self.url, creds)
+        self._assert_response(response, success=True)
+
+        url = reverse('logout')
+
+        response = client1.get(url)
         self.assertEqual(response.status_code, 302)
 
     def test_change_enrollment_400(self):
@@ -324,29 +356,11 @@ class LoginTest(TestCase):
             self.assertNotIn(log_string, format_string)
 
 
-class UtilFnTest(TestCase):
-    """
-    Tests for utility functions in student.views
-    """
-    def test__parse_course_id_from_string(self):
-        """
-        Tests the _parse_course_id_from_string util function
-        """
-        COURSE_ID = u'org/num/run'                                # pylint: disable=invalid-name
-        COURSE_URL = u'/courses/{}/otherstuff'.format(COURSE_ID)  # pylint: disable=invalid-name
-        NON_COURSE_URL = u'/blahblah'                             # pylint: disable=invalid-name
-        self.assertEqual(
-            _parse_course_id_from_string(COURSE_URL),
-            SlashSeparatedCourseKey.from_deprecated_string(COURSE_ID)
-        )
-        self.assertIsNone(_parse_course_id_from_string(NON_COURSE_URL))
-
-
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class ExternalAuthShibTest(ModuleStoreTestCase):
     """
     Tests how login_user() interacts with ExternalAuth, in particular Shib
     """
+
     def setUp(self):
         super(ExternalAuthShibTest, self).setUp()
         self.course = CourseFactory.create(
@@ -388,15 +402,6 @@ class ExternalAuthShibTest(ModuleStoreTestCase):
         })
 
     @unittest.skipUnless(settings.FEATURES.get('AUTH_USE_SHIB'), "AUTH_USE_SHIB not set")
-    def test__get_course_enrollment_domain(self):
-        """
-        Tests the _get_course_enrollment_domain utility function
-        """
-        self.assertIsNone(_get_course_enrollment_domain(SlashSeparatedCourseKey("I", "DONT", "EXIST")))
-        self.assertIsNone(_get_course_enrollment_domain(self.course.id))
-        self.assertEqual(self.shib_course.enrollment_domain, _get_course_enrollment_domain(self.shib_course.id))
-
-    @unittest.skipUnless(settings.FEATURES.get('AUTH_USE_SHIB'), "AUTH_USE_SHIB not set")
     def test_login_required_dashboard(self):
         """
         Tests redirects to when @login_required to dashboard, which should always be the normal login,
@@ -416,7 +421,7 @@ class ExternalAuthShibTest(ModuleStoreTestCase):
         noshib_response = self.client.get(TARGET_URL, follow=True)
         self.assertEqual(noshib_response.redirect_chain[-1],
                          ('http://testserver/accounts/login?next={url}'.format(url=TARGET_URL), 302))
-        self.assertContains(noshib_response, ("Log into your {platform_name} Account | {platform_name}"
+        self.assertContains(noshib_response, ("Sign in or Register | {platform_name}"
                                               .format(platform_name=settings.PLATFORM_NAME)))
         self.assertEqual(noshib_response.status_code, 200)
 
@@ -436,7 +441,7 @@ class ExternalAuthShibTest(ModuleStoreTestCase):
 
 
 @httpretty.activate
-class LoginOAuthTokenMixin(object):
+class LoginOAuthTokenMixin(ThirdPartyOAuthTestMixin):
     """
     Mixin with tests for the login_oauth_token view. A TestCase that includes
     this must define the following:
@@ -447,30 +452,8 @@ class LoginOAuthTokenMixin(object):
     """
 
     def setUp(self):
-        self.client = Client()
+        super(LoginOAuthTokenMixin, self).setUp()
         self.url = reverse(login_oauth_token, kwargs={"backend": self.BACKEND})
-        self.social_uid = "social_uid"
-        self.user = UserFactory()
-        UserSocialAuth.objects.create(user=self.user, provider=self.BACKEND, uid=self.social_uid)
-
-    def _setup_user_response(self, success):
-        """
-        Register a mock response for the third party user information endpoint;
-        success indicates whether the response status code should be 200 or 400
-        """
-        if success:
-            status = 200
-            body = json.dumps({self.UID_FIELD: self.social_uid})
-        else:
-            status = 400
-            body = json.dumps({})
-        httpretty.register_uri(
-            httpretty.GET,
-            self.USER_URL,
-            body=body,
-            status=status,
-            content_type="application/json"
-        )
 
     def _assert_error(self, response, status_code, error):
         """Assert that the given response was a 400 with the given error code"""
@@ -479,13 +462,13 @@ class LoginOAuthTokenMixin(object):
         self.assertNotIn("partial_pipeline", self.client.session)
 
     def test_success(self):
-        self._setup_user_response(success=True)
+        self._setup_provider_response(success=True)
         response = self.client.post(self.url, {"access_token": "dummy"})
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(self.client.session['_auth_user_id'], self.user.id)
+        self.assertEqual(self.client.session['_auth_user_id'], self.user.id)  # pylint: disable=no-member
 
     def test_invalid_token(self):
-        self._setup_user_response(success=False)
+        self._setup_provider_response(success=False)
         response = self.client.post(self.url, {"access_token": "dummy"})
         self._assert_error(response, 401, "invalid_token")
 
@@ -495,7 +478,7 @@ class LoginOAuthTokenMixin(object):
 
     def test_unlinked_user(self):
         UserSocialAuth.objects.all().delete()
-        self._setup_user_response(success=True)
+        self._setup_provider_response(success=True)
         response = self.client.post(self.url, {"access_token": "dummy"})
         self._assert_error(response, 401, "invalid_token")
 
@@ -506,17 +489,13 @@ class LoginOAuthTokenMixin(object):
 
 # This is necessary because cms does not implement third party auth
 @unittest.skipUnless(settings.FEATURES.get("ENABLE_THIRD_PARTY_AUTH"), "third party auth not enabled")
-class LoginOAuthTokenTestFacebook(LoginOAuthTokenMixin, TestCase):
+class LoginOAuthTokenTestFacebook(LoginOAuthTokenMixin, ThirdPartyOAuthTestMixinFacebook, TestCase):
     """Tests login_oauth_token with the Facebook backend"""
-    BACKEND = "facebook"
-    USER_URL = "https://graph.facebook.com/me"
-    UID_FIELD = "id"
+    pass
 
 
 # This is necessary because cms does not implement third party auth
 @unittest.skipUnless(settings.FEATURES.get("ENABLE_THIRD_PARTY_AUTH"), "third party auth not enabled")
-class LoginOAuthTokenTestGoogle(LoginOAuthTokenMixin, TestCase):
+class LoginOAuthTokenTestGoogle(LoginOAuthTokenMixin, ThirdPartyOAuthTestMixinGoogle, TestCase):
     """Tests login_oauth_token with the Google backend"""
-    BACKEND = "google-oauth2"
-    USER_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
-    UID_FIELD = "email"
+    pass

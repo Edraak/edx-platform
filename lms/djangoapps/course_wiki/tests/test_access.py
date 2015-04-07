@@ -7,9 +7,7 @@ from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 
-from django.test.utils import override_settings
 from courseware.tests.factories import InstructorFactory, StaffFactory
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 
 from wiki.models import URLPath
 from course_wiki.views import get_or_create_root
@@ -17,10 +15,10 @@ from course_wiki.utils import user_is_article_course_staff, course_wiki_slug
 from course_wiki import settings
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestWikiAccessBase(ModuleStoreTestCase):
     """Base class for testing wiki access."""
     def setUp(self):
+        super(TestWikiAccessBase, self).setUp()
 
         self.wiki = get_or_create_root()
 

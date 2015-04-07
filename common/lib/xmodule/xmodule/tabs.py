@@ -1,12 +1,6 @@
 """
 Implement CourseTab
 """
-# pylint: disable=incomplete-protocol
-# Note: pylint complains that we do not implement __delitem__ and __len__, although we implement __setitem__
-# and __getitem__.  However, the former two do not apply to the CourseTab class so we do not implement them.
-# The reason we implement the latter two is to enable callers to continue to use the CourseTab object with
-# dict-type accessors.
-
 from abc import ABCMeta, abstractmethod
 from xblock.fields import List
 
@@ -15,7 +9,7 @@ from xblock.fields import List
 _ = lambda text: text
 
 
-class CourseTab(object):  # pylint: disable=incomplete-protocol
+class CourseTab(object):
     """
     The Course Tab class is a data abstraction for all tabs (i.e., course navigation links) within a course.
     It is an abstract class - to be inherited by various tab types.
@@ -69,6 +63,7 @@ class CourseTab(object):  # pylint: disable=incomplete-protocol
             settings: The configuration settings, including values for:
              WIKI_ENABLED
              FEATURES['ENABLE_DISCUSSION_SERVICE']
+             FEATURES['ENABLE_EDXNOTES']
              FEATURES['ENABLE_STUDENT_NOTES']
              FEATURES['ENABLE_TEXTBOOK']
 
@@ -131,7 +126,7 @@ class CourseTab(object):  # pylint: disable=incomplete-protocol
         was implemented).
         """
 
-        if type(other) is dict and not self.validate(other, raise_error=False):
+        if isinstance(other, dict) and not self.validate(other, raise_error=False):
             # 'other' is a dict-type tab and did not validate
             return False
 
@@ -195,6 +190,7 @@ class CourseTab(object):  # pylint: disable=incomplete-protocol
             'staff_grading': StaffGradingTab,
             'open_ended': OpenEndedGradingTab,
             'notes': NotesTab,
+            'edxnotes': EdxNotesTab,
             'syllabus': SyllabusTab,
             'instructor': InstructorTab,  # not persisted
         }
@@ -556,7 +552,9 @@ class TextbookTabs(TextbookTabsBase):
             yield SingleTextbookTab(
                 name=textbook.title,
                 tab_id='textbook/{0}'.format(index),
-                link_func=lambda course, reverse_func: reverse_func('book', args=[course.id.to_deprecated_string(), index]),
+                link_func=lambda course, reverse_func, index=index: reverse_func(
+                    'book', args=[course.id.to_deprecated_string(), index]
+                ),
             )
 
 
@@ -576,7 +574,9 @@ class PDFTextbookTabs(TextbookTabsBase):
             yield SingleTextbookTab(
                 name=textbook['tab_title'],
                 tab_id='pdftextbook/{0}'.format(index),
-                link_func=lambda course, reverse_func: reverse_func('pdf_book', args=[course.id.to_deprecated_string(), index]),
+                link_func=lambda course, reverse_func, index=index: reverse_func(
+                    'pdf_book', args=[course.id.to_deprecated_string(), index]
+                ),
             )
 
 
@@ -596,7 +596,9 @@ class HtmlTextbookTabs(TextbookTabsBase):
             yield SingleTextbookTab(
                 name=textbook['tab_title'],
                 tab_id='htmltextbook/{0}'.format(index),
-                link_func=lambda course, reverse_func: reverse_func('html_book', args=[course.id.to_deprecated_string(), index]),
+                link_func=lambda course, reverse_func, index=index: reverse_func(
+                    'html_book', args=[course.id.to_deprecated_string(), index]
+                ),
             )
 
 
@@ -692,6 +694,27 @@ class NotesTab(AuthenticatedCourseTab):
     @classmethod
     def validate(cls, tab_dict, raise_error=True):
         return super(NotesTab, cls).validate(tab_dict, raise_error) and need_name(tab_dict, raise_error)
+
+
+class EdxNotesTab(AuthenticatedCourseTab):
+    """
+    A tab for the course student notes.
+    """
+    type = 'edxnotes'
+
+    def can_display(self, course, settings, is_user_authenticated, is_user_staff, is_user_enrolled):
+        return settings.FEATURES.get('ENABLE_EDXNOTES')
+
+    def __init__(self, tab_dict=None):
+        super(EdxNotesTab, self).__init__(
+            name=tab_dict['name'] if tab_dict else _('Notes'),
+            tab_id=self.type,
+            link_func=link_reverse_func(self.type),
+        )
+
+    @classmethod
+    def validate(cls, tab_dict, raise_error=True):
+        return super(EdxNotesTab, cls).validate(tab_dict, raise_error) and need_name(tab_dict, raise_error)
 
 
 class InstructorTab(StaffTab):
@@ -854,13 +877,13 @@ class CourseTabList(List):
 
         # the following tabs should appear only once
         for tab_type in [
-            CoursewareTab.type,
-            CourseInfoTab.type,
-            NotesTab.type,
-            TextbookTabs.type,
-            PDFTextbookTabs.type,
-            HtmlTextbookTabs.type,
-        ]:
+                CoursewareTab.type,
+                CourseInfoTab.type,
+                NotesTab.type,
+                TextbookTabs.type,
+                PDFTextbookTabs.type,
+                HtmlTextbookTabs.type,
+                EdxNotesTab.type]:
             cls._validate_num_tabs_of_type(tabs, tab_type, 1)
 
     @staticmethod

@@ -29,6 +29,12 @@ var edx = edx || {};
             passwordHelp: {}
         },
 
+        urls: {
+            dashboard: '/dashboard',
+            payment: '/verify_student/start-flow/',
+            trackSelection: '/course_modes/choose/'
+        },
+
         // The form currently loaded
         activeForm: '',
 
@@ -40,10 +46,18 @@ var edx = edx || {};
             _.mixin( _s.exports() );
 
             this.tpl = $(this.tpl).html();
+
             this.activeForm = obj.mode || 'login';
+
             this.thirdPartyAuth = obj.thirdPartyAuth || {
                 currentProvider: null,
                 providers: []
+            };
+
+            this.formDescriptions = {
+                login: obj.loginFormDesc,
+                register: obj.registrationFormDesc,
+                reset: obj.passwordResetFormDesc
             };
 
             this.platformName = obj.platformName;
@@ -73,80 +87,65 @@ var edx = edx || {};
         },
 
         loadForm: function( type ) {
-            this.getFormData( type, this );
+            var loadFunc = _.bind( this.load[type], this );
+            loadFunc( this.formDescriptions[type] );
         },
 
         load: {
-            login: function( data, context ) {
+            login: function( data ) {
                 var model = new edx.student.account.LoginModel({}, {
                     method: data.method,
                     url: data.submit_url
                 });
 
-                context.subview.login =  new edx.student.account.LoginView({
+                this.subview.login =  new edx.student.account.LoginView({
                     fields: data.fields,
                     model: model,
-                    resetModel: context.resetModel,
-                    thirdPartyAuth: context.thirdPartyAuth,
-                    platformName: context.platformName
+                    resetModel: this.resetModel,
+                    thirdPartyAuth: this.thirdPartyAuth,
+                    platformName: this.platformName
                 });
 
                 // Listen for 'password-help' event to toggle sub-views
-                context.listenTo( context.subview.login, 'password-help', context.resetPassword );
+                this.listenTo( this.subview.login, 'password-help', this.resetPassword );
 
                 // Listen for 'auth-complete' event so we can enroll/redirect the user appropriately.
-                context.listenTo( context.subview.login, 'auth-complete', context.authComplete );
+                this.listenTo( this.subview.login, 'auth-complete', this.authComplete );
 
             },
 
-            reset: function( data, context ) {
-                context.resetModel.ajaxType = data.method;
-                context.resetModel.urlRoot = data.submit_url;
+            reset: function( data ) {
+                this.resetModel.ajaxType = data.method;
+                this.resetModel.urlRoot = data.submit_url;
 
-                context.subview.passwordHelp = new edx.student.account.PasswordResetView({
+                this.subview.passwordHelp = new edx.student.account.PasswordResetView({
                     fields: data.fields,
-                    model: context.resetModel
+                    model: this.resetModel
                 });
 
                 // Listen for 'password-email-sent' event to toggle sub-views
-                context.listenTo( context.subview.passwordHelp, 'password-email-sent', context.passwordEmailSent );
+                this.listenTo( this.subview.passwordHelp, 'password-email-sent', this.passwordEmailSent );
+
+                // Focus on the form
+                $('.password-reset-form').focus();
             },
 
-            register: function( data, context ) {
+            register: function( data ) {
                 var model = new edx.student.account.RegisterModel({}, {
                     method: data.method,
                     url: data.submit_url
                 });
 
-                context.subview.register =  new edx.student.account.RegisterView({
+                this.subview.register =  new edx.student.account.RegisterView({
                     fields: data.fields,
                     model: model,
-                    thirdPartyAuth: context.thirdPartyAuth,
-                    platformName: context.platformName
+                    thirdPartyAuth: this.thirdPartyAuth,
+                    platformName: this.platformName
                 });
 
                 // Listen for 'auth-complete' event so we can enroll/redirect the user appropriately.
-                context.listenTo( context.subview.register, 'auth-complete', context.authComplete );
+                this.listenTo( this.subview.register, 'auth-complete', this.authComplete );
             }
-        },
-
-        getFormData: function( type, context ) {
-            var urls = {
-                login: 'login_session',
-                register: 'registration',
-                reset: 'password_reset'
-            };
-
-            $.ajax({
-                url: '/user_api/v1/account/' + urls[type] + '/',
-                type: 'GET',
-                dataType: 'json',
-                context: this,
-                success: function( data ) {
-                    this.load[type]( data, context );
-                },
-                error: this.showFormError
-            });
         },
 
         passwordEmailSent: function() {
@@ -163,10 +162,6 @@ var edx = edx || {};
             this.element.hide( $(this.el).find('#login-anchor') );
             this.loadForm('reset');
             this.element.scrollTop( $('#password-reset-anchor') );
-        },
-
-        showFormError: function() {
-            this.element.show( $('#form-load-fail') );
         },
 
         toggleForm: function( e ) {
@@ -192,8 +187,11 @@ var edx = edx || {};
             this.element.scrollTop( $anchor );
 
             // Update url without reloading page
-            History.pushState( null, document.title, '/account/' + type + '/' + queryStr );
+            History.pushState( null, document.title, '/' + type + queryStr );
             analytics.page( 'login_and_registration', type );
+
+            // Focus on the form
+            document.getElementById(type).focus();
         },
 
         /**
@@ -251,15 +249,37 @@ var edx = edx || {};
         enrollment: function() {
             var enrollment = edx.student.account.EnrollmentInterface,
                 shoppingcart = edx.student.account.ShoppingCartInterface,
-                redirectUrl = '/dashboard',
+                redirectUrl = this.urls.dashboard,
                 queryParams = this.queryParams();
 
-            if ( queryParams.enrollmentAction === 'enroll' && queryParams.courseId) {
-                /*
-                If we need to enroll in a course, mark as enrolled.
-                The enrollment interface will redirect the student once enrollment completes.
-                */
-                enrollment.enroll( decodeURIComponent( queryParams.courseId ) );
+            if ( queryParams.enrollmentAction === 'enroll' && queryParams.courseId ) {
+                var courseId = decodeURIComponent( queryParams.courseId );
+
+                // Determine where to redirect the user after auto-enrollment.
+                if ( !queryParams.courseMode ) {
+                    /* Backwards compatibility with the original course details page.
+                    The old implementation did not specify the course mode for enrollment,
+                    so we'd always send the user to the "track selection" page.
+                    The track selection page would allow the user to select the course mode
+                    ("verified", "honor", etc.) -- or, if the only course mode was "honor",
+                    it would redirect the user to the dashboard. */
+                    redirectUrl = this.urls.trackSelection + courseId + '/';
+                } else if ( queryParams.courseMode === 'honor' || queryParams.courseMode === 'audit' ) {
+                    /* The newer version of the course details page allows the user
+                    to specify which course mode to enroll as.  If the student has
+                    chosen "honor", we send them immediately to the dashboard
+                    rather than the payment flow.  The user may decide to upgrade
+                    from the dashboard later. */
+                    redirectUrl = this.urls.dashboard;
+                } else {
+                    /* If the user selected any other kind of course mode, send them
+                    to the payment/verification flow. */
+                    redirectUrl = this.urls.payment + courseId + '/';
+                }
+
+                /* Attempt to auto-enroll the user in a free mode of the course,
+                then redirect to the next location. */
+                enrollment.enroll( courseId, redirectUrl );
             } else if ( queryParams.enrollmentAction === 'add_to_cart' && queryParams.courseId) {
                 /*
                 If this is a paid course, add it to the shopping cart and redirect
@@ -306,6 +326,7 @@ var edx = edx || {};
                 next: $.url( '?next' ),
                 enrollmentAction: $.url( '?enrollment_action' ),
                 courseId: $.url( '?course_id' ),
+                courseMode: $.url( '?course_mode' ),
                 emailOptIn: $.url( '?email_opt_in')
             };
         },

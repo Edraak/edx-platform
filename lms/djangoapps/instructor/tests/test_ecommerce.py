@@ -2,27 +2,26 @@
 Unit tests for Ecommerce feature flag in new instructor dashboard.
 """
 
-from django.core.urlresolvers import reverse
 import datetime
+
 import pytz
-from django.test.utils import override_settings
-from mock import patch
+
+from django.core.urlresolvers import reverse
 
 from course_modes.models import CourseMode
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from student.roles import CourseFinanceAdminRole
-from shoppingcart.models import Coupon, PaidCourseRegistration, CourseRegistrationCode
+from shoppingcart.models import Coupon, CourseRegistrationCode
 from student.tests.factories import AdminFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestECommerceDashboardViews(ModuleStoreTestCase):
     """
     Check for E-commerce view on the new instructor dashboard
     """
     def setUp(self):
+        super(TestECommerceDashboardViews, self).setUp()
         self.course = CourseFactory.create()
 
         # Create instructor account
@@ -38,28 +37,23 @@ class TestECommerceDashboardViews(ModuleStoreTestCase):
         self.e_commerce_link = '<a href="" data-section="e-commerce">E-Commerce</a>'
         CourseFinanceAdminRole(self.course.id).add_users(self.instructor)
 
-    def tearDown(self):
-        """
-        Undo all patches.
-        """
-        patch.stopall()
-
     def test_pass_e_commerce_tab_in_instructor_dashboard(self):
         """
         Test Pass E-commerce Tab is in the Instructor Dashboard
         """
         response = self.client.get(self.url)
         self.assertTrue(self.e_commerce_link in response.content)
+        # Coupons should show up for White Label sites with priced honor modes.
+        self.assertTrue('Coupons' in response.content)
 
     def test_user_has_finance_admin_rights_in_e_commerce_tab(self):
         response = self.client.get(self.url)
         self.assertTrue(self.e_commerce_link in response.content)
 
         # Order/Invoice sales csv button text should render in e-commerce page
-        self.assertTrue('Total CC Amount' in response.content)
-        self.assertTrue('Download All CC Sales' in response.content)
-        self.assertTrue('Download All Invoice Sales' in response.content)
-        self.assertTrue('Enter the invoice number to invalidate or re-validate sale' in response.content)
+        self.assertTrue('Total Credit Card Purchases' in response.content)
+        self.assertTrue('Download All Credit Card Purchases' in response.content)
+        self.assertTrue('Download All Invoices' in response.content)
 
         # removing the course finance_admin role of login user
         CourseFinanceAdminRole(self.course.id).remove_users(self.instructor)
@@ -67,9 +61,7 @@ class TestECommerceDashboardViews(ModuleStoreTestCase):
         # Order/Invoice sales csv button text should not be visible in e-commerce page if the user is not finance admin
         url = reverse('instructor_dashboard', kwargs={'course_id': self.course.id.to_deprecated_string()})
         response = self.client.post(url)
-        self.assertFalse('Download All Order Sales' in response.content)
-        self.assertFalse('Download All Invoice Sales' in response.content)
-        self.assertFalse('Enter the invoice number to invalidate or re-validate sale' in response.content)
+        self.assertFalse('Download All Invoices' in response.content)
 
     def test_user_view_course_price(self):
         """
@@ -190,7 +182,8 @@ class TestECommerceDashboardViews(ModuleStoreTestCase):
         self.assertTrue('Please Enter the Integer Value for Coupon Discount' in response.content)
 
         course_registration = CourseRegistrationCode(
-            code='Vs23Ws4j', course_id=self.course.id.to_deprecated_string(), created_by=self.instructor
+            code='Vs23Ws4j', course_id=unicode(self.course.id), created_by=self.instructor,
+            mode_slug='honor'
         )
         course_registration.save()
 
@@ -288,3 +281,20 @@ class TestECommerceDashboardViews(ModuleStoreTestCase):
         data['coupon_id'] = ''  # Coupon id is not provided
         response = self.client.post(update_coupon_url, data=data)
         self.assertTrue('coupon id not found' in response.content)
+
+    def test_verified_course(self):
+        """Verify the e-commerce panel shows up for verified courses as well, without Coupons """
+        # Change honor mode to verified.
+        original_mode = CourseMode.objects.get(course_id=self.course.id, mode_slug='honor')
+        original_mode.delete()
+        new_mode = CourseMode(
+            course_id=unicode(self.course.id), mode_slug='verified',
+            mode_display_name='verified', min_price=10, currency='usd'
+        )
+        new_mode.save()
+
+        # Get the response value, ensure the Coupon section is not included.
+        response = self.client.get(self.url)
+        self.assertTrue(self.e_commerce_link in response.content)
+        # Coupons should show up for White Label sites with priced honor modes.
+        self.assertFalse('Coupons List' in response.content)

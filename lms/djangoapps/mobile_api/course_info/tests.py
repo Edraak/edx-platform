@@ -8,7 +8,7 @@ from django.conf import settings
 from xmodule.html_module import CourseInfoModule
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.xml_importer import import_from_xml
+from xmodule.modulestore.xml_importer import import_course_from_xml
 
 from ..testutils import (
     MobileAPITestCase, MobileCourseAccessTestMixin, MobileEnrolledCourseAccessTestMixin, MobileAuthTestMixin
@@ -73,30 +73,42 @@ class TestUpdates(MobileAPITestCase, MobileAuthTestMixin, MobileEnrolledCourseAc
         )
 
         # store content in Updates item (either new or old format)
+        num_updates = 3
         if new_format:
-            course_update_data = {
-                "id": 1,
-                "date": "Some date",
-                "content": "<a href=\"/static/\">foo</a>",
-                "status": CourseInfoModule.STATUS_VISIBLE
-            }
-            course_updates.items = [course_update_data]
+            for num in range(1, num_updates + 1):
+                course_updates.items.append(
+                    {
+                        "id": num,
+                        "date": "Date" + str(num),
+                        "content": "<a href=\"/static/\">Update" + str(num) + "</a>",
+                        "status": CourseInfoModule.STATUS_VISIBLE
+                    }
+                )
         else:
-            update_data = u"<ol><li><h2>Date</h2><a href=\"/static/\">foo</a></li></ol>"
-            course_updates.data = update_data
+            update_data = ""
+            # old format stores the updates with the newest first
+            for num in range(num_updates, 0, -1):
+                update_data += "<li><h2>Date" + str(num) + "</h2><a href=\"/static/\">Update" + str(num) + "</a></li>"
+            course_updates.data = u"<ol>" + update_data + "</ol>"
         modulestore().update_item(course_updates, self.user.id)
 
         # call API
         response = self.api_response()
-        content = response.data[0]["content"]  # pylint: disable=maybe-no-member
 
         # verify static URLs are replaced in the content returned by the API
-        self.assertNotIn("\"/static/", content)
+        self.assertNotIn("\"/static/", response.content)
 
         # verify static URLs remain in the underlying content
         underlying_updates = modulestore().get_item(updates_usage_key)
         underlying_content = underlying_updates.items[0]['content'] if new_format else underlying_updates.data
         self.assertIn("\"/static/", underlying_content)
+
+        # verify content and sort order of updates (most recent first)
+        for num in range(1, num_updates + 1):
+            update_data = response.data[num_updates - num]  # pylint: disable=maybe-no-member
+            self.assertEquals(num, update_data['id'])
+            self.assertEquals("Date" + str(num), update_data['date'])
+            self.assertIn("Update" + str(num), update_data['content'])
 
 
 class TestHandouts(MobileAPITestCase, MobileAuthTestMixin, MobileEnrolledCourseAccessTestMixin):
@@ -108,8 +120,13 @@ class TestHandouts(MobileAPITestCase, MobileAuthTestMixin, MobileEnrolledCourseA
     def setUp(self):
         super(TestHandouts, self).setUp()
 
+        # Deleting handouts fails with split modulestore because the handout has no parent.
+        # This needs further investigation to determine if it is a bug in the split modulestore.
+        # pylint: disable=protected-access
+        self.store = modulestore()._get_modulestore_by_type(ModuleStoreEnum.Type.mongo)
+
         # use toy course with handouts, and make it mobile_available
-        course_items = import_from_xml(self.store, self.user.id, settings.COMMON_TEST_DATA_ROOT, ['toy'])
+        course_items = import_course_from_xml(self.store, self.user.id, settings.COMMON_TEST_DATA_ROOT, ['toy'])
         self.course = course_items[0]
         self.course.mobile_available = True
         self.store.update_item(self.course, self.user.id)

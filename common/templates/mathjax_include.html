@@ -12,6 +12,7 @@
     tex2jax: {inlineMath: [ ['$','$'], ["\\(","\\)"]],
               displayMath: [ ['$$','$$'], ["\\[","\\]"]]}
   });
+  HUB = MathJax.Hub
 </script>
 %else:
 <script type="text/x-mathjax-config">
@@ -27,10 +28,11 @@
       ]
     }
   });
+  HUB = MathJax.Hub
 </script>
 %endif
 
 <!-- This must appear after all mathjax-config blocks, so it is after the imports from the other templates.
      It can't be run through static.url because MathJax uses crazy url introspection to do lazy loading of
      MathJax extension libraries -->
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>

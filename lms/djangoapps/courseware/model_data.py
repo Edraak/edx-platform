@@ -62,7 +62,6 @@ class FieldDataCache(object):
         asides: The list of aside types to load, or None to prefetch no asides.
         '''
         self.cache = {}
-        self.descriptors = descriptors
         self.select_for_update = select_for_update
 
         if asides is None:
@@ -74,24 +73,27 @@ class FieldDataCache(object):
         self.course_id = course_id
         self.user = user
 
-        if user.is_authenticated():
-            for scope, fields in self._fields_to_cache().items():
-                for field_object in self._retrieve_fields(scope, fields):
+        self.add_descriptors_to_cache(descriptors)
+
+    def add_descriptors_to_cache(self, descriptors):
+        """
+        Add all `descriptors` to this FieldDataCache.
+        """
+        if self.user.is_authenticated():
+            for scope, fields in self._fields_to_cache(descriptors).items():
+                for field_object in self._retrieve_fields(scope, fields, descriptors):
                     self.cache[self._cache_key_from_field_object(scope, field_object)] = field_object
 
-    @classmethod
-    def cache_for_descriptor_descendents(cls, course_id, user, descriptor, depth=None,
-                                         descriptor_filter=lambda descriptor: True,
-                                         select_for_update=False, asides=None):
+    def add_descriptor_descendents(self, descriptor, depth=None, descriptor_filter=lambda descriptor: True):
         """
-        course_id: the course in the context of which we want StudentModules.
-        user: the django user for whom to load modules.
-        descriptor: An XModuleDescriptor
-        depth is the number of levels of descendent modules to load StudentModules for, in addition to
-            the supplied descriptor. If depth is None, load all descendent StudentModules
-        descriptor_filter is a function that accepts a descriptor and return wether the StudentModule
-            should be cached
-        select_for_update: Flag indicating whether the rows should be locked until end of transaction
+        Add all descendents of `descriptor` to this FieldDataCache.
+
+        Arguments:
+            descriptor: An XModuleDescriptor
+            depth is the number of levels of descendent modules to load StudentModules for, in addition to
+                the supplied descriptor. If depth is None, load all descendent StudentModules
+            descriptor_filter is a function that accepts a descriptor and return wether the StudentModule
+                should be cached
         """
 
         def get_child_descriptors(descriptor, depth, descriptor_filter):
@@ -120,7 +122,25 @@ class FieldDataCache(object):
         with modulestore().bulk_operations(descriptor.location.course_key):
             descriptors = get_child_descriptors(descriptor, depth, descriptor_filter)
 
-        return FieldDataCache(descriptors, course_id, user, select_for_update, asides=asides)
+        self.add_descriptors_to_cache(descriptors)
+
+    @classmethod
+    def cache_for_descriptor_descendents(cls, course_id, user, descriptor, depth=None,
+                                         descriptor_filter=lambda descriptor: True,
+                                         select_for_update=False, asides=None):
+        """
+        course_id: the course in the context of which we want StudentModules.
+        user: the django user for whom to load modules.
+        descriptor: An XModuleDescriptor
+        depth is the number of levels of descendent modules to load StudentModules for, in addition to
+            the supplied descriptor. If depth is None, load all descendent StudentModules
+        descriptor_filter is a function that accepts a descriptor and return wether the StudentModule
+            should be cached
+        select_for_update: Flag indicating whether the rows should be locked until end of transaction
+        """
+        cache = FieldDataCache([], course_id, user, select_for_update, asides=asides)
+        cache.add_descriptor_descendents(descriptor, depth, descriptor_filter)
+        return cache
 
     def _query(self, model_class, **kwargs):
         """
@@ -147,14 +167,13 @@ class FieldDataCache(object):
         )
         return res
 
-    @property
-    def _all_usage_ids(self):
+    def _all_usage_ids(self, descriptors):
         """
         Return a set of all usage_ids for the descriptors that this FieldDataCache is caching
         against, and well as all asides for those descriptors.
         """
         usage_ids = set()
-        for descriptor in self.descriptors:
+        for descriptor in descriptors:
             usage_ids.add(descriptor.scope_ids.usage_id)
 
             for aside_type in self.asides:
@@ -162,13 +181,12 @@ class FieldDataCache(object):
 
         return usage_ids
 
-    @property
-    def _all_block_types(self):
+    def _all_block_types(self, descriptors):
         """
         Return a set of all block_types that are cached by this FieldDataCache.
         """
         block_types = set()
-        for descriptor in self.descriptors:
+        for descriptor in descriptors:
             block_types.add(BlockTypeKeyV1(descriptor.entry_point, descriptor.scope_ids.block_type))
 
         for aside_type in self.asides:
@@ -176,7 +194,7 @@ class FieldDataCache(object):
 
         return block_types
 
-    def _retrieve_fields(self, scope, fields):
+    def _retrieve_fields(self, scope, fields, descriptors):
         """
         Queries the database for all of the fields in the specified scope
         """
@@ -184,7 +202,7 @@ class FieldDataCache(object):
             return self._chunked_query(
                 StudentModule,
                 'module_state_key__in',
-                self._all_usage_ids,
+                self._all_usage_ids(descriptors),
                 course_id=self.course_id,
                 student=self.user.pk,
             )
@@ -192,14 +210,14 @@ class FieldDataCache(object):
             return self._chunked_query(
                 XModuleUserStateSummaryField,
                 'usage_id__in',
-                self._all_usage_ids,
+                self._all_usage_ids(descriptors),
                 field_name__in=set(field.name for field in fields),
             )
         elif scope == Scope.preferences:
             return self._chunked_query(
                 XModuleStudentPrefsField,
                 'module_type__in',
-                self._all_block_types,
+                self._all_block_types(descriptors),
                 student=self.user.pk,
                 field_name__in=set(field.name for field in fields),
             )
@@ -212,12 +230,12 @@ class FieldDataCache(object):
         else:
             return []
 
-    def _fields_to_cache(self):
+    def _fields_to_cache(self, descriptors):
         """
         Returns a map of scopes to fields in that scope that should be cached
         """
         scope_map = defaultdict(set)
-        for descriptor in self.descriptors:
+        for descriptor in descriptors:
             for field in descriptor.fields.values():
                 scope_map[field.scope].add(field)
         return scope_map
@@ -266,7 +284,7 @@ class FieldDataCache(object):
 
     def find_or_create(self, key):
         '''
-        Find a model data object in this cache, or create it if it doesn't
+        Find a model data object in this cache, or create a new one if it doesn't
         exist
         '''
         field_object = self.find(key)
@@ -275,28 +293,26 @@ class FieldDataCache(object):
             return field_object
 
         if key.scope == Scope.user_state:
-            field_object, __ = StudentModule.objects.get_or_create(
+            field_object = StudentModule(
                 course_id=self.course_id,
                 student_id=key.user_id,
                 module_state_key=key.block_scope_id,
-                defaults={
-                    'state': json.dumps({}),
-                    'module_type': key.block_scope_id.block_type,
-                },
+                state=json.dumps({}),
+                module_type=key.block_scope_id.block_type,
             )
         elif key.scope == Scope.user_state_summary:
-            field_object, __ = XModuleUserStateSummaryField.objects.get_or_create(
+            field_object = XModuleUserStateSummaryField(
                 field_name=key.field_name,
                 usage_id=key.block_scope_id
             )
         elif key.scope == Scope.preferences:
-            field_object, __ = XModuleStudentPrefsField.objects.get_or_create(
+            field_object = XModuleStudentPrefsField(
                 field_name=key.field_name,
                 module_type=BlockTypeKeyV1(key.block_family, key.block_scope_id),
                 student_id=key.user_id,
             )
         elif key.scope == Scope.user_info:
-            field_object, __ = XModuleStudentInfoField.objects.get_or_create(
+            field_object = XModuleStudentInfoField(
                 field_name=key.field_name,
                 student_id=key.user_id,
             )
@@ -362,39 +378,39 @@ class DjangoKeyValueStore(KeyValueStore):
 
         """
         saved_fields = []
-        # field_objects maps a field_object to a list of associated fields
-        field_objects = dict()
-        for field in kv_dict:
-            # Check field for validity
-            if field.scope not in self._allowed_scopes:
-                raise InvalidScopeError(field)
+        # field_objects maps id(field_object) to a the object and a list of associated fields.
+        # We use id() because FieldDataCache might return django models with no primary key
+        # set, but will return the same django model each time the same key is passed in.
+        dirty_field_objects = defaultdict(lambda: (None, []))
+        for key in kv_dict:
+            # Check key for validity
+            if key.scope not in self._allowed_scopes:
+                raise InvalidScopeError(key)
 
-            # If the field is valid and isn't already in the dictionary, add it.
-            field_object = self._field_data_cache.find_or_create(field)
-            if field_object not in field_objects.keys():
-                field_objects[field_object] = []
-            # Update the list of associated fields
-            field_objects[field_object].append(field)
+            field_object = self._field_data_cache.find_or_create(key)
+            # Update the list dirtied field_objects
+            _, dirty_names = dirty_field_objects.setdefault(id(field_object), (field_object, []))
+            dirty_names.append(key.field_name)
 
             # Special case when scope is for the user state, because this scope saves fields in a single row
-            if field.scope == Scope.user_state:
+            if key.scope == Scope.user_state:
                 state = json.loads(field_object.state)
-                state[field.field_name] = kv_dict[field]
+                state[key.field_name] = kv_dict[key]
                 field_object.state = json.dumps(state)
             else:
                 # The remaining scopes save fields on different rows, so
                 # we don't have to worry about conflicts
-                field_object.value = json.dumps(kv_dict[field])
+                field_object.value = json.dumps(kv_dict[key])
 
-        for field_object in field_objects:
+        for field_object, names in dirty_field_objects.values():
             try:
                 # Save the field object that we made above
-                field_object.save()
+                field_object.save(force_update=field_object.pk is not None)
                 # If save is successful on this scope, add the saved fields to
                 # the list of successful saves
-                saved_fields.extend([field.field_name for field in field_objects[field_object]])
+                saved_fields.extend(names)
             except DatabaseError:
-                log.exception('Error saving fields %r', field_objects[field_object])
+                log.exception('Error saving fields %r', names)
                 raise KeyValueMultiSaveError(saved_fields)
 
     def delete(self, key):
@@ -409,7 +425,7 @@ class DjangoKeyValueStore(KeyValueStore):
             state = json.loads(field_object.state)
             del state[key.field_name]
             field_object.state = json.dumps(state)
-            field_object.save()
+            field_object.save(force_update=field_object.pk is not None)
         else:
             field_object.delete()
 

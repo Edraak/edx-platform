@@ -222,7 +222,7 @@ class CourseOutlineContainer(CourseOutlineItem):
             require_notification=require_notification,
         )
 
-    def toggle_expand(self):
+    def expand_subsection(self):
         """
         Toggle the expansion of this subsection.
         """
@@ -236,11 +236,14 @@ class CourseOutlineContainer(CourseOutlineItem):
         currently_expanded = subsection_expanded()
 
         self.q(css=self._bounded_selector('.ui-toggle-expansion i')).first.click()
+        self.wait_for_element_presence(self._bounded_selector(self.ADD_BUTTON_SELECTOR), 'Subsection is expanded')
 
         EmptyPromise(
             lambda: subsection_expanded() != currently_expanded,
             "Check that the container {} has been toggled".format(self.locator)
         ).fulfill()
+
+        self.browser.execute_script("jQuery.fx.off = false;")
 
         return self
 
@@ -505,6 +508,12 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         """
         self.q(css=self.EXPAND_COLLAPSE_CSS).click()
 
+    def start_reindex(self):
+        """
+        Starts course reindex by clicking reindex button
+        """
+        self.reindex_button.click()
+
     @property
     def bottom_add_section_button(self):
         """
@@ -545,16 +554,23 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         else:
             return ExpandCollapseLinkState.EXPAND
 
+    @property
+    def reindex_button(self):
+        """
+        Returns reindex button.
+        """
+        return self.q(css=".button.button-reindex")[0]
+
     def expand_all_subsections(self):
         """
         Expands all the subsections in this course.
         """
         for section in self.sections():
             if section.is_collapsed:
-                section.toggle_expand()
+                section.expand_subsection()
             for subsection in section.subsections():
                 if subsection.is_collapsed:
-                    subsection.toggle_expand()
+                    subsection.expand_subsection()
 
     @property
     def xblocks(self):

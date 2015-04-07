@@ -6,12 +6,10 @@ import pytz
 
 from django.conf import settings
 from django.test import TestCase
-from django.test.utils import override_settings
 from mock import patch
 from nose.tools import assert_is_none, assert_equals, assert_raises, assert_true, assert_false  # pylint: disable=E0611
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from reverification.tests.factories import MidcourseReverificationWindowFactory
 from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
@@ -311,7 +309,7 @@ class TestPhotoVerification(TestCase):
 
         attempt.status = "approved"
         attempt.save()
-        assert_true(SoftwareSecurePhotoVerification.user_is_verified(user), status)
+        assert_true(SoftwareSecurePhotoVerification.user_is_verified(user), attempt.status)
 
     def test_user_has_valid_or_pending(self):
         """
@@ -381,6 +379,14 @@ class TestPhotoVerification(TestCase):
 
         reverify_status = SoftwareSecurePhotoVerification.user_status(user=user, window=window)
         self.assertEquals(reverify_status, ('denied', ''))
+
+        reverify_attempt.status = 'approved'
+        # pylint: disable=protected-access
+        reverify_attempt.created_at = SoftwareSecurePhotoVerification._earliest_allowed_date() + timedelta(days=-1)
+        reverify_attempt.save()
+        reverify_status = SoftwareSecurePhotoVerification.user_status(user=user, window=window)
+        message = 'Your {platform_name} verification has expired.'.format(platform_name=settings.PLATFORM_NAME)
+        self.assertEquals(reverify_status, ('expired', message))
 
     def test_display(self):
         user = UserFactory.create()
@@ -497,7 +503,6 @@ class TestPhotoVerification(TestCase):
         self.assertEqual(result, second_attempt)
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 @patch.dict(settings.VERIFY_STUDENT, FAKE_SETTINGS)
 @patch('verify_student.models.S3Connection', new=MockS3Connection)
 @patch('verify_student.models.Key', new=MockKey)

@@ -1,51 +1,13 @@
+# -*- coding: utf-8 -*-
 """
 Tests for mobile API utilities.
 """
 
 import ddt
-from mock import patch
 from django.test import TestCase
+from mobile_api.models import MobileApiConfig
 
-from xmodule.modulestore.tests.factories import CourseFactory
-
-from .utils import mobile_access_when_enrolled, mobile_course_access, mobile_view
-from .testutils import MobileAPITestCase, ROLE_CASES
-
-
-@ddt.ddt
-class TestMobileAccessWhenEnrolled(MobileAPITestCase):
-    """
-    Tests for mobile_access_when_enrolled utility function.
-    """
-    @ddt.data(*ROLE_CASES)
-    @ddt.unpack
-    def test_mobile_role_access(self, role, should_have_access):
-        """
-        Verifies that our mobile access function properly handles using roles to grant access
-        """
-        non_mobile_course = CourseFactory.create(mobile_available=False)
-        if role:
-            role(non_mobile_course.id).add_users(self.user)
-        self.assertEqual(should_have_access, mobile_access_when_enrolled(non_mobile_course, self.user))
-
-    def test_mobile_explicit_access(self):
-        """
-        Verifies that our mobile access function listens to the mobile_available flag as it should
-        """
-        self.assertTrue(mobile_access_when_enrolled(self.course, self.user))
-
-    def test_missing_course(self):
-        """
-        Verifies that we handle the case where a course doesn't exist
-        """
-        self.assertFalse(mobile_access_when_enrolled(None, self.user))
-
-    @patch.dict('django.conf.settings.FEATURES', {'DISABLE_START_DATES': False})
-    def test_unreleased_course(self):
-        """
-        Verifies that we handle the case where a course hasn't started
-        """
-        self.assertFalse(mobile_access_when_enrolled(self.course, self.user))
+from .utils import mobile_course_access, mobile_view
 
 
 @ddt.ddt
@@ -65,3 +27,33 @@ class TestMobileAPIDecorators(TestCase):
         self.assertIn("Test docstring of decorated function.", decorated_func.__doc__)
         self.assertEquals(decorated_func.__name__, "decorated_func")
         self.assertTrue(decorated_func.__module__.endswith("tests"))
+
+
+class TestMobileApiConfig(TestCase):
+    """
+    Tests MobileAPIConfig
+    """
+
+    def test_video_profile_list(self):
+        """Check that video_profiles config is returned in order as a list"""
+        MobileApiConfig(video_profiles="mobile_low,mobile_high,youtube").save()
+        video_profile_list = MobileApiConfig.get_video_profiles()
+        self.assertEqual(
+            video_profile_list,
+            [u'mobile_low', u'mobile_high', u'youtube']
+        )
+
+    def test_video_profile_list_with_whitespace(self):
+        """Check video_profiles config with leading and trailing whitespace"""
+        MobileApiConfig(video_profiles=" mobile_low , mobile_high,youtube ").save()
+        video_profile_list = MobileApiConfig.get_video_profiles()
+        self.assertEqual(
+            video_profile_list,
+            [u'mobile_low', u'mobile_high', u'youtube']
+        )
+
+    def test_empty_video_profile(self):
+        """Test an empty video_profile"""
+        MobileApiConfig(video_profiles="").save()
+        video_profile_list = MobileApiConfig.get_video_profiles()
+        self.assertEqual(video_profile_list, [])

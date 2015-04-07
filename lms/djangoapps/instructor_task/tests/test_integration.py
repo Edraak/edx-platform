@@ -101,6 +101,8 @@ class TestRescoringTask(TestIntegrationTask):
     """
 
     def setUp(self):
+        super(TestRescoringTask, self).setUp()
+
         self.initialize_course()
         self.create_instructor('instructor')
         self.create_student('u1')
@@ -374,6 +376,7 @@ class TestResetAttemptsTask(TestIntegrationTask):
     userlist = ['u1', 'u2', 'u3', 'u4']
 
     def setUp(self):
+        super(TestResetAttemptsTask, self).setUp()
         self.initialize_course()
         self.create_instructor('instructor')
         for username in self.userlist:
@@ -442,6 +445,8 @@ class TestDeleteProblemTask(TestIntegrationTask):
     userlist = ['u1', 'u2', 'u3', 'u4']
 
     def setUp(self):
+        super(TestDeleteProblemTask, self).setUp()
+
         self.initialize_course()
         self.create_instructor('instructor')
         for username in self.userlist:
@@ -622,7 +627,7 @@ class TestGradeReportConditionalContent(TestReportMixin, TestIntegrationTask):
 
         def user_partition_group(user):
             """Return a dict having single key with value equals to students group in partition"""
-            group_config_hdr_tpl = 'Group Configuration Group Name ({})'
+            group_config_hdr_tpl = 'Experiment Group ({})'
             return {
                 group_config_hdr_tpl.format(self.partition.name): self.partition.scheme.get_group_for_user(   # pylint: disable=E1101
                     self.course.id, user, self.partition, track_function=None

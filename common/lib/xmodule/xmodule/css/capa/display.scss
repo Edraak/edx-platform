@@ -166,6 +166,12 @@ div.problem {
         white-space: nowrap;
         overflow: hidden;
       }
+      span.clarification i {
+        font-style: normal;
+        &:hover {
+          color: $blue;
+        }
+      }
     }
 
     &.unanswered {
@@ -578,6 +584,16 @@ div.problem {
 
   .CodeMirror-focused pre.CodeMirror-cursor {
     visibility: visible;
+  }
+
+  .CodeMirror-code pre {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  .CodeMirror-scroll {
+    margin-right: 0px;
   }
 
   hr {

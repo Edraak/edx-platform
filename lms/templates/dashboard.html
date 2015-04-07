@@ -100,7 +100,7 @@
 
   <section class="profile-sidebar">
     <header class="profile">
-      <h1 class="user-name">${ user.username }</h1>
+      <h2><span class="sr">${_("Username")}: </span><span class="user-name">${ user.username }</span></h2>
     </header>
     <section class="user-info">
       <ul>
@@ -155,7 +155,7 @@
                     ${_("Unlink")}
                   </a>
                 % else:
-                  <a href="${pipeline.get_login_url(state.provider.NAME, pipeline.AUTH_ENTRY_DASHBOARD)}">
+                  <a href="${pipeline.get_login_url(state.provider.NAME, pipeline.AUTH_ENTRY_DASHBOARD, redirect_url='/')}">
                     ## Translators: clicking on this creates a link between a user's edX account and their account with an external authentication provider (like Google or LinkedIn).
                     ${_("Link")}
                   </a>
@@ -197,7 +197,7 @@
 
   </section>
 
-  <section class="my-courses" id="my-courses">
+  <section id="my-courses" class="my-courses" role="main" aria-label="Content">
     <header>
       <h2>${_("Current Courses")}</h2>
     </header>
@@ -213,7 +213,8 @@
             <% is_paid_course = (course.id in enrolled_courses_either_paid) %>
             <% is_course_blocked = (course.id in block_courses) %>
             <% course_verification_status = verification_status_by_course.get(course.id, {}) %>
-            <%include file='dashboard/_dashboard_course_listing.html' args="course=course, enrollment=enrollment, show_courseware_link=show_courseware_link, cert_status=cert_status, show_email_settings=show_email_settings, course_mode_info=course_mode_info, show_refund_option = show_refund_option, is_paid_course = is_paid_course, is_course_blocked = is_course_blocked, verification_status=course_verification_status" />
+            <% course_requirements = courses_requirements_not_met.get(course.id) %>
+            <%include file='dashboard/_dashboard_course_listing.html' args="course=course, enrollment=enrollment, show_courseware_link=show_courseware_link, cert_status=cert_status, show_email_settings=show_email_settings, course_mode_info=course_mode_info, show_refund_option = show_refund_option, is_paid_course = is_paid_course, is_course_blocked = is_course_blocked, verification_status=course_verification_status, course_requirements=course_requirements" />
       % endfor
 
       </ul>
@@ -334,12 +335,13 @@
     <div id="change_email_body">
       <form id="change_email_form">
         <div id="change_email_error" class="modal-form-error"> </div>
-        <fieldset>
           <div class="input-group">
-            <label>${_("Please enter your new email address:")}</label>
-            <input id="new_email_field" type="email" value="" />
-            <label>${_("Please confirm your password:")}</label>
-            <input id="new_email_password" value="" type="password" />
+            <label>${_("Please enter your new email address:")}
+              <input id="new_email_field" type="email" value="" />
+            </label>
+            <label>${_("Please confirm your password:")}
+              <input id="new_email_password" value="" type="password" />
+            </label>
           </div>
           <section>
             <p>${_("We will send a confirmation to both {email} and your new email address as part of the process.").format(email=user.email)}</p>
@@ -347,7 +349,6 @@
           <div class="submit">
             <input type="submit" id="submit_email_change" value="${_("Change Email")}"/>
           </div>
-        </fieldset>
       </form>
     </div>
   </div>
@@ -381,18 +382,18 @@
         ## Translators: note that {platform} {cert_name_short} will look something like: "edX certificate". Please do not change the order of these placeholders.
         <p>${_("To uphold the credibility of your {platform} {cert_name_short}, all name changes will be recorded.").format(platform=settings.PLATFORM_NAME, cert_name_short=cert_name_short)}</p>
         <br/>
-        <fieldset>
           <div class="input-group">
             ## Translators: note that {platform} {cert_name_short} will look something like: "edX certificate". Please do not change the order of these placeholders.
-            <label>${_("Enter your desired full name, as it will appear on your {platform} {cert_name_short}:").format(platform=settings.PLATFORM_NAME, cert_name_short=cert_name_short)}</label>
-            <input id="new_name_field" value="" type="text" />
-            <label>${_("Reason for name change:")}</label>
-            <textarea id="name_rationale_field" value=""></textarea>
+            <label>${_("Enter your desired full name, as it will appear on your {platform} {cert_name_short}:").format(platform=settings.PLATFORM_NAME, cert_name_short=cert_name_short)}
+              <input id="new_name_field" value="" type="text" />
+            </label>
+            <label>${_("Reason for name change:")}
+              <textarea id="name_rationale_field" value=""></textarea>
+            </label>
           </div>
           <div class="submit">
             <input type="submit" id="submit" value="${_("Change My Name")}">
           </div>
-        </fieldset>
       </form>
     </div>
   </div>

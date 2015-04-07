@@ -19,12 +19,12 @@ from django.utils.translation import ugettext as _
 import mongoengine
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
-from xmodule.modulestore.tests.django_utils import (
-    TEST_DATA_MOCK_MODULESTORE, TEST_DATA_XML_MODULESTORE
-)
+from xmodule.modulestore.tests.django_utils import TEST_DATA_XML_MODULESTORE
+
 from dashboard.models import CourseImportLog
 from dashboard.sysadmin import Users
 from dashboard.git_import import GitImportError
+from datetime import datetime
 from external_auth.models import ExternalAuthMap
 from student.roles import CourseStaffRole, GlobalStaff
 from student.tests.factories import UserFactory
@@ -115,7 +115,6 @@ class SysadminBaseTestCase(ModuleStoreTestCase):
         self.addCleanup(shutil.rmtree, path)
 
 
-@override_settings(MODULESTORE=TEST_DATA_XML_MODULESTORE)
 @unittest.skipUnless(settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD'),
                      "ENABLE_SYSADMIN_DASHBOARD not set")
 @override_settings(GIT_IMPORT_WITH_XMLMODULESTORE=True)
@@ -123,6 +122,7 @@ class TestSysadmin(SysadminBaseTestCase):
     """
     Test sysadmin dashboard features using XMLModuleStore
     """
+    MODULESTORE = TEST_DATA_XML_MODULESTORE
 
     def test_staff_access(self):
         """Test access controls."""
@@ -405,7 +405,6 @@ class TestSysadmin(SysadminBaseTestCase):
 
 
 @override_settings(MONGODB_LOG=TEST_MONGODB_LOG)
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 @unittest.skipUnless(settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD'),
                      "ENABLE_SYSADMIN_DASHBOARD not set")
 class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
@@ -581,6 +580,40 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
         )
 
         self._rm_edx4edx()
+
+    def test_gitlog_pagination_out_of_range_invalid(self):
+        """
+        Make sure the pagination behaves properly when the requested page is out
+        of range.
+        """
+
+        self._setstaff_login()
+
+        mongoengine.connect(TEST_MONGODB_LOG['db'])
+
+        for _ in xrange(15):
+            CourseImportLog(
+                course_id=SlashSeparatedCourseKey("test", "test", "test"),
+                location="location",
+                import_log="import_log",
+                git_log="git_log",
+                repo_dir="repo_dir",
+                created=datetime.now()
+            ).save()
+
+        for page, expected in [(-1, 1), (1, 1), (2, 2), (30, 2), ('abc', 1)]:
+            response = self.client.get(
+                '{}?page={}'.format(
+                    reverse('gitlogs'),
+                    page
+                )
+            )
+            self.assertIn(
+                'Page {} of 2'.format(expected),
+                response.content
+            )
+
+        CourseImportLog.objects.delete()
 
     def test_gitlog_courseteam_access(self):
         """

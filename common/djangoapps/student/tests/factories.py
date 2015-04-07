@@ -2,7 +2,7 @@
 from student.models import (User, UserProfile, Registration,
                             CourseEnrollmentAllowed, CourseEnrollment,
                             PendingEmailChange, UserStanding,
-                            )
+                            CourseAccessRole)
 from course_modes.models import CourseMode
 from django.contrib.auth.models import Group, AnonymousUser
 from datetime import datetime
@@ -40,7 +40,7 @@ class UserProfileFactory(DjangoModelFactory):
     level_of_education = None
     gender = u'm'
     mailing_address = None
-    goals = u'World domination'
+    goals = u'Learn a lot'
 
 
 class CourseModeFactory(DjangoModelFactory):
@@ -111,6 +111,14 @@ class CourseEnrollmentFactory(DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     course_id = SlashSeparatedCourseKey('edX', 'toy', '2012_Fall')
+
+
+class CourseAccessRoleFactory(DjangoModelFactory):
+    FACTORY_FOR = CourseAccessRole
+
+    user = factory.SubFactory(UserFactory)
+    course_id = SlashSeparatedCourseKey('edX', 'toy', '2012_Fall')
+    role = 'TestRole'
 
 
 class CourseEnrollmentAllowedFactory(DjangoModelFactory):

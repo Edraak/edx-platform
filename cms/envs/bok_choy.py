@@ -5,6 +5,11 @@ Settings for bok choy tests
 import os
 from path import path
 
+# Pylint gets confused by path.py instances, which report themselves as class
+# objects. As a result, pylint applies the wrong regex in validating names,
+# and throws spurious errors. Therefore, we disable invalid-name checking.
+# pylint: disable=invalid-name
+
 
 ########################## Prod-like settings ###################################
 # These should be as close as possible to the settings we use in production.
@@ -54,6 +59,15 @@ for log_name, log_level in LOG_OVERRIDES:
 # Use the auto_auth workflow for creating users and logging them in
 FEATURES['AUTOMATIC_AUTH_FOR_TESTING'] = True
 
+# Enable milestones app
+FEATURES['MILESTONES_APP'] = True
+
+# Enable pre-requisite course
+FEATURES['ENABLE_PREREQUISITE_COURSES'] = True
+
+########################### Entrance Exams #################################
+FEATURES['ENTRANCE_EXAMS'] = True
+
 # Unfortunately, we need to use debug mode to serve staticfiles
 DEBUG = True
 
@@ -62,6 +76,17 @@ YOUTUBE_PORT = 9080
 YOUTUBE['API'] = "127.0.0.1:{0}/get_youtube_api/".format(YOUTUBE_PORT)
 YOUTUBE['TEST_URL'] = "127.0.0.1:{0}/test_youtube/".format(YOUTUBE_PORT)
 YOUTUBE['TEXT_API']['url'] = "127.0.0.1:{0}/test_transcripts_youtube/".format(YOUTUBE_PORT)
+
+FEATURES['ENABLE_COURSEWARE_INDEX'] = True
+SEARCH_ENGINE = "search.tests.mock_search_engine.MockSearchEngine"
+# Path at which to store the mock index
+MOCK_SEARCH_BACKING_FILE = (
+    TEST_ROOT / "index_file.dat"  # pylint: disable=no-value-for-parameter
+).abspath()
+
+# Generate a random UUID so that different runs of acceptance tests don't break each other
+import uuid
+SECRET_KEY = uuid.uuid4().hex
 
 #####################################################################
 # Lastly, see if the developer has any local overrides.

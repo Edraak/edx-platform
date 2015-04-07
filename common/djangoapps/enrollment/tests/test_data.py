@@ -7,25 +7,19 @@ from mock import patch
 from nose.tools import raises
 import unittest
 
-from django.test.utils import override_settings
 from django.conf import settings
-from xmodule.modulestore.tests.django_utils import (
-    ModuleStoreTestCase, mixed_store_config
-)
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
-from enrollment.errors import CourseNotFoundError, UserNotFoundError, CourseEnrollmentClosedError, \
-    CourseEnrollmentFullError, CourseEnrollmentExistsError
+from enrollment.errors import (
+    CourseNotFoundError, UserNotFoundError, CourseEnrollmentClosedError,
+    CourseEnrollmentFullError, CourseEnrollmentExistsError,
+)
 from student.tests.factories import UserFactory, CourseModeFactory
 from student.models import CourseEnrollment, EnrollmentClosedError, CourseFullError, AlreadyEnrolledError
 from enrollment import data
 
-# Since we don't need any XML course fixtures, use a modulestore configuration
-# that disables the XML modulestore.
-MODULESTORE_CONFIG = mixed_store_config(settings.COMMON_TEST_DATA_ROOT, {}, include_xml=False)
-
 
 @ddt.ddt
-@override_settings(MODULESTORE=MODULESTORE_CONFIG)
 @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
 class EnrollmentDataTest(ModuleStoreTestCase):
     """

@@ -274,9 +274,10 @@ class TestBulkWriteMixinFindMethods(TestBulkWriteMixin):
     def test_no_bulk_find_matching_course_indexes(self):
         branch = Mock(name='branch')
         search_targets = MagicMock(name='search_targets')
+        org_targets = None
         self.conn.find_matching_course_indexes.return_value = [Mock(name='result')]
         result = self.bulk.find_matching_course_indexes(branch, search_targets)
-        self.assertConnCalls(call.find_matching_course_indexes(branch, search_targets))
+        self.assertConnCalls(call.find_matching_course_indexes(branch, search_targets, org_targets))
         self.assertEqual(result, self.conn.find_matching_course_indexes.return_value)
         self.assertCacheNotCleared()
 
@@ -405,7 +406,12 @@ class TestBulkWriteMixinFindMethods(TestBulkWriteMixin):
 
         self.conn.get_definitions.return_value = db_definitions
         results = self.bulk.get_definitions(self.course_key, search_ids)
-        self.conn.get_definitions.assert_called_once_with(list(set(search_ids) - set(active_ids)))
+        definitions_gotten = list(set(search_ids) - set(active_ids))
+        if len(definitions_gotten) > 0:
+            self.conn.get_definitions.assert_called_once_with(definitions_gotten)
+        else:
+            # If no definitions to get, then get_definitions() should *not* have been called.
+            self.assertEquals(self.conn.get_definitions.call_count, 0)
         for _id in active_ids:
             if _id in search_ids:
                 self.assertIn(active_definition(_id), results)

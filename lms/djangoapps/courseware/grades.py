@@ -15,6 +15,7 @@ import dogstats_wrapper as dog_stats_api
 from courseware import courses
 from courseware.model_data import FieldDataCache
 from student.models import anonymous_id_for_user
+from util.module_utils import yield_dynamic_descriptor_descendents
 from xmodule import graders
 from xmodule.graders import Score
 from xmodule.modulestore.django import modulestore
@@ -25,30 +26,8 @@ from .module_render import get_module_for_descriptor
 from submissions import api as sub_api  # installed from the edx-submissions repository
 from opaque_keys import InvalidKeyError
 
+
 log = logging.getLogger("edx.courseware")
-
-
-def yield_dynamic_descriptor_descendents(descriptor, module_creator):
-    """
-    This returns all of the descendants of a descriptor. If the descriptor
-    has dynamic children, the module will be created using module_creator
-    and the children (as descriptors) of that module will be returned.
-    """
-    def get_dynamic_descriptor_children(descriptor):
-        if descriptor.has_dynamic_children():
-            module = module_creator(descriptor)
-            if module is None:
-                return []
-            return module.get_child_descriptors()
-        else:
-            return descriptor.get_children()
-
-    stack = [descriptor]
-
-    while len(stack) > 0:
-        next_descriptor = stack.pop()
-        stack.extend(get_dynamic_descriptor_children(next_descriptor))
-        yield next_descriptor
 
 
 def answer_distributions(course_key):
@@ -110,8 +89,9 @@ def answer_distributions(course_key):
             raw_answers = state_dict.get("student_answers", {})
         except ValueError:
             log.error(
-                "Answer Distribution: Could not parse module state for " +
-                "StudentModule id={}, course={}".format(module.id, course_key)
+                u"Answer Distribution: Could not parse module state for StudentModule id=%s, course=%s",
+                module.id,
+                course_key,
             )
             continue
 

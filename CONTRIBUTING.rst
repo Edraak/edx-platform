@@ -73,7 +73,7 @@ small size, and usually don't require a broad knowledge of the edX platform.
 It makes them good candidates for a first task, allowing you to focus on getting
 familiar with the development environment and the contribution process.
 
-.. _byte-sized bugs and tasks: https://openedx.atlassian.net/issues/?jql=labels%3Dbyte-sized%20and%20status%3D%22In%20Backlog%22
+.. _byte-sized bugs and tasks: https://openedx.atlassian.net/issues/?filter=12810
 
 Once you have identified a bug or task, `create an account on the tracker`_ and
 then comment on the ticket to indicate that you are working on it. Don't hesitate
@@ -97,7 +97,7 @@ reviewing and merging your work.
 
 You'll also need to add yourself to the `AUTHORS` file when you submit your
 first pull request.  You should add your full name as well as the email address
-associated with your Github account.  Please update `AUTHORS` in an individual
+associated with your GitHub account.  Please update `AUTHORS` in an individual
 commit, distinct from other changes in the pull request (it's OK for a pull
 request to contain multiple commits, including a commit to `AUTHORS`).
 Alternatively, you can open up a separate PR just to have your name added to
@@ -105,7 +105,7 @@ the `AUTHORS` file, and link that PR to the PR with your changes.
 
 Step 2: Fork, Commit, and Pull Request
 ======================================
-Github has some great documentation on `how to fork a git repository`_. Once
+GitHub has some great documentation on `how to fork a git repository`_. Once
 you've done that, make your changes and `send us a pull request`_! Be sure to
 include a detailed description for your pull request, so that a community
 manager can understand *what* change you're making, *why* you're making it, *how*
@@ -184,7 +184,7 @@ By opening up a pull request, we expect the following things:
    will close it. You are welcome to re-open it when you are ready to engage.
 
 ############################
-Expections You Have of Us
+Expectations You Have of Us
 ############################
 
 1. Within a week of opening up a pull request, one of our community managers
@@ -199,5 +199,4 @@ Expections You Have of Us
 3. Once we have determined through visual review that your code is not
    malicious, we will run a Jenkins build on your branch.
 
-.. _individual contributor agreement: http://code.edx.org/individual-contributor-agreement.pdf
-
+.. _individual contributor agreement: http://open.edx.org/sites/default/files/wysiwyg/individual-contributor-agreement.pdf

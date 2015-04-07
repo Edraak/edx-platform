@@ -10,7 +10,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test.client import RequestFactory
-from django.test.utils import override_settings
 from mock import patch
 
 from capa.tests.response_xml_factory import (
@@ -20,7 +19,6 @@ from capa.tests.response_xml_factory import (
 from courseware import grades
 from courseware.models import StudentModule
 from courseware.tests.helpers import LoginEnrollmentTestCase
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from lms.djangoapps.lms_xblock.runtime import quote_slashes
 from student.tests.factories import UserFactory
 from student.models import anonymous_id_for_user
@@ -30,7 +28,6 @@ from xmodule.partitions.partitions import Group, UserPartition
 from openedx.core.djangoapps.user_api.tests.factories import UserCourseTagFactory
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestSubmittingProblems(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Check that a course gets graded properly.
@@ -648,7 +645,6 @@ class ProblemWithUploadedFilesTest(TestSubmittingProblems):
         self.assertItemsEqual(kwargs['files'].keys(), filenames.split())
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestPythonGradedResponse(TestSubmittingProblems):
     """
     Check that we can submit a schematic and custom response, and it answers properly.
@@ -1159,11 +1155,11 @@ class TestConditionalContent(TestSubmittingProblems):
         vertical_0, vertical_1 = self.split_setup(user_partition_group)
 
         # Group 0 will have 2 problems in the section, worth a total of 4 points.
-        self.add_dropdown_to_section(vertical_0.location, 'H2P1', 1).location.html_id()
-        self.add_dropdown_to_section(vertical_0.location, 'H2P2', 3).location.html_id()
+        self.add_dropdown_to_section(vertical_0.location, 'H2P1_GROUP0', 1).location.html_id()
+        self.add_dropdown_to_section(vertical_0.location, 'H2P2_GROUP0', 3).location.html_id()
 
         # Group 1 will have 1 problem in the section, worth a total of 1 point.
-        self.add_dropdown_to_section(vertical_1.location, 'H2P1', 1).location.html_id()
+        self.add_dropdown_to_section(vertical_1.location, 'H2P1_GROUP1', 1).location.html_id()
 
         # Submit answers for problem in Section 1, which is visible to all students.
         self.submit_question_answer('H1P1', {'2_1': 'Correct', '2_2': 'Incorrect'})
@@ -1175,8 +1171,8 @@ class TestConditionalContent(TestSubmittingProblems):
         """
         self.split_different_problems_setup(self.user_partition_group_0)
 
-        self.submit_question_answer('H2P1', {'2_1': 'Correct'})
-        self.submit_question_answer('H2P2', {'2_1': 'Correct', '2_2': 'Incorrect', '2_3': 'Correct'})
+        self.submit_question_answer('H2P1_GROUP0', {'2_1': 'Correct'})
+        self.submit_question_answer('H2P2_GROUP0', {'2_1': 'Correct', '2_2': 'Incorrect', '2_3': 'Correct'})
 
         self.assertEqual(self.score_for_hw('homework1'), [1.0])
         self.assertEqual(self.score_for_hw('homework2'), [1.0, 2.0])
@@ -1194,7 +1190,7 @@ class TestConditionalContent(TestSubmittingProblems):
         """
         self.split_different_problems_setup(self.user_partition_group_1)
 
-        self.submit_question_answer('H2P1', {'2_1': 'Correct'})
+        self.submit_question_answer('H2P1_GROUP1', {'2_1': 'Correct'})
 
         self.assertEqual(self.score_for_hw('homework1'), [1.0])
         self.assertEqual(self.score_for_hw('homework2'), [1.0])
@@ -1219,7 +1215,7 @@ class TestConditionalContent(TestSubmittingProblems):
         [_, vertical_1] = self.split_setup(user_partition_group)
 
         # Group 1 will have 1 problem in the section, worth a total of 1 point.
-        self.add_dropdown_to_section(vertical_1.location, 'H2P1', 1).location.html_id()
+        self.add_dropdown_to_section(vertical_1.location, 'H2P1_GROUP1', 1).location.html_id()
 
         self.submit_question_answer('H1P1', {'2_1': 'Correct'})
 
@@ -1244,7 +1240,7 @@ class TestConditionalContent(TestSubmittingProblems):
         """
         self.split_one_group_no_problems_setup(self.user_partition_group_1)
 
-        self.submit_question_answer('H2P1', {'2_1': 'Correct'})
+        self.submit_question_answer('H2P1_GROUP1', {'2_1': 'Correct'})
 
         self.assertEqual(self.score_for_hw('homework1'), [1.0])
         self.assertEqual(self.score_for_hw('homework2'), [1.0])

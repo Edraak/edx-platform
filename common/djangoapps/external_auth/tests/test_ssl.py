@@ -21,7 +21,6 @@ from student.models import CourseEnrollment
 from student.roles import CourseStaffRole
 from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from xmodule.modulestore.tests.factories import CourseFactory
 
 FEATURES_WITH_SSL_AUTH = settings.FEATURES.copy()
@@ -220,8 +219,7 @@ class SSLClientTest(ModuleStoreTestCase):
         # Test that they do signin if they don't have a cert
         response = self.client.get(reverse('signin_user'))
         self.assertEqual(200, response.status_code)
-        self.assertTrue('login_form' in response.content
-                        or 'login-form' in response.content)
+        self.assertTrue('login-and-registration-container' in response.content)
 
         # And get directly logged in otherwise
         response = self.client.get(
@@ -320,8 +318,7 @@ class SSLClientTest(ModuleStoreTestCase):
         self.assertTrue(self.mock.called)
 
     @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
-    @override_settings(FEATURES=FEATURES_WITH_SSL_AUTH_AUTO_ACTIVATE,
-                       MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
+    @override_settings(FEATURES=FEATURES_WITH_SSL_AUTH_AUTO_ACTIVATE)
     def test_ssl_lms_redirection(self):
         """
         Auto signup auth user and ensure they return to the original

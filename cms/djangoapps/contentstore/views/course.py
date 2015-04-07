@@ -1,6 +1,7 @@
 """
 Views related to operations on course objects
 """
+from django.shortcuts import redirect
 import json
 import random
 import string  # pylint: disable=deprecated-module
@@ -9,17 +10,19 @@ from django.utils.translation import ugettext as _
 import django.utils
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_GET
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse, Http404
 from util.json_request import JsonResponse, JsonResponseBadRequest
 from util.date_utils import get_default_time_display
+from util.db import generate_int_id, MYSQL_MAX_INT
 from edxmako.shortcuts import render_to_response
 
 from xmodule.course_module import DEFAULT_START_DATE
 from xmodule.error_module import ErrorDescriptor
 from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.courseware_index import CoursewareSearchIndexer, SearchIndexingError
 from xmodule.contentstore.content import StaticContent
 from xmodule.tabs import PDFTextbookTabs
 from xmodule.partitions.partitions import UserPartition
@@ -28,6 +31,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateCourseErr
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import Location
 from opaque_keys.edx.keys import CourseKey
+from openedx.core.djangoapps.course_groups.partition_scheme import get_cohorted_user_partition
 
 from django_future.csrf import ensure_csrf_cookie
 from contentstore.course_info_model import get_course_updates, update_course_updates, delete_course_update
@@ -38,6 +42,7 @@ from contentstore.utils import (
     add_extra_panel_tab,
     remove_extra_panel_tab,
     reverse_course_url,
+    reverse_library_url,
     reverse_usage_url,
     reverse_url,
     remove_all_instructors,
@@ -47,7 +52,7 @@ from models.settings.course_grading import CourseGradingModel
 from models.settings.course_metadata import CourseMetadata
 from util.json_request import expect_json
 from util.string_utils import _has_non_ascii_characters
-from student.auth import has_course_author_access
+from student.auth import has_studio_write_access, has_studio_read_access
 from .component import (
     OPEN_ENDED_COMPONENT_TYPES,
     NOTE_COMPONENT_TYPES,
@@ -56,6 +61,13 @@ from .component import (
     ADVANCED_COMPONENT_TYPES,
 )
 from contentstore.tasks import rerun_course
+from contentstore.views.entrance_exam import (
+    create_entrance_exam,
+    update_entrance_exam,
+    delete_entrance_exam
+)
+
+from .library import LIBRARIES_ENABLED
 from .item import create_xblock_info
 from course_creators.views import get_course_creator_status, add_user_with_status_unrequested
 from contentstore import utils
@@ -67,9 +79,28 @@ from course_action_state.models import CourseRerunState, CourseRerunUIStateManag
 from course_action_state.managers import CourseActionStateItemNotFoundError
 from microsite_configuration import microsite
 from xmodule.course_module import CourseFields
+from xmodule.split_test_module import get_split_user_partitions
+from student.auth import has_course_author_access
+
+from util.milestones_helpers import (
+    set_prerequisite_courses,
+    is_valid_course_key
+)
+
+MINIMUM_GROUP_ID = 100
+
+RANDOM_SCHEME = "random"
+COHORT_SCHEME = "cohort"
 
 
-__all__ = ['course_info_handler', 'course_handler', 'course_info_update_handler',
+# Note: the following content group configuration strings are not
+# translated since they are not visible to users.
+CONTENT_GROUP_CONFIGURATION_DESCRIPTION = 'The groups in this configuration can be mapped to cohort groups in the LMS.'
+
+CONTENT_GROUP_CONFIGURATION_NAME = 'Content Group Configuration'
+
+__all__ = ['course_info_handler', 'course_handler', 'course_listing',
+           'course_info_update_handler', 'course_search_index_handler',
            'course_rerun_handler',
            'settings_handler',
            'grading_handler',
@@ -94,10 +125,19 @@ def get_course_and_check_access(course_key, user, depth=0):
     Internal method used to calculate and return the locator and course module
     for the view functions in this file.
     """
-    if not has_course_author_access(user, course_key):
+    if not has_studio_read_access(user, course_key):
         raise PermissionDenied()
     course_module = modulestore().get_course(course_key, depth=depth)
     return course_module
+
+
+def reindex_course_and_check_access(course_key, user):
+    """
+    Internal method used to restart indexing on a course.
+    """
+    if not has_course_author_access(user, course_key):
+        raise PermissionDenied()
+    return CoursewareSearchIndexer.do_course_reindex(modulestore(), course_key)
 
 
 @login_required
@@ -128,7 +168,7 @@ def course_notifications_handler(request, course_key_string=None, action_state_i
     course_key = CourseKey.from_string(course_key_string)
 
     if response_format == 'json' or 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json'):
-        if not has_course_author_access(request.user, course_key):
+        if not has_studio_write_access(request.user, course_key):
             raise PermissionDenied()
         if request.method == 'GET':
             return _course_notifications_json_get(action_state_id)
@@ -218,7 +258,7 @@ def course_handler(request, course_key_string=None):
                     return JsonResponse(_course_outline_json(request, course_module))
             elif request.method == 'POST':  # not sure if this is only post. If one will have ids, it goes after access
                 return _create_or_rerun_course(request)
-            elif not has_course_author_access(request.user, CourseKey.from_string(course_key_string)):
+            elif not has_studio_write_access(request.user, CourseKey.from_string(course_key_string)):
                 raise PermissionDenied()
             elif request.method == 'PUT':
                 raise NotImplementedError()
@@ -228,7 +268,7 @@ def course_handler(request, course_key_string=None):
                 return HttpResponseBadRequest()
         elif request.method == 'GET':  # assume html
             if course_key_string is None:
-                return course_listing(request)
+                return redirect(reverse("home"))
             else:
                 return course_index(request, CourseKey.from_string(course_key_string))
         else:
@@ -262,6 +302,35 @@ def course_rerun_handler(request, course_key_string):
             })
 
 
+@login_required
+@ensure_csrf_cookie
+@require_GET
+def course_search_index_handler(request, course_key_string):
+    """
+    The restful handler for course indexing.
+    GET
+        html: return status of indexing task
+        json: return status of indexing task
+    """
+    # Only global staff (PMs) are able to index courses
+    if not GlobalStaff().has_user(request.user):
+        raise PermissionDenied()
+    course_key = CourseKey.from_string(course_key_string)
+    content_type = request.META.get('CONTENT_TYPE', None)
+    if content_type is None:
+        content_type = "application/json; charset=utf-8"
+    with modulestore().bulk_operations(course_key):
+        try:
+            reindex_course_and_check_access(course_key, request.user)
+        except SearchIndexingError as search_err:
+            return HttpResponse(json.dumps({
+                "user_message": search_err.error_list
+            }), content_type=content_type, status=500)
+        return HttpResponse(json.dumps({
+            "user_message": _("Course has been successfully reindexed.")
+        }), content_type=content_type, status=200)
+
+
 def _course_outline_json(request, course_module):
     """
     Returns a JSON representation of the course module and recursively all of its children.
@@ -290,7 +359,7 @@ def _accessible_courses_list(request):
         if course.location.course == 'templates':
             return False
 
-        return has_course_author_access(request.user, course.id)
+        return has_studio_read_access(request.user, course.id)
 
     courses = filter(course_filter, modulestore().get_courses())
     in_process_course_actions = [
@@ -298,7 +367,7 @@ def _accessible_courses_list(request):
         CourseRerunState.objects.find_all(
             exclude_args={'state': CourseRerunUIStateManager.State.SUCCEEDED}, should_display=True
         )
-        if has_course_author_access(request.user, course.course_key)
+        if has_studio_read_access(request.user, course.course_key)
     ]
     return courses, in_process_course_actions
 
@@ -341,39 +410,22 @@ def _accessible_courses_list_from_groups(request):
     return courses_list.values(), in_process_course_actions
 
 
+def _accessible_libraries_list(user):
+    """
+    List all libraries available to the logged in user by iterating through all libraries
+    """
+    # No need to worry about ErrorDescriptors - split's get_libraries() never returns them.
+    return [lib for lib in modulestore().get_libraries() if has_studio_read_access(user, lib.location.library_key)]
+
+
 @login_required
 @ensure_csrf_cookie
 def course_listing(request):
     """
     List all courses available to the logged in user
-    Try to get all courses by first reversing django groups and fallback to old method if it fails
-    Note: overhead of pymongo reads will increase if getting courses from django groups fails
     """
-    if GlobalStaff().has_user(request.user):
-        # user has global access so no need to get courses from django groups
-        courses, in_process_course_actions = _accessible_courses_list(request)
-    else:
-        try:
-            courses, in_process_course_actions = _accessible_courses_list_from_groups(request)
-        except AccessListFallback:
-            # user have some old groups or there was some error getting courses from django groups
-            # so fallback to iterating through all courses
-            courses, in_process_course_actions = _accessible_courses_list(request)
-
-    def format_course_for_view(course):
-        """
-        Return a dict of the data which the view requires for each course
-        """
-        return {
-            'display_name': course.display_name,
-            'course_key': unicode(course.location.course_key),
-            'url': reverse_course_url('course_handler', course.id),
-            'lms_link': get_lms_link_for_item(course.location),
-            'rerun_link': _get_rerun_link_for_item(course.id),
-            'org': course.display_org_with_default,
-            'number': course.display_number_with_default,
-            'run': course.location.run
-        }
+    courses, in_process_course_actions = get_courses_accessible_to_user(request)
+    libraries = _accessible_libraries_list(request.user) if LIBRARIES_ENABLED else []
 
     def format_in_process_course_view(uca):
         """
@@ -396,25 +448,33 @@ def course_listing(request):
             ) if uca.state == CourseRerunUIStateManager.State.FAILED else ''
         }
 
-    # remove any courses in courses that are also in the in_process_course_actions list
-    in_process_action_course_keys = [uca.course_key for uca in in_process_course_actions]
-    courses = [
-        format_course_for_view(c)
-        for c in courses
-        if not isinstance(c, ErrorDescriptor) and (c.id not in in_process_action_course_keys)
-    ]
+    def format_library_for_view(library):
+        """
+        Return a dict of the data which the view requires for each library
+        """
+        return {
+            'display_name': library.display_name,
+            'library_key': unicode(library.location.library_key),
+            'url': reverse_library_url('library_handler', unicode(library.location.library_key)),
+            'org': library.display_org_with_default,
+            'number': library.display_number_with_default,
+            'can_edit': has_studio_write_access(request.user, library.location.library_key),
+        }
 
+    courses = _remove_in_process_courses(courses, in_process_course_actions)
     in_process_course_actions = [format_in_process_course_view(uca) for uca in in_process_course_actions]
 
     return render_to_response('index.html', {
         'courses': courses,
         'in_process_course_actions': in_process_course_actions,
+        'libraries_enabled': LIBRARIES_ENABLED,
+        'libraries': [format_library_for_view(lib) for lib in libraries],
         'user': request.user,
         'request_course_creator_url': reverse('contentstore.views.request_course_creator'),
         'course_creator_status': _get_course_creator_status(request.user),
         'rerun_creator_status': GlobalStaff().has_user(request.user),
         'allow_unicode_course_id': settings.FEATURES.get('ALLOW_UNICODE_COURSE_ID', False),
-        'allow_course_reruns': settings.FEATURES.get('ALLOW_COURSE_RERUNS', False)
+        'allow_course_reruns': settings.FEATURES.get('ALLOW_COURSE_RERUNS', True)
     })
 
 
@@ -436,6 +496,9 @@ def course_index(request, course_key):
     with modulestore().bulk_operations(course_key):
         course_module = get_course_and_check_access(course_key, request.user, depth=None)
         lms_link = get_lms_link_for_item(course_module.location)
+        reindex_link = None
+        if settings.FEATURES.get('ENABLE_COURSEWARE_INDEX', False):
+            reindex_link = "/course/{course_id}/search_reindex".format(course_id=unicode(course_key))
         sections = course_module.get_children()
         course_structure = _course_outline_json(request, course_module)
         locator_to_show = request.REQUEST.get('show', None)
@@ -459,6 +522,7 @@ def course_index(request, course_key):
             'rerun_notification_id': current_action.id if current_action else None,
             'course_release_date': course_release_date,
             'settings_url': settings_url,
+            'reindex_link': reindex_link,
             'notification_dismiss_url': reverse_course_url(
                 'course_notifications_handler',
                 current_action.course_key,
@@ -467,6 +531,53 @@ def course_index(request, course_key):
                 },
             ) if current_action else None,
         })
+
+
+def get_courses_accessible_to_user(request):
+    """
+    Try to get all courses by first reversing django groups and fallback to old method if it fails
+    Note: overhead of pymongo reads will increase if getting courses from django groups fails
+    """
+    if GlobalStaff().has_user(request.user):
+        # user has global access so no need to get courses from django groups
+        courses, in_process_course_actions = _accessible_courses_list(request)
+    else:
+        try:
+            courses, in_process_course_actions = _accessible_courses_list_from_groups(request)
+        except AccessListFallback:
+            # user have some old groups or there was some error getting courses from django groups
+            # so fallback to iterating through all courses
+            courses, in_process_course_actions = _accessible_courses_list(request)
+    return courses, in_process_course_actions
+
+
+def _remove_in_process_courses(courses, in_process_course_actions):
+    """
+    removes any in-process courses in courses list. in-process actually refers to courses
+    that are in the process of being generated for re-run
+    """
+    def format_course_for_view(course):
+        """
+        Return a dict of the data which the view requires for each course
+        """
+        return {
+            'display_name': course.display_name,
+            'course_key': unicode(course.location.course_key),
+            'url': reverse_course_url('course_handler', course.id),
+            'lms_link': get_lms_link_for_item(course.location),
+            'rerun_link': _get_rerun_link_for_item(course.id),
+            'org': course.display_org_with_default,
+            'number': course.display_number_with_default,
+            'run': course.location.run
+        }
+
+    in_process_action_course_keys = [uca.course_key for uca in in_process_course_actions]
+    courses = [
+        format_course_for_view(c)
+        for c in courses
+        if not isinstance(c, ErrorDescriptor) and (c.id not in in_process_action_course_keys)
+    ]
+    return courses
 
 
 def course_outline_initial_state(locator_to_show, course_structure):
@@ -571,10 +682,7 @@ def _create_new_course(request, org, number, run, fields):
     Returns the URL for the course overview page.
     Raises DuplicateCourseError if the course already exists
     """
-    store_for_new_course = (
-        settings.FEATURES.get('DEFAULT_STORE_FOR_NEW_COURSE') or
-        modulestore().default_modulestore.get_modulestore_type()
-    )
+    store_for_new_course = modulestore().default_modulestore.get_modulestore_type()
     new_course = create_new_course_in_store(store_for_new_course, request.user, org, number, run, fields)
     return JsonResponse({
         'url': reverse_course_url('course_handler', new_course.id),
@@ -621,7 +729,7 @@ def _rerun_course(request, org, number, run, fields):
     source_course_key = CourseKey.from_string(request.json.get('source_course_key'))
 
     # verify user has access to the original course
-    if not has_course_author_access(request.user, source_course_key):
+    if not has_studio_write_access(request.user, source_course_key):
         raise PermissionDenied()
 
     # create destination course key
@@ -702,7 +810,7 @@ def course_info_update_handler(request, course_key_string, provided_id=None):
         provided_id = None
 
     # check that logged in user has permissions to this item (GET shouldn't require this level?)
-    if not has_course_author_access(request.user, usage_key.course_key):
+    if not has_studio_write_access(request.user, usage_key.course_key):
         raise PermissionDenied()
 
     if request.method == 'GET':
@@ -744,6 +852,7 @@ def settings_handler(request, course_key_string):
         json: update the Course and About xblocks through the CourseDetails model
     """
     course_key = CourseKey.from_string(course_key_string)
+    prerequisite_course_enabled = settings.FEATURES.get('ENABLE_PREREQUISITE_COURSES', False)
     with modulestore().bulk_operations(course_key):
         course_module = get_course_and_check_access(course_key, request.user)
         if 'text/html' in request.META.get('HTTP_ACCEPT', '') and request.method == 'GET':
@@ -758,8 +867,7 @@ def settings_handler(request, course_key_string):
             )
 
             short_description_editable = settings.FEATURES.get('EDITABLE_SHORT_DESCRIPTION', True)
-
-            return render_to_response('settings.html', {
+            settings_context = {
                 'context_course': course_module,
                 'course_locator': course_key,
                 'lms_link_for_about_page': utils.get_lms_link_for_about_page(course_key),
@@ -767,16 +875,69 @@ def settings_handler(request, course_key_string):
                 'details_url': reverse_course_url('settings_handler', course_key),
                 'about_page_editable': about_page_editable,
                 'short_description_editable': short_description_editable,
-                'upload_asset_url': upload_asset_url
-            })
+                'upload_asset_url': upload_asset_url,
+                'course_handler_url': reverse_course_url('course_handler', course_key),
+            }
+            if prerequisite_course_enabled:
+                courses, in_process_course_actions = get_courses_accessible_to_user(request)
+                # exclude current course from the list of available courses
+                courses = [course for course in courses if course.id != course_key]
+                if courses:
+                    courses = _remove_in_process_courses(courses, in_process_course_actions)
+                settings_context.update({'possible_pre_requisite_courses': courses})
+
+            return render_to_response('settings.html', settings_context)
         elif 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             if request.method == 'GET':
+                course_details = CourseDetails.fetch(course_key)
                 return JsonResponse(
-                    CourseDetails.fetch(course_key),
+                    course_details,
                     # encoder serializes dates, old locations, and instances
                     encoder=CourseSettingsEncoder
                 )
-            else:  # post or put, doesn't matter.
+            # For every other possible method type submitted by the caller...
+            else:
+                # if pre-requisite course feature is enabled set pre-requisite course
+                if prerequisite_course_enabled:
+                    prerequisite_course_keys = request.json.get('pre_requisite_courses', [])
+                    if prerequisite_course_keys:
+                        if not all(is_valid_course_key(course_key) for course_key in prerequisite_course_keys):
+                            return JsonResponseBadRequest({"error": _("Invalid prerequisite course key")})
+                        set_prerequisite_courses(course_key, prerequisite_course_keys)
+
+                # If the entrance exams feature has been enabled, we'll need to check for some
+                # feature-specific settings and handle them accordingly
+                # We have to be careful that we're only executing the following logic if we actually
+                # need to create or delete an entrance exam from the specified course
+                if settings.FEATURES.get('ENTRANCE_EXAMS', False):
+                    course_entrance_exam_present = course_module.entrance_exam_enabled
+                    entrance_exam_enabled = request.json.get('entrance_exam_enabled', '') == 'true'
+                    ee_min_score_pct = request.json.get('entrance_exam_minimum_score_pct', None)
+                    # If the entrance exam box on the settings screen has been checked...
+                    if entrance_exam_enabled:
+                        # Load the default minimum score threshold from settings, then try to override it
+                        entrance_exam_minimum_score_pct = float(settings.ENTRANCE_EXAM_MIN_SCORE_PCT)
+                        if ee_min_score_pct:
+                            entrance_exam_minimum_score_pct = float(ee_min_score_pct)
+                        if entrance_exam_minimum_score_pct.is_integer():
+                            entrance_exam_minimum_score_pct = entrance_exam_minimum_score_pct / 100
+                        entrance_exam_minimum_score_pct = unicode(entrance_exam_minimum_score_pct)
+                        # If there's already an entrance exam defined, we'll update the existing one
+                        if course_entrance_exam_present:
+                            exam_data = {
+                                'entrance_exam_minimum_score_pct': entrance_exam_minimum_score_pct
+                            }
+                            update_entrance_exam(request, course_key, exam_data)
+                        # If there's no entrance exam defined, we'll create a new one
+                        else:
+                            create_entrance_exam(request, course_key, entrance_exam_minimum_score_pct)
+
+                    # If the entrance exam box on the settings screen has been unchecked,
+                    # and the course has an entrance exam attached...
+                    elif not entrance_exam_enabled and course_entrance_exam_present:
+                        delete_entrance_exam(request, course_key)
+
+                # Perform the normal update workflow for the CourseDetails model
                 return JsonResponse(
                     CourseDetails.update_from_json(course_key, request.json, request.user),
                     encoder=CourseSettingsEncoder
@@ -838,62 +999,100 @@ def grading_handler(request, course_key_string, grader_index=None):
 
 
 # pylint: disable=invalid-name
-def _config_course_advanced_components(request, course_module):
+def _add_tab(request, tab_type, course_module):
     """
-    Check to see if the user instantiated any advanced components. This
-    is a hack that does the following :
-    1) adds/removes the open ended panel tab to a course automatically
-    if the user has indicated that they want to edit the
-    combinedopendended or peergrading module
-    2) adds/removes the notes panel tab to a course automatically if
-    the user has indicated that they want the notes module enabled in
-    their course
+    Adds tab to the course.
     """
-    # TODO refactor the above into distinct advanced policy settings
-    filter_tabs = True  # Exceptional conditions will pull this to False
-    if ADVANCED_COMPONENT_POLICY_KEY in request.json:  # Maps tab types to components
-        tab_component_map = {
-            'open_ended': OPEN_ENDED_COMPONENT_TYPES,
-            'notes': NOTE_COMPONENT_TYPES,
-        }
-        # Check to see if the user instantiated any notes or open ended components
-        for tab_type in tab_component_map.keys():
-            component_types = tab_component_map.get(tab_type)
-            found_ac_type = False
-            for ac_type in component_types:
+    # Add tab to the course if needed
+    changed, new_tabs = add_extra_panel_tab(tab_type, course_module)
+    # If a tab has been added to the course, then send the
+    # metadata along to CourseMetadata.update_from_json
+    if changed:
+        course_module.tabs = new_tabs
+        request.json.update({'tabs': {'value': new_tabs}})
+        # Indicate that tabs should not be filtered out of
+        # the metadata
+        return True
+    return False
 
-                # Check if the user has incorrectly failed to put the value in an iterable.
-                new_advanced_component_list = request.json[ADVANCED_COMPONENT_POLICY_KEY]['value']
-                if hasattr(new_advanced_component_list, '__iter__'):
-                    if ac_type in new_advanced_component_list and ac_type in ADVANCED_COMPONENT_TYPES:
 
-                        # Add tab to the course if needed
-                        changed, new_tabs = add_extra_panel_tab(tab_type, course_module)
-                        # If a tab has been added to the course, then send the
-                        # metadata along to CourseMetadata.update_from_json
-                        if changed:
-                            course_module.tabs = new_tabs
-                            request.json.update({'tabs': {'value': new_tabs}})
-                            # Indicate that tabs should not be filtered out of
-                            # the metadata
-                            filter_tabs = False  # Set this flag to avoid the tab removal code below.
-                        found_ac_type = True  # break
-                else:
-                    # If not iterable, return immediately and let validation handle.
-                    return
+# pylint: disable=invalid-name
+def _remove_tab(request, tab_type, course_module):
+    """
+    Removes the tab from the course.
+    """
+    changed, new_tabs = remove_extra_panel_tab(tab_type, course_module)
+    if changed:
+        course_module.tabs = new_tabs
+        request.json.update({'tabs': {'value': new_tabs}})
+        return True
+    return False
 
-            # If we did not find a module type in the advanced settings,
-            # we may need to remove the tab from the course.
-            if not found_ac_type:  # Remove tab from the course if needed
-                changed, new_tabs = remove_extra_panel_tab(tab_type, course_module)
-                if changed:
-                    course_module.tabs = new_tabs
-                    request.json.update({'tabs': {'value': new_tabs}})
-                    # Indicate that tabs should *not* be filtered out of
-                    # the metadata
-                    filter_tabs = False
 
-    return filter_tabs
+def is_advanced_component_present(request, advanced_components):
+    """
+    Return True when one of `advanced_components` is present in the request.
+
+    raises TypeError
+    when request.ADVANCED_COMPONENT_POLICY_KEY is malformed (not iterable)
+    """
+    if ADVANCED_COMPONENT_POLICY_KEY not in request.json:
+        return False
+
+    new_advanced_component_list = request.json[ADVANCED_COMPONENT_POLICY_KEY]['value']
+    for ac_type in advanced_components:
+        if ac_type in new_advanced_component_list and ac_type in ADVANCED_COMPONENT_TYPES:
+            return True
+
+
+def is_field_value_true(request, field_list):
+    """
+    Return True when one of field values is set to True by request
+    """
+    return any([request.json.get(field, {}).get('value') for field in field_list])
+
+
+# pylint: disable=invalid-name
+def _modify_tabs_to_components(request, course_module):
+    """
+    Automatically adds/removes tabs if user indicated that they want
+    respective modules enabled in the course
+
+    Return True when tab configuration has been modified.
+    """
+    tab_component_map = {
+        # 'tab_type': (check_function, list_of_checked_components_or_values),
+
+        # open ended tab by combinedopendended or peergrading module
+        'open_ended': (is_advanced_component_present, OPEN_ENDED_COMPONENT_TYPES),
+        # notes tab
+        'notes': (is_advanced_component_present, NOTE_COMPONENT_TYPES),
+        # student notes tab
+        'edxnotes': (is_field_value_true, ['edxnotes'])
+    }
+
+    tabs_changed = False
+    for tab_type in tab_component_map.keys():
+        check, component_types = tab_component_map[tab_type]
+        try:
+            tab_enabled = check(request, component_types)
+        except TypeError:
+            # user has failed to put iterable value into advanced component list.
+            # return immediately and let validation handle.
+            return
+
+        if tab_enabled:
+            # check passed, some of this component_types are present, adding tab
+            if _add_tab(request, tab_type, course_module):
+                # tab indeed was added, the change needs to propagate
+                tabs_changed = True
+        else:
+            # the tab should not be present (anymore)
+            if _remove_tab(request, tab_type, course_module):
+                # tab indeed was removed, the change needs to propagate
+                tabs_changed = True
+
+    return tabs_changed
 
 
 @login_required
@@ -925,8 +1124,8 @@ def advanced_settings_handler(request, course_key_string):
                 return JsonResponse(CourseMetadata.fetch(course_module))
             else:
                 try:
-                    # Whether or not to filter the tabs key out of the settings metadata
-                    filter_tabs = _config_course_advanced_components(request, course_module)
+                    # do not process tabs unless they were modified according to course metadata
+                    filter_tabs = not _modify_tabs_to_components(request, course_module)
 
                     # validate data formats and update
                     is_valid, errors, updated_data = CourseMetadata.validate_and_update_from_json(
@@ -1185,23 +1384,16 @@ class GroupConfiguration(object):
         if len(self.configuration.get('groups', [])) < 1:
             raise GroupConfigurationsValidationError(_("must have at least one group"))
 
-    def generate_id(self, used_ids):
-        """
-        Generate unique id for the group configuration.
-        If this id is already used, we generate new one.
-        """
-        cid = random.randint(100, 10 ** 12)
-
-        while cid in used_ids:
-            cid = random.randint(100, 10 ** 12)
-
-        return cid
-
     def assign_id(self, configuration_id=None):
         """
         Assign id for the json representation of group configuration.
         """
-        self.configuration['id'] = int(configuration_id) if configuration_id else self.generate_id(self.get_used_ids())
+        if configuration_id:
+            self.configuration['id'] = int(configuration_id)
+        else:
+            self.configuration['id'] = generate_int_id(
+                MINIMUM_GROUP_ID, MYSQL_MAX_INT, GroupConfiguration.get_used_ids(self.course)
+            )
 
     def assign_group_ids(self):
         """
@@ -1211,14 +1403,15 @@ class GroupConfiguration(object):
         # Assign ids to every group in configuration.
         for group in self.configuration.get('groups', []):
             if group.get('id') is None:
-                group["id"] = self.generate_id(used_ids)
+                group["id"] = generate_int_id(MINIMUM_GROUP_ID, MYSQL_MAX_INT, used_ids)
                 used_ids.append(group["id"])
 
-    def get_used_ids(self):
+    @staticmethod
+    def get_used_ids(course):
         """
         Return a list of IDs that already in use.
         """
-        return set([p.id for p in self.course.user_partitions])
+        return set([p.id for p in course.user_partitions])
 
     def get_user_partition(self):
         """
@@ -1227,30 +1420,47 @@ class GroupConfiguration(object):
         return UserPartition.from_json(self.configuration)
 
     @staticmethod
-    def get_usage_info(course, store):
+    def _get_usage_info(course, unit, item, usage_info, group_id, scheme_name=None):
         """
-        Get usage information for all Group Configurations.
+        Get usage info for unit/module.
         """
-        split_tests = store.get_items(course.id, qualifiers={'category': 'split_test'})
-        return GroupConfiguration._get_usage_info(store, course, split_tests)
+        unit_url = reverse_usage_url(
+            'container_handler',
+            course.location.course_key.make_usage_key(unit.location.block_type, unit.location.name)
+        )
+
+        usage_dict = {'label': u"{} / {}".format(unit.display_name, item.display_name), 'url': unit_url}
+        if scheme_name == RANDOM_SCHEME:
+            validation_summary = item.general_validation_message()
+            usage_dict.update({'validation': validation_summary.to_json() if validation_summary else None})
+
+        usage_info[group_id].append(usage_dict)
+
+        return usage_info
 
     @staticmethod
-    def add_usage_info(course, store):
+    def get_content_experiment_usage_info(store, course):
         """
-        Add usage information to group configurations jsons in course.
+        Get usage information for all Group Configurations currently referenced by a split_test instance.
+        """
+        split_tests = store.get_items(course.id, qualifiers={'category': 'split_test'})
+        return GroupConfiguration._get_content_experiment_usage_info(store, course, split_tests)
 
-        Returns json of group configurations updated with usage information.
+    @staticmethod
+    def get_split_test_partitions_with_usage(store, course):
         """
-        usage_info = GroupConfiguration.get_usage_info(course, store)
+        Returns json split_test group configurations updated with usage information.
+        """
+        usage_info = GroupConfiguration.get_content_experiment_usage_info(store, course)
         configurations = []
-        for partition in course.user_partitions:
+        for partition in get_split_user_partitions(course.user_partitions):
             configuration = partition.to_json()
             configuration['usage'] = usage_info.get(partition.id, [])
             configurations.append(configuration)
         return configurations
 
     @staticmethod
-    def _get_usage_info(store, course, split_tests):
+    def _get_content_experiment_usage_info(store, course, split_tests):
         """
         Returns all units names, their urls and validation messages.
 
@@ -1275,28 +1485,70 @@ class GroupConfiguration(object):
             if split_test.user_partition_id not in usage_info:
                 usage_info[split_test.user_partition_id] = []
 
-            unit_location = store.get_parent_location(split_test.location)
-            if not unit_location:
-                log.warning("Parent location of split_test module not found: %s", split_test.location)
+            unit = split_test.get_parent()
+            if not unit:
+                log.warning("Unable to find parent for split_test %s", split_test.location)
                 continue
 
-            try:
-                unit = store.get_item(unit_location)
-            except ItemNotFoundError:
-                log.warning("Unit not found: %s", unit_location)
-                continue
-
-            unit_url = reverse_usage_url(
-                'container_handler',
-                course.location.course_key.make_usage_key(unit.location.block_type, unit.location.name)
+            usage_info = GroupConfiguration._get_usage_info(
+                course=course,
+                unit=unit,
+                item=split_test,
+                usage_info=usage_info,
+                group_id=split_test.user_partition_id,
+                scheme_name=RANDOM_SCHEME
             )
+        return usage_info
 
-            validation_summary = split_test.general_validation_message()
-            usage_info[split_test.user_partition_id].append({
-                'label': '{} / {}'.format(unit.display_name, split_test.display_name),
-                'url': unit_url,
-                'validation': validation_summary.to_json() if validation_summary else None,
-            })
+    @staticmethod
+    def get_content_groups_usage_info(store, course):
+        """
+        Get usage information for content groups.
+        """
+        items = store.get_items(course.id, settings={'group_access': {'$exists': True}})
+
+        return GroupConfiguration._get_content_groups_usage_info(course, items)
+
+    @staticmethod
+    def _get_content_groups_usage_info(course, items):
+        """
+        Returns all units names and their urls.
+
+        Returns:
+        {'group_id':
+            [
+                {
+                    'label': 'Unit 1 / Problem 1',
+                    'url': 'url_to_unit_1'
+                },
+                {
+                    'label': 'Unit 2 / Problem 2',
+                    'url': 'url_to_unit_2'
+                }
+            ],
+        }
+        """
+        usage_info = {}
+        for item in items:
+            if hasattr(item, 'group_access') and item.group_access:
+                (__, group_ids), = item.group_access.items()
+                for group_id in group_ids:
+                    if group_id not in usage_info:
+                        usage_info[group_id] = []
+
+                    unit = item.get_parent()
+                    if not unit:
+                        log.warning("Unable to find parent for component %s", item.location)
+                        continue
+
+                    usage_info = GroupConfiguration._get_usage_info(
+                        course,
+                        unit=unit,
+                        item=item,
+                        usage_info=usage_info,
+                        group_id=group_id
+                    )
+
         return usage_info
 
     @staticmethod
@@ -1306,16 +1558,105 @@ class GroupConfiguration(object):
 
         Returns json of particular group configuration updated with usage information.
         """
-        # Get all Experiments that use particular Group Configuration in course.
-        split_tests = store.get_items(
-            course.id,
-            category='split_test',
-            content={'user_partition_id': configuration.id}
-        )
-        configuration_json = configuration.to_json()
-        usage_information = GroupConfiguration._get_usage_info(store, course, split_tests)
-        configuration_json['usage'] = usage_information.get(configuration.id, [])
+        configuration_json = None
+        # Get all Experiments that use particular  Group Configuration in course.
+        if configuration.scheme.name == RANDOM_SCHEME:
+            split_tests = store.get_items(
+                course.id,
+                category='split_test',
+                content={'user_partition_id': configuration.id}
+            )
+            configuration_json = configuration.to_json()
+            usage_information = GroupConfiguration._get_content_experiment_usage_info(store, course, split_tests)
+            configuration_json['usage'] = usage_information.get(configuration.id, [])
+        elif configuration.scheme.name == COHORT_SCHEME:
+            # In case if scheme is "cohort"
+            configuration_json = GroupConfiguration.update_content_group_usage_info(store, course, configuration)
         return configuration_json
+
+    @staticmethod
+    def update_content_group_usage_info(store, course, configuration):
+        """
+        Update usage information for particular Content Group Configuration.
+
+        Returns json of particular content group configuration updated with usage information.
+        """
+        usage_info = GroupConfiguration.get_content_groups_usage_info(store, course)
+        content_group_configuration = configuration.to_json()
+
+        for group in content_group_configuration['groups']:
+            group['usage'] = usage_info.get(group['id'], [])
+
+        return content_group_configuration
+
+    @staticmethod
+    def get_or_create_content_group(store, course):
+        """
+        Returns the first user partition from the course which uses the
+        CohortPartitionScheme, or generates one if no such partition is
+        found.  The created partition is not saved to the course until
+        the client explicitly creates a group within the partition and
+        POSTs back.
+        """
+        content_group_configuration = get_cohorted_user_partition(course.id)
+        if content_group_configuration is None:
+            content_group_configuration = UserPartition(
+                id=generate_int_id(MINIMUM_GROUP_ID, MYSQL_MAX_INT, GroupConfiguration.get_used_ids(course)),
+                name=CONTENT_GROUP_CONFIGURATION_NAME,
+                description=CONTENT_GROUP_CONFIGURATION_DESCRIPTION,
+                groups=[],
+                scheme_id=COHORT_SCHEME
+            )
+            return content_group_configuration.to_json()
+
+        content_group_configuration = GroupConfiguration.update_content_group_usage_info(
+            store,
+            course,
+            content_group_configuration
+        )
+        return content_group_configuration
+
+
+def remove_content_or_experiment_group(request, store, course, configuration, group_configuration_id, group_id=None):
+    """
+    Remove content group or experiment group configuration only if it's not in use.
+    """
+    configuration_index = course.user_partitions.index(configuration)
+    if configuration.scheme.name == RANDOM_SCHEME:
+        usages = GroupConfiguration.get_content_experiment_usage_info(store, course)
+        used = int(group_configuration_id) in usages
+
+        if used:
+            return JsonResponse(
+                {"error": _("This group configuration is in use and cannot be deleted.")},
+                status=400
+            )
+        course.user_partitions.pop(configuration_index)
+    elif configuration.scheme.name == COHORT_SCHEME:
+        if not group_id:
+            return JsonResponse(status=404)
+
+        group_id = int(group_id)
+        usages = GroupConfiguration.get_content_groups_usage_info(store, course)
+        used = group_id in usages
+
+        if used:
+            return JsonResponse(
+                {"error": _("This content group is in use and cannot be deleted.")},
+                status=400
+            )
+
+        matching_groups = [group for group in configuration.groups if group.id == group_id]
+        if matching_groups:
+            group_index = configuration.groups.index(matching_groups[0])
+            configuration.groups.pop(group_index)
+        else:
+            return JsonResponse(status=404)
+
+        course.user_partitions[configuration_index] = configuration
+
+    store.update_item(course, request.user.id)
+    return JsonResponse(status=204)
 
 
 @require_http_methods(("GET", "POST"))
@@ -1338,12 +1679,21 @@ def group_configurations_list_handler(request, course_key_string):
         if 'text/html' in request.META.get('HTTP_ACCEPT', 'text/html'):
             group_configuration_url = reverse_course_url('group_configurations_list_handler', course_key)
             course_outline_url = reverse_course_url('course_handler', course_key)
-            configurations = GroupConfiguration.add_usage_info(course, store)
+            should_show_experiment_groups = are_content_experiments_enabled(course)
+            if should_show_experiment_groups:
+                experiment_group_configurations = GroupConfiguration.get_split_test_partitions_with_usage(store, course)
+            else:
+                experiment_group_configurations = None
+
+            content_group_configuration = GroupConfiguration.get_or_create_content_group(store, course)
+
             return render_to_response('group_configurations.html', {
                 'context_course': course,
                 'group_configuration_url': group_configuration_url,
                 'course_outline_url': course_outline_url,
-                'configurations': configurations if should_show_group_configurations_page(course) else None,
+                'experiment_group_configurations': experiment_group_configurations,
+                'should_show_experiment_groups': should_show_experiment_groups,
+                'content_group_configuration': content_group_configuration
             })
         elif "application/json" in request.META.get('HTTP_ACCEPT'):
             if request.method == 'POST':
@@ -1370,7 +1720,7 @@ def group_configurations_list_handler(request, course_key_string):
 @login_required
 @ensure_csrf_cookie
 @require_http_methods(("POST", "PUT", "DELETE"))
-def group_configurations_detail_handler(request, course_key_string, group_configuration_id):
+def group_configurations_detail_handler(request, course_key_string, group_configuration_id, group_id=None):
     """
     JSON API endpoint for manipulating a group configuration via its internal ID.
     Used by the Backbone application.
@@ -1404,27 +1754,24 @@ def group_configurations_detail_handler(request, course_key_string, group_config
             store.update_item(course, request.user.id)
             configuration = GroupConfiguration.update_usage_info(store, course, new_configuration)
             return JsonResponse(configuration, status=201)
+
         elif request.method == "DELETE":
             if not configuration:
                 return JsonResponse(status=404)
 
-            # Verify that group configuration is not already in use.
-            usages = GroupConfiguration.get_usage_info(course, store)
-            if usages.get(int(group_configuration_id)):
-                return JsonResponse(
-                    {"error": _("This Group Configuration is already in use and cannot be removed.")},
-                    status=400
-                )
-
-            index = course.user_partitions.index(configuration)
-            course.user_partitions.pop(index)
-            store.update_item(course, request.user.id)
-            return JsonResponse(status=204)
+            return remove_content_or_experiment_group(
+                request=request,
+                store=store,
+                course=course,
+                configuration=configuration,
+                group_configuration_id=group_configuration_id,
+                group_id=group_id
+            )
 
 
-def should_show_group_configurations_page(course):
+def are_content_experiments_enabled(course):
     """
-    Returns true if Studio should show the "Group Configurations" page for the specified course.
+    Returns True if content experiments have been enabled for the course.
     """
     return (
         SPLIT_TEST_COMPONENT_TYPE in ADVANCED_COMPONENT_TYPES and

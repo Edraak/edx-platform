@@ -7,6 +7,7 @@ from pytz import UTC
 from uuid import uuid4
 from nose.plugins.attrib import attr
 
+from .helpers import BaseDiscussionTestCase
 from ..helpers import UniqueCourseTest
 from ...pages.lms.auto_auth import AutoAuthPage
 from ...pages.lms.courseware import CoursewarePage
@@ -112,22 +113,44 @@ class DiscussionResponsePaginationTestMixin(BaseDiscussionMixin):
 
 
 @attr('shard_1')
-class DiscussionTabSingleThreadTest(UniqueCourseTest, DiscussionResponsePaginationTestMixin):
+class DiscussionHomePageTest(UniqueCourseTest):
+    """
+    Tests for the discussion home page.
+    """
+
+    SEARCHED_USERNAME = "gizmo"
+
+    def setUp(self):
+        super(DiscussionHomePageTest, self).setUp()
+        CourseFixture(**self.course_info).install()
+        AutoAuthPage(self.browser, course_id=self.course_id).visit()
+        self.page = DiscussionTabHomePage(self.browser, self.course_id)
+        self.page.visit()
+
+    def test_new_post_button(self):
+        """
+        Scenario: I can create new posts from the Discussion home page.
+            Given that I am on the Discussion home page
+            When I click on the 'New Post' button
+            Then I should be shown the new post form
+        """
+        self.assertIsNotNone(self.page.new_post_button)
+        self.page.click_new_post_button()
+        self.assertIsNotNone(self.page.new_post_form)
+
+
+@attr('shard_1')
+class DiscussionTabSingleThreadTest(BaseDiscussionTestCase, DiscussionResponsePaginationTestMixin):
     """
     Tests for the discussion page displaying a single thread
     """
 
     def setUp(self):
         super(DiscussionTabSingleThreadTest, self).setUp()
-        self.discussion_id = "test_discussion_{}".format(uuid4().hex)
-
-        # Create a course to register for
-        CourseFixture(**self.course_info).install()
-
         AutoAuthPage(self.browser, course_id=self.course_id).visit()
 
     def setup_thread_page(self, thread_id):
-        self.thread_page = DiscussionTabSingleThreadPage(self.browser, self.course_id, thread_id)  # pylint: disable=attribute-defined-outside-init
+        self.thread_page = self.create_single_thread_page(thread_id)  # pylint: disable=attribute-defined-outside-init
         self.thread_page.visit()
 
     def test_marked_answer_comments(self):
@@ -153,7 +176,7 @@ class DiscussionTabSingleThreadTest(UniqueCourseTest, DiscussionResponsePaginati
 
 
 @attr('shard_1')
-class DiscussionOpenClosedThreadTest(UniqueCourseTest):
+class DiscussionOpenClosedThreadTest(BaseDiscussionTestCase):
     """
     Tests for checking the display of attributes on open and closed threads
     """
@@ -161,8 +184,6 @@ class DiscussionOpenClosedThreadTest(UniqueCourseTest):
     def setUp(self):
         super(DiscussionOpenClosedThreadTest, self).setUp()
 
-        # Create a course to register for
-        CourseFixture(**self.course_info).install()
         self.thread_id = "test_thread_{}".format(uuid4().hex)
 
     def setup_user(self, roles=[]):
@@ -170,6 +191,7 @@ class DiscussionOpenClosedThreadTest(UniqueCourseTest):
         self.user_id = AutoAuthPage(self.browser, course_id=self.course_id, roles=roles_str).visit().get_user_id()
 
     def setup_view(self, **thread_kwargs):
+        thread_kwargs.update({'commentable_id': self.discussion_id})
         view = SingleThreadViewFixture(
             Thread(id=self.thread_id, **thread_kwargs)
         )
@@ -182,7 +204,7 @@ class DiscussionOpenClosedThreadTest(UniqueCourseTest):
             self.setup_view(closed=True)
         else:
             self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, self.thread_id)
+        page = self.create_single_thread_page(self.thread_id)
         page.visit()
         page.close_open_thread()
         return page
@@ -203,23 +225,16 @@ class DiscussionOpenClosedThreadTest(UniqueCourseTest):
 
 
 @attr('shard_1')
-class DiscussionCommentDeletionTest(UniqueCourseTest):
+class DiscussionCommentDeletionTest(BaseDiscussionTestCase):
     """
     Tests for deleting comments displayed beneath responses in the single thread view.
     """
-
-    def setUp(self):
-        super(DiscussionCommentDeletionTest, self).setUp()
-
-        # Create a course to register for
-        CourseFixture(**self.course_info).install()
-
     def setup_user(self, roles=[]):
         roles_str = ','.join(roles)
         self.user_id = AutoAuthPage(self.browser, course_id=self.course_id, roles=roles_str).visit().get_user_id()
 
     def setup_view(self):
-        view = SingleThreadViewFixture(Thread(id="comment_deletion_test_thread"))
+        view = SingleThreadViewFixture(Thread(id="comment_deletion_test_thread", commentable_id=self.discussion_id))
         view.addResponse(
             Response(id="response1"),
             [Comment(id="comment_other_author", user_id="other"), Comment(id="comment_self_author", user_id=self.user_id)])
@@ -228,7 +243,7 @@ class DiscussionCommentDeletionTest(UniqueCourseTest):
     def test_comment_deletion_as_student(self):
         self.setup_user()
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "comment_deletion_test_thread")
+        page = self.create_single_thread_page("comment_deletion_test_thread")
         page.visit()
         self.assertTrue(page.is_comment_deletable("comment_self_author"))
         self.assertTrue(page.is_comment_visible("comment_other_author"))
@@ -238,7 +253,7 @@ class DiscussionCommentDeletionTest(UniqueCourseTest):
     def test_comment_deletion_as_moderator(self):
         self.setup_user(roles=['Moderator'])
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "comment_deletion_test_thread")
+        page = self.create_single_thread_page("comment_deletion_test_thread")
         page.visit()
         self.assertTrue(page.is_comment_deletable("comment_self_author"))
         self.assertTrue(page.is_comment_deletable("comment_other_author"))
@@ -247,23 +262,16 @@ class DiscussionCommentDeletionTest(UniqueCourseTest):
 
 
 @attr('shard_1')
-class DiscussionResponseEditTest(UniqueCourseTest):
+class DiscussionResponseEditTest(BaseDiscussionTestCase):
     """
     Tests for editing responses displayed beneath thread in the single thread view.
     """
-
-    def setUp(self):
-        super(DiscussionResponseEditTest, self).setUp()
-
-        # Create a course to register for
-        CourseFixture(**self.course_info).install()
-
     def setup_user(self, roles=[]):
         roles_str = ','.join(roles)
         self.user_id = AutoAuthPage(self.browser, course_id=self.course_id, roles=roles_str).visit().get_user_id()
 
     def setup_view(self):
-        view = SingleThreadViewFixture(Thread(id="response_edit_test_thread"))
+        view = SingleThreadViewFixture(Thread(id="response_edit_test_thread", commentable_id=self.discussion_id))
         view.addResponse(
             Response(id="response_other_author", user_id="other", thread_id="response_edit_test_thread"),
         )
@@ -290,7 +298,7 @@ class DiscussionResponseEditTest(UniqueCourseTest):
         """
         self.setup_user()
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "response_edit_test_thread")
+        page = self.create_single_thread_page("response_edit_test_thread")
         page.visit()
         self.assertTrue(page.is_response_visible("response_other_author"))
         self.assertFalse(page.is_response_editable("response_other_author"))
@@ -307,7 +315,7 @@ class DiscussionResponseEditTest(UniqueCourseTest):
         """
         self.setup_user(roles=["Moderator"])
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "response_edit_test_thread")
+        page = self.create_single_thread_page("response_edit_test_thread")
         page.visit()
         self.edit_response(page, "response_self_author")
         self.edit_response(page, "response_other_author")
@@ -335,7 +343,7 @@ class DiscussionResponseEditTest(UniqueCourseTest):
         """
         self.setup_user(roles=["Moderator"])
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "response_edit_test_thread")
+        page = self.create_single_thread_page("response_edit_test_thread")
         page.visit()
         self.edit_response(page, "response_self_author")
         self.edit_response(page, "response_other_author")
@@ -348,23 +356,16 @@ class DiscussionResponseEditTest(UniqueCourseTest):
 
 
 @attr('shard_1')
-class DiscussionCommentEditTest(UniqueCourseTest):
+class DiscussionCommentEditTest(BaseDiscussionTestCase):
     """
     Tests for editing comments displayed beneath responses in the single thread view.
     """
-
-    def setUp(self):
-        super(DiscussionCommentEditTest, self).setUp()
-
-        # Create a course to register for
-        CourseFixture(**self.course_info).install()
-
     def setup_user(self, roles=[]):
         roles_str = ','.join(roles)
         self.user_id = AutoAuthPage(self.browser, course_id=self.course_id, roles=roles_str).visit().get_user_id()
 
     def setup_view(self):
-        view = SingleThreadViewFixture(Thread(id="comment_edit_test_thread"))
+        view = SingleThreadViewFixture(Thread(id="comment_edit_test_thread", commentable_id=self.discussion_id))
         view.addResponse(
             Response(id="response1"),
             [Comment(id="comment_other_author", user_id="other"), Comment(id="comment_self_author", user_id=self.user_id)])
@@ -379,7 +380,7 @@ class DiscussionCommentEditTest(UniqueCourseTest):
     def test_edit_comment_as_student(self):
         self.setup_user()
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "comment_edit_test_thread")
+        page = self.create_single_thread_page("comment_edit_test_thread")
         page.visit()
         self.assertTrue(page.is_comment_editable("comment_self_author"))
         self.assertTrue(page.is_comment_visible("comment_other_author"))
@@ -389,7 +390,7 @@ class DiscussionCommentEditTest(UniqueCourseTest):
     def test_edit_comment_as_moderator(self):
         self.setup_user(roles=["Moderator"])
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "comment_edit_test_thread")
+        page = self.create_single_thread_page("comment_edit_test_thread")
         page.visit()
         self.assertTrue(page.is_comment_editable("comment_self_author"))
         self.assertTrue(page.is_comment_editable("comment_other_author"))
@@ -399,7 +400,7 @@ class DiscussionCommentEditTest(UniqueCourseTest):
     def test_cancel_comment_edit(self):
         self.setup_user()
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "comment_edit_test_thread")
+        page = self.create_single_thread_page("comment_edit_test_thread")
         page.visit()
         self.assertTrue(page.is_comment_editable("comment_self_author"))
         original_body = page.get_comment_body("comment_self_author")
@@ -411,7 +412,7 @@ class DiscussionCommentEditTest(UniqueCourseTest):
         """Only one editor should be visible at a time within a single response"""
         self.setup_user(roles=["Moderator"])
         self.setup_view()
-        page = DiscussionTabSingleThreadPage(self.browser, self.course_id, "comment_edit_test_thread")
+        page = self.create_single_thread_page("comment_edit_test_thread")
         page.visit()
         self.assertTrue(page.is_comment_editable("comment_self_author"))
         self.assertTrue(page.is_comment_editable("comment_other_author"))

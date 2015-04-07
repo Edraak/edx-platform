@@ -31,7 +31,7 @@ class VideoFields(object):
         help=_("Optional, for older browsers: the YouTube ID for the normal speed video."),
         display_name=_("YouTube ID"),
         scope=Scope.settings,
-        default="OEoXaMPEzfM"
+        default="3_yD_cEKoCk"
     )
     youtube_id_0_75 = String(
         help=_("Optional, for older browsers: the YouTube ID for the .75x speed video."),
@@ -149,6 +149,15 @@ class VideoFields(object):
         help=_("Upload a handout to accompany this video. Students can download the handout by clicking Download Handout under the video."),
         display_name=_("Upload Handout"),
         scope=Scope.settings,
+    )
+    only_on_web = Boolean(
+        help=_(
+            "Specify whether access to this video is limited to browsers only, or if it can be "
+            "accessed from other applications including mobile apps."
+        ),
+        display_name="Video Available on Web Only",
+        scope=Scope.settings,
+        default=False
     )
     edx_video_id = String(
         help=_("If you were assigned a Video ID by edX for the video to play in this component, enter the ID here. In this case, do not enter values in the Default Video URL, the Video File URLs, and the YouTube ID fields. If you were not assigned an edX Video ID, enter values in those other fields and ignore this field."),

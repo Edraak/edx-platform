@@ -20,15 +20,18 @@
       width: flex-grid(12);
       background: $dashboard-profile-color;
 
-      h1.user-name {
+      .user-name {
+        display: block;
         overflow: hidden;
         margin: 0;
-        padding: ($baseline*0.75) ($baseline/2);
+        padding: ($baseline*0.75) ($baseline/2) 0;
         color: $base-font-color;
         text-transform: none;
         text-wrap: nowrap;
         text-overflow: ellipsis;
-        font: 700 1.2em/1.2em $sans-serif;
+        text-align: center;
+        font-weight: 700;
+        line-height: 1.2em;
       }
     }
 
@@ -482,6 +485,17 @@
         }
       }
 
+      .prerequisites {
+        @include clearfix;
+
+        .tip {
+          font-family: $sans-serif;
+          font-size: 1em;
+          color: $lighter-base-font-color;
+          margin-top: ($baseline/2);
+        }
+      }
+
       // "enrolled as" status
       .sts-enrollment {
         position: absolute;
@@ -601,8 +615,11 @@
     // ====================
 
     // UI: message
-    .message {
+    .wrapper-message-primary {
       @include clearfix();
+    }
+
+    .message {
       border-radius: 3px;
       display: none;
       z-index: 10;
@@ -876,13 +893,18 @@
       }
 
       &.course-status-processing {
-
+        background-color: $gray-l5;
+        border: 0;
       }
 
       &.course-status-certnotavailable {
+        background-color: $gray-l5;
+        border: 0;
       }
 
       &.course-status-certrendering {
+        background-color: $gray-l5;
+        border: 0;
 
         .cta {
           margin-top: 2px;
@@ -890,13 +912,71 @@
       }
 
       &.course-status-certavailable {
+        background-color: $gray-l5;
+        border: 0;
 
-        .action-certificate {
+        .message-copy {
+          width: flex-grid(6, 12);
+          position: relative;
+          @include float(left);
+        }
 
-          .btn {
+        .actions-primary {
+          width: flex-grid(6, 12);
+          position: relative;
+          @include float(right);
+
+          .action {
+            @include margin(0, 0, ($baseline/2), ($baseline*.75));
+            float: none;
+            text-align: center;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            .btn {
+              float: none;
+            }
+          }
+
+          .action-certificate .btn {
             @extend %btn-inherited-primary;
+            @include box-sizing(border-box);
+            float: none;
+            border-radius: 3px;
+            display: block;
+            @include padding(7px, ($baseline*.75), 7px, ($baseline*.75));
+            text-align: center;
+
+            a:link, a:visited {
+              color: #fff;
+            }
+          }
+
+          .action-share .btn {
+            display: inline;
+            letter-spacing: 0;
           }
         }
+      }
+
+      .actions-secondary {
+        margin-top: ($baseline/2);
+        border-top: 1px solid $gray-l4;
+        padding-top: ($baseline/2);
+
+        .action-share {
+          @include float(right);
+          margin: 0;
+        }
+      }
+
+      .certificate-explanation {
+        @extend %t-copy-sub1;
+        margin-top: ($baseline/2);
+        border-top: 1px solid $gray-l4;
+        padding-top: ($baseline/2);
       }
 
       .verification-reminder {

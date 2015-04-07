@@ -51,6 +51,8 @@ What is supported:
             GET / PUT / DELETE HTTP methods respectively
 """
 
+import datetime
+from django.utils.timezone import UTC
 import logging
 import oauthlib.oauth1
 from oauthlib.oauth1.rfc5849 import signature
@@ -67,7 +69,6 @@ from xml.sax.saxutils import escape
 from xmodule.editing_module import MetadataOnlyEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.x_module import XModule, module_attr
-from xmodule.course_module import CourseDescriptor
 from xmodule.lti_2_util import LTI20ModuleMixin, LTIError
 from pkg_resources import resource_string
 from xblock.core import String, Scope, List, XBlock
@@ -78,10 +79,9 @@ log = logging.getLogger(__name__)
 # Make '_' a no-op so we can scrape strings
 _ = lambda text: text
 
-DOCS_ANCHOR_TAG = (
-    "<a target='_blank'"
+DOCS_ANCHOR_TAG_OPEN = (
+    "<a target='_blank' "
     "href='http://edx.readthedocs.org/projects/ca/en/latest/exercises_tools/lti_component.html'>"
-    "the edX LTI documentation</a>"
 )
 
 
@@ -120,7 +120,10 @@ class LTIFields(object):
             "Enter the LTI ID for the external LTI provider.  "
             "This value must be the same LTI ID that you entered in the "
             "LTI Passports setting on the Advanced Settings page."
-            "<br />See " + DOCS_ANCHOR_TAG + " for more details on this setting."
+            "<br />See {docs_anchor_open}the edX LTI documentation{anchor_close} for more details on this setting."
+        ).format(
+            docs_anchor_open=DOCS_ANCHOR_TAG_OPEN,
+            anchor_close="</a>"
         ),
         default='',
         scope=Scope.settings
@@ -130,7 +133,10 @@ class LTIFields(object):
         help=_(
             "Enter the URL of the external tool that this component launches. "
             "This setting is only used when Hide External Tool is set to False."
-            "<br />See " + DOCS_ANCHOR_TAG + " for more details on this setting."
+            "<br />See {docs_anchor_open}the edX LTI documentation{anchor_close} for more details on this setting."
+        ).format(
+            docs_anchor_open=DOCS_ANCHOR_TAG_OPEN,
+            anchor_close="</a>"
         ),
         default='http://www.example.com',
         scope=Scope.settings)
@@ -139,7 +145,10 @@ class LTIFields(object):
         help=_(
             "Add the key/value pair for any custom parameters, such as the page your e-book should open to or "
             "the background color for this component."
-            "<br />See " + DOCS_ANCHOR_TAG + " for more details on this setting."
+            "<br />See {docs_anchor_open}the edX LTI documentation{anchor_close} for more details on this setting."
+        ).format(
+            docs_anchor_open=DOCS_ANCHOR_TAG_OPEN,
+            anchor_close="</a>"
         ),
         scope=Scope.settings)
     open_in_a_new_page = Boolean(
@@ -231,6 +240,13 @@ class LTIFields(object):
             "Enter the text on the button used to launch the third party application."
         ),
         default="",
+        scope=Scope.settings
+    )
+
+    accept_grades_past_due = Boolean(
+        display_name=_("Accept grades past deadline"),
+        help=_("Select True to allow third party systems to post grades past the deadline."),
+        default=True,
         scope=Scope.settings
     )
 
@@ -423,7 +439,7 @@ class LTIModule(LTIFields, LTI20ModuleMixin, XModule):
             'ask_to_send_username': self.ask_to_send_username,
             'ask_to_send_email': self.ask_to_send_email,
             'button_text': self.button_text,
-
+            'accept_grades_past_due': self.accept_grades_past_due,
         }
 
     def get_html(self):
@@ -702,7 +718,8 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
             'response': ''
         }
         # Returns if:
-        #   - score is out of range;
+        #   - past due grades are not accepted and grade is past due
+        #   - score is out of range
         #   - can't parse response from TP;
         #   - can't verify OAuth signing or OAuth signing is incorrect.
         failure_values = {
@@ -711,6 +728,10 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
             'imsx_messageIdentifier': 'unknown',
             'response': ''
         }
+
+        if not self.accept_grades_past_due and self.is_past_due():
+            failure_values['imsx_description'] = "Grade is past due"
+            return Response(response_xml_template.format(**failure_values), content_type="application/xml")
 
         try:
             imsx_messageIdentifier, sourcedId, score, action = self.parse_grade_xml_body(request.body)
@@ -861,6 +882,17 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
             if lti_id == self.lti_id.strip():
                 return key, secret
         return '', ''
+
+    def is_past_due(self):
+        """
+        Is it now past this problem's due date, including grace period?
+        """
+        due_date = self.due  # pylint: disable=no-member
+        if self.graceperiod is not None and due_date:  # pylint: disable=no-member
+            close_date = due_date + self.graceperiod  # pylint: disable=no-member
+        else:
+            close_date = due_date
+        return close_date is not None and datetime.datetime.now(UTC()) > close_date
 
 
 class LTIDescriptor(LTIFields, MetadataOnlyEditingDescriptor, EmptyDataRawDescriptor):

@@ -5,6 +5,7 @@ course level, such as available course modes.
 """
 from django.utils import importlib
 import logging
+from django.core.cache import cache
 from django.conf import settings
 from enrollment import errors
 
@@ -44,7 +45,8 @@ def get_enrollments(user_id):
                             "suggested_prices": "",
                             "currency": "usd",
                             "expiration_datetime": null,
-                            "description": null
+                            "description": null,
+                            "sku": null
                         }
                     ],
                     "enrollment_start": 2014-10-15T20:18:00Z,
@@ -67,7 +69,8 @@ def get_enrollments(user_id):
                             "suggested_prices": "",
                             "currency": "usd",
                             "expiration_datetime": null,
-                            "description": null
+                            "description": null,
+                            "sku": null
                         }
                     ],
                     "enrollment_start": 2014-10-15T20:18:00Z,
@@ -110,7 +113,8 @@ def get_enrollment(user_id, course_id):
                         "suggested_prices": "",
                         "currency": "usd",
                         "expiration_datetime": null,
-                        "description": null
+                        "description": null,
+                        "sku": null
                     }
                 ],
                 "enrollment_start": 2014-10-15T20:18:00Z,
@@ -156,7 +160,8 @@ def add_enrollment(user_id, course_id, mode='honor', is_active=True):
                         "suggested_prices": "",
                         "currency": "usd",
                         "expiration_datetime": null,
-                        "description": null
+                        "description": null,
+                        "sku": null
                     }
                 ],
                 "enrollment_start": 2014-10-15T20:18:00Z,
@@ -200,7 +205,8 @@ def update_enrollment(user_id, course_id, mode=None, is_active=None):
                         "suggested_prices": "",
                         "currency": "usd",
                         "expiration_datetime": null,
-                        "description": null
+                        "description": null,
+                        "sku": null
                     }
                 ],
                 "enrollment_start": 2014-10-15T20:18:00Z,
@@ -242,7 +248,8 @@ def get_course_enrollment_details(course_id):
                     "suggested_prices": "",
                     "currency": "usd",
                     "expiration_datetime": null,
-                    "description": null
+                    "description": null,
+                    "sku": null
                 }
             ],
             "enrollment_start": 2014-10-15T20:18:00Z,
@@ -250,7 +257,31 @@ def get_course_enrollment_details(course_id):
         }
 
     """
-    return _data_api().get_course_enrollment_info(course_id)
+    cache_key = u"enrollment.course.details.{course_id}".format(course_id=course_id)
+
+    cached_enrollment_data = None
+    try:
+        cached_enrollment_data = cache.get(cache_key)
+    except Exception:
+        # The cache backend could raise an exception (for example, memcache keys that contain spaces)
+        log.exception(u"Error occurred while retrieving course enrollment details from the cache")
+
+    if cached_enrollment_data:
+        log.info(u"Get enrollment data for course %s (cached)", course_id)
+        return cached_enrollment_data
+
+    course_enrollment_details = _data_api().get_course_enrollment_info(course_id)
+
+    try:
+        cache_time_out = getattr(settings, 'ENROLLMENT_COURSE_DETAILS_CACHE_TIMEOUT', 60)
+        cache.set(cache_key, course_enrollment_details, cache_time_out)
+    except Exception:
+        # Catch any unexpected errors during caching.
+        log.exception(u"Error occurred while caching course enrollment details for course %s", course_id)
+        raise errors.CourseEnrollmentError(u"An unexpected error occurred while retrieving course enrollment details.")
+
+    log.info(u"Get enrollment data for course %s", course_id)
+    return course_enrollment_details
 
 
 def _validate_course_mode(course_id, mode):

@@ -1,3 +1,8 @@
+"""
+Module rendering
+"""
+
+import hashlib
 import json
 import logging
 import mimetypes
@@ -5,6 +10,7 @@ import mimetypes
 import static_replace
 import xblock.reference.plugins
 
+from collections import OrderedDict
 from functools import partial
 from requests.auth import HTTPBasicAuth
 import dogstats_wrapper as dog_stats_api
@@ -13,6 +19,8 @@ from opaque_keys import InvalidKeyError
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.context_processors import csrf
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -31,10 +39,11 @@ from student.models import anonymous_id_for_user, user_by_anonymous_id
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.runtime import KvsFieldData, KeyValueStore
-from xblock.exceptions import NoSuchHandlerError
+from xblock.exceptions import NoSuchHandlerError, NoSuchViewError
 from xblock.django.request import django_to_webob_request, webob_to_django_response
 from xmodule.error_module import ErrorDescriptor, NonStaffErrorDescriptor
 from xmodule.exceptions import NotFoundError, ProcessingError
+from opaque_keys.edx.keys import UsageKey
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.contentstore.django import contentstore
 from xmodule.modulestore.django import modulestore, ModuleI18nService
@@ -50,10 +59,11 @@ from xmodule_modifiers import (
 )
 from xmodule.lti_module import LTIModule
 from xmodule.x_module import XModuleDescriptor
-
+from xblock_django.user_service import DjangoXBlockUserService
 from util.json_request import JsonResponse
 from util.sandboxing import can_execute_unsafe_code, get_python_lib_zip
-
+from util import milestones_helpers
+from util.module_utils import yield_dynamic_descriptor_descendents
 
 log = logging.getLogger(__name__)
 
@@ -122,9 +132,20 @@ def toc_for_course(request, course, active_chapter, active_section, field_data_c
         if course_module is None:
             return None
 
+        # Check to see if the course is gated on milestone-required content (such as an Entrance Exam)
+        required_content = milestones_helpers.get_required_content(course, request.user)
+
         chapters = list()
         for chapter in course_module.get_display_items():
-            if chapter.hide_from_toc:
+            # Only show required content, if there is required content
+            # chapter.hide_from_toc is read-only (boo)
+            local_hide_from_toc = False
+            if required_content:
+                if unicode(chapter.location) not in required_content:
+                    local_hide_from_toc = True
+
+            # Skip the current chapter if a hide flag is tripped
+            if chapter.hide_from_toc or local_hide_from_toc:
                 continue
 
             sections = list()
@@ -141,7 +162,6 @@ def toc_for_course(request, course, active_chapter, active_section, field_data_c
                                      'active': active,
                                      'graded': section.graded,
                                      })
-
             chapters.append({'display_name': chapter.display_name_with_default,
                              'url_name': chapter.url_name,
                              'sections': sections,
@@ -213,7 +233,7 @@ def get_xqueue_callback_url_prefix(request):
     return settings.XQUEUE_INTERFACE.get('callback_url', prefix)
 
 
-def get_module_for_descriptor(user, request, descriptor, field_data_cache, course_id,
+def get_module_for_descriptor(user, request, descriptor, field_data_cache, course_key,
                               position=None, wrap_xmodule_display=True, grade_bucket_type=None,
                               static_asset_path=''):
     """
@@ -221,10 +241,6 @@ def get_module_for_descriptor(user, request, descriptor, field_data_cache, cours
 
     See get_module() docstring for further details.
     """
-    # allow course staff to masquerade as student
-    if has_access(user, 'staff', descriptor, course_id):
-        setup_masquerade(request, True)
-
     track_function = make_track_function(request)
     xqueue_callback_url_prefix = get_xqueue_callback_url_prefix(request)
 
@@ -234,7 +250,7 @@ def get_module_for_descriptor(user, request, descriptor, field_data_cache, cours
         user=user,
         descriptor=descriptor,
         field_data_cache=field_data_cache,
-        course_id=course_id,
+        course_id=course_key,
         track_function=track_function,
         xqueue_callback_url_prefix=xqueue_callback_url_prefix,
         position=position,
@@ -345,7 +361,51 @@ def get_module_system_for_user(user, field_data_cache,
             request_token=request_token,
         )
 
-    def handle_grade_event(block, event_type, event):
+    def _calculate_entrance_exam_score(user, course_descriptor):
+        """
+        Internal helper to calculate a user's score for a course's entrance exam
+        """
+        exam_key = UsageKey.from_string(course_descriptor.entrance_exam_id)
+        exam_descriptor = modulestore().get_item(exam_key)
+        exam_module_generators = yield_dynamic_descriptor_descendents(
+            exam_descriptor,
+            inner_get_module
+        )
+        exam_modules = [module for module in exam_module_generators]
+        exam_score = milestones_helpers.calculate_entrance_exam_score(user, course_descriptor, exam_modules)
+        return exam_score
+
+    def _fulfill_content_milestones(user, course_key, content_key):
+        """
+        Internal helper to handle milestone fulfillments for the specified content module
+        """
+        # Fulfillment Use Case: Entrance Exam
+        # If this module is part of an entrance exam, we'll need to see if the student
+        # has reached the point at which they can collect the associated milestone
+        if settings.FEATURES.get('ENTRANCE_EXAMS', False):
+            course = modulestore().get_course(course_key)
+            content = modulestore().get_item(content_key)
+            entrance_exam_enabled = getattr(course, 'entrance_exam_enabled', False)
+            in_entrance_exam = getattr(content, 'in_entrance_exam', False)
+            if entrance_exam_enabled and in_entrance_exam:
+                exam_pct = _calculate_entrance_exam_score(user, course)
+                if exam_pct >= course.entrance_exam_minimum_score_pct:
+                    exam_key = UsageKey.from_string(course.entrance_exam_id)
+                    relationship_types = milestones_helpers.get_milestone_relationship_types()
+                    content_milestones = milestones_helpers.get_course_content_milestones(
+                        course_key,
+                        exam_key,
+                        relationship=relationship_types['FULFILLS']
+                    )
+                    # Add each milestone to the user's set...
+                    user = {'id': user.id}
+                    for milestone in content_milestones:
+                        milestones_helpers.add_user_milestone(user, milestone)
+
+    def handle_grade_event(block, event_type, event):  # pylint: disable=unused-argument
+        """
+        Manages the workflow for recording and updating of student module grade state
+        """
         user_id = event.get('user_id', user.id)
 
         # Construct the key for the module
@@ -376,6 +436,16 @@ def get_module_system_for_user(user, field_data_cache,
             tags.append('type:%s' % grade_bucket_type)
 
         dog_stats_api.increment("lms.courseware.question_answered", tags=tags)
+
+        # If we're using the awesome edx-milestones app, we need to cycle
+        # through the fulfillment scenarios to see if any are now applicable
+        # thanks to the updated grading information that was just submitted
+        if settings.FEATURES.get('MILESTONES_APP', False):
+            _fulfill_content_milestones(
+                user,
+                course_id,
+                descriptor.location,
+            )
 
     def publish(block, event_type, event):
         """A function that allows XModules to publish events."""
@@ -427,10 +497,8 @@ def get_module_system_for_user(user, field_data_cache,
         # rebinds module to a different student.  We'll change system, student_data, and scope_ids
         module.descriptor.bind_for_student(
             inner_system,
-            LmsFieldData(module.descriptor._field_data, inner_student_data)  # pylint: disable=protected-access
-        )
-        module.descriptor.scope_ids = (
-            module.descriptor.scope_ids._replace(user_id=real_user.id)  # pylint: disable=protected-access
+            LmsFieldData(module.descriptor._field_data, inner_student_data),  # pylint: disable=protected-access
+            real_user.id,
         )
         module.scope_ids = module.descriptor.scope_ids  # this is needed b/c NamedTuples are immutable
         # now bind the module to the new ModuleSystem instance and vice-versa
@@ -500,6 +568,8 @@ def get_module_system_for_user(user, field_data_cache,
 
     field_data = LmsFieldData(descriptor._field_data, student_data)  # pylint: disable=protected-access
 
+    user_is_staff = has_access(user, u'staff', descriptor.location, course_id)
+
     system = LmsModuleSystem(
         track_function=track_function,
         render_template=render_to_string,
@@ -546,9 +616,10 @@ def get_module_system_for_user(user, field_data_cache,
             'i18n': ModuleI18nService(),
             'fs': xblock.reference.plugins.FSService(),
             'field-data': field_data,
+            'user': DjangoXBlockUserService(user, user_is_staff=user_is_staff),
         },
         get_user_role=lambda: get_user_role(user, course_id),
-        descriptor_runtime=descriptor.runtime,
+        descriptor_runtime=descriptor._runtime,  # pylint: disable=protected-access
         rebind_noauth_module_to_user=rebind_noauth_module_to_user,
         user_location=user_location,
         request_token=request_token,
@@ -569,7 +640,7 @@ def get_module_system_for_user(user, field_data_cache,
             make_psychometrics_data_update_handler(course_id, user, descriptor.location)
         )
 
-    system.set(u'user_is_staff', has_access(user, u'staff', descriptor.location, course_id))
+    system.set(u'user_is_staff', user_is_staff)
     system.set(u'user_is_admin', has_access(user, u'staff', 'global'))
 
     # make an ErrorDescriptor -- assuming that the descriptor's system is ok
@@ -615,8 +686,7 @@ def get_module_for_descriptor_internal(user, descriptor, field_data_cache, cours
         request_token=request_token
     )
 
-    descriptor.bind_for_student(system, field_data)  # pylint: disable=protected-access
-    descriptor.scope_ids = descriptor.scope_ids._replace(user_id=user.id)  # pylint: disable=protected-access
+    descriptor.bind_for_student(system, field_data, user.id)  # pylint: disable=protected-access
     return descriptor
 
 
@@ -687,7 +757,7 @@ def handle_xblock_callback_noauth(request, course_id, usage_id, handler, suffix=
     """
     request.user.known = False
 
-    return _invoke_xblock_handler(request, course_id, usage_id, handler, suffix, request.user)
+    return _invoke_xblock_handler(request, course_id, usage_id, handler, suffix)
 
 
 def handle_xblock_callback(request, course_id, usage_id, handler, suffix=None):
@@ -708,7 +778,7 @@ def handle_xblock_callback(request, course_id, usage_id, handler, suffix=None):
     if not request.user.is_authenticated():
         return HttpResponse('Unauthenticated', status=403)
 
-    return _invoke_xblock_handler(request, course_id, usage_id, handler, suffix, request.user)
+    return _invoke_xblock_handler(request, course_id, usage_id, handler, suffix)
 
 
 def xblock_resource(request, block_type, uri):  # pylint: disable=unused-argument
@@ -721,40 +791,30 @@ def xblock_resource(request, block_type, uri):  # pylint: disable=unused-argumen
     except IOError:
         log.info('Failed to load xblock resource', exc_info=True)
         raise Http404
-    except Exception:  # pylint: disable-msg=broad-except
+    except Exception:  # pylint: disable=broad-except
         log.error('Failed to load xblock resource', exc_info=True)
         raise Http404
     mimetype, _ = mimetypes.guess_type(uri)
     return HttpResponse(content, mimetype=mimetype)
 
 
-def _invoke_xblock_handler(request, course_id, usage_id, handler, suffix, user):
+def _get_module_by_usage_id(request, course_id, usage_id):
     """
-    Invoke an XBlock handler, either authenticated or not.
+    Gets a module instance based on its `usage_id` in a course, for a given request/user
 
-    Arguments:
-        request (HttpRequest): the current request
-        course_id (str): A string of the form org/course/run
-        usage_id (str): A string of the form i4x://org/course/category/name@revision
-        handler (str): The name of the handler to invoke
-        suffix (str): The suffix to pass to the handler when invoked
-        user (User): The currently logged in user
-
+    Returns (instance, tracking_context)
     """
+    user = request.user
+
     try:
         course_id = SlashSeparatedCourseKey.from_deprecated_string(course_id)
         usage_key = course_id.make_usage_key_from_deprecated_string(unquote_slashes(usage_id))
     except InvalidKeyError:
         raise Http404("Invalid location")
 
-    # Check submitted files
-    files = request.FILES or {}
-    error_msg = _check_files_limits(files)
-    if error_msg:
-        return HttpResponse(json.dumps({'success': error_msg}))
-
     try:
         descriptor = modulestore().get_item(usage_key)
+        descriptor_orig_usage_key, descriptor_orig_version = modulestore().get_block_original_usage(usage_key)
     except ItemNotFoundError:
         log.warn(
             "Invalid location for course id {course_id}: {usage_key}".format(
@@ -764,18 +824,24 @@ def _invoke_xblock_handler(request, course_id, usage_id, handler, suffix, user):
         )
         raise Http404
 
-    tracking_context_name = 'module_callback_handler'
     tracking_context = {
         'module': {
             'display_name': descriptor.display_name_with_default,
+            'usage_key': unicode(descriptor.location),
         }
     }
+
+    # For blocks that are inherited from a content library, we add some additional metadata:
+    if descriptor_orig_usage_key is not None:
+        tracking_context['module']['original_usage_key'] = unicode(descriptor_orig_usage_key)
+        tracking_context['module']['original_usage_version'] = unicode(descriptor_orig_version)
 
     field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
         course_id,
         user,
         descriptor
     )
+    setup_masquerade(request, course_id, has_access(user, 'staff', descriptor, course_id))
     instance = get_module(user, request, usage_key, field_data_cache, grade_bucket_type='ajax')
     if instance is None:
         # Either permissions just changed, or someone is trying to be clever
@@ -783,6 +849,30 @@ def _invoke_xblock_handler(request, course_id, usage_id, handler, suffix, user):
         log.debug("No module %s for user %s -- access denied?", usage_key, user)
         raise Http404
 
+    return (instance, tracking_context)
+
+
+def _invoke_xblock_handler(request, course_id, usage_id, handler, suffix):
+    """
+    Invoke an XBlock handler, either authenticated or not.
+
+    Arguments:
+        request (HttpRequest): the current request
+        course_id (str): A string of the form org/course/run
+        usage_id (str): A string of the form i4x://org/course/category/name@revision
+        handler (str): The name of the handler to invoke
+        suffix (str): The suffix to pass to the handler when invoked
+    """
+
+    # Check submitted files
+    files = request.FILES or {}
+    error_msg = _check_files_limits(files)
+    if error_msg:
+        return JsonResponse(object={'success': error_msg}, status=413)
+
+    instance, tracking_context = _get_module_by_usage_id(request, course_id, usage_id)
+
+    tracking_context_name = 'module_callback_handler'
     req = django_to_webob_request(request)
     try:
         with tracker.get_tracker().context(tracking_context_name, tracking_context):
@@ -809,6 +899,52 @@ def _invoke_xblock_handler(request, course_id, usage_id, handler, suffix, user):
         raise
 
     return webob_to_django_response(resp)
+
+
+def hash_resource(resource):
+    """
+    Hash a :class:`xblock.fragment.FragmentResource
+    """
+    md5 = hashlib.md5()
+    for data in resource:
+        md5.update(repr(data))
+    return md5.hexdigest()
+
+
+def xblock_view(request, course_id, usage_id, view_name):
+    """
+    Returns the rendered view of a given XBlock, with related resources
+
+    Returns a json object containing two keys:
+        html: The rendered html of the view
+        resources: A list of tuples where the first element is the resource hash, and
+            the second is the resource description
+    """
+    if not settings.FEATURES.get('ENABLE_XBLOCK_VIEW_ENDPOINT', False):
+        log.warn("Attempt to use deactivated XBlock view endpoint -"
+                 " see FEATURES['ENABLE_XBLOCK_VIEW_ENDPOINT']")
+        raise Http404
+
+    if not request.user.is_authenticated():
+        raise PermissionDenied
+
+    instance, _ = _get_module_by_usage_id(request, course_id, usage_id)
+
+    try:
+        fragment = instance.render(view_name, context=request.GET)
+    except NoSuchViewError:
+        log.exception("Attempt to render missing view on %s: %s", instance, view_name)
+        raise Http404
+
+    hashed_resources = OrderedDict()
+    for resource in fragment.resources:
+        hashed_resources[hash_resource(resource)] = resource
+
+    return JsonResponse({
+        'html': fragment.content,
+        'resources': hashed_resources.items(),
+        'csrf_token': unicode(csrf(request)['csrf_token']),
+    })
 
 
 def get_score_bucket(grade, max_grade):

@@ -5,7 +5,6 @@ from textwrap import dedent
 from unittest import TestCase
 
 from django.core.urlresolvers import reverse
-from django.test.utils import override_settings
 import mock
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
@@ -23,6 +22,7 @@ class ActivateLoginTest(LoginEnrollmentTestCase):
     Test logging in and logging out.
     """
     def setUp(self):
+        super(ActivateLoginTest, self).setUp()
         self.setup_user()
 
     def test_activate_login(self):
@@ -112,11 +112,11 @@ class PageLoaderTestCase(LoginEnrollmentTestCase):
             self.assertNotIsInstance(descriptor, ErrorDescriptor)
 
 
-@override_settings(MODULESTORE=XML_MODULESTORE)
 class TestXmlCoursesLoad(ModuleStoreTestCase, PageLoaderTestCase):
     """
     Check that all pages in test courses load properly from XML.
     """
+    MODULESTORE = XML_MODULESTORE
 
     def setUp(self):
         super(TestXmlCoursesLoad, self).setUp()
@@ -129,11 +129,11 @@ class TestXmlCoursesLoad(ModuleStoreTestCase, PageLoaderTestCase):
         self.check_all_pages_load(SlashSeparatedCourseKey('edX', 'toy', '2012_Fall'))
 
 
-@override_settings(MODULESTORE=TOY_MODULESTORE)
 class TestMongoCoursesLoad(ModuleStoreTestCase, PageLoaderTestCase):
     """
     Check that all pages in test courses load properly from Mongo.
     """
+    MODULESTORE = TOY_MODULESTORE
 
     def setUp(self):
         super(TestMongoCoursesLoad, self).setUp()

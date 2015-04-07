@@ -1,3 +1,6 @@
+"""
+Django module for Course Metadata class -- manages advanced settings and related parameters
+"""
 from xblock.fields import Scope
 from xmodule.modulestore.django import modulestore
 from django.utils.translation import ugettext as _
@@ -12,9 +15,10 @@ class CourseMetadata(object):
     editable metadata.
     '''
     # The list of fields that wouldn't be shown in Advanced Settings.
-    # Should not be used directly. Instead the filtered_list method should be used if the field needs to be filtered
-    # depending on the feature flag.
+    # Should not be used directly. Instead the filtered_list method should
+    # be used if the field needs to be filtered depending on the feature flag.
     FILTERED_LIST = [
+        'cohort_config',
         'xml_attributes',
         'start',
         'end',
@@ -33,6 +37,12 @@ class CourseMetadata(object):
         'tags',  # from xblock
         'visible_to_staff_only',
         'group_access',
+        'pre_requisite_courses',
+        'entrance_exam_enabled',
+        'entrance_exam_minimum_score_pct',
+        'entrance_exam_id',
+        'is_entrance_exam',
+        'in_entrance_exam',
     ]
 
     @classmethod
@@ -47,6 +57,18 @@ class CourseMetadata(object):
         if not settings.FEATURES.get('ENABLE_EXPORT_GIT'):
             filtered_list.append('giturl')
 
+        # Do not show edxnotes if the feature is disabled.
+        if not settings.FEATURES.get('ENABLE_EDXNOTES'):
+            filtered_list.append('edxnotes')
+
+        # Do not show video_upload_pipeline if the feature is disabled.
+        if not settings.FEATURES.get('ENABLE_VIDEO_UPLOAD_PIPELINE'):
+            filtered_list.append('video_upload_pipeline')
+
+        # Do not show facebook_url if the feature is disabled.
+        if not settings.FEATURES.get('ENABLE_MOBILE_SOCIAL_FACEBOOK_FEATURES'):
+            filtered_list.append('facebook_url')
+
         return filtered_list
 
     @classmethod
@@ -56,21 +78,28 @@ class CourseMetadata(object):
         persistence and return a CourseMetadata model.
         """
         result = {}
+        metadata = cls.fetch_all(descriptor)
+        for key, value in metadata.iteritems():
+            if key in cls.filtered_list():
+                continue
+            result[key] = value
+        return result
 
+    @classmethod
+    def fetch_all(cls, descriptor):
+        """
+        Fetches all key:value pairs from persistence and returns a CourseMetadata model.
+        """
+        result = {}
         for field in descriptor.fields.values():
             if field.scope != Scope.settings:
                 continue
-
-            if field.name in cls.filtered_list():
-                continue
-
             result[field.name] = {
                 'value': field.read_json(descriptor),
                 'display_name': _(field.display_name),
                 'help': _(field.help),
                 'deprecated': field.runtime_options.get('deprecated', False)
             }
-
         return result
 
     @classmethod
@@ -97,8 +126,8 @@ class CourseMetadata(object):
                 if hasattr(descriptor, key) and getattr(descriptor, key) != val:
                     key_values[key] = descriptor.fields[key].from_json(val)
             except (TypeError, ValueError) as err:
-                raise ValueError(_("Incorrect format for field '{name}'. {detailed_message}".format(
-                    name=model['display_name'], detailed_message=err.message)))
+                raise ValueError(_("Incorrect format for field '{name}'. {detailed_message}").format(
+                    name=model['display_name'], detailed_message=err.message))
 
         return cls.update_from_dict(key_values, descriptor, user)
 

@@ -5,25 +5,30 @@ from django.conf.urls.static import static
 
 import django.contrib.auth.views
 from microsite_configuration import microsite
+import oauth_exchange.views
 
 # Uncomment the next two lines to enable the admin:
 if settings.DEBUG or settings.FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
     admin.autodiscover()
 
-urlpatterns = ('',  # nopep8
+# Use urlpatterns formatted as within the Django docs with first parameter "stuck" to the open parenthesis
+# pylint: disable=bad-continuation
+urlpatterns = (
+    '',
+    
     # Edraak.org SEO-friendly URL re-writes.
     # Keep it on top to let it get the requests first
     url(r'', include('edraak_url_rewrites.urls')),
 
     # certificate view
     url(r'^update_certificate$', 'certificates.views.update_certificate'),
+    url(r'^update_example_certificate$', 'certificates.views.update_example_certificate'),
     url(r'^request_certificate$', 'certificates.views.request_certificate'),
+
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
     url(r'^login_ajax$', 'student.views.login_user', name="login"),
     url(r'^login_ajax/(?P<error>[^/]*)$', 'student.views.login_user'),
-    url(r'^login$', 'student.views.signin_user', name="signin_user"),
-    url(r'^register$', 'student.views.register_user', name="register_user"),
 
     url(r'^admin_dashboard$', 'dashboard.views.dashboard'),
 
@@ -34,6 +39,7 @@ urlpatterns = ('',  # nopep8
     url(r'^reject_name_change$', 'student.views.reject_name_change'),
     url(r'^pending_name_changes$', 'student.views.pending_name_changes'),
     url(r'^event$', 'track.views.user_track'),
+    url(r'^performance$', 'performance.views.performance_log'),
     url(r'^segmentio/event$', 'track.views.segmentio.segmentio_event'),
     url(r'^t/(?P<template>[^/]*)$', 'static_template_view.views.index'),   # TODO: Is this used anymore? What is STATIC_GRAB?
 
@@ -64,7 +70,9 @@ urlpatterns = ('',  # nopep8
 
     url(r'^heartbeat$', include('heartbeat.urls')),
 
-    url(r'^user_api/', include('openedx.core.djangoapps.user_api.urls')),
+    # Note: these are older versions of the User API that will eventually be
+    # subsumed by api/user listed below.
+    url(r'^user_api/', include('openedx.core.djangoapps.user_api.legacy_urls')),
 
     url(r'^notifier_api/', include('notifier_api.urls')),
 
@@ -89,7 +97,35 @@ urlpatterns = ('',  # nopep8
     # CourseInfo API RESTful endpoints
     url(r'^api/course/details/v0/', include('course_about.urls')),
 
+    # Courseware search endpoints
+    url(r'^search/', include('search.urls')),
+
+    # Course content API
+    url(r'^api/course_structure/', include('course_structure_api.urls', namespace='course_structure_api')),
 )
+
+if settings.FEATURES["ENABLE_USER_REST_API"]:
+    urlpatterns += (
+        url(r'^api/user/', include('openedx.core.djangoapps.user_api.urls')),
+    )
+
+if settings.FEATURES["ENABLE_COMBINED_LOGIN_REGISTRATION"]:
+    # Backwards compatibility with old URL structure, but serve the new views
+    urlpatterns += (
+        url(r'^login$', 'student_account.views.login_and_registration_form',
+            {'initial_mode': 'login'}, name="signin_user"),
+        url(r'^register$', 'student_account.views.login_and_registration_form',
+            {'initial_mode': 'register'}, name="register_user"),
+        url(r'^accounts/login$', 'student_account.views.login_and_registration_form',
+            {'initial_mode': 'login'}, name="accounts_login"),
+    )
+else:
+    # Serve the old views
+    urlpatterns += (
+        url(r'^login$', 'student.views.signin_user', name="signin_user"),
+        url(r'^register$', 'student.views.register_user', name="register_user"),
+        url(r'^accounts/login$', 'student.views.accounts_login', name="accounts_login"),
+    )
 
 if settings.FEATURES["ENABLE_MOBILE_REST_API"]:
     urlpatterns += (
@@ -355,11 +391,11 @@ if settings.COURSEWARE_ENABLED:
             'open_ended_grading.views.take_action_on_flags', name='open_ended_flagged_problems_take_action'),
 
         # Cohorts management
-        url(r'^courses/{}/cohorts$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.list_cohorts', name="cohorts"),
-        url(r'^courses/{}/cohorts/add$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.add_cohort',
-            name="add_cohort"),
+        url(r'^courses/{}/cohorts/settings$'.format(settings.COURSE_KEY_PATTERN),
+            'openedx.core.djangoapps.course_groups.views.course_cohort_settings_handler',
+            name="course_cohort_settings"),
+        url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)?$'.format(settings.COURSE_KEY_PATTERN),
+            'openedx.core.djangoapps.course_groups.views.cohort_handler', name="cohorts"),
         url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)$'.format(settings.COURSE_KEY_PATTERN),
             'openedx.core.djangoapps.course_groups.views.users_in_cohort',
             name="list_cohort"),
@@ -372,6 +408,9 @@ if settings.COURSEWARE_ENABLED:
         url(r'^courses/{}/cohorts/debug$'.format(settings.COURSE_KEY_PATTERN),
             'openedx.core.djangoapps.course_groups.views.debug_cohort_mgmt',
             name="debug_cohort_mgmt"),
+        url(r'^courses/{}/cohorts/topics$'.format(settings.COURSE_KEY_PATTERN),
+            'openedx.core.djangoapps.course_groups.views.cohort_discussion_topics',
+            name='cohort_discussion_topics'),
 
         # Open Ended Notifications
         url(r'^courses/{}/open_ended_notifications$'.format(settings.COURSE_ID_PATTERN),
@@ -389,14 +428,23 @@ if settings.COURSEWARE_ENABLED:
 
         # Student account and profile
         url(r'^account/', include('student_account.urls')),
-        url(r'^profile/', include('student_profile.urls')),
+
+        # Student Notes
+        url(r'^courses/{}/edxnotes'.format(settings.COURSE_ID_PATTERN),
+            include('edxnotes.urls'), name="edxnotes_endpoints"),
     )
 
     # allow course staff to change to student view of courseware
     if settings.FEATURES.get('ENABLE_MASQUERADE'):
         urlpatterns += (
-            url(r'^masquerade/(?P<marg>.*)$', 'courseware.masquerade.handle_ajax', name="masquerade-switch"),
+            url(r'^courses/{}/masquerade$'.format(settings.COURSE_KEY_PATTERN),
+                'courseware.masquerade.handle_ajax', name="masquerade_update"),
         )
+
+    urlpatterns += (
+        url(r'^courses/{}/generate_user_cert'.format(settings.COURSE_ID_PATTERN),
+            'courseware.views.generate_user_cert', name="generate_user_cert"),
+    )
 
     # discussion forums live within courseware, so courseware must be enabled first
     if settings.FEATURES.get('ENABLE_DISCUSSION_SERVICE'):
@@ -470,7 +518,14 @@ if settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD'):
 # Shopping cart
 urlpatterns += (
     url(r'^shoppingcart/', include('shoppingcart.urls')),
+    url(r'^commerce/', include('commerce.urls', namespace='commerce')),
 )
+
+# Embargo
+if settings.FEATURES.get('EMBARGO'):
+    urlpatterns += (
+        url(r'^embargo/', include('embargo.urls')),
+    )
 
 # Survey Djangoapp
 urlpatterns += (
@@ -554,9 +609,26 @@ if settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING'):
 if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
     urlpatterns += (
         url(r'', include('third_party_auth.urls')),
+        url(
+            r'^oauth2/exchange_access_token/(?P<backend>[^/]+)/$',
+            oauth_exchange.views.AccessTokenExchangeView.as_view(),
+            name="exchange_access_token"
+        ),
+        # NOTE: The following login_oauth_token endpoint is DEPRECATED.
+        # Please use the exchange_access_token endpoint instead.
         url(r'^login_oauth_token/(?P<backend>[^/]+)/$', 'student.views.login_oauth_token'),
     )
 
+# Certificates Web/HTML View
+if settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False):
+    urlpatterns += (
+        url(r'^certificates/html', 'certificates.views.render_html_view', name='cert_html_view'),
+    )
+
+# XDomain proxy
+urlpatterns += (
+    url(r'^xdomain_proxy.html$', 'cors_csrf.views.xdomain_proxy', name='xdomain_proxy'),
+)
 
 urlpatterns = patterns(*urlpatterns)
 
