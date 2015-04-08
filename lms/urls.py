@@ -35,9 +35,6 @@ urlpatterns = (
     url(r'^change_email$', 'student.views.change_email_request', name="change_email"),
     url(r'^email_confirm/(?P<key>[^/]*)$', 'student.views.confirm_email_change'),
     url(r'^change_name$', 'student.views.change_name_request', name="change_name"),
-    url(r'^accept_name_change$', 'student.views.accept_name_change'),
-    url(r'^reject_name_change$', 'student.views.reject_name_change'),
-    url(r'^pending_name_changes$', 'student.views.pending_name_changes'),
     url(r'^event$', 'track.views.user_track'),
     url(r'^performance$', 'performance.views.performance_log'),
     url(r'^segmentio/event$', 'track.views.segmentio.segmentio_event'),
@@ -85,8 +82,6 @@ urlpatterns = (
     url(r'', include('edraak_contact.urls')),
     url(r'', include('edraak_bayt.urls')),
     url(r'^certificate/', include('edraak_certificates.urls')),
-
-    url(r'^embargo$', 'student.views.embargo', name="embargo"),
 
     # Feedback Form endpoint
     url(r'^submit_feedback$', 'util.views.submit_feedback'),

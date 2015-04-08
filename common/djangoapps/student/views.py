@@ -42,7 +42,7 @@ from ratelimitbackend.exceptions import RateLimitException
 
 from requests import HTTPError
 
-from edraak_misc.utils import validate_email
+from edraak_misc.utils import validate_email,sort_closed_courses_to_bottom
 
 from social.apps.django_app import utils as social_utils
 from social.backends import oauth as social_oauth
@@ -96,7 +96,9 @@ import dogstats_wrapper as dog_stats_api
 from util.db import commit_on_success_with_read_committed
 from util.json_request import JsonResponse
 from util.bad_request_rate_limiter import BadRequestRateLimiter
-
+from util.milestones_helpers import (
+    get_pre_requisite_courses_not_completed,
+)
 from microsite_configuration import microsite
 
 from util.password_policy_validators import (
@@ -112,7 +114,6 @@ from student.helpers import (
 )
 from xmodule.error_module import ErrorDescriptor
 from shoppingcart.models import DonationConfiguration, CourseRegistrationCode
-from openedx.core.djangoapps.user_api.api import profile as profile_api
 
 import analytics
 from eventtracking import tracker
