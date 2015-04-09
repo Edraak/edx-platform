@@ -35,7 +35,7 @@ def course_org_to_logo(course_org):
         return 'Full-AUB-Seal.jpg'
     elif course_org == "csbe":
         return 'csbe.png'
-    elif course_org == "haca":
+    elif course_org == "hcac":
         return 'HCAC_Logo.png'
     else:
         return None
