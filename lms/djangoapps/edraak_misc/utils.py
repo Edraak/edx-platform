@@ -77,14 +77,6 @@ def sort_closed_courses_to_bottom(courses):
     return open_courses + ended_courses
 
 
-def filter_invitation_only_courses(courses):
-    """
-    Filter out the courses with invitation_only flag set to true.
-    """
-
-    return [course for course in courses if not course.invitation_only]
-
-
 def validate_email(email):
     """
     Validate email, the strict or the quick way depending on `FEATURES['EMAIL_STRICT_VERIFICATION']`.
