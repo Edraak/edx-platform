@@ -113,7 +113,7 @@ import analytics
 from eventtracking import tracker
 
 from edraak_validation import validate_username
-from edraak_misc.utils import sort_closed_courses_to_bottom
+from edraak_misc.utils import sort_closed_courses_to_bottom, filter_invitation_only_courses
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -152,14 +152,13 @@ def index(request, extra_context=None, user=AnonymousUser()):
     # Hardcoded `AnonymousUser()` to hide unpublished courses always
     courses = get_courses(AnonymousUser(), domain=domain)
 
-    courses = sort_closed_courses_to_bottom(courses)
-
     if microsite.get_value("ENABLE_COURSE_SORTING_BY_START_DATE",
                            settings.FEATURES["ENABLE_COURSE_SORTING_BY_START_DATE"]):
         courses = sort_by_start_date(courses)
     else:
         courses = sort_by_announcement(courses)
 
+    courses = filter_invitation_only_courses(courses)
     courses = sort_closed_courses_to_bottom(courses)
 
     context = {'courses': courses}
