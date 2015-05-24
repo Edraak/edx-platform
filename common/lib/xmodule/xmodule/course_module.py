@@ -818,6 +818,16 @@ class CourseDescriptor(CourseFields, SequenceDescriptor):
 
         return datetime.now(UTC()) > self.end
 
+    def enrollment_has_ended(self):
+        """
+        Returns True if the current time is after the specified course end date.
+        Returns False if there is no end date specified.
+        """
+        if self.enrollment_end is None:
+            return False
+
+        return datetime.now(UTC()) > self.enrollment_end
+
     def may_certify(self):
         """
         Return True if it is acceptable to show the student a certificate download link
