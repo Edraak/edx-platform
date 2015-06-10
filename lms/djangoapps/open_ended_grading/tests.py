@@ -11,7 +11,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
-from django.test.utils import override_settings
 from edxmako.shortcuts import render_to_string
 from edxmako.tests import mako_middleware_process_request
 from mock import MagicMock, patch, Mock
@@ -28,10 +27,8 @@ from xmodule import peer_grading_module
 from xmodule.error_module import ErrorDescriptor
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
-from xmodule.modulestore.tests.django_utils import (
-    TEST_DATA_MOCK_MODULESTORE, TEST_DATA_MIXED_TOY_MODULESTORE
-)
-from xmodule.modulestore.xml_importer import import_from_xml
+from xmodule.modulestore.tests.django_utils import TEST_DATA_MIXED_TOY_MODULESTORE
+from xmodule.modulestore.xml_importer import import_course_from_xml
 from xmodule.open_ended_grading_classes import peer_grading_service, controller_query_service
 from xmodule.tests import test_util_open_ended
 
@@ -104,15 +101,16 @@ class StudentProblemListMockQuery(object):
         }
 
 
-@override_settings(MODULESTORE=TEST_DATA_MIXED_TOY_MODULESTORE)
 class TestStaffGradingService(ModuleStoreTestCase, LoginEnrollmentTestCase):
     '''
     Check that staff grading service proxy works.  Basically just checking the
     access control and error handling logic -- all the actual work is on the
     backend.
     '''
+    MODULESTORE = TEST_DATA_MIXED_TOY_MODULESTORE
 
     def setUp(self):
+        super(TestStaffGradingService, self).setUp()
         self.student = 'view@test.com'
         self.instructor = 'view2@test.com'
         self.password = 'foo'
@@ -257,7 +255,6 @@ class TestStaffGradingService(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestPeerGradingService(ModuleStoreTestCase, LoginEnrollmentTestCase):
     '''
     Check that staff grading service proxy works.  Basically just checking the
@@ -266,6 +263,7 @@ class TestPeerGradingService(ModuleStoreTestCase, LoginEnrollmentTestCase):
     '''
 
     def setUp(self):
+        super(TestPeerGradingService, self).setUp()
         self.student = 'view@test.com'
         self.instructor = 'view2@test.com'
         self.password = 'foo'
@@ -444,15 +442,15 @@ class TestPeerGradingService(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestPanel(ModuleStoreTestCase):
     """
     Run tests on the open ended panel
     """
     def setUp(self):
+        super(TestPanel, self).setUp()
         self.user = factories.UserFactory()
         store = modulestore()
-        course_items = import_from_xml(store, self.user.id, TEST_DATA_DIR, ['open_ended'])  # pylint: disable=maybe-no-member
+        course_items = import_course_from_xml(store, self.user.id, TEST_DATA_DIR, ['open_ended'])  # pylint: disable=maybe-no-member
         self.course = course_items[0]
         self.course_key = self.course.id
 
@@ -469,7 +467,7 @@ class TestPanel(ModuleStoreTestCase):
         Mock(
             return_value=controller_query_service.MockControllerQueryService(
                 settings.OPEN_ENDED_GRADING_INTERFACE,
-                utils.SYSTEM
+                utils.render_to_string
             )
         )
     )
@@ -488,15 +486,15 @@ class TestPanel(ModuleStoreTestCase):
         self.assertRegexpMatches(response.content, "Here is a list of open ended problems for this course.")
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestPeerGradingFound(ModuleStoreTestCase):
     """
     Test to see if peer grading modules can be found properly.
     """
     def setUp(self):
+        super(TestPeerGradingFound, self).setUp()
         self.user = factories.UserFactory()
         store = modulestore()
-        course_items = import_from_xml(store, self.user.id, TEST_DATA_DIR, ['open_ended_nopath'])  # pylint: disable=maybe-no-member
+        course_items = import_course_from_xml(store, self.user.id, TEST_DATA_DIR, ['open_ended_nopath'])  # pylint: disable=maybe-no-member
         self.course = course_items[0]
         self.course_key = self.course.id
 
@@ -510,16 +508,17 @@ class TestPeerGradingFound(ModuleStoreTestCase):
         self.assertEqual(found, False)
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
 class TestStudentProblemList(ModuleStoreTestCase):
     """
     Test if the student problem list correctly fetches and parses problems.
     """
     def setUp(self):
+        super(TestStudentProblemList, self).setUp()
+
         # Load an open ended course with several problems.
         self.user = factories.UserFactory()
         store = modulestore()
-        course_items = import_from_xml(store, self.user.id, TEST_DATA_DIR, ['open_ended'])  # pylint: disable=maybe-no-member
+        course_items = import_course_from_xml(store, self.user.id, TEST_DATA_DIR, ['open_ended'])  # pylint: disable=maybe-no-member
         self.course = course_items[0]
         self.course_key = self.course.id
 

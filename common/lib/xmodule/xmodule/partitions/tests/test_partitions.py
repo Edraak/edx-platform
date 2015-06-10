@@ -8,7 +8,9 @@ from mock import Mock
 
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from stevedore.extension import Extension, ExtensionManager
-from xmodule.partitions.partitions import Group, UserPartition, UserPartitionError, USER_PARTITION_SCHEME_NAMESPACE
+from xmodule.partitions.partitions import (
+    Group, UserPartition, UserPartitionError, NoSuchUserPartitionGroupError, USER_PARTITION_SCHEME_NAMESPACE
+)
 from xmodule.partitions.partitions_service import PartitionService
 
 
@@ -112,14 +114,16 @@ class PartitionTestCase(TestCase):
     TEST_SCHEME_NAME = "mock"
 
     def setUp(self):
+        super(PartitionTestCase, self).setUp()
         # Set up two user partition schemes: mock and random
+        self.non_random_scheme = MockUserPartitionScheme(self.TEST_SCHEME_NAME)
+        self.random_scheme = MockUserPartitionScheme("random")
         extensions = [
             Extension(
-                self.TEST_SCHEME_NAME, USER_PARTITION_SCHEME_NAMESPACE,
-                MockUserPartitionScheme(self.TEST_SCHEME_NAME), None
+                self.non_random_scheme.name, USER_PARTITION_SCHEME_NAMESPACE, self.non_random_scheme, None
             ),
             Extension(
-                "random", USER_PARTITION_SCHEME_NAMESPACE, MockUserPartitionScheme("random"), None
+                self.random_scheme.name, USER_PARTITION_SCHEME_NAMESPACE, self.random_scheme, None
             ),
         ]
         UserPartition.scheme_extensions = ExtensionManager.make_test_instance(
@@ -134,6 +138,10 @@ class PartitionTestCase(TestCase):
             self.TEST_GROUPS,
             extensions[0].plugin
         )
+
+        # Make sure the names are set on the schemes (which happens normally in code, but may not happen in tests).
+        self.user_partition.get_scheme(self.non_random_scheme.name)
+        self.user_partition.get_scheme(self.random_scheme.name)
 
 
 class TestUserPartition(PartitionTestCase):
@@ -259,6 +267,23 @@ class TestUserPartition(PartitionTestCase):
         user_partition = UserPartition.from_json(jsonified)
         self.assertNotIn("programmer", user_partition.to_json())
 
+    def test_get_group(self):
+        """
+        UserPartition.get_group correctly returns the group referenced by the
+        `group_id` parameter, or raises NoSuchUserPartitionGroupError when
+        the lookup fails.
+        """
+        self.assertEqual(
+            self.user_partition.get_group(self.TEST_GROUPS[0].id),  # pylint: disable=no-member
+            self.TEST_GROUPS[0]
+        )
+        self.assertEqual(
+            self.user_partition.get_group(self.TEST_GROUPS[1].id),  # pylint: disable=no-member
+            self.TEST_GROUPS[1]
+        )
+        with self.assertRaises(NoSuchUserPartitionGroupError):
+            self.user_partition.get_group(3)
+
 
 class StaticPartitionService(PartitionService):
     """
@@ -280,12 +305,23 @@ class TestPartitionService(PartitionTestCase):
 
     def setUp(self):
         super(TestPartitionService, self).setUp()
-        course = Mock(id=SlashSeparatedCourseKey('org_0', 'course_0', 'run_0'))
-        self.partition_service = StaticPartitionService(
+        self.course = Mock(id=SlashSeparatedCourseKey('org_0', 'course_0', 'run_0'))
+        self.partition_service = self._create_service("ma")
+
+    def _create_service(self, username, cache=None):
+        """Convenience method to generate a StaticPartitionService for a user."""
+        # Derive a "user_id" from the username, just so we don't have to add an
+        # extra param to this method. Just has to be unique per user.
+        user_id = abs(hash(username))
+
+        return StaticPartitionService(
             [self.user_partition],
-            user=Mock(username='ma', email='ma@edx.org', is_staff=False, is_active=True),
-            course_id=course.id,
-            track_function=Mock()
+            user=Mock(
+                username=username, email='{}@edx.org'.format(username), is_staff=False, is_active=True, id=user_id
+            ),
+            course_id=self.course.id,
+            track_function=Mock(),
+            cache=cache
         )
 
     def test_get_user_group_id_for_partition(self):
@@ -302,6 +338,59 @@ class TestPartitionService(PartitionTestCase):
         self.user_partition.scheme.current_group = groups[1]    # pylint: disable=no-member
         group2_id = self.partition_service.get_user_group_id_for_partition(user_partition_id)
         self.assertEqual(group2_id, groups[1].id)    # pylint: disable=no-member
+
+    def test_caching(self):
+        username = "psvc_cache_user"
+        user_partition_id = self.user_partition.id    # pylint: disable=no-member
+        shared_cache = {}
+
+        # Two StaticPartitionService objects that share the same cache:
+        ps_shared_cache_1 = self._create_service(username, shared_cache)
+        ps_shared_cache_2 = self._create_service(username, shared_cache)
+
+        # A StaticPartitionService with its own local cache
+        ps_diff_cache = self._create_service(username, {})
+
+        # A StaticPartitionService that never uses caching.
+        ps_uncached = self._create_service(username)
+
+        # Set the group we expect users to be placed into
+        first_group = self.user_partition.groups[0]
+        self.user_partition.scheme.current_group = first_group    # pylint: disable=no-member
+
+        # Make sure our partition services all return the right thing, but skip
+        # ps_shared_cache_2 so we can see if its cache got updated anyway.
+        for part_svc in [ps_shared_cache_1, ps_diff_cache, ps_uncached]:
+            self.assertEqual(
+                first_group.id,
+                part_svc.get_user_group_id_for_partition(user_partition_id)
+            )
+
+        # Now select a new target group
+        second_group = self.user_partition.groups[1]
+        self.user_partition.scheme.current_group = second_group
+
+        # Both of the shared cache entries should return the old value, even
+        # ps_shared_cache_2, which was never asked for the value the first time
+        # Likewise, our separately cached piece should return the original answer
+        for part_svc in [ps_shared_cache_1, ps_shared_cache_2, ps_diff_cache]:
+            self.assertEqual(
+                first_group.id,
+                part_svc.get_user_group_id_for_partition(user_partition_id)
+            )
+
+        # Our uncached service should be accurate.
+        self.assertEqual(
+            second_group.id,
+            ps_uncached.get_user_group_id_for_partition(user_partition_id)
+        )
+
+        # And a newly created service should see the right thing
+        ps_new_cache = self._create_service(username, {})
+        self.assertEqual(
+            second_group.id,
+            ps_new_cache.get_user_group_id_for_partition(user_partition_id)
+        )
 
     def test_get_group(self):
         """

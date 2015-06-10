@@ -60,7 +60,7 @@ from contentstore.utils import reverse_usage_url
             <span class="sr">&gt; </span>${_("Course Outline")}
         </h1>
 
-        <nav class="nav-actions">
+        <nav class="nav-actions" aria-label="${_('Page Actions')}">
             <h3 class="sr">${_("Page Actions")}</h3>
             <ul>
                 <li class="nav-item">
@@ -68,6 +68,13 @@ from contentstore.utils import reverse_usage_url
                         <i class="icon fa fa-plus"></i>${_('New Section')}
                     </a>
                 </li>
+                %if reindex_link:
+                    <li class="nav-item">
+                        <a href="${reindex_link}" class="button button-reindex" data-category="reindex" title="${_('Reindex current course')}">
+                            <i class="icon-arrow-right"></i>${_('Reindex')}
+                        </a>
+                    </li>
+                %endif
                 <li class="nav-item">
                     <a href="#" class="button button-toggle button-toggle-expand-collapse collapse-all is-hidden">
                         <span class="collapse-all"><i class="icon fa fa-arrow-up"></i> <span class="label">${_("Collapse All Sections")}</span></span>
@@ -111,7 +118,7 @@ from contentstore.utils import reverse_usage_url
                 </article>
             </div>
             <div class="ui-loading">
-                <p><span class="spin"><i class="icon fa fa-refresh"></i></span> <span class="copy">${_("Loading...")}</span></p>
+                <p><span class="spin"><i class="icon fa fa-refresh"></i></span> <span class="copy">${_("Loading")}</span></p>
             </div>
         </article>
         <aside class="content-supplementary" role="complementary">

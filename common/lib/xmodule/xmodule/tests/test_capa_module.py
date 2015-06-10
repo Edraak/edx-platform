@@ -19,10 +19,11 @@ from webob.multidict import MultiDict
 
 import xmodule
 from xmodule.tests import DATA_DIR
+from capa import responsetypes
 from capa.responsetypes import (StudentInputError, LoncapaProblemError,
                                 ResponseError)
 from capa.xqueue_interface import XQueueInterface
-from xmodule.capa_module import CapaModule, ComplexEncoder
+from xmodule.capa_module import CapaModule, CapaDescriptor, ComplexEncoder
 from opaque_keys.edx.locations import Location
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
@@ -186,6 +187,8 @@ if submission[0] == '':
 class CapaModuleTest(unittest.TestCase):
 
     def setUp(self):
+        super(CapaModuleTest, self).setUp()
+
         now = datetime.datetime.now(UTC)
         day_delta = datetime.timedelta(days=1)
         self.yesterday_str = str(now - day_delta)
@@ -426,13 +429,6 @@ class CapaModuleTest(unittest.TestCase):
         module = CapaFactory.create(max_attempts="1", attempts="0",
                                     due=self.yesterday_str)
         self.assertTrue(module.closed())
-
-    def test_due_date_extension(self):
-
-        module = CapaFactory.create(
-            max_attempts="1", attempts="0", due=self.yesterday_str,
-            extended_due=self.tomorrow_str)
-        self.assertFalse(module.closed())
 
     def test_parse_get_params(self):
 
@@ -1661,6 +1657,85 @@ class CapaModuleTest(unittest.TestCase):
             self.assertEquals(event_info['success'], 'incorrect')
 
 
+@ddt.ddt
+class CapaDescriptorTest(unittest.TestCase):
+    def _create_descriptor(self, xml, name=None):
+        """ Creates a CapaDescriptor to run test against """
+        descriptor = CapaDescriptor(get_test_system(), scope_ids=1)
+        descriptor.data = xml
+        if name:
+            descriptor.display_name = name
+        return descriptor
+
+    @ddt.data(*responsetypes.registry.registered_tags())
+    def test_all_response_types(self, response_tag):
+        """ Tests that every registered response tag is correctly returned """
+        xml = "<problem><{response_tag}></{response_tag}></problem>".format(response_tag=response_tag)
+        name = "Some Capa Problem"
+        descriptor = self._create_descriptor(xml, name=name)
+        self.assertEquals(descriptor.problem_types, {response_tag})
+        self.assertEquals(descriptor.index_dictionary(), {
+            'content_type': CapaDescriptor.INDEX_CONTENT_TYPE,
+            'display_name': name,
+            'problem_types': [response_tag]
+        })
+
+    def test_response_types_ignores_non_response_tags(self):
+        xml = textwrap.dedent("""
+            <problem>
+            <p>Label</p>
+            <div>Some comment</div>
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
+                <choice correct="false">Apple</choice>
+                <choice correct="false">Banana</choice>
+                <choice correct="false">Chocolate</choice>
+                <choice correct ="true">Donut</choice>
+              </choicegroup>
+            </multiplechoiceresponse>
+            </problem>
+        """)
+        name = "Test Capa Problem"
+        descriptor = self._create_descriptor(xml, name=name)
+        self.assertEquals(descriptor.problem_types, {"multiplechoiceresponse"})
+        self.assertEquals(descriptor.index_dictionary(), {
+            'content_type': CapaDescriptor.INDEX_CONTENT_TYPE,
+            'display_name': name,
+            'problem_types': ["multiplechoiceresponse"]
+        })
+
+    def test_response_types_multiple_tags(self):
+        xml = textwrap.dedent("""
+            <problem>
+                <p>Label</p>
+                <div>Some comment</div>
+                <multiplechoiceresponse>
+                  <choicegroup type="MultipleChoice" answer-pool="1">
+                    <choice correct ="true">Donut</choice>
+                  </choicegroup>
+                </multiplechoiceresponse>
+                <multiplechoiceresponse>
+                  <choicegroup type="MultipleChoice" answer-pool="1">
+                    <choice correct ="true">Buggy</choice>
+                  </choicegroup>
+                </multiplechoiceresponse>
+                <optionresponse>
+                    <optioninput label="Option" options="('1','2')" correct="2"></optioninput>
+                </optionresponse>
+            </problem>
+        """)
+        name = "Other Test Capa Problem"
+        descriptor = self._create_descriptor(xml, name=name)
+        self.assertEquals(descriptor.problem_types, {"multiplechoiceresponse", "optionresponse"})
+        self.assertEquals(
+            descriptor.index_dictionary(), {
+                'content_type': CapaDescriptor.INDEX_CONTENT_TYPE,
+                'display_name': name,
+                'problem_types': ["optionresponse", "multiplechoiceresponse"]
+            }
+        )
+
+
 class ComplexEncoderTest(unittest.TestCase):
     def test_default(self):
         """
@@ -1678,10 +1753,11 @@ class TestProblemCheckTracking(unittest.TestCase):
     """
 
     def setUp(self):
+        super(TestProblemCheckTracking, self).setUp()
         self.maxDiff = None
 
     def test_choice_answer_text(self):
-        factory = self.capa_factory_for_problem_xml("""\
+        xml = """\
             <problem display_name="Multiple Choice Questions">
               <p>What color is the open ocean on a sunny day?</p>
               <optionresponse>
@@ -1690,18 +1766,10 @@ class TestProblemCheckTracking(unittest.TestCase):
               <p>Which piece of furniture is built for sitting?</p>
               <multiplechoiceresponse>
                 <choicegroup type="MultipleChoice">
-                  <choice correct="false">
-                    <text>a table</text>
-                  </choice>
-                  <choice correct="false">
-                    <text>a desk</text>
-                  </choice>
-                  <choice correct="true">
-                    <text>a chair</text>
-                  </choice>
-                  <choice correct="false">
-                    <text>a bookshelf</text>
-                  </choice>
+                  <choice correct="false"><text>a table</text></choice>
+                  <choice correct="false"><text>a desk</text></choice>
+                  <choice correct="true"><text>a chair</text></choice>
+                  <choice correct="false"><text>a bookshelf</text></choice>
                 </choicegroup>
               </multiplechoiceresponse>
               <p>Which of the following are musical instruments?</p>
@@ -1714,7 +1782,11 @@ class TestProblemCheckTracking(unittest.TestCase):
                 </checkboxgroup>
               </choiceresponse>
             </problem>
-            """)
+            """
+
+        # Whitespace screws up comparisons
+        xml = ''.join(line.strip() for line in xml.split('\n'))
+        factory = self.capa_factory_for_problem_xml(xml)
         module = factory.create()
 
         answer_input_dict = {

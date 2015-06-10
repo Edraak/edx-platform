@@ -57,6 +57,8 @@ jscover.log
 jscover.log.*
 .tddium*
 common/test/data/test_unicode/static/
+django-pyfs
+test_root/uploads/*.txt
 
 ### Installation artifacts
 *.egg-info
@@ -72,18 +74,15 @@ bin/
 lms/static/css/
 lms/static/sass/*.css
 lms/static/sass/*.css.map
-lms/static/sass/application.scss
-lms/static/sass/application-rtl.scss
-lms/static/sass/application-extend1.scss
-lms/static/sass/application-extend1-rtl.scss
-lms/static/sass/application-extend2.scss
-lms/static/sass/application-extend2-rtl.scss
-lms/static/sass/course.scss
-lms/static/sass/course-rtl.scss
+lms/static/sass/lms-main.scss
+lms/static/sass/lms-main-rtl.scss
+lms/static/sass/lms-course.scss
+lms/static/sass/lms-course-rtl.scss
+lms/static/sass/lms-footer.scss
+lms/static/sass/lms-footer-rtl.scss
 cms/static/css/
 cms/static/sass/*.css
 cms/static/sass/*.css.map
-
 
 
 ### Logging artifacts

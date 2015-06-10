@@ -6,11 +6,16 @@ This is the default template for our main set of AWS servers.
 # want to import all variables from base settings files
 # pylint: disable=wildcard-import, unused-wildcard-import
 
+# Pylint gets confused by path.py instances, which report themselves as class
+# objects. As a result, pylint applies the wrong regex in validating names,
+# and throws spurious errors. Therefore, we disable invalid-name checking.
+# pylint: disable=invalid-name
+
 import json
 
 from .common import *
 
-from logsettings import get_logger_config
+from openedx.core.lib.logsettings import get_logger_config
 import os
 
 from path import path
@@ -40,6 +45,14 @@ EMAIL_BACKEND = 'django_ses.SESBackend'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
+# IMPORTANT: With this enabled, the server must always be behind a proxy that
+# strips the header HTTP_X_FORWARDED_PROTO from client requests. Otherwise,
+# a user can fool our server into thinking it was an https connection.
+# See
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-proxy-ssl-header
+# for other warnings.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ###################################### CELERY  ################################
 
 # Don't use a connection pool, since connections are dropped by ELB.
@@ -47,8 +60,7 @@ BROKER_POOL_LIMIT = 0
 BROKER_CONNECTION_TIMEOUT = 1
 
 # For the Result Store, use the django cache named 'celery'
-CELERY_RESULT_BACKEND = 'cache'
-CELERY_CACHE_BACKEND = 'celery'
+CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
 
 # When the broker is behind an ELB, use a heartbeat to refresh the
 # connection and to detect if it has been dropped.
@@ -131,6 +143,7 @@ if 'loc_cache' not in CACHES:
     }
 
 SESSION_COOKIE_DOMAIN = ENV_TOKENS.get('SESSION_COOKIE_DOMAIN')
+SESSION_COOKIE_HTTPONLY = ENV_TOKENS.get('SESSION_COOKIE_HTTPONLY', True)
 SESSION_ENGINE = ENV_TOKENS.get('SESSION_ENGINE', SESSION_ENGINE)
 SESSION_COOKIE_SECURE = ENV_TOKENS.get('SESSION_COOKIE_SECURE', SESSION_COOKIE_SECURE)
 
@@ -185,6 +198,9 @@ LOGGING = get_logger_config(LOG_DIR,
 #theming start:
 PLATFORM_NAME = ENV_TOKENS.get('PLATFORM_NAME', 'edX')
 STUDIO_NAME = ENV_TOKENS.get('STUDIO_NAME', 'edX Studio')
+STUDIO_SHORT_NAME = ENV_TOKENS.get('STUDIO_SHORT_NAME', 'Studio')
+TENDER_DOMAIN = ENV_TOKENS.get('TENDER_DOMAIN', TENDER_DOMAIN)
+TENDER_SUBDOMAIN = ENV_TOKENS.get('TENDER_SUBDOMAIN', TENDER_SUBDOMAIN)
 
 # Event Tracking
 if "TRACKING_IGNORE_URL_PATTERNS" in ENV_TOKENS:
@@ -263,7 +279,9 @@ BROKER_URL = "{0}://{1}:{2}@{3}/{4}".format(CELERY_BROKER_TRANSPORT,
 
 # Event tracking
 TRACKING_BACKENDS.update(AUTH_TOKENS.get("TRACKING_BACKENDS", {}))
-EVENT_TRACKING_BACKENDS.update(AUTH_TOKENS.get("EVENT_TRACKING_BACKENDS", {}))
+EVENT_TRACKING_BACKENDS['tracking_logs']['OPTIONS']['backends'].update(AUTH_TOKENS.get("EVENT_TRACKING_BACKENDS", {}))
+EVENT_TRACKING_BACKENDS['segmentio']['OPTIONS']['processors'][0]['OPTIONS']['whitelist'].extend(
+    AUTH_TOKENS.get("EVENT_TRACKING_SEGMENTIO_EMIT_WHITELIST", []))
 
 SUBDOMAIN_BRANDING = ENV_TOKENS.get('SUBDOMAIN_BRANDING', {})
 VIRTUAL_UNIVERSITIES = ENV_TOKENS.get('VIRTUAL_UNIVERSITIES', [])
@@ -303,6 +321,22 @@ DEPRECATED_ADVANCED_COMPONENT_TYPES = ENV_TOKENS.get(
 
 VIDEO_UPLOAD_PIPELINE = ENV_TOKENS.get('VIDEO_UPLOAD_PIPELINE', VIDEO_UPLOAD_PIPELINE)
 
+################ PUSH NOTIFICATIONS ###############
+
+PARSE_KEYS = AUTH_TOKENS.get("PARSE_KEYS", {})
+
+
 #date format the api will be formatting the datetime values
 API_DATE_FORMAT = '%Y-%m-%d'
 API_DATE_FORMAT = ENV_TOKENS.get('API_DATE_FORMAT', API_DATE_FORMAT)
+
+# Video Caching. Pairing country codes with CDN URLs.
+# Example: {'CN': 'http://api.xuetangx.com/edx/video?s3_url='}
+VIDEO_CDN_URL = ENV_TOKENS.get('VIDEO_CDN_URL', {})
+
+if FEATURES['ENABLE_COURSEWARE_INDEX'] or FEATURES['ENABLE_LIBRARY_INDEX']:
+    # Use ElasticSearch for the search engine
+    SEARCH_ENGINE = "search.elastic.ElasticSearchEngine"
+
+XBLOCK_SETTINGS = ENV_TOKENS.get('XBLOCK_SETTINGS', {})
+XBLOCK_SETTINGS.setdefault("VideoDescriptor", {})["licensing_enabled"] = FEATURES.get("LICENSING", False)

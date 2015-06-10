@@ -8,11 +8,15 @@ import pymongo
 # Import this just to export it
 from pymongo.errors import DuplicateKeyError  # pylint: disable=unused-import
 
-from contracts import check
+from contracts import check, new_contract
 from xmodule.exceptions import HeartbeatFailure
+from xmodule.modulestore import BlockData
 from xmodule.modulestore.split_mongo import BlockKey
 import datetime
 import pytz
+
+
+new_contract('BlockData', BlockData)
 
 
 def structure_from_mongo(structure):
@@ -34,7 +38,7 @@ def structure_from_mongo(structure):
     for block in structure['blocks']:
         if 'children' in block['fields']:
             block['fields']['children'] = [BlockKey(*child) for child in block['fields']['children']]
-        new_blocks[BlockKey(block['block_type'], block.pop('block_id'))] = block
+        new_blocks[BlockKey(block['block_type'], block.pop('block_id'))] = BlockData(**block)
     structure['blocks'] = new_blocks
 
     return structure
@@ -49,16 +53,16 @@ def structure_to_mongo(structure):
         directly into mongo.
     """
     check('BlockKey', structure['root'])
-    check('dict(BlockKey: dict)', structure['blocks'])
+    check('dict(BlockKey: BlockData)', structure['blocks'])
     for block in structure['blocks'].itervalues():
-        if 'children' in block['fields']:
-            check('list(BlockKey)', block['fields']['children'])
+        if 'children' in block.fields:
+            check('list(BlockKey)', block.fields['children'])
 
     new_structure = dict(structure)
     new_structure['blocks'] = []
 
     for block_key, block in structure['blocks'].iteritems():
-        new_block = dict(block)
+        new_block = dict(block.to_storable())
         new_block.setdefault('block_type', block_key.type)
         new_block['block_id'] = block_key.id
         new_structure['blocks'].append(new_block)
@@ -77,16 +81,19 @@ class MongoConnection(object):
         """
         Create & open the connection, authenticate, and provide pointers to the collections
         """
+        if kwargs.get('replicaSet') is None:
+            kwargs.pop('replicaSet', None)
+            mongo_class = pymongo.MongoClient
+        else:
+            mongo_class = pymongo.MongoReplicaSetClient
+        _client = mongo_class(
+            host=host,
+            port=port,
+            tz_aware=tz_aware,
+            **kwargs
+        )
         self.database = MongoProxy(
-            pymongo.database.Database(
-                pymongo.MongoClient(
-                    host=host,
-                    port=port,
-                    tz_aware=tz_aware,
-                    **kwargs
-                ),
-                db
-            ),
+            pymongo.database.Database(_client, db),
             wait_time=retry_wait_time
         )
 
@@ -187,7 +194,7 @@ class MongoConnection(object):
             }
         return self.course_index.find_one(query)
 
-    def find_matching_course_indexes(self, branch=None, search_targets=None):
+    def find_matching_course_indexes(self, branch=None, search_targets=None, org_target=None):
         """
         Find the course_index matching particular conditions.
 
@@ -195,6 +202,8 @@ class MongoConnection(object):
             branch: If specified, this branch must exist in the returned courses
             search_targets: If specified, this must be a dictionary specifying field values
                 that must exist in the search_targets of the returned courses
+            org_target: If specified, this is an ORG filter so that only course_indexs are
+                returned for the specified ORG
         """
         query = {}
         if branch is not None:
@@ -203,6 +212,9 @@ class MongoConnection(object):
         if search_targets:
             for key, value in search_targets.iteritems():
                 query['search_targets.{}'.format(key)] = value
+
+        if org_target:
+            query['org'] = org_target
 
         return self.course_index.find(query)
 
@@ -255,7 +267,7 @@ class MongoConnection(object):
         """
         Retrieve all definitions listed in `definitions`.
         """
-        return self.definitions.find({'$in': {'_id': definitions}})
+        return self.definitions.find({'_id': {'$in': definitions}})
 
     def insert_definition(self, definition):
         """

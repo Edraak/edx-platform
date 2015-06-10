@@ -23,16 +23,16 @@
         if (runtime && version && initFnName) {
             return new window[runtime]['v' + version];
         } else {
-            if (!runtime || !version || !initFnName) {
+            if (runtime || version || initFnName) {
                 var elementTag = $('<div>').append($element.clone()).html();
                 console.log('Block ' + elementTag + ' is missing data-runtime, data-runtime-version or data-init, and can\'t be initialized');
-            }
+            } // else this XBlock doesn't have a JS init function.
             return null;
         }
     }
 
     function initArgs(element) {
-        var initargs = $('.xblock_json_init_args', element).text();
+        var initargs = $(element).children('.xblock-json-init-args').remove().text();
         return initargs ? JSON.parse(initargs) : {};
     }
 

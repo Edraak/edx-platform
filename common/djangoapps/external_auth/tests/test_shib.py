@@ -21,7 +21,6 @@ from external_auth.views import (
 )
 from mock import patch
 
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from student.views import create_account, change_enrollment
 from student.models import UserProfile, CourseEnrollment
 from student.tests.factories import UserFactory
@@ -73,7 +72,7 @@ def gen_all_identities():
 
 
 @ddt
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE, SESSION_ENGINE='django.contrib.sessions.backends.cache')
+@override_settings(SESSION_ENGINE='django.contrib.sessions.backends.cache')
 class ShibSPTest(ModuleStoreTestCase):
     """
     Tests for the Shibboleth SP, which communicates via request.META
@@ -376,7 +375,7 @@ class ShibSPTest(ModuleStoreTestCase):
             self.assertEqual(profile.name, identity.get('displayName').decode('utf-8'))
 
     @unittest.skipUnless(settings.FEATURES.get('AUTH_USE_SHIB'), "AUTH_USE_SHIB not set")
-    @data("", "shib:https://idp.stanford.edu/")
+    @data(None, "", "shib:https://idp.stanford.edu/")
     def test_course_specific_login_and_reg(self, domain):
         """
         Tests that the correct course specific login and registration urls work for shib
@@ -407,7 +406,7 @@ class ShibSPTest(ModuleStoreTestCase):
         login_response = course_specific_login(login_request, 'MITx/999/Robot_Super_Course')
         reg_response = course_specific_register(login_request, 'MITx/999/Robot_Super_Course')
 
-        if "shib" in domain:
+        if domain and "shib" in domain:
             self.assertIsInstance(login_response, HttpResponseRedirect)
             self.assertEqual(login_response['Location'],
                              reverse('shib-login') +

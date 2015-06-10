@@ -2,6 +2,7 @@
 """Video xmodule tests in mongo."""
 
 from mock import patch
+from nose.plugins.attrib import attr
 import os
 import tempfile
 import textwrap
@@ -103,6 +104,7 @@ def _upload_file(subs_file, location, filename):
     del_cached_content(content.location)
 
 
+@attr('shard_1')
 class TestVideo(BaseTestXmodule):
     """Integration tests: web client + mongo."""
     CATEGORY = "video"
@@ -154,8 +156,10 @@ class TestVideo(BaseTestXmodule):
 
     def tearDown(self):
         _clear_assets(self.item_descriptor.location)
+        super(TestVideo, self).tearDown()
 
 
+@attr('shard_1')
 class TestTranscriptAvailableTranslationsDispatch(TestVideo):
     """
     Test video handler that provide available translations info.
@@ -215,6 +219,7 @@ class TestTranscriptAvailableTranslationsDispatch(TestVideo):
         self.assertEqual(json.loads(response.body), ['en', 'uk'])
 
 
+@attr('shard_1')
 class TestTranscriptDownloadDispatch(TestVideo):
     """
     Test video handler that provide translation transcripts.
@@ -279,6 +284,7 @@ class TestTranscriptDownloadDispatch(TestVideo):
         self.assertEqual(response.headers['Content-Disposition'], 'attachment; filename="塞.srt"')
 
 
+@attr('shard_1')
 class TestTranscriptTranslationGetDispatch(TestVideo):
     """
     Test video handler that provide translation transcripts.
@@ -320,6 +326,11 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
         # Language is not in available languages
         request = Request.blank('/translation/ru?videoId=12345')
         response = self.item.transcript(request=request, dispatch='translation/ru')
+        self.assertEqual(response.status, '404 Not Found')
+
+        # Youtube_id is invalid or does not exist
+        request = Request.blank('/translation/uk?videoId=9855256955511225')
+        response = self.item.transcript(request=request, dispatch='translation/uk')
         self.assertEqual(response.status, '404 Not Found')
 
     def test_translaton_en_youtube_success(self):
@@ -479,6 +490,7 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
         self.assertEqual(response.status, '404 Not Found')
 
 
+@attr('shard_1')
 class TestStudioTranscriptTranslationGetDispatch(TestVideo):
     """
     Test Studio video handler that provide translation transcripts.
@@ -536,6 +548,7 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
         self.assertEqual(response.headers['Content-Language'], 'zh')
 
 
+@attr('shard_1')
 class TestStudioTranscriptTranslationPostDispatch(TestVideo):
     """
     Test Studio video handler that provide translation transcripts.
@@ -596,6 +609,7 @@ class TestStudioTranscriptTranslationPostDispatch(TestVideo):
         self.assertTrue(_check_asset(self.item_descriptor.location, u'filename.srt'))
 
 
+@attr('shard_1')
 class TestGetTranscript(TestVideo):
     """
     Make sure that `get_transcript` method works correctly

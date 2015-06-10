@@ -2,10 +2,12 @@ define(
     [
         "js/views/baseview", "underscore", "js/models/metadata", "js/views/abstract_editor",
         "js/models/uploads", "js/views/uploads",
+        "js/models/license", "js/views/license",
         "js/views/video/transcripts/metadata_videolist",
         "js/views/video/translations_editor"
     ],
-function(BaseView, _, MetadataModel, AbstractEditor, FileUpload, UploadDialog, VideoList, VideoTranslations) {
+function(BaseView, _, MetadataModel, AbstractEditor, FileUpload, UploadDialog,
+         LicenseModel, LicenseView, VideoList, VideoTranslations) {
     var Metadata = {};
 
     Metadata.Editor = BaseView.extend({
@@ -49,7 +51,7 @@ function(BaseView, _, MetadataModel, AbstractEditor, FileUpload, UploadDialog, V
         },
 
         /**
-         * Returns the just the modified metadata values, in the format used to persist to the server.
+         * Returns just the modified metadata values, in the format used to persist to the server.
          */
         getModifiedMetadataValues: function () {
             var modified_values = {};
@@ -548,6 +550,33 @@ function(BaseView, _, MetadataModel, AbstractEditor, FileUpload, UploadDialog, V
 
             event.preventDefault();
         }
+    });
+
+    Metadata.License = AbstractEditor.extend({
+
+        initialize: function(options) {
+            this.licenseModel = new LicenseModel({"asString": this.model.getValue()});
+            this.licenseView = new LicenseView({model: this.licenseModel});
+
+            // Rerender when the license model changes
+            this.listenTo(this.licenseModel, 'change', this.setLicense);
+            this.render();
+        },
+
+        render: function() {
+            this.licenseView.render().$el.css("display", "inline");
+            this.licenseView.undelegateEvents();
+            this.$el.empty().append(this.licenseView.el);
+            // restore event bindings
+            this.licenseView.delegateEvents();
+            return this;
+        },
+
+        setLicense: function() {
+            this.model.setValue(this.licenseModel.toString());
+            this.render()
+        }
+
     });
 
     return Metadata;

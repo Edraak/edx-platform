@@ -4,7 +4,6 @@
 <%!
   from django.utils.translation import ugettext as _
   from contentstore import utils
-  from contentstore.views.course import should_show_group_configurations_page
   from django.utils.html import escapejs
 %>
 <%block name="title">${_("Advanced Settings")}</%block>
@@ -87,14 +86,12 @@
           course_team_url = utils.reverse_course_url('course_team_handler', context_course.id)
         %>
       <h3 class="title-3">${_("Other Course Settings")}</h3>
-        <nav class="nav-related">
+        <nav class="nav-related" aria-label="${_('Other Course Settings')}">
           <ul>
             <li class="nav-item"><a href="${details_url}">${_("Details &amp; Schedule")}</a></li>
             <li class="nav-item"><a href="${grading_url}">${_("Grading")}</a></li>
             <li class="nav-item"><a href="${course_team_url}">${_("Course Team")}</a></li>
-            % if should_show_group_configurations_page(context_course):
-              <li class="nav-item"><a href="${utils.reverse_course_url('group_configurations_list_handler', context_course.id)}">${_("Group Configurations")}</a></li>
-            % endif
+            <li class="nav-item"><a href="${utils.reverse_course_url('group_configurations_list_handler', context_course.id)}">${_("Group Configurations")}</a></li>
           </ul>
         </nav>
       % endif

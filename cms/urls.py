@@ -5,7 +5,17 @@ from django.conf.urls import patterns, include, url
 from ratelimitbackend import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',  # nopep8
+# pylint: disable=bad-continuation
+
+# Pattern to match a course key or a library key
+COURSELIKE_KEY_PATTERN = r'(?P<course_key_string>({}|{}))'.format(
+    r'[^/]+/[^/]+/[^/]+', r'[^/:]+:[^/+]+\+[^/+]+(\+[^/]+)?'
+)
+# Pattern to match a library key only
+LIBRARY_KEY_PATTERN = r'(?P<library_key_string>library-v1:[^/+]+\+[^/+]+)'
+
+urlpatterns = patterns(
+    '',
 
     url(r'^transcripts/upload$', 'contentstore.views.upload_transcripts', name='upload_transcripts'),
     url(r'^transcripts/download$', 'contentstore.views.download_transcripts', name='download_transcripts'),
@@ -41,7 +51,7 @@ urlpatterns = patterns('',  # nopep8
     url(r'^xmodule/', include('pipeline_js.urls')),
     url(r'^heartbeat$', include('heartbeat.urls')),
 
-    url(r'^user_api/', include('openedx.core.djangoapps.user_api.urls')),
+    url(r'^user_api/', include('openedx.core.djangoapps.user_api.legacy_urls')),
     url(r'^lang_pref/', include('lang_pref.urls')),
 )
 
@@ -55,7 +65,6 @@ urlpatterns += patterns(
     # ajax view that actually does the work
     url(r'^login_post$', 'student.views.login_user', name='login_post'),
     url(r'^logout$', 'student.views.logout_user', name='logout'),
-    url(r'^embargo$', 'student.views.embargo', name="embargo"),
 )
 
 # restful api
@@ -68,23 +77,31 @@ urlpatterns += patterns(
     url(r'^signin$', 'login_page', name='login'),
     url(r'^request_course_creator$', 'request_course_creator'),
 
-    url(r'^course_team/{}/(?P<email>.+)?$'.format(settings.COURSE_KEY_PATTERN), 'course_team_handler'),
+    url(r'^course_team/{}(?:/(?P<email>.+))?$'.format(COURSELIKE_KEY_PATTERN), 'course_team_handler'),
     url(r'^course_info/{}$'.format(settings.COURSE_KEY_PATTERN), 'course_info_handler'),
     url(
         r'^course_info_update/{}/(?P<provided_id>\d+)?$'.format(settings.COURSE_KEY_PATTERN),
         'course_info_update_handler'
     ),
+    url(r'^home/?$', 'course_listing', name='home'),
+    url(
+        r'^course/{}/search_reindex?$'.format(settings.COURSE_KEY_PATTERN),
+        'course_search_index_handler',
+        name='course_search_index_handler'
+    ),
     url(r'^course/{}?$'.format(settings.COURSE_KEY_PATTERN), 'course_handler', name='course_handler'),
-    url(r'^course_notifications/{}/(?P<action_state_id>\d+)?$'.format(settings.COURSE_KEY_PATTERN), 'course_notifications_handler'),
+    url(r'^course_notifications/{}/(?P<action_state_id>\d+)?$'.format(settings.COURSE_KEY_PATTERN),
+        'course_notifications_handler'),
     url(r'^course_rerun/{}$'.format(settings.COURSE_KEY_PATTERN), 'course_rerun_handler', name='course_rerun_handler'),
     url(r'^container/{}$'.format(settings.USAGE_KEY_PATTERN), 'container_handler'),
     url(r'^checklists/{}/(?P<checklist_index>\d+)?$'.format(settings.COURSE_KEY_PATTERN), 'checklists_handler'),
     url(r'^orphan/{}$'.format(settings.COURSE_KEY_PATTERN), 'orphan_handler'),
     url(r'^assets/{}/{}?$'.format(settings.COURSE_KEY_PATTERN, settings.ASSET_KEY_PATTERN), 'assets_handler'),
-    url(r'^import/{}$'.format(settings.COURSE_KEY_PATTERN), 'import_handler'),
-    url(r'^import_status/{}/(?P<filename>.+)$'.format(settings.COURSE_KEY_PATTERN), 'import_status_handler'),
-    url(r'^export/{}$'.format(settings.COURSE_KEY_PATTERN), 'export_handler'),
+    url(r'^import/{}$'.format(COURSELIKE_KEY_PATTERN), 'import_handler'),
+    url(r'^import_status/{}/(?P<filename>.+)$'.format(COURSELIKE_KEY_PATTERN), 'import_status_handler'),
+    url(r'^export/{}$'.format(COURSELIKE_KEY_PATTERN), 'export_handler'),
     url(r'^xblock/outline/{}$'.format(settings.USAGE_KEY_PATTERN), 'xblock_outline_handler'),
+    url(r'^xblock/container/{}$'.format(settings.USAGE_KEY_PATTERN), 'xblock_container_handler'),
     url(r'^xblock/{}/(?P<view_name>[^/]+)$'.format(settings.USAGE_KEY_PATTERN), 'xblock_view_handler'),
     url(r'^xblock/{}?$'.format(settings.USAGE_KEY_PATTERN), 'xblock_handler'),
     url(r'^tabs/{}$'.format(settings.COURSE_KEY_PATTERN), 'tabs_handler'),
@@ -96,13 +113,13 @@ urlpatterns += patterns(
     url(r'^videos/{}$'.format(settings.COURSE_KEY_PATTERN), 'videos_handler'),
     url(r'^video_encodings_download/{}$'.format(settings.COURSE_KEY_PATTERN), 'video_encodings_download'),
     url(r'^group_configurations/{}$'.format(settings.COURSE_KEY_PATTERN), 'group_configurations_list_handler'),
-    url(r'^group_configurations/{}/(?P<group_configuration_id>\d+)/?$'.format(settings.COURSE_KEY_PATTERN),
-        'group_configurations_detail_handler'),
+    url(r'^group_configurations/{}/(?P<group_configuration_id>\d+)(/)?(?P<group_id>\d+)?$'.format(
+        settings.COURSE_KEY_PATTERN), 'group_configurations_detail_handler'),
 
     url(r'^api/val/v0/', include('edxval.urls')),
 )
 
-js_info_dict = {
+JS_INFO_DICT = {
     'domain': 'djangojs',
     # We need to explicitly include external Django apps that are not in LOCALE_PATHS.
     'packages': ('openassessment',),
@@ -111,8 +128,16 @@ js_info_dict = {
 urlpatterns += patterns(
     '',
     # Serve catalog of localized strings to be rendered by Javascript
-    url(r'^i18n.js$', 'django.views.i18n.javascript_catalog', js_info_dict),
+    url(r'^i18n.js$', 'django.views.i18n.javascript_catalog', JS_INFO_DICT),
 )
+
+if settings.FEATURES.get('ENABLE_CONTENT_LIBRARIES'):
+    urlpatterns += (
+        url(r'^library/{}?$'.format(LIBRARY_KEY_PATTERN),
+            'contentstore.views.library_handler', name='library_handler'),
+        url(r'^library/{}/team/$'.format(LIBRARY_KEY_PATTERN),
+            'contentstore.views.manage_library_users', name='manage_library_users'),
+    )
 
 if settings.FEATURES.get('ENABLE_EXPORT_GIT'):
     urlpatterns += (url(
@@ -141,6 +166,12 @@ urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)),)
 if settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING'):
     urlpatterns += (
         url(r'^auto_auth$', 'student.views.auto_auth'),
+    )
+
+# enable entrance exams
+if settings.FEATURES.get('ENTRANCE_EXAMS'):
+    urlpatterns += (
+        url(r'^course/{}/entrance_exam/?$'.format(settings.COURSE_KEY_PATTERN), 'contentstore.views.entrance_exam'),
     )
 
 if settings.DEBUG:

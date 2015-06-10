@@ -53,7 +53,8 @@ VIDEO_MENUS = {
 }
 
 
-@js_defined('window.Video', 'window.RequireJS.require', 'window.jQuery')
+@js_defined('window.Video', 'window.RequireJS.require', 'window.jQuery',
+            'window.MathJax', 'window.MathJax.isReady')
 class VideoPage(PageObject):
     """
     Video player in the courseware.
@@ -355,10 +356,6 @@ class VideoPage(PageObject):
             self.wait_for(lambda: self.state != 'buffering', 'Player is Ready for Pause')
 
         self.q(css=button_selector).first.click()
-
-        button_states = {'play': 'playing', 'pause': 'pause'}
-        if button in button_states:
-            self.wait_for_state(button_states[button])
 
         self.wait_for_ajax()
 
@@ -677,7 +674,7 @@ class VideoPage(PageObject):
         elif 'is-ended' in current_state:
             return 'finished'
 
-    def _wait_for(self, check_func, desc, result=False, timeout=200):
+    def _wait_for(self, check_func, desc, result=False, timeout=200, try_interval=0.2):
         """
         Calls the method provided as an argument until the Promise satisfied or BrokenPromise
 
@@ -689,9 +686,9 @@ class VideoPage(PageObject):
 
         """
         if result:
-            return Promise(check_func, desc, timeout=timeout).fulfill()
+            return Promise(check_func, desc, timeout=timeout, try_interval=try_interval).fulfill()
         else:
-            return EmptyPromise(check_func, desc, timeout=timeout).fulfill()
+            return EmptyPromise(check_func, desc, timeout=timeout, try_interval=try_interval).fulfill()
 
     def wait_for_state(self, state):
         """
@@ -706,20 +703,6 @@ class VideoPage(PageObject):
             'State is {state}'.format(state=state)
         )
 
-    def _parse_time_str(self, time_str):
-        """
-        Parse a string of the form 1:23 into seconds (int).
-
-        Arguments:
-            time_str (str): seek value
-
-        Returns:
-            int: seek value in seconds
-
-        """
-        time_obj = time.strptime(time_str, '%M:%S')
-        return time_obj.tm_min * 60 + time_obj.tm_sec
-
     def seek(self, seek_value):
         """
         Seek the video to position specified by `seek_value`.
@@ -728,7 +711,7 @@ class VideoPage(PageObject):
             seek_value (str): seek value
 
         """
-        seek_time = self._parse_time_str(seek_value)
+        seek_time = _parse_time_str(seek_value)
         seek_selector = self.get_element_selector(' .video')
         js_code = "$('{seek_selector}').data('video-player-state').videoPlayer.onSlideSeek({{time: {seek_time}}})".format(
             seek_selector=seek_selector, seek_time=seek_time)
@@ -814,3 +797,18 @@ class VideoPage(PageObject):
         """
         captions_rendered_selector = self.get_element_selector(CSS_CLASS_NAMES['captions_rendered'])
         self.wait_for_element_presence(captions_rendered_selector, 'Captions Rendered')
+
+
+def _parse_time_str(time_str):
+    """
+    Parse a string of the form 1:23 into seconds (int).
+
+    Arguments:
+        time_str (str): seek value
+
+    Returns:
+        int: seek value in seconds
+
+    """
+    time_obj = time.strptime(time_str, '%M:%S')
+    return time_obj.tm_min * 60 + time_obj.tm_sec

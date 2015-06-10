@@ -42,6 +42,7 @@ class RegisterPage(PageObject):
         Fill in registration info.
         `email`, `password`, `username`, and `full_name` are the user's credentials.
         """
+        self.wait_for_element_visibility('input#email', 'Email field is shown')
         self.q(css='input#email').fill(email)
         self.q(css='input#password').fill(password)
         self.q(css='input#username').fill(username)
@@ -62,6 +63,30 @@ class RegisterPage(PageObject):
         return dashboard
 
 
+class ResetPasswordPage(PageObject):
+    """Initialize the page.
+
+        Arguments:
+            browser (Browser): The browser instance.
+    """
+    url = BASE_URL + "/login#forgot-password-modal"
+
+    def __init__(self, browser):
+        super(ResetPasswordPage, self).__init__(browser)
+
+    def is_browser_on_page(self):
+        return (
+            self.q(css="#login-anchor").is_present() and
+            self.q(css="#password-reset-anchor").is_present()
+        )
+
+    def is_form_visible(self):
+        return (
+            not self.q(css="#login-anchor").visible and
+            self.q(css="#password-reset-form").visible
+        )
+
+
 class CombinedLoginAndRegisterPage(PageObject):
     """Interact with combined login and registration page.
 
@@ -70,7 +95,9 @@ class CombinedLoginAndRegisterPage(PageObject):
     in the bok choy settings.
 
     When enabled, the new page is available from either
-    `/account/login` or `/account/register`.
+    `/login` or `/register`; the new page is also served at
+    `/account/login/` or `/account/register/`, where it was
+    available for a time during an A/B test.
 
     Users can reach this page while attempting to enroll
     in a course, in which case users will be auto-enrolled
@@ -159,6 +186,7 @@ class CombinedLoginAndRegisterPage(PageObject):
 
         """
         # Fill in the form
+        self.wait_for_element_visibility('#register-email', 'Email field is shown')
         self.q(css="#register-email").fill(email)
         self.q(css="#register-name").fill(full_name)
         self.q(css="#register-username").fill(username)
@@ -185,6 +213,7 @@ class CombinedLoginAndRegisterPage(PageObject):
 
         """
         # Fill in the form
+        self.wait_for_element_visibility('#login-email', 'Email field is shown')
         self.q(css="#login-email").fill(email)
         self.q(css="#login-password").fill(password)
 
@@ -212,6 +241,7 @@ class CombinedLoginAndRegisterPage(PageObject):
         ).fulfill()
 
         # Fill in the form
+        self.wait_for_element_visibility('#password-reset-email', 'Email field is shown')
         self.q(css="#password-reset-email").fill(email)
 
         # Submit it
@@ -246,6 +276,7 @@ class CombinedLoginAndRegisterPage(PageObject):
     def wait_for_errors(self):
         """Wait for errors to be visible, then return them. """
         def _check_func():
+            """Return success status and any errors that occurred."""
             errors = self.errors
             return (bool(errors), errors)
         return Promise(_check_func, "Errors are visible").fulfill()
@@ -259,6 +290,7 @@ class CombinedLoginAndRegisterPage(PageObject):
     def wait_for_success(self):
         """Wait for a success message to be visible, then return it."""
         def _check_func():
+            """Return success status and any errors that occurred."""
             success = self.success
             return (bool(success), success)
         return Promise(_check_func, "Success message is visible").fulfill()

@@ -6,11 +6,11 @@ import json
 from student.models import CourseEnrollment
 from django.core.urlresolvers import reverse
 from mock import patch
-from student.tests.factories import UserFactory
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from student.roles import CourseSalesAdminRole
+from student.tests.factories import UserFactory, CourseModeFactory
 from shoppingcart.models import (
     CourseRegistrationCode, RegistrationCodeRedemption, Order,
-    Invoice, Coupon, CourseRegCodeItem, CouponRedemption
+    Invoice, Coupon, CourseRegCodeItem, CouponRedemption, CourseRegistrationCodeInvoiceItem
 )
 from course_modes.models import CourseMode
 from instructor_analytics.basic import (
@@ -32,7 +32,7 @@ class TestAnalyticsBasic(ModuleStoreTestCase):
 
     def setUp(self):
         super(TestAnalyticsBasic, self).setUp()
-        self.course_key = SlashSeparatedCourseKey('robot', 'course', 'id')
+        self.course_key = self.store.make_course_key('robot', 'course', 'id')
         self.users = tuple(UserFactory() for _ in xrange(30))
         self.ces = tuple(CourseEnrollment.enroll(user, self.course_key)
                          for user in self.users)
@@ -79,7 +79,7 @@ class TestAnalyticsBasic(ModuleStoreTestCase):
             self.assertIn(userreport['meta.company'], ["Open edX Inc {}".format(user.id) for user in self.users])
 
     def test_enrolled_students_features_keys_cohorted(self):
-        course = CourseFactory.create(course_key=self.course_key)
+        course = CourseFactory.create(org="test", course="course1", display_name="run1")
         course.cohort_config = {'cohorted': True, 'auto_cohort': True, 'auto_cohort_groups': ['cohort']}
         self.store.update_item(course, self.instructor.id)
         cohort = CohortFactory.create(name='cohort', course_id=course.id)
@@ -146,10 +146,16 @@ class TestCourseSaleRecordsAnalyticsBasic(ModuleStoreTestCase):
             company_contact_email='test@company.com', recipient_name='Testw_1', recipient_email='test2@test.com',
             customer_reference_number='2Fwe23S', internal_reference="ABC", course_id=self.course.id
         )
+        invoice_item = CourseRegistrationCodeInvoiceItem.objects.create(
+            invoice=sale_invoice,
+            qty=1,
+            unit_price=1234.32,
+            course_id=self.course.id
+        )
         for i in range(5):
             course_code = CourseRegistrationCode(
                 code="test_code{}".format(i), course_id=self.course.id.to_deprecated_string(),
-                created_by=self.instructor, invoice=sale_invoice
+                created_by=self.instructor, invoice=sale_invoice, invoice_item=invoice_item, mode_slug='honor'
             )
             course_code.save()
 
@@ -259,12 +265,19 @@ class TestCourseRegistrationCodeAnalyticsBasic(ModuleStoreTestCase):
         self.course = CourseFactory.create()
         self.instructor = InstructorFactory(course_key=self.course.id)
         self.client.login(username=self.instructor.username, password='test')
+        CourseSalesAdminRole(self.course.id).add_users(self.instructor)
+
+        # Create a paid course mode.
+        mode = CourseModeFactory.create()
+        mode.course_id = self.course.id
+        mode.min_price = 1
+        mode.save()
 
         url = reverse('generate_registration_codes',
                       kwargs={'course_id': self.course.id.to_deprecated_string()})
 
         data = {
-            'total_registration_codes': 12, 'company_name': 'Test Group', 'sale_price': 122.45,
+            'total_registration_codes': 12, 'company_name': 'Test Group', 'unit_price': 122.45,
             'company_contact_name': 'TestName', 'company_contact_email': 'test@company.com', 'recipient_name': 'Test123',
             'recipient_email': 'test@123.com', 'address_line_1': 'Portland Street', 'address_line_2': '',
             'address_line_3': '', 'city': '', 'state': '', 'zip': '', 'country': '',
@@ -276,7 +289,7 @@ class TestCourseRegistrationCodeAnalyticsBasic(ModuleStoreTestCase):
 
     def test_course_registration_features(self):
         query_features = [
-            'code', 'course_id', 'company_name', 'created_by',
+            'code', 'redeem_code_url', 'course_id', 'company_name', 'created_by',
             'redeemed_by', 'invoice_id', 'purchaser', 'customer_reference_number', 'internal_reference'
         ]
         order = Order(user=self.instructor, status='purchased')
@@ -298,11 +311,17 @@ class TestCourseRegistrationCodeAnalyticsBasic(ModuleStoreTestCase):
             )
             self.assertIn(
                 course_registration['company_name'],
-                [getattr(registration_code.invoice, 'company_name') for registration_code in registration_codes]
+                [
+                    getattr(registration_code.invoice_item.invoice, 'company_name')
+                    for registration_code in registration_codes
+                ]
             )
             self.assertIn(
                 course_registration['invoice_id'],
-                [registration_code.invoice_id for registration_code in registration_codes]
+                [
+                    registration_code.invoice_item.invoice_id
+                    for registration_code in registration_codes
+                ]
             )
 
     def test_coupon_codes_features(self):

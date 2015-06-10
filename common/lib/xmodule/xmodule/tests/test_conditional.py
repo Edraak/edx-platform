@@ -23,14 +23,13 @@ class DummySystem(ImportSystem):
     @patch('xmodule.modulestore.xml.OSFS', lambda directory: MemoryFS())
     def __init__(self, load_error_modules):
 
-        xmlstore = XMLModuleStore("data_dir", course_dirs=[], load_error_modules=load_error_modules)
+        xmlstore = XMLModuleStore("data_dir", source_dirs=[], load_error_modules=load_error_modules)
 
         super(DummySystem, self).__init__(
             xmlstore=xmlstore,
             course_id=SlashSeparatedCourseKey(ORG, COURSE, 'test_run'),
             course_dir='test_dir',
             error_tracker=Mock(),
-            parent_tracker=Mock(),
             load_error_modules=load_error_modules,
         )
 
@@ -117,6 +116,7 @@ class ConditionalModuleBasicTest(unittest.TestCase):
     """
 
     def setUp(self):
+        super(ConditionalModuleBasicTest, self).setUp()
         self.test_system = get_test_system()
 
     def test_icon_class(self):
@@ -179,13 +179,14 @@ class ConditionalModuleXmlTest(unittest.TestCase):
         return DummySystem(load_error_modules)
 
     def setUp(self):
+        super(ConditionalModuleXmlTest, self).setUp()
         self.test_system = get_test_system()
 
     def get_course(self, name):
         """Get a test course by directory name.  If there's more than one, error."""
         print "Importing {0}".format(name)
 
-        modulestore = XMLModuleStore(DATA_DIR, course_dirs=[name])
+        modulestore = XMLModuleStore(DATA_DIR, source_dirs=[name])
         courses = modulestore.get_courses()
         self.modulestore = modulestore
         self.assertEquals(len(courses), 1)
@@ -205,6 +206,7 @@ class ConditionalModuleXmlTest(unittest.TestCase):
                 location = descriptor
                 descriptor = self.modulestore.get_item(location, depth=None)
             descriptor.xmodule_runtime = get_test_system()
+            descriptor.xmodule_runtime.descriptor_runtime = descriptor._runtime  # pylint: disable=protected-access
             descriptor.xmodule_runtime.get_module = inner_get_module
             return descriptor
 

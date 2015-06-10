@@ -22,6 +22,8 @@ class TestSuite(object):
         self.subsuites = kwargs.get('subsuites', [])
         self.failed_suites = []
         self.verbosity = kwargs.get('verbosity', 1)
+        self.skip_clean = kwargs.get('skip_clean', False)
+        self.pdb = kwargs.get('pdb', False)
 
     def __enter__(self):
         """

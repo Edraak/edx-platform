@@ -6,6 +6,7 @@ from rest_framework.reverse import reverse
 
 from courseware.courses import course_image_url
 from student.models import CourseEnrollment, User
+from certificates.models import certificate_status_for_student, CertificateStatuses
 
 
 class CourseField(serializers.RelatedField):
@@ -30,16 +31,10 @@ class CourseField(serializers.RelatedField):
                 kwargs={'course_id': course_id},
                 request=request
             )
-            course_about_url = reverse(
-                'course-about-detail',
-                kwargs={'course_id': course_id},
-                request=request
-            )
         else:
             video_outline_url = None
             course_updates_url = None
             course_handouts_url = None
-            course_about_url = None
 
         return {
             "id": course_id,
@@ -49,13 +44,16 @@ class CourseField(serializers.RelatedField):
             "start": course.start,
             "end": course.end,
             "course_image": course_image_url(course),
+            "social_urls": {
+                "facebook": course.facebook_url,
+            },
             "latest_updates": {
                 "video": None
             },
             "video_outline": video_outline_url,
             "course_updates": course_updates_url,
             "course_handouts": course_handouts_url,
-            "course_about": course_about_url,
+            "subscription_id": course.clean_id(padding_char='_'),
         }
 
 
@@ -64,10 +62,21 @@ class CourseEnrollmentSerializer(serializers.ModelSerializer):
     Serializes CourseEnrollment models
     """
     course = CourseField()
+    certificate = serializers.SerializerMethodField('get_certificate')
 
-    class Meta:  # pylint: disable=missing-docstring
+    def get_certificate(self, model):
+        """Returns the information about the user's certificate in the course."""
+        certificate_info = certificate_status_for_student(model.user, model.course_id)
+        if certificate_info['status'] == CertificateStatuses.downloadable:
+            return {
+                "url": certificate_info['download_url'],
+            }
+        else:
+            return {}
+
+    class Meta(object):  # pylint: disable=missing-docstring
         model = CourseEnrollment
-        fields = ('created', 'mode', 'is_active', 'course')
+        fields = ('created', 'mode', 'is_active', 'course', 'certificate')
         lookup_field = 'username'
 
 
@@ -81,7 +90,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='username'
     )
 
-    class Meta:  # pylint: disable=missing-docstring
+    class Meta(object):  # pylint: disable=missing-docstring
         model = User
         fields = ('id', 'username', 'email', 'name', 'course_enrollments')
         lookup_field = 'username'

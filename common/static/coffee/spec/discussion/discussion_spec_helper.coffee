@@ -317,7 +317,7 @@ browser and pasting the output.  When that file changes, this one should be rege
         <ul class="post-errors" style="display: none"></ul>
         <div class="forum-new-post-form-wrapper"></div>
         <% if (cohort_options) { %>
-        <div class="post-field">
+        <div class="post-field group-selector-wrapper<% if (!is_commentable_cohorted) { %> disabled<% } %>">
             <label class="field-label">
                 <span class="field-label-text">
                     Visible To:
@@ -328,7 +328,7 @@ browser and pasting the output.  When that file changes, this one should be rege
                     <% }); %>
                  </select>
             </label><div class="field-help">
-                Discussion admins, moderators, and TAs can make their posts visible to all students or specify a single cohort group.
+                Discussion admins, moderators, and TAs can make their posts visible to all students or specify a single cohort.
             </div>
         </div>
         <% } %>
@@ -340,7 +340,7 @@ browser and pasting the output.  When that file changes, this one should be rege
                 Add a clear and descriptive title to encourage participation.
             </span>
         </div>
-        <div class="post-field js-post-body editor" name="body" data-placeholder="Enter your question or comment…"></div>
+        <div class="post-field js-post-body editor" name="body" data-placeholder="Enter your question or comment"></div>
         <div class="post-options">
             <label class="post-option is-enabled">
                 <input type="checkbox" name="follow" class="post-option-input js-follow" checked>
