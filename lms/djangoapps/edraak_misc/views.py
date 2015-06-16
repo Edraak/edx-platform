@@ -5,7 +5,7 @@ from django.conf import settings
 from courseware.courses import get_courses, sort_by_announcement
 from edxmako.shortcuts import render_to_response
 from django.contrib.auth.models import AnonymousUser
-from .utils import is_student_pass, sort_closed_courses_to_bottom, filter_invitation_only_courses
+from .utils import is_student_pass, edraak_courses_logic
 
 
 def check_student_grades(request):
@@ -36,9 +36,9 @@ def all_courses(request, extra_context={}, user=AnonymousUser()):
 
     # Hardcoded `AnonymousUser()` to hide unpublished courses always
     courses = get_courses(AnonymousUser(), domain=domain)
-    courses = filter_invitation_only_courses(courses)
     courses = sort_by_announcement(courses)
-    courses = sort_closed_courses_to_bottom(courses)
+
+    courses = edraak_courses_logic(courses)
 
     context = {'courses': courses}
 
