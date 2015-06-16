@@ -91,6 +91,12 @@ def edraak_courses_logic(courses):
     return courses
 
 
+def get_absolute_url_prefix(request):
+    schema = 'https' if request.is_secure() else 'http'
+    prefix = '{schema}://{host}'.format(schema=schema, host=settings.SITE_NAME)
+    return prefix
+
+
 def validate_email(email):
     """
     Validate email, the strict or the quick way depending on `FEATURES['EMAIL_STRICT_VERIFICATION']`.

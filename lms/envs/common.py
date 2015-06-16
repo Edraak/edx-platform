@@ -1584,6 +1584,7 @@ INSTALLED_APPS = (
     'edraak_contact',
     'edraak_bayt',
     'edraak_certificates',
+    'edraak_api',
     'edraak_url_rewrites',
     'lms.djangoapps.lms_xblock',
 )
