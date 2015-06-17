@@ -13,7 +13,7 @@
           ${_("Your certificate has been posted to Bayt successfully. "
               "You well redirect to Edraak in 5 seconds. "
               "If not click {link_start}here{link_end}").format(
-                 link_start='<a href="{}">'.format(settings.LMS_BASE),
+                 link_start='<a href="{}">'.format(settings.SITE_NAME),
                  link_end='</a>',
           )}
         </p>
@@ -30,7 +30,7 @@
 </section>
 <script>
         % if status:
-            setTimeout("window.location='${settings.LMS_BASE}'", 5000);
+            setTimeout("window.location='${settings.SITE_NAME}'", 5000);
         % else:
             setTimeout("window.location='${settings.BAYT_BASE}/en/register-j/'", 500);
         % endif
