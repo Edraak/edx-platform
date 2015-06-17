@@ -3,7 +3,7 @@ from staticfiles.storage import staticfiles_storage
 from pipeline_mako import compressed_css, compressed_js
 from django.utils.translation import get_language_bidi
 from urlparse import urlparse
-from edraak_misc.utils import get_aboslute_url_prefix
+from edraak_misc.utils import get_absolute_url_prefix
 %>
 
 <%def name='url(file, raw=False)'><%
@@ -23,7 +23,7 @@ except:
     if urlparse(url).netloc:  # is absolute URL
         prefix = ''
     else:
-        prefix = get_aboslute_url_prefix(request)
+        prefix = get_absolute_url_prefix(request)
 
 
 %>${prefix}${url}${"?raw" if raw else ""}</%def>
