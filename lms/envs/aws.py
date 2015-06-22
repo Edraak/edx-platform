@@ -24,7 +24,7 @@ import os
 
 from path import path
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 # SERVICE_VARIANT specifies name of the variant used, which decides what JSON
 # configuration files are read during startup.
@@ -135,8 +135,32 @@ if STATIC_URL_BASE:
 MEDIA_ROOT = ENV_TOKENS.get('MEDIA_ROOT', MEDIA_ROOT)
 MEDIA_URL = ENV_TOKENS.get('MEDIA_URL', MEDIA_URL)
 
-# Translators: This is the Edraak platform name, keep it only on word. Edraak-specific.
-PLATFORM_NAME = _("Edraak")
+
+class EdraakName(object):
+    """
+    That's a huge and dangerous hack to have the platform name translated, because `ugettext_lazy` didn't work.
+    """
+
+    # Translators: This is the Edraak platform name, keep it only on word. Edraak-specific.
+    def my_value(self):
+        return _('Edraak')
+
+    def __get__(self, obj, obj_type):
+        return self.my_value()
+
+    def __repr__(self):
+        return repr(self.my_value())
+
+    def __str__(self):
+        return self.my_value().encode('utf-8')
+
+    def __unicode__(self):
+        return self.my_value()
+
+    def __add__(self, other):
+        return self.my_value() + other
+
+PLATFORM_NAME = EdraakName()
 
 # For displaying on the receipt. At Stanford PLATFORM_NAME != MERCHANT_NAME, but PLATFORM_NAME is a fine default
 PLATFORM_TWITTER_ACCOUNT = ENV_TOKENS.get('PLATFORM_TWITTER_ACCOUNT', PLATFORM_TWITTER_ACCOUNT)
