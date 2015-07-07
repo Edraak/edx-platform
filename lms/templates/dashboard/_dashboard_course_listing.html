@@ -51,16 +51,16 @@ from student.helpers import (
       % if show_courseware_link:
         % if not is_course_blocked:
             <a href="${course_target}" class="cover">
-              <img src="${course_image_url(course)}" class="course-image" alt="${_('{course_number} {course_name} Home Page').format(course_number=course.number, course_name=course.display_name_with_default) |h}" />
+              <div style="background-image: url('${course_image_url(course)}')" class="course-image" title="${_('{course_number} {course_name} Home Page').format(course_number=course.number, course_name=course.display_name_with_default) |h}"></div>
             </a>
         % else:
             <a class="fade-cover">
-              <img src="${course_image_url(course)}" class="course-image" alt="${_('{course_number} {course_name} Cover Image').format(course_number=course.number, course_name=course.display_name_with_default) |h}" />
+              <div style="background-image: url('${course_image_url(course)}')" class="course-image" title="${_('{course_number} {course_name} Cover Image').format(course_number=course.number, course_name=course.display_name_with_default) |h}"></div>
             </a>
         % endif
       % else:
         <a class="cover">
-          <img src="${course_image_url(course)}" class="course-image" alt="${_('{course_number} {course_name} Cover Image').format(course_number=course.number, course_name=course.display_name_with_default) | h}" />
+          <div style="background-image: url('${course_image_url(course)}')" class="course-image" title="${_('{course_number} {course_name} Cover Image').format(course_number=course.number, course_name=course.display_name_with_default) | h}"></div>
         </a>
       % endif
       % if settings.FEATURES.get('ENABLE_VERIFIED_CERTIFICATES'):
@@ -266,6 +266,7 @@ from student.helpers import (
                 </ul>
               </div>
             </div>
+            <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course=course" />
           </div>
         </div>
       </div>
@@ -381,9 +382,6 @@ from student.helpers import (
   <div class="tracking-code">
     ${CourseTrackingCode.get_tracking_code_once(user, course.id)}
   </div>
-
-  ## Available in Edraak theme
-  <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course=course" />
 </article>
 </li>
 <script>
