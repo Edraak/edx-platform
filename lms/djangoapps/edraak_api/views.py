@@ -42,20 +42,25 @@ def courses(request):
     prefix = get_absolute_url_prefix(request)
 
     for course in courses:
+        video_tag = get_course_about_section(course, "video")
+        youtube_id = video_tag[video_tag.find("embed") + 6:video_tag.find("?")]
+
         courses_json.append({
             "id": unicode(course.id),
             "number": course.display_number_with_default,
             "name": course.display_name_with_default,
             "organization": course.display_org_with_default,
-            "description": get_course_about_section(course, "short_description"),
+            "description": get_course_about_section(course, "short_description").strip(),
             "startDate": course.start,
             "endDate": course.end,
             "enrollmentStartDate": course.enrollment_start,
             "enrollmentEndDate": course.enrollment_end,
-            "overview": get_course_about_section(course, "overview"),
+            "overview": get_course_about_section(course, "overview").strip(),
             "aboutPage": prefix + reverse('about_course', args=[unicode(course.id)]),
             "image": prefix + course_image_url(course),
             "state": _get_course_status(course),
+            "youtube_id": youtube_id,
+            "effort": get_course_about_section(course, "effort").strip(),
         })
 
     return JsonResponse(courses_json)
