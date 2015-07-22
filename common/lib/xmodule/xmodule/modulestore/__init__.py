@@ -7,13 +7,11 @@ import logging
 import re
 import json
 import datetime
-from uuid import uuid4
 
 from pytz import UTC
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 import collections
 from contextlib import contextmanager
-import functools
 import threading
 from operator import itemgetter
 from sortedcontainers import SortedListWithKey
@@ -27,8 +25,6 @@ from xmodule.errortracker import make_error_tracker
 from xmodule.assetstore import AssetMetadata
 from opaque_keys.edx.keys import CourseKey, UsageKey, AssetKey
 from opaque_keys.edx.locations import Location  # For import backwards compatibility
-from opaque_keys import InvalidKeyError
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xblock.runtime import Mixologist
 from xblock.core import XBlock
 
@@ -225,7 +221,8 @@ class BulkOperationsMixin(object):
         """
         Clear the record for this course
         """
-        del self._active_bulk_ops.records[course_key.for_branch(None)]
+        if course_key.for_branch(None) in self._active_bulk_ops.records:
+            del self._active_bulk_ops.records[course_key.for_branch(None)]
 
     def _start_outermost_bulk_operation(self, bulk_ops_record, course_key):
         """
@@ -249,7 +246,7 @@ class BulkOperationsMixin(object):
         if bulk_ops_record.is_root:
             self._start_outermost_bulk_operation(bulk_ops_record, course_key)
 
-    def _end_outermost_bulk_operation(self, bulk_ops_record, structure_key, emit_signals=True):
+    def _end_outermost_bulk_operation(self, bulk_ops_record, structure_key):
         """
         The outermost nested bulk_operation call: do the actual end of the bulk operation.
 
@@ -273,7 +270,19 @@ class BulkOperationsMixin(object):
         if bulk_ops_record.active:
             return
 
-        self._end_outermost_bulk_operation(bulk_ops_record, structure_key, emit_signals)
+        dirty = self._end_outermost_bulk_operation(bulk_ops_record, structure_key)
+
+        # The bulk op has ended. However, the signal tasks below still need to use the
+        # built-up bulk op information (if the signals trigger tasks in the same thread).
+        # So re-nest until the signals are sent.
+        bulk_ops_record.nest()
+
+        if emit_signals and dirty:
+            self.send_bulk_published_signal(bulk_ops_record, structure_key)
+            self.send_bulk_library_updated_signal(bulk_ops_record, structure_key)
+
+        # Signals are sent. Now unnest and clear the bulk op for good.
+        bulk_ops_record.unnest()
 
         self._clear_bulk_ops_record(structure_key)
 
@@ -368,6 +377,19 @@ class EditInfo(object):
             source_version="UNSET" if self.source_version is None else self.source_version,
         )  # pylint: disable=bad-continuation
 
+    def __eq__(self, edit_info):
+        """
+        Two EditInfo instances are equal iff their storable representations
+        are equal.
+        """
+        return self.to_storable() == edit_info.to_storable()
+
+    def __neq__(self, edit_info):
+        """
+        Two EditInfo instances are not equal if they're not equal.
+        """
+        return not self == edit_info
+
 
 class BlockData(object):
     """
@@ -424,6 +446,19 @@ class BlockData(object):
             self=self,
             classname=self.__class__.__name__,
         )  # pylint: disable=bad-continuation
+
+    def __eq__(self, block_data):
+        """
+        Two BlockData objects are equal iff all their attributes are equal.
+        """
+        attrs = ['fields', 'block_type', 'definition', 'defaults', 'edit_info']
+        return all(getattr(self, attr) == getattr(block_data, attr) for attr in attrs)
+
+    def __neq__(self, block_data):
+        """
+        Just define this as not self.__eq__(block_data)
+        """
+        return not self == block_data
 
 
 new_contract('BlockData', BlockData)
@@ -1087,7 +1122,7 @@ class ModuleStoreReadBase(BulkOperationsMixin, ModuleStoreRead):
         contentstore=None,
         doc_store_config=None,  # ignore if passed up
         metadata_inheritance_cache_subsystem=None, request_cache=None,
-        xblock_mixins=(), xblock_select=None,
+        xblock_mixins=(), xblock_select=None, disabled_xblock_types=(),  # pylint: disable=bad-continuation
         # temporary parms to enable backward compatibility. remove once all envs migrated
         db=None, collection=None, host=None, port=None, tz_aware=True, user=None, password=None,
         # allow lower level init args to pass harmlessly
@@ -1104,6 +1139,7 @@ class ModuleStoreReadBase(BulkOperationsMixin, ModuleStoreRead):
         self.request_cache = request_cache
         self.xblock_mixins = xblock_mixins
         self.xblock_select = xblock_select
+        self.disabled_xblock_types = disabled_xblock_types
         self.contentstore = contentstore
 
     def get_course_errors(self, course_key):
@@ -1194,41 +1230,6 @@ class ModuleStoreReadBase(BulkOperationsMixin, ModuleStoreRead):
         if self.get_modulestore_type(None) != store_type:
             raise ValueError(u"Cannot set default store to type {}".format(store_type))
         yield
-
-    @staticmethod
-    def memoize_request_cache(func):
-        """
-        Memoize a function call results on the request_cache if there's one. Creates the cache key by
-        joining the unicode of all the args with &; so, if your arg may use the default &, it may
-        have false hits
-        """
-        @functools.wraps(func)
-        def wrapper(self, *args, **kwargs):
-            """
-            Wraps a method to memoize results.
-            """
-            if self.request_cache:
-                cache_key = '&'.join([hashvalue(arg) for arg in args])
-                if cache_key in self.request_cache.data.setdefault(func.__name__, {}):
-                    return self.request_cache.data[func.__name__][cache_key]
-
-                result = func(self, *args, **kwargs)
-
-                self.request_cache.data[func.__name__][cache_key] = result
-                return result
-            else:
-                return func(self, *args, **kwargs)
-        return wrapper
-
-
-def hashvalue(arg):
-    """
-    If arg is an xblock, use its location. otherwise just turn it into a string
-    """
-    if isinstance(arg, XBlock):
-        return unicode(arg.location)
-    else:
-        return unicode(arg)
 
 
 # pylint: disable=abstract-method

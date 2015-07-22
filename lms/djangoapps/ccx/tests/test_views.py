@@ -5,15 +5,19 @@ import datetime
 import json
 import re
 import pytz
-from mock import patch
+import ddt
+from mock import patch, MagicMock
 from nose.plugins.attrib import attr
 
 from capa.tests.response_xml_factory import StringResponseXMLFactory
+from courseware.courses import get_course_by_id  # pyline: disable=import-error
 from courseware.field_overrides import OverrideFieldData  # pylint: disable=import-error
 from courseware.tests.factories import StudentModuleFactory  # pylint: disable=import-error
 from courseware.tests.helpers import LoginEnrollmentTestCase  # pylint: disable=import-error
+from courseware.tabs import get_course_tab_list
 from django.core.urlresolvers import reverse
 from django.test.utils import override_settings
+from django.test import RequestFactory
 from edxmako.shortcuts import render_to_response  # pylint: disable=import-error
 from student.roles import CourseCcxCoachRole  # pylint: disable=import-error
 from student.tests.factories import (  # pylint: disable=import-error
@@ -23,18 +27,21 @@ from student.tests.factories import (  # pylint: disable=import-error
 )
 
 from xmodule.x_module import XModuleMixin
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from xmodule.modulestore.tests.django_utils import (
+    ModuleStoreTestCase,
+    TEST_DATA_SPLIT_MODULESTORE)
 from xmodule.modulestore.tests.factories import (
     CourseFactory,
     ItemFactory,
 )
+from ccx_keys.locator import CCXLocator
+
 from ..models import (
     CustomCourseForEdX,
     CcxMembership,
     CcxFutureMembership,
 )
 from ..overrides import get_override_for_ccx, override_field_for_ccx
-from .. import ACTIVE_CCX_KEY
 from .factories import (
     CcxFactory,
     CcxMembershipFactory,
@@ -56,11 +63,24 @@ def intercept_renderer(path, context):
     return response
 
 
+def ccx_dummy_request():
+    """
+    Returns dummy request object for CCX coach tab test
+    """
+    factory = RequestFactory()
+    request = factory.get('ccx_coach_dashboard')
+    request.user = MagicMock()
+
+    return request
+
+
 @attr('shard_1')
 class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Tests for Custom Courses views.
     """
+    MODULESTORE = TEST_DATA_SPLIT_MODULESTORE
+
     def setUp(self):
         """
         Set up tests
@@ -122,9 +142,10 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         """
         User is not a coach, should get Forbidden response.
         """
+        ccx = self.make_ccx()
         url = reverse(
             'ccx_coach_dashboard',
-            kwargs={'course_id': self.course.id.to_deprecated_string()})
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
@@ -165,14 +186,15 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         Get CCX schedule, modify it, save it.
         """
         today.return_value = datetime.datetime(2014, 11, 25, tzinfo=pytz.UTC)
-        self.test_create_ccx()
+        self.make_coach()
+        ccx = self.make_ccx()
         url = reverse(
             'ccx_coach_dashboard',
-            kwargs={'course_id': self.course.id.to_deprecated_string()})
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)})
         response = self.client.get(url)
         schedule = json.loads(response.mako_context['schedule'])  # pylint: disable=no-member
         self.assertEqual(len(schedule), 2)
-        self.assertEqual(schedule[0]['hidden'], True)
+        self.assertEqual(schedule[0]['hidden'], False)
         self.assertEqual(schedule[0]['start'], None)
         self.assertEqual(schedule[0]['children'][0]['start'], None)
         self.assertEqual(schedule[0]['due'], None)
@@ -183,7 +205,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'save_ccx',
-            kwargs={'course_id': self.course.id.to_deprecated_string()})
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)})
 
         def unhide(unit):
             """
@@ -218,7 +240,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         policy = get_override_for_ccx(ccx, self.course, 'grading_policy',
                                       self.course.grading_policy)
         self.assertEqual(policy['GRADER'][0]['type'], 'Homework')
-        self.assertEqual(policy['GRADER'][0]['min_count'], 4)
+        self.assertEqual(policy['GRADER'][0]['min_count'], 8)
         self.assertEqual(policy['GRADER'][1]['type'], 'Lab')
         self.assertEqual(policy['GRADER'][1]['min_count'], 0)
         self.assertEqual(policy['GRADER'][2]['type'], 'Midterm Exam')
@@ -238,7 +260,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'ccx_invite',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)}
         )
         data = {
             'enrollment-button': 'Enroll',
@@ -271,7 +293,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'ccx_invite',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)}
         )
         data = {
             'enrollment-button': 'Unenroll',
@@ -301,7 +323,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'ccx_invite',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)}
         )
         data = {
             'enrollment-button': 'Enroll',
@@ -333,7 +355,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'ccx_invite',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)}
         )
         data = {
             'enrollment-button': 'Unenroll',
@@ -366,7 +388,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'ccx_manage_student',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)}
         )
         data = {
             'student-action': 'add',
@@ -397,7 +419,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         url = reverse(
             'ccx_manage_student',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': CCXLocator.from_course_locator(self.course.id, ccx.id)}
         )
         data = {
             'student-action': 'revoke',
@@ -418,9 +440,10 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
 GET_CHILDREN = XModuleMixin.get_children
 
 
-def patched_get_children(self, usage_key_filter=None):  # pylint: disable=missing-docstring
-    def iter_children():  # pylint: disable=missing-docstring
-        print self.__dict__
+def patched_get_children(self, usage_key_filter=None):
+    """Emulate system tools that mask courseware not visible to students"""
+    def iter_children():
+        """skip children not visible to students"""
         for child in GET_CHILDREN(self, usage_key_filter=usage_key_filter):
             child._field_data_cache = {}  # pylint: disable=protected-access
             if not child.visible_to_staff_only:
@@ -436,12 +459,14 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Tests for Custom Courses views.
     """
+    MODULESTORE = TEST_DATA_SPLIT_MODULESTORE
+
     def setUp(self):
         """
         Set up tests
         """
         super(TestCCXGrades, self).setUp()
-        self.course = course = CourseFactory.create()
+        self.course = course = CourseFactory.create(enable_ccx=True)
 
         # Create instructor account
         self.coach = coach = AdminFactory.create()
@@ -458,31 +483,22 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
                 category="sequential",
                 metadata={'graded': True, 'format': 'Homework'})
             for _ in xrange(4)]
-
-        role = CourseCcxCoachRole(self.course.id)
-        role.add_users(coach)
-        self.ccx = ccx = CcxFactory(course_id=self.course.id, coach=self.coach)
-
-        self.student = student = UserFactory.create()
-        CourseEnrollmentFactory.create(user=student, course_id=self.course.id)
-        CcxMembershipFactory(ccx=ccx, student=student, active=True)
-
-        for i, section in enumerate(sections):
-            for j in xrange(4):
-                item = ItemFactory.create(
+        # pylint: disable=unused-variable
+        problems = [
+            [
+                ItemFactory.create(
                     parent=section,
                     category="problem",
                     data=StringResponseXMLFactory().build_xml(answer='foo'),
                     metadata={'rerandomize': 'always'}
-                )
+                ) for _ in xrange(4)
+            ] for section in sections
+        ]
 
-                StudentModuleFactory.create(
-                    grade=1 if i < j else 0,
-                    max_grade=1,
-                    student=student,
-                    course_id=self.course.id,
-                    module_state_key=item.location
-                )
+        # Create CCX
+        role = CourseCcxCoachRole(course.id)
+        role.add_users(coach)
+        ccx = CcxFactory(course_id=course.id, coach=self.coach)
 
         # Apparently the test harness doesn't use LmsFieldStorage, and I'm not
         # sure if there's a way to poke the test harness to do so.  So, we'll
@@ -490,7 +506,7 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
         OverrideFieldData.provider_classes = None
         # pylint: disable=protected-access
         for block in iter_blocks(course):
-            block._field_data = OverrideFieldData.wrap(coach, block._field_data)
+            block._field_data = OverrideFieldData.wrap(coach, course, block._field_data)
             new_cache = {'tabs': [], 'discussion_topics': []}
             if 'grading_policy' in block._field_data_cache:
                 new_cache['grading_policy'] = block._field_data_cache['grading_policy']
@@ -504,11 +520,7 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
             OverrideFieldData.provider_classes = None
         self.addCleanup(cleanup_provider_classes)
 
-        patch_context = patch('ccx.views.get_course_by_id')
-        get_course = patch_context.start()
-        get_course.return_value = course
-        self.addCleanup(patch_context.stop)
-
+        # override course grading policy and make last section invisible to students
         override_field_for_ccx(ccx, course, 'grading_policy', {
             'GRADER': [
                 {'drop_count': 0,
@@ -522,11 +534,36 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
         override_field_for_ccx(
             ccx, sections[-1], 'visible_to_staff_only', True)
 
+        # create a ccx locator and retrieve the course structure using that key
+        # which emulates how a student would get access.
+        self.ccx_key = CCXLocator.from_course_locator(course.id, ccx.id)
+        self.course = get_course_by_id(self.ccx_key)
+
+        self.student = student = UserFactory.create()
+        CourseEnrollmentFactory.create(user=student, course_id=self.course.id)
+        CcxMembershipFactory(ccx=ccx, student=student, active=True)
+
+        # create grades for self.student as if they'd submitted the ccx
+        for chapter in self.course.get_children():
+            for i, section in enumerate(chapter.get_children()):
+                for j, problem in enumerate(section.get_children()):
+                    # if not problem.visible_to_staff_only:
+                    StudentModuleFactory.create(
+                        grade=1 if i < j else 0,
+                        max_grade=1,
+                        student=self.student,
+                        course_id=self.course.id,
+                        module_state_key=problem.location
+                    )
+
+        self.client.login(username=coach.username, password="test")
+
     @patch('ccx.views.render_to_response', intercept_renderer)
     def test_gradebook(self):
+        self.course.enable_ccx = True
         url = reverse(
             'ccx_gradebook',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': self.ccx_key}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -539,9 +576,10 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
             len(student_info['grade_summary']['section_breakdown']), 4)
 
     def test_grades_csv(self):
+        self.course.enable_ccx = True
         url = reverse(
             'ccx_grades_csv',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': self.ccx_key}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -558,19 +596,16 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
     @patch('courseware.views.render_to_response', intercept_renderer)
     def test_student_progress(self):
+        self.course.enable_ccx = True
         patch_context = patch('courseware.views.get_course_with_access')
         get_course = patch_context.start()
         get_course.return_value = self.course
         self.addCleanup(patch_context.stop)
 
         self.client.login(username=self.student.username, password="test")
-        session = self.client.session
-        session[ACTIVE_CCX_KEY] = self.ccx.id  # pylint: disable=no-member
-        session.save()
-        self.client.session.get(ACTIVE_CCX_KEY)
         url = reverse(
             'progress',
-            kwargs={'course_id': self.course.id.to_deprecated_string()}
+            kwargs={'course_id': self.ccx_key}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -580,180 +615,44 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.assertEqual(len(grades['section_breakdown']), 4)
 
 
-@attr('shard_1')
-class TestSwitchActiveCCX(ModuleStoreTestCase, LoginEnrollmentTestCase):
-    """Verify the view for switching which CCX is active, if any
+@ddt.ddt
+class CCXCoachTabTestCase(ModuleStoreTestCase):
+    """
+    Test case for CCX coach tab.
     """
     def setUp(self):
-        super(TestSwitchActiveCCX, self).setUp()
-        self.course = course = CourseFactory.create()
-        coach = AdminFactory.create()
-        role = CourseCcxCoachRole(course.id)
-        role.add_users(coach)
-        self.ccx = CcxFactory(course_id=course.id, coach=coach)
-        enrollment = CourseEnrollmentFactory.create(course_id=course.id)
-        self.user = enrollment.user
-        self.target_url = reverse(
-            'course_root', args=[course.id.to_deprecated_string()]
-        )
+        super(CCXCoachTabTestCase, self).setUp()
+        self.course = CourseFactory.create()
+        self.user = UserFactory.create()
+        CourseEnrollmentFactory.create(user=self.user, course_id=self.course.id)
+        role = CourseCcxCoachRole(self.course.id)
+        role.add_users(self.user)
 
-    def register_user_in_ccx(self, active=False):
-        """create registration of self.user in self.ccx
+    def check_ccx_tab(self):
+        """Helper function for verifying the ccx tab."""
+        request = RequestFactory().request()
+        request.user = self.user
+        all_tabs = get_course_tab_list(request, self.course)
+        return any(tab.type == 'ccx_coach' for tab in all_tabs)
 
-        registration will be inactive unless active=True
+    @ddt.data(
+        (True, True, True),
+        (True, False, False),
+        (False, True, False),
+        (False, False, False),
+        (True, None, False)
+    )
+    @ddt.unpack
+    def test_coach_tab_for_ccx_advance_settings(self, ccx_feature_flag, enable_ccx, expected_result):
         """
-        CcxMembershipFactory(ccx=self.ccx, student=self.user, active=active)
-
-    def revoke_ccx_registration(self):
+        Test ccx coach tab state (visible or hidden) depending on the value of enable_ccx flag, ccx feature flag.
         """
-        delete membership
-        """
-        membership = CcxMembership.objects.filter(
-            ccx=self.ccx, student=self.user
-        )
-        membership.delete()
-
-    def verify_active_ccx(self, request, id=None):  # pylint: disable=redefined-builtin, invalid-name
-        """verify that we have the correct active ccx"""
-        if id:
-            id = str(id)
-        self.assertEqual(id, request.session.get(ACTIVE_CCX_KEY, None))
-
-    def test_unauthorized_cannot_switch_to_ccx(self):
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-
-    def test_unauthorized_cannot_switch_to_mooc(self):
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string()]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-
-    def test_enrolled_inactive_user_cannot_select_ccx(self):
-        self.register_user_in_ccx(active=False)
-        self.client.login(username=self.user.username, password="test")
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(self.target_url))  # pylint: disable=no-member
-        # if the ccx were active, we'd need to pass the ID of the ccx here.
-        self.verify_active_ccx(self.client)
-
-    def test_enrolled_user_can_select_ccx(self):
-        self.register_user_in_ccx(active=True)
-        self.client.login(username=self.user.username, password="test")
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(self.target_url))  # pylint: disable=no-member
-        self.verify_active_ccx(self.client, self.ccx.id)
-
-    def test_enrolled_user_can_select_mooc(self):
-        self.register_user_in_ccx(active=True)
-        self.client.login(username=self.user.username, password="test")
-        # pre-seed the session with the ccx id
-        session = self.client.session
-        session[ACTIVE_CCX_KEY] = str(self.ccx.id)
-        session.save()
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string()]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(self.target_url))  # pylint: disable=no-member
-        self.verify_active_ccx(self.client)
-
-    def test_unenrolled_user_cannot_select_ccx(self):
-        self.client.login(username=self.user.username, password="test")
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(self.target_url))  # pylint: disable=no-member
-        # if the ccx were active, we'd need to pass the ID of the ccx here.
-        self.verify_active_ccx(self.client)
-
-    def test_unenrolled_user_switched_to_mooc(self):
-        self.client.login(username=self.user.username, password="test")
-        # pre-seed the session with the ccx id
-        session = self.client.session
-        session[ACTIVE_CCX_KEY] = str(self.ccx.id)
-        session.save()
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(self.target_url))  # pylint: disable=no-member
-        # we tried to select the ccx but are not registered, so we are switched
-        # back to the mooc view
-        self.verify_active_ccx(self.client)
-
-    def test_unassociated_course_and_ccx_not_selected(self):
-        new_course = CourseFactory.create()
-        self.client.login(username=self.user.username, password="test")
-        expected_url = reverse(
-            'course_root', args=[new_course.id.to_deprecated_string()]
-        )
-        # the ccx and the course are not related.
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[new_course.id.to_deprecated_string(), self.ccx.id]
-        )
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(expected_url))  # pylint: disable=no-member
-        # the mooc should be active
-        self.verify_active_ccx(self.client)
-
-    def test_missing_ccx_cannot_be_selected(self):
-        self.register_user_in_ccx()
-        self.client.login(username=self.user.username, password="test")
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        # delete the ccx
-        self.ccx.delete()  # pylint: disable=no-member
-
-        response = self.client.get(switch_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.get('Location', '').endswith(self.target_url))  # pylint: disable=no-member
-        # we tried to select the ccx it doesn't exist anymore, so we are
-        # switched back to the mooc view
-        self.verify_active_ccx(self.client)
-
-    def test_revoking_ccx_membership_revokes_active_ccx(self):
-        self.register_user_in_ccx(active=True)
-        self.client.login(username=self.user.username, password="test")
-        # ensure ccx is active in the request session
-        switch_url = reverse(
-            'switch_active_ccx',
-            args=[self.course.id.to_deprecated_string(), self.ccx.id]
-        )
-        self.client.get(switch_url)
-        self.verify_active_ccx(self.client, self.ccx.id)
-        # unenroll the user from the ccx
-        self.revoke_ccx_registration()
-        # request the course root and verify that the ccx is not active
-        self.client.get(self.target_url)
-        self.verify_active_ccx(self.client)
+        with self.settings(FEATURES={'CUSTOM_COURSES_EDX': ccx_feature_flag}):
+            self.course.enable_ccx = enable_ccx
+            self.assertEquals(
+                expected_result,
+                self.check_ccx_tab()
+            )
 
 
 def flatten(seq):

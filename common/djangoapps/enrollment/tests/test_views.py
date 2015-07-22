@@ -2,6 +2,7 @@
 Tests for user enrollment.
 """
 import json
+import itertools
 import unittest
 import datetime
 
@@ -25,6 +26,7 @@ from util.models import RateLimitConfiguration
 from util.testing import UrlResetMixin
 from enrollment import api
 from enrollment.errors import CourseEnrollmentError
+from openedx.core.lib.django_test_client_utils import get_absolute_url
 from openedx.core.djangoapps.user_api.models import UserOrgTag
 from student.tests.factories import UserFactory, CourseModeFactory
 from student.models import CourseEnrollment
@@ -73,29 +75,39 @@ class EnrollmentTestMixin(object):
         if as_server:
             extra['HTTP_X_EDX_API_KEY'] = self.API_KEY
 
-        url = reverse('courseenrollments')
-        response = self.client.post(url, json.dumps(data), content_type='application/json', **extra)
-        self.assertEqual(response.status_code, expected_status)
+        with patch('enrollment.views.audit_log') as mock_audit_log:
+            url = reverse('courseenrollments')
+            response = self.client.post(url, json.dumps(data), content_type='application/json', **extra)
+            self.assertEqual(response.status_code, expected_status)
 
-        if expected_status == status.HTTP_200_OK:
-            data = json.loads(response.content)
-            self.assertEqual(course_id, data['course_details']['course_id'])
+            if expected_status == status.HTTP_200_OK:
+                data = json.loads(response.content)
+                self.assertEqual(course_id, data['course_details']['course_id'])
 
-            if mode is not None:
-                self.assertEqual(mode, data['mode'])
+                if mode is not None:
+                    self.assertEqual(mode, data['mode'])
 
-            if is_active is not None:
-                self.assertEqual(is_active, data['is_active'])
-            else:
-                self.assertTrue(data['is_active'])
+                if is_active is not None:
+                    self.assertEqual(is_active, data['is_active'])
+                else:
+                    self.assertTrue(data['is_active'])
+
+                if as_server:
+                    # Verify that an audit message was logged.
+                    self.assertTrue(mock_audit_log.called)
+
+                    # If multiple enrollment calls are made in the scope of a
+                    # single test, we want to validate that audit messages are
+                    # logged for each call.
+                    mock_audit_log.reset_mock()
 
         return response
 
-    def assert_enrollment_activation(self, expected_activation, expected_mode=CourseMode.VERIFIED):
+    def assert_enrollment_activation(self, expected_activation, expected_mode):
         """Change an enrollment's activation and verify its activation and mode are as expected."""
         self.assert_enrollment_status(
             as_server=True,
-            mode=None,
+            mode=expected_mode,
             is_active=expected_activation,
             expected_status=status.HTTP_200_OK
         )
@@ -476,6 +488,40 @@ class EnrollmentTest(EnrollmentTestMixin, ModuleStoreTestCase, APITestCase):
         self.assertTrue(is_active)
         self.assertEqual(course_mode, 'professional')
 
+    def test_enrollment_includes_expired_verified(self):
+        """With the right API key, request that expired course verifications are still returned. """
+        # Create a honor mode for a course.
+        CourseModeFactory.create(
+            course_id=self.course.id,
+            mode_slug=CourseMode.HONOR,
+            mode_display_name=CourseMode.HONOR,
+        )
+
+        # Create a verified mode for a course.
+        CourseModeFactory.create(
+            course_id=self.course.id,
+            mode_slug=CourseMode.VERIFIED,
+            mode_display_name=CourseMode.VERIFIED,
+            expiration_datetime='1970-01-01 05:00:00'
+        )
+
+        # Passes the include_expired parameter to the API call
+        v_response = self.client.get(
+            reverse('courseenrollmentdetails', kwargs={"course_id": unicode(self.course.id)}), {'include_expired': True}
+        )
+        v_data = json.loads(v_response.content)
+
+        # Ensure that both course modes are returned
+        self.assertEqual(len(v_data['course_modes']), 2)
+
+        # Omits the include_expired parameter from the API call
+        h_response = self.client.get(reverse('courseenrollmentdetails', kwargs={"course_id": unicode(self.course.id)}))
+        h_data = json.loads(h_response.content)
+
+        # Ensure that only one course mode is returned and that it is honor
+        self.assertEqual(len(h_data['course_modes']), 1)
+        self.assertEqual(h_data['course_modes'][0]['slug'], CourseMode.HONOR)
+
     def test_update_enrollment_with_mode(self):
         """With the right API key, update an existing enrollment with a new mode. """
         # Create an honor and verified mode for a course. This allows an update.
@@ -526,24 +572,34 @@ class EnrollmentTest(EnrollmentTestMixin, ModuleStoreTestCase, APITestCase):
         self.assertTrue(is_active)
         self.assertEqual(course_mode, CourseMode.HONOR)
 
-    def test_deactivate_enrollment(self):
+    @ddt.data(
+        ((CourseMode.HONOR, ), CourseMode.HONOR),
+        ((CourseMode.HONOR, CourseMode.VERIFIED), CourseMode.HONOR),
+        ((CourseMode.HONOR, CourseMode.VERIFIED), CourseMode.VERIFIED),
+        ((CourseMode.PROFESSIONAL, ), CourseMode.PROFESSIONAL),
+        ((CourseMode.NO_ID_PROFESSIONAL_MODE, ), CourseMode.NO_ID_PROFESSIONAL_MODE),
+        ((CourseMode.VERIFIED, CourseMode.CREDIT_MODE), CourseMode.VERIFIED),
+        ((CourseMode.VERIFIED, CourseMode.CREDIT_MODE), CourseMode.CREDIT_MODE),
+    )
+    @ddt.unpack
+    def test_deactivate_enrollment(self, configured_modes, selected_mode):
         """With the right API key, deactivate (i.e., unenroll from) an existing enrollment."""
-        # Create an honor and verified mode for a course. This allows an update.
-        for mode in [CourseMode.HONOR, CourseMode.VERIFIED]:
+        # Configure a set of modes for the course.
+        for mode in configured_modes:
             CourseModeFactory.create(
                 course_id=self.course.id,
                 mode_slug=mode,
                 mode_display_name=mode,
             )
 
-        # Create a 'verified' enrollment
-        self.assert_enrollment_status(as_server=True, mode=CourseMode.VERIFIED)
+        # Create an enrollment with the selected mode.
+        self.assert_enrollment_status(as_server=True, mode=selected_mode)
 
-        # Check that the enrollment is 'verified' and active.
+        # Check that the enrollment has the correct mode and is active.
         self.assertTrue(CourseEnrollment.is_enrolled(self.user, self.course.id))
         course_mode, is_active = CourseEnrollment.enrollment_mode_for_user(self.user, self.course.id)
         self.assertTrue(is_active)
-        self.assertEqual(course_mode, CourseMode.VERIFIED)
+        self.assertEqual(course_mode, selected_mode)
 
         # Verify that a non-Boolean enrollment status is treated as invalid.
         self.assert_enrollment_status(
@@ -554,10 +610,19 @@ class EnrollmentTest(EnrollmentTestMixin, ModuleStoreTestCase, APITestCase):
         )
 
         # Verify that the enrollment has been deactivated, and that the mode is unchanged.
-        self.assert_enrollment_activation(False)
+        self.assert_enrollment_activation(False, selected_mode)
 
         # Verify that enrollment deactivation is idempotent.
-        self.assert_enrollment_activation(False)
+        self.assert_enrollment_activation(False, selected_mode)
+
+        # Verify that omitting the mode returns 400 for course configurations
+        # in which the default (honor) mode doesn't exist.
+        expected_status = status.HTTP_200_OK if CourseMode.HONOR in configured_modes else status.HTTP_400_BAD_REQUEST
+        self.assert_enrollment_status(
+            as_server=True,
+            is_active=False,
+            expected_status=expected_status,
+        )
 
     def test_change_mode_from_user(self):
         """Users should not be able to alter the enrollment mode on an enrollment. """
@@ -583,6 +648,58 @@ class EnrollmentTest(EnrollmentTestMixin, ModuleStoreTestCase, APITestCase):
         course_mode, is_active = CourseEnrollment.enrollment_mode_for_user(self.user, self.course.id)
         self.assertTrue(is_active)
         self.assertEqual(course_mode, CourseMode.HONOR)
+
+    @ddt.data(*itertools.product(
+        (CourseMode.HONOR, CourseMode.VERIFIED),
+        (CourseMode.HONOR, CourseMode.VERIFIED),
+        (True, False),
+        (True, False),
+    ))
+    @ddt.unpack
+    def test_change_mode_from_server(self, old_mode, new_mode, old_is_active, new_is_active):
+        """
+        Server-to-server calls should be allowed to change the mode of any
+        enrollment, as long as the enrollment is not being deactivated during
+        the same call (this is assumed to be an error on the client's side).
+        """
+        for mode in [CourseMode.HONOR, CourseMode.VERIFIED]:
+            CourseModeFactory.create(
+                course_id=self.course.id,
+                mode_slug=mode,
+                mode_display_name=mode,
+            )
+
+        # Set up the initial enrollment
+        self.assert_enrollment_status(as_server=True, mode=old_mode, is_active=old_is_active)
+        course_mode, is_active = CourseEnrollment.enrollment_mode_for_user(self.user, self.course.id)
+        self.assertEqual(is_active, old_is_active)
+        self.assertEqual(course_mode, old_mode)
+
+        expected_status = status.HTTP_400_BAD_REQUEST if (
+            old_mode != new_mode and
+            old_is_active != new_is_active and
+            not new_is_active
+        ) else status.HTTP_200_OK
+
+        # simulate the server-server api call under test
+        response = self.assert_enrollment_status(
+            as_server=True,
+            mode=new_mode,
+            is_active=new_is_active,
+            expected_status=expected_status,
+        )
+
+        course_mode, is_active = CourseEnrollment.enrollment_mode_for_user(self.user, self.course.id)
+        if expected_status == status.HTTP_400_BAD_REQUEST:
+            # nothing should have changed
+            self.assertEqual(is_active, old_is_active)
+            self.assertEqual(course_mode, old_mode)
+            # error message should contain specific text.  Otto checks for this text in the message.
+            self.assertRegexpMatches(json.loads(response.content)['message'], 'Enrollment mode mismatch')
+        else:
+            # call should have succeeded
+            self.assertEqual(is_active, new_is_active)
+            self.assertEqual(course_mode, new_mode)
 
     def test_change_mode_invalid_user(self):
         """
@@ -619,10 +736,6 @@ class EnrollmentEmbargoTest(EnrollmentTestMixin, UrlResetMixin, ModuleStoreTestC
             'user': self.user.username
         })
 
-    def _get_absolute_url(self, path):
-        """ Generate an absolute URL for a resource on the test server. """
-        return u'http://testserver/{}'.format(path.lstrip('/'))
-
     def assert_access_denied(self, user_message_path):
         """
         Verify that the view returns HTTP status 403 and includes a URL in the response, and no enrollment is created.
@@ -635,7 +748,7 @@ class EnrollmentEmbargoTest(EnrollmentTestMixin, UrlResetMixin, ModuleStoreTestC
 
         # Expect that the redirect URL is included in the response
         resp_data = json.loads(response.content)
-        user_message_url = self._get_absolute_url(user_message_path)
+        user_message_url = get_absolute_url(user_message_path)
         self.assertEqual(resp_data['user_message_url'], user_message_url)
 
         # Verify that we were not enrolled

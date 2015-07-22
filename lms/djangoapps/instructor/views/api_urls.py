@@ -21,6 +21,8 @@ urlpatterns = patterns(
         'instructor.views.api.get_grading_config', name="get_grading_config"),
     url(r'^get_students_features(?P<csv>/csv)?$',
         'instructor.views.api.get_students_features', name="get_students_features"),
+    url(r'^get_students_who_may_enroll$',
+        'instructor.views.api.get_students_who_may_enroll', name="get_students_who_may_enroll"),
     url(r'^get_user_invoice_preference$',
         'instructor.views.api.get_user_invoice_preference', name="get_user_invoice_preference"),
     url(r'^get_sale_records(?P<csv>/csv)?$',
@@ -107,7 +109,8 @@ urlpatterns = patterns(
     # Reports..
     url(r'get_enrollment_report$',
         'instructor.views.api.get_enrollment_report', name="get_enrollment_report"),
-
+    url(r'get_exec_summary_report$',
+        'instructor.views.api.get_exec_summary_report', name="get_exec_summary_report"),
 
     # Coupon Codes..
     url(r'get_coupon_codes',
@@ -129,4 +132,8 @@ urlpatterns = patterns(
     url(r'^enable_certificate_generation$',
         'instructor.views.api.enable_certificate_generation',
         name='enable_certificate_generation'),
+
+    url(r'^start_certificate_generation',
+        'instructor.views.api.start_certificate_generation',
+        name='start_certificate_generation'),
 )

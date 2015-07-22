@@ -2,10 +2,30 @@
 Discussion API forms
 """
 from django.core.exceptions import ValidationError
-from django.forms import BooleanField, CharField, Form, IntegerField, NullBooleanField
+from django.forms import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    Field,
+    Form,
+    IntegerField,
+    MultipleHiddenInput,
+    NullBooleanField,
+)
 
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locator import CourseLocator
+
+
+class TopicIdField(Field):
+    """
+    Field for a list of topic_ids
+    """
+    widget = MultipleHiddenInput
+
+    def validate(self, value):
+        if value and "" in value:
+            raise ValidationError("This field cannot be empty.")
 
 
 class _PaginationForm(Form):
@@ -26,7 +46,12 @@ class ThreadListGetForm(_PaginationForm):
     """
     A form to validate query parameters in the thread list retrieval endpoint
     """
+    EXCLUSIVE_PARAMS = ["topic_id", "text_search", "following"]
+
     course_id = CharField()
+    topic_id = TopicIdField(required=False)
+    text_search = CharField(required=False)
+    following = NullBooleanField(required=False)
 
     def clean_course_id(self):
         """Validate course_id"""
@@ -36,13 +61,36 @@ class ThreadListGetForm(_PaginationForm):
         except InvalidKeyError:
             raise ValidationError("'{}' is not a valid course id".format(value))
 
+    def clean_following(self):
+        """Validate following"""
+        value = self.cleaned_data["following"]
+        if value is False:
+            raise ValidationError("The value of the 'following' parameter must be true.")
+        else:
+            return value
 
-class ThreadCreateExtrasForm(Form):
+    def clean(self):
+        cleaned_data = super(ThreadListGetForm, self).clean()
+        exclusive_params_count = sum(
+            1 for param in self.EXCLUSIVE_PARAMS if cleaned_data.get(param)
+        )
+        if exclusive_params_count > 1:
+            raise ValidationError(
+                "The following query parameters are mutually exclusive: {}".format(
+                    ", ".join(self.EXCLUSIVE_PARAMS)
+                )
+            )
+        return cleaned_data
+
+
+class ThreadActionsForm(Form):
     """
-    A form to handle fields in thread creation that require separate
+    A form to handle fields in thread creation/update that require separate
     interactions with the comments service.
     """
     following = BooleanField(required=False)
+    voted = BooleanField(required=False)
+    abuse_flagged = BooleanField(required=False)
 
 
 class CommentListGetForm(_PaginationForm):
@@ -53,3 +101,12 @@ class CommentListGetForm(_PaginationForm):
     # TODO: should we use something better here? This only accepts "True",
     # "False", "1", and "0"
     endorsed = NullBooleanField(required=False)
+
+
+class CommentActionsForm(Form):
+    """
+    A form to handle fields in comment creation/update that require separate
+    interactions with the comments service.
+    """
+    voted = BooleanField(required=False)
+    abuse_flagged = BooleanField(required=False)

@@ -60,6 +60,7 @@ class CourseEndingTest(TestCase):
         link2_expected = "http://www.mysurvey.com?unique={UNIQUE_ID}".format(UNIQUE_ID=user_id)
         self.assertEqual(process_survey_link(link2, user), link2_expected)
 
+    @patch.dict('django.conf.settings.FEATURES', {'CERTIFICATES_HTML_VIEW': False})
     def test_cert_info(self):
         user = Mock(username="fred")
         survey_url = "http://a_survey.com"
@@ -439,6 +440,7 @@ class DashboardTest(ModuleStoreTestCase):
         self.assertNotContains(response, response_url)
 
     @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
+    @patch.dict('django.conf.settings.FEATURES', {'CERTIFICATES_HTML_VIEW': False})
     def test_linked_in_add_to_profile_btn_with_certificate(self):
         # If user has a certificate with valid linked-in config then Add Certificate to LinkedIn button
         # should be visible. and it has URL value with valid parameters.
@@ -815,38 +817,6 @@ class ChangeEnrollmentViewTest(ModuleStoreTestCase):
         )
         self.assertTrue(is_active)
         self.assertEqual(enrollment_mode, u'honor')
-
-
-class PaidRegistrationTest(ModuleStoreTestCase):
-    """
-    Tests for paid registration functionality (not verified student), involves shoppingcart
-    """
-    def setUp(self):
-        super(PaidRegistrationTest, self).setUp()
-        # Create course
-        self.course = CourseFactory.create()
-        self.req_factory = RequestFactory()
-        self.user = User.objects.create(username="jack", email="jack@fake.edx.org")
-
-    @unittest.skipUnless(settings.FEATURES.get('ENABLE_SHOPPING_CART'), "Shopping Cart not enabled in settings")
-    def test_change_enrollment_add_to_cart(self):
-        request = self.req_factory.post(
-            reverse('change_enrollment'), {
-                'course_id': self.course.id.to_deprecated_string(),
-                'enrollment_action': 'add_to_cart'
-            }
-        )
-
-        # Add a session to the request
-        SessionMiddleware().process_request(request)
-        request.session.save()
-
-        request.user = self.user
-        response = change_enrollment(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, reverse('shoppingcart.views.show_cart'))
-        self.assertTrue(shoppingcart.models.PaidCourseRegistration.contained_in_order(
-            shoppingcart.models.Order.get_cart_for_user(self.user), self.course.id))
 
 
 class AnonymousLookupTable(ModuleStoreTestCase):

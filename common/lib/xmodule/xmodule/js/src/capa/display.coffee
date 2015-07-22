@@ -32,6 +32,8 @@ class @Problem
     @checkButtonCheckText = @checkButtonLabel.text()
     @checkButtonCheckingText = @checkButton.data('checking')
     @checkButton.click @check_fd
+
+    @$('div.action button.hint-button').click @hint_button
     @$('div.action button.reset').click @reset
     @$('div.action button.show').click @show
     @$('div.action button.save').click @save
@@ -96,19 +98,11 @@ class @Problem
     if @num_queued_items > 0
       if window.queuePollerID # Only one poller 'thread' per Problem
         window.clearTimeout(window.queuePollerID)
-      queuelen = @get_queuelen()
-      window.queuePollerID = window.setTimeout(@poll, queuelen*10)
+      window.queuePollerID = window.setTimeout(
+        => @poll(1000),
+        1000)
 
-  # Retrieves the minimum queue length of all queued items
-  get_queuelen: =>
-    minlen = Infinity
-    @queued_items.each (index, qitem) ->
-      len = parseInt($.text(qitem))
-      if len < minlen
-        minlen = len
-    return minlen
-
-  poll: =>
+  poll: (prev_timeout) =>
     $.postWithPrefix "#{@url}/problem_get", (response) =>
       # If queueing status changed, then render
       @new_queued_items = $(response.html).find(".xqueue")
@@ -123,8 +117,16 @@ class @Problem
         @forceUpdate response
         delete window.queuePollerID
       else
-        # TODO: Some logic to dynamically adjust polling rate based on queuelen
-        window.queuePollerID = window.setTimeout(@poll, 1000)
+        new_timeout = prev_timeout * 2
+        # if the timeout is greather than 1 minute
+        if new_timeout >= 60000
+          delete window.queuePollerID
+          @gentle_alert gettext("The grading process is still running. Refresh the page to see updates.")
+        else
+          window.queuePollerID = window.setTimeout(
+            => @poll(new_timeout),
+            new_timeout
+          )
 
 
   # Use this if you want to make an ajax call on the input type object
@@ -466,9 +468,9 @@ class @Problem
     # They should set handlers on each <input> to reset the whole.
     formulaequationinput: (element) ->
       $(element).find('input').on 'input', ->
-        $p = $(element).find('p.status')
+        $p = $(element).find('span.status')
         `// Translators: the word unanswered here is about answering a problem the student must solve.`
-        $p.parent().removeClass().addClass "unanswered"
+        $p.parent().removeClass().addClass "unsubmitted"
 
     choicegroup: (element) ->
       $element = $(element)
@@ -494,9 +496,9 @@ class @Problem
 
     textline: (element) ->
       $(element).find('input').on 'input', ->
-        $p = $(element).find('p.status')
+        $p = $(element).find('span.status')
         `// Translators: the word unanswered here is about answering a problem the student must solve.`
-        $p.parent().removeClass("correct incorrect").addClass "unanswered"
+        $p.parent().removeClass("correct incorrect").addClass "unsubmitted"
 
   inputtypeSetupMethods:
 
@@ -699,3 +701,17 @@ class @Problem
       if @has_response
         @enableCheckButton true
     window.setTimeout(enableCheckButton, 750)
+
+  hint_button: =>
+    # Store the index of the currently shown hint as an attribute.
+    # Use that to compute the next hint number when the button is clicked.
+    hint_index = @$('.problem-hint').attr('hint_index')
+    if hint_index == undefined
+      next_index = 0
+    else
+      next_index = parseInt(hint_index) + 1
+    $.postWithPrefix "#{@url}/hint_button", hint_index: next_index, input_id: @id, (response) =>
+      @$('.problem-hint').html(response.contents)
+      @$('.problem-hint').attr('hint_index', response.hint_index)
+      @$('.hint-button').focus()  # a11y focus on click, like the Check button
+

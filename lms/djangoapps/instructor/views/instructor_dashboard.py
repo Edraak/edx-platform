@@ -11,8 +11,8 @@ import pytz
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext as _
-from django_future.csrf import ensure_csrf_cookie
+from django.utils.translation import ugettext as _, ugettext_noop
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from edxmako.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
@@ -26,6 +26,7 @@ from lms.djangoapps.lms_xblock.runtime import quote_slashes
 from openedx.core.lib.xblock_utils import wrap_xblock
 from xmodule.html_module import HtmlDescriptor
 from xmodule.modulestore.django import modulestore
+from xmodule.tabs import CourseTab
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
 from courseware.access import has_access
@@ -43,8 +44,25 @@ from class_dashboard.dashboard_data import get_section_display_name, get_array_s
 from .tools import get_units_with_due_date, title_or_url, bulk_email_is_enabled_for_course
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
-
 log = logging.getLogger(__name__)
+
+
+class InstructorDashboardTab(CourseTab):
+    """
+    Defines the Instructor Dashboard view type that is shown as a course tab.
+    """
+
+    type = "instructor"
+    title = ugettext_noop('Instructor')
+    view_name = "instructor_dashboard"
+    is_dynamic = True    # The "Instructor" tab is instead dynamically added when it is enabled
+
+    @classmethod
+    def is_enabled(cls, course, user=None):  # pylint: disable=unused-argument,redefined-outer-name
+        """
+        Returns true if the specified user has staff access.
+        """
+        return user and has_access(user, 'staff', course, course.id)
 
 
 @ensure_csrf_cookie
@@ -71,9 +89,11 @@ def instructor_dashboard_2(request, course_id):
     if not access['staff']:
         raise Http404()
 
+    is_white_label = CourseMode.is_white_label(course_key)
+
     sections = [
         _section_course_info(course, access),
-        _section_membership(course, access),
+        _section_membership(course, access, is_white_label),
         _section_cohort_management(course, access),
         _section_student_admin(course, access),
         _section_data_download(course, access),
@@ -91,8 +111,6 @@ def instructor_dashboard_2(request, course_id):
             u"one paid course mode to enable eCommerce options.",
             unicode(course_key), len(paid_modes)
         )
-
-    is_white_label = CourseMode.is_white_label(course_key)
 
     if (settings.FEATURES.get('INDIVIDUAL_DUE_DATES') and access['instructor']):
         sections.insert(3, _section_extensions(course))
@@ -184,9 +202,11 @@ def _section_e_commerce(course, access, paid_mode, coupons_enabled, reports_enab
         'set_course_mode_url': reverse('set_course_mode_price', kwargs={'course_id': unicode(course_key)}),
         'download_coupon_codes_url': reverse('get_coupon_codes', kwargs={'course_id': unicode(course_key)}),
         'enrollment_report_url': reverse('get_enrollment_report', kwargs={'course_id': unicode(course_key)}),
+        'exec_summary_report_url': reverse('get_exec_summary_report', kwargs={'course_id': unicode(course_key)}),
         'list_financial_report_downloads_url': reverse('list_financial_report_downloads',
                                                        kwargs={'course_id': unicode(course_key)}),
         'list_instructor_tasks_url': reverse('list_instructor_tasks', kwargs={'course_id': unicode(course_key)}),
+        'look_up_registration_code': reverse('look_up_registration_code', kwargs={'course_id': unicode(course_key)}),
         'coupons': coupons,
         'sales_admin': access['sales_admin'],
         'coupons_enabled': coupons_enabled,
@@ -225,12 +245,15 @@ def _section_certificates(course):
             for cert_status in example_cert_status
         )
     )
+    instructor_generation_enabled = settings.FEATURES.get('CERTIFICATES_INSTRUCTOR_GENERATION', False)
+
     return {
         'section_key': 'certificates',
         'section_display_name': _('Certificates'),
         'example_certificate_status': example_cert_status,
         'can_enable_for_course': can_enable_for_course,
         'enabled_for_course': certs_api.cert_generation_enabled(course.id),
+        'instructor_generation_enabled': instructor_generation_enabled,
         'urls': {
             'generate_example_certificates': reverse(
                 'generate_example_certificates',
@@ -239,7 +262,15 @@ def _section_certificates(course):
             'enable_certificate_generation': reverse(
                 'enable_certificate_generation',
                 kwargs={'course_id': course.id}
-            )
+            ),
+            'start_certificate_generation': reverse(
+                'start_certificate_generation',
+                kwargs={'course_id': course.id}
+            ),
+            'list_instructor_tasks_url': reverse(
+                'list_instructor_tasks',
+                kwargs={'course_id': course.id}
+            ),
         }
     }
 
@@ -321,13 +352,16 @@ def _section_course_info(course, access):
     return section_data
 
 
-def _section_membership(course, access):
+def _section_membership(course, access, is_white_label):
     """ Provide data for the corresponding dashboard section """
     course_key = course.id
+    ccx_enabled = settings.FEATURES.get('CUSTOM_COURSES_EDX', False) and course.enable_ccx
     section_data = {
         'section_key': 'membership',
         'section_display_name': _('Membership'),
         'access': access,
+        'ccx_is_enabled': ccx_enabled,
+        'is_white_label': is_white_label,
         'enroll_button_url': reverse('students_update_enrollment', kwargs={'course_id': unicode(course_key)}),
         'unenroll_button_url': reverse('students_update_enrollment', kwargs={'course_id': unicode(course_key)}),
         'upload_student_csv_button_url': reverse('register_and_enroll_students', kwargs={'course_id': unicode(course_key)}),
@@ -423,6 +457,9 @@ def _section_data_download(course, access):
         'access': access,
         'get_grading_config_url': reverse('get_grading_config', kwargs={'course_id': unicode(course_key)}),
         'get_students_features_url': reverse('get_students_features', kwargs={'course_id': unicode(course_key)}),
+        'get_students_who_may_enroll_url': reverse(
+            'get_students_who_may_enroll', kwargs={'course_id': unicode(course_key)}
+        ),
         'get_anon_ids_url': reverse('get_anon_ids', kwargs={'course_id': unicode(course_key)}),
         'list_instructor_tasks_url': reverse('list_instructor_tasks', kwargs={'course_id': unicode(course_key)}),
         'list_report_downloads_url': reverse('list_report_downloads', kwargs={'course_id': unicode(course_key)}),

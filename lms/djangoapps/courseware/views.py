@@ -7,6 +7,7 @@ import urllib
 import json
 import cgi
 
+from collections import OrderedDict
 from datetime import datetime
 from django.utils import translation
 from django.utils.translation import ugettext as _
@@ -19,12 +20,12 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import UTC
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
 from certificates import api as certs_api
 from edxmako.shortcuts import render_to_response, render_to_string, marketing_link
-from django_future.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from django.db import transaction
 from markupsafe import escape
@@ -38,8 +39,13 @@ from courseware.courses import (
     sort_by_start_date,
 )
 from courseware.masquerade import setup_masquerade
+from openedx.core.djangoapps.credit.api import (
+    get_credit_requirement_status,
+    is_user_eligible_for_credit,
+    is_credit_course
+)
 from courseware.model_data import FieldDataCache
-from .module_render import toc_for_course, get_module_for_descriptor, get_module
+from .module_render import toc_for_course, get_module_for_descriptor, get_module, get_module_by_usage_id
 from .entrance_exams import (
     course_has_entrance_exam,
     get_entrance_exam_content,
@@ -47,17 +53,18 @@ from .entrance_exams import (
     user_must_complete_entrance_exam,
     user_has_passed_entrance_exam
 )
-from courseware.models import StudentModule, StudentModuleHistory
+from courseware.user_state_client import DjangoXBlockUserStateClient
 from course_modes.models import CourseMode
 
 from open_ended_grading import open_ended_notifications
+from open_ended_grading.views import StaffGradingTab, PeerGradingTab, OpenEndedGradingTab
 from student.models import UserTestGroup, CourseEnrollment
 from student.views import is_course_blocked
 from util.cache import cache, cache_if_anonymous
 from xblock.fragment import Fragment
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError, NoPathToItem
-from xmodule.tabs import CourseTabList, StaffGradingTab, PeerGradingTab, OpenEndedGradingTab
+from xmodule.tabs import CourseTabList
 from xmodule.x_module import STUDENT_VIEW
 import shoppingcart
 from shoppingcart.models import CourseRegistrationCode
@@ -118,6 +125,16 @@ def courses(request):
     """
     Render "find courses" page.  The course selection work is done in courseware.courses.
     """
+    courses_list = []
+    course_discovery_meanings = getattr(settings, 'COURSE_DISCOVERY_MEANINGS', {})
+    if not settings.FEATURES.get('ENABLE_COURSE_DISCOVERY'):
+        courses_list = get_courses(request.user, request.META.get('HTTP_HOST'))
+
+        if microsite.get_value("ENABLE_COURSE_SORTING_BY_START_DATE",
+                               settings.FEATURES["ENABLE_COURSE_SORTING_BY_START_DATE"]):
+            courses_list = sort_by_start_date(courses_list)
+        else:
+            courses_list = sort_by_announcement(courses_list)
     # Hardcoded `AnonymousUser()` to hide unpublished courses always
     courses = get_courses(AnonymousUser(), request.META.get('HTTP_HOST'))
     courses = filter_invitation_only_courses(courses)
@@ -246,7 +263,7 @@ def save_child_position(seq_module, child_name):
     seq_module.save()
 
 
-def save_positions_recursively_up(user, request, field_data_cache, xmodule):
+def save_positions_recursively_up(user, request, field_data_cache, xmodule, course=None):
     """
     Recurses up the course tree starting from a leaf
     Saving the position property based on the previous node as it goes
@@ -258,7 +275,14 @@ def save_positions_recursively_up(user, request, field_data_cache, xmodule):
         parent = None
         if parent_location:
             parent_descriptor = modulestore().get_item(parent_location)
-            parent = get_module_for_descriptor(user, request, parent_descriptor, field_data_cache, current_module.location.course_key)
+            parent = get_module_for_descriptor(
+                user,
+                request,
+                parent_descriptor,
+                field_data_cache,
+                current_module.location.course_key,
+                course=course
+            )
 
         if parent and hasattr(parent, 'position'):
             save_child_position(parent, current_module.location.name)
@@ -362,7 +386,7 @@ def _index_bulk_op(request, course_key, chapter, section, position):
         try:
             int(position)
         except ValueError:
-            raise Http404("Position {} is not an integer!".format(position))
+            raise Http404(u"Position {} is not an integer!".format(position))
 
     user = request.user
     course = get_course_with_access(user, 'load', course_key, depth=2)
@@ -405,7 +429,9 @@ def _index_bulk_op(request, course_key, chapter, section, position):
         field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
             course_key, user, course, depth=2)
 
-        course_module = get_module_for_descriptor(user, request, course, field_data_cache, course_key)
+        course_module = get_module_for_descriptor(
+            user, request, course, field_data_cache, course_key, course=course
+        )
         if course_module is None:
             log.warning(u'If you see this, something went wrong: if we got this'
                         u' far, should have gotten a course module for this user')
@@ -525,7 +551,8 @@ def _index_bulk_op(request, course_key, chapter, section, position):
                 section_descriptor,
                 field_data_cache,
                 course_key,
-                position
+                position,
+                course=course
             )
 
             if section_module is None:
@@ -740,8 +767,6 @@ def static_tab(request, course_id, tab_slug):
         'tab_contents': contents,
     })
 
-# TODO arjun: remove when custom tabs in place, see courseware/syllabus.py
-
 
 @ensure_csrf_cookie
 @ensure_valid_course_key
@@ -872,7 +897,6 @@ def course_about(request, course_id):
         return render_to_response('courseware/course_about.html', {
             'course': course,
             'has_course_ended': course.has_ended(),  # Added by Edraak
-            'staff_access': staff_access,
             'staff_access': staff_access,
             'studio_url': studio_url,
             'registered': registered,
@@ -1060,16 +1084,89 @@ def _progress(request, course_key, student_id):
         'staff_access': staff_access,
         'student': student,
         'passed': is_course_passed(course, grade_summary),
-        'show_generate_cert_btn': show_generate_cert_btn
+        'show_generate_cert_btn': show_generate_cert_btn,
+        'credit_course_requirements': _credit_course_requirements(course_key, student),
     }
 
     if show_generate_cert_btn:
         context.update(certs_api.certificate_downloadable_status(student, course_key))
+        # showing the certificate web view button if feature flags are enabled.
+        if settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False):
+            if certs_api.get_active_web_certificate(course) is not None:
+                context.update({
+                    'show_cert_web_view': True,
+                    'cert_web_view_url': u'{url}'.format(
+                        url=certs_api.get_certificate_url(
+                            user_id=student.id,
+                            course_id=unicode(course.id),
+                            verify_uuid=None
+                        )
+                    )
+                })
+            else:
+                context.update({
+                    'is_downloadable': False,
+                    'is_generating': True,
+                    'download_url': None
+                })
 
     with grades.manual_transaction():
         response = render_to_response('courseware/progress.html', context)
 
     return response
+
+
+def _credit_course_requirements(course_key, student):
+    """Return information about which credit requirements a user has satisfied.
+
+    Arguments:
+        course_key (CourseKey): Identifier for the course.
+        student (User): Currently logged in user.
+
+    Returns: dict
+
+    """
+    # If credit eligibility is not enabled or this is not a credit course,
+    # short-circuit and return `None`.  This indicates that credit requirements
+    # should NOT be displayed on the progress page.
+    if not (settings.FEATURES.get("ENABLE_CREDIT_ELIGIBILITY", False) and is_credit_course(course_key)):
+        return None
+
+    # Retrieve the status of the user for each eligibility requirement in the course.
+    # For each requirement, the user's status is either "satisfied", "failed", or None.
+    # In this context, `None` means that we don't know the user's status, either because
+    # the user hasn't done something (for example, submitting photos for verification)
+    # or we're waiting on more information (for example, a response from the photo
+    # verification service).
+    requirement_statuses = get_credit_requirement_status(course_key, student.username)
+
+    # If the user has been marked as "eligible", then they are *always* eligible
+    # unless someone manually intervenes.  This could lead to some strange behavior
+    # if the requirements change post-launch.  For example, if the user was marked as eligible
+    # for credit, then a new requirement was added, the user will see that they're eligible
+    # AND that one of the requirements is still pending.
+    # We're assuming here that (a) we can mitigate this by properly training course teams,
+    # and (b) it's a better user experience to allow students who were at one time
+    # marked as eligible to continue to be eligible.
+    # If we need to, we can always manually move students back to ineligible by
+    # deleting CreditEligibility records in the database.
+    if is_user_eligible_for_credit(student.username, course_key):
+        eligibility_status = "eligible"
+
+    # If the user has *failed* any requirements (for example, if a photo verification is denied),
+    # then the user is NOT eligible for credit.
+    elif any(requirement['status'] == 'failed' for requirement in requirement_statuses):
+        eligibility_status = "not_eligible"
+
+    # Otherwise, the user may be eligible for credit, but the user has not
+    # yet completed all the requirements.
+    else:
+        eligibility_status = "partial_eligible"
+
+    return {
+        'eligibility_status': eligibility_status,
+        'requirements': requirement_statuses,
+    }
 
 
 @login_required
@@ -1096,34 +1193,18 @@ def submission_history(request, course_id, student_username, location):
     if (student_username != request.user.username) and (not staff_access):
         raise PermissionDenied
 
+    user_state_client = DjangoXBlockUserStateClient()
     try:
-        student = User.objects.get(username=student_username)
-        student_module = StudentModule.objects.get(
-            course_id=course_key,
-            module_state_key=usage_key,
-            student_id=student.id
-        )
-    except User.DoesNotExist:
-        return HttpResponse(escape(_(u'User {username} does not exist.').format(username=student_username)))
-    except StudentModule.DoesNotExist:
+        history_entries = user_state_client.get_history(student_username, usage_key)
+    except DjangoXBlockUserStateClient.DoesNotExist:
         return HttpResponse(escape(_(u'User {username} has never accessed problem {location}').format(
             username=student_username,
             location=location
         )))
-    history_entries = StudentModuleHistory.objects.filter(
-        student_module=student_module
-    ).order_by('-id')
-
-    # If no history records exist, let's force a save to get history started.
-    if not history_entries:
-        student_module.save()
-        history_entries = StudentModuleHistory.objects.filter(
-            student_module=student_module
-        ).order_by('-id')
 
     context = {
         'history_entries': history_entries,
-        'username': student.username,
+        'username': student_username,
         'location': location,
         'course_id': course_key.to_deprecated_string()
     }
@@ -1142,8 +1223,8 @@ def notification_image_for_tab(course_tab, user, course):
         OpenEndedGradingTab.type: open_ended_notifications.combined_notifications
     }
 
-    if course_tab.type in tab_notification_handlers:
-        notifications = tab_notification_handlers[course_tab.type](course, user)
+    if course_tab.name in tab_notification_handlers:
+        notifications = tab_notification_handlers[course_tab.name](course, user)
         if notifications and notifications['pending_grading']:
             return notifications['img_path']
 
@@ -1162,7 +1243,7 @@ def get_static_tab_contents(request, course, tab):
         course.id, request.user, modulestore().get_item(loc), depth=0
     )
     tab_module = get_module(
-        request.user, request, loc, field_data_cache, static_asset_path=course.static_asset_path
+        request.user, request, loc, field_data_cache, static_asset_path=course.static_asset_path, course=course
     )
 
     logging.debug('course_module = {0}'.format(tab_module))
@@ -1220,7 +1301,8 @@ def get_course_lti_endpoints(request, course_id):
                 anonymous_user,
                 descriptor
             ),
-            course_key
+            course_key,
+            course=course
         )
         for descriptor in lti_descriptors
     ]
@@ -1331,7 +1413,9 @@ def generate_user_cert(request, course_id):
 
     certificate_status = certs_api.certificate_downloadable_status(student, course.id)
 
-    if certificate_status["is_generating"]:
+    if certificate_status["is_downloadable"]:
+        return HttpResponseBadRequest(_("Certificate has already been created."))
+    elif certificate_status["is_generating"]:
         return HttpResponseBadRequest(_("Certificate is being created."))
     else:
         # If the certificate is not already in-process or completed,
@@ -1340,13 +1424,14 @@ def generate_user_cert(request, course_id):
         # mark the certificate with "error" status, so it can be re-run
         # with a management command.  From the user's perspective,
         # it will appear that the certificate task was submitted successfully.
-        certs_api.generate_user_certificates(student, course.id)
+        certs_api.generate_user_certificates(student, course.id, course=course, generation_mode='self')
         _track_successful_certificate_generation(student.id, course.id)
         return HttpResponse()
 
 
 def _track_successful_certificate_generation(user_id, course_id):  # pylint: disable=invalid-name
-    """Track an successfully certificate generation event.
+    """
+    Track a successful certificate generation event.
 
     Arguments:
         user_id (str): The ID of the user generting the certificate.
@@ -1372,3 +1457,36 @@ def _track_successful_certificate_generation(user_id, course_id):  # pylint: dis
                 }
             }
         )
+
+
+@require_http_methods(["GET", "POST"])
+def render_xblock(request, usage_key_string, check_if_enrolled=True):
+    """
+    Returns an HttpResponse with HTML content for the xBlock with the given usage_key.
+    The returned HTML is a chromeless rendering of the xBlock (excluding content of the containing courseware).
+    """
+    usage_key = UsageKey.from_string(usage_key_string)
+    usage_key = usage_key.replace(course_key=modulestore().fill_in_run(usage_key.course_key))
+    course_key = usage_key.course_key
+
+    with modulestore().bulk_operations(course_key):
+        # verify the user has access to the course, including enrollment check
+        course = get_course_with_access(request.user, 'load', course_key, check_if_enrolled=check_if_enrolled)
+
+        # get the block, which verifies whether the user has access to the block.
+        block, _ = get_module_by_usage_id(
+            request, unicode(course_key), unicode(usage_key), disable_staff_debug_info=True, course=course
+        )
+
+        context = {
+            'fragment': block.render('student_view', context=request.GET),
+            'course': course,
+            'disable_accordion': True,
+            'allow_iframing': True,
+            'disable_header': True,
+            'disable_window_wrap': True,
+            'disable_preview_menu': True,
+            'staff_access': has_access(request.user, 'staff', course),
+            'xqa_server': settings.FEATURES.get('XQA_SERVER', 'http://your_xqa_server.com'),
+        }
+        return render_to_response('courseware/courseware-chromeless.html', context)

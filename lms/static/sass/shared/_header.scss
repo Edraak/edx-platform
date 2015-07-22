@@ -6,9 +6,9 @@ header.global {
   border-bottom: 1px solid $m-gray;
   box-shadow: 0 1px 5px 0 $shadow-l1;
   background: $header-bg;
-  height: 76px;
   position: relative;
   width: 100%;
+  height: 76px;
 
   .wrapper-header {
     @include clearfix();
@@ -35,7 +35,6 @@ header.global {
     margin: 0 auto;
     padding: 18px ($baseline/2) 0;
     max-width: grid-width(12);
-    min-width: 760px;
   }
 
   .left {
@@ -118,8 +117,8 @@ header.global {
   .user {
     @include float(right);
     @extend %ui-print-excluded;
-
     margin-top: ($baseline/4);
+    padding-left: 0;
 
     > .primary {
       display: block;

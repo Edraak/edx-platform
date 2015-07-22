@@ -10,6 +10,7 @@ import pymongo
 import logging
 
 from opaque_keys.edx.locations import Location
+from openedx.core.lib.cache_utils import memoize_in_request_cache
 from xmodule.exceptions import InvalidVersionError
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.exceptions import (
@@ -81,12 +82,14 @@ class DraftModuleStore(MongoModuleStore):
         """
         def get_published():
             return wrap_draft(super(DraftModuleStore, self).get_item(
-                usage_key, depth=depth, using_descriptor_system=using_descriptor_system
+                usage_key, depth=depth, using_descriptor_system=using_descriptor_system,
+                for_parent=kwargs.get('for_parent'),
             ))
 
         def get_draft():
             return wrap_draft(super(DraftModuleStore, self).get_item(
-                as_draft(usage_key), depth=depth, using_descriptor_system=using_descriptor_system
+                as_draft(usage_key), depth=depth, using_descriptor_system=using_descriptor_system,
+                for_parent=kwargs.get('for_parent')
             ))
 
         # return the published version if ModuleStoreEnum.RevisionOption.published_only is requested
@@ -634,7 +637,7 @@ class DraftModuleStore(MongoModuleStore):
             bulk_record.dirty = True
             self.collection.remove({'_id': {'$in': to_be_deleted}}, safe=self.collection.safe)
 
-    @MongoModuleStore.memoize_request_cache
+    @memoize_in_request_cache('request_cache')
     def has_changes(self, xblock):
         """
         Check if the subtree rooted at xblock has any drafts and thus may possibly have changes

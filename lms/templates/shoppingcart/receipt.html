@@ -4,8 +4,8 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.core.urlresolvers import reverse
 from courseware.courses import course_image_url, get_course_about_section, get_course_by_id
+from microsite_configuration import microsite
 %>
-<%! from microsite_configuration import microsite %>
 
 <%block name="billing_details_highlight">
 % if order_type == 'business':
@@ -84,6 +84,8 @@ from courseware.courses import course_image_url, get_course_about_section, get_c
             <td>
               % if reg_code_info['is_redeemed']:
                 <span class="red"></M>${_("Used")}</span>
+              % elif not reg_code_info['is_valid']:
+                <span class="red"></M>${_("Invalid")}</span>
               % else:
                 <span class="green"></M>${_("Available")}</span>
               % endif
@@ -280,7 +282,7 @@ from courseware.courses import course_image_url, get_course_about_section, get_c
         </div>
       </div>
     % endif
-    <hr class="border"/>
+
     % for item, course in shoppingcart_items:
       % if loop.index > 0 :
         <hr>
@@ -288,12 +290,17 @@ from courseware.courses import course_image_url, get_course_about_section, get_c
       <div class="user-data">
         <div class="clearfix">
           <div class="image">
-            <img style="width: 100%; height: 100%;" src="${course_image_url(course)}"
+            <img class="item-image" src="${course_image_url(course)}"
                  alt="${course.display_number_with_default | h} ${get_course_about_section(course, 'title')} Image"/>
           </div>
           <div class="data-input">
-            <h3>${_("Registration for")}:
-              <span class="pull-right">
+
+            <h3 class="course-title-info" id="course-title">
+              <span class="course-registration-title">${_('Registration for:')}</span>
+              <span class="course-display-name">${ course.display_name }</span>
+            </h3>
+            <p class="course-meta-info" aria-describedby="course-title">
+              <span class="course-dates-title">
                 <%
                     course_start_time = course.start_datetime_text()
                     course_end_time = course.end_datetime_text()
@@ -302,23 +309,21 @@ from courseware.courses import course_image_url, get_course_about_section, get_c
                   ${_("Course Dates")}:
                 %endif
               </span>
-            </h3>
-
-            <h1>${course.display_name}</h1>
-            <span class="pull-right">
-              % if course_start_time:
-                ${course_start_time}
-              %endif
-              -
-              % if course_end_time:
-                ${course_end_time}
-              %endif
-            </span>
-            <hr/>
+              <span class="course-display-dates">
+                % if course_start_time:
+                  ${course_start_time}
+                %endif
+                -
+                % if course_end_time:
+                  ${course_end_time}
+                %endif
+              </span>
+            </p>
+            <hr>
             <div class="three-col">
               % if item.status == "purchased":
                 <div class="col-1">
-                  % if item.list_price != None:
+                  % if item.is_discounted:
                     <div class="price">${_('Price per student:')} <span class="line-through">  ${currency_symbol}${"{0:0.2f}".format(item.list_price)}</span>
                     </div>
                     <div class="price green">${_('Discount Applied:')} <span>   ${currency_symbol}${"{0:0.2f}".format(item.unit_cost)} </span></div>
@@ -336,7 +341,7 @@ from courseware.courses import course_image_url, get_course_about_section, get_c
                 </div>
               % elif item.status == "refunded":
                 <div class="col-1">
-                  % if item.list_price != None:
+                  % if item.is_discounted:
                     <div class="price">${_('Price per student:')} <span class="line-through">   ${currency_symbol}${"{0:0.2f}".format(item.list_price)}</span>
                     </div>
                     <div class="price green">${_('Discount Applied:')} <span><del>  ${currency_symbol}${"{0:0.2f}".format(item.unit_cost)}

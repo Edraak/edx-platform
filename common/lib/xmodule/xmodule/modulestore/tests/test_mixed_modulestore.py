@@ -11,6 +11,7 @@ import mimetypes
 from unittest import skip
 from uuid import uuid4
 from contextlib import contextmanager
+from mock import patch
 
 # Mixed modulestore depends on django, so we'll manually configure some django settings
 # before importing the module
@@ -47,7 +48,7 @@ from xmodule.modulestore.mixed import MixedModuleStore
 from xmodule.modulestore.search import path_to_location, navigation_index
 from xmodule.modulestore.tests.factories import check_mongo_calls, check_exact_number_of_calls, \
     mongo_uses_error_check
-from xmodule.modulestore.tests.utils import create_modulestore_instance, LocationMixin
+from xmodule.modulestore.tests.utils import create_modulestore_instance, LocationMixin, mock_tab_from_json
 from xmodule.modulestore.tests.mongo_connection import MONGO_PORT_NUM, MONGO_HOST
 from xmodule.tests import DATA_DIR, CourseComparisonTest
 
@@ -522,6 +523,118 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
         component = self.store.publish(component.location, self.user_id)
         self.assertFalse(self.store.has_changes(component))
 
+    @ddt.data('draft', 'split')
+    def test_unit_stuck_in_draft_mode(self, default_ms):
+        """
+        After revert_to_published() the has_changes() should return false if draft has no changes
+        """
+        self.initdb(default_ms)
+
+        test_course = self.store.create_course('testx', 'GreekHero', 'test_run', self.user_id)
+
+        # Create a dummy component to test against
+        xblock = self.store.create_item(
+            self.user_id,
+            test_course.id,
+            'vertical',
+            block_id='test_vertical'
+        )
+
+        # Not yet published, so changes are present
+        self.assertTrue(self.store.has_changes(xblock))
+
+        # Publish and verify that there are no unpublished changes
+        component = self.store.publish(xblock.location, self.user_id)
+        self.assertFalse(self.store.has_changes(component))
+
+        self.store.revert_to_published(component.location, self.user_id)
+        component = self.store.get_item(component.location)
+        self.assertFalse(self.store.has_changes(component))
+
+        # Publish and verify again
+        component = self.store.publish(component.location, self.user_id)
+        self.assertFalse(self.store.has_changes(component))
+
+    @ddt.data('draft', 'split')
+    def test_unit_stuck_in_published_mode(self, default_ms):
+        """
+        After revert_to_published() the has_changes() should return true if draft has changes
+        """
+        self.initdb(default_ms)
+
+        test_course = self.store.create_course('testx', 'GreekHero', 'test_run', self.user_id)
+
+        # Create a dummy component to test against
+        xblock = self.store.create_item(
+            self.user_id,
+            test_course.id,
+            'vertical',
+            block_id='test_vertical'
+        )
+
+        # Not yet published, so changes are present
+        self.assertTrue(self.store.has_changes(xblock))
+
+        # Publish and verify that there are no unpublished changes
+        component = self.store.publish(xblock.location, self.user_id)
+        self.assertFalse(self.store.has_changes(component))
+
+        # Discard changes and verify that there are no changes
+        self.store.revert_to_published(component.location, self.user_id)
+        component = self.store.get_item(component.location)
+        self.assertFalse(self.store.has_changes(component))
+
+        # Change the component, then check that there now are changes
+        component = self.store.get_item(component.location)
+        component.display_name = 'Changed Display Name'
+        self.store.update_item(component, self.user_id)
+
+        # Verify that changes are present
+        self.assertTrue(self.store.has_changes(component))
+
+    @ddt.data('draft', 'split')
+    def test_unit_stuck_in_published_mode_after_delete(self, default_ms):
+        """
+        Test that a unit does not get stuck in published mode
+        after discarding a component changes and deleting a component
+        """
+        self.initdb(default_ms)
+
+        test_course = self.store.create_course('testx', 'GreekHero', 'test_run', self.user_id)
+
+        # Create a dummy vertical & html component to test against
+        vertical = self.store.create_item(
+            self.user_id,
+            test_course.id,
+            'vertical',
+            block_id='test_vertical'
+        )
+        component = self.store.create_child(
+            self.user_id,
+            vertical.location,
+            'html',
+            block_id='html_component'
+        )
+
+        # publish vertical changes
+        self.store.publish(vertical.location, self.user_id)
+        self.assertFalse(self._has_changes(vertical.location))
+
+        # Change a component, then check that there now are changes
+        component = self.store.get_item(component.location)
+        component.display_name = 'Changed Display Name'
+        self.store.update_item(component, self.user_id)
+        self.assertTrue(self._has_changes(vertical.location))
+
+        # Discard changes and verify that there are no changes
+        self.store.revert_to_published(vertical.location, self.user_id)
+        self.assertFalse(self._has_changes(vertical.location))
+
+        # Delete the component and verify that the unit has changes
+        self.store.delete_item(component.location, self.user_id)
+        vertical = self.store.get_item(vertical.location)
+        self.assertTrue(self._has_changes(vertical.location))
+
     def setup_has_changes(self, default_ms):
         """
         Common set up for has_changes tests below.
@@ -793,7 +906,7 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
     #   find: find parent (definition.children) 2x, find draft item, get inheritance items
     #   send: one delete query for specific item
     # Split:
-    #   find: active_version & structure
+    #   find: active_version & structure (cached)
     #   send: update structure and active_versions
     @ddt.data(('draft', 4, 1), ('split', 2, 2))
     @ddt.unpack
@@ -1989,6 +2102,52 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
             self.assertCoursesEqual(source_store, source_course_key, dest_store, dest_course_id)
 
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
+    def test_bulk_operations_signal_firing(self, default):
+        """ Signals should be fired right before bulk_operations() exits. """
+        with MongoContentstoreBuilder().build() as contentstore:
+            self.store = MixedModuleStore(
+                contentstore=contentstore,
+                create_modulestore_instance=create_modulestore_instance,
+                mappings={},
+                signal_handler=SignalHandler(MixedModuleStore),
+                **self.OPTIONS
+            )
+            self.addCleanup(self.store.close_all_connections)
+
+            with self.store.default_store(default):
+
+                with mock_signal_receiver(SignalHandler.course_published) as receiver:
+                    self.assertEqual(receiver.call_count, 0)
+
+                    # Course creation and publication should fire the signal
+                    course = self.store.create_course('org_x', 'course_y', 'run_z', self.user_id)
+                    self.assertEqual(receiver.call_count, 1)
+                    receiver.reset_mock()
+
+                    course_key = course.id
+
+                    def _clear_bulk_ops_record(course_key):  # pylint: disable=unused-argument
+                        """
+                        Check if the signal has been fired.
+                        The course_published signal fires before the _clear_bulk_ops_record.
+                        """
+                        self.assertEqual(receiver.call_count, 1)
+
+                    with patch.object(
+                        self.store.thread_cache.default_store, '_clear_bulk_ops_record', wraps=_clear_bulk_ops_record
+                    ) as mock_clear_bulk_ops_record:
+
+                        with self.store.bulk_operations(course_key):
+                            categories = DIRECT_ONLY_CATEGORIES
+                            for block_type in categories:
+                                self.store.create_item(self.user_id, course_key, block_type)
+                                self.assertEqual(receiver.call_count, 0)
+
+                        self.assertEqual(mock_clear_bulk_ops_record.call_count, 1)
+
+                    self.assertEqual(receiver.call_count, 1)
+
+    @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
     def test_course_publish_signal_direct_firing(self, default):
         with MongoContentstoreBuilder().build() as contentstore:
             self.store = MixedModuleStore(
@@ -2057,8 +2216,9 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
                     self.store.clone_course(course_key, dest_course_id, self.user_id)
                     self.assertEqual(receiver.call_count, 1)
 
+    @patch('xmodule.tabs.CourseTab.from_json', side_effect=mock_tab_from_json)
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
-    def test_course_publish_signal_import_firing(self, default):
+    def test_course_publish_signal_import_firing(self, default, _from_json):
         with MongoContentstoreBuilder().build() as contentstore:
             self.store = MixedModuleStore(
                 contentstore=contentstore,

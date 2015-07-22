@@ -7,8 +7,10 @@ import uuid
 import time
 import json
 import warnings
+from datetime import timedelta
 from collections import defaultdict
 from pytz import UTC
+from requests import HTTPError
 from ipware.ip import get_ip
 
 from django.conf import settings
@@ -25,22 +27,19 @@ from django.db import IntegrityError, transaction
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
                          HttpResponseServerError, Http404)
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.translation import ungettext
-from django_future.csrf import ensure_csrf_cookie
 from django.utils.http import cookie_date, base36_to_int
 from django.utils.translation import ugettext as _, get_language
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_GET
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from django.template.response import TemplateResponse
 
 from ratelimitbackend.exceptions import RateLimitException
 
-from requests import HTTPError
 
 from social.apps.django_app import utils as social_utils
 from social.backends import oauth as social_oauth
@@ -52,14 +51,15 @@ from course_modes.models import CourseMode
 from shoppingcart.api import order_history
 from student.models import (
     Registration, UserProfile, PendingNameChange,
-    PendingEmailChange, CourseEnrollment, unique_id_for_user,
+    PendingEmailChange, CourseEnrollment, CourseEnrollmentAttribute, unique_id_for_user,
     CourseEnrollmentAllowed, UserStanding, LoginFailures,
     create_comments_service_user, PasswordHistory, UserSignupSource,
-    DashboardConfiguration, LinkedInAddToProfileConfiguration)
+    DashboardConfiguration, LinkedInAddToProfileConfiguration, ManualEnrollmentAudit, ALLOWEDTOENROLL_TO_ENROLLED)
 from student.forms import AccountCreationForm, PasswordResetFormNoActive
 
-from verify_student.models import SoftwareSecurePhotoVerification, MidcourseReverificationWindow
+from verify_student.models import SoftwareSecurePhotoVerification  # pylint: disable=import-error
 from certificates.models import CertificateStatuses, certificate_status_for_student
+from certificates.api import get_certificate_url, get_active_web_certificate  # pylint: disable=import-error
 from dark_lang.models import DarkLangConfig
 
 from xmodule.modulestore.django import modulestore
@@ -106,9 +106,11 @@ from util.password_policy_validators import (
 import third_party_auth
 from third_party_auth import pipeline, provider
 from student.helpers import (
-    auth_pipeline_urls, set_logged_in_cookie,
-    check_verify_status_by_course
+    check_verify_status_by_course,
+    auth_pipeline_urls, get_next_url_for_login_page
 )
+from student.cookies import set_logged_in_cookies, delete_logged_in_cookies
+from student.models import anonymous_id_for_user
 from xmodule.error_module import ErrorDescriptor
 from shoppingcart.models import DonationConfiguration, CourseRegistrationCode
 
@@ -128,9 +130,7 @@ from openedx.core.djangoapps.user_api.preferences import api as preferences_api
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
-
 ReverifyInfo = namedtuple('ReverifyInfo', 'course_id course_name course_number date status display')  # pylint: disable=invalid-name
-
 SETTING_CHANGE_INITIATED = 'edx.user.settings.change_initiated'
 
 
@@ -310,7 +310,22 @@ def _cert_info(user, course, cert_status, course_mode):
         status_dict['show_survey_button'] = False
 
     if status == 'ready':
-        if 'download_url' not in cert_status:
+        # showing the certificate web view button if certificate is ready state and feature flags are enabled.
+        if settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False):
+            if get_active_web_certificate(course) is not None:
+                certificate_url = get_certificate_url(
+                    user_id=user.id,
+                    course_id=unicode(course.id),
+                    verify_uuid=None
+                )
+                status_dict.update({
+                    'show_cert_web_view': True,
+                    'cert_web_view_url': u'{url}'.format(url=certificate_url)
+                })
+            else:
+                # don't show download certificate button if we don't have an active certificate for course
+                status_dict['show_download_url'] = False
+        elif 'download_url' not in cert_status:
             log.warning(
                 u"User %s has a downloadable cert for %s, but no download url",
                 user.username,
@@ -350,24 +365,30 @@ def signin_user(request):
     external_auth_response = external_auth_login(request)
     if external_auth_response is not None:
         return external_auth_response
+    # Determine the URL to redirect to following login:
+    redirect_to = get_next_url_for_login_page(request)
     if request.user.is_authenticated():
-        return redirect(reverse('dashboard'))
+        return redirect(redirect_to)
 
-    course_id = request.GET.get('course_id')
-    email_opt_in = request.GET.get('email_opt_in')
+    third_party_auth_error = None
+    for msg in messages.get_messages(request):
+        if msg.extra_tags.split()[0] == "social-auth":
+            # msg may or may not be translated. Try translating [again] in case we are able to:
+            third_party_auth_error = _(unicode(msg))  # pylint: disable=translation-of-non-string
+            break
+
     context = {
-        'course_id': course_id,
-        'email_opt_in': email_opt_in,
-        'enrollment_action': request.GET.get('enrollment_action'),
+        'login_redirect_url': redirect_to,  # This gets added to the query string of the "Sign In" button in the header
         # Bool injected into JS to submit form if we're inside a running third-
         # party auth pipeline; distinct from the actual instance of the running
         # pipeline, if any.
         'pipeline_running': 'true' if pipeline.running(request) else 'false',
-        'pipeline_url': auth_pipeline_urls(pipeline.AUTH_ENTRY_LOGIN, course_id=course_id, email_opt_in=email_opt_in),
+        'pipeline_url': auth_pipeline_urls(pipeline.AUTH_ENTRY_LOGIN, redirect_url=redirect_to),
         'platform_name': microsite.get_value(
             'platform_name',
             settings.PLATFORM_NAME
         ),
+        'third_party_auth_error': third_party_auth_error
     }
 
     return render_to_response('login.html', context)
@@ -376,24 +397,21 @@ def signin_user(request):
 @ensure_csrf_cookie
 def register_user(request, extra_context=None):
     """Deprecated. To be replaced by :class:`student_account.views.login_and_registration_form`."""
+    # Determine the URL to redirect to following login:
+    redirect_to = get_next_url_for_login_page(request)
     if request.user.is_authenticated():
-        return redirect(reverse('dashboard'))
+        return redirect(redirect_to)
 
     external_auth_response = external_auth_register(request)
     if external_auth_response is not None:
         return external_auth_response
 
-    course_id = request.GET.get('course_id')
-    email_opt_in = request.GET.get('email_opt_in')
-
     context = {
-        'course_id': course_id,
-        'email_opt_in': email_opt_in,
+        'login_redirect_url': redirect_to,  # This gets added to the query string of the "Sign In" button in the header
         'email': '',
-        'enrollment_action': request.GET.get('enrollment_action'),
         'name': '',
         'running_pipeline': None,
-        'pipeline_urls': auth_pipeline_urls(pipeline.AUTH_ENTRY_REGISTER, course_id=course_id, email_opt_in=email_opt_in),
+        'pipeline_urls': auth_pipeline_urls(pipeline.AUTH_ENTRY_REGISTER, redirect_url=redirect_to),
         'platform_name': microsite.get_value(
             'platform_name',
             settings.PLATFORM_NAME
@@ -412,10 +430,10 @@ def register_user(request, extra_context=None):
     # selected provider.
     if third_party_auth.is_enabled() and pipeline.running(request):
         running_pipeline = pipeline.get(request)
-        current_provider = provider.Registry.get_by_backend_name(running_pipeline.get('backend'))
+        current_provider = provider.Registry.get_from_pipeline(running_pipeline)
         overrides = current_provider.get_register_form_data(running_pipeline.get('kwargs'))
         overrides['running_pipeline'] = running_pipeline
-        overrides['selected_provider'] = current_provider.NAME
+        overrides['selected_provider'] = current_provider.name
         context.update(overrides)
 
     return render_to_response('register.html', context)
@@ -513,6 +531,11 @@ def dashboard(request):
     enrollment_message = _create_recent_enrollment_message(
         course_enrollment_pairs, course_modes_by_course
     )
+
+    # Retrieve the course modes for each course
+    enrolled_courses_dict = {}
+    for course, __ in course_enrollment_pairs:
+        enrolled_courses_dict[unicode(course.id)] = course
 
     course_optouts = Optout.objects.filter(user=user).values_list('course_id', flat=True)
 
@@ -612,14 +635,10 @@ def dashboard(request):
 
     ccx_membership_triplets = []
     if settings.FEATURES.get('CUSTOM_COURSES_EDX', False):
-        from ccx import ACTIVE_CCX_KEY
         from ccx.utils import get_ccx_membership_triplets
         ccx_membership_triplets = get_ccx_membership_triplets(
             user, course_org_filter, org_filter_out_set
         )
-        # should we deselect any active CCX at this time so that we don't have
-        # to change the URL for viewing a course?  I think so.
-        request.session[ACTIVE_CCX_KEY] = None
 
     context = {
         'enrollment_message': enrollment_message,
@@ -631,6 +650,7 @@ def dashboard(request):
         'show_courseware_links_for': show_courseware_links_for,
         'all_course_modes': course_mode_info,
         'cert_statuses': cert_statuses,
+        'credit_statuses': _credit_statuses(user, course_enrollment_pairs),
         'show_email_settings_for': show_email_settings_for,
         'reverifications': reverifications,
         'verification_status': verification_status,
@@ -727,33 +747,6 @@ def _allow_donation(course_modes, course_id, enrollment):
     return donations_enabled and enrollment.mode in course_modes[course_id] and course_modes[course_id][enrollment.mode].min_price == 0
 
 
-def try_change_enrollment(request):
-    """
-    This method calls change_enrollment if the necessary POST
-    parameters are present, but does not return anything in most cases. It
-    simply logs the result or exception. This is usually
-    called after a registration or login, as secondary action.
-    It should not interrupt a successful registration or login.
-    """
-    if 'enrollment_action' in request.POST:
-        try:
-            enrollment_response = change_enrollment(request)
-            # There isn't really a way to display the results to the user, so we just log it
-            # We expect the enrollment to be a success, and will show up on the dashboard anyway
-            log.info(
-                u"Attempted to automatically enroll after login. Response code: %s; response body: %s",
-                enrollment_response.status_code,
-                enrollment_response.content
-            )
-            # Hack: since change_enrollment delivers its redirect_url in the content
-            # of its response, we check here that only the 200 codes with content
-            # will return redirect_urls.
-            if enrollment_response.status_code == 200 and enrollment_response.content != '':
-                return enrollment_response.content
-        except Exception as exc:  # pylint: disable=broad-except
-            log.exception(u"Exception automatically enrolling after login: %s", exc)
-
-
 def _update_email_opt_in(request, org):
     """Helper function used to hit the profile API if email opt-in is enabled."""
 
@@ -761,6 +754,128 @@ def _update_email_opt_in(request, org):
     if email_opt_in is not None:
         email_opt_in_boolean = email_opt_in == 'true'
         preferences_api.update_email_opt_in(request.user, org, email_opt_in_boolean)
+
+
+def _credit_statuses(user, course_enrollment_pairs):
+    """
+    Retrieve the status for credit courses.
+
+    A credit course is a course for which a user can purchased
+    college credit.  The current flow is:
+
+    1. User becomes eligible for credit (submits verifications, passes the course, etc.)
+    2. User purchases credit from a particular credit provider.
+    3. User requests credit from the provider, usually creating an account on the provider's site.
+    4. The credit provider notifies us whether the user's request for credit has been accepted or rejected.
+
+    The dashboard is responsible for communicating the user's state in this flow.
+
+    Arguments:
+        user (User): The currently logged-in user.
+        course_enrollment_pairs (list): List of (Course, CourseEnrollment) tuples.
+
+    Returns: dict
+
+    The returned dictionary has keys that are `CourseKey`s and values that
+    are dictionaries with:
+
+        * eligible (bool): True if the user is eligible for credit in this course.
+        * deadline (datetime): The deadline for purchasing and requesting credit for this course.
+        * purchased (bool): Whether the user has purchased credit for this course.
+        * provider_name (string): The display name of the credit provider.
+        * provider_status_url (string): A URL the user can visit to check on their credit request status.
+        * request_status (string): Either "pending", "approved", or "rejected"
+        * error (bool): If true, an unexpected error occurred when retrieving the credit status,
+            so the user should contact the support team.
+
+    Example:
+    >>> _credit_statuses(user, course_enrollment_pairs)
+    {
+        CourseKey.from_string("edX/DemoX/Demo_Course"): {
+            "course_key": "edX/DemoX/Demo_Course",
+            "eligible": True,
+            "deadline": 2015-11-23 00:00:00 UTC,
+            "purchased": True,
+            "provider_name": "Hogwarts",
+            "provider_status_url": "http://example.com/status",
+            "request_status": "pending",
+            "error": False
+        }
+    }
+
+    """
+    from openedx.core.djangoapps.credit import api as credit_api
+
+    # Feature flag off
+    if not settings.FEATURES.get("ENABLE_CREDIT_ELIGIBILITY"):
+        return {}
+
+    request_status_by_course = {
+        request["course_key"]: request["status"]
+        for request in credit_api.get_credit_requests_for_user(user.username)
+    }
+
+    credit_enrollments = {
+        course.id: enrollment
+        for course, enrollment in course_enrollment_pairs
+        if enrollment.mode == "credit"
+    }
+
+    # When a user purchases credit in a course, the user's enrollment
+    # mode is set to "credit" and an enrollment attribute is set
+    # with the ID of the credit provider.  We retrieve *all* such attributes
+    # here to minimize the number of database queries.
+    purchased_credit_providers = {
+        attribute.enrollment.course_id: attribute.value
+        for attribute in CourseEnrollmentAttribute.objects.filter(
+            namespace="credit",
+            name="provider_id",
+            enrollment__in=credit_enrollments.values()
+        ).select_related("enrollment")
+    }
+
+    provider_info_by_id = {
+        provider["id"]: provider
+        for provider in credit_api.get_credit_providers()
+    }
+
+    statuses = {}
+    for eligibility in credit_api.get_eligibilities_for_user(user.username):
+        course_key = eligibility["course_key"]
+        status = {
+            "course_key": unicode(course_key),
+            "eligible": True,
+            "deadline": eligibility["deadline"],
+            "purchased": course_key in credit_enrollments,
+            "provider_name": None,
+            "provider_status_url": None,
+            "request_status": request_status_by_course.get(course_key),
+            "error": False,
+        }
+
+        # If the user has purchased credit, then include information about the credit
+        # provider from which the user purchased credit.
+        # We retrieve the provider's ID from the an "enrollment attribute" set on the user's
+        # enrollment when the user's order for credit is fulfilled by the E-Commerce service.
+        if status["purchased"]:
+            provider_id = purchased_credit_providers.get(course_key)
+            if provider_id is None:
+                status["error"] = True
+                log.error(
+                    u"Could not find credit provider associated with credit enrollment "
+                    u"for user %s in course %s.  The user will not be able to see his or her "
+                    u"credit request status on the student dashboard.  This attribute should "
+                    u"have been set when the user purchased credit in the course.",
+                    user.id, course_key
+                )
+            else:
+                provider_info = provider_info_by_id.get(provider_id, {})
+                status["provider_name"] = provider_info.get("display_name")
+                status["provider_status_url"] = provider_info.get("status_url")
+
+        statuses[course_key] = status
+
+    return statuses
 
 
 @require_POST
@@ -778,9 +893,8 @@ def change_enrollment(request, check_access=True):
     course, a 400 error will be returned. If the user is not logged in, 403
     will be returned; it is important that only this case return 403 so the
     front end can redirect the user to a registration or login page when this
-    happens. This function should only be called from an AJAX request or
-    as a post-login/registration helper, so the error messages in the responses
-    should never actually be user-visible.
+    happens. This function should only be called from an AJAX request, so
+    the error messages in the responses should never actually be user-visible.
 
     Args:
         request (`Request`): The Django request object
@@ -872,20 +986,6 @@ def change_enrollment(request, check_access=True):
 
         # Otherwise, there is only one mode available (the default)
         return HttpResponse()
-
-    elif action == "add_to_cart":
-        # Pass the request handling to shoppingcart.views
-        # The view in shoppingcart.views performs error handling and logs different errors.  But this elif clause
-        # is only used in the "auto-add after user reg/login" case, i.e. it's always wrapped in try_change_enrollment.
-        # This means there's no good way to display error messages to the user.  So we log the errors and send
-        # the user to the shopping cart page always, where they can reasonably discern the status of their cart,
-        # whether things got added, etc
-
-        shoppingcart.views.add_course_to_cart(request, course_id.to_deprecated_string())
-        return HttpResponse(
-            reverse("shoppingcart.views.show_cart")
-        )
-
     elif action == "unenroll":
         if not CourseEnrollment.is_enrolled(user, course_id):
             return HttpResponseBadRequest(_("You are not enrolled in this course"))
@@ -903,8 +1003,9 @@ def accounts_login(request):
     if external_auth_response is not None:
         return external_auth_response
 
-    redirect_to = request.GET.get('next')
+    redirect_to = get_next_url_for_login_page(request)
     context = {
+        'login_redirect_url': redirect_to,
         'pipeline_running': 'false',
         'pipeline_url': auth_pipeline_urls(pipeline.AUTH_ENTRY_LOGIN, redirect_url=redirect_to),
         'platform_name': settings.PLATFORM_NAME,
@@ -936,10 +1037,11 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
         running_pipeline = pipeline.get(request)
         username = running_pipeline['kwargs'].get('username')
         backend_name = running_pipeline['backend']
-        requested_provider = provider.Registry.get_by_backend_name(backend_name)
+        third_party_uid = running_pipeline['kwargs']['uid']
+        requested_provider = provider.Registry.get_from_pipeline(running_pipeline)
 
         try:
-            user = pipeline.get_authenticated_user(username, backend_name)
+            user = pipeline.get_authenticated_user(requested_provider, username, third_party_uid)
             third_party_auth_successful = True
         except User.DoesNotExist:
             AUDIT_LOG.warning(
@@ -947,12 +1049,12 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
                     username=username, backend_name=backend_name))
             return HttpResponse(
                 _("You've successfully logged into your {provider_name} account, but this account isn't linked with an {platform_name} account yet.").format(
-                    platform_name=settings.PLATFORM_NAME, provider_name=requested_provider.NAME
+                    platform_name=settings.PLATFORM_NAME, provider_name=requested_provider.name
                 )
                 + "<br/><br/>" +
                 _("Use your {platform_name} username and password to log into {platform_name} below, "
                   "and then link your {platform_name} account with {provider_name} from your dashboard.").format(
-                      platform_name=settings.PLATFORM_NAME, provider_name=requested_provider.NAME
+                      platform_name=settings.PLATFORM_NAME, provider_name=requested_provider.name
                 )
                 + "<br/><br/>" +
                 _("If you don't have an {platform_name} account yet, click <strong>Register Now</strong> at the top of the page.").format(
@@ -1089,8 +1191,7 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
             log.exception(exc)
             raise
 
-        redirect_url = try_change_enrollment(request)
-
+        redirect_url = None  # The AJAX method calling should know the default destination upon success
         if third_party_auth_successful:
             redirect_url = pipeline.get_complete_url(backend_name)
 
@@ -1101,7 +1202,7 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
 
         # Ensure that the external marketing site can
         # detect that the user is logged in.
-        return set_logged_in_cookie(request, response)
+        return set_logged_in_cookies(request, response, user)
 
     if settings.FEATURES['SQUELCH_PII_IN_LOGS']:
         AUDIT_LOG.warning(u"Login failed - Account not active for user.id: {0}, resending activation".format(user.id))
@@ -1127,7 +1228,7 @@ def login_oauth_token(request, backend):
     """
     warnings.warn("Please use AccessTokenExchangeView instead.", DeprecationWarning)
 
-    backend = request.social_strategy.backend
+    backend = request.backend
     if isinstance(backend, social_oauth.BaseOAuth1) or isinstance(backend, social_oauth.BaseOAuth2):
         if "access_token" in request.POST:
             # Tell third party auth pipeline that this is an API call
@@ -1135,7 +1236,7 @@ def login_oauth_token(request, backend):
             user = None
             try:
                 user = backend.do_auth(request.POST["access_token"])
-            except HTTPError:
+            except (HTTPError, AuthException):
                 pass
             # do_auth can return a non-User object if it fails
             if user and isinstance(user, User):
@@ -1165,10 +1266,8 @@ def logout_user(request):
     else:
         target = '/'
     response = redirect(target)
-    response.delete_cookie(
-        settings.EDXMKTG_COOKIE_NAME,
-        path='/', domain=settings.SESSION_COOKIE_DOMAIN,
-    )
+
+    delete_logged_in_cookies(response)
     return response
 
 
@@ -1443,9 +1542,13 @@ def create_account_with_params(request, params):
         # first, create the account
         (user, profile, registration) = _do_create_account(form)
 
-        # next, link the account with social auth, if provided
+        # next, link the account with social auth, if provided via the API.
+        # (If the user is using the normal register page, the social auth pipeline does the linking, not this code)
         if should_link_with_social_auth:
-            request.social_strategy = social_utils.load_strategy(backend=params['provider'], request=request)
+            backend_name = params['provider']
+            request.social_strategy = social_utils.load_strategy(request)
+            redirect_uri = reverse('social:complete', args=(backend_name, ))
+            request.backend = social_utils.load_backend(request.social_strategy, backend_name, redirect_uri)
             social_access_token = params.get('access_token')
             if not social_access_token:
                 raise ValidationError({
@@ -1459,7 +1562,7 @@ def create_account_with_params(request, params):
             pipeline_user = None
             error_message = ""
             try:
-                pipeline_user = request.social_strategy.backend.do_auth(social_access_token, user=user)
+                pipeline_user = request.backend.do_auth(social_access_token, user=user)
             except AuthAlreadyAssociated:
                 error_message = _("The provided access_token is already associated with another user.")
             except (HTTPError, AuthException):
@@ -1480,6 +1583,13 @@ def create_account_with_params(request, params):
 
     dog_stats_api.increment("common.student.account_created")
 
+    # If the user is registering via 3rd party auth, track which provider they use
+    third_party_provider = None
+    running_pipeline = None
+    if third_party_auth.is_enabled() and pipeline.running(request):
+        running_pipeline = pipeline.get(request)
+        third_party_provider = provider.Registry.get_from_pipeline(running_pipeline)
+
     # Track the user's registration
     if settings.FEATURES.get('SEGMENT_IO_LMS') and hasattr(settings, 'SEGMENT_IO_LMS_KEY'):
         tracking_context = tracker.get_tracker().resolve_context()
@@ -1488,20 +1598,13 @@ def create_account_with_params(request, params):
             'username': user.username,
         })
 
-        # If the user is registering via 3rd party auth, track which provider they use
-        provider_name = None
-        if third_party_auth.is_enabled() and pipeline.running(request):
-            running_pipeline = pipeline.get(request)
-            current_provider = provider.Registry.get_by_backend_name(running_pipeline.get('backend'))
-            provider_name = current_provider.NAME
-
         analytics.track(
             user.id,
             "edx.bi.user.account.registered",
             {
                 'category': 'conversion',
                 'label': params.get('course_id'),
-                'provider': provider_name
+                'provider': third_party_provider.name if third_party_provider else None
             },
             context={
                 'Google Analytics': {
@@ -1518,6 +1621,7 @@ def create_account_with_params(request, params):
     # 2. Random user generation for other forms of testing.
     # 3. External auth bypassing activation.
     # 4. Have the platform configured to not require e-mail activation.
+    # 5. Registering a new user using a trusted third party provider (with skip_email_verification=True)
     #
     # Note that this feature is only tested as a flag set one way or
     # the other for *new* systems. we need to be careful about
@@ -1526,7 +1630,11 @@ def create_account_with_params(request, params):
     send_email = (
         not settings.FEATURES.get('SKIP_EMAIL_VALIDATION', None) and
         not settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING') and
-        not (do_external_auth and settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH'))
+        not (do_external_auth and settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH')) and
+        not (
+            third_party_provider and third_party_provider.skip_email_verification and
+            user.email == running_pipeline['kwargs'].get('details', {}).get('email')
+        )
     )
     if send_email:
         context = {
@@ -1582,32 +1690,7 @@ def create_account_with_params(request, params):
             new_user.save()
             AUDIT_LOG.info(u"Login activated on extauth account - {0} ({1})".format(new_user.username, new_user.email))
 
-
-def set_marketing_cookie(request, response):
-    """
-    Set the login cookie for the edx marketing site on the given response. Its
-    expiration will match that of the given request's session.
-    """
-    if request.session.get_expire_at_browser_close():
-        max_age = None
-        expires = None
-    else:
-        max_age = request.session.get_expiry_age()
-        expires_time = time.time() + max_age
-        expires = cookie_date(expires_time)
-
-    # we want this cookie to be accessed via javascript
-    # so httponly is set to None
-    response.set_cookie(
-        settings.EDXMKTG_COOKIE_NAME,
-        'true',
-        max_age=max_age,
-        expires=expires,
-        domain=settings.SESSION_COOKIE_DOMAIN,
-        path='/',
-        secure=None,
-        httponly=None
-    )
+    return new_user
 
 
 @csrf_exempt
@@ -1619,7 +1702,7 @@ def create_account(request, post_override=None):
     warnings.warn("Please use RegistrationView instead.", DeprecationWarning)
 
     try:
-        create_account_with_params(request, post_override or request.POST)
+        user = create_account_with_params(request, post_override or request.POST)
     except AccountValidationError as exc:
         return JsonResponse({'success': False, 'value': exc.message, 'field': exc.field}, status=400)
     except ValidationError as exc:
@@ -1633,7 +1716,7 @@ def create_account(request, post_override=None):
             status=400
         )
 
-    redirect_url = try_change_enrollment(request)
+    redirect_url = None  # The AJAX method calling should know the default destination upon success
 
     # Resume the third-party-auth pipeline if necessary.
     if third_party_auth.is_enabled() and pipeline.running(request):
@@ -1644,7 +1727,7 @@ def create_account(request, post_override=None):
         'success': True,
         'redirect_url': redirect_url,
     })
-    set_marketing_cookie(request, response)
+    set_logged_in_cookies(request, response, user)
     return response
 
 
@@ -1740,11 +1823,21 @@ def auto_auth(request):
 
     # Provide the user with a valid CSRF token
     # then return a 200 response
-    success_msg = u"{} user {} ({}) with password {} and user_id {}".format(
-        u"Logged in" if login_when_done else "Created",
-        username, email, password, user.id
-    )
-    response = HttpResponse(success_msg)
+    if request.META.get('HTTP_ACCEPT') == 'application/json':
+        response = JsonResponse({
+            'created_status': u"Logged in" if login_when_done else "Created",
+            'username': username,
+            'email': email,
+            'password': password,
+            'user_id': user.id,  # pylint: disable=no-member
+            'anonymous_id': anonymous_id_for_user(user, None),
+        })
+    else:
+        success_msg = u"{} user {} ({}) with password {} and user_id {}".format(
+            u"Logged in" if login_when_done else "Created",
+            username, email, password, user.id  # pylint: disable=no-member
+        )
+        response = HttpResponse(success_msg)
     response.set_cookie('csrftoken', csrf(request)['csrf_token'])
     return response
 
@@ -1766,7 +1859,16 @@ def activate_account(request, key):
             ceas = CourseEnrollmentAllowed.objects.filter(email=student[0].email)
             for cea in ceas:
                 if cea.auto_enroll:
-                    CourseEnrollment.enroll(student[0], cea.course_id)
+                    enrollment = CourseEnrollment.enroll(student[0], cea.course_id)
+                    manual_enrollment_audit = ManualEnrollmentAudit.get_manual_enrollment_by_email(student[0].email)
+                    if manual_enrollment_audit is not None:
+                        # get the enrolled by user and reason from the ManualEnrollmentAudit table.
+                        # then create a new ManualEnrollmentAudit table entry for the same email
+                        # different transition state.
+                        ManualEnrollmentAudit.create_manual_enrollment_audit(
+                            manual_enrollment_audit.enrolled_by, student[0].email, ALLOWEDTOENROLL_TO_ENROLLED,
+                            manual_enrollment_audit.reason, enrollment
+                        )
 
             # enroll student in any pending CCXs he/she may have if auto_enroll flag is set
             if settings.FEATURES.get('CUSTOM_COURSES_EDX'):
@@ -1953,36 +2055,6 @@ def reactivation_email_for_user(user):
     return JsonResponse({"success": True})
 
 
-# TODO: delete this method and redirect unit tests to validate_new_email and do_email_change_request
-# after accounts page work is done.
-@ensure_csrf_cookie
-def change_email_request(request):
-    """ AJAX call from the profile page. User wants a new e-mail.
-    """
-    ## Make sure it checks for existing e-mail conflicts
-    if not request.user.is_authenticated():
-        raise Http404
-
-    user = request.user
-
-    if not user.check_password(request.POST['password']):
-        return JsonResponse({
-            "success": False,
-            "error": _('Invalid password'),
-        })  # TODO: this should be status code 400  # pylint: disable=fixme
-
-    new_email = request.POST['new_email']
-    try:
-        validate_new_email(request.user, new_email)
-        do_email_change_request(request.user, new_email)
-    except ValueError as err:
-        return JsonResponse({
-            "success": False,
-            "error": err.message,
-        })
-    return JsonResponse({"success": True})
-
-
 def validate_new_email(user, new_email):
     """
     Given a new email for a user, does some basic verification of the new address If any issues are encountered
@@ -2120,66 +2192,6 @@ def confirm_email_change(request, key):  # pylint: disable=unused-argument
         # If we get an unexpected exception, be sure to rollback the transaction
         transaction.rollback()
         raise
-
-
-# TODO: DELETE AFTER NEW ACCOUNT PAGE DONE
-@ensure_csrf_cookie
-@require_POST
-def change_name_request(request):
-    """ Log a request for a new name. """
-    if not request.user.is_authenticated():
-        raise Http404
-
-    try:
-        pnc = PendingNameChange.objects.get(user=request.user.id)
-    except PendingNameChange.DoesNotExist:
-        pnc = PendingNameChange()
-    pnc.user = request.user
-    pnc.new_name = request.POST['new_name'].strip()
-    pnc.rationale = request.POST['rationale']
-    if len(pnc.new_name) < 2:
-        return JsonResponse({
-            "success": False,
-            "error": _('Name required'),
-        })  # TODO: this should be status code 400  # pylint: disable=fixme
-    pnc.save()
-
-    # The following automatically accepts name change requests. Remove this to
-    # go back to the old system where it gets queued up for admin approval.
-    accept_name_change_by_id(pnc.id)
-
-    return JsonResponse({"success": True})
-
-
-# TODO: DELETE AFTER NEW ACCOUNT PAGE DONE
-def accept_name_change_by_id(uid):
-    """
-    Accepts the pending name change request for the user represented
-    by user id `uid`.
-    """
-    try:
-        pnc = PendingNameChange.objects.get(id=uid)
-    except PendingNameChange.DoesNotExist:
-        return JsonResponse({
-            "success": False,
-            "error": _('Invalid ID'),
-        })  # TODO: this should be status code 400  # pylint: disable=fixme
-
-    user = pnc.user
-    u_prof = UserProfile.objects.get(user=user)
-
-    # Save old name
-    meta = u_prof.get_meta()
-    if 'old_names' not in meta:
-        meta['old_names'] = []
-    meta['old_names'].append([u_prof.name, pnc.rationale, datetime.datetime.now(UTC).isoformat()])
-    u_prof.set_meta(meta)
-
-    u_prof.name = pnc.new_name
-    u_prof.save()
-    pnc.delete()
-
-    return JsonResponse({"success": True})
 
 
 @require_POST

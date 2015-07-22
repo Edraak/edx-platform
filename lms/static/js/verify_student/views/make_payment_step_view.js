@@ -10,6 +10,8 @@ var edx = edx || {};
 
     edx.verify_student.MakePaymentStepView = edx.verify_student.StepView.extend({
 
+        templateName: "make_payment_step",
+
         defaultContext: function() {
             return {
                 isActive: true,
@@ -45,13 +47,13 @@ var edx = edx || {};
 
         _getPaymentButtonText: function(processorName) {
             if (processorName.toLowerCase().substr(0, 11)=='cybersource') {
-                return gettext('Pay with Credit Card');
+                return gettext('Checkout');
             } else if (processorName.toLowerCase()=='paypal') {
-                return gettext('Pay with PayPal');
+                return gettext('Checkout with PayPal');
             } else {
                 // This is mainly for testing as no other processors are supported right now.
                 // Translators: 'processor' is the name of a third-party payment processing vendor (example: "PayPal")
-                return interpolate_text(gettext('Pay with {processor}'), {processor: processorName});
+                return interpolate_text(gettext('Checkout with {processor}'), {processor: processorName});
             }
         },
 
@@ -68,6 +70,9 @@ var edx = edx || {};
                     templateContext.requirements,
                     function( isVisible ) { return isVisible; }
                 ),
+                // This a hack to appease /lms/static/js/spec/verify_student/pay_and_verify_view_spec.js,
+                // which does not load an actual template context.
+                processors = templateContext.processors || [],
                 self = this;
 
             // Track a virtual pageview, for easy funnel reconstruction.
@@ -100,7 +105,7 @@ var edx = edx || {};
             );
 
             // create a button for each payment processor
-            _.each(templateContext.processors, function(processorName) {
+            _.each(processors.reverse(), function(processorName) {
                 $( 'div.payment-buttons' ).append( self._getPaymentButtonHtml(processorName) );
             });
 
@@ -133,6 +138,8 @@ var edx = edx || {};
 
             // Disable the payment button to prevent multiple submissions
             this.setPaymentEnabled( false );
+
+            $( event.target ).toggleClass( 'is-selected' );
 
             // Create the order for the amount
             $.ajax({
@@ -194,6 +201,8 @@ var edx = edx || {};
 
             // Re-enable the button so the user can re-try
             this.setPaymentEnabled( true );
+
+            $( '.payment-button' ).toggleClass( 'is-selected', false );
         },
 
         getPaymentAmount: function() {

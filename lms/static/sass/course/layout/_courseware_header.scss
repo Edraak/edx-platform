@@ -164,7 +164,7 @@ header.global.slim {
 
   h2 {
     display: block;
-    width: 550px;
+    width: 65%;
     @include float(left);
     font-size: 0.9em;
     font-weight: 600;
@@ -192,5 +192,9 @@ header.global.slim {
     font-size: 14px;
     font-weight: bold;
     letter-spacing: 0;
+  }
+
+  @media print {
+    background: transparent !important;
   }
 }

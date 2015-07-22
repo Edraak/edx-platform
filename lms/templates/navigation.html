@@ -5,15 +5,15 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
+from microsite_configuration import microsite
+from microsite_configuration.templatetags.microsite import platform_name
+from ccx.overrides import get_current_ccx
+
 # App that handles subdomain specific branding
 import branding
 # app that handles site status messages
 from status.status import get_site_status_msg
 %>
-
-<%! from microsite_configuration import microsite %>
-<%! from microsite_configuration.templatetags.microsite import platform_name %>
-<%! from ccx.overrides import get_current_ccx %>
 
 ## Provide a hook for themes to inject branding on top.
 <%block name="navigation_top" />
@@ -38,7 +38,7 @@ site_status_msg = get_site_status_msg(course_id)
 </%block>
 
   <header id="global-navigation" class="global ${"slim" if course else ""}" >
-    <nav aria-label="${_('Global')}">
+    <nav class="nav-wrapper" aria-label="${_('Global')}">
     <h1 class="logo">
       <a href="${marketing_link('ROOT')}">
         <%block name="navigation_logo">
@@ -48,12 +48,12 @@ site_status_msg = get_site_status_msg(course_id)
     </h1>
 
     % if course:
-    <h2><span class="provider">${course.display_org_with_default | h}:</span>
+    <h2 class="course-header"><span class="provider">${course.display_org_with_default | h}:</span>
       ${course.display_number_with_default | h}
       <%
         display_name = course.display_name_with_default
         if settings.FEATURES.get('CUSTOM_COURSES_EDX', False):
-          ccx = get_current_ccx()
+          ccx = get_current_ccx(course.id)
           if ccx:
             display_name = ccx.display_name
       %>
@@ -130,7 +130,7 @@ site_status_msg = get_site_status_msg(course_id)
           </li>
           % else:
           <li class="nav-global-04">
-            <a class="cta cta-register" href="/register">${_("Register Now")}</a>
+            <a class="cta cta-register" href="/register${login_query()}">${_("Register Now")}</a>
           </li>
           % endif
       % endif
@@ -155,9 +155,5 @@ site_status_msg = get_site_status_msg(course_id)
 <div class="ie-banner" aria-hidden="true">${_('<strong>Warning:</strong> Your browser is not fully supported. We strongly recommend using {chrome_link} or {ff_link}.').format(chrome_link='<a href="https://www.google.com/chrome" target="_blank">Chrome</a>', ff_link='<a href="http://www.mozilla.org/firefox" target="_blank">Firefox</a>')}</div>
 <![endif]-->
 % endif
-
-%if not user.is_authenticated():
-  <%include file="forgot_password_modal.html" />
-%endif
 
 <%include file="help_modal.html"/>

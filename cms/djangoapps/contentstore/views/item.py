@@ -332,13 +332,14 @@ def xblock_outline_handler(request, usage_key_string):
     response_format = request.REQUEST.get('format', 'html')
     if response_format == 'json' or 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json'):
         store = modulestore()
-        root_xblock = store.get_item(usage_key)
-        return JsonResponse(create_xblock_info(
-            root_xblock,
-            include_child_info=True,
-            course_outline=True,
-            include_children_predicate=lambda xblock: not xblock.category == 'vertical'
-        ))
+        with store.bulk_operations(usage_key.course_key):
+            root_xblock = store.get_item(usage_key, depth=None)
+            return JsonResponse(create_xblock_info(
+                root_xblock,
+                include_child_info=True,
+                course_outline=True,
+                include_children_predicate=lambda xblock: not xblock.category == 'vertical'
+            ))
     else:
         return Http404
 
@@ -478,6 +479,7 @@ def _save_xblock(user, xblock, data=None, children_strings=None, metadata=None, 
                             if verr.message:
                                 reason = _("Invalid data ({details})").format(details=verr.message)
                             return JsonResponse({"error": reason}, 400)
+
                         field.write_to(xblock, value)
 
         # update the xblock and call any xblock callbacks
@@ -753,7 +755,8 @@ def _get_module_info(xblock, rewrite_static_links=True, include_ancestor_info=Fa
 
 
 def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=False, include_child_info=False,
-                       course_outline=False, include_children_predicate=NEVER, parent_xblock=None, graders=None):
+                       course_outline=False, include_children_predicate=NEVER, parent_xblock=None, graders=None,
+                       user=None):
     """
     Creates the information needed for client-side XBlockInfo.
 
@@ -793,6 +796,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
             course_outline,
             graders,
             include_children_predicate=include_children_predicate,
+            user=user
         )
     else:
         child_info = None
@@ -831,7 +835,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
         "published_on": get_default_time_display(xblock.published_on) if published and xblock.published_on else None,
         "studio_url": xblock_studio_url(xblock, parent_xblock),
         "released_to_students": datetime.now(UTC) > xblock.start,
-        "release_date": _get_release_date(xblock),
+        "release_date": _get_release_date(xblock, user),
         "visibility_state": visibility_state,
         "has_explicit_staff_lock": xblock.fields['visible_to_staff_only'].is_set_on(xblock),
         "start": xblock.fields['start'].to_json(xblock.start),
@@ -1002,7 +1006,7 @@ def _create_xblock_ancestor_info(xblock, course_outline):
     }
 
 
-def _create_xblock_child_info(xblock, course_outline, graders, include_children_predicate=NEVER):
+def _create_xblock_child_info(xblock, course_outline, graders, include_children_predicate=NEVER, user=None):
     """
     Returns information about the children of an xblock, as well as about the primary category
     of xblock expected as children.
@@ -1020,16 +1024,22 @@ def _create_xblock_child_info(xblock, course_outline, graders, include_children_
                 child, include_child_info=True, course_outline=course_outline,
                 include_children_predicate=include_children_predicate,
                 parent_xblock=xblock,
-                graders=graders
+                graders=graders,
+                user=user
             ) for child in xblock.get_children()
         ]
     return child_info
 
 
-def _get_release_date(xblock):
+def _get_release_date(xblock, user=None):
     """
     Returns the release date for the xblock, or None if the release date has never been set.
     """
+    # If year of start date is less than 1900 then reset the start date to DEFAULT_START_DATE
+    if xblock.start.year < 1900 and user:
+        xblock.start = DEFAULT_START_DATE
+        xblock = _update_with_callback(xblock, user)
+
     # Treat DEFAULT_START_DATE as a magic number that means the release date has not been set
     return get_default_time_display(xblock.start) if xblock.start != DEFAULT_START_DATE else None
 

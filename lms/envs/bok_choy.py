@@ -71,10 +71,11 @@ XQUEUE_INTERFACE['url'] = 'http://localhost:8040'
 OPEN_ENDED_GRADING_INTERFACE['url'] = 'http://localhost:8041/'
 
 # Configure the LMS to use our stub EdxNotes implementation
-EDXNOTES_INTERFACE['url'] = 'http://localhost:8042/api/v1'
+EDXNOTES_PUBLIC_API = 'http://localhost:8042/api/v1'
+EDXNOTES_INTERNAL_API = 'http://localhost:8042/api/v1'
 
 # Enable django-pipeline and staticfiles
-STATIC_ROOT = (TEST_ROOT / "staticfiles").abspath()
+STATIC_ROOT = (TEST_ROOT / "staticfiles" / "lms").abspath()
 
 # Silence noisy logs
 import logging
@@ -92,6 +93,9 @@ FEATURES['MILESTONES_APP'] = True
 
 # Enable pre-requisite course
 FEATURES['ENABLE_PREREQUISITE_COURSES'] = True
+
+# Enable Course Discovery
+FEATURES['ENABLE_COURSE_DISCOVERY'] = True
 
 # Enable student notes
 FEATURES['ENABLE_EDXNOTES'] = True
@@ -123,6 +127,11 @@ FEATURES['ENABLE_MAX_FAILED_LOGIN_ATTEMPTS'] = False
 FEATURES['SQUELCH_PII_IN_LOGS'] = False
 FEATURES['PREVENT_CONCURRENT_LOGINS'] = False
 FEATURES['ADVANCED_SECURITY'] = False
+
+FEATURES['ENABLE_MOBILE_REST_API'] = True  # Show video bumper in LMS
+FEATURES['ENABLE_VIDEO_BUMPER'] = True  # Show video bumper in LMS
+FEATURES['SHOW_BUMPER_PERIODICITY'] = 1
+
 PASSWORD_MIN_LENGTH = None
 PASSWORD_COMPLEXITY = {}
 

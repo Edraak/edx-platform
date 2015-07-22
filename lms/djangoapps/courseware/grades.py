@@ -15,7 +15,7 @@ import dogstats_wrapper as dog_stats_api
 from courseware import courses
 from courseware.model_data import FieldDataCache
 from student.models import anonymous_id_for_user
-from util.module_utils import yield_dynamic_descriptor_descendents
+from util.module_utils import yield_dynamic_descriptor_descendants
 from xmodule import graders
 from xmodule.graders import Score
 from xmodule.modulestore.django import modulestore
@@ -26,6 +26,7 @@ from submissions import api as sub_api  # installed from the edx-submissions rep
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 
+from openedx.core.djangoapps.signals.signals import GRADES_UPDATED
 
 log = logging.getLogger("edx.courseware")
 
@@ -126,9 +127,22 @@ def grade(student, request, course, keep_raw_scores=False):
     """
     Wraps "_grade" with the manual_transaction context manager just in case
     there are unanticipated errors.
+    Send a signal to update the minimum grade requirement status.
     """
     with manual_transaction():
-        return _grade(student, request, course, keep_raw_scores)
+        grade_summary = _grade(student, request, course, keep_raw_scores)
+        responses = GRADES_UPDATED.send_robust(
+            sender=None,
+            username=request.user.username,
+            grade_summary=grade_summary,
+            course_key=course.id,
+            deadline=course.end
+        )
+
+        for receiver, response in responses:
+            log.info('Signal fired when student grade is calculated. Receiver: %s. Response: %s', receiver, response)
+
+        return grade_summary
 
 
 def _grade(student, request, course, keep_raw_scores):
@@ -207,9 +221,13 @@ def _grade(student, request, course, keep_raw_scores):
                     # would be simpler
                     with manual_transaction():
                         field_data_cache = FieldDataCache([descriptor], course.id, student)
-                    return get_module_for_descriptor(student, request, descriptor, field_data_cache, course.id)
+                    return get_module_for_descriptor(
+                        student, request, descriptor, field_data_cache, course.id, course=course
+                    )
 
-                for module_descriptor in yield_dynamic_descriptor_descendents(section_descriptor, create_module):
+                for module_descriptor in yield_dynamic_descriptor_descendants(
+                        section_descriptor, student.id, create_module
+                ):
 
                     (correct, total) = get_score(
                         course.id, student, module_descriptor, create_module, scores_cache=submissions_scores
@@ -335,7 +353,9 @@ def _progress_summary(student, request, course):
         )
         # TODO: We need the request to pass into here. If we could
         # forego that, our arguments would be simpler
-        course_module = get_module_for_descriptor(student, request, course, field_data_cache, course.id)
+        course_module = get_module_for_descriptor(
+            student, request, course, field_data_cache, course.id, course=course
+        )
         if not course_module:
             # This student must not have access to the course.
             return None
@@ -364,7 +384,9 @@ def _progress_summary(student, request, course):
 
                 module_creator = section_module.xmodule_runtime.get_module
 
-                for module_descriptor in yield_dynamic_descriptor_descendents(section_module, module_creator):
+                for module_descriptor in yield_dynamic_descriptor_descendants(
+                        section_module, student.id, module_creator
+                ):
                     course_id = course.id
                     (correct, total) = get_score(
                         course_id, student, module_descriptor, module_creator, scores_cache=submissions_scores

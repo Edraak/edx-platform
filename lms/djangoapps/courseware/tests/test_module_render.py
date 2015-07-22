@@ -184,7 +184,13 @@ class ModuleRenderTestCase(ModuleStoreTestCase, LoginEnrollmentTestCase):
         with patch('courseware.module_render.load_single_xblock', return_value=self.mock_module):
             # call xqueue_callback with our mocked information
             request = self.request_factory.post(self.callback_url, data)
-            render.xqueue_callback(request, self.course_key, self.mock_user.id, self.mock_module.id, self.dispatch)
+            render.xqueue_callback(
+                request,
+                unicode(self.course_key),
+                self.mock_user.id,
+                self.mock_module.id,
+                self.dispatch
+            )
 
         # Verify that handle ajax is called with the correct data
         request.POST['queuekey'] = fake_key
@@ -200,12 +206,24 @@ class ModuleRenderTestCase(ModuleStoreTestCase, LoginEnrollmentTestCase):
             # Test with missing xqueue data
             with self.assertRaises(Http404):
                 request = self.request_factory.post(self.callback_url, {})
-                render.xqueue_callback(request, self.course_key, self.mock_user.id, self.mock_module.id, self.dispatch)
+                render.xqueue_callback(
+                    request,
+                    unicode(self.course_key),
+                    self.mock_user.id,
+                    self.mock_module.id,
+                    self.dispatch
+                )
 
             # Test with missing xqueue_header
             with self.assertRaises(Http404):
                 request = self.request_factory.post(self.callback_url, data)
-                render.xqueue_callback(request, self.course_key, self.mock_user.id, self.mock_module.id, self.dispatch)
+                render.xqueue_callback(
+                    request,
+                    unicode(self.course_key),
+                    self.mock_user.id,
+                    self.mock_module.id,
+                    self.dispatch
+                )
 
     def test_get_score_bucket(self):
         self.assertEquals(render.get_score_bucket(0, 10), 'incorrect')
@@ -275,11 +293,28 @@ class ModuleRenderTestCase(ModuleStoreTestCase, LoginEnrollmentTestCase):
         course = CourseFactory()
         descriptor = ItemFactory(category=block_type, parent=course)
         field_data_cache = FieldDataCache([self.toy_course, descriptor], self.toy_course.id, self.mock_user)
-        render.get_module_for_descriptor(self.mock_user, request, descriptor, field_data_cache, self.toy_course.id)
-        render.get_module_for_descriptor(self.mock_user, request, descriptor, field_data_cache, self.toy_course.id)
+        # This is verifying that caching doesn't cause an error during get_module_for_descriptor, which
+        # is why it calls the method twice identically.
+        render.get_module_for_descriptor(
+            self.mock_user,
+            request,
+            descriptor,
+            field_data_cache,
+            self.toy_course.id,
+            course=self.toy_course
+        )
+        render.get_module_for_descriptor(
+            self.mock_user,
+            request,
+            descriptor,
+            field_data_cache,
+            self.toy_course.id,
+            course=self.toy_course
+        )
 
     @override_settings(FIELD_OVERRIDE_PROVIDERS=(
-        'ccx.overrides.CustomCoursesForEdxOverrideProvider',))
+        'ccx.overrides.CustomCoursesForEdxOverrideProvider',
+    ))
     def test_rebind_different_users_ccx(self):
         """
         This tests the rebinding a descriptor to a student does not result
@@ -287,18 +322,18 @@ class ModuleRenderTestCase(ModuleStoreTestCase, LoginEnrollmentTestCase):
         """
         request = self.request_factory.get('')
         request.user = self.mock_user
-        course = CourseFactory()
+        course = CourseFactory.create(enable_ccx=True)
 
         descriptor = ItemFactory(category='html', parent=course)
         field_data_cache = FieldDataCache(
-            [self.toy_course, descriptor], self.toy_course.id, self.mock_user
+            [course, descriptor], course.id, self.mock_user
         )
 
         # grab what _field_data was originally set to
         original_field_data = descriptor._field_data  # pylint: disable=protected-access, no-member
 
         render.get_module_for_descriptor(
-            self.mock_user, request, descriptor, field_data_cache, self.toy_course.id
+            self.mock_user, request, descriptor, field_data_cache, course.id, course=course
         )
 
         # check that _unwrapped_field_data is the same as the original
@@ -314,7 +349,8 @@ class ModuleRenderTestCase(ModuleStoreTestCase, LoginEnrollmentTestCase):
                 request,
                 descriptor,
                 field_data_cache,
-                self.toy_course.id
+                course.id,
+                course=course
             )
 
         # _field_data should now be wrapped by LmsFieldData
@@ -574,11 +610,11 @@ class TestTOC(ModuleStoreTestCase):
     # Split makes 6 queries to load the course to depth 2:
     #     - load the structure
     #     - load 5 definitions
-    # Split makes 6 queries to render the toc:
+    # Split makes 5 queries to render the toc:
     #     - it loads the active version at the start of the bulk operation
-    #     - it loads 5 definitions, because it instantiates the a CourseModule and 4 VideoModules
+    #     - it loads 4 definitions, because it instantiates 4 VideoModules
     #       each of which access a Scope.content field in __init__
-    @ddt.data((ModuleStoreEnum.Type.mongo, 3, 0, 0), (ModuleStoreEnum.Type.split, 6, 0, 6))
+    @ddt.data((ModuleStoreEnum.Type.mongo, 3, 0, 0), (ModuleStoreEnum.Type.split, 6, 0, 5))
     @ddt.unpack
     def test_toc_toy_from_chapter(self, default_ms, setup_finds, setup_sends, toc_finds):
         with self.store.default_store(default_ms):
@@ -598,9 +634,10 @@ class TestTOC(ModuleStoreTestCase):
                             'format': '', 'due': None, 'active': False}],
                           'url_name': 'secret:magic', 'display_name': 'secret:magic'}])
 
+            course = self.store.get_course(self.toy_course.id, depth=2)
             with check_mongo_calls(toc_finds):
                 actual = render.toc_for_course(
-                    self.request, self.toy_course, self.chapter, None, self.field_data_cache
+                    self.request, course, self.chapter, None, self.field_data_cache
                 )
         for toc_section in expected:
             self.assertIn(toc_section, actual)
@@ -612,11 +649,11 @@ class TestTOC(ModuleStoreTestCase):
     # Split makes 6 queries to load the course to depth 2:
     #     - load the structure
     #     - load 5 definitions
-    # Split makes 2 queries to render the toc:
+    # Split makes 5 queries to render the toc:
     #     - it loads the active version at the start of the bulk operation
-    #     - it loads 5 definitions, because it instantiates the a CourseModule and 4 VideoModules
+    #     - it loads 4 definitions, because it instantiates 4 VideoModules
     #       each of which access a Scope.content field in __init__
-    @ddt.data((ModuleStoreEnum.Type.mongo, 3, 0, 0), (ModuleStoreEnum.Type.split, 6, 0, 6))
+    @ddt.data((ModuleStoreEnum.Type.mongo, 3, 0, 0), (ModuleStoreEnum.Type.split, 6, 0, 5))
     @ddt.unpack
     def test_toc_toy_from_section(self, default_ms, setup_finds, setup_sends, toc_finds):
         with self.store.default_store(default_ms):
@@ -832,6 +869,7 @@ class JsonInitDataTest(ModuleStoreTestCase):
             descriptor,
             field_data_cache,
             course.id,                          # pylint: disable=no-member
+            course=course
         )
         html = module.render(STUDENT_VIEW).content
         self.assertIn(json_output, html)
@@ -1098,6 +1136,8 @@ class TestAnonymousStudentId(ModuleStoreTestCase, LoginEnrollmentTestCase):
     def setUp(self):
         super(TestAnonymousStudentId, self).setUp(create_user=False)
         self.user = UserFactory()
+        self.course_key = self.create_toy_course()
+        self.course = modulestore().get_course(self.course_key)
 
     @patch('courseware.module_render.has_access', Mock(return_value=True))
     def _get_anonymous_id(self, course_id, xblock_class):
@@ -1135,6 +1175,7 @@ class TestAnonymousStudentId(ModuleStoreTestCase, LoginEnrollmentTestCase):
             track_function=Mock(name='track_function'),  # Track Function
             xqueue_callback_url_prefix=Mock(name='xqueue_callback_url_prefix'),  # XQueue Callback Url Prefix
             request_token='request_token',
+            course=self.course,
         ).xmodule_runtime.anonymous_student_id
 
     @ddt.data(*PER_STUDENT_ANONYMIZED_DESCRIPTORS)
@@ -1316,22 +1357,43 @@ class TestRebindModule(TestSubmittingProblems):
         super(TestRebindModule, self).setUp()
         self.homework = self.add_graded_section_to_course('homework')
         self.lti = ItemFactory.create(category='lti', parent=self.homework)
+        self.problem = ItemFactory.create(category='problem', parent=self.homework)
         self.user = UserFactory.create()
         self.anon_user = AnonymousUser()
 
-    def get_module_for_user(self, user):
+    def get_module_for_user(self, user, item=None):
         """Helper function to get useful module at self.location in self.course_id for user"""
         mock_request = MagicMock()
         mock_request.user = user
         field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
             self.course.id, user, self.course, depth=2)
 
+        if item is None:
+            item = self.lti
+
         return render.get_module(  # pylint: disable=protected-access
             user,
             mock_request,
-            self.lti.location,
+            item.location,
             field_data_cache,
         )._xmodule
+
+    def test_rebind_module_to_new_users(self):
+        module = self.get_module_for_user(self.user, self.problem)
+
+        # Bind the module to another student, which will remove "correct_map"
+        # from the module's _field_data_cache and _dirty_fields.
+        user2 = UserFactory.create()
+        module.descriptor.bind_for_student(module.system, user2.id)
+
+        # XBlock's save method assumes that if a field is in _dirty_fields,
+        # then it's also in _field_data_cache. If this assumption
+        # doesn't hold, then we get an error trying to bind this module
+        # to a third student, since we've removed "correct_map" from
+        # _field_data cache, but not _dirty_fields, when we bound
+        # this module to the second student. (TNL-2640)
+        user3 = UserFactory.create()
+        module.descriptor.bind_for_student(module.system, user3.id)
 
     def test_rebind_noauth_module_to_user_not_anonymous(self):
         """
@@ -1444,7 +1506,8 @@ class LMSXBlockServiceBindingTest(ModuleStoreTestCase):
             self.course.id,
             self.track_function,
             self.xqueue_callback_url_prefix,
-            self.request_token
+            self.request_token,
+            course=self.course
         )
         service = runtime.service(descriptor, expected_service)
         self.assertIsNotNone(service)
@@ -1462,7 +1525,8 @@ class LMSXBlockServiceBindingTest(ModuleStoreTestCase):
             self.course.id,
             self.track_function,
             self.xqueue_callback_url_prefix,
-            self.request_token
+            self.request_token,
+            course=self.course
         )
 
         self.assertFalse(getattr(runtime, u'user_is_beta_tester'))
@@ -1607,6 +1671,7 @@ class TestFilteredChildren(ModuleStoreTestCase):
             block,
             field_data_cache,
             course_id,
+            course=self.course
         )
 
     def _has_access(self, user, action, obj, course_key=None):
@@ -1643,3 +1708,26 @@ class TestFilteredChildren(ModuleStoreTestCase):
         Used to assert that sets of children are equivalent.
         """
         self.assertEquals(set(child_usage_ids), set(child.scope_ids.usage_id for child in block.get_children()))
+
+
+@attr('shard_1')
+@ddt.ddt
+class TestDisabledXBlockTypes(ModuleStoreTestCase):
+    """
+    Tests that verify disabled XBlock types are not loaded.
+    """
+    # pylint: disable=attribute-defined-outside-init, no-member
+    def setUp(self):
+        super(TestDisabledXBlockTypes, self).setUp()
+
+        for store in self.store.modulestores:
+            store.disabled_xblock_types = ('combinedopenended', 'peergrading', 'video')
+
+    @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
+    def test_get_item(self, default_ms):
+        with self.store.default_store(default_ms):
+            course = CourseFactory()
+            for block_type in ('peergrading', 'combinedopenended', 'video'):
+                item = ItemFactory(category=block_type, parent=course)
+                item = self.store.get_item(item.scope_ids.usage_id)
+                self.assertEqual(item.__class__.__name__, 'RawDescriptorWithMixins')

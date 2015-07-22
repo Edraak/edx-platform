@@ -12,7 +12,7 @@ import re
 import time
 import requests
 from django.conf import settings
-from django_future.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import cache_control
 from django.core.exceptions import ValidationError, PermissionDenied
@@ -30,7 +30,10 @@ import urllib
 import decimal
 from student import auth
 from student.roles import GlobalStaff, CourseSalesAdminRole, CourseFinanceAdminRole
-from util.file import store_uploaded_file, course_and_time_based_filename_generator, FileValidationException, UniversalNewlineIterator
+from util.file import (
+    store_uploaded_file, course_and_time_based_filename_generator,
+    FileValidationException, UniversalNewlineIterator
+)
 from util.json_request import JsonResponse
 from instructor.views.instructor_task_helpers import extract_email_features, extract_task_features
 
@@ -60,7 +63,10 @@ from shoppingcart.models import (
 )
 from student.models import (
     CourseEnrollment, unique_id_for_user, anonymous_id_for_user,
-    UserProfile, Registration, EntranceExamConfiguration
+    UserProfile, Registration, EntranceExamConfiguration,
+    ManualEnrollmentAudit, UNENROLLED_TO_ALLOWEDTOENROLL, ALLOWEDTOENROLL_TO_ENROLLED,
+    ENROLLED_TO_ENROLLED, ENROLLED_TO_UNENROLLED, UNENROLLED_TO_ENROLLED,
+    UNENROLLED_TO_UNENROLLED, ALLOWEDTOENROLL_TO_UNENROLLED, DEFAULT_TRANSITION_STATE
 )
 import instructor_task.api
 from instructor_task.api_helper import AlreadyRunningError
@@ -414,7 +420,11 @@ def register_and_enroll_students(request, course_id):  # pylint: disable=too-man
 
                     # make sure user is enrolled in course
                     if not CourseEnrollment.is_enrolled(user, course_id):
-                        CourseEnrollment.enroll(user, course_id)
+                        enrollment_obj = CourseEnrollment.enroll(user, course_id)
+                        reason = 'Enrolling via csv upload'
+                        ManualEnrollmentAudit.create_manual_enrollment_audit(
+                            request.user, email, UNENROLLED_TO_ENROLLED, reason, enrollment_obj
+                        )
                         log.info(
                             u'user %s enrolled in the course %s',
                             username,
@@ -428,7 +438,11 @@ def register_and_enroll_students(request, course_id):  # pylint: disable=too-man
                     password = generate_unique_password(generated_passwords)
 
                     try:
-                        create_and_enroll_user(email, username, name, country, password, course_id)
+                        enrollment_obj = create_and_enroll_user(email, username, name, country, password, course_id)
+                        reason = 'Enrolling via csv upload'
+                        ManualEnrollmentAudit.create_manual_enrollment_audit(
+                            request.user, email, UNENROLLED_TO_ENROLLED, reason, enrollment_obj
+                        )
                     except IntegrityError:
                         row_errors.append({
                             'username': username, 'email': email, 'response': _('Username {user} already exists.').format(user=username)})
@@ -497,7 +511,7 @@ def create_and_enroll_user(email, username, name, country, password, course_id):
     profile.save()
 
     # try to enroll the user in this course
-    CourseEnrollment.enroll(user, course_id)
+    return CourseEnrollment.enroll(user, course_id)
 
 
 @ensure_csrf_cookie
@@ -547,6 +561,18 @@ def students_update_enrollment(request, course_id):
     identifiers = _split_input_list(identifiers_raw)
     auto_enroll = request.POST.get('auto_enroll') in ['true', 'True', True]
     email_students = request.POST.get('email_students') in ['true', 'True', True]
+    is_white_label = CourseMode.is_white_label(course_id)
+    reason = request.POST.get('reason')
+    if is_white_label:
+        if not reason:
+            return JsonResponse(
+                {
+                    'action': action,
+                    'results': [{'error': True}],
+                    'auto_enroll': auto_enroll,
+                }, status=400)
+    enrollment_obj = None
+    state_transition = DEFAULT_TRANSITION_STATE
 
     email_params = {}
     if email_students:
@@ -572,15 +598,44 @@ def students_update_enrollment(request, course_id):
             # validity (obviously, cannot check if email actually /exists/,
             # simply that it is plausibly valid)
             validate_email(email)  # Raises ValidationError if invalid
-
             if action == 'enroll':
-                before, after = enroll_email(
+                before, after, enrollment_obj = enroll_email(
                     course_id, email, auto_enroll, email_students, email_params, language=language
                 )
+                before_enrollment = before.to_dict()['enrollment']
+                before_user_registered = before.to_dict()['user']
+                before_allowed = before.to_dict()['allowed']
+                after_enrollment = after.to_dict()['enrollment']
+                after_allowed = after.to_dict()['allowed']
+
+                if before_user_registered:
+                    if after_enrollment:
+                        if before_enrollment:
+                            state_transition = ENROLLED_TO_ENROLLED
+                        else:
+                            if before_allowed:
+                                state_transition = ALLOWEDTOENROLL_TO_ENROLLED
+                            else:
+                                state_transition = UNENROLLED_TO_ENROLLED
+                else:
+                    if after_allowed:
+                        state_transition = UNENROLLED_TO_ALLOWEDTOENROLL
+
             elif action == 'unenroll':
                 before, after = unenroll_email(
                     course_id, email, email_students, email_params, language=language
                 )
+                before_enrollment = before.to_dict()['enrollment']
+                before_allowed = before.to_dict()['allowed']
+
+                if before_enrollment:
+                    state_transition = ENROLLED_TO_UNENROLLED
+                else:
+                    if before_allowed:
+                        state_transition = ALLOWEDTOENROLL_TO_UNENROLLED
+                    else:
+                        state_transition = UNENROLLED_TO_UNENROLLED
+
             else:
                 return HttpResponseBadRequest(strip_tags(
                     "Unrecognized action '{}'".format(action)
@@ -605,6 +660,9 @@ def students_update_enrollment(request, course_id):
             })
 
         else:
+            ManualEnrollmentAudit.create_manual_enrollment_audit(
+                request.user, email, state_transition, reason, enrollment_obj
+            )
             results.append({
                 'identifier': identifier,
                 'before': before.to_dict(),
@@ -894,7 +952,6 @@ def get_sale_order_records(request, course_id):  # pylint: disable=unused-argume
         ('company_name', 'Company Name'),
         ('company_contact_name', 'Company Contact Name'),
         ('company_contact_email', 'Company Contact Email'),
-        ('total_amount', 'Total Amount'),
         ('logged_in_username', 'Login Username'),
         ('logged_in_email', 'Login User Email'),
         ('purchase_time', 'Date of Sale'),
@@ -910,8 +967,11 @@ def get_sale_order_records(request, course_id):  # pylint: disable=unused-argume
         ('order_type', 'Order Type'),
         ('status', 'Order Item Status'),
         ('coupon_code', 'Coupon Code'),
-        ('unit_cost', 'Unit Price'),
         ('list_price', 'List Price'),
+        ('unit_cost', 'Unit Price'),
+        ('quantity', 'Quantity'),
+        ('total_discount', 'Total Discount'),
+        ('total_amount', 'Total Amount Paid'),
     ]
 
     db_columns = [x[0] for x in query_features]
@@ -1057,6 +1117,36 @@ def get_students_features(request, course_id, csv=False):  # pylint: disable=red
 
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def get_students_who_may_enroll(request, course_id):
+    """
+    Initiate generation of a CSV file containing information about
+    students who may enroll in a course.
+
+    Responds with JSON
+        {"status": "... status message ..."}
+
+    """
+    course_key = CourseKey.from_string(course_id)
+    query_features = ['email']
+    try:
+        instructor_task.api.submit_calculate_may_enroll_csv(request, course_key, query_features)
+        success_status = _(
+            "Your students who may enroll report is being generated! "
+            "You can view the status of the generation task in the 'Pending Instructor Tasks' section."
+        )
+        return JsonResponse({"status": success_status})
+    except AlreadyRunningError:
+        already_running_status = _(
+            "A students who may enroll report generation task is already in progress. "
+            "Check the 'Pending Instructor Tasks' table for the status of the task. "
+            "When completed, the report will be available for download in the table below."
+        )
+        return JsonResponse({"status": already_running_status})
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @require_POST
 @require_level('staff')
 def add_users_to_cohorts(request, course_id):
@@ -1111,11 +1201,22 @@ def get_coupon_codes(request, course_id):  # pylint: disable=unused-argument
     coupons = Coupon.objects.filter(course_id=course_id)
 
     query_features = [
-        'code', 'course_id', 'percentage_discount', 'code_redeemed_count', 'description', 'expiration_date', 'is_active'
+        ('code', _('Coupon Code')),
+        ('course_id', _('Course Id')),
+        ('percentage_discount', _('% Discount')),
+        ('description', _('Description')),
+        ('expiration_date', _('Expiration Date')),
+        ('is_active', _('Is Active')),
+        ('code_redeemed_count', _('Code Redeemed Count')),
+        ('total_discounted_seats', _('Total Discounted Seats')),
+        ('total_discounted_amount', _('Total Discounted Amount')),
     ]
-    coupons_list = instructor_analytics.basic.coupon_codes_features(query_features, coupons)
-    header, data_rows = instructor_analytics.csvs.format_dictlist(coupons_list, query_features)
-    return instructor_analytics.csvs.create_csv_response('Coupons.csv', header, data_rows)
+    db_columns = [x[0] for x in query_features]
+    csv_columns = [x[1] for x in query_features]
+
+    coupons_list = instructor_analytics.basic.coupon_codes_features(db_columns, coupons, course_id)
+    __, data_rows = instructor_analytics.csvs.format_dictlist(coupons_list, db_columns)
+    return instructor_analytics.csvs.create_csv_response('Coupons.csv', csv_columns, data_rows)
 
 
 @ensure_csrf_cookie
@@ -1139,6 +1240,31 @@ def get_enrollment_report(request, course_id):
         return JsonResponse({
             "status": already_running_status
         })
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+@require_finance_admin
+def get_exec_summary_report(request, course_id):
+    """
+    get the executive summary report for the particular course.
+    """
+    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+    try:
+        instructor_task.api.submit_executive_summary_report(request, course_key)
+        status_response = _("Your executive summary report is being created. "
+                            "To view the status of the report, see the 'Pending Instructor Tasks' section.")
+    except AlreadyRunningError:
+        status_response = _(
+            "An executive summary report is currently in progress. "
+            "To view the status of the report, see the 'Pending Instructor Tasks' section. "
+            "When completed, the report will be available for download in the table below. "
+            "You will be able to download the report when it is complete."
+        )
+    return JsonResponse({
+        "status": status_response
+    })
 
 
 def save_registration_code(user, course_id, mode_slug, invoice=None, order=None, invoice_item=None):
@@ -1196,7 +1322,7 @@ def registration_codes_csv(file_name, codes_list, csv_type=None):
     # csv headers
     query_features = [
         'code', 'redeem_code_url', 'course_id', 'company_name', 'created_by',
-        'redeemed_by', 'invoice_id', 'purchaser', 'customer_reference_number', 'internal_reference'
+        'redeemed_by', 'invoice_id', 'purchaser', 'customer_reference_number', 'internal_reference', 'is_valid'
     ]
 
     registration_codes = instructor_analytics.basic.course_registration_features(query_features, codes_list, csv_type)
@@ -2515,5 +2641,24 @@ def mark_student_can_skip_entrance_exam(request, course_id):  # pylint: disable=
         message = _('This student (%s) is already allowed to skip the entrance exam.') % student_identifier
     response_payload = {
         'message': message,
+    }
+    return JsonResponse(response_payload)
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_global_staff
+@require_POST
+def start_certificate_generation(request, course_id):
+    """
+    Start generating certificates for all students enrolled in given course.
+    """
+    course_key = CourseKey.from_string(course_id)
+    task = instructor_task.api.generate_certificates_for_all_students(request, course_key)
+    message = _('Certificate generation task for all students of this course has been started. '
+                'You can view the status of the generation task in the "Pending Tasks" section.')
+    response_payload = {
+        'message': message,
+        'task_id': task.task_id
     }
     return JsonResponse(response_payload)

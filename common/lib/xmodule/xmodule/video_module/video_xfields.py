@@ -3,7 +3,7 @@ XFields for video module.
 """
 import datetime
 
-from xblock.fields import Scope, String, Float, Boolean, List, Dict
+from xblock.fields import Scope, String, Float, Boolean, List, Dict, DateTime
 
 from xmodule.fields import RelativeTime
 from xmodule.mixin import LicenseMixin
@@ -12,7 +12,7 @@ from xmodule.mixin import LicenseMixin
 _ = lambda text: text
 
 
-class VideoFields(LicenseMixin):
+class VideoFields(object):
     """Fields for `VideoModule` and `VideoDescriptor`."""
     display_name = String(
         help=_("The name students see. This name appears in the course ribbon and as a header for the video."),
@@ -142,7 +142,7 @@ class VideoFields(LicenseMixin):
     )
     speed = Float(
         help=_("The last speed that the user specified for the video."),
-        scope=Scope.user_state,
+        scope=Scope.user_state
     )
     global_speed = Float(
         help=_("The default speed for the video."),
@@ -182,4 +182,13 @@ class VideoFields(LicenseMixin):
         display_name=_("Youtube ID for non-sign language version"),
         scope=Scope.settings,
         default="",
+    )
+    bumper_last_view_date = DateTime(
+        display_name=_("Date of the last view of the bumper"),
+        scope=Scope.preferences,
+    )
+    bumper_do_not_show_again = Boolean(
+        display_name=_("Do not show bumper again"),
+        scope=Scope.preferences,
+        default=False,
     )

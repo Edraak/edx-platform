@@ -4,12 +4,14 @@ Defines concrete class for cybersource  Enrollment Report.
 """
 from courseware.access import has_access
 import collections
+from django.conf import settings
 from django.utils.translation import ugettext as _
 from courseware.courses import get_course_by_id
 from instructor.enrollment_report import BaseAbstractEnrollmentReportProvider
+from microsite_configuration import microsite
 from shoppingcart.models import RegistrationCodeRedemption, PaidCourseRegistration, CouponRedemption, OrderItem, \
     InvoiceTransaction
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, ManualEnrollmentAudit
 
 
 class PaidCourseEnrollmentReportProvider(BaseAbstractEnrollmentReportProvider):
@@ -26,7 +28,8 @@ class PaidCourseEnrollmentReportProvider(BaseAbstractEnrollmentReportProvider):
 
         # check the user enrollment role
         if user.is_staff:
-            enrollment_role = _('Edx Staff')
+            platform_name = microsite.get_value('platform_name', settings.PLATFORM_NAME)
+            enrollment_role = _('{platform_name} Staff').format(platform_name=platform_name)
         elif is_course_staff:
             enrollment_role = _('Course Staff')
         else:
@@ -53,7 +56,13 @@ class PaidCourseEnrollmentReportProvider(BaseAbstractEnrollmentReportProvider):
             elif paid_course_reg_item is not None:
                 enrollment_source = _('Credit Card - Individual')
             else:
-                enrollment_source = _('Manually Enrolled')
+                manual_enrollment = ManualEnrollmentAudit.get_manual_enrollment(course_enrollment)
+                if manual_enrollment is not None:
+                    enrollment_source = _(
+                        'manually enrolled by user_id {user_id}, enrollment state transition: {transition}'
+                    ).format(user_id=manual_enrollment.enrolled_by_id, transition=manual_enrollment.state_transition)
+                else:
+                    enrollment_source = _('Manually Enrolled')
 
         enrollment_date = course_enrollment.created.strftime("%B %d, %Y")
         currently_enrolled = course_enrollment.is_active
@@ -85,11 +94,7 @@ class PaidCourseEnrollmentReportProvider(BaseAbstractEnrollmentReportProvider):
             coupon_codes = ", ".join(coupon_codes)
             registration_code_used = 'N/A'
 
-            if coupon_redemption.exists():
-                list_price = paid_course_reg_item.list_price
-            else:
-                list_price = paid_course_reg_item.unit_cost
-
+            list_price = paid_course_reg_item.get_list_price()
             payment_amount = paid_course_reg_item.unit_cost
             coupon_codes_used = coupon_codes
             payment_status = paid_course_reg_item.status
@@ -147,7 +152,7 @@ class PaidCourseEnrollmentReportProvider(BaseAbstractEnrollmentReportProvider):
         coupon_codes = [redemption.coupon.code for redemption in coupon_redemption]
         coupon_codes = ", ".join(coupon_codes)
 
-        list_price = order_item.list_price
+        list_price = order_item.get_list_price()
         payment_amount = order_item.unit_cost
         coupon_codes_used = coupon_codes
         payment_status = order_item.status

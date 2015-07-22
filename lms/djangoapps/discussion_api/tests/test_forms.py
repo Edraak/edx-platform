@@ -1,7 +1,13 @@
 """
 Tests for Discussion API forms
 """
+import itertools
 from unittest import TestCase
+from urllib import urlencode
+
+import ddt
+
+from django.http import QueryDict
 
 from opaque_keys.edx.locator import CourseLocator
 
@@ -60,17 +66,23 @@ class PaginationTestMixin(object):
         self.assert_field_value("page_size", 100)
 
 
+@ddt.ddt
 class ThreadListGetFormTest(FormTestMixin, PaginationTestMixin, TestCase):
     """Tests for ThreadListGetForm"""
     FORM_CLASS = ThreadListGetForm
 
     def setUp(self):
         super(ThreadListGetFormTest, self).setUp()
-        self.form_data = {
-            "course_id": "Foo/Bar/Baz",
-            "page": "2",
-            "page_size": "13",
-        }
+        self.form_data = QueryDict(
+            urlencode(
+                {
+                    "course_id": "Foo/Bar/Baz",
+                    "page": "2",
+                    "page_size": "13",
+                }
+            ),
+            mutable=True
+        )
 
     def test_basic(self):
         form = self.get_form(expected_valid=True)
@@ -80,7 +92,26 @@ class ThreadListGetFormTest(FormTestMixin, PaginationTestMixin, TestCase):
                 "course_id": CourseLocator.from_string("Foo/Bar/Baz"),
                 "page": 2,
                 "page_size": 13,
+                "topic_id": [],
+                "text_search": "",
+                "following": None,
             }
+        )
+
+    def test_topic_id(self):
+        self.form_data.setlist("topic_id", ["example topic_id", "example 2nd topic_id"])
+        form = self.get_form(expected_valid=True)
+        self.assertEqual(
+            form.cleaned_data["topic_id"],
+            ["example topic_id", "example 2nd topic_id"],
+        )
+
+    def test_text_search(self):
+        self.form_data["text_search"] = "test search string"
+        form = self.get_form(expected_valid=True)
+        self.assertEqual(
+            form.cleaned_data["text_search"],
+            "test search string",
         )
 
     def test_missing_course_id(self):
@@ -90,6 +121,26 @@ class ThreadListGetFormTest(FormTestMixin, PaginationTestMixin, TestCase):
     def test_invalid_course_id(self):
         self.form_data["course_id"] = "invalid course id"
         self.assert_error("course_id", "'invalid course id' is not a valid course id")
+
+    def test_empty_topic_id(self):
+        self.form_data.setlist("topic_id", ["", "not empty"])
+        self.assert_error("topic_id", "This field cannot be empty.")
+
+    def test_following_true(self):
+        self.form_data["following"] = "True"
+        self.assert_field_value("following", True)
+
+    def test_following_false(self):
+        self.form_data["following"] = "False"
+        self.assert_error("following", "The value of the 'following' parameter must be true.")
+
+    @ddt.data(*itertools.combinations(["topic_id", "text_search", "following"], 2))
+    def test_mutually_exclusive(self, params):
+        self.form_data.update({param: "True" for param in params})
+        self.assert_error(
+            "__all__",
+            "The following query parameters are mutually exclusive: topic_id, text_search, following"
+        )
 
 
 class CommentListGetFormTest(FormTestMixin, PaginationTestMixin, TestCase):

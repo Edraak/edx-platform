@@ -4,7 +4,6 @@ Modulestore configuration for test cases.
 """
 import datetime
 import pytz
-from tempfile import mkdtemp
 from uuid import uuid4
 
 from mock import patch
@@ -16,13 +15,14 @@ from django.test.utils import override_settings
 from request_cache.middleware import RequestCache
 
 from courseware.field_overrides import OverrideFieldData  # pylint: disable=import-error
+from openedx.core.lib.tempdir import mkdtemp_clean
+
 from xmodule.contentstore.django import _CONTENTSTORE
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore, clear_existing_modulestores
 from xmodule.modulestore.tests.mongo_connection import MONGO_PORT_NUM, MONGO_HOST
 from xmodule.modulestore.tests.sample_courses import default_block_info_tree, TOY_BLOCK_INFO_TREE
 from xmodule.modulestore.tests.factories import XMODULE_FACTORY_LOCK
-from xmodule.tabs import CoursewareTab, CourseInfoTab, StaticTab, DiscussionTab, ProgressTab, WikiTab
 
 
 class StoreConstructors(object):
@@ -185,13 +185,13 @@ TEST_DATA_MIXED_GRADED_MODULESTORE = mixed_store_config(
 # All store requests now go through mixed
 # Use this modulestore if you specifically want to test mongo and not a mocked modulestore.
 # This modulestore definition below will not load any xml courses.
-TEST_DATA_MONGO_MODULESTORE = mixed_store_config(mkdtemp(), {}, include_xml=False)
+TEST_DATA_MONGO_MODULESTORE = mixed_store_config(mkdtemp_clean(), {}, include_xml=False)
 
 # All store requests now go through mixed
 # Use this modulestore if you specifically want to test split-mongo and not a mocked modulestore.
 # This modulestore definition below will not load any xml courses.
 TEST_DATA_SPLIT_MODULESTORE = mixed_store_config(
-    mkdtemp(),
+    mkdtemp_clean(),
     {},
     include_xml=False,
     store_order=[StoreConstructors.split, StoreConstructors.draft]
@@ -236,7 +236,7 @@ class ModuleStoreTestCase(TestCase):
           your `setUp()` method.
     """
 
-    MODULESTORE = mixed_store_config(mkdtemp(), {}, include_xml=False)
+    MODULESTORE = mixed_store_config(mkdtemp_clean(), {}, include_xml=False)
 
     def setUp(self, **kwargs):
         """
@@ -379,15 +379,6 @@ class ModuleStoreTestCase(TestCase):
                 "wiki_slug": "toy",
                 "display_name": "Toy Course",
                 "graded": True,
-                "tabs": [
-                    CoursewareTab(),
-                    CourseInfoTab(),
-                    StaticTab(name="Syllabus", url_slug="syllabus"),
-                    StaticTab(name="Resources", url_slug="resources"),
-                    DiscussionTab(),
-                    WikiTab(),
-                    ProgressTab(),
-                ],
                 "discussion_topics": {"General": {"id": "i4x-edX-toy-course-2012_Fall"}},
                 "graceperiod": datetime.timedelta(days=2, seconds=21599),
                 "start": datetime.datetime(2015, 07, 17, 12, tzinfo=pytz.utc),

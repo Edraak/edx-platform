@@ -1,7 +1,14 @@
 """
 This file contains (or should), all access control logic for the courseware.
 Ideally, it will be the only place that needs to know about any special settings
-like DISABLE_START_DATES
+like DISABLE_START_DATES.
+
+Note: The access control logic in this file does NOT check for enrollment in
+  a course.  It is expected that higher layers check for enrollment so we
+  don't have to hit the enrollments table on every module load.
+
+  If enrollment is to be checked, use get_course_with_access in courseware.courses.
+  It is a wrapper around has_access that additionally checks for enrollment.
 """
 import logging
 from datetime import datetime, timedelta
@@ -27,7 +34,7 @@ from xmodule.util.django import get_current_request_hostname
 from external_auth.models import ExternalAuthMap
 from courseware.masquerade import get_masquerade_role, is_masquerading_as_student
 from student import auth
-from student.models import CourseEnrollment, CourseEnrollmentAllowed
+from student.models import CourseEnrollmentAllowed
 from student.roles import (
     GlobalStaff, CourseStaffRole, CourseInstructorRole,
     OrgStaffRole, OrgInstructorRole, CourseBetaTesterRole
@@ -36,6 +43,7 @@ from util.milestones_helpers import (
     get_pre_requisite_courses_not_completed,
     any_unfulfilled_milestones,
 )
+from ccx_keys.locator import CCXLocator
 
 import dogstats_wrapper as dog_stats_api
 
@@ -84,6 +92,9 @@ def has_access(user, action, obj, course_key=None):
     if not user:
         user = AnonymousUser()
 
+    if isinstance(course_key, CCXLocator):
+        course_key = course_key.to_course_locator()
+
     # delegate the work to type-specific functions.
     # (start with more specific types, then get more general)
     if isinstance(obj, CourseDescriptor):
@@ -98,6 +109,9 @@ def has_access(user, action, obj, course_key=None):
     # NOTE: any descriptor access checkers need to go above this
     if isinstance(obj, XBlock):
         return _has_access_descriptor(user, action, obj, course_key)
+
+    if isinstance(obj, CCXLocator):
+        return _has_access_ccx_key(user, action, obj)
 
     if isinstance(obj, CourseKey):
         return _has_access_course_key(user, action, obj)
@@ -140,18 +154,6 @@ def _has_access_course_desc(user, action, course):
         # delegate to generic descriptor check to check start dates
         return _has_access_descriptor(user, 'load', course, course.id)
 
-    def can_load_forum():
-        """
-        Can this user access the forums in this course?
-        """
-        return (
-            can_load() and
-            (
-                CourseEnrollment.is_enrolled(user, course.id) or
-                _has_staff_access_to_descriptor(user, course, course.id)
-            )
-        )
-
     def can_load_mobile():
         """
         Can this user access this course from a mobile device?
@@ -164,12 +166,8 @@ def _has_access_course_desc(user, action, course):
             (
                 # either is a staff user or
                 _has_staff_access_to_descriptor(user, course, course.id) or
-                (
-                    # check enrollment
-                    CourseEnrollment.is_enrolled(user, course.id) and
-                    # check for unfulfilled milestones
-                    not any_unfulfilled_milestones(course.id, user.id)
-                )
+                # check for unfulfilled milestones
+                not any_unfulfilled_milestones(course.id, user.id)
             )
         )
 
@@ -294,7 +292,6 @@ def _has_access_course_desc(user, action, course):
     checkers = {
         'load': can_load,
         'view_courseware_with_prerequisites': can_view_courseware_with_prerequisites,
-        'load_forum': can_load_forum,
         'load_mobile': can_load_mobile,
         'enroll': can_enroll,
         'see_exists': see_exists,
@@ -498,6 +495,16 @@ def _has_access_course_key(user, action, course_key):
     return _dispatch(checkers, action, user, course_key)
 
 
+def _has_access_ccx_key(user, action, ccx_key):
+    """Check if user has access to the course for this ccx_key
+
+    Delegates checking to _has_access_course_key
+    Valid actions: same as for that function
+    """
+    course_key = ccx_key.to_course_locator()
+    return _has_access_course_key(user, action, course_key)
+
+
 def _has_access_string(user, action, perm):
     """
     Check if user has certain special access, specified as string.  Valid strings:
@@ -656,17 +663,19 @@ def _has_staff_access_to_descriptor(user, descriptor, course_key):
     return _has_staff_access_to_location(user, descriptor.location, course_key)
 
 
-def is_mobile_available_for_user(user, course):
+def is_mobile_available_for_user(user, descriptor):
     """
     Returns whether the given course is mobile_available for the given user.
     Checks:
         mobile_available flag on the course
         Beta User and staff access overrides the mobile_available flag
+    Arguments:
+        descriptor (CourseDescriptor|CourseOverview): course or overview of course in question
     """
     return (
-        course.mobile_available or
-        auth.has_access(user, CourseBetaTesterRole(course.id)) or
-        _has_staff_access_to_descriptor(user, course, course.id)
+        descriptor.mobile_available or
+        auth.has_access(user, CourseBetaTesterRole(descriptor.id)) or
+        _has_staff_access_to_descriptor(user, descriptor, descriptor.id)
     )
 
 

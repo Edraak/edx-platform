@@ -322,6 +322,10 @@ FEATURES = {
     'ENABLE_MOBILE_REST_API': False,
     'ENABLE_MOBILE_SOCIAL_FACEBOOK_FEATURES': False,
 
+    # Enable APIs required for xBlocks on Mobile, and supported in general
+    'ENABLE_RENDER_XBLOCK_API': False,
+    'ENABLE_COURSE_BLOCKS_NAVIGATION_API': False,
+
     # Enable the combined login/registration form
     'ENABLE_COMBINED_LOGIN_REGISTRATION': False,
 
@@ -375,13 +379,18 @@ FEATURES = {
     # Certificates Web/HTML Views
     'CERTIFICATES_HTML_VIEW': False,
 
+    # Batch-Generated Certificates from Instructor Dashboard
+    'CERTIFICATES_INSTRUCTOR_GENERATION': False,
+
     # Social Media Sharing on Student Dashboard
-    'DASHBOARD_SHARE_SETTINGS': {
+    'SOCIAL_SHARING_SETTINGS': {
         # Note: Ensure 'CUSTOM_COURSE_URLS' has a matching value in cms/envs/common.py
         'CUSTOM_COURSE_URLS': False,
-        'FACEBOOK_SHARING': False,
-        'TWITTER_SHARING': False,
-        'TWITTER_SHARING_TEXT': None
+        'DASHBOARD_FACEBOOK': False,
+        'CERTIFICATE_FACEBOOK': False,
+        'CERTIFICATE_FACEBOOK_TEXT': None,
+        'DASHBOARD_TWITTER': False,
+        'DASHBOARD_TWITTER_TEXT': None
     },
 
     # Course discovery feature
@@ -392,6 +401,21 @@ FEATURES = {
 
     # Teams feature
     'ENABLE_TEAMS': False,
+
+    # Show video bumper in LMS
+    'ENABLE_VIDEO_BUMPER': False,
+
+    # How many seconds to show the bumper again, default is 7 days:
+    'SHOW_BUMPER_PERIODICITY': 7 * 24 * 3600,
+
+    # Enable OpenBadge support. See the BADGR_* settings later in this file.
+    'ENABLE_OPENBADGES': False,
+
+    # Credit course API
+    'ENABLE_CREDIT_API': False,
+
+    # The block types to disable need to be specified in "x block disable config" in django admin.
+    'ENABLE_DISABLING_XBLOCK_TYPES': True,
 }
 
 # Ignore static asset files on import which match this pattern
@@ -482,6 +506,7 @@ TEMPLATE_DIRS = [
     COMMON_ROOT / 'templates',
     COMMON_ROOT / 'lib' / 'capa' / 'capa' / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates',
+    COMMON_ROOT / 'static',  # required to statically include common Underscore templates
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -504,11 +529,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     # Allows the open edX footer to be leveraged in Django Templates.
     'edxmako.shortcuts.open_source_footer_context_processor',
 
-    # TODO (ECOM-1339): Remove once the V3 version of the footer is enabled permanently
-    # This allows us to pass the appropriate feature flag to the main Django template
-    # that contains the footer.
-    'branding.context_processors.branding_context_processor',
-
     # Shoppingcart processor (detects if request.user has a cart)
     'shoppingcart.context_processor.user_has_cart_context_processor',
 
@@ -523,11 +543,6 @@ AUTHENTICATION_BACKENDS = (
 STUDENT_FILEUPLOAD_MAX_SIZE = 4 * 1000 * 1000  # 4 MB
 MAX_FILEUPLOADS_PER_INPUT = 20
 
-# FIXME:
-# We should have separate S3 staged URLs in case we need to make changes to
-# these assets and test them.
-LIB_URL = '/static/js/'
-
 # Dev machines shouldn't need the book
 # BOOK_URL = '/static/book/'
 BOOK_URL = 'https://mitxstatic.s3.amazonaws.com/book_images/'  # For AWS deploys
@@ -539,8 +554,8 @@ DEV_CONTENT = True
 
 EDX_ROOT_URL = ''
 
-LOGIN_REDIRECT_URL = EDX_ROOT_URL + '/accounts/login'
-LOGIN_URL = EDX_ROOT_URL + '/accounts/login'
+LOGIN_REDIRECT_URL = EDX_ROOT_URL + '/login'
+LOGIN_URL = EDX_ROOT_URL + '/login'
 
 COURSE_NAME = "6.002_Spring_2012"
 COURSE_NUMBER = "6.002x"
@@ -1028,9 +1043,8 @@ MOCK_STAFF_GRADING = False
 ################################# EdxNotes config  #########################
 
 # Configure the LMS to use our stub EdxNotes implementation
-EDXNOTES_INTERFACE = {
-    'url': 'http://localhost:8120/api/v1',
-}
+EDXNOTES_PUBLIC_API = 'http://localhost:8120/api/v1'
+EDXNOTES_INTERNAL_API = 'http://localhost:8120/api/v1'
 
 ########################## Parental controls config  #######################
 
@@ -1146,11 +1160,18 @@ MIDDLEWARE_CLASSES = (
     'embargo.middleware.EmbargoMiddleware',
 
     # Allows us to set user preferences
-    # should be after DarkLangMiddleware
     'lang_pref.middleware.LanguagePreferenceMiddleware',
 
-    # Detects user-requested locale from 'accept-language' header in http request
-    'django.middleware.locale.LocaleMiddleware',
+    # Allows us to dark-launch particular languages.
+    # Must be after LangPrefMiddleware, so ?preview-lang query params can override
+    # user's language preference. ?clear-lang resets to user's language preference.
+    'dark_lang.middleware.DarkLangMiddleware',
+
+    # Detects user-requested locale from 'accept-language' header in http request.
+    # Must be after DarkLangMiddleware.
+    # TODO: Re-import the Django version once we upgrade to Django 1.8 [PLAT-671]
+    # 'django.middleware.locale.LocaleMiddleware',
+    'django_locale.middleware.LocaleMiddleware',
 
     'django.middleware.transaction.TransactionMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -1193,9 +1214,10 @@ courseware_js = (
         for pth in ['courseware', 'histogram', 'navigation', 'time']
     ] +
     ['js/' + pth + '.js' for pth in ['ajax-error']] +
-    ['js/search/course/main.js'] +
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.js'))
 )
+
+courseware_search_js = ['js/search/course/main.js']
 
 
 # Before a student accesses courseware, we do not
@@ -1226,9 +1248,9 @@ main_vendor_js = base_vendor_js + [
 ]
 
 dashboard_js = (
-    sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js')) +
-    ['js/search/dashboard/main.js']
+    sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js'))
 )
+dashboard_search_js = ['js/search/dashboard/main.js']
 discussion_js = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
 rwd_header_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/utils/rwd_header.js'))
 staff_grading_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.js'))
@@ -1262,13 +1284,13 @@ student_account_js = [
     'js/student_account/models/PasswordResetModel.js',
     'js/student_account/views/FormView.js',
     'js/student_account/views/LoginView.js',
+    'js/student_account/views/HintedLoginView.js',
     'js/student_account/views/RegisterView.js',
     'js/student_account/views/PasswordResetView.js',
     'js/student_account/views/AccessView.js',
+    'js/student_account/views/InstitutionLoginView.js',
     'js/student_account/accessApp.js',
 ]
-
-student_profile_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/student_profile/**/*.js'))
 
 verify_student_js = [
     'js/form.ext.js',
@@ -1300,6 +1322,20 @@ reverify_js = [
     'js/verify_student/views/error_view.js',
     'js/verify_student/views/image_input_view.js',
     'js/verify_student/views/webcam_photo_view.js',
+    'js/verify_student/views/step_view.js',
+    'js/verify_student/views/face_photo_step_view.js',
+    'js/verify_student/views/id_photo_step_view.js',
+    'js/verify_student/views/review_photos_step_view.js',
+    'js/verify_student/views/reverify_success_step_view.js',
+    'js/verify_student/models/verification_model.js',
+    'js/verify_student/views/reverify_view.js',
+    'js/verify_student/reverify.js',
+]
+
+incourse_reverify_js = [
+    'js/verify_student/views/error_view.js',
+    'js/verify_student/views/image_input_view.js',
+    'js/verify_student/views/webcam_photo_view.js',
     'js/verify_student/models/reverification_model.js',
     'js/verify_student/views/incourse_reverify_view.js',
     'js/verify_student/incourse_reverify.js',
@@ -1307,6 +1343,20 @@ reverify_js = [
 
 ccx_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/ccx/**/*.js'))
 
+discovery_js = ['js/discovery/main.js']
+
+certificates_web_view_js = [
+    'js/vendor/jquery.min.js',
+    'js/vendor/jquery.cookie.js',
+    'js/src/logger.js',
+    'js/utils/facebook.js',
+]
+
+credit_web_view_js = [
+    'js/vendor/jquery.min.js',
+    'js/vendor/jquery.cookie.js',
+    'js/src/logger.js',
+]
 
 PIPELINE_CSS = {
     'style-vendor': {
@@ -1331,16 +1381,16 @@ PIPELINE_CSS = {
         'output_filename': 'css/lms-style-vendor-tinymce-skin.css',
     },
     'style-main': {
+        # this is unnecessary and can be removed
         'source_filenames': [
-            'sass/lms-main.css',
-            'css/edx-cc.css',
+            'css/lms-main.css',
         ],
         'output_filename': 'css/lms-main.css',
     },
     'style-main-rtl': {
+        # this is unnecessary and can be removed
         'source_filenames': [
-            'sass/lms-main-rtl.css',
-            'css/edx-cc.css',
+            'css/lms-main-rtl.css',
         ],
         'output_filename': 'css/lms-main-rtl.css',
     },
@@ -1354,14 +1404,14 @@ PIPELINE_CSS = {
     },
     'style-course': {
         'source_filenames': [
-            'sass/lms-course.css',
+            'css/lms-course.css',
             'xmodule/modules.css',
         ],
         'output_filename': 'css/lms-course.css',
     },
     'style-course-rtl': {
         'source_filenames': [
-            'sass/lms-course-rtl.css',
+            'css/lms-course-rtl.css',
             'xmodule/modules.css',
         ],
         'output_filename': 'css/lms-course-rtl.css',
@@ -1391,27 +1441,41 @@ PIPELINE_CSS = {
     },
     FOOTER_CSS['openedx']['ltr']: {
         'source_filenames': [
-            'sass/lms-footer.css',
+            'css/lms-footer.css',
         ],
         'output_filename': 'css/lms-footer.css',
     },
     FOOTER_CSS['openedx']['rtl']: {
         'source_filenames': [
-            'sass/lms-footer-rtl.css',
+            'css/lms-footer-rtl.css',
         ],
         'output_filename': 'css/lms-footer-rtl.css'
     },
     FOOTER_CSS['edx']['ltr']: {
         'source_filenames': [
-            'sass/lms-footer-edx.css',
+            'css/lms-footer-edx.css',
         ],
         'output_filename': 'css/lms-footer-edx.css'
     },
     FOOTER_CSS['edx']['rtl']: {
         'source_filenames': [
-            'sass/lms-footer-edx-rtl.css',
+            'css/lms-footer-edx-rtl.css',
         ],
         'output_filename': 'css/lms-footer-edx-rtl.css'
+    },
+    'style-certificates': {
+        'source_filenames': [
+            'certificates/css/main-ltr.css',
+            'css/vendor/font-awesome.css',
+        ],
+        'output_filename': 'css/certificates-style.css'
+    },
+    'style-certificates-rtl': {
+        'source_filenames': [
+            'certificates/css/main-rtl.css',
+            'css/vendor/font-awesome.css',
+        ],
+        'output_filename': 'css/certificates-style-rtl.css'
     },
 }
 
@@ -1441,6 +1505,10 @@ PIPELINE_JS = {
     'courseware': {
         'source_filenames': courseware_js,
         'output_filename': 'js/lms-courseware.js',
+    },
+    'courseware_search': {
+        'source_filenames': courseware_search_js,
+        'output_filename': 'js/lms-courseware-search.js',
     },
     'base_vendor': {
         'source_filenames': base_vendor_js,
@@ -1482,6 +1550,10 @@ PIPELINE_JS = {
         'source_filenames': dashboard_js,
         'output_filename': 'js/dashboard.js'
     },
+    'dashboard_search': {
+        'source_filenames': dashboard_search_js,
+        'output_filename': 'js/dashboard-search.js',
+    },
     'rwd_header': {
         'source_filenames': rwd_header_js,
         'output_filename': 'js/rwd_header.js'
@@ -1489,10 +1561,6 @@ PIPELINE_JS = {
     'student_account': {
         'source_filenames': student_account_js,
         'output_filename': 'js/student_account.js'
-    },
-    'student_profile': {
-        'source_filenames': student_profile_js,
-        'output_filename': 'js/student_profile.js'
     },
     'verify_student': {
         'source_filenames': verify_student_js,
@@ -1502,13 +1570,33 @@ PIPELINE_JS = {
         'source_filenames': reverify_js,
         'output_filename': 'js/reverify.js'
     },
+    'incourse_reverify': {
+        'source_filenames': incourse_reverify_js,
+        'output_filename': 'js/incourse_reverify.js'
+    },
     'ccx': {
         'source_filenames': ccx_js,
         'output_filename': 'js/ccx.js'
     },
     'footer_edx': {
         'source_filenames': ['js/footer-edx.js'],
-        'output_filename': 'js/footer-edx.js',
+        'output_filename': 'js/footer-edx.js'
+    },
+    'discovery': {
+        'source_filenames': discovery_js,
+        'output_filename': 'js/discovery.js'
+    },
+    'certificates_wv': {
+        'source_filenames': certificates_web_view_js,
+        'output_filename': 'js/certificates/web_view.js'
+    },
+    'utility': {
+        'source_filenames': ['js/src/utility.js'],
+        'output_filename': 'js/utility.js'
+    },
+    'credit_wv': {
+        'source_filenames': credit_web_view_js,
+        'output_filename': 'js/credit/web_view.js'
     }
 }
 
@@ -1543,7 +1631,6 @@ STATICFILES_IGNORE_PATTERNS = (
 
     # Symlinks used by js-test-tool
     "xmodule_js",
-    "common_static",
 )
 
 PIPELINE_UGLIFYJS_BINARY = 'node_modules/.bin/uglifyjs'
@@ -1669,6 +1756,8 @@ YOUTUBE = {
             'v': 'set_youtube_id_of_11_symbols_here',
         },
     },
+
+    'IMAGE_API': 'http://img.youtube.com/vi/{youtube_id}/0.jpg',  # /maxresdefault.jpg for 1920*1080
 }
 
 ################################### APPS ######################################
@@ -1682,6 +1771,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'djcelery',
     'south',
+
+    # History tables
+    'simple_history',
 
     # Database-backed configuration
     'config_models',
@@ -1764,6 +1856,9 @@ INSTALLED_APPS = (
     'rest_framework',
     'openedx.core.djangoapps.user_api',
 
+    # Team API
+    'teams',
+
     # Shopping cart
     'shoppingcart',
 
@@ -1820,6 +1915,7 @@ INSTALLED_APPS = (
     'edraak_url_rewrites',
     'lms.djangoapps.lms_xblock',
 
+    'openedx.core.djangoapps.content.course_overviews',
     'openedx.core.djangoapps.content.course_structures',
     'course_structure_api',
 
@@ -1834,6 +1930,11 @@ INSTALLED_APPS = (
 
     # Credit courses
     'openedx.core.djangoapps.credit',
+
+    # Course teams
+    'teams',
+
+    'xblock_django',
 )
 
 ######################### CSRF #########################################
@@ -1843,7 +1944,10 @@ CSRF_COOKIE_AGE = 60 * 60 * 24 * 7 * 52
 
 
 ######################### MARKETING SITE ###############################
-EDXMKTG_COOKIE_NAME = 'edxloggedin'
+EDXMKTG_LOGGED_IN_COOKIE_NAME = 'edxloggedin'
+EDXMKTG_USER_INFO_COOKIE_NAME = 'edx-user-info'
+EDXMKTG_USER_INFO_COOKIE_VERSION = 1
+
 MKTG_URLS = {}
 MKTG_URL_LINK_MAP = {
     'ABOUT': 'about',
@@ -1885,25 +1989,29 @@ SOCIAL_MEDIA_FOOTER_DISPLAY = {
         # Translators: This is the website name of www.facebook.com.  Please
         # translate this the way that Facebook advertises in your language.
         "title": _("Facebook"),
-        "icon": "fa-facebook-square"
+        "icon": "fa-facebook-square",
+        "action": _("Like {platform_name} on Facebook")
     },
     "twitter": {
         # Translators: This is the website name of www.twitter.com.  Please
         # translate this the way that Twitter advertises in your language.
         "title": _("Twitter"),
-        "icon": "fa-twitter"
+        "icon": "fa-twitter",
+        "action": _("Follow {platform_name} on Twitter")
     },
     "linkedin": {
         # Translators: This is the website name of www.linkedin.com.  Please
         # translate this the way that LinkedIn advertises in your language.
         "title": _("LinkedIn"),
-        "icon": "fa-linkedin-square"
+        "icon": "fa-linkedin-square",
+        "action": _("Follow {platform_name} on LinkedIn")
     },
     "google_plus": {
         # Translators: This is the website name of plus.google.com.  Please
         # translate this the way that Google+ advertises in your language.
         "title": _("Google+"),
-        "icon": "fa-google-plus-square"
+        "icon": "fa-google-plus-square",
+        "action": _("Follow {platform_name} on Google+")
     },
     "tumblr": {
         # Translators: This is the website name of www.tumblr.com.  Please
@@ -1921,7 +2029,8 @@ SOCIAL_MEDIA_FOOTER_DISPLAY = {
         # Translators: This is the website name of www.reddit.com.  Please
         # translate this the way that Reddit advertises in your language.
         "title": _("Reddit"),
-        "icon": "fa-reddit"
+        "icon": "fa-reddit",
+        "action": _("Subscribe to the {platform_name} subreddit"),
     },
     "vk": {
         # Translators: This is the website name of https://vk.com.  Please
@@ -1939,7 +2048,8 @@ SOCIAL_MEDIA_FOOTER_DISPLAY = {
         # Translators: This is the website name of www.youtube.com.  Please
         # translate this the way that YouTube advertises in your language.
         "title": _("Youtube"),
-        "icon": "fa-youtube"
+        "icon": "fa-youtube",
+        "action": _("Subscribe to the {platform_name} YouTube channel")
     }
 }
 
@@ -1960,6 +2070,10 @@ VERIFY_STUDENT = {
 FEATURES['CLASS_DASHBOARD'] = False
 if FEATURES.get('CLASS_DASHBOARD'):
     INSTALLED_APPS += ('class_dashboard',)
+
+################ Enable credit eligibility feature ####################
+ENABLE_CREDIT_ELIGIBILITY = False
+FEATURES['ENABLE_CREDIT_ELIGIBILITY'] = ENABLE_CREDIT_ELIGIBILITY
 
 ######################## CAS authentication ###########################
 
@@ -2006,6 +2120,16 @@ REGISTRATION_EXTRA_FIELDS = {
 ########################## CERTIFICATE NAME ########################
 CERT_NAME_SHORT = "Certificate"
 CERT_NAME_LONG = "Certificate of Achievement"
+
+############ CERTIFICATE VERIFICATION URL (STATIC FILES) ###########
+CERTIFICATES_STATIC_VERIFY_URL = "https://verify-test.edx.org/cert/"
+
+#################### Badgr OpenBadges generation #######################
+# Be sure to set up images for course modes using the BadgeImageConfiguration model in the certificates app.
+BADGR_API_TOKEN = None
+# Do not add the trailing slash here.
+BADGR_BASE_URL = "http://localhost:8005"
+BADGR_ISSUER_SLUG = "example-issuer"
 
 ###################### Grade Downloads ######################
 GRADES_DOWNLOAD_ROUTING_KEY = HIGH_MEM_QUEUE
@@ -2280,10 +2404,6 @@ for app_name in OPTIONAL_APPS:
             continue
     INSTALLED_APPS += (app_name,)
 
-# Stub for third_party_auth options.
-# See common/djangoapps/third_party_auth/settings.py for configuration details.
-THIRD_PARTY_AUTH = {}
-
 ### ADVANCED_SECURITY_CONFIG
 # Empty by default
 ADVANCED_SECURITY_CONFIG = {}
@@ -2316,8 +2436,6 @@ COURSE_CATALOG_VISIBILITY_PERMISSION = 'see_exists'
 # visible. We default this to the legacy permission 'see_exists'.
 COURSE_ABOUT_VISIBILITY_PERMISSION = 'see_exists'
 
-#date format the api will be formatting the datetime values
-API_DATE_FORMAT = '%Y-%m-%d'
 
 # Enrollment API Cache Timeout
 ENROLLMENT_COURSE_DETAILS_CACHE_TIMEOUT = 60
@@ -2348,6 +2466,8 @@ SEARCH_INITIALIZER = "lms.lib.courseware_search.lms_search_initializer.LmsSearch
 SEARCH_RESULT_PROCESSOR = "lms.lib.courseware_search.lms_result_processor.LmsSearchResultProcessor"
 # Use the LMS specific filter generator
 SEARCH_FILTER_GENERATOR = "lms.lib.courseware_search.lms_filter_generator.LmsSearchFilterGenerator"
+# Override to skip enrollment start date filtering in course search
+SEARCH_SKIP_ENROLLMENT_START_DATE_FILTERING = False
 
 ### PERFORMANCE EXPERIMENT SETTINGS ###
 # CDN experiment/monitoring flags
@@ -2425,7 +2545,7 @@ PREVIEW_DOMAIN = 'preview'
 # If set to None, all courses will be listed on the homepage
 HOMEPAGE_COURSE_MAX = None
 
-################################ Settings for Credit Course Requirements ################################
+################################ Settings for Credit Courses ################################
 # Initial delay used for retrying tasks.
 # Additional retries use longer delays.
 # Value is in seconds.
@@ -2434,3 +2554,21 @@ CREDIT_TASK_DEFAULT_RETRY_DELAY = 30
 # Maximum number of retries per task for errors that are not related
 # to throttling.
 CREDIT_TASK_MAX_RETRIES = 5
+
+# Secret keys shared with credit providers.
+# Used to digitally sign credit requests (us --> provider)
+# and validate responses (provider --> us).
+# Each key in the dictionary is a credit provider ID, and
+# the value is the 32-character key.
+CREDIT_PROVIDER_SECRET_KEYS = {}
+
+# Maximum age in seconds of timestamps we will accept
+# when a credit provider notifies us that a student has been approved
+# or denied for credit.
+CREDIT_PROVIDER_TIMESTAMP_EXPIRATION = 15 * 60
+
+# Default domain for the e-mail address associated with users who are created
+# via the LTI Provider feature. Note that the generated e-mail addresses are
+# not expected to be active; this setting simply allows administrators to
+# route any messages intended for LTI users to a common domain.
+LTI_USER_EMAIL_DOMAIN = 'lti.example.com'

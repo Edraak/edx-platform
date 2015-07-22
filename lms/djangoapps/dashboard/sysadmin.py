@@ -25,7 +25,7 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_control
 from django.views.generic.base import TemplateView
 from django.views.decorators.http import condition
-from django_future.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from edxmako.shortcuts import render_to_response
 import mongoengine
 from path import path
@@ -41,7 +41,6 @@ from student.models import CourseEnrollment, UserProfile, Registration
 import track.views
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.xml import XMLModuleStore
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
 
@@ -60,8 +59,9 @@ class SysadminDashboardView(TemplateView):
         """
 
         self.def_ms = modulestore()
+
         self.is_using_mongo = True
-        if isinstance(self.def_ms, XMLModuleStore):
+        if self.def_ms.get_modulestore_type(None) == 'xml':
             self.is_using_mongo = False
         self.msg = u''
         self.datatable = []

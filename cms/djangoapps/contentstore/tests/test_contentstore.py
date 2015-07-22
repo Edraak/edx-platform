@@ -1022,6 +1022,14 @@ class ContentStoreTest(ContentStoreTestCase):
         """Test new course creation - happy path"""
         self.assert_created_course()
 
+    @override_settings(DEFAULT_COURSE_LANGUAGE='hr')
+    def test_create_course_default_language(self):
+        """Test new course creation and verify default language"""
+        test_course_data = self.assert_created_course()
+        course_id = _get_course_id(self.store, test_course_data)
+        course_module = self.store.get_course(course_id)
+        self.assertEquals(course_module.language, 'hr')
+
     def test_create_course_with_dots(self):
         """Test new course creation with dots in the name"""
         self.course_data['org'] = 'org.foo.bar'
@@ -1100,6 +1108,17 @@ class ContentStoreTest(ContentStoreTestCase):
 
         self.assertFalse(instructor_role.has_user(self.user))
         self.assertEqual(len(instructor_role.users_with_role()), 0)
+
+    def test_create_course_after_delete(self):
+        """
+        Test that course creation works after deleting a course with the same URL
+        """
+        test_course_data = self.assert_created_course()
+        course_id = _get_course_id(self.store, test_course_data)
+
+        delete_course_and_groups(course_id, self.user.id)
+
+        self.assert_created_course()
 
     def test_create_course_duplicate_course(self):
         """Test new course creation - error path"""
@@ -1835,6 +1854,42 @@ class RerunCourseTest(ContentStoreTestCase):
             self.assertEquals(rerun_state.state, CourseRerunUIStateManager.State.FAILED)
             self.assertTrue(rerun_state.message.endswith("traceback"))
             self.assertEqual(len(rerun_state.message), CourseRerunState.MAX_MESSAGE_LENGTH)
+
+    def test_rerun_course_wiki_slug(self):
+        """
+        Test that unique wiki_slug is assigned to rerun course.
+        """
+        course_data = {
+            'org': 'edX',
+            'number': '123',
+            'display_name': 'Rerun Course',
+            'run': '2013'
+        }
+
+        source_wiki_slug = '{0}.{1}.{2}'.format(course_data['org'], course_data['number'], course_data['run'])
+
+        source_course_key = _get_course_id(self.store, course_data)
+        _create_course(self, source_course_key, course_data)
+        source_course = self.store.get_course(source_course_key)
+
+        # Verify created course's wiki_slug.
+        self.assertEquals(source_course.wiki_slug, source_wiki_slug)
+
+        destination_course_data = course_data
+        destination_course_data['run'] = '2013_Rerun'
+
+        destination_course_key = self.post_rerun_request(
+            source_course.id, destination_course_data=destination_course_data
+        )
+        self.verify_rerun_course(source_course.id, destination_course_key, destination_course_data['display_name'])
+        destination_course = self.store.get_course(destination_course_key)
+
+        destination_wiki_slug = '{0}.{1}.{2}'.format(
+            destination_course.id.org, destination_course.id.course, destination_course.id.run
+        )
+
+        # Verify rerun course's wiki_slug.
+        self.assertEquals(destination_course.wiki_slug, destination_wiki_slug)
 
 
 class ContentLicenseTest(ContentStoreTestCase):
