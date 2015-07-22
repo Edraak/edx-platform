@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This is the default template for our main set of AWS servers. This does NOT
 cover the content machines, which use content.py
@@ -24,7 +25,7 @@ import os
 
 from path import path
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 # SERVICE_VARIANT specifies name of the variant used, which decides what JSON
 # configuration files are read during startup.
@@ -135,8 +136,8 @@ if STATIC_URL_BASE:
 MEDIA_ROOT = ENV_TOKENS.get('MEDIA_ROOT', MEDIA_ROOT)
 MEDIA_URL = ENV_TOKENS.get('MEDIA_URL', MEDIA_URL)
 
-# Translators: This is the Edraak platform name, keep it only on word. Edraak-specific.
-PLATFORM_NAME = _("Edraak")
+# Hardcode to the Arabic name, even in English layout, check the previous commits to see other failed scripts
+PLATFORM_NAME = u'إدراك'
 
 # For displaying on the receipt. At Stanford PLATFORM_NAME != MERCHANT_NAME, but PLATFORM_NAME is a fine default
 PLATFORM_TWITTER_ACCOUNT = ENV_TOKENS.get('PLATFORM_TWITTER_ACCOUNT', PLATFORM_TWITTER_ACCOUNT)

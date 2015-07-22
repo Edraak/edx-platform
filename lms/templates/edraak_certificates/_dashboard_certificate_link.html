@@ -1,7 +1,6 @@
 <%!
     from django.utils.translation import ugettext as _
     from django.core.urlresolvers import reverse
-    from edraak_bayt.utils import check_user_publish
     from edraak_misc.utils import is_certificate_allowed
 %>
 
@@ -9,9 +8,9 @@
 
 ## TODO: Activate this
 ##% if is_certificate_allowed(user, course):
-    <a href="${reverse('edraak_certificates_issue', args=[course.id])}" class="email-settings issue_certificate">
+    <a href="${reverse('edraak_certificates_issue', args=[course.id])}" class="issue-certificate">
 
-    ## Translators: Edraak-specific
-    ${_("Completion Certificate")}
+        ## Translators: Edraak-specific
+        ${_("Completion Certificate")}
     </a>
 ##% endif

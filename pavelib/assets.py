@@ -142,6 +142,8 @@ def compile_sass(debug=False):
         "--update", "-E", "utf-8", " ".join(SASS_UPDATE_DIRS + THEME_SASS_PATHS),
     ))
 
+    print("\t\tFinished compiling assets.")
+
 
 def compile_templated_sass(systems, settings):
     """
