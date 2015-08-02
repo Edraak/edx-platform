@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def remove_ignored_messages(theme_root):
-        theme_pofile = theme_root / 'conf/locale/en/LC_MESSAGES/edraak-platform-theme.po'
+        theme_pofile = theme_root / 'conf/locale/en/LC_MESSAGES/edraak-platform-2015-theme.po'
         theme_po = polib.pofile(theme_pofile)
 
         # `reversed()` is used to allow removing from the bottom
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def transifex_push(theme_root):
-        call(['tx', 'push', '-l', 'en', '-s', '-r', 'edraak.edraak-platform-theme'], cwd=theme_root)
+        call(['tx', 'push', '-l', 'en', '-s', '-r', 'edraak.edraak-platform-2015-theme'], cwd=theme_root)
 
     def handle(self, *args, **options):
         if settings.FEATURES.get('USE_CUSTOM_THEME', False) and settings.THEME_NAME:
