@@ -55,9 +55,12 @@ def courses(request):
             "endDate": course.end,
             "enrollmentStartDate": course.enrollment_start,
             "enrollmentEndDate": course.enrollment_end,
+            "overview": get_course_about_section(course, "overview").strip(),
             "aboutPage": prefix + reverse('about_course', args=[unicode(course.id)]),
             "image": prefix + course_image_url(course),
             "state": _get_course_status(course),
+            "youtube_id": youtube_id,
+            "effort": get_course_about_section(course, "effort").strip(),
         })
 
     return JsonResponse(courses_json)
