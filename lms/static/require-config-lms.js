@@ -46,8 +46,10 @@
         paths: {
             "annotator_1.2.9": "js/vendor/edxnotes/annotator-full.min",
             "date": "js/vendor/date",
+            "text": 'js/vendor/requirejs/text',
             "backbone": "js/vendor/backbone-min",
             "backbone-super": "js/vendor/backbone-super",
+            "backbone.paginator": "js/vendor/backbone.paginator.min",
             "underscore.string": "js/vendor/underscore.string.min",
             // Files needed by OVA
             "annotator": "js/vendor/ova/annotator-full",
@@ -67,7 +69,7 @@
             "osda": 'js/vendor/ova/OpenSeaDragonAnnotation',
             "ova": 'js/vendor/ova/ova',
             "catch": 'js/vendor/ova/catch/js/catch',
-            "handlebars": 'js/vendor/ova/catch/js/handlebars-1.1.2',
+            "handlebars": 'js/vendor/ova/catch/js/handlebars-1.1.2'
             // end of files needed by OVA
         },
         shim: {
@@ -88,8 +90,12 @@
                 deps: ["underscore", "jquery"],
                 exports: "Backbone"
             },
-            "backbone-super": {
+            "backbone.paginator": {
                 deps: ["backbone"],
+                exports: "Backbone.Paginator"
+            },
+            "backbone-super": {
+                deps: ["backbone"]
             },
             "logger": {
                 exports: "Logger"
@@ -147,7 +153,7 @@
                     "grouping-annotator", "diacritic-annotator", "openseadragon", "jquery-Watch", "catch", "handlebars",
                     "URI"
                 ]
-            },
+            }
             // End of needed by OVA
         }
     };

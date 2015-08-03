@@ -13,6 +13,7 @@ DEBUG = True
 USE_I18N = True
 TEMPLATE_DEBUG = True
 SITE_NAME = 'localhost:8000'
+PLATFORM_NAME = ENV_TOKENS.get('PLATFORM_NAME', 'Devstack')
 # By default don't use a worker, execute tasks as if they were local functions
 CELERY_ALWAYS_EAGER = True
 
@@ -61,7 +62,10 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar_mongo.panel.MongoDebugPanel',
-    'debug_toolbar.panels.profiling.ProfilingPanel',
+    # ProfilingPanel has been intentionally removed for default devstack.py
+    # runtimes for performance reasons. If you wish to re-enable it in your
+    # local development environment, please create a new settings file
+    # that imports and extends devstack.py.
 )
 
 DEBUG_TOOLBAR_CONFIG = {
@@ -133,6 +137,22 @@ FEATURES['CERTIFICATES_HTML_VIEW'] = True
 
 
 ########################## Course Discovery #######################
+from django.utils.translation import ugettext as _
+LANGUAGE_MAP = {'terms': {lang: display for lang, display in ALL_LANGUAGES}, 'name': _('Language')}
+COURSE_DISCOVERY_MEANINGS = {
+    'org': {
+        'name': _('Organization'),
+    },
+    'modes': {
+        'name': _('Course Type'),
+        'terms': {
+            'honor': _('Honor'),
+            'verified': _('Verified'),
+        },
+    },
+    'language': LANGUAGE_MAP,
+}
+
 FEATURES['ENABLE_COURSE_DISCOVERY'] = True
 FEATURES['COURSES_ARE_BROWSEABLE'] = True
 HOMEPAGE_COURSE_MAX = 9
@@ -146,6 +166,9 @@ VERIFY_STUDENT["SOFTWARE_SECURE"] = {
     "API_SECRET_KEY": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
 }
 
+# Skip enrollment start date filtering
+SEARCH_SKIP_ENROLLMENT_START_DATE_FILTERING = True
+
 
 ########################## Shopping cart ##########################
 FEATURES['ENABLE_SHOPPING_CART'] = True
@@ -153,6 +176,10 @@ FEATURES['STORE_BILLING_INFO'] = True
 FEATURES['ENABLE_PAID_COURSE_REGISTRATION'] = True
 FEATURES['ENABLE_COSMETIC_DISPLAY_PRICE'] = True
 
+########################## Third Party Auth #######################
+
+if FEATURES.get('ENABLE_THIRD_PARTY_AUTH') and 'third_party_auth.dummy.DummyBackend' not in AUTHENTICATION_BACKENDS:
+    AUTHENTICATION_BACKENDS = ['third_party_auth.dummy.DummyBackend'] + list(AUTHENTICATION_BACKENDS)
 
 #####################################################################
 # See if the developer has any local overrides.

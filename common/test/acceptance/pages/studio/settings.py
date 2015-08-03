@@ -16,6 +16,9 @@ class SettingsPage(CoursePage):
 
     url_path = "settings/details"
 
+    ################
+    # Helpers
+    ################
     def is_browser_on_page(self):
         return self.q(css='body.view-settings').present
 
@@ -38,11 +41,18 @@ class SettingsPage(CoursePage):
         results = self.get_elements(css_selector=css_selector)
         return results[0] if results else None
 
+    ################
+    # Properties
+    ################
     @property
     def pre_requisite_course_options(self):
         """
         Returns the pre-requisite course drop down field options.
         """
+        self.wait_for_element_visibility(
+            '#pre-requisite-course',
+            'Prerequisite course element is available'
+        )
         return self.get_elements('#pre-requisite-course')
 
     @property
@@ -50,6 +60,10 @@ class SettingsPage(CoursePage):
         """
         Returns the enable entrance exam checkbox.
         """
+        self.wait_for_element_visibility(
+            '#entrance-exam-enabled',
+            'Entrance exam checkbox is available'
+        )
         return self.get_element('#entrance-exam-enabled')
 
     @property
@@ -58,26 +72,11 @@ class SettingsPage(CoursePage):
         Returns the alert confirmation element, which contains text
         such as 'Your changes have been saved.'
         """
+        self.wait_for_element_visibility(
+            '#alert-confirmation-title',
+            'Alert confirmation title element is available'
+        )
         return self.get_element('#alert-confirmation-title')
-
-    def require_entrance_exam(self, required=True):
-        """
-        Set the entrance exam requirement via the checkbox.
-        """
-        checkbox = self.entrance_exam_field
-        selected = checkbox.is_selected()
-        if required and not selected:
-            checkbox.click()
-            self.wait_for_element_visibility(
-                '#entrance-exam-minimum-score-pct',
-                'Entrance exam minimum score percent is visible'
-            )
-        if not required and selected:
-            checkbox.click()
-            self.wait_for_element_invisibility(
-                '#entrance-exam-minimum-score-pct',
-                'Entrance exam minimum score percent is invisible'
-            )
 
     @property
     def course_license(self):
@@ -122,6 +121,45 @@ class SettingsPage(CoursePage):
         if not button.present:
             raise Exception("Invalid license name: {name}".format(name=license_name))
         button.click()
+
+    ################
+    # Waits
+    ################
+    def wait_for_prerequisite_course_options(self):
+        """
+        Ensure the pre_requisite_course_options dropdown selector is displayed
+        """
+        EmptyPromise(
+            lambda: self.q(css="#pre-requisite-course").present,
+            'Prerequisite course dropdown selector is displayed'
+        ).fulfill()
+
+    ################
+    # Clicks
+    ################
+
+    ################
+    # Workflows
+    ################
+
+    def require_entrance_exam(self, required=True):
+        """
+        Set the entrance exam requirement via the checkbox.
+        """
+        checkbox = self.entrance_exam_field
+        selected = checkbox.is_selected()
+        if required and not selected:
+            checkbox.click()
+            self.wait_for_element_visibility(
+                '#entrance-exam-minimum-score-pct',
+                'Entrance exam minimum score percent is visible'
+            )
+        if not required and selected:
+            checkbox.click()
+            self.wait_for_element_invisibility(
+                '#entrance-exam-minimum-score-pct',
+                'Entrance exam minimum score percent is invisible'
+            )
 
     def save_changes(self, wait_for_confirmation=True):
         """

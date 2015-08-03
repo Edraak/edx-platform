@@ -17,6 +17,8 @@ set -e
 #       - "quality": Run the quality (pep8/pylint) checks
 #       - "lms-unit": Run the LMS Python unit tests
 #       - "cms-unit": Run the CMS Python unit tests
+#       - "js-unit": Run the JavaScript tests
+#       - "commonlib-unit": Run Python unit tests from the common/lib directory
 #       - "commonlib-js-unit": Run the JavaScript tests and the Python unit
 #           tests from the common/lib directory
 #       - "lms-acceptance": Run the acceptance (Selenium/Lettuce) tests for
@@ -56,7 +58,7 @@ git clean -qxfd
 source scripts/jenkins-common.sh
 
 # Violations thresholds for failing the build
-PYLINT_THRESHOLD=7350
+PYLINT_THRESHOLD=7000
 JSHINT_THRESHOLD=3700
 
 # If the environment variable 'SHARD' is not set, default to 'all'.
@@ -111,6 +113,14 @@ END
 
     "cms-unit")
         paver test_system -s cms --extra_args="--with-flaky" --cov_args="-p"
+        ;;
+
+    "commonlib-unit")
+        paver test_lib --extra_args="--with-flaky" --cov_args="-p"
+        ;;
+
+    "js-unit")
+        paver test_js --coverage
         ;;
 
     "commonlib-js-unit")

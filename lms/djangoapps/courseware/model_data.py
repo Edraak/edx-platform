@@ -419,6 +419,7 @@ class UserStateCache(object):
                 pending_updates
             )
         except DatabaseError:
+            log.exception("Saving user state failed for %s", self.user.username)
             raise KeyValueMultiSaveError([])
         finally:
             self._cache.update(pending_updates)
@@ -479,7 +480,7 @@ class UserStateCache(object):
             kvs_key.field_name in self._cache[cache_key]
         )
 
-    @contract(user_id=int, usage_key=UsageKey, score="number|None", max_score="number|None")
+    # @contract(user_id=int, usage_key=UsageKey, score="number|None", max_score="number|None")
     def set_score(self, user_id, usage_key, score, max_score):
         """
         UNSUPPORTED METHOD
@@ -544,7 +545,7 @@ class UserStateSummaryCache(DjangoOrmFieldCache):
         with them.
 
         Arguments:
-            fields (list of str): Field names to return values for
+            fields (list of :class:`~Field`): Fields to return values for
             xblocks (list of :class:`~XBlock`): XBlocks to load fields for
             aside_types (list of str): Asides to load field for (which annotate the supplied
                 xblocks).
@@ -920,7 +921,7 @@ class FieldDataCache(object):
 
         return self.cache[key.scope].has(key)
 
-    @contract(user_id=int, usage_key=UsageKey, score="number|None", max_score="number|None")
+    # @contract(user_id=int, usage_key=UsageKey, score="number|None", max_score="number|None")
     def set_score(self, user_id, usage_key, score, max_score):
         """
         UNSUPPORTED METHOD

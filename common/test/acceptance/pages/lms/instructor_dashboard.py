@@ -57,6 +57,15 @@ class InstructorDashboardPage(CoursePage):
         student_admin_section.wait_for_page()
         return student_admin_section
 
+    def select_certificates(self):
+        """
+        Selects the certificates tab and returns the CertificatesSection
+        """
+        self.q(css='a[data-section=certificates]').first.click()
+        certificates_section = CertificatesPage(self.browser)
+        certificates_section.wait_for_page()
+        return certificates_section
+
     @staticmethod
     def get_asset_path(file_name):
         """
@@ -299,6 +308,11 @@ class CohortManagementSection(PageObject):
             textinput.send_keys(user)
             textinput.send_keys(",")
         self.q(css=self._bounded_selector("div.cohort-management-group-add .action-primary")).first.click()
+        # Expect the confirmation message substring. (The full message will differ depending on 1 or >1 students added)
+        self.wait_for(
+            lambda: "added to this cohort" in self.get_cohort_confirmation_messages(wait_for_messages=True)[0],
+            "Student(s) added confirmation message."
+        )
 
     def get_cohort_student_input_field_value(self):
         """
@@ -393,14 +407,14 @@ class CohortManagementSection(PageObject):
 
         return self._get_messages(title_css, detail_css, wait_for_messages=wait_for_messages)
 
-    def _get_cohort_messages(self, type):
+    def _get_cohort_messages(self, type, wait_for_messages=False):
         """
         Returns array of messages related to manipulating cohorts directly through the UI for the given type.
         """
         title_css = "div.cohort-management-group-add .cohort-" + type + " .message-title"
         detail_css = "div.cohort-management-group-add .cohort-" + type + " .summary-item"
 
-        return self._get_messages(title_css, detail_css)
+        return self._get_messages(title_css, detail_css, wait_for_messages)
 
     def get_csv_messages(self):
         """
@@ -428,12 +442,12 @@ class CohortManagementSection(PageObject):
             messages.append(detail.text)
         return messages
 
-    def get_cohort_confirmation_messages(self):
+    def get_cohort_confirmation_messages(self, wait_for_messages=False):
         """
         Returns an array of messages present in the confirmation area of the cohort management UI.
         The first entry in the array is the title. Any further entries are the details.
         """
-        return self._get_cohort_messages("confirmations")
+        return self._get_cohort_messages("confirmations", wait_for_messages)
 
     def get_cohort_error_messages(self):
         """
@@ -879,3 +893,41 @@ class StudentAdminPage(PageObject):
         """
         input_box = self.student_email_input.first.results[0]
         input_box.send_keys(email_addres)
+
+
+class CertificatesPage(PageObject):
+    """
+    Certificates section of the Instructor dashboard.
+    """
+    url = None
+    PAGE_SELECTOR = 'section#certificates'
+
+    def is_browser_on_page(self):
+        return self.q(css='a[data-section=certificates].active-section').present
+
+    def get_selector(self, css_selector):
+        """
+        Makes query selector by pre-pending certificates section
+        """
+        return self.q(css=' '.join([self.PAGE_SELECTOR, css_selector]))
+
+    @property
+    def generate_certificates_button(self):
+        """
+        Returns the "Generate Certificates" button.
+        """
+        return self.get_selector('#btn-start-generating-certificates')
+
+    @property
+    def certificate_generation_status(self):
+        """
+        Returns certificate generation status message container.
+        """
+        return self.get_selector('div.certificate-generation-status')
+
+    @property
+    def pending_tasks_section(self):
+        """
+        Returns the "Pending Instructor Tasks" section.
+        """
+        return self.get_selector('div.running-tasks-container')

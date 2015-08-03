@@ -1,5 +1,13 @@
 """
-Settings for bok choy tests
+Settings for Bok Choy tests that are used for running CMS and LMS.
+
+Bok Choy uses two different settings files:
+1. test_static_optimized is used when invoking collectstatic
+2. bok_choy is used when running CMS and LMS
+
+Note: it isn't possible to have a single settings file, because Django doesn't
+support both generating static assets to a directory and also serving static
+from the same directory.
 """
 
 import os
@@ -28,9 +36,10 @@ from .aws import *  # pylint: disable=wildcard-import, unused-wildcard-import
 INSTALLED_APPS += ('django_extensions',)
 
 # Redirect to the test_root folder within the repo
-TEST_ROOT = CONFIG_ROOT.dirname().dirname() / "test_root"  # pylint: disable=no-value-for-parameter
+TEST_ROOT = REPO_ROOT / "test_root"  # pylint: disable=no-value-for-parameter
 GITHUB_REPO_ROOT = (TEST_ROOT / "data").abspath()
 LOG_DIR = (TEST_ROOT / "log").abspath()
+DATA_DIR = TEST_ROOT / "data"
 
 # Configure modulestore to use the test folder within the repo
 update_module_store_settings(
@@ -44,8 +53,20 @@ update_module_store_settings(
     default_store=os.environ.get('DEFAULT_STORE', 'draft'),
 )
 
-# Enable django-pipeline and staticfiles
-STATIC_ROOT = (TEST_ROOT / "staticfiles").abspath()
+############################ STATIC FILES #############################
+
+# Enable debug so that static assets are served by Django
+DEBUG = True
+
+# Serve static files at /static directly from the staticfiles directory under test root
+# Note: optimized files for testing are generated with settings from test_static_optimized
+STATIC_URL = "/static/"
+STATICFILES_FINDERS = (
+    'staticfiles.finders.FileSystemFinder',
+)
+STATICFILES_DIRS = (
+    (TEST_ROOT / "staticfiles" / "cms").abspath(),
+)
 
 # Silence noisy logs
 import logging
@@ -74,16 +95,16 @@ FEATURES['ENABLE_TEAMS'] = True
 # Enable custom content licensing
 FEATURES['LICENSING'] = True
 
+FEATURES['ENABLE_MOBILE_REST_API'] = True  # Enable video bumper in Studio
+FEATURES['ENABLE_VIDEO_BUMPER'] = True  # Enable video bumper in Studio settings
+
 ########################### Entrance Exams #################################
 FEATURES['ENTRANCE_EXAMS'] = True
 
-# Unfortunately, we need to use debug mode to serve staticfiles
-DEBUG = True
-
 # Point the URL used to test YouTube availability to our stub YouTube server
 YOUTUBE_PORT = 9080
-YOUTUBE['API'] = "127.0.0.1:{0}/get_youtube_api/".format(YOUTUBE_PORT)
-YOUTUBE['TEST_URL'] = "127.0.0.1:{0}/test_youtube/".format(YOUTUBE_PORT)
+YOUTUBE['API'] = "http://127.0.0.1:{0}/get_youtube_api/".format(YOUTUBE_PORT)
+YOUTUBE['METADATA_URL'] = "http://127.0.0.1:{0}/test_youtube/".format(YOUTUBE_PORT)
 YOUTUBE['TEXT_API']['url'] = "127.0.0.1:{0}/test_transcripts_youtube/".format(YOUTUBE_PORT)
 
 FEATURES['ENABLE_COURSEWARE_INDEX'] = True

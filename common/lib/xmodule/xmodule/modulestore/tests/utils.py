@@ -54,6 +54,14 @@ def create_modulestore_instance(
     )
 
 
+def mock_tab_from_json(tab_dict):
+    """
+    Mocks out the CourseTab.from_json to just return the tab_dict itself so that we don't have to deal
+    with plugin errors.
+    """
+    return tab_dict
+
+
 class LocationMixin(XBlockMixin):
     """
     Adds a `location` property to an :class:`XBlock` so it is more compatible
@@ -135,3 +143,33 @@ class MixedSplitTestCase(TestCase):
             modulestore=self.store,
             **extra
         )
+
+
+class ProceduralCourseTestMixin(object):
+    """
+    Contains methods for testing courses generated procedurally
+    """
+    def populate_course(self, branching=2):
+        """
+        Add k chapters, k^2 sections, k^3 verticals, k^4 problems to self.course (where k = branching)
+        """
+        user_id = self.user.id
+        self.populated_usage_keys = {}  # pylint: disable=attribute-defined-outside-init
+
+        def descend(parent, stack):  # pylint: disable=missing-docstring
+            if not stack:
+                return
+
+            xblock_type = stack[0]
+            for _ in range(branching):
+                child = ItemFactory.create(
+                    category=xblock_type,
+                    parent_location=parent.location,
+                    user_id=user_id
+                )
+                self.populated_usage_keys.setdefault(xblock_type, []).append(
+                    child.location
+                )
+                descend(child, stack[1:])
+
+        descend(self.course, ['chapter', 'sequential', 'vertical', 'problem'])

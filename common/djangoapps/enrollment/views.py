@@ -3,11 +3,14 @@ The Enrollment API Views should be simple, lean HTTP endpoints for API access. T
 consist primarily of authentication, request validation, and serialization.
 
 """
+import logging
+
 from ipware.ip import get_ip
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 from opaque_keys import InvalidKeyError
 from course_modes.models import CourseMode
+from lms.djangoapps.commerce.utils import audit_log
 from openedx.core.djangoapps.user_api.preferences.api import update_email_opt_in
 from openedx.core.lib.api.permissions import ApiKeyHeaderPermission, ApiKeyHeaderPermissionIsAuthenticated
 from rest_framework import status
@@ -29,6 +32,8 @@ from enrollment.errors import (
     CourseModeNotFoundError, CourseEnrollmentExistsError
 )
 from student.models import User
+
+log = logging.getLogger(__name__)
 
 
 class EnrollmentCrossDomainSessionAuth(SessionAuthenticationAllowInactiveUser, SessionAuthenticationCrossDomainCsrf):
@@ -86,15 +91,19 @@ class EnrollmentView(APIView, ApiKeyPermissionMixIn):
 
                 * course_id: The unique identifier for the course.
 
-                * enrollment_start: The date and time that users can begin enrolling in the course.  If null, enrollment opens immediately when the course is created.
+                * enrollment_start: The date and time that users can begin enrolling in the course.
+                  If null, enrollment opens immediately when the course is created.
 
-                * enrollment_end: The date and time after which users cannot enroll for the course.  If null, the enrollment period never ends.
+                * enrollment_end: The date and time after which users cannot enroll for the course.
+                  If null, the enrollment period never ends.
 
-                * course_start: The date and time at which the course opens.  If null, the course opens immediately when created.
+                * course_start: The date and time at which the course opens.
+                  If null, the course opens immediately when created.
 
                 * course_end: The date and time at which the course closes.  If null, the course never ends.
 
-                * course_modes: An array of data about the enrollment modes supported for the course. Each enrollment mode collection includes:
+                * course_modes: An array of data about the enrollment modes supported for the course.
+                  Each enrollment mode collection includes:
 
                     * slug: The short name for the enrollment mode.
                     * name: The full name of the enrollment mode.
@@ -163,35 +172,48 @@ class EnrollmentCourseDetailView(APIView):
 
             Get enrollment details for a course.
 
+            Response values include the course schedule and enrollment modes supported by the course.
+            Use the parameter include_expired=1 to include expired enrollment modes in the response.
+
             **Note:** Getting enrollment details for a course does not require authentication.
 
         **Example Requests**:
 
             GET /api/enrollment/v1/course/{course_id}
 
+            GET /api/v1/enrollment/course/{course_id}?include_expired=1
+
 
         **Response Values**
 
-            A collection of course enrollments for the user, or for the newly created enrollment. Each course enrollment contains:
+            A collection of course enrollments for the user, or for the newly created enrollment.
+            Each course enrollment contains:
 
                 * course_id: The unique identifier of the course.
 
-                * enrollment_start: The date and time that users can begin enrolling in the course.  If null, enrollment opens immediately when the course is created.
+                * enrollment_start: The date and time that users can begin enrolling in the course.
+                  If null, enrollment opens immediately when the course is created.
 
-                * enrollment_end: The date and time after which users cannot enroll for the course.  If null, the enrollment period never ends.
+                * enrollment_end: The date and time after which users cannot enroll for the course.
+                  If null, the enrollment period never ends.
 
-                * course_start: The date and time at which the course opens.  If null, the course opens immediately when created.
+                * course_start: The date and time at which the course opens.
+                  If null, the course opens immediately when created.
 
                 * course_end: The date and time at which the course closes.  If null, the course never ends.
 
-                * course_modes: An array of data about the enrollment modes supported for the course. Each enrollment mode collection includes:
+                * course_modes: An array containing details about the enrollment modes supported for the course.
+                  If the request uses the parameter include_expired=1, the array also includes expired enrollment modes.
+
+                  Each enrollment mode collection includes:
 
                         * slug: The short name for the enrollment mode.
                         * name: The full name of the enrollment mode.
                         * min_price: The minimum price for which a user can enroll in this mode.
                         * suggested_prices: A list of suggested prices for this enrollment mode.
                         * currency: The currency of the listed prices.
-                        * expiration_datetime: The date and time after which users cannot enroll in the course in this mode.
+                        * expiration_datetime: The date and time after which users cannot enroll in the course
+                          in this mode.
                         * description: A description of this mode.
 
                 * invite_only: Whether students must be invited to enroll in the course; true or false.
@@ -217,7 +239,7 @@ class EnrollmentCourseDetailView(APIView):
 
         """
         try:
-            return Response(api.get_course_enrollment_details(course_id))
+            return Response(api.get_course_enrollment_details(course_id, bool(request.GET.get('include_expired', ''))))
         except CourseNotFoundError:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -254,7 +276,8 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
 
         **Post Parameters**
 
-            * user:  The user ID of the currently logged in user. Optional. You cannot use the command to enroll a different user.
+            * user:  The username of the currently logged in user. Optional.
+              You cannot use the command to enroll a different user.
 
             * mode: The Course Mode for the enrollment. Individual users cannot upgrade their enrollment mode from
               'honor'. Only server-to-server requests can enroll with other modes. Optional.
@@ -271,7 +294,8 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
 
         **Response Values**
 
-            A collection of course enrollments for the user, or for the newly created enrollment. Each course enrollment contains:
+            A collection of course enrollments for the user, or for the newly created enrollment.
+            Each course enrollment contains:
 
                 * created: The date the user account was created.
 
@@ -283,28 +307,33 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
 
                     * course_id:  The unique identifier for the course.
 
-                    * enrollment_start: The date and time that users can begin enrolling in the course.  If null, enrollment opens immediately when the course is created.
+                    * enrollment_start: The date and time that users can begin enrolling in the course.
+                      If null, enrollment opens immediately when the course is created.
 
-                    * enrollment_end: The date and time after which users cannot enroll for the course.  If null, the enrollment period never ends.
+                    * enrollment_end: The date and time after which users cannot enroll for the course.
+                      If null, the enrollment period never ends.
 
-                    * course_start: The date and time at which the course opens.  If null, the course opens immediately when created.
+                    * course_start: The date and time at which the course opens.
+                      If null, the course opens immediately when created.
 
                     * course_end: The date and time at which the course closes.  If null, the course never ends.
 
-                    * course_modes: An array of data about the enrollment modes supported for the course. Each enrollment mode collection includes:
+                    * course_modes: An array of data about the enrollment modes supported for the course.
+                      Each enrollment mode collection includes:
 
                         * slug: The short name for the enrollment mode.
                         * name: The full name of the enrollment mode.
                         * min_price: The minimum price for which a user can enroll in this mode.
                         * suggested_prices: A list of suggested prices for this enrollment mode.
                         * currency: The currency of the listed prices.
-                        * expiration_datetime: The date and time after which users cannot enroll in the course in this mode.
+                        * expiration_datetime: The date and time after which users cannot enroll in the course
+                          in this mode.
                         * description: A description of this mode.
 
 
                     * invite_only: Whether students must be invited to enroll in the course; true or false.
 
-                * user: The ID of the user.
+                * user: The username of the user.
     """
 
     authentication_classes = OAuth2AuthenticationAllowInactiveUser, EnrollmentCrossDomainSessionAuth
@@ -393,21 +422,10 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                 }
             )
 
-        # Check whether any country access rules block the user from enrollment
-        # We do this at the view level (rather than the Python API level)
-        # because this check requires information about the HTTP request.
-        redirect_url = embargo_api.redirect_if_blocked(
-            course_id, user=user, ip_address=get_ip(request), url=request.path)
-        if redirect_url:
-            return Response(
-                status=status.HTTP_403_FORBIDDEN,
-                data={
-                    "message": (
-                        u"Users from this location cannot access the course '{course_id}'."
-                    ).format(course_id=course_id),
-                    "user_message_url": request.build_absolute_uri(redirect_url)
-                }
-            )
+        embargo_response = embargo_api.get_embargo_response(request, course_id, user)
+
+        if embargo_response:
+            return embargo_response
 
         try:
             is_active = request.DATA.get('is_active')
@@ -421,11 +439,22 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                 )
 
             enrollment = api.get_enrollment(username, unicode(course_id))
-            if has_api_key_permissions and enrollment and enrollment['mode'] != mode:
+            mode_changed = enrollment and mode is not None and enrollment['mode'] != mode
+            active_changed = enrollment and is_active is not None and enrollment['is_active'] != is_active
+            if has_api_key_permissions and (mode_changed or active_changed):
+                if mode_changed and active_changed and not is_active:
+                    # if the requester wanted to deactivate but specified the wrong mode, fail
+                    # the request (on the assumption that the requester had outdated information
+                    # about the currently active enrollment).
+                    msg = u"Enrollment mode mismatch: active mode={}, requested mode={}. Won't deactivate.".format(
+                        enrollment["mode"], mode
+                    )
+                    log.warning(msg)
+                    return Response(status=status.HTTP_400_BAD_REQUEST, data={"message": msg})
                 response = api.update_enrollment(username, unicode(course_id), mode=mode, is_active=is_active)
             else:
                 # Will reactivate inactive enrollments.
-                response = api.add_enrollment(username, unicode(course_id), mode=mode)
+                response = api.add_enrollment(username, unicode(course_id), mode=mode, is_active=is_active)
 
             email_opt_in = request.DATA.get('email_opt_in', None)
             if email_opt_in is not None:
@@ -461,3 +490,16 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                     ).format(username=username, course_id=course_id)
                 }
             )
+        finally:
+            # Assumes that the ecommerce service uses an API key to authenticate.
+            if has_api_key_permissions:
+                current_enrollment = api.get_enrollment(username, unicode(course_id))
+                audit_log(
+                    'enrollment_change_requested',
+                    course_id=unicode(course_id),
+                    requested_mode=mode,
+                    actual_mode=current_enrollment['mode'] if current_enrollment else None,
+                    requested_activation=is_active,
+                    actual_activation=current_enrollment['is_active'] if current_enrollment else None,
+                    user_id=user.id
+                )

@@ -4,10 +4,14 @@ Utilities related to API views
 import functools
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.http import Http404
+from django.utils.translation import ugettext as _
 
 from rest_framework import status, response
 from rest_framework.exceptions import APIException
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
+from rest_framework.generics import GenericAPIView
 
 from lms.djangoapps.courseware.courses import get_course_with_access
 from opaque_keys.edx.keys import CourseKey
@@ -17,7 +21,7 @@ from openedx.core.lib.api.authentication import (
     SessionAuthenticationAllowInactiveUser,
     OAuth2AuthenticationAllowInactiveUser,
 )
-from openedx.core.lib.api.permissions import IsUserInUrl, IsAuthenticatedOrDebug
+from openedx.core.lib.api.permissions import IsUserInUrl
 from util.milestones_helpers import any_unfulfilled_milestones
 
 
@@ -40,7 +44,11 @@ class DeveloperErrorViewMixin(object):
         if hasattr(validation_error, "message_dict"):
             response_obj = {}
             message_dict = dict(validation_error.message_dict)
-            non_field_error_list = message_dict.pop(NON_FIELD_ERRORS, None)
+            # Extract both Django form and DRF serializer non-field errors
+            non_field_error_list = (
+                message_dict.pop(NON_FIELD_ERRORS, []) +
+                message_dict.pop("non_field_errors", [])
+            )
             if non_field_error_list:
                 response_obj["developer_message"] = non_field_error_list[0]
             if message_dict:
@@ -63,6 +71,16 @@ class DeveloperErrorViewMixin(object):
             raise
 
 
+class ExpandableFieldViewMixin(object):
+    """A view mixin to add expansion information to the serializer context for later use by an ExpandableField."""
+
+    def get_serializer_context(self):
+        """Adds expand information from query parameters to the serializer context to support expandable fields."""
+        result = super(ExpandableFieldViewMixin, self).get_serializer_context()
+        result['expand'] = [x for x in self.request.QUERY_PARAMS.get('expand', '').split(',') if x]
+        return result
+
+
 def view_course_access(depth=0, access_action='load', check_for_milestones=False):
     """
     Method decorator for an API endpoint that verifies the user has access to the course.
@@ -83,7 +101,8 @@ def view_course_access(depth=0, access_action='load', check_for_milestones=False
                         request.user,
                         access_action,
                         course_id,
-                        depth=depth
+                        depth=depth,
+                        check_if_enrolled=True,
                     )
                 except Http404:
                     # any_unfulfilled_milestones called a second time since has_access returns a bool
@@ -113,8 +132,71 @@ def view_auth_classes(is_user=False):
             OAuth2AuthenticationAllowInactiveUser,
             SessionAuthenticationAllowInactiveUser
         )
-        func_or_class.permission_classes = (IsAuthenticatedOrDebug,)
+        func_or_class.permission_classes = (IsAuthenticated,)
         if is_user:
             func_or_class.permission_classes += (IsUserInUrl,)
         return func_or_class
     return _decorator
+
+
+def add_serializer_errors(serializer, data, field_errors):
+    """Adds errors from serializer validation to field_errors. data is the original data to deserialize."""
+    if not serializer.is_valid():  # pylint: disable=maybe-no-member
+        errors = serializer.errors  # pylint: disable=maybe-no-member
+        for key, error in errors.iteritems():
+            field_errors[key] = {
+                'developer_message': u"Value '{field_value}' is not valid for field '{field_name}': {error}".format(
+                    field_value=data.get(key, ''), field_name=key, error=error
+                ),
+                'user_message': _(u"This value is invalid."),
+            }
+    return field_errors
+
+
+def build_api_error(message, **kwargs):
+    """Build an error dict corresponding to edX API conventions.
+
+    Args:
+        message (string): The string to use for developer and user messages.
+            The user message will be translated, but for this to work message
+            must have already been scraped. ugettext_noop is useful for this.
+        **kwargs: format parameters for message
+    """
+    return {
+        'developer_message': message.format(**kwargs),
+        'user_message': _(message).format(**kwargs),  # pylint: disable=translation-of-non-string
+    }
+
+
+class RetrievePatchAPIView(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
+    """Concrete view for retrieving and updating a model instance.
+
+    Like DRF's RetrieveUpdateAPIView, but without PUT and with automatic validation errors in the edX format.
+    """
+    def get(self, request, *args, **kwargs):
+        """Retrieves the specified resource using the RetrieveModelMixin."""
+        return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        """Checks for validation errors, then updates the model using the UpdateModelMixin."""
+        field_errors = self._validate_patch(request.DATA)
+        if field_errors:
+            return Response({'field_errors': field_errors}, status=status.HTTP_400_BAD_REQUEST)
+        return self.partial_update(request, *args, **kwargs)
+
+    def _validate_patch(self, patch):
+        """Validates a JSON merge patch. Captures DRF serializer errors and converts them to edX's standard format."""
+        field_errors = {}
+        serializer = self.get_serializer(self.get_object_or_none(), data=patch, partial=True)
+        fields = self.get_serializer().get_fields()  # pylint: disable=maybe-no-member
+
+        for key in patch:
+            if key in fields and fields[key].read_only:
+                field_errors[key] = {
+                    'developer_message': "This field is not editable",
+                    'user_message': _("This field is not editable"),
+                }
+
+        add_serializer_errors(serializer, patch, field_errors)
+
+        return field_errors

@@ -17,6 +17,7 @@ Common traits:
 # and throws spurious errors. Therefore, we disable invalid-name checking.
 # pylint: disable=invalid-name
 
+import datetime
 import json
 
 from .common import *
@@ -49,7 +50,6 @@ TEMPLATE_DEBUG = False
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 # IMPORTANT: With this enabled, the server must always be behind a proxy that
 # strips the header HTTP_X_FORWARDED_PROTO from client requests. Otherwise,
@@ -110,6 +110,7 @@ CELERY_QUEUES = {
 if os.environ.get('QUEUE') == 'high_mem':
     CELERYD_MAX_TASKS_PER_CHILD = 1
 
+CELERYBEAT_SCHEDULE = {}  # For scheduling tasks, entries can be added to this dict
 
 ########################## NON-SECURE ENV CONFIG ##############################
 # Things like server locations, ports, etc.
@@ -159,6 +160,12 @@ SESSION_COOKIE_DOMAIN = ENV_TOKENS.get('SESSION_COOKIE_DOMAIN')
 SESSION_COOKIE_HTTPONLY = ENV_TOKENS.get('SESSION_COOKIE_HTTPONLY', True)
 REGISTRATION_EXTRA_FIELDS = ENV_TOKENS.get('REGISTRATION_EXTRA_FIELDS', REGISTRATION_EXTRA_FIELDS)
 SESSION_COOKIE_SECURE = ENV_TOKENS.get('SESSION_COOKIE_SECURE', SESSION_COOKIE_SECURE)
+
+# Set the names of cookies shared with the marketing site
+# These have the same cookie domain as the session, which in production
+# usually includes subdomains.
+EDXMKTG_LOGGED_IN_COOKIE_NAME = ENV_TOKENS.get('EDXMKTG_LOGGED_IN_COOKIE_NAME', EDXMKTG_LOGGED_IN_COOKIE_NAME)
+EDXMKTG_USER_INFO_COOKIE_NAME = ENV_TOKENS.get('EDXMKTG_USER_INFO_COOKIE_NAME', EDXMKTG_USER_INFO_COOKIE_NAME)
 
 CMS_BASE = ENV_TOKENS.get('CMS_BASE', 'studio.edx.org')
 
@@ -265,6 +272,11 @@ CERT_QUEUE = ENV_TOKENS.get("CERT_QUEUE", 'test-pull')
 ZENDESK_URL = ENV_TOKENS.get("ZENDESK_URL")
 FEEDBACK_SUBMISSION_EMAIL = ENV_TOKENS.get("FEEDBACK_SUBMISSION_EMAIL")
 MKTG_URLS = ENV_TOKENS.get('MKTG_URLS', MKTG_URLS)
+
+# Badgr API
+BADGR_API_TOKEN = ENV_TOKENS.get('BADGR_API_TOKEN', BADGR_API_TOKEN)
+BADGR_BASE_URL = ENV_TOKENS.get('BADGR_BASE_URL', BADGR_BASE_URL)
+BADGR_ISSUER_SLUG = ENV_TOKENS.get('BADGR_ISSUER_SLUG', BADGR_ISSUER_SLUG)
 
 # git repo loading  environment
 GIT_REPO_DIR = ENV_TOKENS.get('GIT_REPO_DIR', '/edx/var/edxapp/course_repos')
@@ -399,6 +411,13 @@ if AWS_SECRET_ACCESS_KEY == "":
 
 AWS_STORAGE_BUCKET_NAME = AUTH_TOKENS.get('AWS_STORAGE_BUCKET_NAME', 'edxuploads')
 
+if AUTH_TOKENS.get('DEFAULT_FILE_STORAGE'):
+    DEFAULT_FILE_STORAGE = AUTH_TOKENS.get('DEFAULT_FILE_STORAGE')
+elif AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+else:
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
 # Specific setting for the File Upload Service to store media in a bucket.
 FILE_UPLOAD_STORAGE_BUCKET_NAME = ENV_TOKENS.get('FILE_UPLOAD_STORAGE_BUCKET_NAME', FILE_UPLOAD_STORAGE_BUCKET_NAME)
 FILE_UPLOAD_STORAGE_PREFIX = ENV_TOKENS.get('FILE_UPLOAD_STORAGE_PREFIX', FILE_UPLOAD_STORAGE_PREFIX)
@@ -523,7 +542,27 @@ TIME_ZONE_DISPLAYED_FOR_DEADLINES = ENV_TOKENS.get("TIME_ZONE_DISPLAYED_FOR_DEAD
 X_FRAME_OPTIONS = ENV_TOKENS.get('X_FRAME_OPTIONS', X_FRAME_OPTIONS)
 
 ##### Third-party auth options ################################################
-THIRD_PARTY_AUTH = AUTH_TOKENS.get('THIRD_PARTY_AUTH', THIRD_PARTY_AUTH)
+if FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
+    AUTHENTICATION_BACKENDS = (
+        ENV_TOKENS.get('THIRD_PARTY_AUTH_BACKENDS', [
+            'social.backends.google.GoogleOAuth2',
+            'social.backends.linkedin.LinkedinOAuth2',
+            'social.backends.facebook.FacebookOAuth2',
+            'third_party_auth.saml.SAMLAuthBackend',
+        ]) + list(AUTHENTICATION_BACKENDS)
+    )
+
+    # The reduced session expiry time during the third party login pipeline. (Value in seconds)
+    SOCIAL_AUTH_PIPELINE_TIMEOUT = ENV_TOKENS.get('SOCIAL_AUTH_PIPELINE_TIMEOUT', 600)
+
+    # third_party_auth config moved to ConfigurationModels. This is for data migration only:
+    THIRD_PARTY_AUTH_OLD_CONFIG = AUTH_TOKENS.get('THIRD_PARTY_AUTH', None)
+
+    if ENV_TOKENS.get('THIRD_PARTY_AUTH_SAML_FETCH_PERIOD_HOURS', 24) is not None:
+        CELERYBEAT_SCHEDULE['refresh-saml-metadata'] = {
+            'task': 'third_party_auth.fetch_saml_metadata',
+            'schedule': datetime.timedelta(hours=ENV_TOKENS.get('THIRD_PARTY_AUTH_SAML_FETCH_PERIOD_HOURS', 24)),
+        }
 
 ##### OAUTH2 Provider ##############
 if FEATURES.get('ENABLE_OAUTH2_PROVIDER'):
@@ -566,9 +605,6 @@ COURSE_ABOUT_VISIBILITY_PERMISSION = ENV_TOKENS.get(
     COURSE_ABOUT_VISIBILITY_PERMISSION
 )
 
-#date format the api will be formatting the datetime values
-API_DATE_FORMAT = '%Y-%m-%d'
-API_DATE_FORMAT = ENV_TOKENS.get('API_DATE_FORMAT', API_DATE_FORMAT)
 
 # Enrollment API Cache Timeout
 ENROLLMENT_COURSE_DETAILS_CACHE_TIMEOUT = ENV_TOKENS.get('ENROLLMENT_COURSE_DETAILS_CACHE_TIMEOUT', 60)
@@ -587,7 +623,9 @@ PDF_RECEIPT_COBRAND_LOGO_HEIGHT_MM = ENV_TOKENS.get(
     'PDF_RECEIPT_COBRAND_LOGO_HEIGHT_MM', PDF_RECEIPT_COBRAND_LOGO_HEIGHT_MM
 )
 
-if FEATURES.get('ENABLE_COURSEWARE_SEARCH') or FEATURES.get('ENABLE_DASHBOARD_SEARCH'):
+if FEATURES.get('ENABLE_COURSEWARE_SEARCH') or \
+   FEATURES.get('ENABLE_DASHBOARD_SEARCH') or \
+   FEATURES.get('ENABLE_COURSE_DISCOVERY'):
     # Use ElasticSearch as the search engine herein
     SEARCH_ENGINE = "search.elastic.ElasticSearchEngine"
 
@@ -598,6 +636,7 @@ FACEBOOK_APP_ID = AUTH_TOKENS.get("FACEBOOK_APP_ID")
 
 XBLOCK_SETTINGS = ENV_TOKENS.get('XBLOCK_SETTINGS', {})
 XBLOCK_SETTINGS.setdefault("VideoDescriptor", {})["licensing_enabled"] = FEATURES.get("LICENSING", False)
+XBLOCK_SETTINGS.setdefault("VideoModule", {})['YOUTUBE_API_KEY'] = AUTH_TOKENS.get('YOUTUBE_API_KEY', YOUTUBE_API_KEY)
 
 ##### CDN EXPERIMENT/MONITORING FLAGS #####
 CDN_VIDEO_URLS = ENV_TOKENS.get('CDN_VIDEO_URLS', CDN_VIDEO_URLS)
@@ -612,7 +651,6 @@ ECOMMERCE_API_TIMEOUT = ENV_TOKENS.get('ECOMMERCE_API_TIMEOUT', ECOMMERCE_API_TI
 ##### Custom Courses for EdX #####
 if FEATURES.get('CUSTOM_COURSES_EDX'):
     INSTALLED_APPS += ('ccx',)
-    MIDDLEWARE_CLASSES += ('ccx.overrides.CcxMiddleware',)
     FIELD_OVERRIDE_PROVIDERS += (
         'ccx.overrides.CustomCoursesForEdxOverrideProvider',
     )
@@ -635,4 +673,17 @@ else:
 
 # EdxNotes config
 
-EDXNOTES_INTERFACE = ENV_TOKENS.get('EDXNOTES_INTERFACE', EDXNOTES_INTERFACE)
+EDXNOTES_PUBLIC_API = ENV_TOKENS.get('EDXNOTES_PUBLIC_API', EDXNOTES_PUBLIC_API)
+EDXNOTES_INTERNAL_API = ENV_TOKENS.get('EDXNOTES_INTERNAL_API', EDXNOTES_INTERNAL_API)
+
+##### Credit Provider Integration #####
+
+CREDIT_PROVIDER_SECRET_KEYS = AUTH_TOKENS.get("CREDIT_PROVIDER_SECRET_KEYS", {})
+
+############ CERTIFICATE VERIFICATION URL (STATIC FILES) ###########
+ENV_TOKENS.get('CERTIFICATES_STATIC_VERIFY_URL', CERTIFICATES_STATIC_VERIFY_URL)
+
+##################### LTI Provider #####################
+if FEATURES.get('ENABLE_LTI_PROVIDER'):
+    INSTALLED_APPS += ('lti_provider',)
+    AUTHENTICATION_BACKENDS += ('lti_provider.users.LtiBackend', )

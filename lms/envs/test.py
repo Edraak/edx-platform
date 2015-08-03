@@ -21,9 +21,10 @@ sessions. Assumes structure:
 from .common import *
 import os
 from path import path
-from tempfile import mkdtemp
 from uuid import uuid4
 from warnings import filterwarnings, simplefilter
+
+from openedx.core.lib.tempdir import mkdtemp_clean
 
 # Silence noisy logs to make troubleshooting easier when tests fail.
 import logging
@@ -87,9 +88,11 @@ _SYSTEM = 'lms'
 
 _REPORT_DIR = REPO_ROOT / 'reports' / _SYSTEM
 _REPORT_DIR.makedirs_p()
+_NOSEID_DIR = REPO_ROOT / '.testids' / _SYSTEM
+_NOSEID_DIR.makedirs_p()
 
 NOSE_ARGS = [
-    '--id-file', REPO_ROOT / '.testids' / _SYSTEM / 'noseids',
+    '--id-file', _NOSEID_DIR / 'noseids',
     '--xunit-file', _REPORT_DIR / 'nosetests.xml',
 ]
 
@@ -149,7 +152,7 @@ update_module_store_settings(
         'fs_root': TEST_ROOT / "data",
     },
     xml_store_options={
-        'data_dir': mkdtemp(dir=TEST_ROOT),  # never inadvertently load all the XML courses
+        'data_dir': mkdtemp_clean(dir=TEST_ROOT),  # never inadvertently load all the XML courses
     },
     doc_store_settings={
         'host': MONGO_HOST,
@@ -207,7 +210,9 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'edx_location_mem_cache',
     },
-
+    'course_structure_cache': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
 }
 
 # Dummy secret key for dev
@@ -236,16 +241,13 @@ PASSWORD_COMPLEXITY = {}
 ######### Third-party auth ##########
 FEATURES['ENABLE_THIRD_PARTY_AUTH'] = True
 
-THIRD_PARTY_AUTH = {
-    "Google": {
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY": "test",
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET": "test",
-    },
-    "Facebook": {
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY": "test",
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET": "test",
-    },
-}
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.linkedin.LinkedinOAuth2',
+    'social.backends.facebook.FacebookOAuth2',
+    'third_party_auth.dummy.DummyBackend',
+    'third_party_auth.saml.SAMLAuthBackend',
+) + AUTHENTICATION_BACKENDS
 
 ################################## OPENID #####################################
 FEATURES['AUTH_USE_OPENID'] = True
@@ -268,6 +270,8 @@ FEATURES['ENABLE_OAUTH2_PROVIDER'] = True
 FEATURES['ENABLE_MOBILE_REST_API'] = True
 FEATURES['ENABLE_MOBILE_SOCIAL_FACEBOOK_FEATURES'] = True
 FEATURES['ENABLE_VIDEO_ABSTRACTION_LAYER_API'] = True
+FEATURES['ENABLE_COURSE_BLOCKS_NAVIGATION_API'] = True
+FEATURES['ENABLE_RENDER_XBLOCK_API'] = True
 
 ###################### Payment ##############################3
 # Enable fake payment processing page
@@ -453,7 +457,7 @@ FEATURES['ENABLE_EDXNOTES'] = True
 FEATURES['ENABLE_TEAMS'] = True
 
 # Add milestones to Installed apps for testing
-INSTALLED_APPS += ('milestones', )
+INSTALLED_APPS += ('milestones', 'openedx.core.djangoapps.call_stack_manager')
 
 # Enable courseware search for tests
 FEATURES['ENABLE_COURSEWARE_SEARCH'] = True
@@ -468,12 +472,8 @@ FACEBOOK_APP_SECRET = "Test"
 FACEBOOK_APP_ID = "Test"
 FACEBOOK_API_VERSION = "v2.2"
 
-# Certificates Views
-FEATURES['CERTIFICATES_HTML_VIEW'] = True
-
 ######### custom courses #########
 INSTALLED_APPS += ('ccx',)
-MIDDLEWARE_CLASSES += ('ccx.overrides.CcxMiddleware',)
 FEATURES['CUSTOM_COURSES_EDX'] = True
 
 # Set dummy values for profile image settings.
@@ -493,3 +493,4 @@ PROFILE_IMAGE_MIN_BYTES = 100
 # Enable the LTI provider feature for testing
 FEATURES['ENABLE_LTI_PROVIDER'] = True
 INSTALLED_APPS += ('lti_provider',)
+AUTHENTICATION_BACKENDS += ('lti_provider.users.LtiBackend',)

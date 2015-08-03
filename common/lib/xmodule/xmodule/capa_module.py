@@ -59,6 +59,7 @@ class CapaModule(CapaMixin, XModule):
           <other request-specific values here > }
         """
         handlers = {
+            'hint_button': self.hint_button,
             'problem_get': self.get_problem,
             'problem_check': self.check_problem,
             'problem_reset': self.reset_problem,
@@ -187,6 +188,13 @@ class CapaDescriptor(CapaFields, RawDescriptor):
         registered_tags = responsetypes.registry.registered_tags()
         return set([node.tag for node in tree.iter() if node.tag in registered_tags])
 
+    @property
+    def has_responsive_ui(self):
+        """
+        Returns whether this module has support for responsive UI.
+        """
+        return self.lcp.has_responsive_ui
+
     def index_dictionary(self):
         """
         Return dictionary prepared with module content and type for indexing.
@@ -214,6 +222,7 @@ class CapaDescriptor(CapaFields, RawDescriptor):
     get_problem_html = module_attr('get_problem_html')
     get_state_for_lcp = module_attr('get_state_for_lcp')
     handle_input_ajax = module_attr('handle_input_ajax')
+    hint_button = module_attr('hint_button')
     handle_problem_html_error = module_attr('handle_problem_html_error')
     handle_ungraded_response = module_attr('handle_ungraded_response')
     is_attempted = module_attr('is_attempted')

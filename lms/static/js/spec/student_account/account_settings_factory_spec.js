@@ -1,4 +1,4 @@
-define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'js/common_helpers/template_helpers',
+define(['backbone', 'jquery', 'underscore', 'common/js/spec_helpers/ajax_helpers', 'common/js/spec_helpers/template_helpers',
         'js/spec/views/fields_helpers',
         'js/spec/student_account/helpers',
         'js/spec/student_account/account_settings_fields_helpers',
@@ -32,12 +32,14 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
             var AUTH_DATA = {
                 'providers': [
                     {
+                        'id': 'oa2-network1',
                         'name': "Network1",
                         'connected': true,
                         'connect_url': 'yetanother1.com/auth/connect',
                         'disconnect_url': 'yetanother1.com/auth/disconnect'
                     },
                     {
+                        'id': 'oa2-network2',
                         'name': "Network2",
                         'connected': true,
                         'connect_url': 'yetanother2.com/auth/connect',

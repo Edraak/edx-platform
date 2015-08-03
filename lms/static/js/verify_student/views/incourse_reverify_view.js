@@ -26,20 +26,17 @@
 
             this.errorModel = obj.errorModel || null;
             this.courseKey = obj.courseKey || null;
-            this.checkpointName = obj.checkpointName || null;
             this.platformName = obj.platformName || null;
             this.usageId = obj.usageId || null;
 
 
             this.model = new edx.verify_student.ReverificationModel({
                 courseKey: this.courseKey,
-                checkpointName: this.checkpointName,
                 usageId: this.usageId
             });
 
             this.listenTo( this.model, 'sync', _.bind( this.handleSubmitPhotoSuccess, this ));
             this.listenTo( this.model, 'error', _.bind( this.handleSubmissionError, this ));
-            this.render();
         },
 
         render: function() {
@@ -47,7 +44,6 @@
                 $( this.templateId ).html(),
                 {
                     courseKey: this.courseKey,
-                    checkpointName: this.checkpointName,
                     platformName: this.platformName
                 }
             );
@@ -73,7 +69,7 @@
 
         submitPhoto: function() {
             // disable the submit button to prevent multiple submissions.
-            this.setSubmitButtonEnabled(false)
+            this.setSubmitButtonEnabled(false);
             this.model.save();
         },
 

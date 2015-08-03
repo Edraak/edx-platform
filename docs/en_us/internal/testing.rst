@@ -31,8 +31,8 @@ Unit Tests
 
 -  As a rule of thumb, your unit tests should cover every code branch.
 
--  Mock or patch external dependencies. We use `voidspace
-   mock <http://www.voidspace.org.uk/python/mock/>`__.
+-  Mock or patch external dependencies. We use voidspace
+   `Mock Library <http://www.voidspace.org.uk/python/mock/>`__.
 
 -  We unit test Python code (using
    `unittest <http://docs.python.org/2/library/unittest.html>`__) and
@@ -120,6 +120,10 @@ You can run all of the unit-level tests using the command
 This includes python, javascript, and documentation tests. It does not,
 however, run any acceptance tests.
 
+Note - 
+`paver` is a scripting tool. To get information about various options, you can run the following command -
+::
+	paver -h
 Running Python Unit tests
 -------------------------
 

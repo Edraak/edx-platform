@@ -29,6 +29,7 @@ from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase, TEST_DATA_SPLIT_MODULESTORE
 from xmodule.modulestore.tests.factories import ItemFactory, LibraryFactory, check_mongo_calls, CourseFactory
 from xmodule.x_module import STUDIO_VIEW, STUDENT_VIEW
+from xmodule.course_module import DEFAULT_START_DATE
 from xblock.exceptions import NoSuchHandlerError
 from xblock_django.user_service import DjangoXBlockUserService
 from opaque_keys.edx.keys import UsageKey, CourseKey
@@ -1384,6 +1385,7 @@ class TestComponentTemplates(CourseTestCase):
         self.assertEqual(template_display_names, ['Annotation', 'Open Response Assessment', 'Peer Grading Interface'])
 
 
+@ddt.ddt
 class TestXBlockInfo(ItemTest):
     """
     Unit tests for XBlock's outline handling.
@@ -1409,6 +1411,32 @@ class TestXBlockInfo(ItemTest):
         resp = self.client.get(outline_url, HTTP_ACCEPT='application/json')
         json_response = json.loads(resp.content)
         self.validate_course_xblock_info(json_response, course_outline=True)
+
+    @ddt.data(
+        (ModuleStoreEnum.Type.split, 5, 5),
+        (ModuleStoreEnum.Type.mongo, 4, 6),
+    )
+    @ddt.unpack
+    def test_xblock_outline_handler_mongo_calls(self, store_type, chapter_queries, chapter_queries_1):
+        with self.store.default_store(store_type):
+            course = CourseFactory.create()
+            chapter = ItemFactory.create(
+                parent_location=course.location, category='chapter', display_name='Week 1'
+            )
+            outline_url = reverse_usage_url('xblock_outline_handler', chapter.location)
+            with check_mongo_calls(chapter_queries):
+                self.client.get(outline_url, HTTP_ACCEPT='application/json')
+
+            sequential = ItemFactory.create(
+                parent_location=chapter.location, category='sequential', display_name='Sequential 1'
+            )
+
+            ItemFactory.create(
+                parent_location=sequential.location, category='vertical', display_name='Vertical 1'
+            )
+            # calls should be same after adding two new children for split only.
+            with check_mongo_calls(chapter_queries_1):
+                self.client.get(outline_url, HTTP_ACCEPT='application/json')
 
     def test_entrance_exam_chapter_xblock_info(self):
         chapter = ItemFactory.create(
@@ -1504,11 +1532,14 @@ class TestXBlockInfo(ItemTest):
 
     def test_vertical_xblock_info(self):
         vertical = modulestore().get_item(self.vertical.location)
+        vertical.start = datetime(year=1899, month=1, day=1, tzinfo=UTC)
+
         xblock_info = create_xblock_info(
             vertical,
             include_child_info=True,
             include_children_predicate=ALWAYS,
-            include_ancestor_info=True
+            include_ancestor_info=True,
+            user=self.user
         )
         add_container_page_publishing_info(vertical, xblock_info)
         self.validate_vertical_xblock_info(xblock_info)
@@ -1574,6 +1605,7 @@ class TestXBlockInfo(ItemTest):
         self.assertEqual(xblock_info['display_name'], 'Unit 1')
         self.assertTrue(xblock_info['published'])
         self.assertEqual(xblock_info['edited_by'], 'testuser')
+        self.assertEqual(xblock_info['start'], DEFAULT_START_DATE.strftime('%Y-%m-%dT%H:%M:%SZ'))
 
         # Validate that the correct ancestor info has been included
         ancestor_info = xblock_info.get('ancestor_info', None)

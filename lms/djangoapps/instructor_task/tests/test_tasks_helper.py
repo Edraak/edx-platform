@@ -11,29 +11,35 @@ from mock import Mock, patch
 import tempfile
 import unicodecsv
 from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 
 from capa.tests.response_xml_factory import MultipleChoiceResponseXMLFactory
+from certificates.models import CertificateStatuses
 from certificates.tests.factories import GeneratedCertificateFactory, CertificateWhitelistFactory
 from course_modes.models import CourseMode
 from courseware.tests.factories import InstructorFactory
-from instructor_task.models import ReportStore
-from instructor_task.tasks_helper import cohort_students_and_upload, upload_grades_csv, upload_students_csv, \
-    upload_enrollment_report
 from instructor_task.tests.test_base import InstructorTaskCourseTestCase, TestReportMixin, InstructorTaskModuleTestCase
 from openedx.core.djangoapps.course_groups.models import CourseUserGroupPartitionGroup
 from openedx.core.djangoapps.course_groups.tests.helpers import CohortFactory
 import openedx.core.djangoapps.user_api.course_tag.api as course_tag_api
 from openedx.core.djangoapps.user_api.partition_schemes import RandomUserPartitionScheme
 from shoppingcart.models import Order, PaidCourseRegistration, CourseRegistrationCode, Invoice, \
-    CourseRegistrationCodeInvoiceItem, InvoiceTransaction
-from student.tests.factories import UserFactory
-from student.models import CourseEnrollment
+    CourseRegistrationCodeInvoiceItem, InvoiceTransaction, Coupon
+from student.tests.factories import UserFactory, CourseModeFactory
+from student.models import CourseEnrollment, CourseEnrollmentAllowed, ManualEnrollmentAudit, ALLOWEDTOENROLL_TO_ENROLLED
 from verify_student.tests.factories import SoftwareSecurePhotoVerificationFactory
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.partitions.partitions import Group, UserPartition
 from instructor_task.models import ReportStore
 from instructor_task.tasks_helper import (
-    cohort_students_and_upload, upload_grades_csv, upload_problem_grade_report, upload_students_csv
+    cohort_students_and_upload,
+    upload_grades_csv,
+    upload_problem_grade_report,
+    upload_students_csv,
+    upload_may_enroll_csv,
+    upload_enrollment_report,
+    upload_exec_summary_report,
+    generate_students_certificates,
 )
 from openedx.core.djangoapps.util.testing import ContentGroupTestCase, TestConditionalContent
 
@@ -320,6 +326,28 @@ class TestInstructorDetailedEnrollmentReport(TestReportMixin, InstructorTaskCour
         self.assertDictContainsSubset({'attempted': 1, 'succeeded': 1, 'failed': 0}, result)
         self._verify_cell_data_in_csv(student.username, 'Enrollment Source', 'Credit Card - Individual')
         self._verify_cell_data_in_csv(student.username, 'Payment Status', 'purchased')
+
+    def test_student_manually_enrolled_in_detailed_enrollment_source(self):
+        """
+        test to check the manually enrolled user enrollment report status
+        and enrollment source.
+        """
+        student = UserFactory()
+        enrollment = CourseEnrollment.enroll(student, self.course.id)
+        ManualEnrollmentAudit.create_manual_enrollment_audit(
+            self.instructor, student.email, ALLOWEDTOENROLL_TO_ENROLLED,
+            'manually enrolling unenrolled user', enrollment
+        )
+
+        task_input = {'features': []}
+        with patch('instructor_task.tasks_helper._get_current_task'):
+            result = upload_enrollment_report(None, None, self.course.id, task_input, 'generating_enrollment_report')
+
+        enrollment_source = u'manually enrolled by user_id {user_id}, enrollment state transition: {transition}'.format(
+            user_id=self.instructor.id, transition=ALLOWEDTOENROLL_TO_ENROLLED)  # pylint: disable=no-member
+        self.assertDictContainsSubset({'attempted': 1, 'succeeded': 1, 'failed': 0}, result)
+        self._verify_cell_data_in_csv(student.username, 'Enrollment Source', enrollment_source)
+        self._verify_cell_data_in_csv(student.username, 'Payment Status', 'TBD')
 
     def test_student_used_enrollment_code_for_course_enrollment(self):
         """
@@ -686,6 +714,132 @@ class TestProblemReportCohortedContent(TestReportMixin, ContentGroupTestCase, In
 
 
 @ddt.ddt
+class TestExecutiveSummaryReport(TestReportMixin, InstructorTaskCourseTestCase):
+    """
+    Tests that Executive Summary report generation works.
+    """
+    def setUp(self):
+        super(TestExecutiveSummaryReport, self).setUp()
+        self.course = CourseFactory.create()
+        CourseModeFactory.create(course_id=self.course.id, min_price=50)
+
+        self.instructor = InstructorFactory(course_key=self.course.id)
+        self.student1 = UserFactory()
+        self.student2 = UserFactory()
+        self.student1_cart = Order.get_cart_for_user(self.student1)
+        self.student2_cart = Order.get_cart_for_user(self.student2)
+
+        self.sale_invoice_1 = Invoice.objects.create(
+            total_amount=1234.32, company_name='Test1', company_contact_name='TestName',
+            company_contact_email='Test@company.com',
+            recipient_name='Testw', recipient_email='test1@test.com', customer_reference_number='2Fwe23S',
+            internal_reference="A", course_id=self.course.id, is_valid=True
+        )
+        InvoiceTransaction.objects.create(
+            invoice=self.sale_invoice_1,
+            amount=self.sale_invoice_1.total_amount,
+            status='completed',
+            created_by=self.instructor,
+            last_modified_by=self.instructor
+        )
+        self.invoice_item = CourseRegistrationCodeInvoiceItem.objects.create(
+            invoice=self.sale_invoice_1,
+            qty=10,
+            unit_price=1234.32,
+            course_id=self.course.id
+        )
+        for i in range(5):
+            coupon = Coupon(
+                code='coupon{0}'.format(i), description='test_description', course_id=self.course.id,
+                percentage_discount='{0}'.format(i), created_by=self.instructor, is_active=True,
+            )
+            coupon.save()
+
+    def test_successfully_generate_executive_summary_report(self):
+        """
+        Test that successfully generates the executive summary report.
+        """
+        task_input = {'features': []}
+        with patch('instructor_task.tasks_helper._get_current_task'):
+            result = upload_exec_summary_report(
+                None, None, self.course.id,
+                task_input, 'generating executive summary report'
+            )
+        ReportStore.from_config(config_name='FINANCIAL_REPORTS')
+        self.assertDictContainsSubset({'attempted': 1, 'succeeded': 1, 'failed': 0}, result)
+
+    def students_purchases(self):
+        """
+        Students purchases the courses using enrollment
+        and coupon codes.
+        """
+        self.client.login(username=self.student1.username, password='test')
+        paid_course_reg_item = PaidCourseRegistration.add_to_order(self.student1_cart, self.course.id)
+        # update the quantity of the cart item paid_course_reg_item
+        resp = self.client.post(reverse('shoppingcart.views.update_user_cart'), {
+            'ItemId': paid_course_reg_item.id, 'qty': '4'
+        })
+        self.assertEqual(resp.status_code, 200)
+        # apply the coupon code to the item in the cart
+        resp = self.client.post(reverse('shoppingcart.views.use_code'), {'code': 'coupon1'})
+        self.assertEqual(resp.status_code, 200)
+
+        self.student1_cart.purchase()
+
+        course_reg_codes = CourseRegistrationCode.objects.filter(order=self.student1_cart)
+        redeem_url = reverse('register_code_redemption', args=[course_reg_codes[0].code])
+        response = self.client.get(redeem_url)
+        self.assertEquals(response.status_code, 200)
+        # check button text
+        self.assertTrue('Activate Course Enrollment' in response.content)
+
+        response = self.client.post(redeem_url)
+        self.assertEquals(response.status_code, 200)
+
+        self.client.login(username=self.student2.username, password='test')
+        PaidCourseRegistration.add_to_order(self.student2_cart, self.course.id)
+
+        # apply the coupon code to the item in the cart
+        resp = self.client.post(reverse('shoppingcart.views.use_code'), {'code': 'coupon1'})
+        self.assertEqual(resp.status_code, 200)
+
+        self.student2_cart.purchase()
+
+    @patch.dict('django.conf.settings.FEATURES', {'ENABLE_PAID_COURSE_REGISTRATION': True})
+    def test_generate_executive_summary_report(self):
+        """
+        test to generate executive summary report
+        and then test the report authenticity.
+        """
+        self.students_purchases()
+        task_input = {'features': []}
+        with patch('instructor_task.tasks_helper._get_current_task'):
+            result = upload_exec_summary_report(
+                None, None, self.course.id,
+                task_input, 'generating executive summary report'
+            )
+        report_store = ReportStore.from_config(config_name='FINANCIAL_REPORTS')
+        expected_data = [
+            'Gross Revenue Collected', '$1481.82',
+            'Gross Revenue Pending', '$0.00',
+            'Average Price per Seat', '$296.36',
+            'Number of seats purchased using coupon codes', '<td>2</td>'
+        ]
+        self.assertDictContainsSubset({'attempted': 1, 'succeeded': 1, 'failed': 0}, result)
+        self._verify_html_file_report(report_store, expected_data)
+
+    def _verify_html_file_report(self, report_store, expected_data):
+        """
+        Verify grade report data.
+        """
+        report_html_filename = report_store.links_for(self.course.id)[0][0]
+        with open(report_store.path_to(self.course.id, report_html_filename)) as html_file:
+            html_file_data = html_file.read()
+            for data in expected_data:
+                self.assertTrue(data in html_file_data)
+
+
+@ddt.ddt
 class TestStudentReport(TestReportMixin, InstructorTaskCourseTestCase):
     """
     Tests that CSV student profile report generation works.
@@ -729,6 +883,51 @@ class TestStudentReport(TestReportMixin, InstructorTaskCourseTestCase):
         # This assertion simply confirms that the generation completed with no errors
         num_students = len(students)
         self.assertDictContainsSubset({'attempted': num_students, 'succeeded': num_students, 'failed': 0}, result)
+
+
+@ddt.ddt
+class TestListMayEnroll(TestReportMixin, InstructorTaskCourseTestCase):
+    """
+    Tests that generation of CSV files containing information about
+    students who may enroll in a given course (but have not signed up
+    for it yet) works.
+    """
+    def _create_enrollment(self, email):
+        "Factory method for creating CourseEnrollmentAllowed objects."
+        return CourseEnrollmentAllowed.objects.create(
+            email=email, course_id=self.course.id
+        )
+
+    def setUp(self):
+        super(TestListMayEnroll, self).setUp()
+        self.course = CourseFactory.create()
+
+    def test_success(self):
+        self._create_enrollment('user@example.com')
+        task_input = {'features': []}
+        with patch('instructor_task.tasks_helper._get_current_task'):
+            result = upload_may_enroll_csv(None, None, self.course.id, task_input, 'calculated')
+        report_store = ReportStore.from_config(config_name='GRADES_DOWNLOAD')
+        links = report_store.links_for(self.course.id)
+
+        self.assertEquals(len(links), 1)
+        self.assertDictContainsSubset({'attempted': 1, 'succeeded': 1, 'failed': 0}, result)
+
+    def test_unicode_email_addresses(self):
+        """
+        Test handling of unicode characters in email addresses of students
+        who may enroll in a course.
+        """
+        enrollments = [u'student@example.com', u'ni\xf1o@example.com']
+        for email in enrollments:
+            self._create_enrollment(email)
+
+        task_input = {'features': ['email']}
+        with patch('instructor_task.tasks_helper._get_current_task'):
+            result = upload_may_enroll_csv(None, None, self.course.id, task_input, 'calculated')
+        # This assertion simply confirms that the generation completed with no errors
+        num_enrollments = len(enrollments)
+        self.assertDictContainsSubset({'attempted': num_enrollments, 'succeeded': num_enrollments, 'failed': 0}, result)
 
 
 class MockDefaultStorage(object):
@@ -1103,3 +1302,54 @@ class TestGradeReportEnrollmentAndCertificateInfo(TestReportMixin, InstructorTas
         )
 
         self._verify_csv_data(user.username, expected_output)
+
+
+@override_settings(CERT_QUEUE='test-queue')
+class TestCertificateGeneration(InstructorTaskModuleTestCase):
+    """
+    Test certificate generation task works.
+    """
+    def setUp(self):
+        super(TestCertificateGeneration, self).setUp()
+        self.initialize_course()
+
+    def test_certificate_generation_for_students(self):
+        """
+        Verify that certificates generated for all eligible students enrolled in a course.
+        """
+        # create 10 students
+        students = [self.create_student(username='student_{}'.format(i), email='student_{}@example.com'.format(i))
+                    for i in xrange(1, 11)]
+
+        # mark 2 students to have certificates generated already
+        for student in students[:2]:
+            GeneratedCertificateFactory.create(
+                user=student,
+                course_id=self.course.id,
+                status=CertificateStatuses.downloadable,
+                mode='honor'
+            )
+
+        # white-list 5 students
+        for student in students[2:7]:
+            CertificateWhitelistFactory.create(user=student, course_id=self.course.id, whitelist=True)
+
+        current_task = Mock()
+        current_task.update_state = Mock()
+        with self.assertNumQueries(104):
+            with patch('instructor_task.tasks_helper._get_current_task') as mock_current_task:
+                mock_current_task.return_value = current_task
+                with patch('capa.xqueue_interface.XQueueInterface.send_to_queue') as mock_queue:
+                    mock_queue.return_value = (0, "Successfully queued")
+                    result = generate_students_certificates(None, None, self.course.id, None, 'certificates generated')
+        self.assertDictContainsSubset(
+            {
+                'action_name': 'certificates generated',
+                'total': 10,
+                'attempted': 8,
+                'succeeded': 5,
+                'failed': 3,
+                'skipped': 2
+            },
+            result
+        )

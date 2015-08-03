@@ -4,10 +4,12 @@ import json
 from uuid import uuid4
 from nose.plugins.attrib import attr
 
-from ddt import ddt, data
+import ddt
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
+import mock
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 
@@ -16,6 +18,8 @@ from commerce.constants import Messages
 from commerce.tests import TEST_BASKET_ID, TEST_ORDER_NUMBER, TEST_PAYMENT_DATA, TEST_API_URL, TEST_API_SIGNING_KEY
 from commerce.tests.mocks import mock_basket_order, mock_create_basket
 from course_modes.models import CourseMode
+from embargo.test_utils import restrict_course
+from openedx.core.lib.django_test_client_utils import get_absolute_url
 from enrollment.api import get_enrollment
 from student.models import CourseEnrollment
 from student.tests.factories import UserFactory, CourseModeFactory
@@ -35,13 +39,12 @@ class UserMixin(object):
 
 
 @attr('shard_1')
-@ddt
+@ddt.ddt
 @override_settings(ECOMMERCE_API_URL=TEST_API_URL, ECOMMERCE_API_SIGNING_KEY=TEST_API_SIGNING_KEY)
 class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase):
     """
     Tests for the commerce orders view.
     """
-
     def _post_to_view(self, course_id=None):
         """
         POST to the view being tested.
@@ -95,6 +98,17 @@ class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase)
         # Ignore events fired from UserFactory creation
         self.reset_tracker()
 
+    @mock.patch.dict(settings.FEATURES, {'EMBARGO': True})
+    def test_embargo_restriction(self):
+        """
+        The view should return HTTP 403 status if the course is embargoed.
+        """
+        with restrict_course(self.course.id) as redirect_url:
+            response = self._post_to_view()
+            self.assertEqual(403, response.status_code)
+            body = json.loads(response.content)
+            self.assertEqual(get_absolute_url(redirect_url), body['user_message_url'])
+
     def test_login_required(self):
         """
         The view should return HTTP 403 status if the user is not logged in.
@@ -102,7 +116,7 @@ class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase)
         self.client.logout()
         self.assertEqual(403, self._post_to_view().status_code)
 
-    @data('delete', 'get', 'put')
+    @ddt.data('delete', 'get', 'put')
     def test_post_required(self, method):
         """
         Verify that the view only responds to POST operations.
@@ -148,7 +162,11 @@ class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase)
         """
         Verifies that the view contacts the E-Commerce API with the correct data and headers.
         """
-        response = self._post_to_view()
+        with mock.patch('commerce.views.audit_log') as mock_audit_log:
+            response = self._post_to_view()
+
+            # Verify that an audit message was logged
+            self.assertTrue(mock_audit_log.called)
 
         # Validate the response content
         if is_completed:
@@ -157,7 +175,7 @@ class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase)
         else:
             self.assertResponsePaymentData(response)
 
-    @data(True, False)
+    @ddt.data(True, False)
     def test_course_with_honor_seat_sku(self, user_is_active):
         """
         If the course has a SKU, the view should get authorization from the E-Commerce API before enrolling
@@ -172,7 +190,7 @@ class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase)
         with mock_create_basket(response=return_value):
             self._test_successful_ecommerce_api_call()
 
-    @data(True, False)
+    @ddt.data(True, False)
     def test_course_with_paid_seat_sku(self, user_is_active):
         """
         If the course has a SKU, the view should return data that the client
@@ -292,19 +310,6 @@ class BasketsViewTests(EnrollmentEventTestMixin, UserMixin, ModuleStoreTestCase)
             self._test_successful_ecommerce_api_call(False)
 
 
-class OrdersViewTests(BasketsViewTests):
-    """
-    Ensures that /orders/ points to and behaves like /baskets/, for backward
-    compatibility with stale js clients during updates.
-
-    (XCOM-214) remove after release.
-    """
-
-    def setUp(self):
-        super(OrdersViewTests, self).setUp()
-        self.url = reverse('commerce:orders')
-
-
 @attr('shard_1')
 @override_settings(ECOMMERCE_API_URL=TEST_API_URL, ECOMMERCE_API_SIGNING_KEY=TEST_API_SIGNING_KEY)
 class BasketOrderViewTests(UserMixin, TestCase):
@@ -341,11 +346,63 @@ class BasketOrderViewTests(UserMixin, TestCase):
 
 
 @attr('shard_1')
-class ReceiptViewTests(TestCase):
+@ddt.ddt
+class ReceiptViewTests(UserMixin, TestCase):
     """ Tests for the receipt view. """
 
     def test_login_required(self):
         """ The view should redirect to the login page if the user is not logged in. """
         self.client.logout()
-        response = self.client.get(reverse('commerce:checkout_receipt'))
+        response = self.client.post(reverse('commerce:checkout_receipt'))
         self.assertEqual(response.status_code, 302)
+
+    def post_to_receipt_page(self, post_data):
+        """ DRY helper """
+        response = self.client.post(reverse('commerce:checkout_receipt'), params={'basket_id': 1}, data=post_data)
+        self.assertEqual(response.status_code, 200)
+        return response
+
+    @ddt.data('decision', 'reason_code', 'signed_field_names', None)
+    def test_is_cybersource(self, post_key):
+        """
+        Ensure the view uses three specific POST keys to detect a request initiated by Cybersource.
+        """
+        self._login()
+        post_data = {'decision': 'REJECT', 'reason_code': '200', 'signed_field_names': 'dummy'}
+        if post_key is not None:
+            # a key will be missing; we will not expect the receipt page to handle a cybersource decision
+            del post_data[post_key]
+            expected_pattern = r"<title>(\s+)Receipt"
+        else:
+            expected_pattern = r"<title>(\s+)Payment Failed"
+        response = self.post_to_receipt_page(post_data)
+        self.assertRegexpMatches(response.content, expected_pattern)
+
+    @ddt.data('ACCEPT', 'REJECT', 'ERROR')
+    def test_cybersource_decision(self, decision):
+        """
+        Ensure the view renders a page appropriately depending on the Cybersource decision.
+        """
+        self._login()
+        post_data = {'decision': decision, 'reason_code': '200', 'signed_field_names': 'dummy'}
+        expected_pattern = r"<title>(\s+)Receipt" if decision == 'ACCEPT' else r"<title>(\s+)Payment Failed"
+        response = self.post_to_receipt_page(post_data)
+        self.assertRegexpMatches(response.content, expected_pattern)
+
+    @ddt.data(True, False)
+    @mock.patch('commerce.views.is_user_payment_error')
+    def test_cybersource_message(self, is_user_message_expected, mock_is_user_payment_error):
+        """
+        Ensure that the page displays the right message for the reason_code (it
+        may be a user error message or a system error message).
+        """
+        mock_is_user_payment_error.return_value = is_user_message_expected
+        self._login()
+        response = self.post_to_receipt_page({'decision': 'REJECT', 'reason_code': '99', 'signed_field_names': 'dummy'})
+        self.assertTrue(mock_is_user_payment_error.called)
+        self.assertTrue(mock_is_user_payment_error.call_args[0][0], '99')
+
+        user_message = "There was a problem with this transaction"
+        system_message = "A system error occurred while processing your payment"
+        self.assertRegexpMatches(response.content, user_message if is_user_message_expected else system_message)
+        self.assertNotRegexpMatches(response.content, user_message if not is_user_message_expected else system_message)

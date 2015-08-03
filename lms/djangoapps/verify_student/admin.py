@@ -13,7 +13,6 @@ class SoftwareSecurePhotoVerificationAdmin(admin.ModelAdmin):
     Admin for the SoftwareSecurePhotoVerification table.
     """
     list_display = ('id', 'user', 'status', 'receipt_id', 'submitted_at', 'updated_at')
-    exclude = ('window',)   # TODO: Remove after deleting this field from the model.
     raw_id_fields = ('user', 'reviewing_user')
     search_fields = (
         'receipt_id',
@@ -24,10 +23,10 @@ class VerificationStatusAdmin(admin.ModelAdmin):
     """
     Admin for the VerificationStatus table.
     """
-    list_display = ('timestamp', 'user', 'status', 'checkpoint', 'location_id')
+    list_display = ('timestamp', 'user', 'status', 'checkpoint')
     readonly_fields = ()
+    search_fields = ('checkpoint__checkpoint_location', 'user__username')
     raw_id_fields = ('user',)
-    search_fields = ('checkpoint', 'user')
 
     def get_readonly_fields(self, request, obj=None):
         """When editing an existing record, all fields should be read-only.
@@ -38,7 +37,7 @@ class VerificationStatusAdmin(admin.ModelAdmin):
 
         """
         if obj:
-            return self.readonly_fields + ('status', 'checkpoint', 'user', 'location_id', 'response', 'error')
+            return self.readonly_fields + ('status', 'checkpoint', 'user', 'response', 'error')
         return self.readonly_fields
 
     def has_delete_permission(self, request, obj=None):
@@ -51,7 +50,7 @@ class SkippedReverificationAdmin(admin.ModelAdmin):
     list_display = ('created_at', 'user', 'course_id', 'checkpoint')
     raw_id_fields = ('user',)
     readonly_fields = ('user', 'course_id')
-    search_fields = ('user', 'course_id', 'checkpoint')
+    search_fields = ('user__username', 'course_id', 'checkpoint__checkpoint_location')
 
     def has_add_permission(self, request):
         """Skipped verifications can't be created in Django admin. """

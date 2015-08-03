@@ -223,11 +223,19 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
         self.course_id = course_key
         self.cached_metadata = cached_metadata
 
-    def load_item(self, location):
+    def load_item(self, location, for_parent=None):  # pylint: disable=method-hidden
         """
         Return an XModule instance for the specified location
         """
         assert isinstance(location, UsageKey)
+
+        if location.run is None:
+            # self.module_data is keyed on locations that have full run information.
+            # If the supplied location is missing a run, then we will miss the cache and
+            # incur an additional query.
+            # TODO: make module_data a proper class that can handle this itself.
+            location = location.replace(course_key=self.modulestore.fill_in_run(location.course_key))
+
         json_data = self.module_data.get(location)
         if json_data is None:
             module = self.modulestore.get_item(location, using_descriptor_system=self)
@@ -258,7 +266,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
                         else ModuleStoreEnum.Branch.draft_preferred
                     )
                     if parent_url:
-                        parent = BlockUsageLocator.from_string(parent_url)
+                        parent = self._convert_reference_to_key(parent_url)
                 if not parent and category != 'course':
                     # try looking it up just-in-time (but not if we're working with a root node (course).
                     parent = self.modulestore.get_parent_location(
@@ -284,7 +292,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
 
                 field_data = KvsFieldData(kvs)
                 scope_ids = ScopeIds(None, category, location, location)
-                module = self.construct_xblock_from_class(class_, scope_ids, field_data)
+                module = self.construct_xblock_from_class(class_, scope_ids, field_data, for_parent=for_parent)
                 if self.cached_metadata is not None:
                     # parent container pointers don't differentiate between draft and non-draft
                     # so when we do the lookup, we should do so with a non-draft location
@@ -324,7 +332,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
         """
         Convert a single serialized UsageKey string in a ReferenceField into a UsageKey.
         """
-        key = Location.from_string(ref_string)
+        key = UsageKey.from_string(ref_string)
         return key.replace(run=self.modulestore.fill_in_run(key.course_key).run)
 
     def __setattr__(self, name, value):
@@ -476,19 +484,17 @@ class MongoBulkOpsMixin(BulkOperationsMixin):
         # ensure it starts clean
         bulk_ops_record.dirty = False
 
-    def _end_outermost_bulk_operation(self, bulk_ops_record, structure_key, emit_signals=True):
+    def _end_outermost_bulk_operation(self, bulk_ops_record, structure_key):
         """
         Restart updating the meta-data inheritance cache for the given course or library.
         Refresh the meta-data inheritance cache now since it was temporarily disabled.
         """
+        dirty = False
         if bulk_ops_record.dirty:
             self.refresh_cached_metadata_inheritance_tree(structure_key)
-
-            if emit_signals:
-                self.send_bulk_published_signal(bulk_ops_record, structure_key)
-                self.send_bulk_library_updated_signal(bulk_ops_record, structure_key)
-
+            dirty = True
             bulk_ops_record.dirty = False  # brand spanking clean now
+        return dirty
 
     def _is_in_bulk_operation(self, course_id, ignore_case=False):
         """
@@ -877,7 +883,8 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         apply_cached_metadata=bool,
         using_descriptor_system="None|CachingDescriptorSystem"
     )
-    def _load_item(self, course_key, item, data_cache, apply_cached_metadata=True, using_descriptor_system=None):
+    def _load_item(self, course_key, item, data_cache,
+                   apply_cached_metadata=True, using_descriptor_system=None, for_parent=None):
         """
         Load an XModuleDescriptor from item, using the children stored in data_cache
 
@@ -892,6 +899,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 purposes.
             using_descriptor_system (CachingDescriptorSystem): The existing CachingDescriptorSystem
                 to add data to, and to load the XBlocks from.
+            for_parent (:class:`XBlock`): The parent of the XBlock being loaded.
         """
         course_key = self.fill_in_run(course_key)
         location = Location._from_deprecated_son(item['location'], course_key.run)
@@ -915,6 +923,9 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 services["user"] = self.user_service
             services["settings"] = SettingsService()
 
+            if self.request_cache:
+                services["request_cache"] = self.request_cache
+
             system = CachingDescriptorSystem(
                 modulestore=self,
                 course_key=course_key,
@@ -926,6 +937,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 cached_metadata=cached_metadata,
                 mixins=self.xblock_mixins,
                 select=self.xblock_select,
+                disabled_xblock_types=self.disabled_xblock_types,
                 services=services,
             )
         else:
@@ -933,9 +945,9 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             system.module_data.update(data_cache)
             system.cached_metadata.update(cached_metadata)
 
-        return system.load_item(location)
+        return system.load_item(location, for_parent=for_parent)
 
-    def _load_items(self, course_key, items, depth=0, using_descriptor_system=None):
+    def _load_items(self, course_key, items, depth=0, using_descriptor_system=None, for_parent=None):
         """
         Load a list of xmodules from the data in items, with children cached up
         to specified depth
@@ -951,7 +963,8 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 item,
                 data_cache,
                 using_descriptor_system=using_descriptor_system,
-                apply_cached_metadata=self._should_apply_cached_metadata(item, depth)
+                apply_cached_metadata=self._should_apply_cached_metadata(item, depth),
+                for_parent=for_parent,
             )
             for item in items
         ]
@@ -1069,7 +1082,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         except ItemNotFoundError:
             return False
 
-    def get_item(self, usage_key, depth=0, using_descriptor_system=None):
+    def get_item(self, usage_key, depth=0, using_descriptor_system=None, for_parent=None, **kwargs):
         """
         Returns an XModuleDescriptor instance for the item at location.
 
@@ -1092,7 +1105,8 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             usage_key.course_key,
             [item],
             depth,
-            using_descriptor_system=using_descriptor_system
+            using_descriptor_system=using_descriptor_system,
+            for_parent=for_parent,
         )[0]
         return module
 
@@ -1284,6 +1298,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             # so we use the location for both.
             ScopeIds(None, block_type, location, location),
             dbmodel,
+            for_parent=kwargs.get('for_parent'),
         )
         if fields is not None:
             for key, value in fields.iteritems():
@@ -1332,11 +1347,16 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             block_id: a unique identifier for the new item. If not supplied,
                 a new identifier will be generated
         """
-        xblock = self.create_item(user_id, parent_usage_key.course_key, block_type, block_id=block_id, **kwargs)
         # attach to parent if given
-        if 'detached' not in xblock._class_tags:
-            parent = self.get_item(parent_usage_key)
+        parent = None
 
+        if parent_usage_key is not None:
+            parent = self.get_item(parent_usage_key)
+            kwargs.setdefault('for_parent', parent)
+
+        xblock = self.create_item(user_id, parent_usage_key.course_key, block_type, block_id=block_id, **kwargs)
+
+        if parent is not None and 'detached' not in xblock._class_tags:
             # Originally added to support entrance exams (settings.FEATURES.get('ENTRANCE_EXAMS'))
             if kwargs.get('position') is None:
                 parent.children.append(xblock.location)

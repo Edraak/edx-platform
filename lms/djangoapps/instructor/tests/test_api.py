@@ -8,7 +8,6 @@ import random
 import pytz
 import io
 import json
-import os
 import requests
 import shutil
 import tempfile
@@ -43,7 +42,10 @@ from shoppingcart.models import (
     InvoiceTransaction)
 from shoppingcart.pdf import PDFInvoice
 from student.models import (
-    CourseEnrollment, CourseEnrollmentAllowed, NonExistentCourseError
+    CourseEnrollment, CourseEnrollmentAllowed, NonExistentCourseError,
+    ManualEnrollmentAudit, UNENROLLED_TO_ENROLLED, ENROLLED_TO_UNENROLLED,
+    ALLOWEDTOENROLL_TO_UNENROLLED, ENROLLED_TO_ENROLLED, UNENROLLED_TO_ALLOWEDTOENROLL,
+    UNENROLLED_TO_UNENROLLED, ALLOWEDTOENROLL_TO_ENROLLED
 )
 from student.tests.factories import UserFactory, CourseModeFactory, AdminFactory
 from student.roles import CourseBetaTesterRole, CourseSalesAdminRole, CourseFinanceAdminRole, CourseInstructorRole
@@ -72,7 +74,8 @@ EXPECTED_CSV_HEADER = (
     '"code","redeem_code_url","course_id","company_name","created_by","redeemed_by","invoice_id","purchaser",'
     '"customer_reference_number","internal_reference"'
 )
-EXPECTED_COUPON_CSV_HEADER = '"code","course_id","percentage_discount","code_redeemed_count","description"'
+EXPECTED_COUPON_CSV_HEADER = '"Coupon Code","Course Id","% Discount","Description","Expiration Date",' \
+                             '"Is Active","Code Redeemed Count","Total Discounted Seats","Total Discounted Amount"'
 
 # ddt data for test cases involving reports
 REPORTS_DATA = (
@@ -93,7 +96,23 @@ REPORTS_DATA = (
         'instructor_api_endpoint': 'get_enrollment_report',
         'task_api_endpoint': 'instructor_task.api.submit_detailed_enrollment_features_csv',
         'extra_instructor_api_kwargs': {}
+    },
+    {
+        'report_type': 'students who may enroll',
+        'instructor_api_endpoint': 'get_students_who_may_enroll',
+        'task_api_endpoint': 'instructor_task.api.submit_calculate_may_enroll_csv',
+        'extra_instructor_api_kwargs': {},
     }
+)
+
+# ddt data for test cases involving executive summary report
+EXECUTIVE_SUMMARY_DATA = (
+    {
+        'report_type': 'executive summary',
+        'instructor_api_endpoint': 'get_exec_summary_report',
+        'task_api_endpoint': 'instructor_task.api.submit_executive_summary_report',
+        'extra_instructor_api_kwargs': {}
+    },
 )
 
 
@@ -185,7 +204,8 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         # Endpoints that only Staff or Instructors can access
         self.staff_level_endpoints = [
-            ('students_update_enrollment', {'identifiers': 'foo@example.org', 'action': 'enroll'}),
+            ('students_update_enrollment',
+             {'identifiers': 'foo@example.org', 'action': 'enroll'}),
             ('get_grading_config', {}),
             ('get_students_features', {}),
             ('get_distribution', {}),
@@ -204,6 +224,8 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ('calculate_grades_csv', {}),
             ('get_students_features', {}),
             ('get_enrollment_report', {}),
+            ('get_students_who_may_enroll', {}),
+            ('get_exec_summary_report', {}),
         ]
         # Endpoints that only Instructors can access
         self.instructor_level_endpoints = [
@@ -355,6 +377,10 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertEquals(len(data['warnings']), 0)
         self.assertEquals(len(data['general_errors']), 0)
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
+
         # test the log for email that's send to new created user.
         info_log.assert_called_with('email sent to new created user at %s', 'test_student@example.com')
 
@@ -371,6 +397,10 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertEquals(len(data['row_errors']), 0)
         self.assertEquals(len(data['warnings']), 0)
         self.assertEquals(len(data['general_errors']), 0)
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
 
         # test the log for email that's send to new created user.
         info_log.assert_called_with('email sent to new created user at %s', 'test_student@example.com')
@@ -391,6 +421,10 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertEquals(len(data['warnings']), 0)
         self.assertEquals(len(data['general_errors']), 0)
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
+
         # test the log for email that's send to new created user.
         info_log.assert_called_with(
             u"user already exists with username '%s' and email '%s'",
@@ -409,6 +443,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertNotEquals(len(data['general_errors']), 0)
         self.assertEquals(data['general_errors'][0]['response'], 'Make sure that the file you upload is in CSV format with no extraneous characters or rows.')
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
+
     def test_bad_file_upload_type(self):
         """
         Try uploading some non-CSV file and verify that it is rejected
@@ -419,6 +456,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         data = json.loads(response.content)
         self.assertNotEquals(len(data['general_errors']), 0)
         self.assertEquals(data['general_errors'][0]['response'], 'Could not read uploaded file.')
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
 
     def test_insufficient_data(self):
         """
@@ -434,6 +474,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertEquals(len(data['general_errors']), 1)
         self.assertEquals(data['general_errors'][0]['response'], 'Data in row #1 must have exactly four columns: email, username, full name, and country')
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
+
     def test_invalid_email_in_csv(self):
         """
         Test failure case of a poorly formatted email field
@@ -448,6 +491,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertEquals(len(data['warnings']), 0)
         self.assertEquals(len(data['general_errors']), 0)
         self.assertEquals(data['row_errors'][0]['response'], 'Invalid email {0}.'.format('test_student.example.com'))
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
 
     @patch('instructor.views.api.log.info')
     def test_csv_user_exist_and_not_enrolled(self, info_log):
@@ -465,6 +511,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
             u'NotEnrolledStudent',
             self.course.id
         )
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertTrue(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
 
     def test_user_with_already_existing_email_in_csv(self):
         """
@@ -484,6 +533,10 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertEquals(data['warnings'][0]['response'], warning_message)
         user = User.objects.get(email='test_student@example.com')
         self.assertTrue(CourseEnrollment.is_enrolled(user, self.course.id))
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertTrue(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
 
     def test_user_with_already_existing_username_in_csv(self):
         """
@@ -516,6 +569,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertNotEquals(len(data['general_errors']), 0)
         self.assertEquals(data['general_errors'][0]['response'], 'File is not attached.')
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
+
     def test_raising_exception_in_auto_registration_and_enrollment_case(self):
         """
         Test that exceptions are handled well
@@ -532,6 +588,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         data = json.loads(response.content)
         self.assertNotEquals(len(data['row_errors']), 0)
         self.assertEquals(data['row_errors'][0]['response'], 'NonExistentCourseError')
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
 
     def test_generate_unique_password(self):
         """
@@ -558,6 +617,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         self.assertTrue(User.objects.filter(username='test_student_2', email='test_student2@example.com').exists())
         self.assertFalse(User.objects.filter(email='test_student3@example.com').exists())
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 2)
+
     @patch.object(instructor.views.api, 'generate_random_string',
                   Mock(side_effect=['first', 'first', 'second']))
     def test_generate_unique_password_no_reuse(self):
@@ -574,6 +636,9 @@ class TestInstructorAPIBulkAccountCreationAndEnrollment(ModuleStoreTestCase, Log
         uploaded_file = SimpleUploadedFile("temp.csv", csv_content)
         response = self.client.post(self.url, {'students_list': uploaded_file})
         self.assertEquals(response.status_code, 403)
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
 
 
 @attr('shard_1')
@@ -658,7 +723,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
     def test_invalid_username(self):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': 'percivaloctavius', 'action': 'enroll', 'email_students': False})
+        response = self.client.post(url,
+                                    {'identifiers': 'percivaloctavius', 'action': 'enroll', 'email_students': False})
         self.assertEqual(response.status_code, 200)
 
         # test the response data
@@ -678,7 +744,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
     def test_enroll_with_username(self):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.notenrolled_student.username, 'action': 'enroll', 'email_students': False})
+        response = self.client.post(url, {'identifiers': self.notenrolled_student.username, 'action': 'enroll',
+                                          'email_students': False})
         self.assertEqual(response.status_code, 200)
 
         # test the response data
@@ -703,13 +770,16 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
                 }
             ]
         }
-
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
         res_json = json.loads(response.content)
         self.assertEqual(res_json, expected)
 
     def test_enroll_without_email(self):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.notenrolled_student.email, 'action': 'enroll', 'email_students': False})
+        response = self.client.post(url, {'identifiers': self.notenrolled_student.email, 'action': 'enroll',
+                                          'email_students': False})
         print "type(self.notenrolled_student.email): {}".format(type(self.notenrolled_student.email))
         self.assertEqual(response.status_code, 200)
 
@@ -740,6 +810,9 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ]
         }
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ENROLLED)
         res_json = json.loads(response.content)
         self.assertEqual(res_json, expected)
 
@@ -811,6 +884,9 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
         params = {'identifiers': self.notregistered_email, 'action': 'enroll', 'email_students': True}
         environ = {'wsgi.url_scheme': protocol}
         response = self.client.post(url, params, **environ)
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ALLOWEDTOENROLL)
         self.assertEqual(response.status_code, 200)
 
         # Check the outbox
@@ -839,10 +915,14 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
         environ = {'wsgi.url_scheme': protocol}
         response = self.client.post(url, params, **environ)
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ALLOWEDTOENROLL)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             mail.outbox[0].body,
-            "Dear student,\n\nYou have been invited to join {display_name} at edx.org by a member of the course staff.\n\n"
+            "Dear student,\n\nYou have been invited to join {display_name}"
+            " at edx.org by a member of the course staff.\n\n"
             "To finish your registration, please visit {proto}://{site}/register and fill out the registration form "
             "making sure to use robot-not-an-email-yet@robot.org in the E-mail field.\n"
             "You can then enroll in {display_name}.\n\n----\n"
@@ -867,12 +947,17 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
             mail.outbox[0].subject,
             u'You have been invited to register for {}'.format(self.course.display_name)
         )
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ALLOWEDTOENROLL)
         self.assertEqual(
             mail.outbox[0].body,
-            "Dear student,\n\nYou have been invited to join {display_name} at edx.org by a member of the course staff.\n\n"
+            "Dear student,\n\nYou have been invited to join {display_name}"
+            " at edx.org by a member of the course staff.\n\n"
             "To finish your registration, please visit {proto}://{site}/register and fill out the registration form "
             "making sure to use robot-not-an-email-yet@robot.org in the E-mail field.\n"
-            "Once you have registered and activated your account, you will see {display_name} listed on your dashboard.\n\n----\n"
+            "Once you have registered and activated your account,"
+            " you will see {display_name} listed on your dashboard.\n\n----\n"
             "This email was automatically sent from edx.org to robot-not-an-email-yet@robot.org".format(
                 proto=protocol, site=self.site_name, display_name=self.course.display_name
             )
@@ -880,7 +965,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
     def test_unenroll_without_email(self):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.enrolled_student.email, 'action': 'unenroll', 'email_students': False})
+        response = self.client.post(url, {'identifiers': self.enrolled_student.email, 'action': 'unenroll',
+                                          'email_students': False})
         print "type(self.enrolled_student.email): {}".format(type(self.enrolled_student.email))
         self.assertEqual(response.status_code, 200)
 
@@ -911,6 +997,9 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ]
         }
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, ENROLLED_TO_UNENROLLED)
         res_json = json.loads(response.content)
         self.assertEqual(res_json, expected)
 
@@ -919,7 +1008,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
     def test_unenroll_with_email(self):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.enrolled_student.email, 'action': 'unenroll', 'email_students': True})
+        response = self.client.post(url, {'identifiers': self.enrolled_student.email, 'action': 'unenroll',
+                                          'email_students': True})
         print "type(self.enrolled_student.email): {}".format(type(self.enrolled_student.email))
         self.assertEqual(response.status_code, 200)
 
@@ -950,6 +1040,9 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ]
         }
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, ENROLLED_TO_UNENROLLED)
         res_json = json.loads(response.content)
         self.assertEqual(res_json, expected)
 
@@ -972,7 +1065,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
     def test_unenroll_with_email_allowed_student(self):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.allowed_email, 'action': 'unenroll', 'email_students': True})
+        response = self.client.post(url,
+                                    {'identifiers': self.allowed_email, 'action': 'unenroll', 'email_students': True})
         print "type(self.allowed_email): {}".format(type(self.allowed_email))
         self.assertEqual(response.status_code, 200)
 
@@ -999,6 +1093,9 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ]
         }
 
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, ALLOWEDTOENROLL_TO_UNENROLLED)
         res_json = json.loads(response.content)
         self.assertEqual(res_json, expected)
 
@@ -1054,7 +1151,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
         url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id.to_deprecated_string()})
         # Try with marketing site enabled
         with patch.dict('django.conf.settings.FEATURES', {'ENABLE_MKTG_SITE': True}):
-            response = self.client.post(url, {'identifiers': self.notregistered_email, 'action': 'enroll', 'email_students': True})
+            response = self.client.post(url, {'identifiers': self.notregistered_email, 'action': 'enroll',
+                                              'email_students': True})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -1087,7 +1185,8 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
 
         self.assertEqual(
             mail.outbox[0].body,
-            "Dear student,\n\nYou have been invited to join {display_name} at edx.org by a member of the course staff.\n\n"
+            "Dear student,\n\nYou have been invited to join {display_name}"
+            " at edx.org by a member of the course staff.\n\n"
             "To access the course visit {proto}://{site}{course_path} and login.\n\n----\n"
             "This email was automatically sent from edx.org to robot-not-an-email-yet@robot.org".format(
                 display_name=self.course.display_name,
@@ -1115,7 +1214,142 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
         course_enrollment = CourseEnrollment.objects.get(
             user=self.enrolled_student, course_id=self.course.id
         )
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, ENROLLED_TO_ENROLLED)
         self.assertEqual(course_enrollment.mode, u"verified")
+
+    def create_paid_course(self):
+        """
+        create paid course mode.
+        """
+        paid_course = CourseFactory.create()
+        CourseModeFactory.create(course_id=paid_course.id, min_price=50)
+        CourseInstructorRole(paid_course.id).add_users(self.instructor)
+        return paid_course
+
+    def test_reason_field_should_not_be_empty(self):
+        """
+        test to check that reason field should not be empty when
+        manually enrolling the students for the paid courses.
+        """
+        paid_course = self.create_paid_course()
+        url = reverse('students_update_enrollment', kwargs={'course_id': paid_course.id.to_deprecated_string()})
+        params = {'identifiers': self.notregistered_email, 'action': 'enroll', 'email_students': False,
+                  'auto_enroll': False}
+        response = self.client.post(url, params)
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 0)
+
+        # test the response data
+        expected = {
+            "action": "enroll",
+            "auto_enroll": False,
+            "results": [
+                {
+                    "error": True
+                }
+            ]
+        }
+        res_json = json.loads(response.content)
+        self.assertEqual(res_json, expected)
+
+    def test_unenrolled_allowed_to_enroll_user(self):
+        """
+        test to unenroll allow to enroll user.
+        """
+        paid_course = self.create_paid_course()
+        url = reverse('students_update_enrollment', kwargs={'course_id': paid_course.id.to_deprecated_string()})
+        params = {'identifiers': self.notregistered_email, 'action': 'enroll', 'email_students': False,
+                  'auto_enroll': False, 'reason': 'testing..'}
+        response = self.client.post(url, params)
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_ALLOWEDTOENROLL)
+        self.assertEqual(response.status_code, 200)
+
+        # now registered the user
+        UserFactory(email=self.notregistered_email)
+        url = reverse('students_update_enrollment', kwargs={'course_id': paid_course.id.to_deprecated_string()})
+        params = {'identifiers': self.notregistered_email, 'action': 'enroll', 'email_students': False,
+                  'auto_enroll': False, 'reason': 'testing'}
+        response = self.client.post(url, params)
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 2)
+        self.assertEqual(manual_enrollments[1].state_transition, ALLOWEDTOENROLL_TO_ENROLLED)
+        self.assertEqual(response.status_code, 200)
+
+        # test the response data
+        expected = {
+            "action": "enroll",
+            "auto_enroll": False,
+            "results": [
+                {
+                    "identifier": self.notregistered_email,
+                    "before": {
+                        "enrollment": False,
+                        "auto_enroll": False,
+                        "user": True,
+                        "allowed": True,
+                    },
+                    "after": {
+                        "enrollment": True,
+                        "auto_enroll": False,
+                        "user": True,
+                        "allowed": True,
+                    }
+                }
+            ]
+        }
+        res_json = json.loads(response.content)
+        self.assertEqual(res_json, expected)
+
+    def test_unenrolled_already_not_enrolled_user(self):
+        """
+        test unenrolled user already not enrolled in a course.
+        """
+        paid_course = self.create_paid_course()
+        course_enrollment = CourseEnrollment.objects.filter(
+            user__email=self.notregistered_email, course_id=paid_course.id
+        )
+        self.assertEqual(course_enrollment.count(), 0)
+
+        url = reverse('students_update_enrollment', kwargs={'course_id': paid_course.id.to_deprecated_string()})
+        params = {'identifiers': self.notregistered_email, 'action': 'unenroll', 'email_students': False,
+                  'auto_enroll': False, 'reason': 'testing'}
+
+        response = self.client.post(url, params)
+        self.assertEqual(response.status_code, 200)
+
+        # test the response data
+        expected = {
+            "action": "unenroll",
+            "auto_enroll": False,
+            "results": [
+                {
+                    "identifier": self.notregistered_email,
+                    "before": {
+                        "enrollment": False,
+                        "auto_enroll": False,
+                        "user": False,
+                        "allowed": False,
+                    },
+                    "after": {
+                        "enrollment": False,
+                        "auto_enroll": False,
+                        "user": False,
+                        "allowed": False,
+                    }
+                }
+            ]
+        }
+
+        manual_enrollments = ManualEnrollmentAudit.objects.all()
+        self.assertEqual(manual_enrollments.count(), 1)
+        self.assertEqual(manual_enrollments[0].state_transition, UNENROLLED_TO_UNENROLLED)
+
+        res_json = json.loads(response.content)
+        self.assertEqual(res_json, expected)
 
     def test_unenroll_and_enroll_verified(self):
         """
@@ -1152,6 +1386,7 @@ class TestInstructorAPIEnrollment(ModuleStoreTestCase, LoginEnrollmentTestCase):
             'identifiers': user.email,
             'action': action,
             'email_students': True,
+            'reason': 'change user enrollment'
         }
         response = self.client.post(url, params)
         self.assertEqual(response.status_code, 200)
@@ -1382,7 +1617,9 @@ class TestInstructorAPIBulkBetaEnrollment(ModuleStoreTestCase, LoginEnrollmentTe
     def test_enroll_with_email_not_registered(self):
         # User doesn't exist
         url = reverse('bulk_beta_modify_access', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.notregistered_email, 'action': 'add', 'email_students': True})
+        response = self.client.post(url,
+                                    {'identifiers': self.notregistered_email, 'action': 'add', 'email_students': True,
+                                     'reason': 'testing'})
         self.assertEqual(response.status_code, 200)
         # test the response data
         expected = {
@@ -1403,7 +1640,9 @@ class TestInstructorAPIBulkBetaEnrollment(ModuleStoreTestCase, LoginEnrollmentTe
 
     def test_remove_without_email(self):
         url = reverse('bulk_beta_modify_access', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.beta_tester.email, 'action': 'remove', 'email_students': False})
+        response = self.client.post(url,
+                                    {'identifiers': self.beta_tester.email, 'action': 'remove', 'email_students': False,
+                                     'reason': 'testing'})
         self.assertEqual(response.status_code, 200)
 
         # Works around a caching bug which supposedly can't happen in prod. The instance here is not ==
@@ -1431,7 +1670,9 @@ class TestInstructorAPIBulkBetaEnrollment(ModuleStoreTestCase, LoginEnrollmentTe
 
     def test_remove_with_email(self):
         url = reverse('bulk_beta_modify_access', kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.post(url, {'identifiers': self.beta_tester.email, 'action': 'remove', 'email_students': True})
+        response = self.client.post(url,
+                                    {'identifiers': self.beta_tester.email, 'action': 'remove', 'email_students': True,
+                                     'reason': 'testing'})
         self.assertEqual(response.status_code, 200)
 
         # Works around a caching bug which supposedly can't happen in prod. The instance here is not ==
@@ -1754,6 +1995,12 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         for student in self.students:
             CourseEnrollment.enroll(student, self.course.id)
 
+        self.students_who_may_enroll = self.students + [UserFactory() for _ in range(5)]
+        for student in self.students_who_may_enroll:
+            CourseEnrollmentAllowed.objects.create(
+                email=student.email, course_id=self.course.id
+            )
+
     def register_with_redemption_code(self, user, code):
         """
         enroll user using a registration code
@@ -1879,7 +2126,7 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         # check that the coupon redeem count should be 0
         resp = self.client.get(instructor_dashboard)
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Redeem Count', resp.content)
+        self.assertIn('Number Redeemed', resp.content)
         self.assertIn('<td>0</td>', resp.content)
 
         # now make the payment of your cart items
@@ -1889,7 +2136,7 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         resp = self.client.get(instructor_dashboard)
         self.assertEqual(resp.status_code, 200)
 
-        self.assertIn('Redeem Count', resp.content)
+        self.assertIn('Number Redeemed', resp.content)
         self.assertIn('<td>1</td>', resp.content)
 
     def test_get_sale_records_features_csv(self):
@@ -2047,6 +2294,30 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         res_json = json.loads(response.content)
 
         self.assertEqual('cohort' in res_json['feature_names'], is_cohorted)
+
+    def test_get_students_who_may_enroll(self):
+        """
+        Test whether get_students_who_may_enroll returns an appropriate
+        status message when users request a CSV file of students who
+        may enroll in a course.
+        """
+        url = reverse(
+            'get_students_who_may_enroll',
+            kwargs={'course_id': unicode(self.course.id)}
+        )
+        # Successful case:
+        response = self.client.get(url, {})
+        res_json = json.loads(response.content)
+        self.assertIn('status', res_json)
+        self.assertNotIn('already in progress', res_json['status'])
+        # CSV generation already in progress:
+        with patch('instructor_task.api.submit_calculate_may_enroll_csv') as submit_task_function:
+            error = AlreadyRunningError()
+            submit_task_function.side_effect = error
+            response = self.client.get(url, {})
+            res_json = json.loads(response.content)
+            self.assertIn('status', res_json)
+            self.assertIn('already in progress', res_json['status'])
 
     def test_access_course_finance_admin_with_invalid_course_key(self):
         """
@@ -2284,9 +2555,36 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         success_status = "Your {report_type} report is being generated! You can view the status of the generation task in the 'Pending Instructor Tasks' section.".format(report_type=report_type)
         self.assertIn(success_status, response.content)
 
-    @ddt.data(*REPORTS_DATA)
+    @ddt.data(*EXECUTIVE_SUMMARY_DATA)
     @ddt.unpack
-    def test_calculate_report_csv_already_running(self, report_type, instructor_api_endpoint, task_api_endpoint, extra_instructor_api_kwargs):
+    def test_executive_summary_report_success(
+            self,
+            report_type,
+            instructor_api_endpoint,
+            task_api_endpoint,
+            extra_instructor_api_kwargs
+    ):
+        kwargs = {'course_id': unicode(self.course.id)}
+        kwargs.update(extra_instructor_api_kwargs)
+        url = reverse(instructor_api_endpoint, kwargs=kwargs)
+
+        CourseFinanceAdminRole(self.course.id).add_users(self.instructor)
+        with patch(task_api_endpoint):
+            response = self.client.get(url, {})
+        success_status = "Your {report_type} report is being created." \
+                         " To view the status of the report, see the 'Pending Instructor Tasks'" \
+                         " section.".format(report_type=report_type)
+        self.assertIn(success_status, response.content)
+
+    @ddt.data(*EXECUTIVE_SUMMARY_DATA)
+    @ddt.unpack
+    def test_executive_summary_report_already_running(
+            self,
+            report_type,
+            instructor_api_endpoint,
+            task_api_endpoint,
+            extra_instructor_api_kwargs
+    ):
         kwargs = {'course_id': unicode(self.course.id)}
         kwargs.update(extra_instructor_api_kwargs)
         url = reverse(instructor_api_endpoint, kwargs=kwargs)
@@ -2295,7 +2593,11 @@ class TestInstructorAPILevelsDataDump(ModuleStoreTestCase, LoginEnrollmentTestCa
         with patch(task_api_endpoint) as mock:
             mock.side_effect = AlreadyRunningError()
             response = self.client.get(url, {})
-        already_running_status = "{report_type} report generation task is already in progress. Check the 'Pending Instructor Tasks' table for the status of the task. When completed, the report will be available for download in the table below.".format(report_type=report_type)
+        already_running_status = "An {report_type} report is currently in progress." \
+                                 " To view the status of the report, see the 'Pending Instructor Tasks' section." \
+                                 " When completed, the report will be available for download in the table below." \
+                                 " You will be able to download the" \
+                                 " report when it is complete.".format(report_type=report_type)
         self.assertIn(already_running_status, response.content)
 
     def test_get_distribution_no_feature(self):
@@ -3986,13 +4288,20 @@ class TestCourseRegistrationCodes(ModuleStoreTestCase):
         self.assertEqual(response.status_code, 200, response.content)
         # filter all the coupons
         for coupon in Coupon.objects.all():
-            self.assertIn('"{code}","{course_id}","{discount}","0","{description}","{expiration_date}","True"'.format(
-                code=coupon.code,
-                course_id=coupon.course_id,
-                discount=coupon.percentage_discount,
-                description=coupon.description,
-                expiration_date=coupon.display_expiry_date
-            ), response.content)
+            self.assertIn(
+                '"{coupon_code}","{course_id}","{discount}","{description}","{expiration_date}","{is_active}",'
+                '"{code_redeemed_count}","{total_discounted_seats}","{total_discounted_amount}"'.format(
+                    coupon_code=coupon.code,
+                    course_id=coupon.course_id,
+                    discount=coupon.percentage_discount,
+                    description=coupon.description,
+                    expiration_date=coupon.display_expiry_date,
+                    is_active=coupon.is_active,
+                    code_redeemed_count="0",
+                    total_discounted_seats="0",
+                    total_discounted_amount="0",
+                ), response.content
+            )
 
         self.assertEqual(response['Content-Type'], 'text/csv')
         body = response.content.replace('\r', '')

@@ -1,6 +1,7 @@
 # 
 # Translators:
 # qrfahasan <ahasan@qrf.org>, 2015
+# Ahmed Jazzar <ajazzar@edraak.org>, 2015
 # moayyad yaghi <moayyad.yaghi@gmail.com>, 2015
 # omarithawi <oithawi@qrf.org>, 2015
 msgid ""
@@ -8,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-04-06 14:21+0000\n"
+"PO-Revision-Date: 2015-08-02 09:16+0000\n"
 "Last-Translator: qrfahasan <ahasan@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -20,14 +21,13 @@ msgstr ""
 
 #. Translators: Edraak-specific
 #: common/djangoapps/student/edraak_validation.py:41
-#: common/djangoapps/student/views.py:1567
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
 msgstr "أدخل اسم مستخدم صحيح، متكوّن من حروف وأرقام ومسافات وشرطات (- و _)."
 
 #. Translators: Edraak-specific
-#: common/lib/xmodule/xmodule/video_module/video_xfields.py:161
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:179
 msgid ""
 "The default assumption is all the videos have sign-language enabled. This "
 "option allows the course authors to provide alternative video without sign-"
@@ -35,57 +35,44 @@ msgid ""
 msgstr "على افتراض أن جميع الفيديوات مترجمة بلغة الإشارة. بواسطة هذا الخيار تستطيع أن تضيف فيديو بديل بدون لغة الإشارة."
 
 #. Translators: Edraak-specific
-#: common/lib/xmodule/xmodule/video_module/video_xfields.py:164
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:182
 msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:243
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:245
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديمين الذين اشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والإمتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:247
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:249
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديمين الذين اشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والإمتحانات."
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:258
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:260
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذﮦ إلى:"
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:263
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:265
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
 #. Translators: Keep newlines for formatting, Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:275
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:277
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
-#. Translators: This is the Edraak platform name, keep it only on word.
-#. Edraak-specific.
-#: lms/envs/aws.py:131
-msgid "Edraak"
-msgstr "إدراك"
-
 #. Translators: Edraak-specific
-#: lms/templates/video.html:86 lms/templates/video.html:89
-msgid "Toggle Sign Language"
-msgstr "فعِّل أو عطِّل فيديو لغة الإشارة"
-
-#. Translators: Edraak-specific
-#: lms/templates/video.html:103
-msgid ""
-"Click on the sign language button to disable and enable the sign language "
-"subtitling."
-msgstr "إضغط على زر لغة الإشارة لتفعيل أو تعطيل الترجمة بلغة الإشارة في هذا الفيديو."
+#: lms/templates/dashboard.html:183
+msgid "Click on your username above."
+msgstr "أضغط على اسمك في الشريط العلوي."
 
 #. Translators: Edraak-specific
 #: lms/templates/bayt/callback.html:8
@@ -97,7 +84,7 @@ msgstr "تفعيل حساب بيت.كوم"
 msgid ""
 "Your certificate has been posted to Bayt successfully. You well redirect to "
 "Edraak in 5 seconds. If not click {link_start}here{link_end}"
-msgstr "لقد تم نشر شهادتك على  BAYT بنجاح ,سوف تعود الى إدراك خلال 5 ثواني, إن لم يحدث ذلك انقر {link_start}هنا{link_end}"
+msgstr "لقد تم نشر شهادتك على  BAYT بنجاح ,سوف تعود الى إدراك خلال 5 ثوانٍ, إن لم يحدث ذلك انقر {link_start}هنا{link_end}"
 
 #. Translators: Edraak-specific
 #: lms/templates/bayt/callback.html:23
@@ -105,14 +92,14 @@ msgid "Please click {link_start}here{link_end}"
 msgstr "الرجاء النقر {link_start}هنا{link_end}"
 
 #. Translators: Edraak-specific
-#: lms/templates/courseware/info.html:59 lms/templates/courseware/info.html:68
+#: lms/templates/courseware/info.html:57 lms/templates/courseware/info.html:66
 msgid "Course Updates &amp; News"
 msgstr "تحديثات وأخبار المساق"
 
 #. Translators: Edraak-specific
-#: lms/templates/edraak_certificates/_dashboard_certificate_link.html:15
-msgid "Completion Certificate"
-msgstr "الشهادة "
+#: lms/templates/edraak_certificates/_dashboard_certificate_link.html:14
+msgid "Issue Certificate"
+msgstr "أصدر الشهادة"
 
 #. Translators: Edraak-specific
 #: lms/templates/edraak_certificates/fail.html:11

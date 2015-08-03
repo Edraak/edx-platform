@@ -121,12 +121,14 @@ class ShoppingCartViewsTests(ModuleStoreTestCase):
                         percentage_discount=self.percentage_discount, created_by=self.user, is_active=is_active)
         coupon.save()
 
-    def add_reg_code(self, course_key, mode_slug='honor'):
+    def add_reg_code(self, course_key, mode_slug='honor', is_valid=True):
         """
         add dummy registration code into models
         """
         course_reg_code = CourseRegistrationCode(
-            code=self.reg_code, course_id=course_key, created_by=self.user, mode_slug=mode_slug
+            code=self.reg_code, course_id=course_key,
+            created_by=self.user, mode_slug=mode_slug,
+            is_valid=is_valid
         )
         course_reg_code.save()
 
@@ -387,6 +389,23 @@ class ShoppingCartViewsTests(ModuleStoreTestCase):
         self.assertEqual(resp.status_code, 404)
         self.assertIn("Discount does not exist against code '{0}'.".format(self.coupon_code), resp.content)
 
+    def test_inactive_registration_code_returns_error(self):
+        """
+        test to redeem inactive registration code and
+        it returns an error.
+        """
+        course_key = self.course_key.to_deprecated_string()
+        self.add_reg_code(course_key, is_valid=False)
+        self.add_course_to_user_cart(self.course_key)
+
+        # now apply the inactive registration code
+        # it will raise an exception
+        resp = self.client.post(reverse('shoppingcart.views.use_code'), {'code': self.reg_code})
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn(
+            "This enrollment code ({enrollment_code}) is no longer valid.".format(
+                enrollment_code=self.reg_code), resp.content)
+
     def test_course_does_not_exist_in_cart_against_valid_reg_code(self):
         course_key = self.course_key.to_deprecated_string() + 'testing'
         self.add_reg_code(course_key)
@@ -525,7 +544,6 @@ class ShoppingCartViewsTests(ModuleStoreTestCase):
             self.assertEqual(coupon.is_active, False)
 
     def test_course_free_discount_for_valid_active_reg_code(self):
-
         self.add_reg_code(self.course_key)
         self.add_course_to_user_cart(self.course_key)
 
@@ -546,7 +564,9 @@ class ShoppingCartViewsTests(ModuleStoreTestCase):
         # the item has been removed when using the registration code for the first time
         resp = self.client.post(reverse('shoppingcart.views.use_code'), {'code': self.reg_code})
         self.assertEqual(resp.status_code, 400)
-        self.assertIn("Oops! The code '{0}' you entered is either invalid or expired".format(self.reg_code), resp.content)
+        self.assertIn("This enrollment code ({enrollment_code}) is not valid.".format(
+            enrollment_code=self.reg_code
+        ), resp.content)
 
     def test_upgrade_from_valid_reg_code(self):
         """Use a valid registration code to upgrade from honor to verified mode. """
@@ -644,8 +664,10 @@ class ShoppingCartViewsTests(ModuleStoreTestCase):
         for item in items:
             if item.id == reg_item.id:
                 self.assertEquals(item.unit_cost, self.get_discount(self.cost))
+                self.assertEquals(item.list_price, self.cost)
             elif item.id == cert_item.id:
-                self.assertEquals(item.list_price, None)
+                self.assertEquals(item.list_price, self.cost)
+                self.assertEquals(item.unit_cost, self.cost)
 
         # Delete the discounted item, corresponding coupon redemption should
         # be removed for that particular discounted item
@@ -708,7 +730,7 @@ class ShoppingCartViewsTests(ModuleStoreTestCase):
         self.login_user()
         resp = self.client.post(reverse('shoppingcart.views.add_course_to_cart', args=['non/existent/course']))
         self.assertEqual(resp.status_code, 404)
-        self.assertIn(_("The course you requested does not exist."), resp.content)
+        self.assertIn("The course you requested does not exist.", resp.content)
 
     def test_add_course_to_cart_success(self):
         self.login_user()
@@ -1902,7 +1924,7 @@ class CSVReportViewsTest(ModuleStoreTestCase):
         self.assertEqual(template, 'shoppingcart/download_report.html')
         self.assertFalse(context['total_count_error'])
         self.assertFalse(context['date_fmt_error'])
-        self.assertIn(_("Download CSV Reports"), response.content.decode('UTF-8'))
+        self.assertIn("Download CSV Reports", response.content.decode('UTF-8'))
 
     @patch('shoppingcart.views.render_to_response', render_mock)
     def test_report_csv_bad_date(self):
@@ -1914,7 +1936,7 @@ class CSVReportViewsTest(ModuleStoreTestCase):
         self.assertEqual(template, 'shoppingcart/download_report.html')
         self.assertFalse(context['total_count_error'])
         self.assertTrue(context['date_fmt_error'])
-        self.assertIn(_("There was an error in your date input.  It should be formatted as YYYY-MM-DD"),
+        self.assertIn("There was an error in your date input.  It should be formatted as YYYY-MM-DD",
                       response.content.decode('UTF-8'))
 
     CORRECT_CSV_NO_DATE_ITEMIZED_PURCHASE = ",1,purchased,1,40,40,usd,Registration for Course: Robot Super Course,"

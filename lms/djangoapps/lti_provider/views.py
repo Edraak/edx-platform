@@ -10,11 +10,10 @@ from django.http import HttpResponseBadRequest, HttpResponseForbidden, Http404
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
-from courseware.access import has_access
-from courseware.courses import get_course_with_access
-from courseware.module_render import get_module_by_usage_id
-from edxmako.shortcuts import render_to_response
+from lti_provider.outcomes import store_outcome_parameters
+from lti_provider.models import LtiConsumer
 from lti_provider.signature_validator import SignatureValidator
+from lti_provider.users import authenticate_lti_user
 from lms_xblock.runtime import unquote_slashes
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys import InvalidKeyError
@@ -26,7 +25,12 @@ log = logging.getLogger("edx.lti_provider")
 REQUIRED_PARAMETERS = [
     'roles', 'context_id', 'oauth_version', 'oauth_consumer_key',
     'oauth_signature', 'oauth_signature_method', 'oauth_timestamp',
-    'oauth_nonce'
+    'oauth_nonce', 'user_id'
+]
+
+OPTIONAL_PARAMETERS = [
+    'lis_result_sourcedid', 'lis_outcome_service_url',
+    'tool_consumer_instance_guid'
 ]
 
 LTI_SESSION_KEY = 'lti_provider_parameters'
@@ -57,16 +61,22 @@ def lti_launch(request, course_id, usage_id):
     the lti_run view. If the user is already logged in, we just call that view
     directly.
     """
+
     if not settings.FEATURES['ENABLE_LTI_PROVIDER']:
         return HttpResponseForbidden()
 
     # Check the OAuth signature on the message
-    if not SignatureValidator().verify(request):
+    try:
+        if not SignatureValidator().verify(request):
+            return HttpResponseForbidden()
+    except LtiConsumer.DoesNotExist:
         return HttpResponseForbidden()
 
     params = get_required_parameters(request.POST)
     if not params:
         return HttpResponseBadRequest()
+    params.update(get_optional_parameters(request.POST))
+
     # Store the course, and usage ID in the session to prevent privilege
     # escalation if a staff member in one course tries to access material in
     # another.
@@ -82,11 +92,20 @@ def lti_launch(request, course_id, usage_id):
         raise Http404()
     params['course_key'] = course_key
     params['usage_key'] = usage_key
-    request.session[LTI_SESSION_KEY] = params
 
-    if not request.user.is_authenticated():
-        run_url = reverse('lti_provider.views.lti_run')
-        return redirect_to_login(run_url, settings.LOGIN_URL)
+    try:
+        lti_consumer = LtiConsumer.get_or_supplement(
+            params.get('tool_consumer_instance_guid', None),
+            params['oauth_consumer_key']
+        )
+    except LtiConsumer.DoesNotExist:
+        return HttpResponseForbidden()
+
+    # Create an edX account if the user identifed by the LTI launch doesn't have
+    # one already, and log the edX account into the platform.
+    authenticate_lti_user(request, params['user_id'], lti_consumer)
+
+    request.session[LTI_SESSION_KEY] = params
 
     return lti_run(request)
 
@@ -118,7 +137,16 @@ def lti_run(request):
     # Remove the parameters from the session to prevent replay
     del request.session[LTI_SESSION_KEY]
 
-    return render_courseware(request, params)
+    # Store any parameters required by the outcome service in order to report
+    # scores back later. We know that the consumer exists, since the record was
+    # used earlier to verify the oauth signature.
+    lti_consumer = LtiConsumer.get_or_supplement(
+        params.get('tool_consumer_instance_guid', None),
+        params['oauth_consumer_key']
+    )
+    store_outcome_parameters(params, request.user, lti_consumer)
+
+    return render_courseware(request, params['usage_key'])
 
 
 def get_required_parameters(dictionary, additional_params=None):
@@ -143,6 +171,19 @@ def get_required_parameters(dictionary, additional_params=None):
     return params
 
 
+def get_optional_parameters(dictionary):
+    """
+    Extract all optional LTI parameters from a dictionary. This method does not
+    fail if any parameters are missing.
+
+    :param dictionary: A dictionary containing zero or more optional parameters.
+    :return: A new dictionary containing all optional parameters from the
+        original dictionary, or an empty dictionary if no optional parameters
+        were present.
+    """
+    return {key: dictionary[key] for key in OPTIONAL_PARAMETERS if key in dictionary}
+
+
 def restore_params_from_session(request):
     """
     Fetch the parameters that were stored in the session by an LTI launch, and
@@ -157,45 +198,25 @@ def restore_params_from_session(request):
         return None
     session_params = request.session[LTI_SESSION_KEY]
     additional_params = ['course_key', 'usage_key']
-    return get_required_parameters(session_params, additional_params)
+    for key in REQUIRED_PARAMETERS + additional_params:
+        if key not in session_params:
+            return None
+    return session_params
 
 
-def render_courseware(request, lti_params):
+def render_courseware(request, usage_key):
     """
     Render the content requested for the LTI launch.
     TODO: This method depends on the current refactoring work on the
     courseware/courseware.html template. It's signature may change depending on
     the requirements for that template once the refactoring is complete.
 
-    :return: an HttpResponse object that contains the template and necessary
+    Return an HttpResponse object that contains the template and necessary
     context to render the courseware.
     """
-    usage_key = lti_params['usage_key']
-    course_key = lti_params['course_key']
-    user = request.user
-    course = get_course_with_access(user, 'load', course_key)
-    staff = has_access(request.user, 'staff', course)
-    instance, _dummy = get_module_by_usage_id(
-        request,
-        unicode(course_key),
-        unicode(usage_key)
-    )
-
-    fragment = instance.render('student_view', context=request.GET)
-
-    context = {
-        'fragment': fragment,
-        'course': course,
-        'disable_accordion': True,
-        'allow_iframing': True,
-        'disable_header': True,
-        'disable_footer': True,
-        'disable_tabs': True,
-        'staff_access': staff,
-        'xqa_server': settings.FEATURES.get('XQA_SERVER', 'http://example.com/xqa'),
-    }
-
-    return render_to_response('courseware/courseware.html', context)
+    # return an HttpResponse object that contains the template and necessary context to render the courseware.
+    from courseware.views import render_xblock
+    return render_xblock(request, unicode(usage_key), check_if_enrolled=False)
 
 
 def parse_course_and_usage_keys(course_id, usage_id):

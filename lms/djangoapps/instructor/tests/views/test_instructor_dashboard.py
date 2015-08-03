@@ -1,21 +1,28 @@
 """
 Unit tests for instructor_dashboard.py.
 """
+import ddt
 from mock import patch
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.test.client import RequestFactory
 from django.test.utils import override_settings
+
+from courseware.tabs import get_course_tab_list
+from courseware.tests.factories import UserFactory
 from courseware.tests.helpers import LoginEnrollmentTestCase
 
-from student.tests.factories import AdminFactory, UserFactory
+from student.tests.factories import AdminFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 from shoppingcart.models import PaidCourseRegistration, Order, CourseRegCodeItem
 from course_modes.models import CourseMode
 from student.roles import CourseFinanceAdminRole
+from student.models import CourseEnrollment
 
 
+@ddt.ddt
 class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Tests for the instructor dashboard (not legacy).
@@ -53,6 +60,21 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         """
         return 'Demographic data is now available in <a href="http://example.com/courses/{}" ' \
                'target="_blank">Example</a>.'.format(unicode(self.course.id))
+
+    def test_instructor_tab(self):
+        """
+        Verify that the instructor tab appears for staff only.
+        """
+        def has_instructor_tab(user, course):
+            """Returns true if the "Instructor" tab is shown."""
+            request = RequestFactory().request()
+            request.user = user
+            tabs = get_course_tab_list(request, course)
+            return len([tab for tab in tabs if tab.name == 'Instructor']) == 1
+
+        self.assertTrue(has_instructor_tab(self.instructor, self.course))
+        student = UserFactory.create()
+        self.assertFalse(has_instructor_tab(student, self.course))
 
     def test_default_currency_in_the_html_response(self):
         """
@@ -96,9 +118,25 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.assertTrue('<td>Verified</td>' in response.content)
         self.assertTrue('<td>Audit</td>' in response.content)
         self.assertTrue('<td>Honor</td>' in response.content)
+        self.assertTrue('<td>Professional</td>' in response.content)
 
         # dashboard link hidden
         self.assertFalse(self.get_dashboard_enrollment_message() in response.content)
+
+    @patch.dict(settings.FEATURES, {'DISPLAY_ANALYTICS_ENROLLMENTS': True})
+    @override_settings(ANALYTICS_DASHBOARD_URL='')
+    def test_show_enrollment_data_for_prof_ed(self):
+        # Create both "professional" (meaning professional + verification)
+        # and "no-id-professional" (meaning professional without verification)
+        # These should be aggregated for display purposes.
+        users = [UserFactory() for _ in range(2)]
+        CourseEnrollment.enroll(users[0], self.course.id, mode="professional")
+        CourseEnrollment.enroll(users[1], self.course.id, mode="no-id-professional")
+
+        response = self.client.get(self.url)
+
+        # Check that the number of professional enrollments is two
+        self.assertContains(response, "<td>Professional</td><td>2</td>")
 
     @patch.dict(settings.FEATURES, {'DISPLAY_ANALYTICS_ENROLLMENTS': False})
     @override_settings(ANALYTICS_DASHBOARD_URL='http://example.com')
@@ -113,6 +151,7 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.assertFalse('<td>Verified</td>' in response.content)
         self.assertFalse('<td>Audit</td>' in response.content)
         self.assertFalse('<td>Honor</td>' in response.content)
+        self.assertFalse('<td>Professional</td>' in response.content)
 
         # link to dashboard shown
         expected_message = self.get_dashboard_enrollment_message()
@@ -179,3 +218,29 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         total_amount = single_purchase_total + bulk_purchase_total
         response = self.client.get(self.url)
         self.assertIn('{currency}{amount}'.format(currency='$', amount=total_amount), response.content)
+
+    @ddt.data(
+        (True, True, True),
+        (True, False, False),
+        (True, None, False),
+        (False, True, False),
+        (False, False, False),
+        (False, None, False),
+    )
+    @ddt.unpack
+    def test_ccx_coaches_option_on_admin_list_management_instructor(
+            self, ccx_feature_flag, enable_ccx, expected_result
+    ):
+        """
+        Test whether the "CCX Coaches" option is visible or hidden depending on the value of course.enable_ccx.
+        """
+        with patch.dict(settings.FEATURES, {'CUSTOM_COURSES_EDX': ccx_feature_flag}):
+            self.course.enable_ccx = enable_ccx
+            self.store.update_item(self.course, self.instructor.id)
+
+            response = self.client.get(self.url)
+
+            self.assertEquals(
+                expected_result,
+                'CCX Coaches are able to create their own Custom Courses based on this course' in response.content
+            )
