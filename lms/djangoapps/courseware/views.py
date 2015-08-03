@@ -76,7 +76,7 @@ import survey.utils
 import survey.views
 
 from util.views import ensure_valid_course_key
-from edraak_misc.utils import sort_closed_courses_to_bottom, filter_invitation_only_courses
+from edraak_misc.utils import edraak_courses_logic
 
 from eventtracking import tracker
 import analytics
@@ -120,14 +120,13 @@ def courses(request):
     """
     # Hardcoded `AnonymousUser()` to hide unpublished courses always
     courses = get_courses(AnonymousUser(), request.META.get('HTTP_HOST'))
-    courses = filter_invitation_only_courses(courses)
     if microsite.get_value("ENABLE_COURSE_SORTING_BY_START_DATE",
                            settings.FEATURES["ENABLE_COURSE_SORTING_BY_START_DATE"]):
         courses = sort_by_start_date(courses)
     else:
         courses = sort_by_announcement(courses)
 
-    courses = sort_closed_courses_to_bottom(courses)
+    courses = edraak_courses_logic(courses)
 
     return render_to_response("courseware/courses.html", {'courses': courses})
 

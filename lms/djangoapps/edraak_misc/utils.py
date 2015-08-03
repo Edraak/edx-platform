@@ -85,6 +85,18 @@ def filter_invitation_only_courses(courses):
     return [course for course in courses if not course.invitation_only]
 
 
+def edraak_courses_logic(courses):
+    courses = filter_invitation_only_courses(courses)
+    courses = sort_closed_courses_to_bottom(courses)
+    return courses
+
+
+def get_absolute_url_prefix(request):
+    schema = 'https' if request.is_secure() else 'http'
+    prefix = '{schema}://{host}'.format(schema=schema, host=settings.SITE_NAME)
+    return prefix
+
+
 def validate_email(email):
     """
     Validate email, the strict or the quick way depending on `FEATURES['EMAIL_STRICT_VERIFICATION']`.

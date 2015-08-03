@@ -117,7 +117,8 @@ from embargo import api as embargo_api
 import analytics
 from eventtracking import tracker
 
-from edraak_misc.utils import sort_closed_courses_to_bottom, filter_invitation_only_courses
+from edraak_validation import validate_username
+from edraak_misc.utils import edraak_courses_logic
 
 # Note that this lives in LMS, so this dependency should be refactored.
 from notification_prefs.views import enable_notifications
@@ -171,8 +172,7 @@ def index(request, extra_context=None, user=AnonymousUser()):
     else:
         courses = sort_by_announcement(courses)
 
-    courses = filter_invitation_only_courses(courses)
-    courses = sort_closed_courses_to_bottom(courses)
+    courses = edraak_courses_logic(courses)
 
     context = {'courses': courses}
 

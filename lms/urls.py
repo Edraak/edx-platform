@@ -78,6 +78,7 @@ urlpatterns = (
 
     url(r'', include('edraak_misc.urls')),
     url(r'', include('edraak_i18n.urls')),
+    url(r'^v1/', include('edraak_api.urls')),
     url(r'', include('edraak_contact.urls')),
     url(r'', include('edraak_bayt.urls')),
     url(r'^certificate/', include('edraak_certificates.urls')),

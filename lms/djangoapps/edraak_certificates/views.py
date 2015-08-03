@@ -36,7 +36,7 @@ def view(request, course_id):
     course_key = locator.CourseLocator.from_string(course_id)
     course = modulestore().get_course(course_key)
 
-    if is_student_pass(user, request, course_id):
+    if course.may_certify() and is_student_pass(user, request, course_id):
         template = 'edraak_certificates/view.html'
     else:
         template = 'edraak_certificates/fail.html'
