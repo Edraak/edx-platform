@@ -63,7 +63,7 @@ def is_certificate_allowed(user, course):
     if not settings.FEATURES.get('ENABLE_ISSUE_CERTIFICATE'):
         return False
 
-    return course.has_ended() or has_access(user, 'staff', course.id)
+    return course.may_certify() or has_access(user, 'staff', course.id)
 
 
 def sort_closed_courses_to_bottom(courses):

@@ -16,7 +16,7 @@ from xmodule.modulestore.django import modulestore
 from opaque_keys.edx import locator
 
 from .utils import generate_certificate
-from edraak_misc.utils import is_student_pass
+from edraak_misc.utils import is_student_pass, is_certificate_allowed
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ def view(request, course_id):
     course_key = locator.CourseLocator.from_string(course_id)
     course = modulestore().get_course(course_key)
 
-    if course.may_certify() and is_student_pass(user, request, course_id):
+    if is_certificate_allowed(user, course) and is_student_pass(user, request, course_id):
         template = 'edraak_certificates/view.html'
     else:
         template = 'edraak_certificates/fail.html'
