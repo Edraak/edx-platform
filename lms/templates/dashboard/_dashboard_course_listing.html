@@ -105,9 +105,9 @@ from student.helpers import (
             % if show_courseware_link:
               % if course.has_ended():
                 % if not is_course_blocked:
-                  <a href="${course_target}" class="enter-course archived">${_('View Archived Course')}<span class="sr">&nbsp;${course.display_name_with_default}</span></a>
+                  <a href="${course_target}" class="enter-course archived">${_('View Course')}<span class="sr">&nbsp;${course.display_name_with_default}</span></a>
                 % else:
-                  <a class="enter-course-blocked archived">${_('View Archived Course')}<span class="sr">&nbsp;${course.display_name_with_default}</span></a>
+                  <a class="enter-course-blocked archived">${_('View Course')}<span class="sr">&nbsp;${course.display_name_with_default}</span></a>
                 % endif
               % else:
                 % if not is_course_blocked:
