@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-08-06 15:22+0300\n"
-"PO-Revision-Date: 2015-08-06 12:22+0000\n"
+"PO-Revision-Date: 2015-08-06 12:58+0000\n"
 "Last-Translator: qrfahasan <ahasan@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -85,7 +85,7 @@ msgstr "تعاون"
 
 #: templates/theme-header.html:120
 msgid "Sign Out"
-msgstr ""
+msgstr "تسجيل الخروج"
 
 #: templates/theme-header.html:125
 msgid "Dashboard"
@@ -93,8 +93,8 @@ msgstr "لوحة المعلومات"
 
 #: templates/theme-header.html:131
 msgid "Sign in"
-msgstr ""
+msgstr "دخول"
 
 #: templates/theme-header.html:136
 msgid "Register"
-msgstr ""
+msgstr "سجّل الآن"

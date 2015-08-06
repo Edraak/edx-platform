@@ -21565,7 +21565,7 @@ msgstr "تعاون"
 
 #: templates/theme-header.html:120
 msgid "Sign Out"
-msgstr ""
+msgstr "تسجيل الخروج"
 
 #: templates/theme-header.html:125
 msgid "Dashboard"
@@ -21573,8 +21573,8 @@ msgstr "لوحة المعلومات"
 
 #: templates/theme-header.html:131
 msgid "Sign in"
-msgstr ""
+msgstr "دخول"
 
 #: templates/theme-header.html:136
 msgid "Register"
-msgstr ""
+msgstr "سجّل الآن"
