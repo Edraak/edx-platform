@@ -9250,7 +9250,7 @@ msgstr ""
 #. a field on the registration form meant to hold the user's name.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Jane Doe"
-msgstr ""
+msgstr "فاطمة الفهري"
 
 #: lms/templates/register.html
 msgid "Needed for any certificates you may earn"
@@ -9260,7 +9260,7 @@ msgstr "مطلوب لأي شهادة قد تنالها "
 #. meant to hold the user's public username.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Public username"
-msgstr "اسم مستخدم ظاهر لعامّة الناس"
+msgstr "اسم المستخدم العلنيّ"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid ""
@@ -9274,7 +9274,7 @@ msgstr ""
 #. a field on the registration form meant to hold the user's username.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "JaneDoe"
-msgstr "JaneDoe"
+msgstr "فاطمة الفهري"
 
 #. Translators: This label appears above a dropdown menu on the registration
 #. form used to select the user's highest completed level of education.
@@ -9298,7 +9298,7 @@ msgstr "العنوان البريدي"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Tell us why you're interested in {platform_name}"
-msgstr "أخبرنا عن سبب اهتمامك بمنصّة {platform_name}"
+msgstr "ا هي الأسباب التي دفعتك للانضمام إلى {platform_name}"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Please select your Country."
@@ -9313,13 +9313,14 @@ msgstr "شروط الخدمة وميثاق الشرف الأكاديمي"
 #: openedx/core/djangoapps/user_api/views.py
 msgid "I agree to the {platform_name} {terms_of_service}."
 msgstr ""
-"أوافق على شروط الخدمة {terms_of_service} الخاصة بمنصّة {platform_name}. "
+"أوافق على شروط الخدمة {terms_of_service} وميثاق الشرف الخاصين بمنصّة "
+"{platform_name}."
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "You must agree to the {platform_name} {terms_of_service}."
 msgstr ""
-"يجب الموافقة على شروط الخدمة {terms_of_service} الخاصة بمنصّة "
-"{platform_name}. "
+"أوافق على شروط الخدمة {terms_of_service} وميثاق الشرف الخاصين بمنصّة "
+"{platform_name}."
 
 #: openedx/core/djangoapps/user_api/accounts/api.py
 msgid "The '{field_name}' field cannot be edited."
@@ -9877,7 +9878,7 @@ msgstr "مثال:  username@domain.com "
 
 #: cms/templates/login.html lms/templates/login.html
 msgid "Forgot password?"
-msgstr "هل نسيت كلمة السر؟"
+msgstr "هل نسيت كلمة المرور؟"
 
 #. Translators: This is the placeholder text for a field that requests the
 #. user's full name.
@@ -10930,7 +10931,7 @@ msgstr "الإقرارات الخاصة بالحساب"
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "I agree to the {link_start}Terms of Service{link_end}"
-msgstr "أوافق على {link_start}شروط الخدمة{link_end} "
+msgstr "أوافق على {link_start} شروط الخدمة {link_end} وميثاق الشرف"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
@@ -11153,7 +11154,7 @@ msgstr "أهداف تسجيل العضوية لدى {platform_name} "
 
 #: lms/templates/signup_modal.html
 msgid "Already have an account?"
-msgstr "هل لديك حساب من قبل؟"
+msgstr "لديك حساب على إدراك؟ سجّل الدخول"
 
 #: lms/templates/signup_modal.html
 msgid "Login."
@@ -12390,6 +12391,8 @@ msgid ""
 "To access course materials, you must score {required_score}% or higher on "
 "this                 exam. Your current score is {current_score}%."
 msgstr ""
+"لتدخل إلى مواد مساقك، يجب عليك الحصول على {required_score}% أو ما فوق في هذا"
+" الامتحان. ودرجتك الحالية هي {current_score}%"
 
 #: lms/templates/courseware/courseware.html
 msgid "Your score is {current_score}%. You have passed the entrance exam."
@@ -13086,7 +13089,7 @@ msgstr "مسجَّل كـ: "
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Archived Course"
-msgstr "استعراض المساق المحفوظ في الأرشيف"
+msgstr "استعراض المساق"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #: lms/templates/shoppingcart/registration_code_receipt.html
@@ -19692,7 +19695,7 @@ msgstr "موقعك"
 
 #: cms/templates/register.html
 msgid "I agree to the {a_start} Terms of Service {a_end}"
-msgstr "أوافق على {a_start} شروط الخدمة  {a_end}"
+msgstr "أوافق على {a_start} شروط الخدمة {a_end} وميثاق الشرف"
 
 #: cms/templates/register.html
 msgid "Create My Account &amp; Start Authoring Courses"
@@ -21561,9 +21564,17 @@ msgid "Teach"
 msgstr "تعاون"
 
 #: templates/theme-header.html:120
+msgid "Sign Out"
+msgstr "تسجيل الخروج"
+
+#: templates/theme-header.html:125
 msgid "Dashboard"
 msgstr "لوحة المعلومات"
 
-#: templates/theme-header.html:124
-msgid "Sign out"
-msgstr "تسجيل خروج"
+#: templates/theme-header.html:131
+msgid "Sign in"
+msgstr "دخول"
+
+#: templates/theme-header.html:136
+msgid "Register"
+msgstr "سجّل الآن"
