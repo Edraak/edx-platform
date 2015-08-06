@@ -5298,7 +5298,7 @@ msgstr "تبرَّع"
 
 #: lms/templates/discovery/filter_bar.underscore
 msgid "CLEAR ALL"
-msgstr ""
+msgstr "امسح الحقول"
 
 #: lms/templates/discovery/more_less_links.underscore
 msgid "MORE..."
@@ -5717,7 +5717,7 @@ msgstr "إذا لم تكن تملك حسابًا بعد، يُرجى استخد�
 
 #: lms/templates/student_account/login.underscore
 msgid "or sign in with"
-msgstr "أو تسجيل الدخول من خلال"
+msgstr "أو سجّل الدخول باستخدام"
 
 #: lms/templates/student_account/login.underscore
 msgid "Sign in with %(providerName)s"
@@ -5730,7 +5730,7 @@ msgstr "استخدام بياناتي لدى المؤسّسة/ الحرم الج
 
 #: lms/templates/student_account/login.underscore
 msgid "New to %(platformName)s?"
-msgstr "هل تستخدم %(platformName)s لأوّل مرّة؟"
+msgstr "هل أنت جديد على %(platformName)s؟ أنشئ حسابًا جديدًا اﻵن."
 
 #: lms/templates/student_account/login.underscore
 msgid "Create an account"
@@ -5779,15 +5779,15 @@ msgstr "إنشاء حساب باستخدام"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create account using %(providerName)s."
-msgstr "إنشاء حساب باستخدام %(providerName)s."
+msgstr "أنشئ حسابًا باستخدام %(providerName)s."
 
 #: lms/templates/student_account/register.underscore
 msgid "or create a new one here"
-msgstr "أو إنشاء حساب جديد هنا"
+msgstr "أو أنشئ حسابًا جديدًا باستخدام"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create a new account"
-msgstr "إنشاء حساب جديد"
+msgstr "أنشئ حسابًا جديدًا"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create your account"
@@ -5799,7 +5799,7 @@ msgstr "حقل مطلوب"
 
 #: lms/templates/student_account/register.underscore
 msgid "Already have an account?"
-msgstr "هل لديك حساب من قبل؟"
+msgstr "لديك حساب على إدراك؟ سجّل الدخول"
 
 #: lms/templates/student_profile/learner_profile.underscore
 msgid "You are currently sharing a limited profile."
