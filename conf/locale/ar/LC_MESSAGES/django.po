@@ -704,7 +704,7 @@ msgstr "حالة غير متوقّعة للحساب"
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Public Username '{username}' already exists."
-msgstr "يوجد مسبقًا حساب يحمل اسم المستخدم العلني '{username}'."
+msgstr "يوجد حساب يحمل نفس اسم المستخدم '{username}'."
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
@@ -5583,7 +5583,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Password must be supplied if not using certificates"
-msgstr "يجب إدخال كلمة المرور في حال عدم استخدام شهادات"
+msgstr "يجب إدخال كلمة السر في حال عدم استخدام شهادات"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "email address required (not username)"
@@ -9260,7 +9260,7 @@ msgstr "مطلوب لأي شهادة قد تنالها "
 #. meant to hold the user's public username.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Public username"
-msgstr "اسم المستخدم العلنيّ"
+msgstr "اسم المستخدم العلني"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid ""
@@ -9874,7 +9874,7 @@ msgstr "مثال:  username@domain.com "
 
 #: cms/templates/login.html lms/templates/login.html
 msgid "Forgot password?"
-msgstr "هل نسيت كلمة المرور؟"
+msgstr "هل نسيت كلمة السر؟"
 
 #. Translators: This is the placeholder text for a field that requests the
 #. user's full name.
@@ -10300,7 +10300,7 @@ msgstr "القانوني"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Password Reset"
-msgstr "إعادة ضبط كلمة السر"
+msgstr "تغيير كلمة السر"
 
 #: lms/templates/forgot_password_modal.html
 msgid ""
@@ -10320,7 +10320,7 @@ msgstr "هذا هو عنوان البريد الإلكتروني الذي است
 
 #: lms/templates/forgot_password_modal.html
 msgid "Reset My Password"
-msgstr "إعادة ضبط كلمة السر الخاصة بي"
+msgstr "تغيير كلمة السر الخاصة بي"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Email is incorrect."
@@ -10927,7 +10927,7 @@ msgstr "الإقرارات الخاصة بالحساب"
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
 msgid "I agree to the {link_start}Terms of Service{link_end}"
-msgstr "أوافق على {link_start} شروط الخدمة {link_end} وميثاق الشرف"
+msgstr "أوافق على {link_start}شروط الخدمة{link_end} وميثاق الشرف"
 
 #: lms/templates/register-shib.html lms/templates/register.html
 #: lms/templates/signup_modal.html
@@ -11071,7 +11071,7 @@ msgstr "يُرجى إدخال اسم عرض علني:"
 
 #: lms/templates/register.html
 msgid "Public Display Name"
-msgstr "اسم العرض العلني"
+msgstr "الاسم العلني"
 
 #: lms/templates/register.html
 msgid "Additional Personal Information"
@@ -11150,11 +11150,11 @@ msgstr "أهداف تسجيل العضوية لدى {platform_name} "
 
 #: lms/templates/signup_modal.html
 msgid "Already have an account?"
-msgstr "لديك حساب على إدراك؟ سجّل الدخول"
+msgstr "لديك حساب على {platform_name}؟"
 
 #: lms/templates/signup_modal.html
 msgid "Login."
-msgstr "تسجيل الدخول."
+msgstr "سجّل الدخول"
 
 #: lms/templates/split_test_author_view.html
 msgid ""
@@ -19122,11 +19122,11 @@ msgstr "مثلًا، مسائل علوم الكمبيوتر"
 
 #: cms/templates/index.html
 msgid "The public display name for your library."
-msgstr "اسم العرض العلني لمكتبتك"
+msgstr "اسم مكتبتك العلني"
 
 #: cms/templates/index.html
 msgid "The public organization name for your library."
-msgstr "اسم المؤسسة العلني لمكتبتك"
+msgstr "اسم مكتبتك المؤسسي"
 
 #: cms/templates/index.html
 msgid "This cannot be changed."

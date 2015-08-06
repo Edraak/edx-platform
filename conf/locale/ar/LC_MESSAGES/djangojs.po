@@ -3649,13 +3649,13 @@ msgid ""
 "Password reset email sent. Follow the link in the email to change your "
 "password."
 msgstr ""
-"بعثنا لك رسالة عبر البريد الإلكتروني لإعادة ضبط كلمة المرور. يُرجى اتّباع "
-"الرابط الوارد في الرسالة لتغيير كلمة مرورك. "
+"تم إرسال بريد إلكتروني لتغيير كلمة السر. يُرجى اتّباع الرابط الوارد في"
+"الرسالة لاستكمال العملية . "
 
 #: lms/static/js/student_account/account.js
 msgid "We weren't able to send you a password reset email."
 msgstr ""
-"عذرًا، لم نتمكّن من مراسلتك عبر البريد الإلكتروني لإعادة ضبط كلمة المرور. "
+"عذرًا، لم نتمكّن من مراسلتك عبر البريد الإلكتروني لإعادة ضبط كلمة السر. "
 
 #: lms/static/js/student_account/account.js
 msgid "Please check your email to confirm the change"
@@ -3714,23 +3714,23 @@ msgstr ""
 
 #: lms/templates/student_account/account.underscore
 msgid "Password"
-msgstr "كلمة المرور"
+msgstr "كلمة السر"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Reset your Password"
-msgstr "إعادة ضبط كلمة المرور"
+msgstr "إعادة ضبط كلمة السر"
 
 #: lms/templates/student_account/account.underscore
 msgid "Reset Password"
-msgstr "إعادة ضبط كلمة المرور"
+msgstr "تغيير كلمة السر"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
 "When you click \"Reset Password\", a message will be sent to your email "
 "address. Click the link in the message to reset your password."
 msgstr ""
-"عندما تنقر على \"إعادة ضبط كلمة المرور\"، ستصلك رسالة إلى بريدك الإلكتروني. "
-"يُرجى عندها النقر على الرابط الموجود في الرسالة لتغيّر كلمة المرور."
+"عندما تنقر على \"إعادة ضبط كلمة السر\"، ستصل رسالة لبريدك الإلكتروني."
+"يُرجى عندها النقر على الرابط الموجود في الرسالة لتغيّرها."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Language"
@@ -5627,7 +5627,7 @@ msgstr "نأسف لحدوث خطأ. يُرجى إعادة فتح الصفحة."
 
 #: lms/templates/student_account/form_field.underscore
 msgid "Forgot password?"
-msgstr "هل نسيت كلمة المرور؟"
+msgstr "هل نسيت كلمة السر؟"
 
 #: lms/templates/student_account/hinted_login.underscore
 #: lms/templates/student_account/login.underscore
@@ -5680,7 +5680,7 @@ msgstr ""
 
 #: lms/templates/student_account/login.underscore
 msgid "Password Reset Email Sent"
-msgstr "أرسلنا رسالة بالبريد الإلكتروني لضبط كلمة المرور."
+msgstr "لقد أرسلنا بريداً إلكترونياً لك لتغيير كلمة السر."
 
 #: lms/templates/student_account/login.underscore
 msgid ""
@@ -5703,13 +5703,13 @@ msgid ""
 "Sign in here using your email address and password, or use one of the "
 "providers listed below."
 msgstr ""
-"يُرجى منك تسجيل دخولك باستخدام عنوان بريدك الإلكتروني وكلمة المرور، أو "
-"استخدام أحد المزوِّدين المذكورين أدناه."
+"يُرجى تسجيل الدخول باستخدام عنوان بريدك الإلكتروني وكلمة السر، أو من"
+"خلال أحد المزوِّدين المذكورين أدناه."
 
 #: lms/templates/student_account/login.underscore
 msgid "Sign in here using your email address and password."
 msgstr ""
-"يُرجى منك تسجيل دخولك هنا باستخدام عنوان بريدك الإلكتروني وكلمة المرور."
+"يُرجى تسجيل الدخول باستخدام عنوان بريدك الإلكتروني وكلمة السر."
 
 #: lms/templates/student_account/login.underscore
 msgid "If you do not yet have an account, use the button below to register."
@@ -5730,11 +5730,11 @@ msgstr "استخدام بياناتي لدى المؤسّسة/ الحرم الج
 
 #: lms/templates/student_account/login.underscore
 msgid "New to %(platformName)s?"
-msgstr "هل أنت جديد على %(platformName)s؟ أنشئ حسابًا جديدًا اﻵن."
+msgstr "هل أنت جديد على %(platformName)s؟"
 
 #: lms/templates/student_account/login.underscore
 msgid "Create an account"
-msgstr "إنشاء حساب "
+msgstr " أنشئ حسابًا جديدًا اﻵن."
 
 #: lms/templates/student_account/password_reset.underscore
 #: lms/templates/student_account/register.underscore
@@ -5755,7 +5755,7 @@ msgstr ""
 
 #: lms/templates/student_account/password_reset.underscore
 msgid "Reset my password"
-msgstr "إعادة ضبط كلمة السر"
+msgstr "تغيير كلمة السر الخاصة بي"
 
 #: lms/templates/student_account/register.underscore
 msgid "We couldn't create your account."
@@ -5779,11 +5779,11 @@ msgstr "إنشاء حساب باستخدام"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create account using %(providerName)s."
-msgstr "أنشئ حسابًا باستخدام %(providerName)s."
+msgstr "إنشاء حساب باستخدام %(providerName)s."
 
 #: lms/templates/student_account/register.underscore
 msgid "or create a new one here"
-msgstr "أو أنشئ حسابًا جديدًا باستخدام"
+msgstr "أو أنشئ حساباً جديداً هنا"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create a new account"
@@ -5799,7 +5799,7 @@ msgstr "حقل مطلوب"
 
 #: lms/templates/student_account/register.underscore
 msgid "Already have an account?"
-msgstr "لديك حساب على إدراك؟ سجّل الدخول"
+msgstr "لديك حساب على إدراك؟"
 
 #: lms/templates/student_profile/learner_profile.underscore
 msgid "You are currently sharing a limited profile."
