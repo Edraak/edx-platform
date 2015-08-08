@@ -9298,7 +9298,7 @@ msgstr "العنوان البريدي"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Tell us why you're interested in {platform_name}"
-msgstr "ا هي الأسباب التي دفعتك للانضمام إلى {platform_name}"
+msgstr "ما هي الأسباب التي دفعتك للانضمام إلى {platform_name}"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Please select your Country."
