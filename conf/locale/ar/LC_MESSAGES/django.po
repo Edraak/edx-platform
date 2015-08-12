@@ -260,7 +260,7 @@ msgstr "شهادة ميثاق الشرف الأكاديمي"
 
 #: common/djangoapps/course_modes/models.py
 msgid "Your verification is pending"
-msgstr ""
+msgstr "عملية التحقّق من هويّتك معلَّقة "
 
 #: common/djangoapps/course_modes/models.py
 msgid "Verified: Pending Verification"
@@ -704,7 +704,7 @@ msgstr "حالة غير متوقّعة للحساب"
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Public Username '{username}' already exists."
-msgstr "يوجد حساب يحمل نفس اسم المستخدم '{username}'."
+msgstr "يوجد مسبقًا حساب يحمل اسم المستخدم '{username}'."
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
@@ -787,7 +787,7 @@ msgstr[5] ""
 
 #: common/djangoapps/student/views.py
 msgid "Password reset unsuccessful"
-msgstr "عذرًا، لم تنجح عملية إعادة ضبط كلمة السر."
+msgstr "عذرًا، لم تنجح عملية تغيير كلمة السر."
 
 #: common/djangoapps/student/views.py
 msgid "No inactive user with this e-mail exists"
@@ -1719,7 +1719,7 @@ msgstr "يظهر هذا الإسم في شريط التصفّح الأفقي ف�
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Blank Advanced Problem"
-msgstr ""
+msgstr "مسألة متقدِّمة فارغة"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -8516,7 +8516,7 @@ msgstr "وقت طلب استرداد المبلغ:"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid "Your Password Reset is Complete"
-msgstr "استُكملت عملية إعادة ضبط كلمة السر الخاصة بك"
+msgstr "استُكملت عملية إعادة تغيير كلمة السر الخاصة بك"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid ""
@@ -8525,7 +8525,7 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"جرى ضبط كلمة السر الخاصة بك. ويمكنك الآن %(link_start)s تسجيل الدخول %(link_end)s."
+"جرى تغيير كلمة السر الخاصة بك. ويمكنك الآن %(link_start)s تسجيل الدخول %(link_end)s."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -8534,7 +8534,7 @@ msgid ""
 "  "
 msgstr ""
 "\n"
-"إعادة ضبط كلمة السر الخاصة بك في %(platform_name)s"
+"تغيير كلمة السر الخاصة بك في %(platform_name)s"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -8543,11 +8543,11 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"إعادة ضبط كلمة السر الخاصة بك في %(platform_name)s"
+"تغيير كلمة السر الخاصة بك في %(platform_name)s"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Password Reset Form"
-msgstr "نموذج إعادة ضبط كلمة السر"
+msgstr "نموذج تغيير كلمة السر"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -8575,7 +8575,7 @@ msgid ""
 "We're sorry, our systems seem to be having trouble processing your password "
 "reset"
 msgstr ""
-"عذرًا، يبدو أنّ أنظمتنا تواجه مشكلة في معالجة طلب إعادة ضبط كلمة السر الخاصة"
+"عذرًا، يبدو أنّ أنظمتنا تواجه مشكلة في معالجة طلب تغيير كلمة السر الخاصة"
 " بك"
 
 #: lms/templates/registration/password_reset_confirm.html
@@ -8627,7 +8627,7 @@ msgstr "تغيير كلمة السر الخاصة بي"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Your Password Reset Was Unsuccessful"
-msgstr "نأسف لفشل عملية إعادة ضبط  كلمة السر الخاصة بك"
+msgstr "نأسف لفشل عملية تغيير كلمة السر الخاصة بك"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid ""
@@ -8636,11 +8636,11 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"لم يكن الرابط الخاص بإعادة ضبط  كلمة السر صالحًا، ربّما لأنّه مستخدم مسبقًا. لذا يُرجى العودة إلى %(start_link)sصفحة تسجيل الدخول%(end_link)s والبدء من جديد بعملية إعادة ضبط كلمة السر."
+"لم يكن الرابط الخاص بتغيير كلمة السر صالحًا، ربّما لأنّه مستخدم مسبقًا. لذا يُرجى العودة إلى %(start_link)sصفحة تسجيل الدخول%(end_link)s والبدء من جديد بعملية تغيير كلمة السر."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Password Reset Help"
-msgstr "المساعدة في إعادة ضبط كلمة السر"
+msgstr "المساعدة في تغيير كلمة السر"
 
 #: lms/templates/registration/password_reset_confirm.html
 #: cms/templates/login.html lms/templates/login-sidebar.html
@@ -9228,7 +9228,7 @@ msgstr "كلمة السر"
 
 #: lms/templates/login.html
 msgid "Remember me"
-msgstr "تذكُّر بياناتي"
+msgstr "يُرجى تذكُّرني"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid ""
@@ -9260,7 +9260,7 @@ msgstr "مطلوب لأي شهادة قد تنالها "
 #. meant to hold the user's public username.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Public username"
-msgstr "اسم المستخدم العلني"
+msgstr "اسم المستخدم العلنيّ"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid ""
@@ -9886,7 +9886,7 @@ msgstr "مثال: عبد الحليم حافظ"
 #: cms/templates/register.html lms/templates/register-shib.html
 #: lms/templates/register.html lms/templates/signup_modal.html
 msgid "Public Username"
-msgstr "اسم المستخدم العلني"
+msgstr "اسم المستخدم"
 
 #. Translators: This is the placeholder text for a field that asks the user to
 #. pick a username
@@ -10320,7 +10320,7 @@ msgstr "هذا هو عنوان البريد الإلكتروني الذي است
 
 #: lms/templates/forgot_password_modal.html
 msgid "Reset My Password"
-msgstr "تغيير كلمة السر الخاصة بي"
+msgstr "إعادة ضبط كلمة السر الخاصة بي"
 
 #: lms/templates/forgot_password_modal.html
 msgid "Email is incorrect."
@@ -16526,7 +16526,7 @@ msgstr "أو بإمكانك العودة لـ {link_start}الصفحة الرئ�
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"
-msgstr "تمت إعادة ضبط كلمة السر بنجاح "
+msgstr "تم تغيير كلمة السر بنجاح"
 
 #: lms/templates/registration/password_reset_done.html
 msgid ""
@@ -16534,7 +16534,7 @@ msgid ""
 "address you submitted. You should be receiving it shortly."
 msgstr ""
 "لقد قمنا بإرسال رسالةٍ على عنوان البريد الإلكتروني الذي زودتنا به تتضمن "
-"التعليمات الخاصة بضبط كلمة السر، وستصلك قريباً. "
+"التعليمات الخاصة بتغيير كلمة السر، وستصلك قريباً. "
 
 #: lms/templates/shoppingcart/billing_details.html
 #: lms/templates/shoppingcart/receipt.html
@@ -16585,7 +16585,7 @@ msgstr "تجري معالجة الدفع عبر موقع آمن منفصل."
 #: lms/templates/shoppingcart/billing_details.html
 #: lms/templates/shoppingcart/shopping_cart.html
 msgid "Your Shopping cart is currently empty."
-msgstr "إنّ عربة تسوّقك فارغة حاليًا."
+msgstr "إنّ سلّة تسوّقك فارغة حاليًا."
 
 #: lms/templates/shoppingcart/billing_details.html
 #: lms/templates/shoppingcart/shopping_cart.html
@@ -16953,11 +16953,11 @@ msgstr "سلّة خالية"
 
 #: lms/templates/shoppingcart/shopping_cart_flow.html
 msgid "Shopping cart"
-msgstr "عربة التسوق"
+msgstr "سلّة التسوّق"
 
 #: lms/templates/shoppingcart/shopping_cart_flow.html
 msgid "{platform_name} -  Shopping Cart"
-msgstr "{platform_name} - عربة التسوق"
+msgstr "{platform_name} - سلّة التسوّق"
 
 #: lms/templates/shoppingcart/shopping_cart_flow.html
 msgid "Review"
@@ -17262,7 +17262,7 @@ msgstr "إضافة مقال"
 
 #: cms/templates/404.html
 msgid "The page that you were looking for was not found."
-msgstr "عذرًا، لم توجد الصفحة التي كنت تبحث عنها."
+msgstr "عذراً، لم توجد الصفحة التي كنت تبحث عنها."
 
 #: cms/templates/404.html
 msgid ""
@@ -17285,16 +17285,16 @@ msgid ""
 "An error occurred in {studio_name} and the page could not be loaded. Please "
 "try again in a few moments."
 msgstr ""
-"عذرًا، حصل خطأ في {studio_name} ولم يمكن تحميل الصفحة. يُرجى المحاولة "
-"مجدّدًا بعد لحظات قليلة. "
+"عذراً، حصل خطأ في {studio_name} ولم يتم تحميل الصفحة. يُرجى المحاولة مجدّداً"
+" بعد لحظات قليلة. "
 
 #: cms/templates/500.html
 msgid ""
 "We've logged the error and our staff is currently working to resolve this "
 "error as soon as possible."
 msgstr ""
-"لقد سجّلنا الخطأ، ويعمل طاقم المساق حاليًّا على إيجاد حلّ لهذا الخطأ في أقرب"
-" وقت ممكن."
+"لقد سجّلنا الخطأ، يعمل طاقم المساق حاليّاً على إيجاد حلّ له في أقرب وقت "
+"ممكن."
 
 #: cms/templates/500.html
 msgid "If the problem persists, please email us at {email_link}."
@@ -19122,11 +19122,11 @@ msgstr "مثلًا، مسائل علوم الكمبيوتر"
 
 #: cms/templates/index.html
 msgid "The public display name for your library."
-msgstr "اسم مكتبتك العلني"
+msgstr "اسم العرض العلني لمكتبتك"
 
 #: cms/templates/index.html
 msgid "The public organization name for your library."
-msgstr "اسم مكتبتك المؤسسي"
+msgstr "اسم المؤسسة العلني لمكتبتك"
 
 #: cms/templates/index.html
 msgid "This cannot be changed."
@@ -20694,7 +20694,8 @@ msgid ""
 "articles etc..."
 msgstr ""
 "هذه محتويات أوّلية فقط لمقالك. ويمكنك بعد إنشائه أن تستخدم مزايا أكثر "
-"تعقيدًا، مثل إضافة برامج مساعدة، أو بيانات وصفية، أو مقالات ذات صلة، الخ. "
+"تعقيدًا، مثل إضافة برامج مساعدة، أو بيانات وصفية، أو مقالات ذات صلة، أو .. ."
+" "
 
 #: wiki/forms.py
 msgid "Contents"
@@ -21039,7 +21040,7 @@ msgstr "نعم أنا متأكدّ..."
 
 #: wiki/plugins/attachments/markdown_extensions.py
 msgid "Click to download file"
-msgstr "أضغط لتحميل الملف"
+msgstr "اضغط لتحميل الملف"
 
 #: wiki/plugins/attachments/models.py
 msgid ""

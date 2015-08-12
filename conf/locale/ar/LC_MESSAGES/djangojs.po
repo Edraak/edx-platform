@@ -233,7 +233,7 @@ msgstr "حفظ"
 #: cms/static/js/views/modals/edit_xblock.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Close"
-msgstr "إغلاق "
+msgstr "إغلاق"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
@@ -3366,7 +3366,7 @@ msgstr "نأسف لحدوث خطأ، يُرجى البحث مجدّدًا."
 
 #: lms/static/js/edxnotes/plugins/accessibility.js
 msgid "Focus grabber"
-msgstr ""
+msgstr "ضابط التركيز"
 
 #: lms/static/js/edxnotes/views/search_box.js
 #: lms/static/js/edxnotes/views/toggle_notes_factory.js
@@ -3649,7 +3649,7 @@ msgid ""
 "Password reset email sent. Follow the link in the email to change your "
 "password."
 msgstr ""
-"تم إرسال بريد إلكتروني لتغيير كلمة السر. يُرجى اتّباع الرابط الوارد في"
+"تم إرسال بريد إلكتروني لتغيير كلمة السر. يُرجى اتّباع الرابط الوارد في "
 "الرسالة لاستكمال العملية . "
 
 #: lms/static/js/student_account/account.js
@@ -3729,9 +3729,8 @@ msgid ""
 "When you click \"Reset Password\", a message will be sent to your email "
 "address. Click the link in the message to reset your password."
 msgstr ""
-"عندما تنقر على \"إعادة ضبط كلمة السر\"، ستصل رسالة لبريدك الإلكتروني."
-"يُرجى عندها النقر على الرابط الموجود في الرسالة لتغيّرها."
-
+"عندما تنقر على \"تغيير كلمة السر\"، ستصل رسالة لبريدك الإلكتروني. يُرجى "
+"عندها النقر على الرابط الموجود في الرسالة لتغيّرها."
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Language"
 msgstr "اللغة"
@@ -4138,8 +4137,8 @@ msgstr "تأكيد حذف الصفحة"
 msgid ""
 "Are you sure you want to delete this page? This action cannot be undone."
 msgstr ""
-"هل أنت واثق من أنّك تريد حذف هذه الصفحة؟ فإنّه لا يمكن التراجع عن هذه "
-"العملية لاحقًا."
+"هل أنت واثق من أنّك تريد حذف هذه الصفحة؟ لا يمكن التراجع عن هذه العملية "
+"لاحقًا."
 
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/js/certificates/views/signatory_editor.js
@@ -5314,7 +5313,7 @@ msgstr "اعرف المزيد"
 
 #: lms/templates/discovery/result_item.underscore
 msgid "gettext("
-msgstr ""
+msgstr "gettext("
 
 #: lms/templates/discovery/result_item.underscore
 msgid "Starts"
