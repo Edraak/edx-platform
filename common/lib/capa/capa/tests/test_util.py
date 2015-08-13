@@ -2,7 +2,7 @@
 Tests capa util
 """
 import unittest
-import textwrap
+
 from . import test_capa_system
 from capa.util import compare_with_tolerance, sanitize_html
 
@@ -90,6 +90,20 @@ class UtilTest(unittest.TestCase):
         self.assertTrue(result)
         result = compare_with_tolerance(100.002, 100.0, 0.001, False)
         self.assertFalse(result)
+        result = compare_with_tolerance(0.4, 0.44, 0.01, False)
+        self.assertFalse(result)
+        result = compare_with_tolerance(100.01, 100.0, 0.010, False)
+        self.assertTrue(result)
+
+        # Test complex_number instructor_complex
+        result = compare_with_tolerance(0.4, complex(0.44, 0), 0.01, False)
+        self.assertFalse(result)
+        result = compare_with_tolerance(100.01, complex(100.0, 0), 0.010, False)
+        self.assertTrue(result)
+        result = compare_with_tolerance(110.1, complex(100.0, 0), '10.0', False)
+        self.assertFalse(result)
+        result = compare_with_tolerance(111.0, complex(100.0, 0), '10%', True)
+        self.assertTrue(result)
 
     def test_sanitize_html(self):
         """

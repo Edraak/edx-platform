@@ -1,7 +1,14 @@
 // studio - views - course settings
 // ====================
+// Table of Contents
+// * +Settings - Base / All
+// * +Settings - Licenses
 
+// +Settings - Base / All
+// ====================
 .view-settings {
+  @include text-align(left);
+  @include direction();
 
   .content-primary, .content-supplementary {
     @include box-sizing(border-box);
@@ -100,7 +107,12 @@
       @include transition(color $tmg-f2 ease-in-out 0s);
       display: block;
       margin-top: ($baseline/4);
-      color: $gray-l3;
+      color: $gray-d1;
+    }
+
+    .tip-inline {
+      display: inline;
+      @include margin-left($baseline/4);
     }
 
     .message-error {
@@ -125,6 +137,32 @@
     // form basics
     .list-input {
       @extend %cont-no-list;
+
+      .show-data{
+        .heading{
+          border: 1px solid #E0E0E0;
+          padding: 5px 15px;
+          margin-top: 5px;
+        }
+         .div-grade-requirements{
+            border: 1px solid #E0E0E0;
+            border-top: none;
+            padding: 10px 15px;
+           label{font-weight: 600;}
+           input#entrance-exam-minimum-score-pct{
+              height: 40px;
+              font-size: 18px;
+           }
+         }
+      }
+
+      #heading-entrance-exam{
+        font-weight: 600;
+      }
+
+      label[for="entrance-exam-enabled"] {
+        font-size: 14px;
+      }
 
       .field {
         margin: 0 0 ($baseline*2) 0;
@@ -286,6 +324,24 @@
       #field-course-name {
         float: left;
         width: flex-grid(5, 9);
+      }
+
+      // Credit eligibility requirements
+      #credit-minimum-passing-grade {
+        float: left;
+        width: flex-grid(3, 9);
+        margin-right: flex-gutter();
+      }
+
+      #credit-proctoring-requirements {
+        float: left;
+        width: flex-grid(3, 9);
+        margin-right: flex-gutter();
+      }
+
+      #credit-reverification-requirements {
+        float: left;
+        width: flex-grid(3, 9);
       }
 
       // course link note
@@ -693,6 +749,11 @@
       #field-course-grading-graceperiod {
         width: flex-grid(3, 9);
       }
+
+      #field-course-minimum_grade_credit {
+        width: flex-grid(4, 9);
+      }
+
     }
 
     &.assignment-types {
@@ -878,6 +939,19 @@
 
         .CodeMirror-sizer {
           top: 4px; /* Vertical alignment for monospace font */
+        }
+
+        .CodeMirror-scroll {
+          @include margin-left(-30px);
+          @include margin-right(0);
+
+          @include padding-left(30px);
+          @include padding-right(0);
+        }
+
+        .CodeMirror-vscrollbar {
+          @include left(0);
+          @include right(auto);
         }
 
         // editor color changes just for JSON

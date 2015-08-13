@@ -1,4 +1,4 @@
-define(["jquery", "underscore", "js/common_helpers/ajax_helpers", "js/spec_helpers/edit_helpers",
+define(["jquery", "underscore", "common/js/spec_helpers/ajax_helpers", "js/spec_helpers/edit_helpers",
     "js/views/modals/edit_xblock", "js/models/xblock_info"],
     function ($, _, AjaxHelpers, EditHelpers, EditXBlockModal, XBlockInfo) {
 
@@ -49,7 +49,7 @@ define(["jquery", "underscore", "js/common_helpers/ajax_helpers", "js/spec_helpe
                     var requests = AjaxHelpers.requests(this);
                     modal = showModal(requests, mockXBlockEditorHtml);
                     expect(modal.$('.action-save')).not.toBeVisible();
-                    expect(modal.$('.action-cancel').text()).toBe('OK');
+                    expect(modal.$('.action-cancel').text()).toBe('Close');
                 });
 
                 it('shows the correct title', function() {

@@ -35,7 +35,8 @@ from xmodule.video_module.transcripts_utils import (
     copy_or_rename_transcript,
     manage_video_subtitles_save,
     GetTranscriptsFromYouTubeException,
-    TranscriptsRequestValidationException
+    TranscriptsRequestValidationException,
+    youtube_video_transcript_name,
 )
 
 from student.auth import has_course_author_access
@@ -100,7 +101,8 @@ def upload_transcripts(request):
     except ValueError:
         return error_response(response, 'Invalid video_list JSON.')
 
-    source_subs_filedata = request.FILES['transcript-file'].read().decode('utf8')
+    # Used utf-8-sig encoding type instead of utf-8 to remove BOM(Byte Order Mark), e.g. U+FEFF
+    source_subs_filedata = request.FILES['transcript-file'].read().decode('utf-8-sig')
     source_subs_filename = request.FILES['transcript-file'].name
 
     if '.' not in source_subs_filename:
@@ -250,6 +252,9 @@ def check_transcripts(request):
         # youtube server
         youtube_text_api = copy.deepcopy(settings.YOUTUBE['TEXT_API'])
         youtube_text_api['params']['v'] = youtube_id
+        youtube_transcript_name = youtube_video_transcript_name(youtube_text_api)
+        if youtube_transcript_name:
+            youtube_text_api['params']['name'] = youtube_transcript_name
         youtube_response = requests.get('http://' + youtube_text_api['url'], params=youtube_text_api['params'])
 
         if youtube_response.status_code == 200 and youtube_response.text:

@@ -484,7 +484,7 @@ class OpenEndedModule(openendedchild.OpenEndedChild):
         feedback = self._convert_longform_feedback_to_html(response_items)
         rubric_scores = []
         if response_items['rubric_scores_complete'] is True:
-            rubric_renderer = CombinedOpenEndedRubric(system, True)
+            rubric_renderer = CombinedOpenEndedRubric(system.render_template, True)
             rubric_dict = rubric_renderer.render_rubric(response_items['rubric_xml'])
             success = rubric_dict['success']
             rubric_feedback = rubric_dict['html']
@@ -574,7 +574,7 @@ class OpenEndedModule(openendedchild.OpenEndedChild):
             feedback_dicts = []
             grader_ids = []
             submission_ids = []
-            for i in xrange(0, len(score_result['score'])):
+            for i in xrange(len(score_result['score'])):
                 new_score_result = {
                     'score': score_result['score'][i],
                     'feedback': score_result['feedback'][i],
@@ -817,7 +817,7 @@ class OpenEndedModule(openendedchild.OpenEndedChild):
         """None if not available"""
         if not self.child_history:
             return None
-        return [self.score_for_attempt(index) for index in xrange(0, len(self.child_history))]
+        return [self.score_for_attempt(index) for index in xrange(len(self.child_history))]
 
     def score_for_attempt(self, index):
         """
@@ -846,7 +846,7 @@ class OpenEndedModule(openendedchild.OpenEndedChild):
         return score
 
 
-class OpenEndedDescriptor():
+class OpenEndedDescriptor(object):
     """
     Module for adding open ended response questions to courses
     """

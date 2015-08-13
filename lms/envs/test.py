@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This config file runs the simplest dev environment using sqlite, and db-based
 sessions. Assumes structure:
@@ -12,12 +13,18 @@ sessions. Assumes structure:
 # want to import all variables from base settings files
 # pylint: disable=wildcard-import, unused-wildcard-import
 
+# Pylint gets confused by path.py instances, which report themselves as class
+# objects. As a result, pylint applies the wrong regex in validating names,
+# and throws spurious errors. Therefore, we disable invalid-name checking.
+# pylint: disable=invalid-name
+
 from .common import *
 import os
 from path import path
-from tempfile import mkdtemp
 from uuid import uuid4
 from warnings import filterwarnings, simplefilter
+
+from openedx.core.lib.tempdir import mkdtemp_clean
 
 # Silence noisy logs to make troubleshooting easier when tests fail.
 import logging
@@ -68,6 +75,9 @@ FEATURES['ENABLE_COMBINED_LOGIN_REGISTRATION'] = True
 # Need wiki for courseware views to work. TODO (vshnayder): shouldn't need it.
 WIKI_ENABLED = True
 
+# Enable a parental consent age limit for testing
+PARENTAL_CONSENT_AGE_LIMIT = 13
+
 # Makes the tests run much faster...
 SOUTH_TESTS_MIGRATE = False  # To disable migrations and use syncdb instead
 
@@ -78,9 +88,11 @@ _SYSTEM = 'lms'
 
 _REPORT_DIR = REPO_ROOT / 'reports' / _SYSTEM
 _REPORT_DIR.makedirs_p()
+_NOSEID_DIR = REPO_ROOT / '.testids' / _SYSTEM
+_NOSEID_DIR.makedirs_p()
 
 NOSE_ARGS = [
-    '--id-file', REPO_ROOT / '.testids' / _SYSTEM / 'noseids',
+    '--id-file', _NOSEID_DIR / 'noseids',
     '--xunit-file', _REPORT_DIR / 'nosetests.xml',
 ]
 
@@ -140,7 +152,7 @@ update_module_store_settings(
         'fs_root': TEST_ROOT / "data",
     },
     xml_store_options={
-        'data_dir': mkdtemp(dir=TEST_ROOT),  # never inadvertently load all the XML courses
+        'data_dir': mkdtemp_clean(dir=TEST_ROOT),  # never inadvertently load all the XML courses
     },
     doc_store_settings={
         'host': MONGO_HOST,
@@ -198,7 +210,9 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'edx_location_mem_cache',
     },
-
+    'course_structure_cache': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
 }
 
 # Dummy secret key for dev
@@ -213,19 +227,27 @@ filterwarnings('ignore', message='No request passed to the backend, unable to ra
 # or "error" to convert all into errors
 simplefilter('ignore')
 
+############################# SECURITY SETTINGS ################################
+# Default to advanced security in common.py, so tests can reset here to use
+# a simpler security model
+FEATURES['ENFORCE_PASSWORD_POLICY'] = False
+FEATURES['ENABLE_MAX_FAILED_LOGIN_ATTEMPTS'] = False
+FEATURES['SQUELCH_PII_IN_LOGS'] = False
+FEATURES['PREVENT_CONCURRENT_LOGINS'] = False
+FEATURES['ADVANCED_SECURITY'] = False
+PASSWORD_MIN_LENGTH = None
+PASSWORD_COMPLEXITY = {}
+
 ######### Third-party auth ##########
 FEATURES['ENABLE_THIRD_PARTY_AUTH'] = True
 
-THIRD_PARTY_AUTH = {
-    "Google": {
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY": "test",
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET": "test",
-    },
-    "Facebook": {
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY": "test",
-        "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET": "test",
-    },
-}
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.linkedin.LinkedinOAuth2',
+    'social.backends.facebook.FacebookOAuth2',
+    'third_party_auth.dummy.DummyBackend',
+    'third_party_auth.saml.SAMLAuthBackend',
+) + AUTHENTICATION_BACKENDS
 
 ################################## OPENID #####################################
 FEATURES['AUTH_USE_OPENID'] = True
@@ -246,7 +268,10 @@ FEATURES['ENABLE_OAUTH2_PROVIDER'] = True
 
 ########################### External REST APIs #################################
 FEATURES['ENABLE_MOBILE_REST_API'] = True
+FEATURES['ENABLE_MOBILE_SOCIAL_FACEBOOK_FEATURES'] = True
 FEATURES['ENABLE_VIDEO_ABSTRACTION_LAYER_API'] = True
+FEATURES['ENABLE_COURSE_BLOCKS_NAVIGATION_API'] = True
+FEATURES['ENABLE_RENDER_XBLOCK_API'] = True
 
 ###################### Payment ##############################3
 # Enable fake payment processing page
@@ -278,8 +303,7 @@ GIT_REPO_DIR = TEST_ROOT / "course_repos"
 ################################# CELERY ######################################
 
 CELERY_ALWAYS_EAGER = True
-CELERY_RESULT_BACKEND = 'cache'
-BROKER_TRANSPORT = 'memory'
+CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
 
 ######################### MARKETING SITE ###############################
 
@@ -360,7 +384,7 @@ FEATURES['CLASS_DASHBOARD'] = True
 #   Generated checkid_setup request to http://testserver/openid/provider/login/ with assocication {HMAC-SHA1}{51d49995}{s/kRmA==}
 
 import openid.oidutil
-openid.oidutil.log = lambda message, level = 0: None
+openid.oidutil.log = lambda message, level=0: None
 
 PLATFORM_NAME = "edX"
 SITE_NAME = "edx.org"
@@ -425,3 +449,48 @@ MONGODB_LOG = {
     'password': '',
     'db': 'xlog',
 }
+
+# Enable EdxNotes for tests.
+FEATURES['ENABLE_EDXNOTES'] = True
+
+# Enable teams feature for tests.
+FEATURES['ENABLE_TEAMS'] = True
+
+# Add milestones to Installed apps for testing
+INSTALLED_APPS += ('milestones', 'openedx.core.djangoapps.call_stack_manager')
+
+# Enable courseware search for tests
+FEATURES['ENABLE_COURSEWARE_SEARCH'] = True
+
+# Enable dashboard search for tests
+FEATURES['ENABLE_DASHBOARD_SEARCH'] = True
+
+# Use MockSearchEngine as the search engine for test scenario
+SEARCH_ENGINE = "search.tests.mock_search_engine.MockSearchEngine"
+
+FACEBOOK_APP_SECRET = "Test"
+FACEBOOK_APP_ID = "Test"
+FACEBOOK_API_VERSION = "v2.2"
+
+######### custom courses #########
+INSTALLED_APPS += ('ccx',)
+FEATURES['CUSTOM_COURSES_EDX'] = True
+
+# Set dummy values for profile image settings.
+PROFILE_IMAGE_BACKEND = {
+    'class': 'storages.backends.overwrite.OverwriteStorage',
+    'options': {
+        'location': MEDIA_ROOT,
+        'base_url': 'http://example-storage.com/profile-images/',
+    },
+}
+PROFILE_IMAGE_DEFAULT_FILENAME = 'default'
+PROFILE_IMAGE_DEFAULT_FILE_EXTENSION = 'png'
+PROFILE_IMAGE_SECRET_KEY = 'secret'
+PROFILE_IMAGE_MAX_BYTES = 1024 * 1024
+PROFILE_IMAGE_MIN_BYTES = 100
+
+# Enable the LTI provider feature for testing
+FEATURES['ENABLE_LTI_PROVIDER'] = True
+INSTALLED_APPS += ('lti_provider',)
+AUTHENTICATION_BACKENDS += ('lti_provider.users.LtiBackend',)

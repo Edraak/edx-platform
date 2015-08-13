@@ -21,6 +21,7 @@ from django.core.urlresolvers import reverse
 if settings.FEATURES.get('AUTH_USE_CAS'):
     from django_cas.views import login as django_cas_login
 
+from student.helpers import get_next_url_for_login_page
 from student.models import UserProfile
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest, HttpResponseForbidden
@@ -33,7 +34,7 @@ try:
     from django.views.decorators.csrf import csrf_exempt
 except ImportError:
     from django.contrib.csrf.middleware import csrf_exempt
-from django_future.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import django_openid_auth.views as openid_views
 from django_openid_auth import auth as openid_auth
@@ -46,8 +47,6 @@ from ratelimitbackend.exceptions import RateLimitException
 
 import student.views
 from xmodule.modulestore.django import modulestore
-from xmodule.course_module import CourseDescriptor
-from xmodule.modulestore.exceptions import ItemNotFoundError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
 log = logging.getLogger("edx.external_auth")
@@ -119,7 +118,8 @@ def openid_login_complete(request,
             external_domain,
             details,
             details.get('email', ''),
-            fullname
+            fullname,
+            retfun=functools.partial(redirect, get_next_url_for_login_page(request)),
         )
 
     return render_failure(request, 'Openid failure')
@@ -237,14 +237,6 @@ def _external_login_or_signup(request,
     login(request, user)
     request.session.set_expiry(0)
 
-    # Now to try enrollment
-    # Need to special case Shibboleth here because it logs in via a GET.
-    # testing request.method for extra paranoia
-    if uses_shibboleth and request.method == 'GET':
-        enroll_request = _make_shib_enrollment_request(request)
-        student.views.try_change_enrollment(enroll_request)
-    else:
-        student.views.try_change_enrollment(request)
     if settings.FEATURES['SQUELCH_PII_IN_LOGS']:
         AUDIT_LOG.info(u"Login success - user.id: {0}".format(user.id))
     else:
@@ -446,9 +438,7 @@ def ssl_login(request):
 
     (_user, email, fullname) = _ssl_dn_extract_info(cert)
 
-    redirect_to = request.GET.get('next')
-    if not redirect_to:
-        redirect_to = '/'
+    redirect_to = get_next_url_for_login_page(request)
     retfun = functools.partial(redirect, redirect_to)
     return _external_login_or_signup(
         request,
@@ -525,10 +515,8 @@ def shib_login(request):
 
     fullname = shib['displayName'] if shib['displayName'] else u'%s %s' % (shib['givenName'], shib['sn'])
 
-    redirect_to = request.REQUEST.get('next')
-    retfun = None
-    if redirect_to:
-        retfun = functools.partial(_safe_postlogin_redirect, redirect_to, request.get_host())
+    redirect_to = get_next_url_for_login_page(request)
+    retfun = functools.partial(_safe_postlogin_redirect, redirect_to, request.get_host())
 
     return _external_login_or_signup(
         request,
@@ -555,31 +543,6 @@ def _safe_postlogin_redirect(redirect_to, safehost, default_redirect='/'):
     return redirect(default_redirect)
 
 
-def _make_shib_enrollment_request(request):
-    """
-        Need this hack function because shibboleth logins don't happen over POST
-        but change_enrollment expects its request to be a POST, with
-        enrollment_action and course_id POST parameters.
-    """
-    enroll_request = HttpRequest()
-    enroll_request.user = request.user
-    enroll_request.session = request.session
-    enroll_request.method = "POST"
-
-    # copy() also makes GET and POST mutable
-    # See https://docs.djangoproject.com/en/dev/ref/request-response/#django.http.QueryDict.update
-    enroll_request.GET = request.GET.copy()
-    enroll_request.POST = request.POST.copy()
-
-    # also have to copy these GET parameters over to POST
-    if "enrollment_action" not in enroll_request.POST and "enrollment_action" in enroll_request.GET:
-        enroll_request.POST.setdefault('enrollment_action', enroll_request.GET.get('enrollment_action'))
-    if "course_id" not in enroll_request.POST and "course_id" in enroll_request.GET:
-        enroll_request.POST.setdefault('course_id', enroll_request.GET.get('course_id'))
-
-    return enroll_request
-
-
 def course_specific_login(request, course_id):
     """
        Dispatcher function for selecting the specific login method
@@ -592,7 +555,11 @@ def course_specific_login(request, course_id):
         return redirect_with_get('signin_user', request.GET)
 
     # now the dispatching conditionals.  Only shib for now
-    if settings.FEATURES.get('AUTH_USE_SHIB') and course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX):
+    if (
+        settings.FEATURES.get('AUTH_USE_SHIB') and
+        course.enrollment_domain and
+        course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX)
+    ):
         return redirect_with_get('shib-login', request.GET)
 
     # Default fallthrough to normal signin page
@@ -612,7 +579,11 @@ def course_specific_register(request, course_id):
         return redirect_with_get('register_user', request.GET)
 
     # now the dispatching conditionals.  Only shib for now
-    if settings.FEATURES.get('AUTH_USE_SHIB') and course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX):
+    if (
+        settings.FEATURES.get('AUTH_USE_SHIB') and
+        course.enrollment_domain and
+        course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX)
+    ):
         # shib-login takes care of both registration and login flows
         return redirect_with_get('shib-login', request.GET)
 

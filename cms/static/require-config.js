@@ -27,9 +27,12 @@ require.config({
         "jquery.immediateDescendents": "coffee/src/jquery.immediateDescendents",
         "datepair": "js/vendor/timepicker/datepair",
         "date": "js/vendor/date",
+        "text": 'js/vendor/requirejs/text',
+        "moment": "js/vendor/moment.min",
         "underscore": "js/vendor/underscore-min",
         "underscore.string": "js/vendor/underscore.string.min",
         "backbone": "js/vendor/backbone-min",
+        "backbone-relational" : "js/vendor/backbone-relational.min",
         "backbone.associations": "js/vendor/backbone-associations-min",
         "backbone.paginator": "js/vendor/backbone.paginator.min",
         "tinymce": "js/vendor/tinymce/js/tinymce/tinymce.full.min",
@@ -67,12 +70,14 @@ require.config({
 
         // externally hosted files
         "tender": [
-            "//edxedge.tenderapp.com/tender_widget",
+            // if TENDER_SUBDOMAIN is defined, use that; otherwise, use a dummy value
+            // (the application JS will never `require(['tender'])` if it's not defined)
+            "//" + (typeof TENDER_SUBDOMAIN === "string" ? TENDER_SUBDOMAIN : "example") + ".tenderapp.com/tender_widget",
             // if tender fails to load, fallback on a local file
             // so that require doesn't fall over
             "js/src/tender_fallback"
         ],
-        "mathjax": "//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
+        "mathjax": "//cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
         "youtube": [
             // youtube URL does not end in ".js". We add "?noext" to the path so
             // that require.js adds the ".js" to the query component of the URL,
@@ -220,7 +225,7 @@ require.config({
         "coffee/src/main": {
             deps: ["coffee/src/ajax_prefix"]
         },
-        "coffee/src/logger": {
+        "js/src/logger": {
             exports: "Logger",
             deps: ["coffee/src/ajax_prefix"]
         },

@@ -9,11 +9,15 @@ from xmodule.tests.xml import factories as xml
 from xmodule.x_module import STUDENT_VIEW, AUTHOR_VIEW
 
 
-class BaseVerticalModuleTest(XModuleXmlImportTest):
+class BaseVerticalBlockTest(XModuleXmlImportTest):
+    """
+    Tests for the BaseVerticalBlock.
+    """
     test_html_1 = 'Test HTML 1'
     test_html_2 = 'Test HTML 2'
 
     def setUp(self):
+        super(BaseVerticalBlockTest, self).setUp()
         # construct module
         course = xml.CourseFactory.build()
         sequence = xml.SequenceFactory.build(parent=course)
@@ -27,14 +31,17 @@ class BaseVerticalModuleTest(XModuleXmlImportTest):
         course_seq = self.course.get_children()[0]
         self.module_system = get_test_system()
 
-        self.module_system.descriptor_runtime = self.course.runtime._descriptor_system  # pylint: disable=protected-access
+        self.module_system.descriptor_runtime = self.course._runtime  # pylint: disable=protected-access
         self.course.runtime.export_fs = MemoryFS()
 
         self.vertical = course_seq.get_children()[0]
         self.vertical.xmodule_runtime = self.module_system
 
 
-class VerticalModuleTestCase(BaseVerticalModuleTest):
+class VerticalBlockTestCase(BaseVerticalBlockTest):
+    """
+    Tests for the VerticalBlock.
+    """
     def test_render_student_view(self):
         """
         Test the rendering of the student view.

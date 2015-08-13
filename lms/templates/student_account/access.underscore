@@ -1,9 +1,3 @@
-<section id="form-load-fail" class="form-type hidden">
-    <div class="status submission-error">
-        <p class="message-copy"><%- gettext("Sorry, we're having some technical problems. Wait a few minutes and try again.") %></p>
-    </div>
-</section>
-
 <section id="login-anchor" class="form-type">
     <div id="login-form" class="form-wrapper <% if ( mode !== 'login' ) { %>hidden<% } %>"></div>
 </section>
@@ -14,4 +8,12 @@
 
 <section id="password-reset-anchor" class="form-type">
     <div id="password-reset-form" class="form-wrapper hidden" aria-hidden="true"></div>
+</section>
+
+<section id="institution_login-anchor" class="form-type">
+    <div id="institution_login-form" class="form-wrapper hidden" aria-hidden="true"></div>
+</section>
+
+<section id="hinted-login-anchor" class="form-type">
+    <div id="hinted-login-form" class="form-wrapper <% if ( mode !== 'hinted_login' ) { %>hidden<% } %>"></div>
 </section>

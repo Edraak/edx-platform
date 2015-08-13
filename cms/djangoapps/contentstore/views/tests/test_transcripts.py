@@ -1,18 +1,18 @@
 """Tests for items views."""
 
-import os
-import json
-import tempfile
-from uuid import uuid4
 import copy
+import json
+import os
+import tempfile
 import textwrap
-from pymongo import MongoClient
+from uuid import uuid4
+from mock import patch
 
 from django.core.urlresolvers import reverse
 from django.test.utils import override_settings
 from django.conf import settings
 
-from contentstore.tests.utils import CourseTestCase
+from contentstore.tests.utils import CourseTestCase, mock_requests_get
 from cache_toolbox.core import del_cached_content
 from xmodule.modulestore.django import modulestore
 from xmodule.contentstore.django import contentstore
@@ -26,7 +26,7 @@ TEST_DATA_CONTENTSTORE['DOC_STORE_CONFIG']['db'] = 'test_xcontent_%s' % uuid4().
 
 
 @override_settings(CONTENTSTORE=TEST_DATA_CONTENTSTORE)
-class Basetranscripts(CourseTestCase):
+class BaseTranscripts(CourseTestCase):
     """Base test class for transcripts tests."""
 
     def clear_subs_content(self):
@@ -42,7 +42,7 @@ class Basetranscripts(CourseTestCase):
 
     def setUp(self):
         """Create initial data."""
-        super(Basetranscripts, self).setUp()
+        super(BaseTranscripts, self).setUp()
 
         # Add video module
         data = {
@@ -81,12 +81,12 @@ class Basetranscripts(CourseTestCase):
         }
 
 
-class TestUploadtranscripts(Basetranscripts):
+class TestUploadTranscripts(BaseTranscripts):
     """Tests for '/transcripts/upload' url."""
 
     def setUp(self):
         """Create initial data."""
-        super(TestUploadtranscripts, self).setUp()
+        super(TestUploadTranscripts, self).setUp()
 
         self.good_srt_file = tempfile.NamedTemporaryFile(suffix='.srt')
         self.good_srt_file.write(textwrap.dedent("""
@@ -115,6 +115,8 @@ class TestUploadtranscripts(Basetranscripts):
             At the left we can see...
         """))
         self.bad_name_srt_file.seek(0)
+
+        self.ufeff_srt_file = tempfile.NamedTemporaryFile(suffix='.srt')
 
     def test_success_video_module_source_subs_uploading(self):
         self.item.data = textwrap.dedent("""
@@ -296,15 +298,55 @@ class TestUploadtranscripts(Basetranscripts):
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(json.loads(resp.content).get('status'), 'Undefined file extension.')
 
+    def test_subs_uploading_with_byte_order_mark(self):
+        """
+        Test uploading subs containing BOM(Byte Order Mark), e.g. U+FEFF
+        """
+        filedata = textwrap.dedent("""
+            1
+            00:00:10,500 --> 00:00:13,000
+            Test ufeff characters
+
+            2
+            00:00:15,000 --> 00:00:18,000
+            At the left we can see...
+        """).encode('utf-8-sig')
+
+        # Verify that ufeff character is in filedata.
+        self.assertIn("ufeff", filedata)
+        self.ufeff_srt_file.write(filedata)
+        self.ufeff_srt_file.seek(0)
+
+        link = reverse('upload_transcripts')
+        filename = os.path.splitext(os.path.basename(self.ufeff_srt_file.name))[0]
+        resp = self.client.post(link, {
+            'locator': self.video_usage_key,
+            'transcript-file': self.ufeff_srt_file,
+            'video_list': json.dumps([{
+                'type': 'html5',
+                'video': filename,
+                'mode': 'mp4',
+            }])
+        })
+        self.assertEqual(resp.status_code, 200)
+
+        content_location = StaticContent.compute_location(
+            self.course.id, 'subs_{0}.srt.sjson'.format(filename))
+        self.assertTrue(contentstore().find(content_location))
+
+        subs_text = json.loads(contentstore().find(content_location).data).get('text')
+        self.assertIn("Test ufeff characters", subs_text)
+
     def tearDown(self):
-        super(TestUploadtranscripts, self).tearDown()
+        super(TestUploadTranscripts, self).tearDown()
 
         self.good_srt_file.close()
         self.bad_data_srt_file.close()
         self.bad_name_srt_file.close()
+        self.ufeff_srt_file.close()
 
 
-class TestDownloadtranscripts(Basetranscripts):
+class TestDownloadTranscripts(BaseTranscripts):
     """Tests for '/transcripts/download' url."""
 
     def save_subs_to_store(self, subs, subs_id):
@@ -480,7 +522,7 @@ class TestDownloadtranscripts(Basetranscripts):
         self.assertEqual(resp.status_code, 404)
 
 
-class TestChecktranscripts(Basetranscripts):
+class TestCheckTranscripts(BaseTranscripts):
     """Tests for '/transcripts/check' url."""
 
     def save_subs_to_store(self, subs, subs_id):
@@ -580,6 +622,58 @@ class TestChecktranscripts(Basetranscripts):
                 u'is_youtube_mode': True,
                 u'youtube_server': False,
                 u'command': u'found',
+                u'current_item_subs': None,
+                u'youtube_diff': True,
+                u'html5_local': [],
+                u'html5_equal': False,
+            }
+        )
+
+    @patch('xmodule.video_module.transcripts_utils.requests.get', side_effect=mock_requests_get)
+    def test_check_youtube_with_transcript_name(self, mock_get):
+        """
+        Test that the transcripts are fetched correctly when the the transcript name is set
+        """
+        self.item.data = '<video youtube="good_id_2" />'
+        modulestore().update_item(self.item, self.user.id)
+
+        subs = {
+            'start': [100, 200, 240],
+            'end': [200, 240, 380],
+            'text': [
+                'subs #1',
+                'subs #2',
+                'subs #3'
+            ]
+        }
+        self.save_subs_to_store(subs, 'good_id_2')
+        link = reverse('check_transcripts')
+        data = {
+            'locator': unicode(self.video_usage_key),
+            'videos': [{
+                'type': 'youtube',
+                'video': 'good_id_2',
+                'mode': 'youtube',
+            }]
+        }
+        resp = self.client.get(link, {'data': json.dumps(data)})
+
+        mock_get.assert_any_call(
+            'http://video.google.com/timedtext',
+            params={'lang': 'en', 'v': 'good_id_2', 'name': 'Custom'}
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertDictEqual(
+            json.loads(resp.content),
+            {
+                u'status': u'Success',
+                u'subs': u'good_id_2',
+                u'youtube_local': True,
+                u'is_youtube_mode': True,
+                u'youtube_server': True,
+                u'command': u'replace',
                 u'current_item_subs': None,
                 u'youtube_diff': True,
                 u'html5_local': [],

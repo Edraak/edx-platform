@@ -3,15 +3,14 @@
 from collections import OrderedDict
 import json
 import mock
+from nose.plugins.attrib import attr
 import oauthlib
 import urllib
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.test.utils import override_settings
 
 from courseware.tests import BaseTestXmodule
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from courseware.views import get_course_lti_endpoints
 from lms.djangoapps.lms_xblock.runtime import quote_slashes
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
@@ -19,6 +18,7 @@ from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.x_module import STUDENT_VIEW
 
 
+@attr('shard_1')
 class TestLTI(BaseTestXmodule):
     """
     Integration test for lti xmodule.
@@ -91,6 +91,7 @@ class TestLTI(BaseTestXmodule):
             'ask_to_send_email': self.item_descriptor.ask_to_send_email,
             'description': self.item_descriptor.description,
             'button_text': self.item_descriptor.button_text,
+            'accept_grades_past_due': self.item_descriptor.accept_grades_past_due,
         }
 
         def mocked_sign(self, *args, **kwargs):
@@ -123,7 +124,7 @@ class TestLTI(BaseTestXmodule):
         self.assertEqual(generated_content, expected_content)
 
 
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
+@attr('shard_1')
 class TestLTIModuleListing(ModuleStoreTestCase):
     """
     a test for the rest endpoint that lists LTI modules in a course
@@ -134,6 +135,7 @@ class TestLTIModuleListing(ModuleStoreTestCase):
 
     def setUp(self):
         """Create course, 2 chapters, 2 sections"""
+        super(TestLTIModuleListing, self).setUp()
         self.course = CourseFactory.create(display_name=self.COURSE_NAME, number=self.COURSE_SLUG)
         self.chapter1 = ItemFactory.create(
             parent_location=self.course.location,
@@ -163,7 +165,7 @@ class TestLTIModuleListing(ModuleStoreTestCase):
             parent_location=self.section2.location,
             display_name="lti draft",
             category="lti",
-            location=self.course.id.make_usage_key('lti', 'lti_published'),
+            location=self.course.id.make_usage_key('lti', 'lti_draft'),
             publish_item=False,
         )
 
@@ -199,7 +201,7 @@ class TestLTIModuleListing(ModuleStoreTestCase):
             "lti_1_1_result_service_xml_endpoint": self.expected_handler_url('grade_handler'),
             "lti_2_0_result_service_json_endpoint":
             self.expected_handler_url('lti_2_0_result_rest_handler') + "/user/{anon_user_id}",
-            "display_name": self.lti_draft.display_name
+            "display_name": self.lti_published.display_name,
         }
         self.assertEqual([expected], json.loads(response.content))
 

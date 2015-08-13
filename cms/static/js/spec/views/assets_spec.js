@@ -1,22 +1,18 @@
-define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views/assets",
-    "js/models/asset", "js/collections/asset", "js/spec_helpers/view_helpers"],
-    function ($, AjaxHelpers, AssetView, AssetsView, AssetModel, AssetCollection, ViewHelpers) {
+define([ "jquery", "common/js/spec_helpers/ajax_helpers", "URI", "js/views/assets",
+         "js/collections/asset", "js/spec_helpers/view_helpers"],
+    function ($, AjaxHelpers, URI, AssetsView, AssetCollection, ViewHelpers) {
 
         describe("Assets", function() {
             var assetsView, mockEmptyAssetsResponse, mockAssetUploadResponse, mockFileUpload,
-                assetLibraryTpl, assetTpl, pagingFooterTpl, pagingHeaderTpl, uploadModalTpl;
+                assetLibraryTpl, assetTpl, uploadModalTpl;
 
             assetLibraryTpl = readFixtures('asset-library.underscore');
             assetTpl = readFixtures('asset.underscore');
-            pagingHeaderTpl = readFixtures('paging-header.underscore');
-            pagingFooterTpl = readFixtures('paging-footer.underscore');
             uploadModalTpl = readFixtures('asset-upload-modal.underscore');
 
             beforeEach(function () {
                 setFixtures($("<script>", { id: "asset-library-tpl", type: "text/template" }).text(assetLibraryTpl));
                 appendSetFixtures($("<script>", { id: "asset-tpl", type: "text/template" }).text(assetTpl));
-                appendSetFixtures($("<script>", { id: "paging-header-tpl", type: "text/template" }).text(pagingHeaderTpl));
-                appendSetFixtures($("<script>", { id: "paging-footer-tpl", type: "text/template" }).text(pagingFooterTpl));
                 appendSetFixtures(uploadModalTpl);
                 appendSetFixtures(sandbox({ id: "asset_table_body" }));
 
@@ -28,6 +24,7 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                     collection: collection,
                     el: $('#asset_table_body')
                 });
+
                 assetsView.render();
             });
 
@@ -50,6 +47,68 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                 totalCount: 0
             };
 
+            var mockExampleAssetsResponse = {
+                sort: "uploadDate",
+                end: 2,
+                assets: [
+                    {
+                        "display_name": "test.jpg",
+                        "url": "/c4x/A/CS102/asset/test.jpg",
+                        "date_added": "Nov 07, 2014 at 17:47 UTC",
+                        "id": "/c4x/A/CS102/asset/test.jpg",
+                        "portable_url": "/static/test.jpg",
+                        "thumbnail": "/c4x/A/CS102/thumbnail/test.jpg",
+                        "locked": false,
+                        "external_url": "localhost:8000/c4x/A/CS102/asset/test.jpg"
+                    },
+                    {
+                        "display_name": "test.pdf",
+                        "url": "/c4x/A/CS102/asset/test.pdf",
+                        "date_added": "Oct 20, 2014 at 11:00 UTC",
+                        "id": "/c4x/A/CS102/asset/test.pdf",
+                        "portable_url": "/static/test.pdf",
+                        "thumbnail": null,
+                        "locked": false,
+                        "external_url": "localhost:8000/c4x/A/CS102/asset/test.pdf"
+                    },
+                    {
+                        "display_name": "test.odt",
+                        "url": "/c4x/A/CS102/asset/test.odt",
+                        "date_added": "Oct 20, 2014 at 11:00 UTC",
+                        "id": "/c4x/A/CS102/asset/test.odt",
+                        "portable_url": "/static/test.odt",
+                        "thumbnail": null,
+                        "locked": false,
+                        "external_url": "localhost:8000/c4x/A/CS102/asset/test.odt"
+                    }
+                ],
+                pageSize: 2,
+                totalCount: 2,
+                start: 0,
+                page: 0
+            };
+
+            var mockExampleFilteredAssetsResponse = {
+                sort: "uploadDate",
+                end: 1,
+                assets: [
+                    {
+                        "display_name": "test.jpg",
+                        "url": "/c4x/A/CS102/asset/test.jpg",
+                        "date_added": "Nov 07, 2014 at 17:47 UTC",
+                        "id": "/c4x/A/CS102/asset/test.jpg",
+                        "portable_url": "/static/test.jpg",
+                        "thumbnail": "/c4x/A/CS102/thumbnail/test.jpg",
+                        "locked": false,
+                        "external_url": "localhost:8000/c4x/A/CS102/asset/test.jpg"
+                    }
+                ],
+                pageSize: 1,
+                totalCount: 1,
+                start: 0,
+                page: 0
+            };
+
             mockAssetUploadResponse = {
                 asset: mockAsset,
                 msg: "Upload completed"
@@ -59,16 +118,30 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                 files: [{name: 'largefile', size: 0}]
             };
 
-            var event = {}
+            var respondWithMockAssets = function(requests) {
+                var requestIndex = requests.length - 1;
+                var request = requests[requestIndex];
+                var url = new URI(request.url);
+                var queryParameters = url.query(true); // Returns an object with each query parameter stored as a value
+                var asset_type = queryParameters.asset_type;
+                var response = asset_type !== '' ? mockExampleFilteredAssetsResponse : mockExampleAssetsResponse;
+                AjaxHelpers.respondWithJson(requests, response, requestIndex);
+            };
+
+            var event = {};
             event.target = {"value": "dummy.jpg"};
 
             describe("AssetsView", function () {
                 var setup;
-                setup = function() {
-                    var requests;
-                    requests = AjaxHelpers.requests(this);
-                    assetsView.setPage(0);
-                    AjaxHelpers.respondWithJson(requests, mockEmptyAssetsResponse);
+                setup = function(responseData) {
+                    var requests = AjaxHelpers.requests(this);
+                    assetsView.pagingView.setPage(0);
+                    if (!responseData){
+                        AjaxHelpers.respondWithJson(requests, mockEmptyAssetsResponse);
+                    }
+                    else{
+                        AjaxHelpers.respondWithJson(requests, responseData);
+                    }
                     return requests;
                 };
 
@@ -111,8 +184,8 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                     expect(assetsView).toBeDefined();
                     spyOn(assetsView, "addAsset").andCallFake(function () {
                         assetsView.collection.add(mockAssetUploadResponse.asset);
-                        assetsView.renderPageItems();
-                        assetsView.setPage(0);
+                        assetsView.pagingView.renderPageItems();
+                        assetsView.pagingView.setPage(0);
                     });
 
                     $('a:contains("Upload your first asset")').click();
@@ -168,6 +241,211 @@ define([ "jquery", "js/common_helpers/ajax_helpers", "js/views/asset", "js/views
                     $(".upload-modal .file-chooser").fileupload('add', mockFileUpload);
 
                     expect(assetsView.largeFileErrorMsg).toBeNull();
+                });
+
+                it('returns the registered info for a filter column', function () {
+                    assetsView.pagingView.registerSortableColumn('test-col', 'Test Column', 'testField', 'asc');
+                    assetsView.pagingView.registerFilterableColumn('js-asset-type-col', 'Type', 'asset_type');
+                    var filterInfo = assetsView.pagingView.filterableColumnInfo('js-asset-type-col');
+                    expect(filterInfo.displayName).toBe('Type');
+                    expect(filterInfo.fieldName).toBe('asset_type');
+                });
+
+                it('throws an exception for an unregistered filter column', function () {
+                    expect(function() {
+                        assetsView.filterableColumnInfo('no-such-column');
+                    }).toThrow();
+                });
+
+
+                it('make sure selectFilter sets collection filter if undefined', function () {
+                    expect(assetsView).toBeDefined();
+                    assetsView.collection.filterField = '';
+                    assetsView.pagingView.selectFilter('js-asset-type-col');
+                    expect(assetsView.collection.filterField).toEqual('asset_type');
+                });
+
+                it('make sure _toggleFilterColumn filters asset list', function () {
+                    expect(assetsView).toBeDefined();
+                    var requests = AjaxHelpers.requests(this);
+                    $.each(assetsView.pagingView.filterableColumns, function(columnID, columnData){
+                        var $typeColumn = $('#' + columnID);
+                        assetsView.pagingView.setPage(0);
+                        respondWithMockAssets(requests);
+                        var assetsNumber = assetsView.collection.length;
+                        assetsView._toggleFilterColumn('Images', 'Images');
+                        respondWithMockAssets(requests);
+                        var assetsNumberFiltered = assetsView.collection.length;
+                        expect(assetsNumberFiltered).toBeLessThan(assetsNumber);
+                        expect($typeColumn.find('.title .type-filter')).not.toEqual(assetsView.allLabel);
+                    });
+                });
+
+                it('opens and closes select type menu', function () {
+                    expect(assetsView).toBeDefined();
+                    setup.call(this, mockExampleAssetsResponse);
+                    $.each(assetsView.pagingView.filterableColumns, function(columnID, columnData){
+                        var $typeColumn = $('#' + columnID);
+                        expect($typeColumn).toBeVisible();
+                        var assetsNumber = $('#asset-table-body .type-col').length;
+                        assetsView.openFilterColumn($typeColumn);
+                        expect($typeColumn.find('.wrapper-nav-sub')).toHaveClass('is-shown');
+                        expect($typeColumn.find('.title')).toHaveClass('is-selected');
+                        expect($typeColumn.find('.column-filter-link')).toBeVisible();
+                        $typeColumn.find('.wrapper-nav-sub').trigger('click');
+                        expect($typeColumn.find('.wrapper-nav-sub').hasClass('is-shown')).toBe(false);
+                    });
+                });
+
+                it('check filtering works with sorting by column on', function () {
+                    expect(assetsView).toBeDefined();
+                    var requests = AjaxHelpers.requests(this);
+                    assetsView.pagingView.registerSortableColumn('name-col', 'Name Column', 'nameField', 'asc');
+                    assetsView.pagingView.registerFilterableColumn('js-asset-type-col', gettext('Type'), 'asset_type');
+                    assetsView.pagingView.setInitialSortColumn('name-col');
+                    assetsView.pagingView.setPage(0);
+                    respondWithMockAssets(requests);
+                    var sortInfo = assetsView.pagingView.sortableColumnInfo('name-col');
+                    expect(sortInfo.defaultSortDirection).toBe('asc');
+                    var $firstFilter = $($('#js-asset-type-col').find('li.nav-item a')[1]);
+                    $firstFilter.trigger('click');
+                    respondWithMockAssets(requests);
+                    var assetsNumberFiltered = assetsView.collection.length;
+                    expect(assetsNumberFiltered).toBe(1);
+
+                });
+
+                it('shows type select menu, selects type, and filters results', function () {
+                    expect(assetsView).toBeDefined();
+                    var requests = AjaxHelpers.requests(this);
+                    $.each(assetsView.pagingView.filterableColumns, function(columnID, columnData) {
+                        assetsView.pagingView.setPage(0);
+                        respondWithMockAssets(requests);
+                        var $typeColumn = $('#' + columnID);
+                        expect($typeColumn).toBeVisible();
+                        var assetsNumber = assetsView.collection.length;
+                        $typeColumn.trigger('click');
+                        expect($typeColumn.find('.wrapper-nav-sub')).toHaveClass('is-shown');
+                        expect($typeColumn.find('.title')).toHaveClass('is-selected');
+                        var $allFilter = $($typeColumn.find('li.nav-item a')[0]);
+                        var $firstFilter = $($typeColumn.find('li.nav-item a')[1]);
+                        var $otherFilter = $($typeColumn.find('li.nav-item a[data-assetfilter="OTHER"]')[0]);
+                        var select_filter_and_check = function($filterEl, result) {
+                            $filterEl.trigger('click');
+                            respondWithMockAssets(requests);
+                            var assetsNumberFiltered = assetsView.collection.length;
+                            expect(assetsNumberFiltered).toBe(result);
+                        };
+
+                        select_filter_and_check($firstFilter, 1);
+                        select_filter_and_check($allFilter, assetsNumber);
+                        select_filter_and_check($otherFilter, 1);
+                    });
+                });
+
+                it('hides the error modal if a large file, then small file is uploaded', function() {
+                    expect(assetsView).toBeDefined();
+                    mockFileUpload.files[0].size = assetsView.maxFileSize;
+
+                    $('.choose-file-button').click();
+                    $(".upload-modal .file-chooser").fileupload('add', mockFileUpload);
+
+                    expect(assetsView.largeFileErrorMsg).toBeDefined();
+
+                    mockFileUpload.files[0].size = assetsView.maxFileSize / 10;
+                    $('.choose-file-button').click();
+                    $(".upload-modal .file-chooser").fileupload('add', mockFileUpload);
+                    expect(assetsView.largeFileErrorMsg).toBeNull();
+                });
+
+                describe('Paging footer', function () {
+                    var firstPageAssets = {
+                        sort: "uploadDate",
+                        end: 1,
+                        assets: [
+                            {
+                                "display_name": "test.jpg",
+                                "url": "/c4x/A/CS102/asset/test.jpg",
+                                "date_added": "Nov 07, 2014 at 17:47 UTC",
+                                "id": "/c4x/A/CS102/asset/test.jpg",
+                                "portable_url": "/static/test.jpg",
+                                "thumbnail": "/c4x/A/CS102/thumbnail/test.jpg",
+                                "locked": false,
+                                "external_url": "localhost:8000/c4x/A/CS102/asset/test.jpg"
+                            },
+                            {
+                                "display_name": "test.pdf",
+                                "url": "/c4x/A/CS102/asset/test.pdf",
+                                "date_added": "Oct 20, 2014 at 11:00 UTC",
+                                "id": "/c4x/A/CS102/asset/test.pdf",
+                                "portable_url": "/static/test.pdf",
+                                "thumbnail": null,
+                                "locked": false,
+                                "external_url": "localhost:8000/c4x/A/CS102/asset/test.pdf"
+                            }
+                        ],
+                        pageSize: 2,
+                        totalCount: 3,
+                        start: 0,
+                        page: 0
+                    }, secondPageAssets = {
+                        sort: "uploadDate",
+                        end: 2,
+                        assets: [
+                            {
+                                "display_name": "test.odt",
+                                "url": "/c4x/A/CS102/asset/test.odt",
+                                "date_added": "Oct 20, 2014 at 11:00 UTC",
+                                "id": "/c4x/A/CS102/asset/test.odt",
+                                "portable_url": "/static/test.odt",
+                                "thumbnail": null,
+                                "locked": false,
+                                "external_url": "localhost:8000/c4x/A/CS102/asset/test.odt"
+                            }
+                        ],
+                        pageSize: 2,
+                        totalCount: 3,
+                        start: 2,
+                        page: 1
+                    };
+
+                    it('can move forward a page using the next page button', function () {
+                        var requests = AjaxHelpers.requests(this);
+                        assetsView.pagingView.setPage(0);
+                        AjaxHelpers.respondWithJson(requests, firstPageAssets);
+                        expect(assetsView.pagingView.pagingFooter).toBeDefined();
+                        expect(assetsView.pagingView.pagingFooter.$('button.next-page-link'))
+                            .not.toHaveClass('is-disabled');
+                        assetsView.pagingView.pagingFooter.$('button.next-page-link').click();
+                        AjaxHelpers.respondWithJson(requests, secondPageAssets);
+                        expect(assetsView.pagingView.pagingFooter.$('button.next-page-link'))
+                            .toHaveClass('is-disabled');
+                    });
+
+                    it('can move back a page using the previous page button', function () {
+                        var requests = AjaxHelpers.requests(this);
+                        assetsView.pagingView.setPage(1);
+                        AjaxHelpers.respondWithJson(requests, secondPageAssets);
+                        expect(assetsView.pagingView.pagingFooter).toBeDefined();
+                        expect(assetsView.pagingView.pagingFooter.$('button.previous-page-link'))
+                            .not.toHaveClass('is-disabled');
+                        assetsView.pagingView.pagingFooter.$('button.previous-page-link').click();
+                        AjaxHelpers.respondWithJson(requests, firstPageAssets);
+                        expect(assetsView.pagingView.pagingFooter.$('button.previous-page-link'))
+                            .toHaveClass('is-disabled');
+                    });
+
+                    it('can set the current page using the page number input', function () {
+                        var requests = AjaxHelpers.requests(this);
+                        assetsView.pagingView.setPage(0);
+                        AjaxHelpers.respondWithJson(requests, firstPageAssets);
+                        assetsView.pagingView.pagingFooter.$('#page-number-input').val('2');
+                        assetsView.pagingView.pagingFooter.$('#page-number-input').trigger('change');
+                        AjaxHelpers.respondWithJson(requests, secondPageAssets);
+                        expect(assetsView.collection.currentPage).toBe(1);
+                        expect(assetsView.pagingView.pagingFooter.$('button.previous-page-link'))
+                            .not.toHaveClass('is-disabled');
+                    });
                 });
             });
         });

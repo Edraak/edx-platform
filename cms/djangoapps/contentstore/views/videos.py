@@ -8,19 +8,17 @@ from uuid import uuid4
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotFound
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_noop
 from django.views.decorators.http import require_GET, require_http_methods
 import rfc6266
 
-from edxval.api import create_video, get_videos_for_ids
+from edxval.api import create_video, get_videos_for_course, SortDirection, VideoSortField
 from opaque_keys.edx.keys import CourseKey
 
 from contentstore.models import VideoUploadConfig
 from contentstore.utils import reverse_course_url
 from edxmako.shortcuts import render_to_response
 from util.json_request import expect_json, JsonResponse
-from xmodule.assetstore import AssetMetadata
-from xmodule.modulestore.django import modulestore
 
 from .course import get_course_and_check_access
 
@@ -28,48 +26,49 @@ from .course import get_course_and_check_access
 __all__ = ["videos_handler", "video_encodings_download"]
 
 
-# String constant used in asset keys to identify video assets.
-VIDEO_ASSET_TYPE = "video"
-
 # Default expiration, in seconds, of one-time URLs used for uploading videos.
 KEY_EXPIRATION_IN_SECONDS = 86400
 
 
 class StatusDisplayStrings(object):
     """
-    Enum of display strings for Video Status presented in Studio (e.g., in UI and in CSV download).
+    A class to map status strings as stored in VAL to display strings for the
+    video upload page
     """
+
     # Translators: This is the status of an active video upload
-    UPLOADING = _("Uploading")
+    _UPLOADING = ugettext_noop("Uploading")
     # Translators: This is the status for a video that the servers are currently processing
-    IN_PROGRESS = _("In Progress")
+    _IN_PROGRESS = ugettext_noop("In Progress")
     # Translators: This is the status for a video that the servers have successfully processed
-    COMPLETE = _("Complete")
+    _COMPLETE = ugettext_noop("Ready")
     # Translators: This is the status for a video that the servers have failed to process
-    FAILED = _("Failed"),
+    _FAILED = ugettext_noop("Failed")
     # Translators: This is the status for a video for which an invalid
     # processing token was provided in the course settings
-    INVALID_TOKEN = _("Invalid Token"),
+    _INVALID_TOKEN = ugettext_noop("Invalid Token")
+    # Translators: This is the status for a video that was included in a course import
+    _IMPORTED = ugettext_noop("Imported")
     # Translators: This is the status for a video that is in an unknown state
-    UNKNOWN = _("Unknown")
+    _UNKNOWN = ugettext_noop("Unknown")
 
-
-def status_display_string(val_status):
-    """
-    Converts VAL status string to Studio status string.
-    """
-    status_map = {
-        "upload": StatusDisplayStrings.UPLOADING,
-        "ingest": StatusDisplayStrings.IN_PROGRESS,
-        "transcode_queue": StatusDisplayStrings.IN_PROGRESS,
-        "transcode_active": StatusDisplayStrings.IN_PROGRESS,
-        "file_delivered": StatusDisplayStrings.COMPLETE,
-        "file_complete": StatusDisplayStrings.COMPLETE,
-        "file_corrupt": StatusDisplayStrings.FAILED,
-        "pipeline_error": StatusDisplayStrings.FAILED,
-        "invalid_token": StatusDisplayStrings.INVALID_TOKEN
+    _STATUS_MAP = {
+        "upload": _UPLOADING,
+        "ingest": _IN_PROGRESS,
+        "transcode_queue": _IN_PROGRESS,
+        "transcode_active": _IN_PROGRESS,
+        "file_delivered": _COMPLETE,
+        "file_complete": _COMPLETE,
+        "file_corrupt": _FAILED,
+        "pipeline_error": _FAILED,
+        "invalid_token": _INVALID_TOKEN,
+        "imported": _IMPORTED,
     }
-    return status_map.get(val_status, StatusDisplayStrings.UNKNOWN)
+
+    @staticmethod
+    def get(val_status):
+        """Map a VAL status string to a localized display string"""
+        return _(StatusDisplayStrings._STATUS_MAP.get(val_status, StatusDisplayStrings._UNKNOWN))    # pylint: disable=translation-of-non-string
 
 
 @expect_json
@@ -126,7 +125,6 @@ def video_encodings_download(request, course_key_string):
         return _("{profile_name} URL").format(profile_name=profile)
 
     profile_whitelist = VideoUploadConfig.get_profile_whitelist()
-    status_whitelist = VideoUploadConfig.get_status_whitelist()
 
     videos = list(_get_videos(course))
     name_col = _("Name")
@@ -177,13 +175,16 @@ def video_encodings_download(request, course_key_string):
     )
     writer = csv.DictWriter(
         response,
-        [name_col, duration_col, added_col, video_id_col, status_col] + profile_cols,
+        [
+            col_name.encode("utf-8")
+            for col_name
+            in [name_col, duration_col, added_col, video_id_col, status_col] + profile_cols
+        ],
         dialect=csv.excel
     )
     writer.writeheader()
     for video in videos:
-        if video["status"] in status_whitelist:
-            writer.writerow(make_csv_dict(video))
+        writer.writerow(make_csv_dict(video))
     return response
 
 
@@ -211,19 +212,13 @@ def _get_and_validate_course(course_key_string, user):
 
 def _get_videos(course):
     """
-    Retrieves the list of videos from VAL corresponding to the videos listed in
-    the asset metadata store.
+    Retrieves the list of videos from VAL corresponding to this course.
     """
-    edx_videos_ids = [
-        v.asset_id.path
-        for v in modulestore().get_all_asset_metadata(course.id, VIDEO_ASSET_TYPE)
-    ]
-
-    videos = list(get_videos_for_ids(edx_videos_ids))
+    videos = list(get_videos_for_course(course.id, VideoSortField.created, SortDirection.desc))
 
     # convert VAL's status to studio's Video Upload feature status.
     for video in videos:
-        video["status"] = status_display_string(video["status"])
+        video["status"] = StatusDisplayStrings.get(video["status"])
 
     return videos
 
@@ -327,10 +322,6 @@ def videos_post(course, request):
             headers={"Content-Type": req_file["content_type"]}
         )
 
-        # persist edx_video_id as uploaded through this course
-        video_meta_data = AssetMetadata(course.id.make_asset_key(VIDEO_ASSET_TYPE, edx_video_id))
-        modulestore().save_asset_metadata(video_meta_data, request.user.id)
-
         # persist edx_video_id in VAL
         create_video({
             "edx_video_id": edx_video_id,
@@ -338,6 +329,7 @@ def videos_post(course, request):
             "client_video_id": file_name,
             "duration": 0,
             "encoded_videos": [],
+            "courses": [course.id]
         })
 
         resp_files.append({"file_name": file_name, "upload_url": upload_url})

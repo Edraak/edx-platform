@@ -5,6 +5,7 @@ course level, such as available course modes.
 """
 from django.utils import importlib
 import logging
+from django.core.cache import cache
 from django.conf import settings
 from enrollment import errors
 
@@ -35,7 +36,10 @@ def get_enrollments(user_id):
                 "user": "Bob",
                 "course": {
                     "course_id": "edX/DemoX/2014T2",
-                    "enrollment_end": 2014-12-20T20:18:00Z,
+                    "enrollment_end": "2014-12-20T20:18:00Z",
+                    "enrollment_start": "2014-10-15T20:18:00Z",
+                    "course_start": "2015-02-03T00:00:00Z",
+                    "course_end": "2015-05-06T00:00:00Z",
                     "course_modes": [
                         {
                             "slug": "honor",
@@ -44,10 +48,10 @@ def get_enrollments(user_id):
                             "suggested_prices": "",
                             "currency": "usd",
                             "expiration_datetime": null,
-                            "description": null
+                            "description": null,
+                            "sku": null
                         }
                     ],
-                    "enrollment_start": 2014-10-15T20:18:00Z,
                     "invite_only": False
                 }
             },
@@ -58,7 +62,10 @@ def get_enrollments(user_id):
                 "user": "Bob",
                 "course": {
                     "course_id": "edX/edX-Insider/2014T2",
-                    "enrollment_end": 2014-12-20T20:18:00Z,
+                    "enrollment_end": "2014-12-20T20:18:00Z",
+                    "enrollment_start": "2014-10-15T20:18:00Z",
+                    "course_start": "2015-02-03T00:00:00Z",
+                    "course_end": "2015-05-06T00:00:00Z",
                     "course_modes": [
                         {
                             "slug": "honor",
@@ -67,10 +74,10 @@ def get_enrollments(user_id):
                             "suggested_prices": "",
                             "currency": "usd",
                             "expiration_datetime": null,
-                            "description": null
+                            "description": null,
+                            "sku": null
                         }
                     ],
-                    "enrollment_start": 2014-10-15T20:18:00Z,
                     "invite_only": True
                 }
             }
@@ -101,7 +108,10 @@ def get_enrollment(user_id, course_id):
             "user": "Bob",
             "course": {
                 "course_id": "edX/DemoX/2014T2",
-                "enrollment_end": 2014-12-20T20:18:00Z,
+                "enrollment_end": "2014-12-20T20:18:00Z",
+                "enrollment_start": "2014-10-15T20:18:00Z",
+                "course_start": "2015-02-03T00:00:00Z",
+                "course_end": "2015-05-06T00:00:00Z",
                 "course_modes": [
                     {
                         "slug": "honor",
@@ -110,10 +120,10 @@ def get_enrollment(user_id, course_id):
                         "suggested_prices": "",
                         "currency": "usd",
                         "expiration_datetime": null,
-                        "description": null
+                        "description": null,
+                        "sku": null
                     }
                 ],
-                "enrollment_start": 2014-10-15T20:18:00Z,
                 "invite_only": False
             }
         }
@@ -147,7 +157,10 @@ def add_enrollment(user_id, course_id, mode='honor', is_active=True):
             "user": "Bob",
             "course": {
                 "course_id": "edX/DemoX/2014T2",
-                "enrollment_end": 2014-12-20T20:18:00Z,
+                "enrollment_end": "2014-12-20T20:18:00Z",
+                "enrollment_start": "2014-10-15T20:18:00Z",
+                "course_start": "2015-02-03T00:00:00Z",
+                "course_end": "2015-05-06T00:00:00Z",
                 "course_modes": [
                     {
                         "slug": "honor",
@@ -156,10 +169,10 @@ def add_enrollment(user_id, course_id, mode='honor', is_active=True):
                         "suggested_prices": "",
                         "currency": "usd",
                         "expiration_datetime": null,
-                        "description": null
+                        "description": null,
+                        "sku": null
                     }
                 ],
-                "enrollment_start": 2014-10-15T20:18:00Z,
                 "invite_only": False
             }
         }
@@ -191,7 +204,10 @@ def update_enrollment(user_id, course_id, mode=None, is_active=None):
             "user": "Bob",
             "course": {
                 "course_id": "edX/DemoX/2014T2",
-                "enrollment_end": 2014-12-20T20:18:00Z,
+                "enrollment_end": "2014-12-20T20:18:00Z",
+                "enrollment_start": "2014-10-15T20:18:00Z",
+                "course_start": "2015-02-03T00:00:00Z",
+                "course_end": "2015-05-06T00:00:00Z",
                 "course_modes": [
                     {
                         "slug": "honor",
@@ -200,16 +216,17 @@ def update_enrollment(user_id, course_id, mode=None, is_active=None):
                         "suggested_prices": "",
                         "currency": "usd",
                         "expiration_datetime": null,
-                        "description": null
+                        "description": null,
+                        "sku": null
                     }
                 ],
-                "enrollment_start": 2014-10-15T20:18:00Z,
                 "invite_only": False
             }
         }
 
     """
-    _validate_course_mode(course_id, mode)
+    if mode is not None:
+        _validate_course_mode(course_id, mode)
     enrollment = _data_api().update_course_enrollment(user_id, course_id, mode=mode, is_active=is_active)
     if enrollment is None:
         msg = u"Course Enrollment not found for user {user} in course {course}".format(user=user_id, course=course_id)
@@ -218,13 +235,16 @@ def update_enrollment(user_id, course_id, mode=None, is_active=None):
     return enrollment
 
 
-def get_course_enrollment_details(course_id):
+def get_course_enrollment_details(course_id, include_expired=False):
     """Get the course modes for course. Also get enrollment start and end date, invite only, etc.
 
     Given a course_id, return a serializable dictionary of properties describing course enrollment information.
 
     Args:
         course_id (str): The Course to get enrollment information for.
+
+        include_expired (bool): Boolean denoting whether expired course modes
+        should be included in the returned JSON data.
 
     Returns:
         A serializable dictionary of course enrollment information.
@@ -233,7 +253,10 @@ def get_course_enrollment_details(course_id):
         >>> get_course_enrollment_details("edX/DemoX/2014T2")
         {
             "course_id": "edX/DemoX/2014T2",
-            "enrollment_end": 2014-12-20T20:18:00Z,
+            "enrollment_end": "2014-12-20T20:18:00Z",
+            "enrollment_start": "2014-10-15T20:18:00Z",
+            "course_start": "2015-02-03T00:00:00Z",
+            "course_end": "2015-05-06T00:00:00Z",
             "course_modes": [
                 {
                     "slug": "honor",
@@ -242,15 +265,41 @@ def get_course_enrollment_details(course_id):
                     "suggested_prices": "",
                     "currency": "usd",
                     "expiration_datetime": null,
-                    "description": null
+                    "description": null,
+                    "sku": null
                 }
             ],
-            "enrollment_start": 2014-10-15T20:18:00Z,
             "invite_only": False
         }
 
     """
-    return _data_api().get_course_enrollment_info(course_id)
+    cache_key = u'enrollment.course.details.{course_id}.{include_expired}'.format(
+        course_id=course_id,
+        include_expired=include_expired
+    )
+    cached_enrollment_data = None
+    try:
+        cached_enrollment_data = cache.get(cache_key)
+    except Exception:
+        # The cache backend could raise an exception (for example, memcache keys that contain spaces)
+        log.exception(u"Error occurred while retrieving course enrollment details from the cache")
+
+    if cached_enrollment_data:
+        log.info(u"Get enrollment data for course %s (cached)", course_id)
+        return cached_enrollment_data
+
+    course_enrollment_details = _data_api().get_course_enrollment_info(course_id, include_expired)
+
+    try:
+        cache_time_out = getattr(settings, 'ENROLLMENT_COURSE_DETAILS_CACHE_TIMEOUT', 60)
+        cache.set(cache_key, course_enrollment_details, cache_time_out)
+    except Exception:
+        # Catch any unexpected errors during caching.
+        log.exception(u"Error occurred while caching course enrollment details for course %s", course_id)
+        raise errors.CourseEnrollmentError(u"An unexpected error occurred while retrieving course enrollment details.")
+
+    log.info(u"Get enrollment data for course %s", course_id)
+    return course_enrollment_details
 
 
 def _validate_course_mode(course_id, mode):

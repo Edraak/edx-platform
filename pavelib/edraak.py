@@ -24,7 +24,7 @@ def edraak_transifex_pull():
     assert not git_repo.is_dirty(untracked_files=True), clean_git_repo_msg
 
     # Get Edraak translations
-    for resource in ('edraak-platform', 'edraak-platform-theme'):
+    for resource in ('edraak-platform', 'edraak-platform-2015-theme'):
         sh('tx pull --force --mode=reviewed --language=ar --resource=edraak.{}'.format(resource))
 
 
@@ -67,9 +67,13 @@ def edraak_generate_files():
     django_pofile_name = lc_messages_dir / 'django.po'
     django_mofile_name = lc_messages_dir / 'django.mo'
 
-    django_pofile = polib.pofile(django_pofile_name)
+    djangojs_pofile_name = lc_messages_dir / 'djangojs.po'
+    djangojs_mofile_name = lc_messages_dir / 'djangojs.mo'
 
-    for resource in ('edraak-platform.po', 'edraak-platform-theme.po'):
+    django_pofile = polib.pofile(django_pofile_name)
+    djangojs_pofile = polib.pofile(djangojs_pofile_name)
+
+    for resource in ('edraak-platform.po', 'edraak-platform-2015-theme.po'):
         edraak_pofile_name = lc_messages_dir / resource
         edraak_pofile = polib.pofile(edraak_pofile_name)
 
@@ -83,6 +87,7 @@ def edraak_generate_files():
     customized_pofile_name = lc_messages_dir / 'django-edraak-customized.po'
     django_pofile.save(customized_pofile_name)
     django_pofile.save_as_mofile(django_mofile_name)
+    djangojs_pofile.save_as_mofile(djangojs_mofile_name)
 
 
 @task
@@ -95,9 +100,12 @@ def edraak_i18n_pull():
     Pulls Edraak-specific translation files.
     """
     files_to_add = (
-        'conf/locale/ar/LC_MESSAGES/edraak-platform-theme.po',
+        'conf/locale/ar/LC_MESSAGES/edraak-platform-2015-theme.po',
         'conf/locale/ar/LC_MESSAGES/edraak-platform.po',
+        'conf/locale/ar/LC_MESSAGES/django.po',
         'conf/locale/ar/LC_MESSAGES/django.mo',
+        'conf/locale/ar/LC_MESSAGES/djangojs.po',
+        'conf/locale/ar/LC_MESSAGES/djangojs.mo',
         'conf/locale/ar/LC_MESSAGES/django-edraak-customized.po',
     )
 

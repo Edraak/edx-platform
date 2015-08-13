@@ -21,6 +21,7 @@ requirejs.config({
         "jquery.immediateDescendents": "xmodule_js/common_static/coffee/src/jquery.immediateDescendents",
         "datepair": "xmodule_js/common_static/js/vendor/timepicker/datepair",
         "date": "xmodule_js/common_static/js/vendor/date",
+        "text": "xmodule_js/common_static/js/vendor/requirejs/text",
         "underscore": "xmodule_js/common_static/js/vendor/underscore-min",
         "underscore.string": "xmodule_js/common_static/js/vendor/underscore.string.min",
         "backbone": "xmodule_js/common_static/js/vendor/backbone-min",
@@ -41,9 +42,9 @@ requirejs.config({
         "domReady": "xmodule_js/common_static/js/vendor/domReady",
         "URI": "xmodule_js/common_static/js/vendor/URI.min",
 
-        "mathjax": "//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
+        "mathjax": "//cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
         "youtube": "//www.youtube.com/player_api?noext",
-        "tender": "//edxedge.tenderapp.com/tender_widget.js"
+        "tender": "//api.tenderapp.com/tender_widget.js"
 
         "coffee/src/ajax_prefix": "xmodule_js/common_static/coffee/src/ajax_prefix"
     }

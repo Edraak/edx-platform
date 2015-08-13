@@ -3,7 +3,6 @@ Common utility functions useful throughout the contentstore
 """
 # pylint: disable=no-member
 
-import copy
 import logging
 import re
 from datetime import datetime
@@ -26,11 +25,6 @@ from student import auth
 
 
 log = logging.getLogger(__name__)
-
-# In order to instantiate an open ended tab automatically, need to have this data
-OPEN_ENDED_PANEL = {"name": _("Open Ended Panel"), "type": "open_ended"}
-NOTES_PANEL = {"name": _("My Notes"), "type": "notes"}
-EXTRA_TAB_PANELS = dict([(p['type'], p) for p in [OPEN_ENDED_PANEL, NOTES_PANEL]])
 
 
 def add_instructor(course_key, requesting_user, new_instructor):
@@ -146,6 +140,24 @@ def get_lms_link_for_about_page(course_key):
     )
 
 
+# pylint: disable=invalid-name
+def get_lms_link_for_certificate_web_view(user_id, course_key, mode):
+    """
+    Returns the url to the certificate web view.
+    """
+    assert isinstance(course_key, CourseKey)
+
+    if settings.LMS_BASE is None:
+        return None
+
+    return u"//{certificate_web_base}/certificates/user/{user_id}/course/{course_id}?preview={mode}".format(
+        certificate_web_base=settings.LMS_BASE,
+        user_id=user_id,
+        course_id=unicode(course_key),
+        mode=mode
+    )
+
+
 def course_image_url(course):
     """Returns the image url for the course."""
     loc = StaticContent.compute_location(course.location.course_key, course.course_image)
@@ -176,6 +188,36 @@ def is_currently_visible_to_students(xblock):
 
     # No start date, so it's always visible
     return True
+
+
+def has_children_visible_to_specific_content_groups(xblock):
+    """
+    Returns True if this xblock has children that are limited to specific content groups.
+    Note that this method is not recursive (it does not check grandchildren).
+    """
+    if not xblock.has_children:
+        return False
+
+    for child in xblock.get_children():
+        if is_visible_to_specific_content_groups(child):
+            return True
+
+    return False
+
+
+def is_visible_to_specific_content_groups(xblock):
+    """
+    Returns True if this xblock has visibility limited to specific content groups.
+    """
+    if not xblock.group_access:
+        return False
+    for __, value in xblock.group_access.iteritems():
+        # value should be a list of group IDs. If it is an empty list or None, the xblock is visible
+        # to all groups in that particular partition. So if value is a truthy value, the xblock is
+        # restricted in some way.
+        if value:
+            return True
+    return False
 
 
 def find_release_date_source(xblock):
@@ -238,46 +280,6 @@ def ancestor_has_staff_lock(xblock, parent_xblock=None):
     return parent_xblock.visible_to_staff_only
 
 
-def add_extra_panel_tab(tab_type, course):
-    """
-    Used to add the panel tab to a course if it does not exist.
-    @param tab_type: A string representing the tab type.
-    @param course: A course object from the modulestore.
-    @return: Boolean indicating whether or not a tab was added and a list of tabs for the course.
-    """
-    # Copy course tabs
-    course_tabs = copy.copy(course.tabs)
-    changed = False
-    # Check to see if open ended panel is defined in the course
-
-    tab_panel = EXTRA_TAB_PANELS.get(tab_type)
-    if tab_panel not in course_tabs:
-        # Add panel to the tabs if it is not defined
-        course_tabs.append(tab_panel)
-        changed = True
-    return changed, course_tabs
-
-
-def remove_extra_panel_tab(tab_type, course):
-    """
-    Used to remove the panel tab from a course if it exists.
-    @param tab_type: A string representing the tab type.
-    @param course: A course object from the modulestore.
-    @return: Boolean indicating whether or not a tab was added and a list of tabs for the course.
-    """
-    # Copy course tabs
-    course_tabs = copy.copy(course.tabs)
-    changed = False
-    # Check to see if open ended panel is defined in the course
-
-    tab_panel = EXTRA_TAB_PANELS.get(tab_type)
-    if tab_panel in course_tabs:
-        # Add panel to the tabs if it is not defined
-        course_tabs = [ct for ct in course_tabs if ct != tab_panel]
-        changed = True
-    return changed, course_tabs
-
-
 def reverse_url(handler_name, key_name=None, key_value=None, kwargs=None):
     """
     Creates the URL for the given handler.
@@ -294,6 +296,13 @@ def reverse_course_url(handler_name, course_key, kwargs=None):
     Creates the URL for handlers that use course_keys as URL parameters.
     """
     return reverse_url(handler_name, 'course_key_string', course_key, kwargs)
+
+
+def reverse_library_url(handler_name, library_key, kwargs=None):
+    """
+    Creates the URL for handlers that use library_keys as URL parameters.
+    """
+    return reverse_url(handler_name, 'library_key_string', library_key, kwargs)
 
 
 def reverse_usage_url(handler_name, usage_key, kwargs=None):

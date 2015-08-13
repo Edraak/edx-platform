@@ -20,8 +20,8 @@ from external_auth.views import (
     shib_login, course_specific_login, course_specific_register, _flatten_to_ascii
 )
 from mock import patch
+from urllib import urlencode
 
-from xmodule.modulestore.tests.django_utils import TEST_DATA_MOCK_MODULESTORE
 from student.views import create_account, change_enrollment
 from student.models import UserProfile, CourseEnrollment
 from student.tests.factories import UserFactory
@@ -73,7 +73,7 @@ def gen_all_identities():
 
 
 @ddt
-@override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE, SESSION_ENGINE='django.contrib.sessions.backends.cache')
+@override_settings(SESSION_ENGINE='django.contrib.sessions.backends.cache')
 class ShibSPTest(ModuleStoreTestCase):
     """
     Tests for the Shibboleth SP, which communicates via request.META
@@ -170,7 +170,7 @@ class ShibSPTest(ModuleStoreTestCase):
                 if idp == "https://idp.stanford.edu/" and remote_user == 'withmap@stanford.edu':
                     self.assertIsInstance(response, HttpResponseRedirect)
                     self.assertEqual(request.user, user_w_map)
-                    self.assertEqual(response['Location'], '/')
+                    self.assertEqual(response['Location'], '/dashboard')
                     # verify logging:
                     self.assertEquals(len(audit_log_calls), 2)
                     self._assert_shib_login_is_logged(audit_log_calls[0], remote_user)
@@ -194,7 +194,7 @@ class ShibSPTest(ModuleStoreTestCase):
                     self.assertIsNotNone(ExternalAuthMap.objects.get(user=user_wo_map))
                     self.assertIsInstance(response, HttpResponseRedirect)
                     self.assertEqual(request.user, user_wo_map)
-                    self.assertEqual(response['Location'], '/')
+                    self.assertEqual(response['Location'], '/dashboard')
                     # verify logging:
                     self.assertEquals(len(audit_log_calls), 2)
                     self._assert_shib_login_is_logged(audit_log_calls[0], remote_user)
@@ -243,7 +243,7 @@ class ShibSPTest(ModuleStoreTestCase):
         self.assertTrue(inactive_user.is_active)
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(request.user, inactive_user)
-        self.assertEqual(response['Location'], '/')
+        self.assertEqual(response['Location'], '/dashboard')
         # verify logging:
         self.assertEquals(len(audit_log_calls), 3)
         self._assert_shib_login_is_logged(audit_log_calls[0], log_user_string)
@@ -376,7 +376,7 @@ class ShibSPTest(ModuleStoreTestCase):
             self.assertEqual(profile.name, identity.get('displayName').decode('utf-8'))
 
     @unittest.skipUnless(settings.FEATURES.get('AUTH_USE_SHIB'), "AUTH_USE_SHIB not set")
-    @data("", "shib:https://idp.stanford.edu/")
+    @data(None, "", "shib:https://idp.stanford.edu/")
     def test_course_specific_login_and_reg(self, domain):
         """
         Tests that the correct course specific login and registration urls work for shib
@@ -407,7 +407,7 @@ class ShibSPTest(ModuleStoreTestCase):
         login_response = course_specific_login(login_request, 'MITx/999/Robot_Super_Course')
         reg_response = course_specific_register(login_request, 'MITx/999/Robot_Super_Course')
 
-        if "shib" in domain:
+        if domain and "shib" in domain:
             self.assertIsInstance(login_response, HttpResponseRedirect)
             self.assertEqual(login_response['Location'],
                              reverse('shib-login') +
@@ -550,29 +550,20 @@ class ShibSPTest(ModuleStoreTestCase):
         # no enrollment before trying
         self.assertFalse(CourseEnrollment.is_enrolled(student, course.id))
         self.client.logout()
+        params = [
+            ('course_id', course.id.to_deprecated_string()),
+            ('enrollment_action', 'enroll'),
+            ('next', '/testredirect')
+        ]
         request_kwargs = {'path': '/shib-login/',
-                          'data': {'enrollment_action': 'enroll', 'course_id': course.id.to_deprecated_string(), 'next': '/testredirect'},
+                          'data': dict(params),
                           'follow': False,
                           'REMOTE_USER': 'testuser@stanford.edu',
                           'Shib-Identity-Provider': 'https://idp.stanford.edu/'}
         response = self.client.get(**request_kwargs)
-        # successful login is a redirect to "/"
+        # successful login is a redirect to the URL that handles auto-enrollment
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], 'http://testserver/testredirect')
-        # now there is enrollment
-        self.assertTrue(CourseEnrollment.is_enrolled(student, course.id))
-
-        # Clean up and try again with POST (doesn't happen with real production shib, doing this for test coverage)
-        self.client.logout()
-        CourseEnrollment.unenroll(student, course.id)
-        self.assertFalse(CourseEnrollment.is_enrolled(student, course.id))
-
-        response = self.client.post(**request_kwargs)
-        # successful login is a redirect to "/"
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], 'http://testserver/testredirect')
-        # now there is enrollment
-        self.assertTrue(CourseEnrollment.is_enrolled(student, course.id))
+        self.assertEqual(response['location'], 'http://testserver/account/finish_auth?{}'.format(urlencode(params)))
 
 
 class ShibUtilFnTest(TestCase):

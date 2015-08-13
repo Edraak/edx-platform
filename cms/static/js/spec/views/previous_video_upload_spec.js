@@ -1,5 +1,5 @@
 define(
-    ["jquery", "backbone", "js/views/previous_video_upload", "js/common_helpers/template_helpers"],
+    ["jquery", "backbone", "js/views/previous_video_upload", "common/js/spec_helpers/template_helpers"],
     function($, Backbone, PreviousVideoUploadView, TemplateHelpers) {
         "use strict";
         describe("PreviousVideoUploadView", function() {
@@ -65,22 +65,11 @@ define(
                 expect($el.find(".video-id-col").text()).toEqual(testId);
             });
 
-            _.each(
-                [
-                    {status: "Uploading", expected: "Uploading"},
-                    {status: "In Progress", expected: "In Progress"},
-                    {status: "Complete", expected: "Complete"},
-                    {status: "Failed", expected: "Failed"},
-                    {status: "Invalid Token", expected: "Invalid Token"},
-                    {status: "Unknown", expected: "Unknown"}
-                ],
-                function(caseInfo) {
-                    it("should render " + caseInfo.status + " status correctly", function() {
-                        var $el = render({status: caseInfo.status});
-                        expect($el.find(".status-col").text()).toEqual(caseInfo.expected);
-                    });
-                }
-            );
+            it("should render status correctly", function() {
+                var testStatus = "Test Status";
+                var $el = render({status: testStatus});
+                expect($el.find(".status-col").text()).toEqual(testStatus);
+            });
         });
     }
 );

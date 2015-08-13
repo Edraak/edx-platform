@@ -15,15 +15,6 @@ domReady(function() {
 
     $body.addClass('js');
 
-    // lean/simple modal
-    $('a[rel*=modal]').leanModal({
-        overlay: 0.80,
-        closeButton: '.action-modal-close'
-    });
-    $('a.action-modal-close').click(function(e) {
-        (e).preventDefault();
-    });
-
     // alerts/notifications - manual close
     $('.action-alert-close, .alert.has-actions .nav-actions a').bind('click', hideAlert);
     $('.action-notification-close').bind('click', hideNotification);
@@ -34,7 +25,7 @@ domReady(function() {
         $('.nav-dd .nav-item .title').removeClass('is-selected');
     });
 
-    $('.nav-dd .nav-item').click(function(e) {
+    $('.nav-dd .nav-item, .filterable-column .nav-item').click(function(e) {
 
         $subnav = $(this).find('.wrapper-nav-sub');
         $title = $(this).find('.title');
