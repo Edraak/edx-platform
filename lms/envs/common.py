@@ -597,6 +597,10 @@ ASSET_KEY_PATTERN = r'(?P<asset_key_string>(?:/?c4x(:/)?/[^/]+/[^/]+/[^/]+/[^@]+
 USAGE_ID_PATTERN = r'(?P<usage_id>(?:i4x://?[^/]+/[^/]+/[^/]+/[^@]+(?:@[^/]+)?)|(?:[^/]+))'
 
 
+# This pattern allow space in username
+USERNAME_PATTERN = r'(?P<username>[\w .@_+-]+)'
+
+
 ############################## EVENT TRACKING #################################
 
 # FIXME: Should we be doing this truncation?
