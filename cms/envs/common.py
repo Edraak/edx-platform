@@ -1022,3 +1022,7 @@ CREDIT_PROVIDER_TIMESTAMP_EXPIRATION = 15 * 60
 ################################ Deprecated Blocks Info ################################
 
 DEPRECATED_BLOCK_TYPES = ['peergrading', 'combinedopenended']
+
+# This pattern allow space in username
+USERNAME_PATTERN = r'(?P<username>[\w .@_+-]+)'
+

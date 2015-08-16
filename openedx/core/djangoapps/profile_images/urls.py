@@ -4,18 +4,17 @@ Defines the URL routes for this app.
 from .views import ProfileImageUploadView, ProfileImageRemoveView
 
 from django.conf.urls import patterns, url
-
-USERNAME_PATTERN = r'(?P<username>[\w.+-]+)'
+from django.conf import settings
 
 urlpatterns = patterns(
     '',
     url(
-        r'^v1/' + USERNAME_PATTERN + '/upload$',
+        r'^v1/{}/upload$'.format(settings.USERNAME_PATTERN),
         ProfileImageUploadView.as_view(),
         name="profile_image_upload"
     ),
     url(
-        r'^v1/' + USERNAME_PATTERN + '/remove$',
+        r'^v1/{}/remove$'.format(settings.USERNAME_PATTERN),
         ProfileImageRemoveView.as_view(),
         name="profile_image_remove"
     ),
