@@ -5733,7 +5733,7 @@ msgstr "هل أنت جديد على %(platformName)s؟"
 
 #: lms/templates/student_account/login.underscore
 msgid "Create an account"
-msgstr " أنشئ حسابًا جديدًا اﻵن."
+msgstr "أنشئ حساباً جديداً اﻵن."
 
 #: lms/templates/student_account/password_reset.underscore
 #: lms/templates/student_account/register.underscore
@@ -5774,11 +5774,11 @@ msgstr ""
 
 #: lms/templates/student_account/register.underscore
 msgid "Create an account using"
-msgstr "إنشاء حساب باستخدام"
+msgstr "أنشئ حساباً باستخدام"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create account using %(providerName)s."
-msgstr "إنشاء حساب باستخدام %(providerName)s."
+msgstr "أنشئ حساباً باستخدام %(providerName)s."
 
 #: lms/templates/student_account/register.underscore
 msgid "or create a new one here"
