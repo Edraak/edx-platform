@@ -9253,7 +9253,7 @@ msgstr "فاطمة الفهري"
 
 #: lms/templates/register.html
 msgid "Needed for any certificates you may earn"
-msgstr "مطلوب لأي شهادة قد تنالها "
+msgstr "مطلوب لأي شهادة قد تنالها - يفضل باللغة العربية"
 
 #. Translators: This label appears above a field on the registration form
 #. meant to hold the user's public username.
@@ -9315,9 +9315,7 @@ msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platfo
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "You must agree to the {platform_name} {terms_of_service}."
-msgstr ""
-"أوافق على شروط الخدمة {terms_of_service} وميثاق الشرف الخاصين بمنصّة "
-"{platform_name}."
+msgstr "يجب الموافقة على {terms_of_service} الخاصين بمنصّة {platform_name}."
 
 #: openedx/core/djangoapps/user_api/accounts/api.py
 msgid "The '{field_name}' field cannot be edited."
@@ -21310,7 +21308,7 @@ msgid ""
 msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة #%(r1)d والمراجعة #%(r2)d "
 
 #. Translators: Edraak-specific
-#: common/djangoapps/student/edraak_validation.py:41
+#: common/djangoapps/student/edraak_validation.py:42
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
@@ -21365,6 +21363,52 @@ msgstr "لإتمام المساق التالي بنجاح:"
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:81
+#: openedx/core/djangoapps/user_api/views.py:342
+msgid "Please enter your Email."
+msgstr "يُرجى إدخال البريد الإلكتروني."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:102
+msgid "Please enter your password."
+msgstr "يُرجى إدخالُ كلمة المرور."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:386
+msgid "Please enter your Full name."
+msgstr "يُرجى إدخال الاسم الكامل."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:427
+msgid "Please enter your Username."
+msgstr "يُرجى اسم المستخدم."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:458
+msgid "Please enter your Password."
+msgstr "يُرجى إدخال كلمة السر."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:488
+msgid "Please enter your Highest level of education completed"
+msgstr "يُرجى تحديد أعلى مستوى تعليمي وصلت إليه."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:517
+msgid "Please enter your Gender."
+msgstr "يُرجى تحديد الجنس."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:546
+msgid "Please enter your Year of birth."
+msgstr "يُرجى إدخال سنة الميلاد."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:639
+msgid "Please select your Country."
+msgstr "يُرجى تحديد بلدك."
 
 #. Translators: Edraak-specific
 #: lms/templates/dashboard.html:183

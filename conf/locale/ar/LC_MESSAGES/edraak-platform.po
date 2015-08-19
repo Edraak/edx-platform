@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. Translators: Edraak-specific
-#: common/djangoapps/student/edraak_validation.py:41
+#: common/djangoapps/student/edraak_validation.py:42
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
@@ -68,6 +68,52 @@ msgstr "لإتمام المساق التالي بنجاح:"
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:81
+#: openedx/core/djangoapps/user_api/views.py:342
+msgid "Please enter your Email."
+msgstr "يُرجى إدخال البريد الإلكتروني."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:102
+msgid "Please enter your password."
+msgstr "يُرجى إدخالُ كلمة المرور."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:386
+msgid "Please enter your Full name."
+msgstr "يُرجى إدخال الاسم الكامل."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:427
+msgid "Please enter your Username."
+msgstr "يُرجى اسم المستخدم."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:458
+msgid "Please enter your Password."
+msgstr "يُرجى إدخال كلمة السر."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:488
+msgid "Please enter your Highest level of education completed"
+msgstr "يُرجى تحديد أعلى مستوى تعليمي وصلت إليه."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:517
+msgid "Please enter your Gender."
+msgstr "يُرجى تحديد الجنس."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:546
+msgid "Please enter your Year of birth."
+msgstr "يُرجى إدخال سنة الميلاد."
+
+#. Translators: Edraak-specific
+#: openedx/core/djangoapps/user_api/views.py:639
+msgid "Please select your Country."
+msgstr "يُرجى تحديد بلدك."
 
 #. Translators: Edraak-specific
 #: lms/templates/dashboard.html:183

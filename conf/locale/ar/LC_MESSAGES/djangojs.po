@@ -2210,7 +2210,7 @@ msgstr "جرى الإسقاط على الهدف"
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%s ago"
-msgstr "منذ %s ثوانٍ "
+msgstr "منذ %s"
 
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
@@ -6293,11 +6293,11 @@ msgstr "الحالة"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problem Types"
-msgstr "أنواع المسائل الشائعة"
+msgstr "المسائل الشائعة"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problems with Hints and Feedback"
-msgstr ""
+msgstr "مسائل شائعة مع بعض التلميحات"
 
 #: cms/templates/js/add-xblock-component.underscore
 msgid "Add New Component"
