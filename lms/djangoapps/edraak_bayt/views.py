@@ -41,7 +41,7 @@ def get_student_email(request):
         h = Http()
         param = {
             'secret_key': settings.BAYT_SECRET_KEY,
-            'valid_until': '06-2015',
+            'valid_until': '06-2030',
             'certificate_name': course_name.encode('UTF-8'),
             'email_address': user_email
         }
