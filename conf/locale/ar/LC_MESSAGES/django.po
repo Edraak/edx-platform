@@ -9254,7 +9254,7 @@ msgstr "فاطمة الفهري"
 
 #: lms/templates/register.html
 msgid "Needed for any certificates you may earn"
-msgstr "مطلوب لأي شهادة قد تنالها "
+msgstr "مطلوب لأي شهادة قد تنالها - يفضل باللغة العربية"
 
 #. Translators: This label appears above a field on the registration form
 #. meant to hold the user's public username.
@@ -9316,7 +9316,7 @@ msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platfo
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "You must agree to the {platform_name} {terms_of_service}."
-msgstr "أوافق على شروط الخدمة {terms_of_service} وميثاق الشرف الخاصين بمنصّة {platform_name}."
+msgstr "يجب الموافقة على {terms_of_service} الخاصين بمنصّة {platform_name}."
 
 #: openedx/core/djangoapps/user_api/accounts/api.py
 msgid "The '{field_name}' field cannot be edited."

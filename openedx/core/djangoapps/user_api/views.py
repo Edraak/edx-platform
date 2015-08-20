@@ -77,6 +77,8 @@ class LoginSessionView(APIView):
             u"The email address you used to register with {platform_name}"
         ).format(platform_name=settings.PLATFORM_NAME)
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Email.")
         form_desc.add_field(
             "email",
             field_type="email",
@@ -86,6 +88,9 @@ class LoginSessionView(APIView):
             restrictions={
                 "min_length": EMAIL_MIN_LENGTH,
                 "max_length": EMAIL_MAX_LENGTH,
+            },
+            error_messages={
+                "required": error_msg
             }
         )
 
@@ -93,6 +98,8 @@ class LoginSessionView(APIView):
         # meant to hold the user's password.
         password_label = _(u"Password")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your password.")
         form_desc.add_field(
             "password",
             label=password_label,
@@ -100,6 +107,9 @@ class LoginSessionView(APIView):
             restrictions={
                 "min_length": PASSWORD_MIN_LENGTH,
                 "max_length": PASSWORD_MAX_LENGTH,
+            },
+            error_messages={
+                "required": error_msg
             }
         )
 
@@ -328,6 +338,8 @@ class RegistrationView(APIView):
         # a field on the registration form meant to hold the user's email address.
         email_placeholder = _(u"username@domain.com")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Email.")
         form_desc.add_field(
             "email",
             field_type="email",
@@ -337,7 +349,10 @@ class RegistrationView(APIView):
                 "min_length": EMAIL_MIN_LENGTH,
                 "max_length": EMAIL_MAX_LENGTH,
             },
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_name_field(self, form_desc, required=True):
@@ -362,6 +377,8 @@ class RegistrationView(APIView):
         # below a field meant to hold the user's full name.
         name_instructions = _(u"Needed for any certificates you may earn")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Full name.")
         form_desc.add_field(
             "name",
             label=name_label,
@@ -370,7 +387,10 @@ class RegistrationView(APIView):
             restrictions={
                 "max_length": NAME_MAX_LENGTH,
             },
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_username_field(self, form_desc, required=True):
@@ -398,6 +418,8 @@ class RegistrationView(APIView):
         # a field on the registration form meant to hold the user's username.
         username_placeholder = _(u"JaneDoe")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Username.")
         form_desc.add_field(
             "username",
             label=username_label,
@@ -407,7 +429,10 @@ class RegistrationView(APIView):
                 "min_length": USERNAME_MIN_LENGTH,
                 "max_length": USERNAME_MAX_LENGTH,
             },
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_password_field(self, form_desc, required=True):
@@ -424,6 +449,8 @@ class RegistrationView(APIView):
         # meant to hold the user's password.
         password_label = _(u"Password")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Password.")
         form_desc.add_field(
             "password",
             label=password_label,
@@ -432,7 +459,10 @@ class RegistrationView(APIView):
                 "min_length": PASSWORD_MIN_LENGTH,
                 "max_length": PASSWORD_MAX_LENGTH,
             },
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_level_of_education_field(self, form_desc, required=True):
@@ -449,13 +479,22 @@ class RegistrationView(APIView):
         # form used to select the user's highest completed level of education.
         education_level_label = _(u"Highest level of education completed")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Highest level of education completed")
+
+        # Translators: These fields appear in level of education dropdown menu on the
+        # registration form used to specify user's level of education
+        options=((code, _(value)) for code, value in UserProfile.LEVEL_OF_EDUCATION_CHOICES )
         form_desc.add_field(
             "level_of_education",
             label=education_level_label,
             field_type="select",
-            options=UserProfile.LEVEL_OF_EDUCATION_CHOICES,
+            options=options,
             include_default_option=True,
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_gender_field(self, form_desc, required=True):
@@ -472,13 +511,22 @@ class RegistrationView(APIView):
         # form used to select the user's gender.
         gender_label = _(u"Gender")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Gender.")
+
+        # Translators: These fields appear in gender dropdown menu on the
+        # registration form used to specify user's gender
+        options=((code, _(value)) for code, value in UserProfile.GENDER_CHOICES )
         form_desc.add_field(
             "gender",
             label=gender_label,
             field_type="select",
-            options=UserProfile.GENDER_CHOICES,
+            options=options,
             include_default_option=True,
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_year_of_birth_field(self, form_desc, required=True):
@@ -495,6 +543,8 @@ class RegistrationView(APIView):
         # form used to select the user's year of birth.
         yob_label = _(u"Year of birth")
 
+        # Translators: Edraak-specific
+        error_msg = _(u"Please enter your Year of birth.")
         options = [(unicode(year), unicode(year)) for year in UserProfile.VALID_YEARS]
         form_desc.add_field(
             "year_of_birth",
@@ -502,7 +552,10 @@ class RegistrationView(APIView):
             field_type="select",
             options=options,
             include_default_option=True,
-            required=required
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
         )
 
     def _add_mailing_address_field(self, form_desc, required=True):
@@ -582,6 +635,8 @@ class RegistrationView(APIView):
         # Translators: This label appears above a dropdown menu on the registration
         # form used to select the country in which the user lives.
         country_label = _(u"Country")
+
+        # Translators: Edraak-specific
         error_msg = _(u"Please select your Country.")
 
         form_desc.add_field(
