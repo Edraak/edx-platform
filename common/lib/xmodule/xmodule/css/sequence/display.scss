@@ -1,5 +1,31 @@
 $sequence--border-color: #C8C8C8;
 
+// * +Icon - Font-Awesome  - Chevron Next
+// ====================
+// TODO: Move it to it's correct lib file
+@mixin fa-chevron-next {
+  &:before {
+    @if $bi-app-direction == ltr {
+        content: "\f054"; // .fa-chevron-right
+    } @else if $bi-app-direction == rtl {
+        content: "\f053"; // .fa-chevron-left
+    }
+  }
+}
+
+// * +Icon - Font-Awesome  - Chevron Previous
+// ====================
+// TODO: Move it to it's correct lib file
+@mixin fa-chevron-prev {
+  &:before {
+    @if $bi-app-direction == ltr {
+        content: "\f053"; // .fa-chevron-left
+    } @else if $bi-app-direction == rtl {
+        content: "\f054"; // .fa-chevron-right
+    }
+  }
+}
+
 // repeated extends - needed since LMS styling was referenced
 .block-link {
   border-left: 1px solid lighten($sequence--border-color, 10%);
@@ -254,11 +280,19 @@ $sequence--border-color: #C8C8C8;
   &.button-previous {
     @include border-radius(35px, 0, 0, 35px);
     @include left(0);
+
+    .fa {
+      @include fa-chevron-prev();
+    }
   }
 
   &.button-next {
     @include border-radius(0, 35px, 35px, 0);
     @include right(0);
+
+    .fa {
+      @include fa-chevron-next();
+    }
   }
 
   &:hover,
