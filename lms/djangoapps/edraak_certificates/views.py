@@ -5,22 +5,23 @@ from wand.image import Image
 
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.decorators import login_required
 
+from dateutil.relativedelta import relativedelta
 from edxmako.shortcuts import render_to_response
 from xmodule.modulestore.django import modulestore
 
 from opaque_keys.edx import locator
-
+from datetime import date
 from .utils import generate_certificate
 from edraak_misc.utils import is_student_pass, is_certificate_allowed
 
 
 logger = logging.getLogger(__name__)
-
 
 @login_required
 def issue(request, course_id):
@@ -41,9 +42,13 @@ def view(request, course_id):
     else:
         template = 'edraak_certificates/fail.html'
 
+    course_end_date = course.end or date.today()
+    course_expiration_date = course_end_date + relativedelta(years=settings.BAYT_VALID_YEARS)
+
     return render_to_response(template, {
         'user': user,
         'cert_course': course,  # Course name is set to `cert_course` to avoid header design bug
+        'cert_end': course_expiration_date.strftime('%m-%Y')
     })
 
 

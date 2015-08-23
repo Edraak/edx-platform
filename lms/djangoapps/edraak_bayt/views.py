@@ -1,6 +1,5 @@
 import hashlib
 import urllib
-from django.http import HttpResponseServerError
 import simplejson
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -27,6 +26,7 @@ def get_student_email(request):
     user_email = request.POST['bayt_email']
     course_name = request.POST['course_name']
     course_id = request.POST['course_id']
+    cert_end = request.POST['cert_end']
     user_id = request.user.id
 
     if not validate_email(user_email):
@@ -41,7 +41,7 @@ def get_student_email(request):
         h = Http()
         param = {
             'secret_key': settings.BAYT_SECRET_KEY,
-            'valid_until': '06-2030',
+            'valid_until': cert_end,
             'certificate_name': course_name.encode('UTF-8'),
             'email_address': user_email
         }
@@ -92,15 +92,17 @@ def activation(request):
     user_email = request.GET['email']
     course_name = request.GET['course_name']
     course_id = request.GET['course_id']
+    cert_end = request.GET['cert_end']
     user_id = request.user.id
     secret_key = settings.BAYT_SECRET_KEY
     my_string = user_email + course_name + secret_key
     current_access_token = hashlib.md5(my_string.encode('UTF-8')).hexdigest()
+
     if current_access_token == access_token:
         h = Http()
         param = {
             'secret_key': settings.BAYT_SECRET_KEY,
-            'valid_until': '06-2015',
+            'valid_until': cert_end,
             'certificate_name': course_name.encode('UTF-8'),
             'email_address': user_email
         }
