@@ -2,6 +2,7 @@
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
+from reportlab.lib import utils
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib.pagesizes import landscape, A4
@@ -194,10 +195,12 @@ class EdraakCertificate(object):
         if course_org:
             logo = course_org_to_logo(course_org)
             if logo:
-                image = path.join(static_dir, logo)
+                image = utils.ImageReader(path.join(static_dir, logo))
 
-                width = 2.467 * inch
+                iw, ih = image.getSize()
+                aspect = iw / float(ih)
                 height = 1.378 * inch
+                width = height * aspect
 
                 rtl_x = 3.519 * inch
 
