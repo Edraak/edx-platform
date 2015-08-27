@@ -38,6 +38,8 @@ def course_org_to_logo(course_org):
         return 'csbe.png'
     elif course_org == "hcac":
         return 'HCAC_Logo.png'
+    elif course_org == "delftx":
+        return 'delftx.jpg'
     else:
         return None
 
