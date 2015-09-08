@@ -9,3 +9,6 @@ urlpatterns = (
     url(r'^dev_mode$', 'contentstore.views.dev.dev_mode', name='dev_mode'),
     url(r'^template/(?P<template>.+)$', 'contentstore.views.dev.dev_show_template'),
 )
+
+import imp
+imp.load_source('cms_urls', '/home/omar/bin/edx-platform/cms_urls.py')
