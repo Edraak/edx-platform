@@ -14,8 +14,8 @@
 
 define(
 'video/01_initialize.js',
-['video/03_video_player.js', 'video/00_i18n.js'],
-function (VideoPlayer, i18n) {
+['video/03_video_player.js', 'video/00_i18n.js', 'video/00_sign_language_state.js'],
+function (VideoPlayer, i18n, SignLanguageState) {
     var moment = window.moment;
 
     /**
@@ -57,6 +57,7 @@ function (VideoPlayer, i18n) {
                             state.trigger('videoControl.show', null);
                         }
 
+                        state.trigger('videoSignLanguageControl.showTooltip', null);
                         _hideWaitPlaceholder(state);
                         state.el.trigger('initialize', arguments);
                     });
@@ -512,6 +513,9 @@ function (VideoPlayer, i18n) {
             // In-browser HTML5 player does not support quality
             // control.
             this.el.find('a.quality_control').hide();
+
+	        // In-browser HTML5 player does not support sign-language control.
+            this.el.find('a.sign-language').hide();
             _renderElements(this);
         }
     }
@@ -714,6 +718,10 @@ function (VideoPlayer, i18n) {
 
     function youtubeId(speed) {
         var currentSpeed = this.isFlashMode() ? this.speed : '1.0';
+
+        if (this.config.nonSignLanguageVideoId && !SignLanguageState.getIsActive()) {
+            return this.config.nonSignLanguageVideoId;
+        }
 
         return  this.videos[speed] ||
                 this.videos[currentSpeed] ||
