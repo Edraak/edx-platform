@@ -44,7 +44,10 @@ from lms.envs.common import (
     PROFILE_IMAGE_SECRET_KEY, PROFILE_IMAGE_MIN_BYTES, PROFILE_IMAGE_MAX_BYTES,
     # The following setting is included as it is used to check whether to
     # display credit eligibility table on the CMS or not.
-    ENABLE_CREDIT_ELIGIBILITY, YOUTUBE_API_KEY
+    ENABLE_CREDIT_ELIGIBILITY, YOUTUBE_API_KEY,
+
+    # Unicode usernames
+    USERNAME_PATTERN, USERNAME_REGEX
 )
 from path import path
 from warnings import simplefilter
@@ -1022,7 +1025,3 @@ CREDIT_PROVIDER_TIMESTAMP_EXPIRATION = 15 * 60
 ################################ Deprecated Blocks Info ################################
 
 DEPRECATED_BLOCK_TYPES = ['peergrading', 'combinedopenended']
-
-# This pattern allow space in username
-USERNAME_PATTERN = r'(?P<username>[\w .@_+-]+)'
-
