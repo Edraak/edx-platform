@@ -7262,6 +7262,14 @@ msgstr ""
 "غيّرت رابط الفيديو ولكنّك لم تغيّر ملف النص محدَّد التوقيت. هل ترغب في "
 "استخدام النص محدَّد التوقيت الحالي أو تحميل ملف نص جديد بصيغة .srt؟"
 
+# common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js
+msgid "Toggle Sign Language"
+msgstr "فعِّل أو عطِّل فيديو لغة الإشارة"
+
+# common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js
+msgid "Click on the sign language button to disable and enable the sign language subtitling."
+msgstr "إضغط على زر لغة الإشارة لتفعيل أو تعطيل الترجمة بلغة الإشارة في هذا الفيديو."
+
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
 msgstr "استخدام النص الحالي"
