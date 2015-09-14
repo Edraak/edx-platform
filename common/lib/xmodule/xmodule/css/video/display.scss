@@ -6,6 +6,31 @@
   display: none;
 }
 
+.video-warning-message {
+  $warning-color: rgb(237, 189, 60); //rich yellow
+
+  @include clearfix();
+  border-radius: 3px;
+  z-index: 10;
+  margin: $baseline 0 ($baseline/2) 0;
+  padding: ($baseline*0.5) $baseline;
+  font-family: $sans-serif;
+  background: tint($yellow,70%);
+  border: 1px solid $gray-l3;
+
+  border-top: 2px solid $warning-color;
+  background: tint($warning-color, 95%);
+
+  strong {
+    font-weight: 700;
+  }
+
+  .message-copy {
+    @extend %t-copy-sub1;
+    margin: 2px 0 0 0;
+  }
+}
+
 div.video {
   @include clearfix();
   background: #f3f3f3;

@@ -39,6 +39,54 @@ def create_youtube_string(module):
     ])
 
 
+class NoHTML5SourcesForFreeAccess(Exception):
+    """
+    Free access is enabled but there's no proper HTML5 sources.
+    """
+
+    def __init__(self, name, youtube, has_mp4, has_webm):
+        self.name = name
+        self.youtube = youtube
+        self.has_mp4 = has_mp4
+        self.has_webm = has_webm
+
+
+def should_disable_youtube(name, html5_sources, youtube_streams):
+    """
+    Decide if the user is granted free-access and switch to HTML5 videos when possible.
+
+    @author: Omar Al-Ithawi <oithawi@qrf.org>
+    """
+    if not settings.FEATURES.get('USE_FREE_ACCESS_VIDEOS', False):
+        return False
+
+    has_mp4 = False
+    has_webm = False
+
+    for source in html5_sources:
+        if source.endswith('.mp4'):
+            has_mp4 = True
+
+        if source.endswith('.webm'):
+            has_webm = True
+
+    if has_mp4 and has_webm:
+        return True
+    else:
+        msg = (u'Missing video encoding: name=%(name)s youtube=%(youtube)s '
+               u'has_mp4=%(has_mp4)s has_webm=%(has_webm)s')
+
+        params = {
+            "name": name,
+            "youtube": repr(youtube_streams),
+            "has_mp4": has_mp4,
+            "has_webm": has_webm,
+        }
+
+        log.error(msg, params)
+        raise NoHTML5SourcesForFreeAccess(**params)
+
+
 # def get_video_from_cdn(cdn_base_url, original_video_url, cdn_branding_logo_url):
 # Not sure if this third variable is necessary...
 def get_video_from_cdn(cdn_base_url, original_video_url):

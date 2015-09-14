@@ -39,6 +39,7 @@ from xmodule.exceptions import NotFoundError
 
 from .transcripts_utils import VideoTranscriptsMixin
 from .video_utils import create_youtube_string, get_video_from_cdn, get_poster
+from .video_utils import should_disable_youtube, NoHTML5SourcesForFreeAccess
 from .bumper_utils import bumperize
 from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
@@ -249,6 +250,20 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
 
         track_url, transcript_language, sorted_languages = self.get_transcripts_for_student(self.get_transcripts_info())
 
+        # Free access videos
+        if not youtube_streams:
+            youtube_streams = create_youtube_string(self)
+
+        try:
+            display_name = self.display_name_with_default
+            if should_disable_youtube(display_name, sources, youtube_streams):
+                # Disable YouTube for free-access users
+                youtube_streams = ""
+        except NoHTML5SourcesForFreeAccess:
+            display_free_access_disclaimer = True
+        else:
+            display_free_access_disclaimer = False
+
         # CDN_VIDEO_URLS is only to be used here and will be deleted
         # TODO(ali@edx.org): Delete this after the CDN experiment has completed.
         html_id = self.location.html_id()
@@ -264,7 +279,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
             cdn_eval = False
             cdn_exp_group = None
 
-        self.youtube_streams = youtube_streams or create_youtube_string(self)  # pylint: disable=W0201
+        self.youtube_streams = youtube_streams
 
         settings_service = self.runtime.service(self, 'settings')
 
@@ -329,6 +344,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
         context = {
             'bumper_metadata': json.dumps(self.bumper['metadata']),  # pylint: disable=E1101
             'metadata': json.dumps(OrderedDict(metadata)),
+            'display_free_access_disclaimer': display_free_access_disclaimer,
             'poster': json.dumps(get_poster(self)),
             'branding_info': branding_info,
             'cdn_eval': cdn_eval,
