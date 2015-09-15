@@ -687,3 +687,9 @@ ENV_TOKENS.get('CERTIFICATES_STATIC_VERIFY_URL', CERTIFICATES_STATIC_VERIFY_URL)
 if FEATURES.get('ENABLE_LTI_PROVIDER'):
     INSTALLED_APPS += ('lti_provider',)
     AUTHENTICATION_BACKENDS += ('lti_provider.users.LtiBackend', )
+
+# Custom MathJax URL, useful for Zero-rating
+MATHJAX_CUSTOM_URL = ENV_TOKENS.get('MATHJAX_CUSTOM_URL', None)
+
+# A list of extra MathJax extension urls
+MATHJAX_EXTENSIONS = ENV_TOKENS.get('MATHJAX_EXTENSIONS', [])

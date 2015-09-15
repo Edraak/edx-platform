@@ -1,10 +1,9 @@
 ## mako
 ## File:   templates/mathjax_include.html
-##
-## Advanced mathjax using 2.0-latest CDN for Dynamic Math
-##
-## This enables ASCIIMathJAX, and is used by js_textbox
+<%! from django.conf import settings %>
 
+## Advanced mathjax using 2.0-latest CDN for Dynamic Math
+## This enables ASCIIMathJAX, and is used by js_textbox
 
 %if mathjax_mode is not Undefined and mathjax_mode == 'wiki':
 <script type="text/x-mathjax-config">
@@ -47,7 +46,26 @@
 </script>
 
 
+<%def name='mathjax_params()'><%
+    if getattr(settings, 'MATHJAX_EXTENSIONS', []):
+        return '&delayStartupUntil=configured'
+    else:
+        return ''
+%></%def>
+
+
+
 <!-- This must appear after all mathjax-config blocks, so it is after the imports from the other templates.
      It can't be run through static.url because MathJax uses crazy url introspection to do lazy loading of
      MathJax extension libraries -->
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+% if getattr(settings, 'MATHJAX_CUSTOM_URL', None):
+    <script type="text/javascript" src="${settings.MATHJAX_CUSTOM_URL}${mathjax_params()}"></script>
+% else:
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full${mathjax_params()}"></script>
+% endif
+
+% if getattr(settings, 'MATHJAX_EXTENSIONS', []):
+    <script type="text/javascript">
+        MathJax.Hub.Configured();
+    </script>
+% endif
