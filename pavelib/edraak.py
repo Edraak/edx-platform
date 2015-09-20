@@ -28,35 +28,6 @@ def edraak_transifex_pull():
         sh('tx pull --force --mode=reviewed --language=ar --resource=edraak.{}'.format(resource))
 
 
-def cleanup_po_entry_conflicts(entry):
-    """
-    A temporary fix for https://openedx.atlassian.net/browse/LOC-67 .
-    Pick the first one!
-    """
-
-    conflict_mark = u'#-#-#-#-#'
-    msgstr = entry.msgstr
-
-    if not msgstr.startswith(conflict_mark):
-        return entry
-
-    lines = msgstr.split(u'\n')
-
-    for i, line in enumerate(lines):
-        if i == 0:  # Skip the first conflict mark
-            continue
-
-        if line.startswith(conflict_mark):
-            entry.msgstr = u'\n'.join(lines[1:i])
-
-            while 'fuzzy' in entry.flags:
-                entry.flags.remove('fuzzy')
-
-            return entry
-
-    raise Exception('Undefined behaviour')
-
-
 @task
 def edraak_generate_files():
     """
@@ -75,9 +46,6 @@ def edraak_generate_files():
 
         for entry in edraak_pofile:
             django_pofile.append(entry)
-
-    for i, entry in enumerate(django_pofile):
-        django_pofile[i] = cleanup_po_entry_conflicts(entry)
 
     # Save a backup in git for later inspection, and keep django.po untouched
     customized_pofile_name = lc_messages_dir / 'django-edraak-customized.po'
