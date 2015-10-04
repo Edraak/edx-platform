@@ -2,7 +2,7 @@
 # edX translation file.
 # Copyright (C) 2015 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# 
+#
 # Translators:
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
@@ -36,7 +36,7 @@
 # edX translation file.
 # Copyright (C) 2015 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# 
+#
 # Translators:
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
@@ -54,7 +54,7 @@
 # edX translation file
 # Copyright (C) 2015 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# 
+#
 # Translators:
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
@@ -82,7 +82,7 @@
 # edX translation file
 # Copyright (C) 2015 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# 
+#
 # Translators:
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
@@ -102,7 +102,7 @@
 # edX translation file
 # Copyright (C) 2013 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# 
+#
 # Translators:
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
@@ -113,7 +113,7 @@
 # edX translation file
 # Copyright (C) 2015 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# 
+#
 # Translators:
 # Almaazon <Ahmed.Almaazon@hotmail.com>, 2014
 # Hassan05 <hassan.upb@gmail.com>, 2014
@@ -676,7 +676,7 @@ msgid ""
 "message. Please check your email for the activation instructions."
 msgstr ""
 "لم يجرِ تفعيل هذا الحساب. وقد بعثنا رسالة تفعيل أخرى. يُرجى منك التحقق من "
-"بريدك الإكتروني للاطلاع على إرشادات التفعيل."
+"بريدك الإلكتروني للاطلاع على إرشادات التفعيل."
 
 #: common/djangoapps/student/views.py
 msgid "Please enter a username"
@@ -9274,7 +9274,7 @@ msgstr ""
 #. a field on the registration form meant to hold the user's username.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "JaneDoe"
-msgstr "فاطمة الفهري"
+msgstr "فاطمة_الفهري"
 
 #. Translators: This label appears above a dropdown menu on the registration
 #. form used to select the user's highest completed level of education.
@@ -9893,7 +9893,7 @@ msgstr "اسم المستخدم"
 #: cms/templates/register.html lms/templates/register-shib.html
 #: lms/templates/register.html
 msgid "example: JaneDoe"
-msgstr "مثال: عبد الحليم حافظ"
+msgstr "مثال: فاطمة_الفهري"
 
 #: cms/templates/register.html
 #: lms/templates/dashboard/_dashboard_info_language.html

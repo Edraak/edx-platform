@@ -1,4 +1,4 @@
-# 
+#
 # Translators:
 # qrfahasan <ahasan@qrf.org>, 2015
 # Ahmed Jazzar <ajazzar@edraak.org>, 2015
@@ -88,7 +88,7 @@ msgstr "يُرجى إدخال الاسم الكامل."
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:428
 msgid "Please enter your Username."
-msgstr "يُرجى اسم المستخدم."
+msgstr "يُرجى إدخال اسم المستخدم."
 
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:459
@@ -219,7 +219,7 @@ msgstr "هل تريد أن تنشر شهادتك على بيت.كوم؟"
 #: lms/templates/edraak_certificates/view.html:127
 #: lms/templates/edraak_certificates/view.html:172
 msgid "Enter or Confirm your Bayt email"
-msgstr "يرجى تأكيد بريدك الإكتروني المسجل على بيت.كوم"
+msgstr "يرجى تأكيد بريدك الإلكتروني المسجل على بيت.كوم"
 
 #. Translators: Edraak-specific
 #: lms/templates/edraak_certificates/view.html:130
