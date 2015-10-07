@@ -73,7 +73,7 @@ def clean_repo_check():
 
 
 @task
-def i18n_transifex_pull_edraak():
+def i18n_po_pull_edraak():
     # Get Edraak translations
     for resource in EDRAAK_RESOURCES:
         cmd = ' '.join([
@@ -116,7 +116,7 @@ def i18n_edraak_generate_files(is_js, suffix):
 
 
 @task
-def i18n_transifex_pull_edx():
+def i18n_po_pull_edx():
     # Pulling these languages to let `i18n_tool generate` work well,
     # This will be undoed later
     # TODO: Consider removing dummy locales
@@ -177,15 +177,15 @@ def i18n_make_missing(is_js, suffix):
 @needs(
     'pavelib.edraak.clean_repo_check',
     'pavelib.i18n.i18n_clean',
-    'pavelib.edraak.i18n_transifex_pull_edx',
-    'pavelib.edraak.i18n_transifex_pull_edraak',
+    'pavelib.edraak.i18n_po_pull_edx',
+    'pavelib.edraak.i18n_po_pull_edraak',
     'pavelib.i18n.i18n_extract',
     'pavelib.i18n.i18n_dummy',
     'pavelib.edraak.i18n_generate_latest',
     'pavelib.edraak.i18n_make_missing',
     'pavelib.edraak.i18n_edraak_generate_files',
 )
-def edraak_i18n_pull():
+def i18n_edraak_pull():
     """
     Pulls Edraak-specific translation files.
     """
@@ -222,20 +222,20 @@ def edraak_i18n_pull():
 
 
 @task
-def edraak_i18n_theme_push():
+def i18n_edraak_theme_push():
     """
-    Run theme's ./scripts/edraak_i18n_theme_push.sh.
+    Pushed the theme translation strings to Transifex.
     """
-    sh(django_cmd('lms', 'devstack', 'edraak_i18n_theme_push'))
+    sh(django_cmd('lms', 'devstack', 'i18n_edraak_theme_push'))
 
 
 @task
 @needs(
-    'pavelib.edraak.edraak_i18n_theme_push',
+    'pavelib.edraak.i18n_edraak_theme_push',
     'pavelib.i18n.i18n_extract',
 )
 @js_nonjs
-def edraak_i18n_push(is_js, suffix):
+def i18n_edraak_push(is_js, suffix):
     """
     Extracts Edraak-specific translation strings and append it to the provided .PO file.
 
