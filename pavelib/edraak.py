@@ -2,7 +2,7 @@
 Edraak internationalization tasks
 """
 from path import path
-from paver.easy import task, needs, sh
+from paver.easy import task, needs, sh, BuildFailure
 import polib
 from git import Repo
 import os
@@ -218,7 +218,19 @@ def i18n_edraak_pull():
         sh('git commit -m "{}" --edit'.format(default_message))
 
     sh('git checkout -- conf/')  # Cleanup dirty files
-    sh('git push')
+    git_push()
+
+
+def git_push():
+    """
+    A `$ git push` that fails safely, and prints a warning.
+    """
+    try:
+        print sh('git push', capture=True)
+    except BuildFailure as e:
+        print 'WARN: Git is unable to push to the remote repository.'
+        print '      This error will not interrupt the build.'
+        print '      You can `$ git push` manully to debug the error.'
 
 
 @task
