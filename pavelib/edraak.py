@@ -249,7 +249,7 @@ def i18n_edraak_theme_push():
 @js_nonjs
 def i18n_edraak_push(is_js, suffix):
     """
-    Extracts Edraak-specific translation strings and append it to the provided .PO file.
+    Extracts Edraak-specific strings and appends it to the provided .PO file.
 
     It searches for translation strings that are marked
     with "# Translators: Edraak-specific" comment.
