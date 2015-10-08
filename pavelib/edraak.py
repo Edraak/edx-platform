@@ -2,171 +2,297 @@
 Edraak internationalization tasks
 """
 from path import path
-from paver.easy import task, needs, sh
+from paver.easy import task, needs, sh, BuildFailure
 import polib
 from git import Repo
 import os
+import contextlib
+from shutil import copyfile
+
 from .utils.cmd import django_cmd
 
-PLATFORM_ROOT = path('.')
-git_repo = Repo(PLATFORM_ROOT)
+EDRAAK_RESOURCES = (
+    'edraak-platform',
+    'edraak-platform-2015-theme',
+)
 
-try:
-    from pygments.console import colorize
-except ImportError:
-    colorize = lambda color, text: text  # pylint: disable-msg=invalid-name
+ARABIC_LOCALE_DIR = 'conf/locale/ar/LC_MESSAGES/'
+
+OTHER_RTL_LOCALES = ('eo', 'rtl', 'he', 'fa',)
+
+git_repo = Repo('.')
+
+
+@contextlib.contextmanager
+def working_directory(path):
+    """
+    A context manager which changes the working directory to the given
+    path, and then changes it back to its previous value on exit.
+    """
+    prev_cwd = os.getcwd()
+    os.chdir(path)
+    yield
+    os.chdir(prev_cwd)
+
+
+def js_nonjs(func):
+    """
+    Make a task run for both `django.po` and `djangojs.po` in a DRY way.
+    """
+    def wrapper():
+        """
+        Run it twice.
+        """
+        func(is_js=False, suffix='')
+        func(is_js=True, suffix='js')
+
+    # Keep the original name for Paver
+    wrapper.__name__ = func.__name__
+
+    return wrapper
+
+
+def run_for_js_nonjs(func):
+    """
+    Actually run the function twice, rather than decorating the function.
+    """
+
+    func2 = js_nonjs(func)
+    func2()
 
 
 @task
-def edraak_transifex_pull():
+def clean_repo_check():
     # Start with clean translation state
-    clean_git_repo_msg = "The repo has local modifications. Please stash or commit your changes."
+    clean_git_repo_msg = (
+        'The repo has local modifications. '
+        'Please stash or commit your changes.'
+    )
+
     assert not git_repo.is_dirty(untracked_files=True), clean_git_repo_msg
 
+
+@task
+def i18n_po_pull_edraak():
     # Get Edraak translations
-    for resource in ('edraak-platform', 'edraak-platform-2015-theme'):
-        sh('tx pull --force --mode=reviewed --language=ar --resource=edraak.{}'.format(resource))
+    for resource in EDRAAK_RESOURCES:
+        cmd = ' '.join([
+            'tx',
+            'pull',
+            '--force',
+            '--mode=reviewed',
+            '--language=ar',
+            '--resource=edraak.{}'.format(resource),
+        ])
 
-
-def cleanup_po_entry_conflicts(entry):
-    """
-    A temporary fix for https://openedx.atlassian.net/browse/LOC-67 .
-    Pick the first one!
-    """
-
-    conflict_mark = u'#-#-#-#-#'
-    msgstr = entry.msgstr
-
-    if not msgstr.startswith(conflict_mark):
-        return entry
-
-    lines = msgstr.split(u'\n')
-
-    for i, line in enumerate(lines):
-        if i == 0:  # Skip the first conflict mark
-            continue
-
-        if line.startswith(conflict_mark):
-            entry.msgstr = u'\n'.join(lines[1:i])
-
-            while 'fuzzy' in entry.flags:
-                entry.flags.remove('fuzzy')
-
-            return entry
-
-    raise Exception('Undefined behaviour')
+        sh(cmd)
 
 
 @task
-def edraak_generate_files():
+@js_nonjs
+def i18n_edraak_generate_files(is_js, suffix):
     """
     Append all Edraak strings to the original django.mo.
     """
-    lc_messages_dir = PLATFORM_ROOT / 'conf/locale/ar/LC_MESSAGES'
+    with working_directory(ARABIC_LOCALE_DIR):
+        django_pofile = polib.pofile('django{}.po'.format(suffix))
 
-    django_pofile_name = lc_messages_dir / 'django.po'
-    django_mofile_name = lc_messages_dir / 'django.mo'
+        resources = [
+            'edraak{}-platform'.format(suffix),
+            'django{}-missing'.format(suffix),
+        ]
 
-    djangojs_pofile_name = lc_messages_dir / 'djangojs.po'
-    djangojs_mofile_name = lc_messages_dir / 'djangojs.mo'
+        if not is_js:
+            resources.append('edraak-platform-2015-theme')
 
-    django_pofile = polib.pofile(django_pofile_name)
-    djangojs_pofile = polib.pofile(djangojs_pofile_name)
+        for resource in resources:
+            for entry in polib.pofile('{}.po'.format(resource)):
+                django_pofile.append(entry)
 
-    for resource in ('edraak-platform.po', 'edraak-platform-2015-theme.po'):
-        edraak_pofile_name = lc_messages_dir / resource
-        edraak_pofile = polib.pofile(edraak_pofile_name)
+        # Save a backup in git for later inspection,
+        # and keep django.po untouched
+        django_pofile.save('django{}-edraak-customized.po'.format(suffix))
+        django_pofile.save_as_mofile('django{}.mo'.format(suffix))
 
-        for entry in edraak_pofile:
-            django_pofile.append(entry)
 
-    for i, entry in enumerate(django_pofile):
-        django_pofile[i] = cleanup_po_entry_conflicts(entry)
+@task
+def i18n_po_pull_edx():
+    # Pulling these languages to let `i18n_tool generate` work well,
+    # This will be undoed later
+    # TODO: Consider removing dummy locales
+    for lang in OTHER_RTL_LOCALES + ('ar',):
+        sh('tx pull --force --mode=reviewed --language={}'.format(lang))
 
-    # Save a backup in git for later inspection, and keep django.po untouched
-    customized_pofile_name = lc_messages_dir / 'django-edraak-customized.po'
-    django_pofile.save(customized_pofile_name)
-    django_pofile.save_as_mofile(django_mofile_name)
-    djangojs_pofile.save_as_mofile(djangojs_mofile_name)
+    def create_lastest(is_js, suffix):
+        with working_directory(ARABIC_LOCALE_DIR):
+            latest = path('latest-django{}.po'.format(suffix))
+
+            if latest.exists():
+                latest.remove()
+
+            copyfile('django.po', latest)
+
+    run_for_js_nonjs(create_lastest)
+
+    sh('git checkout -- conf/')  # Undo brutal `i18n_tool generate` chenges
+
+
+@task
+def i18n_generate_latest():
+    """
+    Compile localizable strings from sources, extracting strings first.
+    """
+
+    cmd = 'i18n_tool generate'
+    sh(cmd + ' --rtl --strict')
+
+
+@task
+@js_nonjs
+def i18n_make_missing(is_js, suffix):
+    with working_directory(ARABIC_LOCALE_DIR):
+        django = polib.pofile('django{}.po'.format(suffix))
+        django_latest = polib.pofile('latest-django{}.po'.format(suffix))
+
+        translated_msgids = {}
+        for entry in django.translated_entries():
+            translated_msgids[entry.msgid] = True
+
+        for entry in reversed(django_latest):
+            if not entry.translated():
+                django_latest.remove(entry)
+            elif translated_msgids.get(entry.msgid):
+                django_latest.remove(entry)
+
+        print 'Added {} missing translations for django{}.po:'.format(
+            len(django_latest),
+            suffix,
+        )
+
+        django_latest.save('django{}-missing.po'.format(suffix))
+        path('latest-django{}.po'.format(suffix)).remove()
 
 
 @task
 @needs(
-    'pavelib.edraak.edraak_transifex_pull',
-    'pavelib.edraak.edraak_generate_files',
+    'pavelib.edraak.clean_repo_check',
+    'pavelib.i18n.i18n_clean',
+    'pavelib.edraak.i18n_po_pull_edx',
+    'pavelib.edraak.i18n_po_pull_edraak',
+    'pavelib.i18n.i18n_extract',
+    'pavelib.i18n.i18n_dummy',
+    'pavelib.edraak.i18n_generate_latest',
+    'pavelib.edraak.i18n_make_missing',
+    'pavelib.edraak.i18n_edraak_generate_files',
 )
-def edraak_i18n_pull():
+def i18n_edraak_pull():
     """
     Pulls Edraak-specific translation files.
     """
     files_to_add = (
-        'conf/locale/ar/LC_MESSAGES/edraak-platform-2015-theme.po',
-        'conf/locale/ar/LC_MESSAGES/edraak-platform.po',
-        'conf/locale/ar/LC_MESSAGES/django.po',
-        'conf/locale/ar/LC_MESSAGES/django.mo',
-        'conf/locale/ar/LC_MESSAGES/djangojs.po',
-        'conf/locale/ar/LC_MESSAGES/djangojs.mo',
-        'conf/locale/ar/LC_MESSAGES/django-edraak-customized.po',
+        'edraak-platform-2015-theme.po',
+        'edraak-platform.po',
+
+        'django-edraak-customized.po',
+        'djangojs-edraak-customized.po',
+
+        'django-missing.po',
+        'djangojs-missing.po',
+
+        'django.mo',
+        'djangojs.mo',
     )
 
-    sh('git add --force {}'.format(' '.join(files_to_add)))
-    sh("git commit -m 'Update Edraak translations (autogenerated message)' --edit")
+    # Undo brutal `i18n_tool generate` chenges
+    for locale in OTHER_RTL_LOCALES:
+        sh('git checkout -- conf/locale/{}'.format(locale))
+
+    with working_directory(ARABIC_LOCALE_DIR):
+        # Keep it to it's original state
+        sh('git checkout -- django.po djangojs.po')
+
+        for f in files_to_add:
+            sh('git add --force {}'.format(f))
+
+        default_message = 'Update Edraak translations (autogenerated message)'
+        sh('git commit -m "{}" --edit'.format(default_message))
+
+    sh('git checkout -- conf/')  # Cleanup dirty files
+    git_push()
+
+
+def git_push():
+    """
+    A `$ git push` that fails safely, and prints a warning.
+    """
+    try:
+        print sh('git push', capture=True)
+    except BuildFailure as e:
+        print 'WARN: Git is unable to push to the remote repository.'
+        print '      This error will not interrupt the build.'
+        print '      You can `$ git push` manully to debug the error.'
 
 
 @task
-def edraak_i18n_theme_push():
+def i18n_edraak_theme_push():
     """
-    Run theme's ./scripts/edraak_i18n_theme_push.sh.
+    Pushed the theme translation strings to Transifex.
     """
-    sh(django_cmd('lms', 'devstack', 'edraak_i18n_theme_push'))
+    sh(django_cmd('lms', 'devstack', 'i18n_edraak_theme_push'))
+
 
 @task
 @needs(
-    'pavelib.edraak.edraak_i18n_theme_push',
+    'pavelib.edraak.i18n_edraak_theme_push',
     'pavelib.i18n.i18n_extract',
 )
-def edraak_i18n_push():
+@js_nonjs
+def i18n_edraak_push(is_js, suffix):
     """
-    Extracts Edraak-specific translation strings and append it to the provided .PO file.
+    Extracts Edraak-specific strings and appends it to the provided .PO file.
 
     It searches for translation strings that are marked
     with "# Translators: Edraak-specific" comment.
     """
-    english_po_dir = PLATFORM_ROOT / 'conf/locale/en/LC_MESSAGES'
 
-    edraak_specific_path = english_po_dir / 'edraak-platform.po'
-    if edraak_specific_path.exists():
-        edraak_specific_path.unlink()
+    with working_directory('conf/locale/en/LC_MESSAGES'):
+        edraak_specific_path = path('edraak{}-platform.po'.format(suffix))
 
-    edraak_specific = polib.POFile()
+        if edraak_specific_path.exists():
+            edraak_specific_path.unlink()
 
-    edraak_specific.metadata = {
-        "Project-Id-Version": "Edraak 1",
-        "Report-Msgid-Bugs-To": "dev@qrf.org",
-        "POT-Creation-Date": "2014-12-15 11:17+0200",
-        "PO-Revision-Date": "YEAR-MO-DA HO:MI+ZONE",
-        "Last-Translator": "Edraak Dev <dev@qrf.org>",
-        "Language-Team": "Edraak Dev <dev@qrf.org>",
-        "MIME-Version": "1.0",
-        "Content-Type": "text/plain; charset=utf-8",
-        "Content-Transfer-Encoding": "8bit",
-        "Generated-By": "Paver",
-    }
+        edraak_specific = polib.POFile()
 
-    for po_path in sorted(os.listdir(english_po_dir)):
-        # Avoid .mo files
-        if not po_path.endswith('.po'):
-            continue
+        edraak_specific.metadata = {
+            'Project-Id-Version': 'Edraak 1',
+            'Report-Msgid-Bugs-To': 'dev@qrf.org',
+            'POT-Creation-Date': '2014-12-15 11:17+0200',
+            'PO-Revision-Date': 'YEAR-MO-DA HO:MI+ZONE',
+            'Last-Translator': 'Edraak Dev <dev@qrf.org>',
+            'Language-Team': 'Edraak Dev <dev@qrf.org>',
+            'MIME-Version': '1.0',
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Content-Transfer-Encoding': '8bit',
+            'Generated-By': 'Paver',
+        }
 
-        if po_path == 'edraak-platform.po':
-            continue
+        for po_path in sorted(os.listdir('.')):
+            # Avoid .mo files
+            if not po_path.endswith('.po'):
+                continue
 
-        pofile = polib.pofile(english_po_dir / po_path)
+            if 'edraak' in po_path:
+                continue
 
-        for entry in pofile:
-            if 'edraak-specific' in entry.comment.lower():
-                edraak_specific.append(entry)
+            if is_js ^ ('djangojs' in po_path):
+                continue
 
-    edraak_specific.save(edraak_specific_path)
+            pofile = polib.pofile(po_path)
 
-    sh("tx push -l en -s -r edraak.edraak-platform")
+            for entry in pofile:
+                if 'edraak-specific' in entry.comment.lower():
+                    edraak_specific.append(entry)
+
+        edraak_specific.save(edraak_specific_path)
+
+        sh('tx push -l en -s -r edraak.edraak{}-platform'.format(suffix))
