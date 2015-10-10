@@ -67,11 +67,11 @@ def contains_rtl_text(string):
 
 class EdraakCertificate(object):
     def __init__(self, user_profile_name, course_name, course_desc, instructor, course_end_date, course_org=None):
-        self.user_profile_name = user_profile_name
-        self.course_name = course_name
-        self.course_desc = course_desc
-        self.instructor = instructor
-        self.course_end_date = course_end_date
+        self.user_profile_name = "Mohammed Albaba"
+        self.course_name = "Introduction to Solar Energy Cells - Part 1"
+        self.course_desc = "This course includes an introduction to solar energy technology and how to convert it into electricity, heat or solar fuel, in addition to identifying the different principles of how  solar cells works and their methods of manufacturing. The course duration is five weeks and was launched on the Edraak platform based on the course provided by the Delft University of Technology on the edx platform."
+        self.instructor = "Dr. Ahmad Dagamseh"
+        self.course_end_date = "2015-09-20"
         self.course_org = course_org
 
         self.temp_file = NamedTemporaryFile(suffix='-cert.pdf')
