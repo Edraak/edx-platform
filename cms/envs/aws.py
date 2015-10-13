@@ -338,6 +338,14 @@ VIDEO_UPLOAD_PIPELINE = ENV_TOKENS.get('VIDEO_UPLOAD_PIPELINE', VIDEO_UPLOAD_PIP
 PARSE_KEYS = AUTH_TOKENS.get("PARSE_KEYS", {})
 
 
+# Keep in pair with the values in the LMS
+# A list of allowed hosts e.g. ['www.example.com', 'courses.example.com']
+CSRF_TRUSTED_ORIGINS = ENV_TOKENS.get('CSRF_TRUSTED_ORIGINS')
+
+# e.g. '.example.org'
+CSRF_COOKIE_DOMAIN = ENV_TOKENS.get('CSRF_COOKIE_DOMAIN')
+
+
 # Video Caching. Pairing country codes with CDN URLs.
 # Example: {'CN': 'http://api.xuetangx.com/edx/video?s3_url='}
 VIDEO_CDN_URL = ENV_TOKENS.get('VIDEO_CDN_URL', {})

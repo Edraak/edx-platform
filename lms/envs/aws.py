@@ -587,6 +587,19 @@ REGISTRATION_CODE_LENGTH = ENV_TOKENS.get('REGISTRATION_CODE_LENGTH', 8)
 BAYT_SECRET_KEY = AUTH_TOKENS.get("BAYT_SECRET_KEY")
 BAYT_BASE = ENV_TOKENS.get("BAYT_BASE")
 
+# Safe URL redirects for the LMS and marketing
+# A list of allowed hosts e.g. ['www.example.com', 'courses.example.com']
+SAFE_REDIRECT_HOSTS = ENV_TOKENS.get('SAFE_REDIRECT_HOSTS')
+
+
+# CSRF settings are used for language change forms, but it can have other usages as well
+# A list of allowed hosts e.g. ['www.example.com', 'courses.example.com']
+CSRF_TRUSTED_ORIGINS = ENV_TOKENS.get('CSRF_TRUSTED_ORIGINS')
+
+# e.g. '.example.org'
+CSRF_COOKIE_DOMAIN = ENV_TOKENS.get('CSRF_COOKIE_DOMAIN')
+
+
 # When the platform should give up on SMTP-based email verification
 EMAIL_VERIFICATION_SMTP_TIMEOUT = ENV_TOKENS.get("EMAIL_VERIFICATION_SMTP_TIMEOUT", 4)
 

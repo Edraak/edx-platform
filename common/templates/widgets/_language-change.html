@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 <form id="edraak-language-form" action="${reverse('edraak_setlang')}"
       method="POST" style="display: none">
 
+    <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }" />
+
     % if translation.get_language() == 'ar':
         <input type="hidden" name="language" value="en">
     % else:
