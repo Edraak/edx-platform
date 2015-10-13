@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-08-18 09:41+0000\n"
+"PO-Revision-Date: 2015-10-13 19:52+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -40,31 +40,31 @@ msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:245
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:250
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:249
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:254
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:260
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:265
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:265
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:270
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
 #. Translators: Keep newlines for formatting, Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:277
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:282
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
@@ -81,27 +81,27 @@ msgid "Please enter your password."
 msgstr "يُرجى إدخالُ كلمة المرور."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:387
+#: openedx/core/djangoapps/user_api/views.py:381
 msgid "Please enter your Full name."
 msgstr "يُرجى إدخال الاسم الكامل."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:428
+#: openedx/core/djangoapps/user_api/views.py:422
 msgid "Please enter your Username."
 msgstr "يُرجى اسم المستخدم."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:459
+#: openedx/core/djangoapps/user_api/views.py:453
 msgid "Please enter your Password."
 msgstr "يُرجى إدخال كلمة السر."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:489
+#: openedx/core/djangoapps/user_api/views.py:483
 msgid "Please enter your Highest level of education completed"
 msgstr "يُرجى تحديد أعلى مستوى تعليمي وصلت إليه."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:518
+#: openedx/core/djangoapps/user_api/views.py:515
 msgid "Please enter your Gender."
 msgstr "يُرجى تحديد الجنس."
 
