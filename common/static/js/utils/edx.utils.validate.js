@@ -18,11 +18,18 @@ var edx = edx || {};
             validate: {
 
                 msg: {
-                    email: '<li><%- gettext("The email address you\'ve provided isn\'t formatted correctly.") %></li>',
-                    min: '<li><%- _.sprintf( gettext("%(field)s must have at least %(count)d characters."), context ) %></li>',
-                    max: '<li><%- _.sprintf( gettext("%(field)s can only contain up to %(count)d characters."), context ) %></li>',
-                    required: '<li><%- _.sprintf( gettext("Please enter your %(field)s."), context ) %></li>',
-                    custom: '<li><%= content %></li>'
+                  // Should not be specific after merging the pull request in edX
+                  // Translators: Edraak-specific
+                  email: gettext("The email address you've provided isn't formatted correctly."),
+                  // Should not be specific after merging the pull request in edX
+                  // Translators: Edraak-specific
+                  min: gettext("%(field)s must have at least %(count)d characters."),
+                  // Should not be specific after merging the pull request in edX
+                  // Translators: Edraak-specific
+                  max: gettext("%(field)s can only contain up to %(count)d characters."),
+                  // Should not be specific after merging the pull request in edX
+                  // Translators: Edraak-specific
+                  required: gettext("Please enter your %(field)s.")
                 },
 
                 field: function( el ) {
@@ -127,7 +134,8 @@ var edx = edx || {};
                         tpl,
                         label,
                         obj,
-                        customMsg;
+                        customMsg,
+                        msgFormat;
 
                     _.each( tests, function( value, key ) {
                         if ( !value ) {
@@ -136,15 +144,18 @@ var edx = edx || {};
 
                             // If the field has a custom error msg attached, use it
                             if ( customMsg ) {
-                                tpl = _fn.validate.msg.custom;
+                                // TODO: Escape from XSS
+                                tpl = '<li><%= content %></li>';
 
                                 obj = {
                                     content: customMsg
                                 };
                             } else {
-                                tpl = _fn.validate.msg[key];
+                                msgFormat = _fn.validate.msg[key];
+                                tpl = '<li><%- _.sprintf(msgFormat, context) %></li>';
 
                                 obj = {
+                                    msgFormat: msgFormat,
                                     // We pass the context object to the template so that
                                     // we can perform variable interpolation using sprintf
                                     context: {
@@ -162,7 +173,6 @@ var edx = edx || {};
                             txt.push( _.template( tpl, obj ) );
                         }
                     });
-
                     return txt.join(' ');
                 },
 
