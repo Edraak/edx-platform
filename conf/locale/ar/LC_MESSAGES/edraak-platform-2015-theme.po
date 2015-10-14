@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-18 19:39+0300\n"
+"POT-Creation-Date: 2015-10-14 05:57-0400\n"
 "PO-Revision-Date: 2015-08-10 12:21+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
@@ -21,42 +21,42 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: templates/theme-footer.html:13
+#: templates/theme-footer.html:14
 msgid ""
 "Edraak is an Initiative of the Queen Rania Foundation for Education and "
 "Development"
 msgstr " إدراك هي مبادرة من مؤسسة الملكة رانيا للتعليم والتنمية"
 
-#: templates/theme-footer.html:18
+#: templates/theme-footer.html:19
 msgid "About Us"
 msgstr "عن إدراك"
 
-#: templates/theme-footer.html:21
+#: templates/theme-footer.html:22
 msgid "Blog"
 msgstr "المدونة"
 
-#: templates/theme-footer.html:24
+#: templates/theme-footer.html:25
 msgid "Contact Us"
 msgstr "تواصل معنا"
 
-#: templates/theme-footer.html:27
+#: templates/theme-footer.html:28
 msgctxt "edraak-2015"
 msgid "FAQ"
 msgstr "الأسئلة المتكررة"
 
-#: templates/theme-footer.html:36
+#: templates/theme-footer.html:37
 msgid "Privacy Policy"
 msgstr "سياسة الخصوصية"
 
-#: templates/theme-footer.html:39
+#: templates/theme-footer.html:40
 msgid "Terms of Service"
 msgstr "شروط الخدمة"
 
-#: templates/theme-footer.html:76
+#: templates/theme-footer.html:77
 msgid "Powered by Open edX"
 msgstr "مدعوم من قبل منصة أوبن إدكس"
 
-#: templates/theme-footer.html:81
+#: templates/theme-footer.html:82
 msgid "{copy} 2015 Edraak, Some rights reserved"
 msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
 
