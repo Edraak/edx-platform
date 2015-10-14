@@ -2,7 +2,7 @@
 Edraak internationalization tasks
 """
 from path import path
-from paver.easy import task, needs, sh, BuildFailure
+from paver.easy import task, needs, sh, call_task, BuildFailure
 import polib
 from git import Repo
 import os
@@ -99,7 +99,7 @@ def i18n_edraak_generate_files(is_js, suffix):
 
         resources = [
             'edraak{}-platform'.format(suffix),
-            'django{}-missing'.format(suffix),
+            'django{}-updates'.format(suffix),
         ]
 
         if not is_js:
@@ -117,11 +117,13 @@ def i18n_edraak_generate_files(is_js, suffix):
 
 @task
 def i18n_po_pull_edx():
-    # Pulling these languages to let `i18n_tool generate` work well,
+    # Pulling these languages to let `i18n_generate_latest()` work well,
     # This will be undoed later
     # TODO: Consider removing dummy locales
     for lang in OTHER_RTL_LOCALES + ('ar',):
         sh('tx pull --force --mode=reviewed --language={}'.format(lang))
+
+    i18n_generate_latest()
 
     def create_lastest(is_js, suffix):
         with working_directory(ARABIC_LOCALE_DIR):
@@ -130,14 +132,13 @@ def i18n_po_pull_edx():
             if latest.exists():
                 latest.remove()
 
-            copyfile('django.po', latest)
+            copyfile('django{}.po'.format(suffix), latest)
 
     run_for_js_nonjs(create_lastest)
 
     sh('git checkout -- conf/')  # Undo brutal `i18n_tool generate` chenges
 
 
-@task
 def i18n_generate_latest():
     """
     Compile localizable strings from sources, extracting strings first.
@@ -149,27 +150,30 @@ def i18n_generate_latest():
 
 @task
 @js_nonjs
-def i18n_make_missing(is_js, suffix):
+def i18n_make_updates(is_js, suffix):
     with working_directory(ARABIC_LOCALE_DIR):
-        django = polib.pofile('django{}.po'.format(suffix))
+        django_edx = polib.pofile('django{}.po'.format(suffix))
         django_latest = polib.pofile('latest-django{}.po'.format(suffix))
 
-        translated_msgids = {}
-        for entry in django.translated_entries():
-            translated_msgids[entry.msgid] = True
+        edx_entries = {}
+        for entry in django_edx.translated_entries():
+            edx_entries[entry.msgid] = entry
 
         for entry in reversed(django_latest):
             if not entry.translated():
                 django_latest.remove(entry)
-            elif translated_msgids.get(entry.msgid):
-                django_latest.remove(entry)
+            else:
+                edx_entry = edx_entries.get(entry.msgid)
+                if edx_entry and edx_entry.msgstr == entry.msgstr:
+                    # Remove the ones that didn't change
+                    django_latest.remove(entry)
 
-        print 'Added {} missing translations for django{}.po:'.format(
+        print 'Added {} updated translations for django{}.po:'.format(
             len(django_latest),
             suffix,
         )
 
-        django_latest.save('django{}-missing.po'.format(suffix))
+        django_latest.save('django{}-updates.po'.format(suffix))
         path('latest-django{}.po'.format(suffix)).remove()
 
 
@@ -179,10 +183,7 @@ def i18n_make_missing(is_js, suffix):
     'pavelib.i18n.i18n_clean',
     'pavelib.edraak.i18n_po_pull_edx',
     'pavelib.edraak.i18n_po_pull_edraak',
-    'pavelib.i18n.i18n_extract',
-    'pavelib.i18n.i18n_dummy',
-    'pavelib.edraak.i18n_generate_latest',
-    'pavelib.edraak.i18n_make_missing',
+    'pavelib.edraak.i18n_make_updates',
     'pavelib.edraak.i18n_edraak_generate_files',
 )
 def i18n_edraak_pull():
@@ -196,8 +197,8 @@ def i18n_edraak_pull():
         'django-edraak-customized.po',
         'djangojs-edraak-customized.po',
 
-        'django-missing.po',
-        'djangojs-missing.po',
+        'django-updates.po',
+        'djangojs-updates.po',
 
         'django.mo',
         'djangojs.mo',
