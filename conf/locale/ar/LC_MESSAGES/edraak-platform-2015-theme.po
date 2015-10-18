@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-14 05:57-0400\n"
+"POT-Creation-Date: 2015-10-18 04:01-0400\n"
 "PO-Revision-Date: 2015-08-10 12:21+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
@@ -64,38 +64,38 @@ msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
 msgid "Welcome {full_name}"
 msgstr "مرحباً، {full_name}"
 
-#: templates/theme-header.html:98
+#: templates/theme-header.html:101
 msgctxt "edraak-2015"
 msgid "ABOUT"
 msgstr "عن إدراك"
 
-#: templates/theme-header.html:103
+#: templates/theme-header.html:106
 msgctxt "edraak-2015"
 msgid "How it Works"
 msgstr "كيف تتعلم عبر إدراك"
 
-#: templates/theme-header.html:108
+#: templates/theme-header.html:111
 msgctxt "edraak-2015"
 msgid "Courses"
 msgstr "المساقات"
 
-#: templates/theme-header.html:113
+#: templates/theme-header.html:116
 msgctxt "edraak-2015"
 msgid "Teach"
 msgstr "علّم"
 
-#: templates/theme-header.html:120
+#: templates/theme-header.html:123
 msgid "Sign Out"
 msgstr "تسجيل الخروج"
 
-#: templates/theme-header.html:125
+#: templates/theme-header.html:128
 msgid "Dashboard"
 msgstr "لوحة المعلومات"
 
-#: templates/theme-header.html:131
+#: templates/theme-header.html:134
 msgid "Sign in"
 msgstr "دخول"
 
-#: templates/theme-header.html:136
+#: templates/theme-header.html:139
 msgid "Register"
 msgstr "سجّل الآن"

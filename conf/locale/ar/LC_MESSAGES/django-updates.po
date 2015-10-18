@@ -132,7 +132,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2015-09-30 13:05+0000\n"
+"POT-Creation-Date: 2015-10-16 13:05+0000\n"
 "PO-Revision-Date: 2015-10-13 19:58+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
@@ -1637,14 +1637,6 @@ msgid "Credit Card - Individual"
 msgstr "بطاقة ائتمان - واحدة"
 
 #: lms/djangoapps/instructor/paidcourse_enrollment_report.py
-msgid ""
-"manually enrolled by user_id {user_id}, enrollment state transition: "
-"{transition}"
-msgstr ""
-"تسجَّل يدويًّا من قبل المستخدم الذي يحمل الرقم التعريفي user_id {user_id}، "
-"تغيير حالة التسجيل: {transition}"
-
-#: lms/djangoapps/instructor/paidcourse_enrollment_report.py
 msgid "Manually Enrolled"
 msgstr "مسجَّل يدويًّا"
 
@@ -2854,8 +2846,7 @@ msgid "Account"
 msgstr "الحساب"
 
 #: cms/templates/widgets/header.html lms/templates/navigation-edx.html
-#: lms/templates/navigation.html themes/edx.org/lms/templates/header.html
-#: themes/red-theme/lms/templates/header.html
+#: lms/templates/navigation.html themes/red-theme/lms/templates/header.html
 msgid "Sign Out"
 msgstr "تسجيل الخروج"
 
@@ -2994,12 +2985,11 @@ msgstr "إيجاد مساقات جديدة"
 msgid "Account Status Info"
 msgstr "معلومات وضع الحساب"
 
-#: lms/templates/footer-edx-v3.html themes/edx.org/lms/templates/footer.html
+#: lms/templates/footer-edx-v3.html
 msgid "Page Footer"
 msgstr "ذيل الصفحة"
 
 #: lms/templates/footer-edx-v3.html lms/templates/footer.html
-#: themes/edx.org/lms/templates/footer.html
 #: themes/red-theme/lms/templates/footer.html
 msgid "Legal"
 msgstr "القانوني"
@@ -3088,7 +3078,7 @@ msgstr "عرض الملف الشخصي"
 msgid "Remove Profile Image"
 msgstr "إزالة صورة الملف الشخصي"
 
-#: lms/templates/navigation-edx.html themes/edx.org/lms/templates/header.html
+#: lms/templates/navigation-edx.html
 msgid "Home Page"
 msgstr "الصفحة الرئيسية"
 
@@ -3316,10 +3306,6 @@ msgstr "يرجى الانتظار ريثما نستعيد تفاصيل طلبي�
 #: lms/templates/courseware/course_about.html
 msgid "This course is in your <a href=\"{cart_link}\">cart</a>."
 msgstr "هذا المساق موجود في <a href=\"{cart_link}\">سلّتك</a>."
-
-#: lms/templates/courseware/course_about.html
-msgid "Register for {course_name}"
-msgstr "التسجيل في {course_name}"
 
 #: lms/templates/courseware/course_about.html
 msgid "Course About"
@@ -3619,26 +3605,6 @@ msgid ""
 msgstr ""
 "وقع خطأ أثناء إكمال هذه العملية. للحصول على المساعدة يرجى الاتصال مع "
 "{support_email}."
-
-#: lms/templates/dashboard/_dashboard_credit_info.html
-msgid "Get credit"
-msgstr "الحصول على الوحدات الدراسية"
-
-#: lms/templates/dashboard/_dashboard_credit_info.html
-msgid "Learn more"
-msgstr "تعلّم المزيد"
-
-#: lms/templates/dashboard/_dashboard_credit_info.html
-msgid "Finalize credit"
-msgstr "استكمال الحصول على الوحدات الدراسية"
-
-#: lms/templates/dashboard/_dashboard_credit_info.html
-msgid "Access credit"
-msgstr "الوصول للمواد"
-
-#: lms/templates/dashboard/_dashboard_credit_info.html
-msgid "Contact {provider}"
-msgstr "يُرجى الاتصال بـ {provider}"
 
 #: lms/templates/dashboard/_dashboard_status_verification.html
 msgid "ID Verification Status"
@@ -4710,7 +4676,6 @@ msgstr ""
 "بالوصول إلى هذا المساق."
 
 #: lms/templates/student_account/account_settings.html
-#: themes/edx.org/lms/templates/header.html
 #: themes/red-theme/lms/templates/header.html
 msgid "Account Settings"
 msgstr "إعدادات الحساب"
@@ -5407,45 +5372,11 @@ msgstr "تحتوي هذه الكتلة على عدة مكوِّنات."
 
 #: cms/templates/videos_index.html
 msgid ""
-"After a file uploads successfully, automated processing begins. After "
-"automated processing begins for a file it is listed under Previous Uploads "
-"as {em_start}In Progress{em_end}. You can add the video to your course as "
-"soon as it has a unique video ID and the status is {em_start}Ready{em_end}. "
-"Allow 24 hours for file processing at the external video hosting sites to "
-"complete."
-msgstr ""
-"بعد نجاح تحميل الملف، تبدأ عملية معالجة أوتوماتيكية لهذا الملفّ. وبعد بدء "
-"هذه العملية، يجري إدراج الملفّ ضمن \"التحميلات السابقة\" بحالة {em_start}قيد"
-" المعالجة{em_end}، ويمكنك إضافة الفيديو إلى مساقك حالما يصبح لديه رقم تعريفي"
-" فريد ويصبح بحالة {em_start}جاهز{em_end}. ثمّ يتوجّب رجاءً الانتظار 24 ساعة "
-"ريثما تُستكمَل معالجة الملفّ في مواقع استضافة الفيديو الخارجية."
-
-#: cms/templates/videos_index.html
-msgid ""
 "If something goes wrong, the {em_start}Failed{em_end} status message "
 "appears. Check for problems in your original file and upload a replacement."
 msgstr ""
 "إذا وقعت مشكلة ما، تظهر لك رسالة {em_start}فشلت العملية{em_end}. ويُرجى "
 "مراجعة المشاكل في ملفّك الأصلي وتحميل الملفّ البديل. "
-
-#: cms/templates/videos_index.html
-msgid ""
-"As soon as the status for a file is {em_start}Ready{em_end}, you can add "
-"that video to a component in your course. Copy the unique video ID. In "
-"another browser window, on the Course Outline page, create or locate a video"
-" component to play this video. Edit the video component to paste the ID into"
-" the Advanced {em_start}Video ID{em_end} field. The video can play in the "
-"LMS as soon as its status is {em_start}Ready{em_end}, although processing "
-"may not be complete for all encodings and all video hosting sites."
-msgstr ""
-"حالما تصبح حالة الملفّ {em_start}جاهز{em_end}، يمكنك إضافة ذلك الفيديو إلى "
-"أحد المكوِّنات في مساقك. ويُرجى نسخ الرقم التعريفي الفريد للفيديو. وفي نافذة"
-" متصفِّح أخرى، في صفحة مخطَّط المساق، يُرجى إنشاء أو تحديد مكوِّن الفيديو "
-"لتشغيل الفيديو، وتعديل هذا المكوِّن للصق الرقم التعريفي في حقل  "
-"{em_start}الرقم التعريفي للفيديو{em_end} المتقدِّم. وقد يجري تشغيل الفيديو "
-"في نظام إدارة التعلّم LMS حالما تصبح حالته {em_start}جاهز{em_end}، وذلك "
-"بالرغم من أنّ المعالجة قد لا تُستَكمَل لجميع عمليات الترميز ولجميع مواقع "
-"استضافة الفيديو."
 
 #. Translators: 'EdX', 'edX', 'Studio', and 'Open edX' are trademarks of 'edX
 #. Inc.'. Please do not translate any of these trademarks and company names.

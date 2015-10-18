@@ -7944,16 +7944,8 @@ msgid "Signatory field(s) has invalid data."
 msgstr "يحتوي حقل (حقول) الموقّع على بيانات غير صالحة."
 
 #: cms/static/js/certificates/models/signatory.js
-msgid "Signatory name should not be more than 40 characters long."
-msgstr "لا يجب أن يزيد عدد أحرف اسم الموقّع عن 40 حرفًا."
-
-#: cms/static/js/certificates/models/signatory.js
 msgid "Signatory title should span over maximum of 2 lines."
 msgstr "لا يجب أن يشغل لقب الموقّع أكثر من سطرَين."
-
-#: cms/static/js/certificates/models/signatory.js
-msgid "Signatory title should have maximum of 40 characters per line."
-msgstr "لا يجب أن يزيد عدد أحرف لقب الموقّع عن 40 حرفًا في السطر الواحد."
 
 #: cms/static/js/certificates/views/certificate_details.js
 msgid "Edit this certificate?"
@@ -7990,10 +7982,6 @@ msgstr "هل تريد حذف \"<%= signatoryName %>\" من لائحة الموق
 #: cms/static/js/certificates/views/signatory_editor.js
 msgid "Upload signature image."
 msgstr "يُرجى تحميل صورة الموقِّع."
-
-#: cms/static/js/certificates/views/signatory_editor.js
-msgid "Image must be 450px X 150px transparent PNG."
-msgstr "يجب أن تكون الصورة شفّافة بصيغة PNG وأبعادها 450 × 150 بكسل."
 
 #: cms/static/js/factories/export.js
 msgid ""
@@ -9235,10 +9223,6 @@ msgid "Some Rights Reserved"
 msgstr "بعض الحقوق محفوظة"
 
 #: cms/templates/js/list.underscore
-msgid "Add your first %(item_type)s"
-msgstr "أَضِف أوَّل %(item_type)s"
-
-#: cms/templates/js/list.underscore
 msgid "New %(item_type)s"
 msgstr "%(item_type)s جديد"
 
@@ -9264,12 +9248,6 @@ msgid "Name of the signatory"
 msgstr "اسم الموقِّع"
 
 #: cms/templates/js/signatory-editor.underscore
-msgid ""
-"The name of this signatory as it should appear on certificates. Maximum 40 "
-"characters."
-msgstr "اسم هذا الموقّع كما يجب أن يظهر على الشهادات. 40 حرفًا كحدّ أقصى."
-
-#: cms/templates/js/signatory-editor.underscore
 msgid "Title of the signatory"
 msgstr "لقب الموقِّع"
 
@@ -9284,10 +9262,6 @@ msgstr "صورة الموقِّع"
 #: cms/templates/js/signatory-editor.underscore
 msgid "Path to Signature Image"
 msgstr "رابط صورة الموقِّع"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Image must be 450px X 150px transparent PNG"
-msgstr "يجب أن تكون الصورة بأبعاد 450×150 بكسل وبصيغة PNG شفّافة"
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""

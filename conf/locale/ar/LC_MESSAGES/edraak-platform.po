@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-10-13 22:17+0000\n"
+"PO-Revision-Date: 2015-10-18 07:44+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -75,7 +75,7 @@ msgstr "شهادة{new_line}إتمام{new_line}مساق"
 msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at %(platform_name)s."
-msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعاددة ضبط كلمة السر الخاصة بك على %(platform_name)s."
+msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعادة ضبط كلمة السر الخاصة بك على %(platform_name)s."
 
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:81
