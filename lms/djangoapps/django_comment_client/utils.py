@@ -62,6 +62,45 @@ def has_forum_access(uname, course_id, rolename):
     return role.users.filter(username=uname).exists()
 
 
+def hack_remove_unwanted_modules(course, categories):
+    """
+    This is a hack to remove the unwanted English modules from the discussion.
+
+    This affects only the Solar Energy course. For now, hopefully not another course!
+
+    edX still don't have a proper solution:
+     - http://help.edge.edx.org/discussions/problems/10019-deleted-discussion-topics-still-visible-on-forum-page
+
+    TODO: Remove this hack once edX or somebody else finds a solution for it.
+
+    :param course:
+    :param categories:
+    :return:
+    """
+
+    import re
+    SOLAR_ENERGY_COURSE = u'ET.3034TU'
+
+    if SOLAR_ENERGY_COURSE != course.id.course:
+        return categories
+
+    def has_english_text(text):
+        return re.match(r'[a-zA-Z]', text)
+
+    categories['children'] = [
+        child for child in categories['children']
+        if not has_english_text(child)
+    ]
+
+    categories['subcategories'] = {
+        key: cat
+        for key, cat in categories['subcategories'].iteritems()
+        if not has_english_text(key)
+    }
+
+    return categories
+
+
 def get_accessible_discussion_modules(course, user, include_all=False):  # pylint: disable=invalid-name
     """
     Return a list of all valid discussion modules in this course that
@@ -274,7 +313,8 @@ def get_discussion_category_map(course, user, cohorted_if_in_list=False, exclude
 
     _sort_map_entries(category_map, course.discussion_sort_alpha)
 
-    return _filter_unstarted_categories(category_map) if exclude_unstarted else category_map
+    categories = _filter_unstarted_categories(category_map) if exclude_unstarted else category_map
+    return hack_remove_unwanted_modules(course, categories)
 
 
 def get_discussion_categories_ids(course, user, include_all=False):
