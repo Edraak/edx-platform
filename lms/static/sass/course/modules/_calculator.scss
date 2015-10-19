@@ -10,7 +10,8 @@
   @include transition(bottom $tmg-avg linear 0s);
   -webkit-appearance: none;
   width: 100%;
-
+  direction: ltr;
+  
   &.open {
     bottom: -36px;
   }
