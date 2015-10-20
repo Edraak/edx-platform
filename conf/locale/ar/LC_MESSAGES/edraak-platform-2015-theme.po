@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-10-18 04:01-0400\n"
-"PO-Revision-Date: 2015-08-10 12:21+0000\n"
+"PO-Revision-Date: 2015-10-18 10:42+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
 
 #: templates/theme-header.html:53
 msgid "Welcome {full_name}"
-msgstr "مرحباً، {full_name}"
+msgstr "أهلاً {full_name}"
 
 #: templates/theme-header.html:101
 msgctxt "edraak-2015"
