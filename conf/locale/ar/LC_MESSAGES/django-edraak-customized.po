@@ -21420,34 +21420,6 @@ msgstr "تلميح:"
 msgid "Hint ({hint_num} of {hints_count}): "
 msgstr "التلميح ({hint_num} من أصل {hints_count}):"
 
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid ""
-"You must wait at least {wait_secs} between submissions. {remaining_secs} "
-"remaining."
-msgstr ""
-"يجب أن تنتظر ما لا يقلّ عن {wait_secs} بين كل تقديم وآخر. بقِيَت "
-"{remaining_secs}. "
-
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "{num_minute} minute"
-msgid_plural "{num_minute} minutes"
-msgstr[0] "{num_minute} دقائق"
-msgstr[1] "{num_minute} دقيقة"
-msgstr[2] "{num_minute} دقيقة"
-msgstr[3] "{num_minute} دقائق"
-msgstr[4] "{num_minute} دقائق"
-msgstr[5] "{num_minute} دقائق"
-
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "{num_second} second"
-msgid_plural "{num_second} seconds"
-msgstr[0] "{num_second} ثانية"
-msgstr[1] "{num_second} ثانية"
-msgstr[2] "{num_second} ثانية"
-msgstr[3] "{num_second} ثوانٍ"
-msgstr[4] "{num_second} ثوانٍ"
-msgstr[5] "{num_second} ثوانٍ"
-
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/peer_grading_module.py
 msgid ""
@@ -24045,7 +24017,7 @@ msgstr "إلغاء صلاحيات الوصول"
 
 #: lms/templates/ccx/enrollment.html
 msgid "Enter username or email"
-msgstr "أدخل اسم المستخدم أو البريد الإلكتروني"
+msgstr "أدخل اسم المستخدم أو البريد الإكتروني"
 
 #: lms/templates/ccx/grading_policy.html
 msgid "WARNING"
@@ -24426,12 +24398,31 @@ msgid "Available Actions"
 msgstr "الإجراءات المتاحة"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
+msgid ""
+"Are you sure you want to unenroll from the purchased course "
+"%(course_number)s?"
+msgstr ""
+"هل أنت متأكد أنك تريد إلغاء تسجيلك في المساق الذي اشتريته %(course_number)s؟"
+
+#: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You will be refunded the amount you paid."
 msgstr "سوف يعاد لك المبلغ الذي دفعته."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You will not be refunded the amount you paid."
 msgstr "لن يعاد لك المبلغ الذي دفعته."
+
+#: lms/templates/dashboard/_dashboard_course_listing.html
+msgid "Are you sure you want to unenroll from %(course_number)s?"
+msgstr "هل أنت متأكد من رغبتك بإلغاء تسجيلك في %(course_number)s؟"
+
+#: lms/templates/dashboard/_dashboard_course_listing.html
+msgid ""
+"Are you sure you want to unenroll from the verified {cert_name_long} track "
+"of %(course_number)s?"
+msgstr ""
+"هل أنت متأكد من رغبتك بإلغاء تسجيلك من مسار {cert_name_long} الموثقة لـ "
+"%(course_number)s؟"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid ""
@@ -25100,11 +25091,6 @@ msgstr "نسبة المقاعد المشتراة بالجملة"
 msgid "Percentage of seats purchased with invoices"
 msgstr "نسبة المقاعد المشتراة بفواتير"
 
-#: lms/templates/instructor/instructor_dashboard_2/extensions.html
-#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid "Student Email or Username"
-msgstr "عنوان البريد الإلكتروني أو اسم المستخدم للطالب"
-
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
 msgid "The organization that purchased enrollments in the course"
 msgstr "المؤسسة التي اشترت تسجيلات هذا المساق"
@@ -25420,10 +25406,6 @@ msgstr[4] ""
 "لقد نجحتَ بشراء <b>{number} رموز تسجيل المساق</b> من أجل {course_names}."
 msgstr[5] ""
 "لقد نجحتَ بشراء <b>{number} رموز تسجيل المساق</b> من أجل {course_names}."
-
-#: lms/templates/shoppingcart/receipt.html
-msgid "The following receipt has been emailed to {receipient_emails}"
-msgstr "أُرسِل الإيصال التالي بالبريد الإلكتروني إلى {receipient_emails}"
 
 #: lms/templates/shoppingcart/receipt.html
 msgid "Invalid"
@@ -26003,10 +25985,6 @@ msgid "Learn more about importing a course"
 msgstr "اعرف المزيد عن استيراد مساق"
 
 #: cms/templates/index.html
-msgid "Email staff to create course"
-msgstr "مراسلة فريق العمل عبر البريد الإلكتروني لإنشاء مساق"
-
-#: cms/templates/index.html
 msgid ""
 "The course creator must give you access to the course. Contact the course "
 "creator or administrator for the course you are helping to author."
@@ -26322,7 +26300,7 @@ msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
 
 #: templates/theme-header.html:53
 msgid "Welcome {full_name}"
-msgstr "أهلاً {full_name}"
+msgstr "مرحباً، {full_name}"
 
 #: templates/theme-header.html:101
 msgctxt "edraak-2015"

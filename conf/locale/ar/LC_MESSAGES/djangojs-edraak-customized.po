@@ -7384,10 +7384,6 @@ msgid "<%= num_students %> students scored."
 msgstr "<%= num_students %> طالب مقيَّم"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "Enter username or email"
-msgstr "أدخل اسم المستخدم أو البريد الإلكتروني"
-
-#: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Reason field should not be left blank."
 msgstr "لا يمكن ترك حقل السبب فارغًا."
 
@@ -8795,14 +8791,6 @@ msgstr "لا توجد أي مواضيع نقاش خاصة بالمحتوى."
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.underscore
 msgid "Cohorted"
 msgstr "التوزيع على المجموعات"
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
-msgid ""
-"Enter email addresses and/or usernames, separated by new lines or commas, "
-"for the students you want to add. *"
-msgstr ""
-"يُرجى إدخال عناوين البريد الإلكتروني و/أو أسماء المستخدمين، مفصولة بأسطر "
-"جديدة أو فواصل، للطلّاب الذين تودّ أن تضيفهم. *"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Cohort Assignment Method"
