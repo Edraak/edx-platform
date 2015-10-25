@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-10-18 07:44+0000\n"
+"PO-Revision-Date: 2015-10-20 13:59+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -96,7 +96,7 @@ msgstr "يُرجى إدخال الاسم الكامل."
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:422
 msgid "Please enter your Username."
-msgstr "يُرجى اسم المستخدم."
+msgstr "يُرجى إدخال اسم المستخدم."
 
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:453
@@ -124,7 +124,12 @@ msgid "Please select your Country."
 msgstr "يُرجى تحديد بلدك."
 
 #. Translators: Edraak-specific
-#: lms/templates/dashboard.html:183
+#: lms/templates/dashboard.html:181
+msgid "Want to change your account settings?"
+msgstr "هل تريد تغيير إعدادات حسابك؟"
+
+#. Translators: Edraak-specific
+#: lms/templates/dashboard.html:184
 msgid "Click on your username above."
 msgstr "اضغط على اسمك في الشريط العلوي."
 

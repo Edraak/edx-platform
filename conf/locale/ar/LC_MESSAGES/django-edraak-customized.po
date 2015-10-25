@@ -20833,7 +20833,7 @@ msgstr "يُرجى إدخال الاسم الكامل."
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:422
 msgid "Please enter your Username."
-msgstr "يُرجى اسم المستخدم."
+msgstr "يُرجى إدخال اسم المستخدم."
 
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:453
@@ -20861,7 +20861,12 @@ msgid "Please select your Country."
 msgstr "يُرجى تحديد بلدك."
 
 #. Translators: Edraak-specific
-#: lms/templates/dashboard.html:183
+#: lms/templates/dashboard.html:181
+msgid "Want to change your account settings?"
+msgstr "هل تريد تغيير إعدادات حسابك؟"
+
+#. Translators: Edraak-specific
+#: lms/templates/dashboard.html:184
 msgid "Click on your username above."
 msgstr "اضغط على اسمك في الشريط العلوي."
 

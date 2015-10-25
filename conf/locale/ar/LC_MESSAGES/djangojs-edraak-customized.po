@@ -8602,7 +8602,7 @@ msgstr "سؤال"
 
 #: common/static/common/templates/discussion/thread-type.underscore
 msgid "Discussion"
-msgstr "المناقشة"
+msgstr "حوار"
 
 #: common/static/common/templates/discussion/thread-type.underscore
 msgid ""
