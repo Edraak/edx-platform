@@ -86,22 +86,6 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: cms/static/coffee/src/views/tabs.js
-#: cms/static/coffee/src/xblock/cms.runtime.v1.js
-#: cms/static/js/certificates/views/signatory_details.js
-#: cms/static/js/models/section.js cms/static/js/utils/drag_and_drop.js
-#: cms/static/js/views/asset.js cms/static/js/views/container.js
-#: cms/static/js/views/course_info_handout.js
-#: cms/static/js/views/course_info_update.js
-#: cms/static/js/views/edit_textbook.js
-#: cms/static/js/views/list_item_editor.js cms/static/js/views/overview.js
-#: cms/static/js/views/overview_assignment_grader.js
-#: cms/static/js/views/modals/edit_xblock.js
-#: cms/static/js/views/utils/xblock_utils.js lms/static/js/ccx/schedule.js
-#: lms/static/js/views/fields.js
-msgid "Saving"
-msgstr ""
-
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: cms/static/coffee/src/views/tabs.js
@@ -156,12 +140,6 @@ msgstr "إلغاء"
 #: cms/templates/js/xblock-outline.underscore
 msgid "Delete"
 msgstr "حذف"
-
-#. Translators: This is the status of an active video upload
-#: cms/static/js/models/active_video_upload.js cms/static/js/views/assets.js
-#: lms/static/js/views/fields.js
-msgid "Uploading"
-msgstr ""
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -228,13 +206,6 @@ msgstr "خطأ"
 msgid "Save"
 msgstr "حفظ"
 
-#. Translators: this is a message from the raw HTML editor displayed in the
-#. browser when a user needs to edit HTML
-#: cms/static/js/views/modals/edit_xblock.js
-#: common/lib/xmodule/xmodule/js/src/html/edit.js
-msgid "Close"
-msgstr "إغلاق "
-
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
 msgstr "إظهار الملاحظات التوضيحية"
@@ -284,10 +255,6 @@ msgstr[2] "(%(num_points)s نقطة محتملة)"
 msgstr[3] "(%(num_points)s نقطة محتملة)"
 msgstr[4] "(%(num_points)s نقطة محتملة)"
 msgstr[5] "(%(num_points)s نقاط محتملة) "
-
-#: common/lib/xmodule/xmodule/js/src/capa/display.js
-msgid "The grading process is still running. Refresh the page to see updates."
-msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Answer:"
@@ -1686,12 +1653,6 @@ msgstr ""
 "\n"
 "هل تود الانتقال إلى المحرِّر المتقدِّم وتحويل هذه المشكلة إلى ملف XML؟ "
 
-#: common/lib/xmodule/xmodule/js/src/sequence/display.js
-msgid ""
-"Sequence error! Cannot navigate to %(tab_name)s in the current "
-"SequenceModule. Please contact the course staff."
-msgstr ""
-
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/09_play_pause_control.js
 #: common/lib/xmodule/xmodule/js/src/video/09_play_skip_control.js
@@ -1827,37 +1788,9 @@ msgstr[3] "%(value)s ثواني "
 msgstr[4] "%(value)s ثواني "
 msgstr[5] "%(value)s ثوانٍ"
 
-#: common/lib/xmodule/xmodule/js/src/video/07_video_volume_control.js
-msgid ""
-"Click on this button to mute or unmute this video or press UP or DOWN "
-"buttons to increase or decrease volume level."
-msgstr ""
-
-#: common/lib/xmodule/xmodule/js/src/video/08_video_speed_control.js
-msgid "Speeds"
-msgstr ""
-
-#: common/lib/xmodule/xmodule/js/src/video/09_play_skip_control.js
-msgid "Skip"
-msgstr ""
-
-#: common/lib/xmodule/xmodule/js/src/video/09_poster.js
-msgid "Play video"
-msgstr ""
-
-#: common/lib/xmodule/xmodule/js/src/video/09_skip_control.js
-msgid "Do not show again"
-msgstr ""
-
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn off captions"
 msgstr "إيقاف العناوين الفرعية"
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid ""
-"Activating an item in this group will spool the video to the corresponding "
-"time point. To skip transcript, go to previous item."
-msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Caption will be displayed when "
@@ -1923,16 +1856,6 @@ msgstr "نأسف لحدوث مشكلة في معالجة طلبك. يُرجى إ
 #: common/static/coffee/src/discussion/views/discussion_topic_menu_view.js
 msgid "…"
 msgstr "..."
-
-#: common/static/coffee/src/discussion/views/discussion_content_view.js
-msgid "there is currently %(numVotes)s vote"
-msgid_plural "there are currently %(numVotes)s votes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "%(numVotes)s Vote"
@@ -2141,46 +2064,6 @@ msgstr "نأسف لحدوث مشكلة في حذف هذا التعليق. يُر
 msgid "Are you sure you want to delete this response?"
 msgstr "هل أنت واثق من أنّك تودّ حذف هذا الرد؟"
 
-#. Translators: sample result:
-#. "Showing 0-9 out of 25 total, filtered by Images, sorted by Date Added
-#. ascending"
-#: common/static/common/js/components/views/paging_header.js
-msgid ""
-"Showing %(current_item_range)s out of %(total_items_count)s, filtered by "
-"%(asset_type)s, sorted by %(sort_name)s ascending"
-msgstr ""
-
-#. Translators: sample result:
-#. "Showing 0-9 out of 25 total, filtered by Images, sorted by Date Added
-#. descending"
-#: common/static/common/js/components/views/paging_header.js
-msgid ""
-"Showing %(current_item_range)s out of %(total_items_count)s, filtered by "
-"%(asset_type)s, sorted by %(sort_name)s descending"
-msgstr ""
-
-#. Translators: sample result:
-#. "Showing 0-9 out of 25 total, sorted by Date Added ascending"
-#: common/static/common/js/components/views/paging_header.js
-msgid ""
-"Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
-"%(sort_name)s ascending"
-msgstr ""
-
-#. Translators: sample result:
-#. "Showing 0-9 out of 25 total, sorted by Date Added descending"
-#: common/static/common/js/components/views/paging_header.js
-msgid ""
-"Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
-"%(sort_name)s descending"
-msgstr ""
-
-#. Translators: turns into "25 total" to be used in other sentences, e.g.
-#. "Showing 0-9 out of 25 total".
-#: common/static/common/js/components/views/paging_header.js
-msgid "%(total_items)s total"
-msgstr ""
-
 #: common/static/js/capa/drag_and_drop/base_image.js
 msgid "Drop target image"
 msgstr "إسقاط الصورة المطلوبة"
@@ -2200,11 +2083,6 @@ msgstr "جرى الإسقاط في شريط التمرير"
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped on target"
 msgstr "جرى الإسقاط على الهدف"
-
-#. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
-#: common/static/js/src/jquery.timeago.locale.js
-msgid "%s ago"
-msgstr "منذ %s ثوانٍ "
 
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
@@ -2443,26 +2321,12 @@ msgid ""
 msgstr ""
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
-msgid "Teams"
-msgstr ""
-
-#: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "My Teams"
 msgstr ""
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Browse"
 msgstr ""
-
-#: lms/djangoapps/teams/static/teams/js/views/topic_card.js
-msgid "%(team_count)s Team"
-msgid_plural "%(team_count)s Teams"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
 
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"
@@ -2493,20 +2357,12 @@ msgid "Error getting student list."
 msgstr "نأسف لحدوث خطأ في الحصول على قائمة الطلّاب."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
-msgid "Error generating list of students who may enroll. Please try again."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error retrieving grading configuration."
 msgstr "نأسف لحدوث خطأ في استرجاع طريقة ضبط إعدادات التقييم."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error generating grades. Please try again."
 msgstr "نأسف لحدوث خطأ في استحداث الدرجات. يُرجى إعادة المحاولة."
-
-#: lms/static/coffee/src/instructor_dashboard/data_download.js
-msgid "Error generating problem grade report. Please try again."
-msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
 msgid "Unavailable metric display."
@@ -2515,14 +2371,6 @@ msgstr "العرض المتري غير متوفّر الآن."
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
 msgid "Error fetching grade distributions."
 msgstr "نأسف لحدوث خطأ في إحضار بيانات توزيع الدرجات."
-
-#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
-msgid "Last Updated: <%= timestamp %>"
-msgstr "التحديث الأخير: <%= timestamp %>"
-
-#: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
-msgid "<%= num_students %> students scored."
-msgstr "جرى تقييم أعمال <%= num_students %> طالبًا."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/js/student_account/views/account_settings_factory.js
@@ -2537,10 +2385,6 @@ msgstr "البريد الإلكتروني"
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Revoke access"
 msgstr "إلغاء صلاحيات الوصول"
-
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "Enter username or email"
-msgstr "أدخل اسم المستخدم أو البريد الإكتروني"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Please enter a username or email."
@@ -2594,50 +2438,11 @@ msgstr "جرت العملية بنجاح"
 msgid "All accounts were created successfully."
 msgstr "استُكمل إنشاء جميع الحسابات بنجاح."
 
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "Error adding/removing users as beta testers."
-msgstr ""
-"نأسف لحدوث خطأ في إضافة/حذف بعض المستخدمين كأعضاء في مختبر النسخة التجريبية."
-
-#. Translators: A list of users appears after this sentence;
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "These users were successfully added as beta testers:"
-msgstr ""
-"نجحت عملية إضافة هؤلاء المستخدمين إلى قائمة أعضاء مختبر النسخة التجريبية:"
-
-#. Translators: A list of users appears after this sentence;
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "These users were successfully removed as beta testers:"
-msgstr ""
-"نجحت عملية حذف هؤلاء المستخدمين من قائمة أعضاء مختبر النسخة التجريبية:"
-
-#. Translators: A list of users appears after this sentence;
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "These users were not added as beta testers:"
-msgstr "لم يُضَف هؤلاء المستخدمون إلى قائمة أعضاء مختبر النسخة التجريبية:"
-
-#. Translators: A list of users appears after this sentence;
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "These users were not removed as beta testers:"
-msgstr "لم يُحذَف هؤلاء المستخدمين من قائمة أعضاء مختبر النسخة التجريبية:"
-
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid ""
-"Users must create and activate their account before they can be promoted to "
-"beta tester."
-msgstr ""
-"يجب على المستخدمين إنشاء حسابهم وتفعيله قبل أن تُتاح لهم إمكانية ترقيتهم إلى"
-" عضو مختبر النسخة التجريبية."
-
 #. Translators: A list of identifiers (which are email addresses and/or
 #. usernames) appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Could not find users associated with the following identifiers:"
 msgstr "نأسف لتعذّر إيجاد مستخدمين يحملون الأرقام التالية:"
-
-#: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "Reason field should not be left blank."
-msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Error enrolling/unenrolling users."
@@ -2865,66 +2670,6 @@ msgstr ""
 "نأسف لحدوث خطأ في الحصول على سجل المهمّات الخاصة بالمسألة رقم ’<%= "
 "problem_id %>‘ للطالب صاحب الرقم ’<%= student_id %>‘. يُرجى التحقق من صحّة "
 "إدخال هذين الرقمين. "
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-#: lms/static/js/spec/instructor_dashboard/student_admin_spec.js
-msgid "Entrance exam attempts is being reset for student '{student_id}'."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-#: lms/static/js/spec/instructor_dashboard/student_admin_spec.js
-msgid ""
-"Error resetting entrance exam attempts for student '{student_id}'. Make sure"
-" student identifier is correct."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-msgid ""
-"Started entrance exam rescore task for student '{student_id}'. Click the "
-"'Show Background Task History for Student' button to see the status of the "
-"task."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-msgid ""
-"Error starting a task to rescore entrance exam for student '{student_id}'. "
-"Make sure that entrance exam has problems in it and student identifier is "
-"correct."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-#: lms/static/js/spec/instructor_dashboard/student_admin_spec.js
-msgid "Enter a student's username or email address."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-msgid ""
-"Do you want to allow this student ('{student_id}') to skip the entrance "
-"exam?"
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-msgid ""
-"An error occurred. Make sure that the student's username or email address is"
-" correct and try again."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-#: lms/static/js/spec/instructor_dashboard/student_admin_spec.js
-msgid "Entrance exam state is being deleted for student '{student_id}'."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-msgid ""
-"Error deleting entrance exam state for student '{student_id}'. Make sure "
-"student identifier is correct."
-msgstr ""
-
-#: lms/static/coffee/src/instructor_dashboard/student_admin.js
-msgid ""
-"Error getting entrance exam task history for student '{student_id}'. Make "
-"sure student identifier is correct."
-msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Reset attempts for all students on problem '<%= problem_id %>'?"
@@ -3293,18 +3038,6 @@ msgstr "جرى بنجاح إعادة تقييم المسألة للمستخدم 
 msgid "Failed to rescore problem."
 msgstr "نأسف لتعذّر إجراء عملية إعادة تقييم المسألة."
 
-#: lms/static/js/ccx/schedule.js
-msgid "All subsections"
-msgstr ""
-
-#: lms/static/js/ccx/schedule.js
-msgid "All units"
-msgstr ""
-
-#: lms/static/js/ccx/schedule.js
-msgid "Select a chapter"
-msgstr ""
-
 #: lms/static/js/ccx/schedule.js lms/static/js/ccx/schedule.js.c
 msgid "Save changes"
 msgstr "حفظ التغييرات"
@@ -3333,18 +3066,6 @@ msgstr "تعذّر تقديم تبرعك."
 msgid "An error occurred. Please try again later."
 msgstr "ناسف لحدوث خطأ. يُرجى إعادة المحاولة لاحقًا. "
 
-#: lms/static/js/discovery/form.js
-msgid "We couldn't find any results for \"%s\"."
-msgstr ""
-
-#: lms/templates/search/search_error.underscore
-msgid "There was an error, try searching again."
-msgstr "نأسف لحدوث خطأ. يُرجى المحاولة مجدّدًا."
-
-#: lms/static/js/edxnotes/plugins/accessibility.js
-msgid "Focus grabber"
-msgstr ""
-
 #: lms/static/js/edxnotes/views/search_box.js
 #: lms/static/js/edxnotes/views/toggle_notes_factory.js
 msgid ""
@@ -3368,16 +3089,8 @@ msgid "Hide notes"
 msgstr "إخفاء الملاحظات"
 
 #: lms/static/js/edxnotes/views/toggle_notes_factory.js
-msgid "Notes visible"
-msgstr ""
-
-#: lms/static/js/edxnotes/views/toggle_notes_factory.js
 msgid "Show notes"
 msgstr "إظهار الملاحظات"
-
-#: lms/static/js/edxnotes/views/toggle_notes_factory.js
-msgid "Notes hidden"
-msgstr ""
 
 #: lms/static/js/edxnotes/views/tabs/course_structure.js
 msgid "Location in Course"
@@ -3392,14 +3105,6 @@ msgid "No results found for \"%(query_string)s\". Please try searching again."
 msgstr ""
 "عذرًا، لم نعثر على نتائج لـ \"%(query_string)s\". يُرجى محاولة البحث مرّة "
 "أخرى. "
-
-#. Translators: this is a title shown before all Notes that have no associated
-#. tags. It is put within
-#. brackets to differentiate it from user-defined tags, but it should still be
-#. translated.
-#: lms/static/js/edxnotes/views/tabs/tags.js
-msgid "[no tags]"
-msgstr ""
 
 #: lms/static/js/groups/views/cohort_discussions.js
 #: lms/static/js/groups/views/cohort_discussions_course_wide.js
@@ -3532,62 +3237,6 @@ msgid ""
 "Your file '{file}' has been uploaded. Allow a few minutes for processing."
 msgstr "جرى تحميل ملفّك '{file}'. يُرجى الانتظار لبضع دقائق لإتمام المعالجة."
 
-#: lms/static/js/groups/views/course_cohort_settings_notification.js
-msgid "Cohorts Enabled"
-msgstr ""
-
-#: lms/static/js/groups/views/course_cohort_settings_notification.js
-msgid "Cohorts Disabled"
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/certificates.js
-msgid "Allow students to generate certificates for this course?"
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/certificates.js
-msgid "Prevent students from generating certificates in this course?"
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/certificates.js
-msgid "Start generating certificates for all students in this course?"
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/certificates.js
-msgid "Error while generating certificates. Please try again."
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/ecommerce.js
-msgid ""
-"There was a problem creating the report. Select \"Create Executive Summary\""
-" to try again."
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/ecommerce.js
-msgid "Enter the enrollment code."
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/ecommerce.js
-msgid "Cancel enrollment code"
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/ecommerce.js
-msgid "Restore enrollment code"
-msgstr ""
-
-#: lms/static/js/instructor_dashboard/ecommerce.js
-msgid "Mark enrollment code as unused"
-msgstr ""
-
-#: lms/static/js/search/base/views/search_results_view.js
-msgid "%s result"
-msgid_plural "%s results"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
-
 #: lms/static/js/spec/instructor_dashboard/student_admin_spec.js
 msgid "Started entrance exam rescore task for student '{student_id}'."
 msgstr ""
@@ -3618,227 +3267,12 @@ msgid "Please enter a valid password"
 msgstr "يُرجى إدخال كلمة مرور صحيحة. "
 
 #: lms/static/js/student_account/account.js
-msgid ""
-"Password reset email sent. Follow the link in the email to change your "
-"password."
-msgstr ""
-"بعثنا لك رسالة عبر البريد الإلكتروني لإعادة ضبط كلمة المرور. يُرجى اتّباع "
-"الرابط الوارد في الرسالة لتغيير كلمة مرورك. "
-
-#: lms/static/js/student_account/account.js
-msgid "We weren't able to send you a password reset email."
-msgstr ""
-"عذرًا، لم نتمكّن من مراسلتك عبر البريد الإلكتروني لإعادة ضبط كلمة المرور. "
-
-#: lms/static/js/student_account/account.js
 msgid "Please check your email to confirm the change"
 msgstr "يُرجى التحقق من بريدك الإلكتروني لتأكيد التغيير."
-
-#: lms/static/js/student_account/views/FinishAuthView.js
-msgid "Saving your email preference"
-msgstr ""
-
-#: lms/static/js/student_account/views/FinishAuthView.js
-msgid "Enrolling you in the selected course"
-msgstr ""
-
-#: lms/static/js/student_account/views/FinishAuthView.js
-msgid "Adding the selected course to your cart"
-msgstr ""
-
-#: lms/static/js/student_account/views/FinishAuthView.js
-msgid "Loading your courses"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Basic Account Information (required)"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"The name that identifies you throughout {platform_name}. You cannot change "
-"your username."
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Full Name"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"The name that appears on your certificates. Other learners never see your "
-"full name."
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Email Address"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"The email address you use to sign in. Communications from {platform_name} "
-"and your courses are sent to this address."
-msgstr ""
 
 #: lms/templates/student_account/account.underscore
 msgid "Password"
 msgstr "كلمة السر"
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Reset your Password"
-msgstr ""
-
-#: lms/templates/student_account/account.underscore
-msgid "Reset Password"
-msgstr "إعادة ضبط كلمة السر"
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"When you click \"Reset Password\", a message will be sent to your email "
-"address. Click the link in the message to reset your password."
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Language"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"The language used throughout this site. This site is currently available in "
-"a limited number of languages."
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Country or Region"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Additional Information (optional)"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Education Completed"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Gender"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Year of Birth"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Preferred Language"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Connected Accounts"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Connect your {accountName} account"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "We've sent a confirmation message to {new_email_address}. "
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid ""
-"You must sign out and sign back in before your language changes take effect."
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "We've sent a message to {email_address}. "
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "Unlink"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "Link"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "Unlinking"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "Linking"
-msgstr ""
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "Successfully unlinked."
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "{platform_name} learners can see my:"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Limited Profile"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Full Profile"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Country"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Add Country"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Add language"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "About me"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid ""
-"Tell other learners a little about yourself: where you live, what your "
-"interests are, why you're taking courses, or what you hope to learn."
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_fields.js
-msgid "Account Settings page."
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_fields.js
-msgid ""
-"You must specify your birth year before you can share your full profile. To "
-"specify your birth year, go to the {account_settings_page_link}"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_fields.js
-msgid ""
-"You must be over 13 to share a full profile. If you are over 13, make sure "
-"that you have specified a birth year on the {account_settings_page_link}"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_fields.js
-msgid "Profile Image"
-msgstr ""
-
-#: lms/static/js/student_profile/views/learner_profile_fields.js
-msgid "Profile image for {username}"
-msgstr ""
-
-#: lms/static/js/verify_student/views/image_input_view.js
-msgid "Image Upload Error"
-msgstr ""
-
-#: lms/static/js/verify_student/views/image_input_view.js
-msgid "Please verify that you have uploaded a valid image (PNG and JPEG)."
-msgstr ""
 
 #: lms/static/js/verify_student/views/incourse_reverify_view.js
 #: lms/static/js/verify_student/views/review_photos_step_view.js
@@ -3851,36 +3285,6 @@ msgid "Could not submit photos"
 msgstr "عذرًا، لم يمكن تقديم الصور."
 
 #: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Professional Education Verified Certificate"
-msgstr ""
-
-#: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Professional Education"
-msgstr ""
-
-#: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Verified Certificate upgrade"
-msgstr ""
-
-#: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Verified Certificate"
-msgstr ""
-
-#: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Checkout"
-msgstr ""
-
-#: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Checkout with PayPal"
-msgstr ""
-
-#. Translators: 'processor' is the name of a third-party payment processing
-#. vendor (example: "PayPal")
-#: lms/static/js/verify_student/views/make_payment_step_view.js
-msgid "Checkout with {processor}"
-msgstr ""
-
-#: lms/static/js/verify_student/views/make_payment_step_view.js
 msgid "An error has occurred. Please try again."
 msgstr "نأسف لحدوث خطأ. يُرجى إعادة المحاولة."
 
@@ -3891,14 +3295,6 @@ msgstr "عذرًا، لم يمكن تقديم الطلب."
 #: lms/static/js/verify_student/views/payment_confirmation_step_view.js
 msgid "Could not retrieve payment information"
 msgstr "عذرًا، لم يمكن استرجاع معلومات الدفع."
-
-#: lms/static/js/verify_student/views/reverify_view.js
-msgid "Take a photo of your ID"
-msgstr ""
-
-#: lms/static/js/verify_student/views/reverify_view.js
-msgid "Review your info"
-msgstr ""
 
 #: lms/templates/verify_student/review_photos_step.underscore
 msgid "Confirm"
@@ -3934,91 +3330,9 @@ msgstr ""
 "يُرجى التحقّق مجدّدًا من أنّ كاميرا الويب متّصلة بالكمبيوتر وغير معطّلة "
 "لتتمكّن من المتابعة. "
 
-#: lms/static/js/verify_student/views/webcam_photo_view.js
-msgid "Photo Captured successfully."
-msgstr ""
-
-#: lms/static/js/verify_student/views/webcam_photo_view.js
-msgid "No Flash Detected"
-msgstr ""
-
-#: lms/static/js/verify_student/views/webcam_photo_view.js
-msgid ""
-"You don't seem to have Flash installed. Get Flash to continue your "
-"verification."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "Editable"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "Validation Error"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "In Progress"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "Placeholder"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "An error occurred. Please try again."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "Upload an image"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "Change image"
-msgstr ""
-
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "حذف"
-
-#: lms/static/js/views/fields.js
-msgid "Removing"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "An error has occurred. Refresh the page, and then try again."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "The file must be at least {size} in size."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "The file must be smaller than {size} in size."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid ""
-"Upload is in progress. To avoid errors, stay on this page until the process "
-"is complete."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid ""
-"Removal is in progress. To avoid errors, stay on this page until the process"
-" is complete."
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "bytes"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "KB"
-msgstr ""
-
-#: lms/static/js/views/fields.js
-msgid "MB"
-msgstr ""
 
 #: lms/static/js/views/file_uploader.js
 msgid "Your upload of '{file}' succeeded."
@@ -4067,27 +3381,12 @@ msgid "Number of Students"
 msgstr "عدد الطلّاب"
 
 #: cms/static/coffee/src/main.js
-msgid ""
-"This may be happening because of an error with our server or your internet "
-"connection. Try refreshing the page or making sure you are online."
-msgstr ""
-"قد يُعزى هذا إلى حدوث مشكلة في السيرفر لدينا أو في اتّصالك بالإنترنت. يُرجى "
-"محاولة تحديث الصفحة أو التأكّد من اتّصالك باالإنترنت."
-
-#: cms/static/coffee/src/main.js
 msgid "Studio's having trouble saving your work"
 msgstr "يواجه نظام Studio صعوبة في حفظ عملك "
 
 #: cms/static/coffee/src/views/tabs.js
 msgid "Delete Page Confirmation"
 msgstr "تأكيد حذف الصفحة"
-
-#: cms/static/coffee/src/views/tabs.js
-msgid ""
-"Are you sure you want to delete this page? This action cannot be undone."
-msgstr ""
-"هل أنت واثق من أنّك تريد حذف هذه الصفحة؟ فإنّه لا يمكن التراجع عن هذه "
-"العملية لاحقًا."
 
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/js/certificates/views/signatory_editor.js
@@ -4101,32 +3400,12 @@ msgstr "جاري الحذف"
 msgid "OpenAssessment Save Error"
 msgstr "نأسف لحدوث خطأ في حفظ التقييم المفتوح."
 
-#: cms/templates/js/checklist.underscore
-msgid "This link will open in a new browser window/tab"
-msgstr "سيُفتح هذا الرابط في نافذة متصفّح جديدة/تبويبة جديدة"
-
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
 msgstr "سيفتح هذا الرابط في نافذة منبثقة جديدة."
 
-#: cms/static/js/certificates/collections/certificates.js
-msgid "Could not parse certificate JSON. %(message)s"
-msgstr ""
-
-#: cms/static/js/certificates/models/certificate.js
-msgid "Certificate name is required."
-msgstr ""
-
-#: cms/static/js/certificates/models/certificate.js
-msgid "Signatory field(s) has invalid data."
-msgstr ""
-
 #: cms/static/js/certificates/models/signatory.js
 msgid "Signatory name should not be more than 40 characters long."
-msgstr ""
-
-#: cms/static/js/certificates/models/signatory.js
-msgid "Signatory title should span over maximum of 2 lines."
 msgstr ""
 
 #: cms/static/js/certificates/models/signatory.js
@@ -4145,31 +3424,10 @@ msgstr ""
 msgid "Maximum logo height should be 125px."
 msgstr ""
 
-#. Translators: This field pertains to the custom label for a certificate.
-#. Translators: this refers to a collection of certificates.
-#: cms/static/js/certificates/views/certificate_item.js
-#: cms/static/js/certificates/views/certificates_list.js
-msgid "certificate"
-msgstr ""
-
-#. Translators: This line refers to the initial state of the form when no data
-#. has been inserted
-#: cms/static/js/certificates/views/certificates_list.js
-msgid "You have not created any certificates yet."
-msgstr ""
-
-#: cms/static/js/certificates/views/signatory_editor.js
-msgid "Delete \"<%= signatoryName %>\" from the list of signatories?"
-msgstr ""
-
 #: cms/static/js/certificates/views/signatory_editor.js
 #: cms/static/js/views/course_info_update.js
 msgid "This action cannot be undone."
 msgstr "يتعذّر التراجع عن هذه العملية لاحقًا. "
-
-#: cms/static/js/certificates/views/signatory_editor.js
-msgid "Upload signature image."
-msgstr ""
 
 #: cms/static/js/certificates/views/signatory_editor.js
 msgid "Image must be 450px X 150px transparent PNG."
@@ -4210,38 +3468,12 @@ msgid "Return to Export"
 msgstr "العودة إلى التصدير"
 
 #: cms/static/js/factories/export.js
-msgid ""
-"Your library could not be exported to XML. There is not enough information "
-"to identify the failed component. Inspect your library to identify any "
-"problematic components and try again."
-msgstr ""
-
-#: cms/static/js/factories/export.js
-msgid "Take me to the main library page"
-msgstr ""
-
-#: cms/static/js/factories/export.js
-msgid ""
-"Your course could not be exported to XML. There is not enough information to"
-" identify the failed component. Inspect your course to identify any "
-"problematic components and try again."
-msgstr ""
-
-#: cms/static/js/factories/export.js
-msgid "Take me to the main course page"
-msgstr ""
-
-#: cms/static/js/factories/export.js
 msgid "The raw error message is:"
 msgstr "نص رسالة الخطأ هي:"
 
 #: cms/static/js/factories/export.js
 msgid "There has been an error with your export."
 msgstr "نأسف لحدوث خطأ في عملية التصدير التي أجريتها. "
-
-#: cms/static/js/factories/import.js
-msgid "There was an error while importing the new library to our database."
-msgstr ""
 
 #: cms/static/js/factories/import.js
 msgid "There was an error while importing the new course to our database."
@@ -4267,44 +3499,13 @@ msgstr "اختر ملف جديد"
 msgid "Your import has failed."
 msgstr "عذرًاً، لم تنجح عملية الاستيراد."
 
-#: cms/static/js/factories/import.js
-msgid ""
-"File format not supported. Please upload a file with a {file_extension} "
-"extension."
-msgstr ""
-
 #: cms/static/js/factories/manage_users.js
 msgid "Already a course team member"
 msgstr "عضو مسبق في فريق المساق"
 
-#: cms/static/js/factories/manage_users.js
-msgid ""
-"Are you sure you want to delete {email} from the course team for "
-"“{container}”?"
-msgstr ""
-
-#: cms/static/js/factories/manage_users.js
-#: cms/static/js/factories/manage_users_lib.js
-msgid "Staff"
-msgstr ""
-
-#: cms/static/js/factories/manage_users.js
-#: cms/static/js/factories/manage_users_lib.js
-msgid "Admin"
-msgstr ""
-
 #: cms/static/js/factories/manage_users_lib.js
 msgid "Already a library team member"
 msgstr "عضو مسبَق في فريق المكتبة"
-
-#: cms/static/js/factories/manage_users_lib.js
-msgid ""
-"Are you sure you want to delete {email} from the library “{container}”?"
-msgstr ""
-
-#: cms/static/js/factories/manage_users_lib.js
-msgid "Library User"
-msgstr ""
 
 #: cms/static/js/factories/settings_advanced.js
 msgid "Hide Deprecated Settings"
@@ -4410,10 +3611,6 @@ msgstr ""
 msgid "Key should only contain letters, numbers, _, or -"
 msgstr "لا يجب أن يحتوي المفتاح سوى على حروف، أو أرقام، أو _، أو -"
 
-#: cms/static/js/models/settings/course_details.js
-msgid "Please enter an integer between %(min)s and %(max)s."
-msgstr ""
-
 #: cms/static/js/models/settings/course_grader.js
 msgid "There's already another assignment type with this name."
 msgstr "يوجد مسبقًا نوع آخر من الواجبات بهذا الاسم."
@@ -4437,10 +3634,6 @@ msgstr "لا يمكن إسقاط <% attrs.types %> أكثر مما سيجري ت
 #: cms/static/js/models/settings/course_grading_policy.js
 msgid "Grace period must be specified in HH:MM format."
 msgstr "يجب تحديد فترة السماح بصيغة HH:MM."
-
-#: cms/static/js/models/settings/course_grading_policy.js
-msgid "Not able to set passing grade to less than %(minimum_grade_cutoff)s%."
-msgstr ""
 
 #: cms/static/js/spec/views/assets_spec.js cms/static/js/views/assets.js
 #: cms/templates/js/asset-library.underscore
@@ -4603,79 +3796,12 @@ msgid "You have not created any group configurations yet."
 msgstr "لم تنشئ أي إعدادات للمجموعات بعد."
 
 #: cms/static/js/views/import.js
-msgid "Your import is in progress; navigating away will abort it."
-msgstr ""
-
-#: cms/static/js/views/import.js
 msgid "Error importing course"
 msgstr "نأسف لحدوث خطأ في استيراد المساق."
 
 #: cms/static/js/views/import.js
 msgid "There was an error with the upload"
 msgstr "نأسف لحدوث خطأ في عملية التحميل."
-
-#: cms/static/js/views/license.js cms/templates/js/license-selector.underscore
-msgid "All Rights Reserved"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "You reserve all rights for your work"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "Creative Commons"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "You waive some rights for your work, such that others can use it too"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "Version"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "Attribution"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid ""
-"Allow others to copy, distribute, display and perform your copyrighted work "
-"but only if they give credit the way you request. Currently, this option is "
-"required."
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "Noncommercial"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid ""
-"Allow others to copy, distribute, display and perform your work - and "
-"derivative works based upon it - but for noncommercial purposes only."
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "No Derivatives"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid ""
-"Allow others to copy, distribute, display and perform only verbatim copies "
-"of your work, not derivative works based upon it. This option is "
-"incompatible with \"Share Alike\"."
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid "Share Alike"
-msgstr ""
-
-#: cms/static/js/views/license.js
-msgid ""
-"Allow others to distribute derivative works only under a license identical "
-"to the license that governs your work. This option is incompatible with \"No"
-" Derivatives\"."
-msgstr ""
 
 #. Translators: "item_display_name" is the name of the item to be deleted.
 #: cms/static/js/views/list_item.js
@@ -4716,26 +3842,12 @@ msgid "Return and add email address"
 msgstr "العودة وإضافة عنوان البريد الإلكتروني."
 
 #: cms/static/js/views/manage_users_and_roles.js
-msgid "Already a member"
-msgstr ""
-
-#: cms/static/js/views/manage_users_and_roles.js
-msgid ""
-"{email} is already on the {container} team. Recheck the email address if you"
-" want to add a new member."
-msgstr ""
-
-#: cms/static/js/views/manage_users_and_roles.js
 msgid "Return to team listing"
 msgstr "العودة إلى إدراج الفريق"
 
 #: cms/static/js/views/manage_users_and_roles.js
 msgid "Are you sure?"
 msgstr "هل أنت واثق؟"
-
-#: cms/static/js/views/manage_users_and_roles.js
-msgid "Are you sure you want to restrict {email} access to “{container}”?"
-msgstr ""
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
@@ -4827,10 +3939,6 @@ msgstr "محرّر"
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid "Settings"
 msgstr "الإعدادات"
-
-#: cms/static/js/views/xblock_outline.js
-msgid "New %(component_type)s"
-msgstr "%(component_type)s جديد"
 
 #. Translators: This message will be added to the front of messages of type
 #. warning,
@@ -4954,14 +4062,6 @@ msgstr "فهرس المساق"
 msgid "There were errors reindexing course."
 msgstr "نأسف لحدوث أخطاء في إعادة فهرسة محتويات المساق."
 
-#: cms/static/js/views/pages/paged_container.js
-msgid "Hide Previews"
-msgstr ""
-
-#: cms/static/js/views/pages/paged_container.js
-msgid "Show Previews"
-msgstr ""
-
 #: cms/static/js/views/settings/advanced.js
 msgid ""
 "Your changes will not take effect until you save your progress. Take care "
@@ -5073,76 +4173,10 @@ msgstr ""
 msgid "Upload translation"
 msgstr "تحميل الترجمة"
 
-#: cms/static/js/views/video/transcripts/file_uploader.js
-msgid "Please select a file in .srt format."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/file_uploader.js
-msgid "Error: Uploading failed."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/message_manager.js
-msgid "Error: Import failed."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/message_manager.js
-msgid "Error: Replacing failed."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/message_manager.js
-msgid "Error: Choosing failed."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/metadata_videolist.js
-msgid "Error: Connection with server failed."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/metadata_videolist.js
-msgid "No sources"
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/metadata_videolist.js
-msgid "Link types should be unique."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/metadata_videolist.js
-msgid "Links should be unique."
-msgstr ""
-
-#: cms/static/js/views/video/transcripts/metadata_videolist.js
-msgid "Incorrect url format."
-msgstr ""
-
-#: cms/templates/js/asset-library.underscore
-#: cms/templates/js/basic-modal.underscore
-#: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
-msgid "Actions"
-msgstr ""
-
 #: cms/templates/js/previous-video-upload-list.underscore
 #: lms/templates/verify_student/enrollment_confirmation_step.underscore
 msgid "Status"
 msgstr "الحالة"
-
-#: lms/templates/ccx/schedule.underscore
-msgid "Unit"
-msgstr ""
-
-#: lms/templates/ccx/schedule.underscore
-msgid "Start Date"
-msgstr ""
-
-#: lms/templates/ccx/schedule.underscore
-msgid "Due Date"
-msgstr ""
-
-#: lms/templates/ccx/schedule.underscore
-msgid "remove all"
-msgstr ""
-
-#: lms/templates/ccx/schedule.underscore
-msgid "remove"
-msgstr ""
 
 #: lms/templates/commerce/receipt.underscore
 msgid "Thank you! We have received your payment."
@@ -5198,10 +4232,6 @@ msgid "No receipt available"
 msgstr "ليس هناك من إيصال. "
 
 #: lms/templates/commerce/receipt.underscore
-msgid "Go to Dashboard"
-msgstr ""
-
-#: lms/templates/commerce/receipt.underscore
 #: lms/templates/verify_student/payment_confirmation_step.underscore
 msgid ""
 "If you don't verify your identity now, you can still explore your course "
@@ -5215,10 +4245,6 @@ msgstr ""
 #: lms/templates/verify_student/payment_confirmation_step.underscore
 msgid "Want to confirm your identity later?"
 msgstr "هل تريد تأكيد هويّتك لاحقًا؟"
-
-#: lms/templates/commerce/receipt.underscore
-msgid "Verify Now"
-msgstr ""
 
 #: lms/templates/dashboard/donation.underscore
 msgid "Donate"
@@ -5242,10 +4268,6 @@ msgstr "اعرف المزيد"
 
 #: lms/templates/discovery/result_item.underscore
 msgid "gettext("
-msgstr ""
-
-#: lms/templates/discovery/result_item.underscore
-msgid "Starts"
 msgstr ""
 
 #: lms/templates/discovery/search_facets_list.underscore
@@ -5280,54 +4302,6 @@ msgstr "الاسم  "
 msgid "Clear search results"
 msgstr "حذف نتائج البحث"
 
-#: lms/templates/fields/field_dropdown.underscore
-#: lms/templates/fields/field_textarea.underscore
-msgid "Click to edit"
-msgstr ""
-
-#: lms/templates/fields/field_text.underscore
-msgid "title"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
-#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
-msgid "Specify whether discussion topics are divided by cohort"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
-msgid "Course-Wide Discussion Topics"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
-msgid ""
-"Select the course-wide discussion topics that you want to divide by cohort."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
-msgid "Content-Specific Discussion Topics"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
-msgid ""
-"Specify whether content-specific discussion topics are divided by cohort."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
-msgid "Always cohort content-specific discussion topics"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
-msgid "Cohort selected content-specific discussion topics"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
-msgid "No content-specific discussion topics exist."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.underscore
-msgid "Cohorted"
-msgstr ""
-
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid "Manage Students"
 msgstr "إدارة الطلّاب"
@@ -5343,14 +4317,6 @@ msgid ""
 msgstr ""
 "ملاحظة: يمكن أن يتواجد الطلّاب في مجوعة واحدة فقط. وتُلغي إضافة الطلّاب إلى "
 "هذه المجموعة أي تعيين سابق لها."
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
-msgid ""
-"Enter email addresses and/or usernames, separated by new lines or commas, "
-"for the students you want to add. *"
-msgstr ""
-"يُرجى إدخال عناوين البريد الإكتروني و/أو أسماء المستخدمين، مفصولة بأسطر "
-"جديدة أو فواصل، للطلّاب الذين تودّ أن تضيفهم. *"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
@@ -5384,23 +4350,6 @@ msgstr "يُرجى إدخال اسم المجموعة"
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Cohort Name"
 msgstr "اسم المجموعة"
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
-msgid "Cohort Assignment Method"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
-msgid "Automatic"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
-msgid "Manual"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
-msgid ""
-"There must be one cohort to which students can automatically be assigned."
-msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Associated Content Group"
@@ -5465,14 +4414,6 @@ msgid "%(cohort_name)s (%(user_count)s)"
 msgstr "%(cohort_name)s (%(user_count)s)"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
-msgid "Enable Cohorts"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
-msgid "Select a cohort to manage"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "View Cohort"
 msgstr "مشاهدة المجموعة"
 
@@ -5490,33 +4431,10 @@ msgstr ""
 "CSV، يُرجى تنزيل معلومات ملفّ المساق أو نتائج المجموعات عن طريق "
 "%(link_start)sصفحة تنزيل البيانات. %(link_end)s "
 
-#: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
-msgid "Used"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
-msgid "Valid"
-msgstr ""
-
-#: lms/templates/search/course_search_results.underscore
-#: lms/templates/search/dashboard_search_results.underscore
-msgid "Load next %(num_items)s result"
-msgid_plural "Load next %(num_items)s results"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
-
 #: lms/templates/search/course_search_results.underscore
 #: lms/templates/search/dashboard_search_results.underscore
 msgid "Sorry, no results were found."
 msgstr "عذرًا، لا توجد أي نتائج."
-
-#: lms/templates/search/dashboard_search_results.underscore
-msgid "Back to Dashboard"
-msgstr ""
 
 #: lms/templates/student_account/account.underscore
 msgid "New Address"
@@ -5526,79 +4444,11 @@ msgstr "عنوان جديد"
 msgid "Change My Email Address"
 msgstr "تغيير عنوان بريدي الإلكتروني"
 
-#: lms/templates/student_account/account_settings.underscore
-msgid "Account Settings"
-msgstr ""
-
-#: lms/templates/student_account/account_settings.underscore
-msgid ""
-"These settings include basic information about your account. You can also "
-"specify additional information and see your linked social accounts on this "
-"page."
-msgstr ""
-
-#: lms/templates/student_account/account_settings.underscore
-msgid "section.title"
-msgstr ""
-
-#: lms/templates/student_account/account_settings.underscore
-#: lms/templates/student_profile/learner_profile.underscore
-msgid "An error occurred. Please reload the page."
-msgstr ""
-
-#: lms/templates/student_account/form_field.underscore
-msgid "Forgot password?"
-msgstr "هل نسيت كلمة المرور؟"
-
 #: lms/templates/student_account/hinted_login.underscore
 #: lms/templates/student_account/login.underscore
 #: lms/templates/student_account/register.underscore
 msgid "Sign in"
 msgstr "تسجيل الدخول"
-
-#: lms/templates/student_account/hinted_login.underscore
-msgid "Would you like to sign in using your %(providerName)s credentials?"
-msgstr ""
-
-#: lms/templates/student_account/hinted_login.underscore
-msgid "Sign in using %(providerName)s"
-msgstr ""
-
-#: lms/templates/student_account/hinted_login.underscore
-msgid "Show me other ways to sign in or register"
-msgstr ""
-
-#: lms/templates/student_account/institution_login.underscore
-msgid "Sign in with Institution/Campus Credentials"
-msgstr ""
-
-#: lms/templates/student_account/institution_login.underscore
-#: lms/templates/student_account/institution_register.underscore
-msgid "Choose your institution from the list below:"
-msgstr ""
-
-#: lms/templates/student_account/institution_login.underscore
-msgid "Back to sign in"
-msgstr ""
-
-#: lms/templates/student_account/institution_register.underscore
-msgid "Register with Institution/Campus Credentials"
-msgstr ""
-
-#: lms/templates/student_account/institution_register.underscore
-msgid "Register through edX"
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid ""
-"You have successfully signed into %(currentProvider)s, but your "
-"%(currentProvider)s account does not have a linked %(platformName)s account."
-" To link your accounts, sign in now using your %(platformName)s password."
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid "Password Reset Email Sent"
-msgstr "أرسلنا رسالة بالبريد الإلكتروني لضبط كلمة المرور."
 
 #: lms/templates/student_account/login.underscore
 msgid ""
@@ -5611,45 +4461,6 @@ msgstr ""
 #: lms/templates/student_account/login.underscore
 msgid "We couldn't sign you in."
 msgstr "عذرًا، لم نتمكّن من تسجيل دخولك. "
-
-#: lms/templates/student_account/login.underscore
-msgid "An error occurred when signing you in to %(platformName)s."
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid ""
-"Sign in here using your email address and password, or use one of the "
-"providers listed below."
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid "Sign in here using your email address and password."
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid "If you do not yet have an account, use the button below to register."
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid "or sign in with"
-msgstr "أو تسجيل الدخول من خلال"
-
-#: lms/templates/student_account/login.underscore
-msgid "Sign in with %(providerName)s"
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-#: lms/templates/student_account/register.underscore
-msgid "Use my institution/campus credentials"
-msgstr ""
-
-#: lms/templates/student_account/login.underscore
-msgid "New to %(platformName)s?"
-msgstr "هل تستخدم %(platformName)s لأوّل مرّة؟"
-
-#: lms/templates/student_account/login.underscore
-msgid "Create an account"
-msgstr "إنشاء حساب "
 
 #: lms/templates/student_account/password_reset.underscore
 #: lms/templates/student_account/register.underscore
@@ -5668,10 +4479,6 @@ msgstr ""
 "يُرجى إدخال عنوان بريدك الإلكتروني أدناه، وسنرسل لك تعليمات ضبط كلمة سر "
 "جديدة."
 
-#: lms/templates/student_account/password_reset.underscore
-msgid "Reset my password"
-msgstr "إعادة ضبط كلمة السر"
-
 #: lms/templates/student_account/register.underscore
 msgid "We couldn't create your account."
 msgstr "عذرًا، لم نتمكّن من إنشاء حسابك. "
@@ -5689,40 +4496,12 @@ msgstr ""
 "%(platformName)s. "
 
 #: lms/templates/student_account/register.underscore
-msgid "Create an account using"
-msgstr "إنشاء حساب باستخدام"
-
-#: lms/templates/student_account/register.underscore
-msgid "Create account using %(providerName)s."
-msgstr ""
-
-#: lms/templates/student_account/register.underscore
-msgid "or create a new one here"
-msgstr "أو إنشاء حساب جديد هنا"
-
-#: lms/templates/student_account/register.underscore
-msgid "Create a new account"
-msgstr "إنشاء حساب جديد"
-
-#: lms/templates/student_account/register.underscore
 msgid "Create your account"
 msgstr "أنشئ حسابك"
 
 #: lms/templates/student_account/register.underscore
 msgid "Required field"
 msgstr "حقل مطلوب"
-
-#: lms/templates/student_account/register.underscore
-msgid "Already have an account?"
-msgstr "هل لديك حساب من قبل؟"
-
-#: lms/templates/student_profile/learner_profile.underscore
-msgid "You are currently sharing a limited profile."
-msgstr ""
-
-#: lms/templates/student_profile/learner_profile.underscore
-msgid "This edX learner is currently sharing a limited profile."
-msgstr ""
 
 #: lms/templates/verify_student/enrollment_confirmation_step.underscore
 msgid "Congratulations! You are now verified on %(platformName)s!"
@@ -5773,10 +4552,6 @@ msgid "Error:"
 msgstr " خطأ:"
 
 #: lms/templates/verify_student/face_photo_step.underscore
-msgid "What You Need for Verification"
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
 #: lms/templates/verify_student/intro_step.underscore
 #: lms/templates/verify_student/make_payment_step.underscore
 #: lms/templates/verify_student/payment_confirmation_step.underscore
@@ -5784,53 +4559,9 @@ msgid "Webcam"
 msgstr "كاميرا الويب "
 
 #: lms/templates/verify_student/face_photo_step.underscore
-msgid ""
-"You need a computer that has a webcam. When you receive a browser prompt, "
-"make sure that you allow access to the camera."
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid "Photo Identification"
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid ""
-"You need a driver's license, passport, or other government-issued ID that "
-"has your name and photo."
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
 #: lms/templates/verify_student/incourse_reverify.underscore
 msgid "Take Your Photo"
 msgstr "التقط صورتك  "
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid ""
-"When your face is in position, use the camera button %(icon)s below to take "
-"your photo."
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid "To take a successful photo, make sure that:"
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid "Your face is well-lit."
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid "Your entire face fits inside the frame."
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid "The photo of your face matches the photo on your ID."
-msgstr ""
-
-#: lms/templates/verify_student/face_photo_step.underscore
-msgid ""
-"To use the current photo, select the camera button %(icon)s. To take another"
-" photo, select the retake button %(icon)s."
-msgstr ""
 
 #: lms/templates/verify_student/face_photo_step.underscore
 #: lms/templates/verify_student/id_photo_step.underscore
@@ -6034,29 +4765,6 @@ msgstr ""
 msgid "Government-Issued Photo ID"
 msgstr "بطاقة شخصية صادرة عن الحكومة"
 
-#: lms/templates/verify_student/make_payment_step.underscore
-msgid ""
-"ID-Verification is not required for this Professional Education course."
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step.underscore
-msgid ""
-"All professional education courses are fee-based, and require payment to "
-"complete the enrollment process."
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step.underscore
-msgid "You have already verified your ID!"
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step.underscore
-msgid "Your verification status is good until %(verificationGoodUntil)s."
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step.underscore
-msgid "price"
-msgstr ""
-
 #: lms/templates/verify_student/payment_confirmation_step.underscore
 msgid "Thank you! We have received your payment for %(courseName)s."
 msgstr "شكرًا جزيلًا! لقد تلقّينا المبلغ الذي ساهمت به في %(courseName)s"
@@ -6084,22 +4792,6 @@ msgid ""
 msgstr ""
 "رخصة القيادة، أو جواز السفر، أو بطاقة شخصية صادرة عن الحكومة، بحيث تحمل أي "
 "واحدة من هذه الوثائق اسمك وصورتك "
-
-#: lms/templates/verify_student/reverify_success_step.underscore
-msgid "Identity Verification In Progress"
-msgstr ""
-
-#: lms/templates/verify_student/reverify_success_step.underscore
-msgid ""
-"We have received your information and are verifying your identity. You will "
-"see a message on your dashboard when the verification process is complete "
-"(usually within 1-2 days). In the meantime, you can still access all "
-"available course content."
-msgstr ""
-
-#: lms/templates/verify_student/reverify_success_step.underscore
-msgid "Return to Your Dashboard"
-msgstr ""
 
 #: lms/templates/verify_student/review_photos_step.underscore
 msgid "Review Your Photos"
@@ -6194,10 +4886,6 @@ msgid "status"
 msgstr "الحالة"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
-msgid "Common Problem Types"
-msgstr "أنواع المسائل الشائعة"
-
-#: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problems with Hints and Feedback"
 msgstr ""
 
@@ -6267,46 +4955,12 @@ msgstr "إقفال/فتح الملفّ"
 msgid "ID"
 msgstr "الرمز التعريفي"
 
-#: cms/templates/js/certificate-details.underscore
-msgid "Certificate Details"
-msgstr ""
-
-#: cms/templates/js/certificate-details.underscore
-#: cms/templates/js/certificate-editor.underscore
-msgid "Course Title Override"
-msgstr ""
-
-#: cms/templates/js/certificate-details.underscore
-#: cms/templates/js/certificate-editor.underscore
-msgid "Certificate Signatories"
-msgstr ""
-
 #: cms/templates/js/certificate-editor.underscore
 #: cms/templates/js/content-group-editor.underscore
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/group-configuration-editor.underscore
 msgid "error.message"
 msgstr "رسالة خطأ error.message"
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Certificate Information"
-msgstr ""
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Certificate Name"
-msgstr ""
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Name of the certificate"
-msgstr ""
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Description of the certificate"
-msgstr ""
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Course title"
-msgstr ""
 
 #: cms/templates/js/certificate-editor.underscore
 msgid "Title of the course"
@@ -6329,34 +4983,10 @@ msgid "Add Signatory"
 msgstr ""
 
 #: cms/templates/js/certificate-editor.underscore
-msgid "(Up to 4 signatories are allowed for a certificate)"
-msgstr ""
-
-#: cms/templates/js/certificate-editor.underscore
 #: cms/templates/js/content-group-editor.underscore
 #: cms/templates/js/group-configuration-editor.underscore
 msgid "Create"
 msgstr "إنشاء "
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Choose mode"
-msgstr ""
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Preview Certificate"
-msgstr ""
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Activate"
-msgstr ""
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Deactivate"
-msgstr ""
-
-#: cms/templates/js/checklist.underscore
-msgid "{number}{pct_sign} of checklists completed"
-msgstr ""
 
 #: cms/templates/js/checklist.underscore
 msgid "%"
@@ -6416,11 +5046,6 @@ msgid "Unpublished changes to content that will release in the future"
 msgstr "تغييرات غير منشورة جرى إدخالها على المحتوى وسيجري إصدارها مستقبليًّا"
 
 #: cms/templates/js/course-outline.underscore
-#: cms/templates/js/xblock-outline.underscore
-msgid "Collapse/Expand this %(xblock_type)s"
-msgstr ""
-
-#: cms/templates/js/course-outline.underscore
 msgid "Display Name"
 msgstr "الاسم الظاهر"
 
@@ -6464,11 +5089,6 @@ msgstr "يستحقّ في:"
 #: cms/templates/js/xblock-outline.underscore
 msgid "You haven't added any content to this course yet."
 msgstr "لم تُضِف أي محتوى إلى هذا المساق بعد."
-
-#: cms/templates/js/course-outline.underscore
-#: cms/templates/js/xblock-outline.underscore
-msgid "Click to add a new %(xblock_type)s"
-msgstr ""
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Assignment Type Name"
@@ -6525,18 +5145,6 @@ msgid ""
 msgstr ""
 "هناك تعليمات برمجية غير صحيحة في محتوى مساقك. يُرجى التحقّق للتأكّد من "
 "كتابتها بلغة HTML صحيحة."
-
-#: cms/templates/js/course_info_update.underscore
-msgid "Send push notification to mobile apps"
-msgstr ""
-
-#: cms/templates/js/course_info_update.underscore
-msgid "Send notification to mobile apps"
-msgstr ""
-
-#: cms/templates/js/course_info_update.underscore
-msgid "Post"
-msgstr ""
 
 #: cms/templates/js/due-date-editor.underscore
 msgid "Due Date:"
@@ -6686,46 +5294,8 @@ msgstr ""
 msgid "delete group"
 msgstr "حذف المجموعة"
 
-#: cms/templates/js/license-selector.underscore
-msgid "License Type"
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid "Learn more about {license_name}"
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid "Options for {license_name}"
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid "The following options are available for the {license_name} license."
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid "License Display"
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid ""
-"The following message will be displayed at the bottom of the courseware "
-"pages within your course:"
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid "Creative Commons licensed content, with terms as follow:"
-msgstr ""
-
-#: cms/templates/js/license-selector.underscore
-msgid "Some Rights Reserved"
-msgstr ""
-
 #: cms/templates/js/list.underscore
 msgid "Add your first %(item_type)s"
-msgstr ""
-
-#: cms/templates/js/list.underscore
-msgid "New %(item_type)s"
 msgstr ""
 
 #: cms/templates/js/metadata-dict-entry.underscore
@@ -6827,10 +5397,6 @@ msgid "Draft saved on %(last_saved_date)s by %(edit_username)s"
 msgstr "مسودة محفّظة في %(last_saved_date)s من قِبل %(edit_username)s"
 
 #: cms/templates/js/publish-xblock.underscore
-msgid "with %(release_date_from)s"
-msgstr ""
-
-#: cms/templates/js/publish-xblock.underscore
 msgid "Is Visible To:"
 msgstr "مرئيّة لـ: "
 
@@ -6841,10 +5407,6 @@ msgstr "ستصبح مرئيّة لـ: "
 #: cms/templates/js/publish-xblock.underscore
 msgid "Staff Only"
 msgstr "طاقم المساق فقط"
-
-#: cms/templates/js/publish-xblock.underscore
-msgid "with %(section_or_subsection)s"
-msgstr ""
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Staff and Students"
@@ -6879,41 +5441,12 @@ msgstr "حذف تاريخ/وقت الإصدار"
 msgid "View Live"
 msgstr "عرض مباشر"
 
-#: cms/templates/js/signatory-details.underscore
-#: cms/templates/js/signatory-editor.underscore
-msgid "Organization"
-msgstr ""
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Certificate Signatory Configuration"
-msgstr ""
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Name of the signatory"
-msgstr ""
-
 #: cms/templates/js/signatory-editor.underscore
 msgid "Maximum 40 characters"
 msgstr ""
 
 #: cms/templates/js/signatory-editor.underscore
-msgid "Title of the signatory"
-msgstr ""
-
-#: cms/templates/js/signatory-editor.underscore
 msgid "2 Lines, 40 characters each"
-msgstr ""
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Organization of the signatory"
-msgstr ""
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Signature Image"
-msgstr ""
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Path to Signature Image"
 msgstr ""
 
 #: cms/templates/js/signatory-editor.underscore
@@ -6934,13 +5467,6 @@ msgstr ""
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
-"If you make this %(xblockType)s visible to students, students will be able "
-"to see its content after the release date has passed and you have published "
-"the unit."
-msgstr ""
-
-#: cms/templates/js/staff-lock-editor.underscore
-msgid ""
 "Any subsections or units that are explicitly hidden from students will "
 "remain hidden after you clear this option for the section."
 msgstr ""
@@ -6954,34 +5480,6 @@ msgid ""
 msgstr ""
 "أي وحدات مخفيّة صراحةً عن الطلاب ستبقى مخفيّة بعد أن تحذف هذا الخيار من "
 "القسم الفرعي."
-
-#: cms/templates/js/team-member.underscore
-msgid "Current Role:"
-msgstr ""
-
-#: cms/templates/js/team-member.underscore
-msgid "You!"
-msgstr ""
-
-#: cms/templates/js/team-member.underscore
-msgid "send an email message to {email}"
-msgstr ""
-
-#: cms/templates/js/team-member.underscore
-msgid "Promote another member to Admin to remove your admin rights"
-msgstr ""
-
-#: cms/templates/js/team-member.underscore
-msgid "Add {role} Access"
-msgstr ""
-
-#: cms/templates/js/team-member.underscore
-msgid "Remove {role} Access"
-msgstr ""
-
-#: cms/templates/js/team-member.underscore
-msgid "Delete the user, {username}"
-msgstr ""
 
 #: cms/templates/js/upload-dialog.underscore
 msgid "File upload succeeded"
@@ -7011,35 +5509,6 @@ msgstr "عنوان النموذج formLabel"
 msgid "Add URLs for additional versions"
 msgstr "إضافة روابط للنسخات الإضافية"
 
-#: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
-msgid ""
-"To be sure all students can access the video, we recommend providing both an"
-" .mp4 and a .webm version of your video. Click below to add a URL for "
-"another version. These URLs cannot be YouTube URLs. The first listed video "
-"that's compatible with the student's computer will play."
-msgstr ""
-
-#: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
-msgid "Default Timed Transcript"
-msgstr "نص محدّد التوقيت افتراضي "
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-#: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
-msgid "Timed Transcript Conflict"
-msgstr "تضارب حول النص محدّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-msgid ""
-"The timed transcript for the first video file does not appear to be the same"
-" as the timed transcript for the second video file."
-msgstr ""
-"يبدو أنّ النص محدّد التوقيت لملف الفيديو الأوّل يختلف عن النص محدّد التوقيت "
-"لملف الفيديو الثاني."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-msgid "Which timed transcript would you like to use?"
-msgstr "ما هو النص محدّد التوقيت الذي ترغب في استخدامه؟"
-
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
@@ -7049,24 +5518,6 @@ msgstr "ما هو النص محدّد التوقيت الذي ترغب في اس
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Error."
 msgstr "خطأ."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-msgid "Timed Transcript from %(filename)s"
-msgstr ""
-
-#: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
-msgid "Timed Transcript Found"
-msgstr "وُجد نص محدّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
-msgid ""
-"EdX has a timed transcript for this video. If you want to edit this "
-"transcript, you can download, edit, and re-upload the existing transcript. "
-"If you want to replace this transcript, upload a new .srt transcript file."
-msgstr ""
-"لدى EdX نص محدّد التوقيت لهذا الفيديو. وإذا رغبت في تعديل هذا النصّ، يمكنك "
-"تنزيل النص الحالي، وتعديله، وإعادة تحميله. أمّا إذا رغبت في استبداله، يُرجى "
-"تحميل ملف نص جديد بصيغة .srt."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
@@ -7088,38 +5539,8 @@ msgid "Download Transcript for Editing"
 msgstr "تنزيل النص لتعديله"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
-msgid "No EdX Timed Transcript"
-msgstr "لا يوجد لدى EdX نص محدّد التوقيت "
-
-#: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
-msgid ""
-"EdX doesn't have a timed transcript for this video in Studio, but we found a"
-" transcript on YouTube. You can import the YouTube transcript or upload your"
-" own .srt transcript file."
-msgstr ""
-
-#: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "Import YouTube Transcript"
 msgstr "استيراد نص من يوتيوب"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
-msgid "No Timed Transcript"
-msgstr "لا يوجد نص محدّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
-msgid ""
-"EdX doesn\\'t have a timed transcript for this video. Please upload an .srt "
-"file."
-msgstr ""
-"ليس لدى EdX نص محدّد التوقيت لهذا الفيديو. يُرجى تحميل ملف بصيغة .srt."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
-msgid ""
-"The timed transcript for this video on edX is out of date, but YouTube has a"
-" current timed transcript for this video."
-msgstr ""
-"إنّ النص محدّد التوقيت لهذا الفيديو على EdX قديم ولكن يوجد نص حديث له "
-"حاليًّا على يوتيوب."
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Do you want to replace the edX transcript with the YouTube transcript?"
@@ -7128,33 +5549,6 @@ msgstr "هل ترغب في استبدال نص EdX بنص يوتيوب؟"
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Yes, replace the edX transcript with the YouTube transcript"
 msgstr "نعم، الرجاء استبدال نص EdX بنص يوتيوب"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
-msgid "Timed Transcript Uploaded Successfully"
-msgstr "جرى تحميل النص محدّد التوقيت بنجاح"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
-msgid ""
-"EdX has a timed transcript for this video. If you want to replace this "
-"transcript, upload a new .srt transcript file. If you want to edit this "
-"transcript, you can download, edit, and re-upload the existing transcript."
-msgstr ""
-"لدى Edx نص محدّد التوقيت لهذا الفيديو. إذا رغبت في استبدال هذا النص، يُرجى "
-"تحميل ملف نص جديد بصيغة .srt. أمّا إذا رغبت في تعديل هذا النصّ، يُرجى إذًا "
-"تنزيل النص السابق وتعديله وإعادة تحميله.  "
-
-#: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
-msgid "Confirm Timed Transcript"
-msgstr "تأكيد النص محدّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
-msgid ""
-"You changed a video URL, but did not change the timed transcript file. Do "
-"you want to use the current timed transcript or upload a new .srt transcript"
-" file?"
-msgstr ""
-"غيّرت رابط الفيديو ولكنّك لم تغيّر ملف النص محدّد التوقيت. هل ترغب في "
-"استخدام النص محدّد التوقيت الحالي أو تحميل ملف نص جديد بصيغة .srt؟"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
