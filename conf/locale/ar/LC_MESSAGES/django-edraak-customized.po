@@ -20924,7 +20924,7 @@ msgid ""
 "You will be redirected to your {link_start}dashboard{link_end} in 10 "
 "seconds."
 msgstr ""
-"سيتم اعادة توجيهك إلى {link_start}لوحة التحكم{link_end} الخاصة بك بعد 10 "
+"سيتم اعادة توجيهك إلى {link_start}لوحة المعلومات{link_end} الخاصة بك بعد 10 "
 "ثوان."
 
 #. Translators: Edraak-specific
@@ -24041,6 +24041,11 @@ msgid "Grading Policy"
 msgstr "سياسة التقييم"
 
 #: lms/templates/ccx/enrollment.html
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Batch Enrollment"
+msgstr "تسجيل المجموعات"
+
+#: lms/templates/ccx/enrollment.html
 msgid "Student List Management"
 msgstr "إدارة قوائم الطلاب"
 
@@ -25142,6 +25147,10 @@ msgstr "رقم العميل"
 msgid "Customer's purchase order or other reference information"
 msgstr "أمر الشراء الخاص بالعميل أو غيره من المعلومات المرجعية"
 
+#: lms/templates/instructor/instructor_dashboard_2/instructor_dashboard_2.html
+msgid "Instructor Dashboard"
+msgstr "لوحة المعلومات الخاصة بالأستاذ"
+
 #: lms/templates/instructor/instructor_dashboard_2/invalidate_registration_code_modal.html
 msgid "Enrollment Code Status"
 msgstr "حالة رمز التسجيل"
@@ -25174,12 +25183,30 @@ msgid "Reason"
 msgstr "السبب"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Batch Beta Tester Addition"
+msgstr "إضافة مختبري النسخة التجريبية للمساق"
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
 "Note: Users must have an activated {platform_name} account before they can "
 "be enrolled as beta testers."
 msgstr ""
 "ملاحظة: يجب أن يكون للمستخدمين حساب {platform_name} قبل أن يتمكنوا من "
 "التسجيل كمختبِرين للبرنامج."
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Checking this box has no effect if 'Remove beta testers' is selected."
+msgstr ""
+"لا يكون لوضع إشارة في هذا المربّع أي مفعول إذا تمّ \"إلغاء أفراد من مختبري "
+"النسخة التجريبية\"."
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Add beta testers"
+msgstr "إضافة أفراد إلى مختبري النسخة التجريبية"
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Remove beta testers"
+msgstr "إرالة أفراد من مختبري النسخة التجريبية"
 
 #. Translators: an "Administration List" is a list, such as Course Staff, that
 #. users can be added to.
@@ -25235,6 +25262,10 @@ msgid "Add Admin"
 msgstr "اضافة مشرف"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Beta Testers"
+msgstr "مختبرو النسخة التجريبية"
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
 "Beta Testers can see course content before other learners. They can make "
 "sure that the content works, but have no additional privileges. You can only"
@@ -25245,8 +25276,8 @@ msgstr ""
 "أدوار أعضاء الفريق فقط للمستخدمين المسجلين."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
-msgid "Discussion Admins"
-msgstr "مشرفوا النقاشات"
+msgid "Add Beta Tester"
+msgstr "إضافة مختبرينَ للنسخة التجريبية"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
@@ -25263,6 +25294,10 @@ msgstr ""
 "للمستخدمين المسجلين."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Discussion Moderators"
+msgstr "مشرفو منتدى النقاش"
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
 "Discussion Moderators can edit or delete any post, clear misuse flags, close"
 " and re-open threads, endorse responses, and see posts from all cohorts. "
@@ -25275,6 +25310,10 @@ msgstr ""
 "المجموعات. ويوصفون بأنهم من ’الفريق‘. ولا يمكنهم إدارة عضوية فريق المساق من "
 "خلال إضافة أو إزالة أدوار وسطاء النقاش. يمكنك إعطاء أدوار فريق المساق فقط "
 "للمستخدمين المسجلين."
+
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid "Discussion Community TAs"
+msgstr "مساعدو مشرفي منتدى النقاش"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
@@ -25388,6 +25427,16 @@ msgstr ""
 "{li_tag}يتعيّن وجود تسليمات تنتظر التقييم.{end_li_tag}\n"
 "{end_ul_tag}\n"
 "{end_p_tag}\n"
+
+#: lms/templates/registration/activate_account_notice.html
+msgid ""
+"You've successfully created an account on {platform_name}. We've sent an "
+"account activation message to {email}. To activate your account and start "
+"enrolling in courses, click the link in the message."
+msgstr ""
+"لقد أنشأت حسابك بنجاح على {platform_name}، وقد أرسلنا رسالة إلكترونية لتفعيل الحساب {email}، انقر على الرابط الموجود في الرسالة لتفعيل حسابك والبدء بالتسجيل في المساقات.\n"
+"\n"
+"إذا لم تصلك الرسالة في صندوق الوارد، فضلًا تفقد صندوق الرسائل المهملة."
 
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"

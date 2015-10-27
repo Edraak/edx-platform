@@ -286,6 +286,42 @@ msgid "Enter username or email"
 msgstr "أدخل اسم المستخدم أو البريد الإلكتروني"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Error adding/removing users as beta testers."
+msgstr ""
+"نأسف لحدوث خطأ في إضافة/حذف بعض المستخدمين كأعضاء في مختبري النسخة "
+"التجريبية."
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were successfully added as beta testers:"
+msgstr ""
+"نجحت عملية إضافة هؤلاء المستخدمين إلى قائمة أعضاء مختبري النسخة التجريبية:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were successfully removed as beta testers:"
+msgstr ""
+"نجحت عملية حذف هؤلاء المستخدمين من قائمة أعضاء مختبري النسخة التجريبية:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were not added as beta testers:"
+msgstr "لم يُضَف هؤلاء المستخدمون إلى قائمة أعضاء مختبري النسخة التجريبية:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were not removed as beta testers:"
+msgstr "لم يُحذَف هؤلاء المستخدمين من قائمة أعضاء مختبري النسخة التجريبية:"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid ""
+"Users must create and activate their account before they can be promoted to "
+"beta tester."
+msgstr ""
+"يجب على المستخدمين إنشاء حسابهم وتفعيله قبل أن تُتاح لهم إمكانية ترقية "
+"عضويتهم إلى مختبري النسخة التجريبية."
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Reason field should not be left blank."
 msgstr "لا يمكن ترك حقل السبب فارغًا."
 
