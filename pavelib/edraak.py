@@ -88,6 +88,20 @@ def i18n_po_pull_edraak():
         sh(cmd)
 
 
+def i18n_remove_duplicates(pofile):
+    """
+    Removes duplicates from a POFile list.
+    """
+
+    is_translated = {}
+
+    for entry in reversed(pofile):
+        if entry.msgid in is_translated:
+            pofile.remove(entry)
+        else:
+            is_translated[entry.msgid] = True
+
+
 @task
 @js_nonjs
 def i18n_edraak_generate_files(is_js, suffix):
@@ -111,6 +125,7 @@ def i18n_edraak_generate_files(is_js, suffix):
 
         # Save a backup in git for later inspection,
         # and keep django.po untouched
+        i18n_remove_duplicates(django_pofile)
         django_pofile.save('django{}-edraak-customized.po'.format(suffix))
         django_pofile.save_as_mofile('django{}.mo'.format(suffix))
 
