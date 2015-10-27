@@ -10,10 +10,9 @@
 
             successMessage: function() {
                 return this.indicators.success + interpolate_text(
-                    gettext(
-                        'We\'ve sent a confirmation message to {new_email_address}. ' +
-                        'Click the link in the message to update your email address.'
-                    ),
+                    // TODO: remove Edraak specific after merging in edx
+                    // Translators: Edraak-specific
+                    gettext('We\'ve sent a confirmation message to {new_email_address}. Click the link in the message to update your email address.'),
                     {'new_email_address': this.fieldValue()}
                 );
             }
@@ -78,10 +77,9 @@
 
             successMessage: function () {
                 return this.indicators.success + interpolate_text(
-                    gettext(
-                        'We\'ve sent a message to {email_address}. ' +
-                        'Click the link in the message to reset your password.'
-                    ),
+                    // TODO: remove Edraak specific after merging in edx
+                    // Translators: Edraak-specific
+                    gettext('We\'ve sent a message to {email_address}. Click the link in the message to reset your password.'),
                     {'email_address': this.model.get(this.options.emailAttribute)}
                 );
             }
