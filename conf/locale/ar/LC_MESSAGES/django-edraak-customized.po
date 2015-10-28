@@ -20997,6 +20997,11 @@ msgstr "البريد الإلكتروني"
 msgid "Post"
 msgstr "نشر"
 
+#. Translators: Edraak-specific
+#: lms/templates/registration/password_reset_subject.txt:7
+msgid "Password reset on {platform_name}"
+msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
+
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: cms/templates/course_outline.html lms/templates/seq_module.html
