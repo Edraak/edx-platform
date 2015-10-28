@@ -597,7 +597,7 @@ msgstr[0] "{num_second} ثانية"
 msgstr[1] "{num_second} ثانية"
 msgstr[2] "{num_second} ثانية"
 msgstr[3] "{num_second} ثوانٍ"
-msgstr[4] "{num_second} ثوانٍ"
+msgstr[4] "{num_second} ثانية"
 msgstr[5] "{num_second} ثوانٍ"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
