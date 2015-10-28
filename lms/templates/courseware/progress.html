@@ -45,7 +45,8 @@ from django.utils.http import urlquote_plus
       % endif
 
       <header class="progress-certificates">
-        <h1 class="progress-certificates-title">${_("Course Progress for Student '{username}' ({email})").format(username=student.username, email=student.email)}</h1>
+        ## Translators: Edraak-specific
+        <h1 class="progress-certificates-title">${_(u"Course Progress for Student '{username}' \u200f ({email})").format(username=student.username, email=student.email)}</h1>
       </header>
 
       %if show_generate_cert_btn:
@@ -209,4 +210,3 @@ from django.utils.http import urlquote_plus
     </div>
   </div>
 </div>
-
