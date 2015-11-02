@@ -586,6 +586,7 @@ REGISTRATION_CODE_LENGTH = ENV_TOKENS.get('REGISTRATION_CODE_LENGTH', 8)
 # BAYT KEYS
 BAYT_SECRET_KEY = AUTH_TOKENS.get("BAYT_SECRET_KEY")
 BAYT_BASE = ENV_TOKENS.get("BAYT_BASE")
+BAYT_VALID_YEARS = ENV_TOKENS.get("BAYT_VALID_YEARS", 10)
 
 # Safe URL redirects for the LMS and marketing
 # A list of allowed hosts e.g. ['www.example.com', 'courses.example.com']

@@ -79,11 +79,13 @@
             var course_name = $('#course_name').val();
             var course_id = $('#course_id').val();
             var user_id = $('#user_id').val();
+            var cert_end = $('#cert_end').val();
             $.post('${reverse('edraak_bayt_get_student_email')}', {
                 "bayt_email": bayt_email,
                 "course_name": course_name,
                 "user_id": user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "cert_end": cert_end
             }, function (data) {
                 if (data.success) {
                     if (data.redirect_to) {
@@ -137,7 +139,9 @@
                 <input type="email" id="bayt_email" name="bayt_email" value="${user.email | h}">
                 <input type="hidden" id="user_id" name="user_id" value="${user.id | h}">
                 <input type="hidden" id="course_name" name="course_name" value="${cert_course.display_name | h}">
-                <input type="hidden" id="course_id" name="course_id" value="${cert_course.id | h}"></div>
+                <input type="hidden" id="course_id" name="course_id" value="${cert_course.id | h}">
+                <input type="hidden" id="cert_end" name="cert_end" value="${cert_end | h}">
+            </div>
             <div class="submit">
                 ## Translators: Edraak-specific
                 <input name="submit" type="submit" value="${_('Post')}"/>
@@ -182,7 +186,10 @@
                 <input type="email" id="bayt_email" name="bayt_email" value="${user.email | h}">
                 <input type="hidden" id="user_id" name="user_id" value="${user.id | h}">
                 <input type="hidden" id="course_name" name="course_name" value="${cert_course.display_name | h}">
-                <input type="hidden" id="course_id" name="course_id" value="${cert_course.id | h}"></div>
+                <input type="hidden" id="course_id" name="course_id" value="${cert_course.id | h}">
+                <input type="hidden" id="cert_end" name="cert_end" value="${cert_end | h}">
+            </div>
+
             <div class="submit">
                 ## Translators: Edraak-specific
                 <input name="submit" type="submit" value="${_('Post')}"/>
