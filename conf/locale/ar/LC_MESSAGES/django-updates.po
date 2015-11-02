@@ -3419,7 +3419,7 @@ msgstr ""
 
 #: lms/templates/courseware/progress.html
 msgid "Course Progress for Student '{username}' ({email})"
-msgstr "تقدّم عمل الطالب '{username}' ‏ ({email}) على المساق"
+msgstr "تقدّم عمل الطالب '{username}'‏ ({email}) على المساق"
 
 #: lms/templates/courseware/progress.html
 msgid "Your certificate is available"
