@@ -10,7 +10,7 @@
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
 # qrfahasan <ahasan@qrf.org>, 2014
 # Ahmad AbdArrahman <mygooglizer@gmail.com>, 2013-2014
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # a.nassif <a.nassif@sit-mena.com>, 2013
 # a.nassif <a.nassif@sit-mena.com>, 2013
 # A <smart.9922@hotmail.com>, 2014
@@ -42,7 +42,7 @@
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
 # Abdallah Nassif <abdoosh00@gmail.com>, 2015
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # a.nassif <a.nassif@sit-mena.com>, 2013
 # Assyass Mahmoud <mahmoud.assyass@edu.uiz.ac.ma>, 2015
 # AzizAhmed <dr.zezo@gmail.com>, 2014
@@ -64,7 +64,8 @@
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013-2015
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
 # Ahmad AbdArrahman <mygooglizer@gmail.com>, 2013-2014
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # ayshibly <ayshibly@gmail.com>, 2014
 # baraahadri <baraahadri@gmail.com>, 2014
 # Belal A. Nwiran <bnwiran@gmail.com>, 2015
@@ -92,7 +93,7 @@
 # Abdallah Nassif <abdoosh00@gmail.com>, 2013
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
 # Abdallah Nassif <abdoosh00@gmail.com>, 2014
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # A <smart.9922@hotmail.com>, 2014
 # طاهر <charaf.le.prince@gmail.com>, 2014
 # Safaa_fadl <fadlaoui_safaa@yahoo.fr>, 2014
@@ -123,7 +124,7 @@
 # 
 # Translators:
 # Almaazon <Ahmed.Almaazon@hotmail.com>, 2014
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # Hassan05 <hassan.upb@gmail.com>, 2014
 # mabdelhaq <mabdelhaq@qou.edu>, 2014
 # may <may@qordoba.com>, 2014
@@ -133,9 +134,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2015-10-22 18:35+0000\n"
+"POT-Creation-Date: 2015-10-30 14:33+0000\n"
 "PO-Revision-Date: 2015-10-13 19:58+0000\n"
-"Last-Translator: Ahmed Jazzar <ajazzar@edraak.org>\n"
+"Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3417,6 +3418,10 @@ msgstr ""
 "يمكنك زيارة قسم تنزيل البيانات من لوحة معلومات المدرب."
 
 #: lms/templates/courseware/progress.html
+msgid "Course Progress for Student '{username}' ({email})"
+msgstr "تقدّم عمل الطالب '{username}'‏ ({email}) في المساق"
+
+#: lms/templates/courseware/progress.html
 msgid "Your certificate is available"
 msgstr "شهادتك جاهزة"
 
@@ -4898,6 +4903,10 @@ msgid "Open the courseware in the LMS"
 msgstr "فتح محتويات المساق في نظام إدارة التعلّم LMS"
 
 #: cms/templates/container.html
+msgid "View Live Version"
+msgstr "شاهد النسخة الحالية"
+
+#: cms/templates/container.html
 msgid "Preview the courseware in the LMS"
 msgstr "معاينة محتويات المساق في نظام إدارة التعلّم LMS"
 
@@ -4940,6 +4949,11 @@ msgstr ""
 #: cms/templates/course_outline.html
 msgid "Unsupported Advance Modules"
 msgstr "وحدات متقدِّمة غير مدعومة"
+
+#: cms/templates/course_outline.html cms/templates/edit-tabs.html
+#: cms/templates/index.html
+msgid "View Live"
+msgstr "شاهد النسخة الحالية"
 
 #: cms/templates/export.html
 msgid "Library Export"
@@ -5280,14 +5294,6 @@ msgid ""
 msgstr ""
 "أعضاء فريق المساق الذين يلعبون دور \"الطاقم\" هم مؤلّفون مشاركون للمساق، "
 "ويملكون كامل امتيازات الكتابة والتعديل في  كافة أقسام محتوى المساق."
-
-#: cms/templates/manage_users.html
-msgid ""
-"All course team members are automatically enrolled in the course and can "
-"access content in Studio, the LMS, and Insights."
-msgstr ""
-"جميع أعضاء فريق المساق مسجَّلون تلقائيًّا في المساق ولديهم صلاحية رؤية "
-"المحتوى في \"استوديو\" ونظام إدارة التعلّم LMS و\"إنسايتس\"."
 
 #: cms/templates/manage_users.html
 msgid ""
