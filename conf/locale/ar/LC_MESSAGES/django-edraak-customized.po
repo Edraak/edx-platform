@@ -24270,6 +24270,10 @@ msgstr ""
 "يمكنك زيارة قسم تنزيل البيانات من لوحة معلومات المدرب."
 
 #: lms/templates/courseware/progress.html
+msgid "Course Progress for Student '{username}' ({email})"
+msgstr "تقدّم عمل الطالب '{username}' \\u200f ({email}) على المساق"
+
+#: lms/templates/courseware/progress.html
 msgid "Your certificate is available"
 msgstr "شهادتك جاهزة"
 
@@ -25751,6 +25755,10 @@ msgid "Open the courseware in the LMS"
 msgstr "فتح محتويات المساق في نظام إدارة التعلّم LMS"
 
 #: cms/templates/container.html
+msgid "View Live Version"
+msgstr "شاهد النسخة الحالية"
+
+#: cms/templates/container.html
 msgid "Preview the courseware in the LMS"
 msgstr "معاينة محتويات المساق في نظام إدارة التعلّم LMS"
 
@@ -25793,6 +25801,11 @@ msgstr ""
 #: cms/templates/course_outline.html
 msgid "Unsupported Advance Modules"
 msgstr "وحدات متقدِّمة غير مدعومة"
+
+#: cms/templates/course_outline.html cms/templates/edit-tabs.html
+#: cms/templates/index.html
+msgid "View Live"
+msgstr "شاهد النسخة الحالية"
 
 #: cms/templates/export.html
 msgid "Library Export"
@@ -26133,14 +26146,6 @@ msgid ""
 msgstr ""
 "أعضاء فريق المساق الذين يلعبون دور \"الطاقم\" هم مؤلّفون مشاركون للمساق، "
 "ويملكون كامل امتيازات الكتابة والتعديل في  كافة أقسام محتوى المساق."
-
-#: cms/templates/manage_users.html
-msgid ""
-"All course team members are automatically enrolled in the course and can "
-"access content in Studio, the LMS, and Insights."
-msgstr ""
-"جميع أعضاء فريق المساق مسجَّلون تلقائيًّا في المساق ولديهم صلاحية رؤية "
-"المحتوى في \"استوديو\" ونظام إدارة التعلّم LMS و\"إنسايتس\"."
 
 #: cms/templates/manage_users.html
 msgid ""

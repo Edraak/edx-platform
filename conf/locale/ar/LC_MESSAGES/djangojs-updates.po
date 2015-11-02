@@ -11,7 +11,7 @@
 # Abdullatif El Ali <abdullatifalali@gmail.com>, 2014
 # Ahmad AbdArrahman <mygooglizer@gmail.com>, 2013
 # Ahmad AbdArrahman <mygooglizer@gmail.com>, 2013
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # ayshibly <ayshibly@gmail.com>, 2014
 # Belal A. Nwiran <bnwiran@gmail.com>, 2015
 # br1ng <ibnalawam@gmail.com>, 2014
@@ -41,7 +41,7 @@
 # Abdallah Nassif <abdoosh00@gmail.com>, 2015
 # Abdelghani Gadiri <wh.gnu.linux@gmail.com>, 2014
 # Ahmad AbdArrahman <mygooglizer@gmail.com>, 2013
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # Mahmoud Elkhateeb <eng.elkhteeb@gmail.com>, 2013
 # may <may@qordoba.com>, 2013
 # may <may@qordoba.com>, 2014
@@ -58,8 +58,9 @@
 # Abdelghani Gadiri <wh.gnu.linux@gmail.com>, 2014
 # qrfahasan <ahasan@qrf.org>, 2014
 # Ahmad <reload_cobra2@yahoo.com>, 2015
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # mohammad hamdi <babrica@hotmail.com>, 2014
+# Emad Ahmad Alghamdi <eaalghamdi@kau.edu.sa>, 2015
 # may <may@qordoba.com>, 2014
 # Nabeel El-Dughailib <nabeel@qordoba.com>, 2014-2015
 # omarithawi <oithawi@qrf.org>, 2015
@@ -71,18 +72,19 @@
 # 
 # Translators:
 # Abdallah Nassif <abdoosh00@gmail.com>, 2014
-# Ahmed Jazzar <ajazzar@edraak.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # may <may@qordoba.com>, 2014
 # Mohamed Ibrahim <root.php@hotmail.com>, 2015
 # wd3bbas <mohed.alabbas@gmail.com>, 2014
 # Nabeel El-Dughailib <nabeel@qordoba.com>, 2014-2015
+# omarithawi <oithawi@qrf.org>, 2015
 # Saramami.mami <saramami.mami@yahoo.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2015-10-22 18:35+0000\n"
-"PO-Revision-Date: 2015-10-14 15:52+0000\n"
+"POT-Creation-Date: 2015-10-30 14:32+0000\n"
+"PO-Revision-Date: 2015-10-29 17:55+0000\n"
 "Last-Translator: Sarina Canelake <sarina@edx.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -121,6 +123,14 @@ msgstr "جاري التحميل"
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/static/common/templates/image-modal.underscore
 #: common/static/common/templates/discussion/forum-action-close.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/signatory-editor.3009878ee0a5.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/signatory-editor.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.underscore
+#: test_root/staticfiles/cms/templates/signatory-editor.3009878ee0a5.underscore
+#: test_root/staticfiles/cms/templates/signatory-editor.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.underscore
 msgid "Close"
 msgstr "إغلاق"
 
@@ -421,6 +431,10 @@ msgstr "عذرًا، لم نجد أي نتائج لـ\"%s\"."
 
 #: lms/static/js/discovery/views/search_form.js
 #: lms/templates/search/search_error.underscore
+#: test_root/staticfiles/cms/templates/search/search_error.b69c159d0140.underscore
+#: test_root/staticfiles/cms/templates/search/search_error.underscore
+#: test_root/staticfiles/lms/templates/search/search_error.b69c159d0140.underscore
+#: test_root/staticfiles/lms/templates/search/search_error.underscore
 msgid "There was an error, try searching again."
 msgstr "نأسف لحدوث خطأ، يُرجى البحث مجدّدًا."
 
@@ -571,6 +585,10 @@ msgstr "تغيير كلمة السر"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 #: lms/templates/student_account/account.underscore
+#: test_root/staticfiles/cms/templates/student_account/account.03264515e9d6.underscore
+#: test_root/staticfiles/cms/templates/student_account/account.underscore
+#: test_root/staticfiles/lms/templates/student_account/account.03264515e9d6.underscore
+#: test_root/staticfiles/lms/templates/student_account/account.underscore
 msgid "Reset Password"
 msgstr "تغيير كلمة السر"
 
@@ -865,7 +883,7 @@ msgstr ""
 "هل أنت واثق من أنّك تريد حذف هذه الصفحة؟ لا يمكن التراجع عن هذه العملية "
 "لاحقًا."
 
-#: cms/static/js/base.js cms/templates/js/checklist.underscore
+#: cms/static/js/base.js
 msgid "This link will open in a new browser window/tab"
 msgstr "سيفتح هذا الرابط في نافذة متصفّح جديدة/تبويبة جديدة"
 
@@ -1014,7 +1032,7 @@ msgstr ""
 "جاري تنفيذ عملية الاستيراد؛ يُرجى الانتباه إلى أنّ انتقالك إلى موقع آخر "
 "سيوقف العملية. "
 
-#: cms/static/js/views/license.js cms/templates/js/license-selector.underscore
+#: cms/static/js/views/license.js
 msgid "All Rights Reserved"
 msgstr "جميع الحقوق محفوظة"
 
@@ -1212,33 +1230,73 @@ msgstr "صيغة خاطئة لرابط url."
 #: cms/templates/js/asset-library.underscore
 #: cms/templates/js/basic-modal.underscore
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/asset-library.a80d4a190855.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/asset-library.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/basic-modal.415179aefc07.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/basic-modal.underscore
+#: test_root/staticfiles/cms/templates/asset-library.a80d4a190855.underscore
+#: test_root/staticfiles/cms/templates/asset-library.underscore
+#: test_root/staticfiles/cms/templates/basic-modal.415179aefc07.underscore
+#: test_root/staticfiles/cms/templates/basic-modal.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.20b880ad7ec9.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.20b880ad7ec9.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Actions"
 msgstr "الإجراءات"
 
 #: cms/templates/js/course-outline.underscore
 #: lms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
 msgid "Due Date"
 msgstr "تاريخ الاستحقاق"
 
 #: cms/templates/js/paging-header.underscore
 #: common/static/common/templates/components/paging-footer.underscore
 #: common/static/common/templates/discussion/pagination.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/paging-header.1d4394185d77.underscore
+#: test_root/staticfiles/cms/coffee/fixtures/paging-header.underscore
+#: test_root/staticfiles/cms/common/templates/components/paging-footer.85dce12f79f5.underscore
+#: test_root/staticfiles/cms/common/templates/components/paging-footer.underscore
+#: test_root/staticfiles/cms/templates/paging-header.1d4394185d77.underscore
+#: test_root/staticfiles/cms/templates/paging-header.underscore
+#: test_root/staticfiles/lms/common/templates/components/paging-footer.85dce12f79f5.underscore
+#: test_root/staticfiles/lms/common/templates/components/paging-footer.underscore
 msgid "Previous"
 msgstr "السابق"
 
 #: common/static/common/templates/image-modal.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.underscore
 msgid "Large"
 msgstr "كبير "
 
 #: common/static/common/templates/image-modal.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.underscore
 msgid "Zoom In"
 msgstr "تكبير"
 
 #: common/static/common/templates/image-modal.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/cms/common/templates/image-modal.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.8fe501b2957a.underscore
+#: test_root/staticfiles/lms/common/templates/image-modal.underscore
 msgid "Zoom Out"
 msgstr "تصغير"
 
 #: common/static/common/templates/components/paging-footer.underscore
+#: test_root/staticfiles/cms/common/templates/components/paging-footer.85dce12f79f5.underscore
+#: test_root/staticfiles/cms/common/templates/components/paging-footer.underscore
+#: test_root/staticfiles/lms/common/templates/components/paging-footer.85dce12f79f5.underscore
+#: test_root/staticfiles/lms/common/templates/components/paging-footer.underscore
 msgid "Page number"
 msgstr "رقم الصفحة"
 
@@ -1422,6 +1480,10 @@ msgstr "نُشِر  %(time_ago)s من قِبل %(author)s"
 #: common/static/common/templates/discussion/response-comment-show.underscore
 #: common/static/common/templates/discussion/thread-response-show.underscore
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "Reported"
 msgstr "مبلَّغ عنه"
 
@@ -1451,6 +1513,10 @@ msgstr "سؤال غير مُجاب عليه"
 
 #: common/static/common/templates/discussion/thread-list-item.underscore
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "Pinned"
 msgstr "مُثَبَّت"
 
@@ -1507,22 +1573,42 @@ msgid "Add a comment"
 msgstr "إضافة تعليق "
 
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "%(post_type)s posted %(time_ago)s by %(author)s"
 msgstr "%(post_type)s منشور %(time_ago)s من قِبل %(author)s"
 
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "Closed"
 msgstr "مُغلق"
 
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "Related to: %(courseware_title_linked)s"
 msgstr "متعلِّقٌ بِـ: %(courseware_title_linked)s"
 
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "This post is visible only to %(group_name)s."
 msgstr "هذا المنشور مرئيٌّ فقط لـ %(group_name)s."
 
 #: common/static/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/cms/common/templates/discussion/thread-show.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.583cf8896477.underscore
+#: test_root/staticfiles/lms/common/templates/discussion/thread-show.underscore
 msgid "This post is visible to everyone."
 msgstr "هذا المنشور مرئيٌّ للجميع."
 
@@ -1627,14 +1713,26 @@ msgid "New Post"
 msgstr "منشور جديد "
 
 #: lms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
 msgid "Unit"
 msgstr "الوحدة"
 
 #: lms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
 msgid "Start Date"
 msgstr "تاريخ البدء"
 
 #: lms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
 msgid "remove all"
 msgstr "حذف الكل"
 
@@ -1643,6 +1741,10 @@ msgid "Section"
 msgstr "قسم"
 
 #: lms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
 msgid "remove"
 msgstr "حذف"
 
@@ -1663,14 +1765,26 @@ msgstr ""
 "class=\"complete-course\" onClick=completeOrder(this)>%s</button>"
 
 #: lms/templates/commerce/receipt.underscore
+#: test_root/staticfiles/cms/templates/commerce/receipt.90d0f0fb7c4d.underscore
+#: test_root/staticfiles/cms/templates/commerce/receipt.underscore
+#: test_root/staticfiles/lms/templates/commerce/receipt.90d0f0fb7c4d.underscore
+#: test_root/staticfiles/lms/templates/commerce/receipt.underscore
 msgid "Go to Dashboard"
 msgstr "الذهاب إلى لوحة المعلومات"
 
 #: lms/templates/commerce/receipt.underscore
+#: test_root/staticfiles/cms/templates/commerce/receipt.90d0f0fb7c4d.underscore
+#: test_root/staticfiles/cms/templates/commerce/receipt.underscore
+#: test_root/staticfiles/lms/templates/commerce/receipt.90d0f0fb7c4d.underscore
+#: test_root/staticfiles/lms/templates/commerce/receipt.underscore
 msgid "Verify Now"
 msgstr "إجراء التحقّق الآن"
 
 #: lms/templates/discovery/course_card.underscore
+#: test_root/staticfiles/cms/templates/discovery/result_item.c9453a26c840.underscore
+#: test_root/staticfiles/cms/templates/discovery/result_item.underscore
+#: test_root/staticfiles/lms/templates/discovery/result_item.c9453a26c840.underscore
+#: test_root/staticfiles/lms/templates/discovery/result_item.underscore
 msgid "Starts"
 msgstr "البداية"
 
@@ -1680,33 +1794,69 @@ msgstr "امسح الحقول"
 
 #: lms/templates/fields/field_dropdown.underscore
 #: lms/templates/fields/field_textarea.underscore
+#: test_root/staticfiles/cms/templates/fields/field_dropdown.63a0291df358.underscore
+#: test_root/staticfiles/cms/templates/fields/field_dropdown.underscore
+#: test_root/staticfiles/cms/templates/fields/field_textarea.1be1438f1ede.underscore
+#: test_root/staticfiles/cms/templates/fields/field_textarea.underscore
+#: test_root/staticfiles/lms/templates/fields/field_dropdown.63a0291df358.underscore
+#: test_root/staticfiles/lms/templates/fields/field_dropdown.underscore
+#: test_root/staticfiles/lms/templates/fields/field_textarea.1be1438f1ede.underscore
+#: test_root/staticfiles/lms/templates/fields/field_textarea.underscore
 msgid "Click to edit"
 msgstr "يُرجى النقر للتعديل"
 
 #: lms/templates/fields/field_text.underscore
+#: test_root/staticfiles/cms/templates/fields/field_text.46480061c06b.underscore
+#: test_root/staticfiles/cms/templates/fields/field_text.underscore
+#: test_root/staticfiles/lms/templates/fields/field_text.46480061c06b.underscore
+#: test_root/staticfiles/lms/templates/fields/field_text.underscore
 msgid "title"
 msgstr "العنوان"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.6b9308f2e953.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohorts.2496d0e899bc.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.6b9308f2e953.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohorts.2496d0e899bc.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Specify whether discussion topics are divided by cohort"
 msgstr "يُرجى تحديد ما إذا كانت مواضيع النقاش موزَّعة بحسب المجموعات."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.6b9308f2e953.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.6b9308f2e953.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
 msgid "Course-Wide Discussion Topics"
 msgstr "مواضيع نقاش على نطاق المساق"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.6b9308f2e953.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.6b9308f2e953.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
 msgid ""
 "Select the course-wide discussion topics that you want to divide by cohort."
 msgstr ""
 "يُرجى اختيار مواضيع النقاش على نطاق المساق التي تريد توزيعها بحسب المجموعات."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Content-Specific Discussion Topics"
 msgstr "مواضيع نقاش خاصة بالمحتوى"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid ""
 "Specify whether content-specific discussion topics are divided by cohort."
 msgstr ""
@@ -1714,23 +1864,43 @@ msgstr ""
 "المجموعات."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Always cohort content-specific discussion topics"
 msgstr ""
 "يُرجى الحرص دائماً على تصنيف مواضيع النقاش الخاصة بالمحتوى بحسب المجموعات."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Cohort selected content-specific discussion topics"
 msgstr "مواضيع نقاش خاصة بالمحتوى تختارها المجموعة"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.1439e7f3f488.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "No content-specific discussion topics exist."
 msgstr "لا توجد أي مواضيع نقاش خاصة بالمحتوى."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.0d4443cb0194.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.0d4443cb0194.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.underscore
 msgid "Cohorted"
 msgstr "التوزيع على المجموعات"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-editor.4f480fe87632.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-editor.4f480fe87632.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid ""
 "Enter email addresses and/or usernames, separated by new lines or commas, "
 "for the students you want to add. *"
@@ -1739,40 +1909,80 @@ msgstr ""
 "جديدة أو فواصل، للطلّاب الذين تودّ أن تضيفهم. *"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Cohort Assignment Method"
 msgstr "طريقة تعيين المجموعات"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Automatic"
 msgstr "تلقائي"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Manual"
 msgstr "يدوي"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.1e14ea524130.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid ""
 "There must be one cohort to which students can automatically be assigned."
 msgstr "يجب أن تتوفّر مجموعة واحدة يتعيَّن فيها الطلّاب تلقائيًا."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohorts.2496d0e899bc.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohorts.2496d0e899bc.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Enable Cohorts"
 msgstr "تمكين المجموعات"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohorts.2496d0e899bc.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohorts.2496d0e899bc.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Select a cohort to manage"
 msgstr "يُرجى اختيار مجموعة لإدارتها."
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.20b880ad7ec9.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.20b880ad7ec9.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Used"
 msgstr "مستخدَم"
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.20b880ad7ec9.underscore
+#: test_root/staticfiles/cms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.20b880ad7ec9.underscore
+#: test_root/staticfiles/lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Valid"
 msgstr "صالح"
 
 #: lms/templates/search/course_search_results.underscore
 #: lms/templates/search/dashboard_search_results.underscore
+#: test_root/staticfiles/cms/templates/search/course_search_results.3f757ef5e44f.underscore
+#: test_root/staticfiles/cms/templates/search/course_search_results.underscore
+#: test_root/staticfiles/cms/templates/search/dashboard_search_results.1c4061882de4.underscore
+#: test_root/staticfiles/cms/templates/search/dashboard_search_results.underscore
+#: test_root/staticfiles/lms/templates/search/course_search_results.3f757ef5e44f.underscore
+#: test_root/staticfiles/lms/templates/search/course_search_results.underscore
+#: test_root/staticfiles/lms/templates/search/dashboard_search_results.1c4061882de4.underscore
+#: test_root/staticfiles/lms/templates/search/dashboard_search_results.underscore
 msgid "Load next %(num_items)s result"
 msgid_plural "Load next %(num_items)s results"
 msgstr[0] "تحميل النتائج الـ %(num_items)s التالية"
@@ -1783,14 +1993,26 @@ msgstr[4] "تحميل النتائج %(num_items)s التالية"
 msgstr[5] "تحميل النتائج الـ %(num_items)s التالية"
 
 #: lms/templates/search/dashboard_search_results.underscore
+#: test_root/staticfiles/cms/templates/search/dashboard_search_results.1c4061882de4.underscore
+#: test_root/staticfiles/cms/templates/search/dashboard_search_results.underscore
+#: test_root/staticfiles/lms/templates/search/dashboard_search_results.1c4061882de4.underscore
+#: test_root/staticfiles/lms/templates/search/dashboard_search_results.underscore
 msgid "Back to Dashboard"
 msgstr "العودة إلى لوحة المعلومات"
 
 #: lms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.underscore
 msgid "Account Settings"
 msgstr "إعدادات الحساب"
 
 #: lms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.underscore
 msgid ""
 "These settings include basic information about your account. You can also "
 "specify additional information and see your linked social accounts on this "
@@ -1801,70 +2023,138 @@ msgstr ""
 "الصفحة."
 
 #: lms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.underscore
 msgid "section.title"
 msgstr "section.title"
 
 #: lms/templates/student_account/account_settings.underscore
 #: lms/templates/student_profile/learner_profile.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/cms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/cms/templates/student_profile/learner_profile.b01f24b0b31d.underscore
+#: test_root/staticfiles/cms/templates/student_profile/learner_profile.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.2266fa0d2c64.underscore
+#: test_root/staticfiles/lms/templates/student_account/account_settings.underscore
+#: test_root/staticfiles/lms/templates/student_profile/learner_profile.b01f24b0b31d.underscore
+#: test_root/staticfiles/lms/templates/student_profile/learner_profile.underscore
 msgid "An error occurred. Please reload the page."
 msgstr "نأسف لحدوث خطأ. يُرجى إعادة فتح الصفحة."
 
 #: lms/templates/student_account/form_field.underscore
+#: test_root/staticfiles/cms/templates/student_account/form_field.0cdd26bf6096.underscore
+#: test_root/staticfiles/cms/templates/student_account/form_field.underscore
+#: test_root/staticfiles/lms/templates/student_account/form_field.0cdd26bf6096.underscore
+#: test_root/staticfiles/lms/templates/student_account/form_field.underscore
 msgid "Forgot password?"
 msgstr "هل نسيت كلمة السر؟"
 
 #: lms/templates/student_account/hinted_login.underscore
+#: test_root/staticfiles/cms/templates/student_account/hinted_login.4440b0af2c5e.underscore
+#: test_root/staticfiles/cms/templates/student_account/hinted_login.underscore
+#: test_root/staticfiles/lms/templates/student_account/hinted_login.4440b0af2c5e.underscore
+#: test_root/staticfiles/lms/templates/student_account/hinted_login.underscore
 msgid "Would you like to sign in using your %(providerName)s credentials?"
 msgstr "هل تريد تسجيل الدخول باستخدام بيانات حسابك لدى %(providerName)s؟"
 
 #: lms/templates/student_account/hinted_login.underscore
+#: test_root/staticfiles/cms/templates/student_account/hinted_login.4440b0af2c5e.underscore
+#: test_root/staticfiles/cms/templates/student_account/hinted_login.underscore
+#: test_root/staticfiles/lms/templates/student_account/hinted_login.4440b0af2c5e.underscore
+#: test_root/staticfiles/lms/templates/student_account/hinted_login.underscore
 msgid "Sign in using %(providerName)s"
 msgstr "تسجيل الدخول باستخدام %(providerName)s"
 
 #: lms/templates/student_account/hinted_login.underscore
+#: test_root/staticfiles/cms/templates/student_account/hinted_login.4440b0af2c5e.underscore
+#: test_root/staticfiles/cms/templates/student_account/hinted_login.underscore
+#: test_root/staticfiles/lms/templates/student_account/hinted_login.4440b0af2c5e.underscore
+#: test_root/staticfiles/lms/templates/student_account/hinted_login.underscore
 msgid "Show me other ways to sign in or register"
 msgstr "إظهار وسائل أخرى لتسجيل الدخول أو للتسجيل"
 
 #: lms/templates/student_account/institution_login.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_login.94f62b1e6393.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_login.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_login.94f62b1e6393.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_login.underscore
 msgid "Sign in with Institution/Campus Credentials"
 msgstr "تسجيل الدخول ببيانات المؤسّسة/ الحرم الجامعي"
 
 #: lms/templates/student_account/institution_login.underscore
 #: lms/templates/student_account/institution_register.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_login.94f62b1e6393.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_login.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_register.aebb1fc73f62.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_register.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_login.94f62b1e6393.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_login.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_register.aebb1fc73f62.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_register.underscore
 msgid "Choose your institution from the list below:"
 msgstr "يُرجى منك اختيار مؤسّستك من القائمة أدناه:"
 
 #: lms/templates/student_account/institution_login.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_login.94f62b1e6393.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_login.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_login.94f62b1e6393.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_login.underscore
 msgid "Back to sign in"
 msgstr "العودة إلى تسجيل الدخول"
 
 #: lms/templates/student_account/institution_register.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_register.aebb1fc73f62.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_register.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_register.aebb1fc73f62.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_register.underscore
 msgid "Register with Institution/Campus Credentials"
 msgstr "التسجيل باستخدام بيانات المؤسّسة/ الحرم الجامعي"
 
 #: lms/templates/student_account/institution_register.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_register.aebb1fc73f62.underscore
+#: test_root/staticfiles/cms/templates/student_account/institution_register.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_register.aebb1fc73f62.underscore
+#: test_root/staticfiles/lms/templates/student_account/institution_register.underscore
 msgid "Register through edX"
 msgstr "التسجيل من خلال edX"
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid ""
 "You have successfully signed into %(currentProvider)s, but your "
 "%(currentProvider)s account does not have a linked %(platformName)s account."
 " To link your accounts, sign in now using your %(platformName)s password."
 msgstr ""
 "نجح تسجيل دخولك إلى %(currentProvider)s، لكنّ حسابك لدى %(currentProvider)s "
-"لا يملك حسابًا مرتبطًا بالمنصّة %(platformName)s. ولربط حساباتك، يُرجى تسجيل"
-" الدخول باستخدام كلمة المرور الخاصة بك في %(platformName)s."
+"لا يملك حسابًا مرتبطًا بمنصّة %(platformName)s. ولربط حسابك، يُرجى إكمال "
+"البيانات المطلوبة في صفحة التسجيل على %(platformName)s."
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "Password Reset Email Sent"
 msgstr "لقد أرسلنا بريداً إلكترونياً لك لتغيير كلمة السر."
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "An error occurred when signing you in to %(platformName)s."
 msgstr "نأسف لحدوث خطأ أثناء تسجيل دخولك إلى %(platformName)s."
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid ""
 "Sign in here using your email address and password, or use one of the "
 "providers listed below."
@@ -1873,71 +2163,143 @@ msgstr ""
 "أحد المزوِّدين المذكورين أدناه."
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "Sign in here using your email address and password."
 msgstr "يُرجى تسجيل دخولك باستخدام عنوان بريدك الإلكتروني وكلمة السر."
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "If you do not yet have an account, use the button below to register."
 msgstr "إذا لم تكن تملك حسابًا بعد، يُرجى استخدام الزرّ أدناه للتسجيل."
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "or sign in with"
 msgstr "أو سجّل الدخول باستخدام"
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "Sign in with %(providerName)s"
 msgstr "يُرجى منك تسجيل دخولك باستخدام %(providerName)s"
 
 #: lms/templates/student_account/login.underscore
 #: lms/templates/student_account/register.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.underscore
 msgid "Use my institution/campus credentials"
 msgstr "استخدام بياناتي لدى المؤسّسة/ الحرم الجامعي"
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "New to %(platformName)s?"
 msgstr "هل أنت جديد على %(platformName)s؟"
 
 #: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/cms/templates/student_account/login.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.212520554437.underscore
+#: test_root/staticfiles/lms/templates/student_account/login.underscore
 msgid "Create an account"
 msgstr " أنشئ حساباً جديداً اﻵن."
 
 #: lms/templates/student_account/password_reset.underscore
+#: test_root/staticfiles/cms/templates/student_account/password_reset.cb2e909309a9.underscore
+#: test_root/staticfiles/cms/templates/student_account/password_reset.underscore
+#: test_root/staticfiles/lms/templates/student_account/password_reset.cb2e909309a9.underscore
+#: test_root/staticfiles/lms/templates/student_account/password_reset.underscore
 msgid "Reset my password"
 msgstr "تغيير كلمة السر"
 
 #: lms/templates/student_account/register.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.underscore
 msgid "Create an account using"
 msgstr "أنشئ حساباً باستخدام"
 
 #: lms/templates/student_account/register.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.underscore
 msgid "Create account using %(providerName)s."
 msgstr "أنشئ حساباً باستخدام %(providerName)s."
 
 #: lms/templates/student_account/register.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.underscore
 msgid "or create a new one here"
 msgstr "أو أنشئ حساباً جديداً باستخدام"
 
 #: lms/templates/student_account/register.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.underscore
 msgid "Create a new account"
 msgstr "أنشئ حساباً جديداً"
 
 #: lms/templates/student_account/register.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/cms/templates/student_account/register.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.aa61d2476df0.underscore
+#: test_root/staticfiles/lms/templates/student_account/register.underscore
 msgid "Already have an account?"
 msgstr "لديك حساب على إدراك؟"
 
 #: lms/templates/student_profile/learner_profile.underscore
+#: test_root/staticfiles/cms/templates/student_profile/learner_profile.b01f24b0b31d.underscore
+#: test_root/staticfiles/cms/templates/student_profile/learner_profile.underscore
+#: test_root/staticfiles/lms/templates/student_profile/learner_profile.b01f24b0b31d.underscore
+#: test_root/staticfiles/lms/templates/student_profile/learner_profile.underscore
 msgid "You are currently sharing a limited profile."
 msgstr "إنّك حاليًّا تشارك ملفًّا شخصيًّا محدودًا."
 
 #: lms/templates/student_profile/learner_profile.underscore
+#: test_root/staticfiles/cms/templates/student_profile/learner_profile.b01f24b0b31d.underscore
+#: test_root/staticfiles/cms/templates/student_profile/learner_profile.underscore
+#: test_root/staticfiles/lms/templates/student_profile/learner_profile.b01f24b0b31d.underscore
+#: test_root/staticfiles/lms/templates/student_profile/learner_profile.underscore
 msgid "This edX learner is currently sharing a limited profile."
 msgstr "يُشارك حاليًّا هذا الطالب لدى edX ملفًّا شخصيًّا محدودًا."
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid "What You Need for Verification"
 msgstr "ما الذي تحتاجه إليه لإجراء التحقّق"
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid ""
 "You need a computer that has a webcam. When you receive a browser prompt, "
 "make sure that you allow access to the camera."
@@ -1946,10 +2308,18 @@ msgstr ""
 "المتصفّح، يُرجى التأكّد من السماح باستخدام الكاميرا."
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid "Photo Identification"
 msgstr "وثيقة إثبات شخصية باستخدام الصورة "
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid ""
 "You need a driver's license, passport, or other government-issued ID that "
 "has your name and photo."
@@ -1958,6 +2328,10 @@ msgstr ""
 "الحكومة والتي تحمل اسمك وصورتك."
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid ""
 "When your face is in position, use the camera button %(icon)s below to take "
 "your photo."
@@ -1966,22 +2340,42 @@ msgstr ""
 "لالتقاط صورتك. "
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid "To take a successful photo, make sure that:"
 msgstr "لالتقاط صورة ناجحة، يُرجى التأكّد ممّا يلي:"
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid "Your face is well-lit."
 msgstr "أنّ الإضاءة جيّدة على وجهك."
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid "Your entire face fits inside the frame."
 msgstr "أنّ وجهك داخل إطار الصورة بالكامل."
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid "The photo of your face matches the photo on your ID."
 msgstr "أن تطابق الصورة على بطاقتك الشخصية صورة وجهك. "
 
 #: lms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/cms/templates/verify_student/face_photo_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.801d5848da55.underscore
+#: test_root/staticfiles/lms/templates/verify_student/face_photo_step.underscore
 msgid ""
 "To use the current photo, select the camera button %(icon)s. To take another"
 " photo, select the retake button %(icon)s."
@@ -1990,11 +2384,19 @@ msgstr ""
 "أخرى، يُرجى اختيار زرّ إعادة التصوير %(icon)s."
 
 #: lms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.underscore
 msgid ""
 "ID-Verification is not required for this Professional Education course."
 msgstr "التحقّق من الهوية الشخصية غير مطلوب لمساق التعليم المهني هذا."
 
 #: lms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.underscore
 msgid ""
 "All professional education courses are fee-based, and require payment to "
 "complete the enrollment process."
@@ -2003,23 +2405,43 @@ msgstr ""
 "التسجيل."
 
 #: lms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.underscore
 msgid "You have already verified your ID!"
 msgstr "سبق أن خضتَ عملية التحقّق من بطاقتك الشخصية! "
 
 #: lms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.underscore
 msgid "Your verification status is good until %(verificationGoodUntil)s."
 msgstr ""
 "يسري مفعول عملية التحقّق من هويّتك حتى تاريخ %(verificationGoodUntil)s."
 
 #: lms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/cms/templates/verify_student/make_payment_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.21478361333a.underscore
+#: test_root/staticfiles/lms/templates/verify_student/make_payment_step.underscore
 msgid "price"
 msgstr "السعر"
 
 #: lms/templates/verify_student/reverify_success_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/reverify_success_step.d45e119e5c47.underscore
+#: test_root/staticfiles/cms/templates/verify_student/reverify_success_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/reverify_success_step.d45e119e5c47.underscore
+#: test_root/staticfiles/lms/templates/verify_student/reverify_success_step.underscore
 msgid "Identity Verification In Progress"
 msgstr "جاري التحقّق من الهوية"
 
 #: lms/templates/verify_student/reverify_success_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/reverify_success_step.d45e119e5c47.underscore
+#: test_root/staticfiles/cms/templates/verify_student/reverify_success_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/reverify_success_step.d45e119e5c47.underscore
+#: test_root/staticfiles/lms/templates/verify_student/reverify_success_step.underscore
 msgid ""
 "We have received your information and are verifying your identity. You will "
 "see a message on your dashboard when the verification process is complete "
@@ -2031,46 +2453,12 @@ msgstr ""
 "الراهن استخدام كافة محتويات المساق المُتاحة."
 
 #: lms/templates/verify_student/reverify_success_step.underscore
+#: test_root/staticfiles/cms/templates/verify_student/reverify_success_step.d45e119e5c47.underscore
+#: test_root/staticfiles/cms/templates/verify_student/reverify_success_step.underscore
+#: test_root/staticfiles/lms/templates/verify_student/reverify_success_step.d45e119e5c47.underscore
+#: test_root/staticfiles/lms/templates/verify_student/reverify_success_step.underscore
 msgid "Return to Your Dashboard"
 msgstr "العودة إلى لوحة المعلومات"
-
-#: cms/templates/js/add-xblock-component-menu-problem.underscore
-msgid "Common Problem Types"
-msgstr "المسائل الشائعة"
-
-#: cms/templates/js/certificate-details.underscore
-msgid "Certificate Details"
-msgstr "تفاصيل الشهادة"
-
-#: cms/templates/js/certificate-details.underscore
-#: cms/templates/js/certificate-editor.underscore
-msgid "Course Title Override"
-msgstr "تجاوز عنوان المساق"
-
-#: cms/templates/js/certificate-details.underscore
-#: cms/templates/js/certificate-editor.underscore
-msgid "Certificate Signatories"
-msgstr "الموقّعون على الشهادة"
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Certificate Information"
-msgstr "معلومات الشهادة"
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Certificate Name"
-msgstr "اسم الشهادة"
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Name of the certificate"
-msgstr "اسم الشهادة"
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Description of the certificate"
-msgstr "وصف الشهادة"
-
-#: cms/templates/js/certificate-editor.underscore
-msgid "Course title"
-msgstr "عنوان المساق"
 
 #: cms/templates/js/certificate-editor.underscore
 msgid ""
@@ -2080,35 +2468,6 @@ msgstr ""
 "يُرجى تحديد بديل للعنوان الرسمي للمساق لوضعه على الشهادات. ويُرجى ترك هذا "
 "الحقل فارغًا لاستخدام العنوان الرسمي للمساق."
 
-#: cms/templates/js/certificate-editor.underscore
-msgid "(Up to 4 signatories are allowed for a certificate)"
-msgstr "(يمكن إضافة 4 موقِّعين كحد أقصى لكل شهادة)"
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Choose mode"
-msgstr "اختر الوضع"
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Preview Certificate"
-msgstr "معاينة الشهادة"
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Activate"
-msgstr "تفعيل"
-
-#: cms/templates/js/certificate-web-preview.underscore
-msgid "Deactivate"
-msgstr "تعطيل"
-
-#: cms/templates/js/checklist.underscore
-msgid "{number}{pct_sign} of checklists completed"
-msgstr "{number}{pct_sign} قوائم مكتملة"
-
-#: cms/templates/js/course-outline.underscore
-#: cms/templates/js/xblock-outline.underscore
-msgid "Collapse/Expand this %(xblock_type)s"
-msgstr "تصغير/تكبير هذه %(xblock_type)s"
-
 #: cms/templates/js/course-outline.underscore
 msgid "Proctored Exam"
 msgstr "امتحان مراقَب"
@@ -2116,135 +2475,6 @@ msgstr "امتحان مراقَب"
 #: cms/templates/js/course-outline.underscore
 msgid "Timed and Proctored Exam"
 msgstr "امتحان مراقَب ومحدَّد التوقيت"
-
-#: cms/templates/js/course-outline.underscore
-#: cms/templates/js/xblock-outline.underscore
-msgid "Click to add a new %(xblock_type)s"
-msgstr "يُرجى النقر لإضافة %(xblock_type)s جديد"
-
-#: cms/templates/js/course_info_update.underscore
-msgid "Send push notification to mobile apps"
-msgstr "إرسال إخطارات لحظية إلى تطبيقات الهاتف الجوال"
-
-#: cms/templates/js/course_info_update.underscore
-msgid "Send notification to mobile apps"
-msgstr "إرسال تنبيهات إلى تطبيقات الهاتف الجوال"
-
-#: cms/templates/js/course_info_update.underscore
-msgid "Post"
-msgstr "نشر"
-
-#: cms/templates/js/license-selector.underscore
-msgid "License Type"
-msgstr "نوع الإجازة"
-
-#: cms/templates/js/license-selector.underscore
-msgid "Learn more about {license_name}"
-msgstr "اعرف المزيد عن {license_name}"
-
-#: cms/templates/js/license-selector.underscore
-msgid "Options for {license_name}"
-msgstr "خيارت لـ {license_name}"
-
-#: cms/templates/js/license-selector.underscore
-msgid "The following options are available for the {license_name} license."
-msgstr "تتوفّر الخيارات التالية للإجازة {license_name}"
-
-#: cms/templates/js/license-selector.underscore
-msgid "License Display"
-msgstr "استعراض الإجازة"
-
-#: cms/templates/js/license-selector.underscore
-msgid ""
-"The following message will be displayed at the bottom of the courseware "
-"pages within your course:"
-msgstr "ستُعرَض الرسالة التالية في أسفل صفحات محتويات مساقك:"
-
-#: cms/templates/js/license-selector.underscore
-msgid "Creative Commons licensed content, with terms as follow:"
-msgstr "محتوى مُجاز مشترك ومبتكر، شروطه كالتالي:"
-
-#: cms/templates/js/license-selector.underscore
-msgid "Some Rights Reserved"
-msgstr "بعض الحقوق محفوظة"
-
-#: cms/templates/js/list.underscore
-msgid "New %(item_type)s"
-msgstr "%(item_type)s جديد"
-
-#: cms/templates/js/publish-xblock.underscore
-msgid "with %(release_date_from)s"
-msgstr "مع %(release_date_from)s"
-
-#: cms/templates/js/publish-xblock.underscore
-msgid "with %(section_or_subsection)s"
-msgstr "مع %(section_or_subsection)s"
-
-#: cms/templates/js/signatory-details.underscore
-#: cms/templates/js/signatory-editor.underscore
-msgid "Organization"
-msgstr "المؤس~سة"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Certificate Signatory Configuration"
-msgstr "إعدادات الموقِّع على الشهادة"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Name of the signatory"
-msgstr "اسم الموقِّع"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Title of the signatory"
-msgstr "لقب الموقِّع"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Organization of the signatory"
-msgstr "مؤسّسة الموقِّع"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Signature Image"
-msgstr "صورة الموقِّع"
-
-#: cms/templates/js/signatory-editor.underscore
-msgid "Path to Signature Image"
-msgstr "رابط صورة الموقِّع"
-
-#: cms/templates/js/staff-lock-editor.underscore
-msgid ""
-"If you make this %(xblockType)s visible to students, students will be able "
-"to see its content after the release date has passed and you have published "
-"the unit."
-msgstr ""
-"إذا جعلت هذه %(xblockType)s مرئية للطلّاب، فإنّهم سيتمكّنون من مشاهدة "
-"محتواها بعد تاريخ الإصدار وبعد نشرك للوحدة."
-
-#: cms/templates/js/team-member.underscore
-msgid "Current Role:"
-msgstr "الدور الحالي:"
-
-#: cms/templates/js/team-member.underscore
-msgid "You!"
-msgstr "أنت!"
-
-#: cms/templates/js/team-member.underscore
-msgid "send an email message to {email}"
-msgstr "بعث رسالة عبر البريد الإلكتروني إلى {email} "
-
-#: cms/templates/js/team-member.underscore
-msgid "Promote another member to Admin to remove your admin rights"
-msgstr "يُرجى ترقية عضو آخر إلى درجة مشرِف لتتمكّن من إلغاء حقوقك كمشرِف."
-
-#: cms/templates/js/team-member.underscore
-msgid "Add {role} Access"
-msgstr "إضافة صلاحية الوصول الخاصة بـ {role}"
-
-#: cms/templates/js/team-member.underscore
-msgid "Remove {role} Access"
-msgstr "إلغاء صلاحية الوصول الخاصة بـ {role}"
-
-#: cms/templates/js/team-member.underscore
-msgid "Delete the user, {username}"
-msgstr "حذف المستخدم،  {username} "
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Timed Exam"
@@ -2280,113 +2510,3 @@ msgstr ""
 "يمكن للطلّاب أن يختاروا الخضوع لهذا الامتحان مع أو من دون مراقبة عبر "
 "الإنترنت، لكنّ فقط الطلّاب الذين يختارون المراقبة يتأهّلون للنجاح في المادة."
 " ويُشترط في الامتحانات المراقَبة أيضًا أن تكون محدَّدة التوقيت."
-
-#: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
-msgid ""
-"To be sure all students can access the video, we recommend providing both an"
-" .mp4 and a .webm version of your video. Click below to add a URL for "
-"another version. These URLs cannot be YouTube URLs. The first listed video "
-"that's compatible with the student's computer will play."
-msgstr ""
-"لضمان تمكّن جميع الطلّاب من الوصول إلى هذا الفيديو، فإنّنا نوصيك بتوفير "
-"نسختين منه بصيغتَي .mp4 و .webm. ويُرجى النقر أدناه لإضافة رابط لنسخة أخرى. "
-"لا يمكن لهذه الروابط أن تكون لموقع يوتيوب. وسيُعرَض أوّل فيديو مُدرَج "
-"ومتوافق مع كومبيوتر الطالب."
-
-#: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
-msgid "Default Timed Transcript"
-msgstr "نص محدَّد التوقيت افتراضي "
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-#: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
-msgid "Timed Transcript Conflict"
-msgstr "تضارب حول النص محدَّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-msgid ""
-"The timed transcript for the first video file does not appear to be the same"
-" as the timed transcript for the second video file."
-msgstr ""
-"يبدو أنّ النص محدَّد التوقيت لملف الفيديو الأوّل يختلف عن النص محدَّد "
-"التوقيت لملف الفيديو الثاني."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-msgid "Which timed transcript would you like to use?"
-msgstr "ما هو النص محدَّد التوقيت الذي ترغب في استخدامه؟"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
-msgid "Timed Transcript from %(filename)s"
-msgstr "نص محدَّد التوقيت من %(filename)s"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
-msgid "Timed Transcript Found"
-msgstr "وُجد نص محدَّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
-msgid ""
-"EdX has a timed transcript for this video. If you want to edit this "
-"transcript, you can download, edit, and re-upload the existing transcript. "
-"If you want to replace this transcript, upload a new .srt transcript file."
-msgstr ""
-"لدى EdX نص محدَّد التوقيت لهذا الفيديو. وإذا رغبت في تعديل هذا النصّ، يمكنك "
-"تنزيل النص الحالي، وتعديله، وإعادة تحميله. أمّا إذا رغبت في استبداله، يُرجى "
-"تحميل ملف نص جديد بصيغة .srt."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
-msgid "No EdX Timed Transcript"
-msgstr "لا يوجد لدى EdX نص محدَّد التوقيت "
-
-#: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
-msgid ""
-"EdX doesn't have a timed transcript for this video in Studio, but we found a"
-" transcript on YouTube. You can import the YouTube transcript or upload your"
-" own .srt transcript file."
-msgstr ""
-"لا تملك EdX نصًّا محدَّد التوقيت لهذا الفيديو في الاستديو، لكنّنا وجدنا "
-"نصًّا على اليوتيوب يمكنك استيراده أو تحميل نصّك الخاص بك بصيغة ملف .srt."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
-msgid "No Timed Transcript"
-msgstr "لا يوجد نص محدَّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
-msgid ""
-"EdX doesn\\'t have a timed transcript for this video. Please upload an .srt "
-"file."
-msgstr ""
-"ليس لدى EdX نص محدَّد التوقيت لهذا الفيديو. يُرجى تحميل ملف بصيغة .srt."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
-msgid ""
-"The timed transcript for this video on edX is out of date, but YouTube has a"
-" current timed transcript for this video."
-msgstr ""
-"إنّ النص محدَّد التوقيت لهذا الفيديو على EdX قديم ولكن يوجد نص حديث له "
-"حاليًّا على يوتيوب."
-
-#: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
-msgid "Timed Transcript Uploaded Successfully"
-msgstr "جرى تحميل النص محدَّد التوقيت بنجاح"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
-msgid ""
-"EdX has a timed transcript for this video. If you want to replace this "
-"transcript, upload a new .srt transcript file. If you want to edit this "
-"transcript, you can download, edit, and re-upload the existing transcript."
-msgstr ""
-"لدى Edx نص محدَّد التوقيت لهذا الفيديو. إذا رغبت في استبدال هذا النص، يُرجى "
-"تحميل ملف نص جديد بصيغة .srt. أمّا إذا رغبت في تعديل هذا النصّ، يُرجى إذًا "
-"تنزيل النص السابق وتعديله وإعادة تحميله.  "
-
-#: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
-msgid "Confirm Timed Transcript"
-msgstr "تأكيد النص محدَّد التوقيت"
-
-#: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
-msgid ""
-"You changed a video URL, but did not change the timed transcript file. Do "
-"you want to use the current timed transcript or upload a new .srt transcript"
-" file?"
-msgstr ""
-"غيّرت رابط الفيديو ولكنّك لم تغيّر ملف النص محدَّد التوقيت. هل ترغب في "
-"استخدام النص محدَّد التوقيت الحالي أو تحميل ملف نص جديد بصيغة .srt؟"
