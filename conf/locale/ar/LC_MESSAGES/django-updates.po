@@ -134,7 +134,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2015-10-30 14:33+0000\n"
+"POT-Creation-Date: 2015-11-02 17:02+0000\n"
 "PO-Revision-Date: 2015-10-13 19:58+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
@@ -892,14 +892,6 @@ msgstr ""
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enable Proctored Exams"
 msgstr "تفعيل الامتحانات المراقَبة"
-
-#: common/lib/xmodule/xmodule/course_module.py
-msgid ""
-"Enter true or false. If this value is true, timed and proctored exams are "
-"enabled in your course."
-msgstr ""
-"يُرجى إدخال صحيح أو خاطئ. ويسمح اختيارك لصحيح بتفعيل الامتحانات المراقبة "
-"ومحدَّدة التوقيت في مساقك."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Minimum Grade for Credit"

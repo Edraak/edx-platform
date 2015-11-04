@@ -8363,15 +8363,6 @@ msgstr "صيغة خاطئة لرابط url."
 msgid "Actions"
 msgstr "الإجراءات"
 
-#: cms/templates/js/course-outline.underscore
-#: lms/templates/ccx/schedule.underscore
-#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
-#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
-#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
-#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
-msgid "Due Date"
-msgstr "تاريخ الاستحقاق"
-
 #: cms/templates/js/paging-header.underscore
 #: common/static/common/templates/components/paging-footer.underscore
 #: common/static/common/templates/discussion/pagination.underscore
@@ -8845,6 +8836,14 @@ msgstr "الوحدة"
 #: test_root/staticfiles/lms/templates/ccx/schedule.underscore
 msgid "Start Date"
 msgstr "تاريخ البدء"
+
+#: lms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/cms/templates/ccx/schedule.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.50fbfd435a6f.underscore
+#: test_root/staticfiles/lms/templates/ccx/schedule.underscore
+msgid "Due Date"
+msgstr "تاريخ الاستحقاق"
 
 #: lms/templates/ccx/schedule.underscore
 #: test_root/staticfiles/cms/templates/ccx/schedule.50fbfd435a6f.underscore
@@ -9591,40 +9590,9 @@ msgid "Proctored Exam"
 msgstr "امتحان مراقَب"
 
 #: cms/templates/js/course-outline.underscore
-msgid "Timed and Proctored Exam"
-msgstr "امتحان مراقَب ومحدَّد التوقيت"
-
-#: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Timed Exam"
 msgstr "امتحان محدَّد التوقيت"
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
-msgid "This exam is timed"
-msgstr "هذا الامتحان له وقت محدَّد"
-
-#: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Time Allotted (HH:MM):"
 msgstr "الوقت المخصَّص (HH:MM): "
-
-#: cms/templates/js/timed-examination-preference-editor.underscore
-msgid ""
-"Students see warnings when 20% and 5% of the allotted time remains. In "
-"certain cases, students can be granted allowances that give them extra time "
-"to complete the exam."
-msgstr ""
-"يرى الطلّاب تحذيرًا عندما يتبقى 20% و 5% من الوقت المقرر. في بعض الحالات، "
-"يمكن للطلاب أن يحصلوا على وقت إضافي  لمساعدتهم في إنهاء الاختبار."
-
-#: cms/templates/js/timed-examination-preference-editor.underscore
-msgid "This exam is proctored"
-msgstr "هذا الامتحان مراقَب"
-
-#: cms/templates/js/timed-examination-preference-editor.underscore
-msgid ""
-"Students can choose to take this exam with or without online proctoring, but"
-" only students who choose the proctored option are eligible for credit. "
-"Proctored exams must also be timed exams."
-msgstr ""
-"يمكن للطلّاب أن يختاروا الخضوع لهذا الامتحان مع أو من دون مراقبة عبر "
-"الإنترنت، لكنّ فقط الطلّاب الذين يختارون المراقبة يتأهّلون للنجاح في المادة."
-" ويُشترط في الامتحانات المراقَبة أيضًا أن تكون محدَّدة التوقيت."

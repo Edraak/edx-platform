@@ -20861,12 +20861,17 @@ msgid "Please select your Country."
 msgstr "يُرجى تحديد بلدك."
 
 #. Translators: Edraak-specific
-#: lms/templates/dashboard.html:181
+#: lms/templates/dashboard.html:93
+msgid "My Courses"
+msgstr "مساقاتي"
+
+#. Translators: Edraak-specific
+#: lms/templates/dashboard.html:182
 msgid "Want to change your account settings?"
 msgstr "هل تريد تغيير إعدادات حسابك؟"
 
 #. Translators: Edraak-specific
-#: lms/templates/dashboard.html:184
+#: lms/templates/dashboard.html:185
 msgid "Click on your username above."
 msgstr "اضغط على اسمك في الشريط العلوي."
 
@@ -20968,34 +20973,39 @@ msgid "Post to Bayt.com"
 msgstr "نشر على بيت.كوم"
 
 #. Translators: Edraak-specific
-#: lms/templates/edraak_certificates/view.html:117
-#: lms/templates/edraak_certificates/view.html:162
+#: lms/templates/edraak_certificates/view.html:119
+#: lms/templates/edraak_certificates/view.html:166
 msgid "Do you want to post your certificate on Bayt?"
 msgstr "هل تريد أن تنشر شهادتك على بيت.كوم؟"
 
 #. Translators: Edraak-specific
-#: lms/templates/edraak_certificates/view.html:127
-#: lms/templates/edraak_certificates/view.html:172
+#: lms/templates/edraak_certificates/view.html:129
+#: lms/templates/edraak_certificates/view.html:176
 msgid "Enter or Confirm your Bayt email"
 msgstr "يرجى تأكيد بريدك الإكتروني المسجل على بيت.كوم"
 
 #. Translators: Edraak-specific
-#: lms/templates/edraak_certificates/view.html:130
-#: lms/templates/edraak_certificates/view.html:175
+#: lms/templates/edraak_certificates/view.html:132
+#: lms/templates/edraak_certificates/view.html:179
 msgid "This will post the course completed on your Bayt CV."
 msgstr "سيتم إضافة هذه الشهادة إلى سيرتك الذاتية في بيت."
 
 #. Translators: Edraak-specific
-#: lms/templates/edraak_certificates/view.html:135
-#: lms/templates/edraak_certificates/view.html:180
+#: lms/templates/edraak_certificates/view.html:137
+#: lms/templates/edraak_certificates/view.html:184
 msgid "Bayt Email"
 msgstr "البريد الإلكتروني"
 
 #. Translators: Edraak-specific
-#: lms/templates/edraak_certificates/view.html:143
-#: lms/templates/edraak_certificates/view.html:188
+#: lms/templates/edraak_certificates/view.html:147
+#: lms/templates/edraak_certificates/view.html:195
 msgid "Post"
 msgstr "نشر"
+
+#. Translators: Edraak-specific
+#: lms/templates/registration/password_reset_subject.txt:7
+msgid "Password reset on {platform_name}"
+msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
 
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -21744,14 +21754,6 @@ msgstr ""
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enable Proctored Exams"
 msgstr "تفعيل الامتحانات المراقَبة"
-
-#: common/lib/xmodule/xmodule/course_module.py
-msgid ""
-"Enter true or false. If this value is true, timed and proctored exams are "
-"enabled in your course."
-msgstr ""
-"يُرجى إدخال صحيح أو خاطئ. ويسمح اختيارك لصحيح بتفعيل الامتحانات المراقبة "
-"ومحدَّدة التوقيت في مساقك."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Minimum Grade for Credit"
