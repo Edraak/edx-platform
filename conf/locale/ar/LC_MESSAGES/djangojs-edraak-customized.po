@@ -7209,8 +7209,8 @@ msgid ""
 "We've sent a message to {email_address}. Click the link in the message to "
 "reset your password."
 msgstr ""
-"لقد أرسلنا لك رسالة تأكيد على {new_email_address}. اضغط على الرابط الموجود "
-"في الرسالة لتغيير كلمة السر. "
+"لقد أرسلنا لك رسالة تأكيد على {email_address}. اضغط على الرابط الموجود في "
+"الرسالة لتغيير كلمة السر. "
 
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
