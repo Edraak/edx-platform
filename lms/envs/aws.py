@@ -595,7 +595,7 @@ FORUS_BASE_URL = ENV_TOKENS.get("FORUS_BASE_URL")
 
 # Safe URL redirects for the LMS and marketing
 # A list of allowed hosts e.g. ['www.example.com', 'courses.example.com']
-SAFE_REDIRECT_HOSTS = ENV_TOKENS.get('SAFE_REDIRECT_HOSTS')
+SAFE_REDIRECT_HOSTS = ENV_TOKENS.get('SAFE_REDIRECT_HOSTS', [])
 
 
 # CSRF settings are used for language change forms, but it can have other usages as well

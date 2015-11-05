@@ -1,7 +1,7 @@
 from django.utils.http import is_safe_url
 
 
-def get_any_safe_url(hosts, urls):
+def get_any_safe_url(hosts, urls, fallback):
     """
     Get any safe URL from a list of URLs in any given host.
 
@@ -14,4 +14,4 @@ def get_any_safe_url(hosts, urls):
             if is_safe_url(url, host):
                 return url
 
-    return None
+    return fallback

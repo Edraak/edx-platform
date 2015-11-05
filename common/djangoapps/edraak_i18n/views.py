@@ -34,8 +34,8 @@ def set_language(request):
         urls=(
             request.REQUEST.get('next'),
             request.META.get('HTTP_REFERER'),
-            '/',
-        )
+        ),
+        fallback='/',
     )
 
     response = http.HttpResponseRedirect(safe_url)
