@@ -21079,6 +21079,7 @@ msgstr ""
 "ذكر كل مجال على سطر خاص به."
 
 #: common/djangoapps/course_modes/admin.py
+#: lms/djangoapps/courseware/date_summary.py
 msgid "Verification Deadline"
 msgstr "الموعد النهائي للتحقّق"
 
@@ -23961,10 +23962,6 @@ msgstr "عرض الملف الشخصي"
 #: lms/templates/manage_user_standing.html
 msgid "Remove Profile Image"
 msgstr "إزالة صورة الملف الشخصي"
-
-#: lms/templates/navigation-edx.html
-msgid "Home Page"
-msgstr "الصفحة الرئيسية"
 
 #: lms/templates/navigation-edx.html lms/templates/navigation.html
 msgid "Profile"
