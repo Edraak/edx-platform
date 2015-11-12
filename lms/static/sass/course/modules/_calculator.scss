@@ -11,7 +11,7 @@
   -webkit-appearance: none;
   width: 100%;
   direction: ltr;
-  
+
   &.open {
     bottom: -36px;
   }
@@ -158,6 +158,7 @@
             border: none;
             background: url("../images/info-icon.png") center center no-repeat;
             color: $white;
+            cursor: pointer;
 
             &:focus {
               outline: 5px auto #5b9dd9;
