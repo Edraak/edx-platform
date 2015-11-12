@@ -9,6 +9,8 @@ from django.views.defaults import server_error
 from django.http import (Http404, HttpResponse, HttpResponseNotAllowed,
                          HttpResponseServerError)
 
+from django.utils.translation import ugettext as _
+
 from edraak_misc.utils import validate_email
 
 import dogstats_wrapper as dog_stats_api
@@ -67,7 +69,7 @@ def calculate(request):
         event = {'error': map(str, sys.exc_info()),
                  'equation': equation}
         track.views.server_track(request, 'error:calc', event, page='calc')
-        return HttpResponse(json.dumps({'result': 'Invalid syntax'}))
+        return HttpResponse(json.dumps({'result': _('Invalid syntax')}))
     return HttpResponse(json.dumps({'result': str(result)}))
 
 
