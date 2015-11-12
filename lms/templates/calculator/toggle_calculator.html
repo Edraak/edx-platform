@@ -64,8 +64,11 @@ from django.core.urlresolvers import reverse
                     <td>${_("+ - * / (add, subtract, multiply, divide)")}<br />
                       ## Translators: Please do not translate mathematical symbols.
                       ${_("^ (raise to a power)")}<br />
-                      ## Translators: Please do not translate mathematical symbols.
-                      ${_("_ (add a subscript)")}<br />
+
+                      ## Developers: Please keep the space at the begining of the string, otherwise gettext will ignore it
+                      ## Translators: Please do not translate mathematical symbols, Edraak-specific
+                      ${_(" _ (add a subscript)")}<br />
+
                       ## Translators: Please do not translate mathematical symbols.
                       ${_("|| (parallel resistors)")}
                     </td>
