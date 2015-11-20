@@ -2,7 +2,7 @@
 Course API Views
 """
 
-from django.http import Http404
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from opaque_keys import InvalidKeyError
@@ -50,7 +50,6 @@ class CourseDetailView(RetrieveAPIView):
             * `"string"`: manually set
             * `"timestamp"`: generated form `start` timestamp
             * `"empty"`: the start date should not be shown
-        * pacing: Course pacing. Possible values: instructor, self
 
     **Parameters:**
 
@@ -85,8 +84,7 @@ class CourseDetailView(RetrieveAPIView):
                 "org": "edX",
                 "start": "2015-07-17T12:00:00Z",
                 "start_display": "July 17, 2015",
-                "start_type": "timestamp",
-                "pacing": "instructor"
+                "start_type": "timestamp"
             }
     """
 
@@ -104,7 +102,7 @@ class CourseDetailView(RetrieveAPIView):
         try:
             course_key = CourseKey.from_string(course_key_string)
         except InvalidKeyError:
-            raise Http404()
+            raise NotFound()
 
         return course_detail(self.request, username, course_key)
 
