@@ -15,7 +15,7 @@ EMAIL_MIN_LENGTH = 3
 EMAIL_MAX_LENGTH = 254
 
 # The minimum and maximum length for the password account field
-PASSWORD_MIN_LENGTH = 2
+PASSWORD_MIN_LENGTH = 6
 PASSWORD_MAX_LENGTH = 75
 
 ACCOUNT_VISIBILITY_PREF_KEY = 'account_privacy'

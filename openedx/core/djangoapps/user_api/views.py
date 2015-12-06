@@ -105,7 +105,10 @@ class LoginSessionView(APIView):
             label=password_label,
             field_type="password",
             restrictions={
-                "min_length": PASSWORD_MIN_LENGTH,
+                # Commented out to avoid checking for non-complex Passwords
+                # for users who registered before implementing the policy.
+                # TODO: Enforce the policy in a gradual.
+                # "min_length": PASSWORD_MIN_LENGTH,
                 "max_length": PASSWORD_MAX_LENGTH,
             },
             error_messages={
