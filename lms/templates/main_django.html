@@ -3,6 +3,9 @@
 {% load sekizai_tags i18n microsite %}
 {% load url from future %}
 {% load staticfiles %}
+
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
 <html lang="{{LANGUAGE_CODE}}">
 <head>
   <meta charset="UTF-8">
@@ -10,10 +13,22 @@
 
  <link rel="icon" type="image/x-icon" href="{% favicon_path %}" />
 
-  {% compressed_css 'style-vendor' %}
-  {% compressed_css 'style-main' %}
+  {% compressed_css 'style-vendor-rtl' %}
+
+  {% if LANGUAGE_BIDI %}
+    {% compressed_css 'style-main-rtl' %}
+  {% else %}
+    {% compressed_css 'style-main' %}
+  {% endif %}
+
   {% compressed_css 'style-course-vendor' %}
-  {% compressed_css 'style-course' %}
+
+  {% if LANGUAGE_BIDI %}
+    {% compressed_css 'style-course-rtl' %}
+  {% else %}
+    {% compressed_css 'style-course' %}
+  {% endif %}
+
 
   {% block main_vendor_js %}
   {% compressed_js 'main_vendor' %}
@@ -27,7 +42,7 @@
 </head>
 
 <body class="{% block bodyclass %}{% endblock %} lang_{{LANGUAGE_CODE}}">
-  <div class="window-wrap" dir="${static.dir_rtl()}">
+  <div class="window-wrap" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
     <a class="nav-skip" href="{% block nav_skip %}#content{% endblock %}">{% trans "Skip to main content" %}</a>
     {% with course=request.course %}
       {% if IS_EDX_DOMAIN %}
