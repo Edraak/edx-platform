@@ -29,6 +29,7 @@ def generate_certificate(request, course_id):
         instructor_name = UserProfile.objects.get(user=instructor_user).name
 
     cert = EdraakCertificate(course_name=course_name,
+                             course_id=course_id,
                              user_profile_name=user.profile.name,
                              course_org=course.org,
                              course_end_date=course_end_date,
