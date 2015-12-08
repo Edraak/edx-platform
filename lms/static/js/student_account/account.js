@@ -10,7 +10,7 @@ var edx = edx || {};
         // These should be the same length limits enforced by the server
         EMAIL_MIN_LENGTH: 3,
         EMAIL_MAX_LENGTH: 254,
-        PASSWORD_MIN_LENGTH: 2,
+        PASSWORD_MIN_LENGTH: 6,
         PASSWORD_MAX_LENGTH: 75,
 
         // This is the same regex used to validate email addresses in Django 1.4
