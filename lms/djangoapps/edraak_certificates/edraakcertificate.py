@@ -24,25 +24,34 @@ pdfmetrics.registerFont(TTFont("DIN Next LT Arabic Bold", bold_font_url, validat
 SIZE = landscape(A4)
 
 
-def course_org_to_logo(course_org):
-    course_org = course_org.lower()
-    if course_org == 'mitx' or course_org == 'harvardx' or course_org == 'qrf':
+def get_organization_logo(organization):
+    organization = organization.lower()
+    if organization == 'mitx' or organization == 'harvardx' or organization == 'qrf':
         return 'edx.png'
-    elif course_org == u'bayt.com':
+    elif organization == u'bayt.com':
         return 'bayt-logo2-en.png'
-    elif course_org == u'qrta':
+    elif organization == u'qrta':
         return 'qrta_logo.jpg'
-    elif course_org == 'aub':
+    elif organization == 'aub':
         return 'Full-AUB-Seal.jpg'
-    elif course_org == "csbe":
+    elif organization == "csbe":
         return 'csbe.png'
-    elif course_org == "hcac":
+    elif organization == "hcac":
         return 'HCAC_Logo.png'
-    elif course_org == "delftx":
+    elif organization == "delftx":
         return 'delftx.jpg'
+    elif organization == "britishcouncil":
+        return 'british-council.jpg'
+    elif organization == "crescent_petroleum":
+        return 'crescent-petroleum.jpg'
     else:
         return None
 
+def get_course_sponsor(course_id):
+    if course_id == "BritishCouncil/Eng100/T4_2015":
+        return "crescent_petroleum"
+    else:
+        return None
 
 def text_to_bidi(text):
     text = normalize_spaces(text)
@@ -66,8 +75,9 @@ def contains_rtl_text(string):
 
 
 class EdraakCertificate(object):
-    def __init__(self, user_profile_name, course_name, course_desc, instructor, course_end_date, course_org=None):
+    def __init__(self, user_profile_name, course_id, course_name, course_desc, instructor, course_end_date, course_org=None):
         self.user_profile_name = user_profile_name
+        self.course_id = course_id
         self.course_name = course_name
         self.course_desc = course_desc
         self.instructor = instructor
@@ -195,7 +205,7 @@ class EdraakCertificate(object):
 
     def add_course_org_logo(self, course_org):
         if course_org:
-            logo = course_org_to_logo(course_org)
+            logo = get_organization_logo(course_org)
             if logo:
                 image = utils.ImageReader(path.join(static_dir, logo))
 
@@ -214,6 +224,27 @@ class EdraakCertificate(object):
                 y = 6.444 * inch
 
                 self.ctx.drawImage(image, x, y, width, height)
+
+    def add_course_sponsor_logo(self, sponsor):
+        logo = get_organization_logo(sponsor)
+        if logo:
+            image = utils.ImageReader(path.join(static_dir, logo))
+
+            iw, ih = image.getSize()
+            aspect = iw / float(ih)
+            height = 0.75 * inch
+            width = height * aspect
+
+            rtl_x = 9.25 * inch
+
+            if not self.is_english_course():
+                x = rtl_x
+            else:
+                x = self.bidi_x_axis(rtl_x) - width
+
+            y = 2.45 * inch
+
+            self.ctx.drawImage(image, x, y, width, height)
 
     def _wrap_text(self, text, max_width):
         same = lambda x: x
@@ -270,6 +301,13 @@ class EdraakCertificate(object):
         self.draw_bidi_text(self._("Successfully completed:"), x, 4.63, size=0.25)
 
         self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
+
+        sponsor = get_course_sponsor(self.course_id)
+        if sponsor:
+            # Translators: Edraak-specific
+            self.draw_bidi_text(self._("This course is sponsored by:"), x, 3.5, size=0.25)
+
+            self.add_course_sponsor_logo(sponsor)
 
         if not self.is_english_course():
             self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
