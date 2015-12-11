@@ -79,7 +79,7 @@ def courses(request, show_hidden):
             courses_json_list.append({
                 "id": unicode(course.id),
                 "number": course.display_number_with_default,
-                "name": course.display_name_with_default,
+                "name": course.display_name_with_default_escaped,
                 "organization": course.display_org_with_default,
                 "description": get_course_about_section(request, course, "short_description").strip(),
                 "startDate": course.start,
