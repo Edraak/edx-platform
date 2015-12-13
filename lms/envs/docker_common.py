@@ -1,7 +1,3 @@
-from .dev import *
-
-FEATURES['AUTH_USE_CERTIFICATES'] = False
-
 VIRTUAL_UNIVERSITIES = ['edge']
 META_UNIVERSITIES = {}
 
@@ -10,6 +6,9 @@ PIPELINE_ENABLED = False
 
 SESSION_COOKIE_DOMAIN = '.local.edx.org'
 CSRF_COOKIE_DOMAIN = '.local.edx.org'
+
+COMMENTS_SERVICE_KEY = "password"
+COMMENTS_SERVICE_URL = "http://forum:4567"
 
 DATABASES = {
     'default': {
@@ -20,8 +19,6 @@ DATABASES = {
         'USER': 'root'
     }
 }
-
-
 
 CONTENTSTORE = {
     'ADDITIONAL_OPTIONS': {},

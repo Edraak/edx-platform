@@ -1,4 +1,7 @@
+from .dev import *
 from .docker_common import *
+
+FEATURES['AUTH_USE_CERTIFICATES'] = False
 
 SUBDOMAIN_BRANDING['edge'] = 'edge'
 SUBDOMAIN_BRANDING['preview.edge'] = 'edge'
