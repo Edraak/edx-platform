@@ -19,6 +19,8 @@ PYTHON_REQ_FILES = [
     'requirements/edx/post.txt',
 ]
 
+IS_INSIDE_DOCKER = os.path.exists('/.dockerenv')
+
 # Developers can have private requirements, for local copies of github repos,
 # or favorite debugging tools, etc.
 PRIVATE_REQS = 'requirements/private.txt'
@@ -133,8 +135,16 @@ def python_prereqs_installation():
     """
     Installs Python prerequisites
     """
+
+    if IS_INSIDE_DOCKER:
+        cwd = os.path.realpath('..')
+    else:
+        cwd = os.path.realpath('.')
+
     for req_file in PYTHON_REQ_FILES:
-        sh("pip install -q --exists-action w -r {req_file}".format(req_file=req_file))
+        sh("pip install -q --exists-action w -r {req_file}".format(
+            req_file=req_file,
+        ), cwd=cwd)
 
 
 @task
