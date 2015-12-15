@@ -98,11 +98,11 @@
 
 @mixin discussion-wmd-preview {
   padding: ($baseline/2) $baseline;
-  width: 100%;
-  color: #333;
+  width: auto;
+  color: $gray-d3;
 
   ol, ul { // Fix up the RTL-only _reset.scss, but only in specific places
-    @include padding-left(40px);
+    @include padding-left($baseline*2);
     @include padding-right(0);
   }
 }
