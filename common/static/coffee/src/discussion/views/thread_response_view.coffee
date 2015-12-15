@@ -42,7 +42,7 @@ if Backbone?
       @$('.wmd-button-row').hide()
       @$('.wmd-preview-container').hide()
       @$('.wmd-input').css({
-        height: '35px',
+        height: '45px',
         padding: '5px'
       })
       @$('.comment-post-control').hide()
@@ -214,4 +214,3 @@ if Backbone?
               @createShowView()
               @renderShowView()
               @showCommentForm()
-
