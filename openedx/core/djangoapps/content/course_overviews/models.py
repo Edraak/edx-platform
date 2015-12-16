@@ -456,20 +456,29 @@ class CourseOverview(TimeStampedModel):
         return course_overviews
 
     @classmethod
-    def get_all_courses(cls, org=None):
+    def get_all_courses(cls, org=None, filter_=None):
         """
         Returns all CourseOverview objects in the database.
 
         Arguments:
-            org (string): Optional parameter that allows filtering
-                by organization.
+            org (string): Optional parameter that allows case-insensitive
+                filtering by organization.
+            filter_ (dict): Optional parameter that allows custom filtering.
         """
         # Note: If a newly created course is not returned in this QueryList,
         # make sure the "publish" signal was emitted when the course was
-        # created.  For tests using CourseFactory, use emit_signals=True.
+        # created. For tests using CourseFactory, use emit_signals=True.
         course_overviews = CourseOverview.objects.all()
+
         if org:
-            course_overviews = course_overviews.filter(org=org)
+            # In rare cases, courses belonging to the same org may be accidentally assigned
+            # an org code with a different casing (e.g., Harvardx as opposed to HarvardX).
+            # Case-insensitive exact matching allows us to deal with this kind of dirty data.
+            course_overviews = course_overviews.filter(org__iexact=org)
+
+        if filter_:
+            course_overviews = course_overviews.filter(**filter_)
+
         return course_overviews
 
     @classmethod
