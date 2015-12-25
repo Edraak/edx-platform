@@ -33,7 +33,7 @@ class BlocksView(DeveloperErrorViewMixin, ListAPIView):
             &requested_fields=graded,format,student_view_multi_device,lti_url
             &block_counts=video
             &student_view_data=video
-            &block_types_filter=problem,html
+            &block_types=problem,html
 
     **Parameters**:
 
@@ -167,9 +167,8 @@ class BlocksView(DeveloperErrorViewMixin, ListAPIView):
             if the student_view_url and the student_view_data fields are not
             supported.
 
-          * lti_url: The block URL for an LTI consumer. Returned only if the
-            "ENABLE_LTI_PROVIDER" Django settign is set to "True".
 
+          * lti_url: The block URL for an LTI consumer.
     """
 
     def list(self, request, usage_key_string):  # pylint: disable=arguments-differ
