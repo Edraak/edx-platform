@@ -44,6 +44,8 @@ def get_organization_logo(organization):
         return 'british-council.jpg'
     elif organization == "crescent_petroleum":
         return 'crescent-petroleum.jpg'
+    elif organization == 'auc':
+        return 'auc.jpg'
     else:
         return None
 
