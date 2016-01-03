@@ -1210,7 +1210,11 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
         AUDIT_LOG.warning(u"Login failed - Account not active for user {0}, resending activation".format(username))
 
     reactivation_email_for_user(user)
-    not_activated_msg = _("This account has not been activated. We have sent another activation message. Please check your email for the activation instructions.")
+    not_activated_msg = (
+        _("This account has not been activated. We have sent another activation message. Please check your email for the activation instructions.") + " " +
+        # Translators: Edraak-specific
+        _("If you're unable to find the password reset email, please check your email account's \"Spam\" or \"Junk\" folders to ensure the message was not filtered.")
+    )
     return JsonResponse({
         "success": False,
         "value": not_activated_msg,
