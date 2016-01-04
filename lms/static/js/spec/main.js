@@ -213,6 +213,27 @@
             'youtube': {
                 exports: 'YT'
             },
+            'Markdown.Converter': {
+                deps: ['mathjax'],
+                exports: 'Markdown.Converter'
+            },
+            'Markdown.Editor': {
+                deps: ['Markdown.Converter', 'gettext', 'underscore'],
+                exports: 'Markdown.Editor'
+            },
+            'Markdown.Sanitizer': {
+                deps: ['Markdown.Converter'],
+                exports: 'Markdown.Sanitizer'
+            },
+            '_split': {
+                exports: '_split'
+            },
+            'MathJaxProcessor': {
+                deps: [
+                    'Markdown.Converter', 'Markdown.Sanitizer', 'Markdown.Editor', '_split', 'mathjax_delay_renderer'
+                ],
+                exports: 'MathJaxProcessor'
+            },
             'codemirror': {
                 exports: 'CodeMirror'
             },
@@ -674,8 +695,41 @@
         'lms/include/js/spec/edxnotes/plugins/caret_navigation_spec.js',
         'lms/include/js/spec/edxnotes/collections/notes_spec.js',
         'lms/include/js/spec/search/search_spec.js',
-        'lms/include/js/spec/discovery/discovery_spec.js',
-        'lms/include/js/spec/ccx/schedule_spec.js'
+        'lms/include/js/spec/navigation_spec.js',
+        'lms/include/js/spec/discovery/collections/filters_spec.js',
+        'lms/include/js/spec/discovery/models/course_card_spec.js',
+        'lms/include/js/spec/discovery/models/course_directory_spec.js',
+        'lms/include/js/spec/discovery/models/facet_option_spec.js',
+        'lms/include/js/spec/discovery/models/filter_spec.js',
+        'lms/include/js/spec/discovery/models/search_state_spec.js',
+        'lms/include/js/spec/discovery/views/course_card_spec.js',
+        'lms/include/js/spec/discovery/views/courses_listing_spec.js',
+        'lms/include/js/spec/discovery/views/filter_bar_spec.js',
+        'lms/include/js/spec/discovery/views/refine_sidebar_spec.js',
+        'lms/include/js/spec/discovery/views/search_form_spec.js',
+        'lms/include/js/spec/discovery/discovery_factory_spec.js',
+        'lms/include/js/spec/ccx/schedule_spec.js',
+        'lms/include/support/js/spec/certificates_spec.js',
+        'lms/include/teams/js/spec/collections/topic_collection_spec.js',
+        'lms/include/teams/js/spec/teams_tab_factory_spec.js',
+        'lms/include/teams/js/spec/views/edit_team_spec.js',
+        'lms/include/teams/js/spec/views/edit_team_members_spec.js',
+        'lms/include/teams/js/spec/views/instructor_tools_spec.js',
+        'lms/include/teams/js/spec/views/my_teams_spec.js',
+        'lms/include/teams/js/spec/views/team_card_spec.js',
+        'lms/include/teams/js/spec/views/team_discussion_spec.js',
+        'lms/include/teams/js/spec/views/team_profile_spec.js',
+        'lms/include/teams/js/spec/views/teams_spec.js',
+        'lms/include/teams/js/spec/views/teams_tab_spec.js',
+        'lms/include/teams/js/spec/views/topic_card_spec.js',
+        'lms/include/teams/js/spec/views/topic_teams_spec.js',
+        'lms/include/teams/js/spec/views/topics_spec.js',
+        'lms/include/teams/js/spec/views/team_profile_header_actions_spec.js',
+        'lms/include/js/spec/financial-assistance/financial_assistance_form_view_spec.js',
+        'lms/include/js/spec/bookmarks/bookmarks_list_view_spec.js',
+        'lms/include/js/spec/bookmarks/bookmark_button_view_spec.js',
+        'lms/include/js/spec/views/message_banner_spec.js',
+        'lms/include/js/spec/markdown_editor_spec.js'
     ]);
 
 }).call(this, requirejs, define);
