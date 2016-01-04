@@ -214,7 +214,7 @@
                 exports: 'Markdown.Converter'
             },
             'Markdown.Editor': {
-                deps: ['Markdown.Converter'],
+                deps: ['Markdown.Converter', 'gettext', 'underscore'],
                 exports: 'Markdown.Editor'
             },
             'Markdown.Sanitizer': {
@@ -729,7 +729,11 @@
         'lms/include/teams/js/spec/views/topic_teams_spec.js',
         'lms/include/teams/js/spec/views/topics_spec.js',
         'lms/include/teams/js/spec/views/team_profile_header_actions_spec.js',
-        'lms/include/js/spec/financial-assistance/financial_assistance_form_view_spec.js'
+        'lms/include/js/spec/financial-assistance/financial_assistance_form_view_spec.js',
+        'lms/include/js/spec/bookmarks/bookmarks_list_view_spec.js',
+        'lms/include/js/spec/bookmarks/bookmark_button_view_spec.js',
+        'lms/include/js/spec/views/message_banner_spec.js',
+        'lms/include/js/spec/markdown_editor_spec.js'
     ]);
 
 }).call(this, requirejs, define);
