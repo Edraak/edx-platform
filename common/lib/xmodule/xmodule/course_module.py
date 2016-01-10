@@ -1105,10 +1105,20 @@ class CourseDescriptor(CourseFields, SequenceDescriptor, LicenseMixin):
         Returns True if the current time is after the specified course end date.
         Returns False if there is no end date specified.
         """
+        now = datetime.now(UTC())
+
         if self.enrollment_start is None:
             return False
 
-        return datetime.now(UTC()) > self.enrollment_start
+        return now > self.enrollment_start
+
+    def is_self_paced(self):
+        now = datetime.now(UTC())
+
+        if now > self.start and self.end is None:
+            return True
+
+        return False
 
     def may_certify(self):
         """

@@ -1,6 +1,5 @@
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
-from django.conf import settings
 
 from util.json_request import JsonResponse
 from courseware.courses import (
@@ -18,6 +17,8 @@ def _get_course_status(course):
         return 'finished'
     elif course.enrollment_has_ended():
         return 'finishing'
+    elif course.is_self_paced():
+        return 'self-paced'
     elif course.has_started():
         return 'open'
     elif course.enrollment_has_started():

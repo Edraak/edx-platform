@@ -1923,6 +1923,8 @@ INSTALLED_APPS = (
     'edraak_certificates',
     'edraak_api',
     'edraak_url_rewrites',
+    'edraak_forus',
+
     'lms.djangoapps.lms_xblock',
 
     'openedx.core.djangoapps.content.course_overviews',

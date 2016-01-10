@@ -589,6 +589,10 @@ BAYT_SECRET_KEY = AUTH_TOKENS.get("BAYT_SECRET_KEY")
 BAYT_BASE = ENV_TOKENS.get("BAYT_BASE")
 BAYT_VALID_YEARS = ENV_TOKENS.get("BAYT_VALID_YEARS", 10)
 
+# TODO: Add two keys, one for ForUs auth and the other one for Bayt
+FORUS_AUTH_SECRET_KEY = AUTH_TOKENS.get("FORUS_AUTH_SECRET_KEY")
+FORUS_BASE_URL = ENV_TOKENS.get("FORUS_BASE_URL")
+
 # Safe URL redirects for the LMS and marketing
 # A list of allowed hosts e.g. ['www.example.com', 'courses.example.com']
 SAFE_REDIRECT_HOSTS = ENV_TOKENS.get('SAFE_REDIRECT_HOSTS')
