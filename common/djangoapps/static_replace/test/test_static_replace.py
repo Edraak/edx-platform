@@ -445,7 +445,6 @@ class CanonicalContentTest(SharedModuleStoreTestCase):
     )
     @ddt.unpack
     def test_canonical_asset_path_with_new_style_assets(self, base_url, start, expected, mongo_calls):
-        exts = ['.html', '.tm']
         prefix = 'split'
         encoded_base_url = quote_plus('//' + base_url)
         c4x = 'c4x/a/b/asset'
@@ -474,7 +473,7 @@ class CanonicalContentTest(SharedModuleStoreTestCase):
         )
 
         with check_mongo_calls(mongo_calls):
-            asset_path = StaticContent.get_canonicalized_asset_path(self.courses[prefix].id, start, base_url, exts)
+            asset_path = StaticContent.get_canonicalized_asset_path(self.courses[prefix].id, start, base_url, ['html'])
             self.assertEqual(asset_path, expected)
 
     @ddt.data(
@@ -631,7 +630,6 @@ class CanonicalContentTest(SharedModuleStoreTestCase):
     )
     @ddt.unpack
     def test_canonical_asset_path_with_c4x_style_assets(self, base_url, start, expected, mongo_calls):
-        exts = ['.html', '.tm']
         prefix = 'old'
         c4x_block = 'c4x/a/b/asset'
         encoded_c4x_block = quote_plus('/' + c4x_block + '/')
@@ -651,5 +649,5 @@ class CanonicalContentTest(SharedModuleStoreTestCase):
         )
 
         with check_mongo_calls(mongo_calls):
-            asset_path = StaticContent.get_canonicalized_asset_path(self.courses[prefix].id, start, base_url, exts)
+            asset_path = StaticContent.get_canonicalized_asset_path(self.courses[prefix].id, start, base_url, ['html'])
             self.assertEqual(asset_path, expected)

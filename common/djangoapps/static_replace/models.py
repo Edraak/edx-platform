@@ -44,8 +44,7 @@ class AssetExcludedExtensionsConfig(ConfigurationModel):
     @classmethod
     def get_excluded_extensions(cls):
         """Gets the excluded file extensions when canonicalizing static asset paths"""
-        add_period = lambda x: '.' + x
-        return map(add_period, cls.current().excluded_extensions.split())
+        return cls.current().excluded_extensions.split()
 
     def __repr__(self):
         return '<AssetExcludedExtensionsConfig(extensions={})>'.format(self.get_excluded_extensions().split())
