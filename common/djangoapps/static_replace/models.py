@@ -47,7 +47,7 @@ class AssetExcludedExtensionsConfig(ConfigurationModel):
         return cls.current().excluded_extensions.split()
 
     def __repr__(self):
-        return '<AssetExcludedExtensionsConfig(extensions={})>'.format(self.get_excluded_extensions().split())
+        return '<AssetExcludedExtensionsConfig(extensions={})>'.format(self.get_excluded_extensions())
 
     def __unicode__(self):
         return unicode(repr(self))
