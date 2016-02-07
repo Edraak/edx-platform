@@ -125,7 +125,11 @@ var edx = edx || {};
             .done(function() {
                 self.$passwordResetStatus
                     .addClass('success')
-                    .text(gettext("Password reset email sent. Follow the link in the email to change your password."));
+                    .text(
+                        gettext("Password reset email sent. Follow the link in the email to change your password.") + " "
+                        // Translators: Edraak-specific
+                        gettext("If you're unable to find the password reset email, please check your email account's \"Spam\" or \"Junk\" folders to ensure the message was not filtered.")
+                    );
             })
             .fail(function() {
                 self.$passwordResetStatus
