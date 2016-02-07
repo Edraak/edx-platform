@@ -14,6 +14,15 @@ TEMPLATE_DEBUG = DEBUG
 
 ################################ LOGGERS ######################################
 
+LOGGING = get_logger_config(LOG_DIR,
+                            logging_env=ENV_TOKENS['LOGGING_ENV'],
+
+                            # Use file log instead if syslog is not available on devstack to make it work (on docker)
+                            dev_env=not os.path.exists('/dev/log'),
+
+                            debug=False,
+                            service_variant=SERVICE_VARIANT)
+
 import logging
 
 # Disable noisy loggers
