@@ -6,10 +6,9 @@
 .edit-post-form {
   @include clearfix();
   box-sizing: border-box;
-  margin: 0;
+  margin: 0 auto;
   border-radius: 3px;
-  padding: ($baseline*2);
-  min-width: 760px;
+  padding: ($baseline);
   max-width: 1180px;
   background: $gray-l5;
 
