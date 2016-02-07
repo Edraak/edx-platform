@@ -73,6 +73,7 @@ urlpatterns = (
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'', include('edraak_misc.urls')),
+    url(r'^forus/', include('edraak_forus.urls')),
     url(r'', include('edraak_i18n.urls')),
     url(r'^v1/', include('edraak_api.urls')),
     url(r'', include('edraak_contact.urls')),
