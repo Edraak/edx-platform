@@ -2,7 +2,6 @@
 <%! from django.utils.translation import ugettext as _ %>
 <%! import urllib %>
 
-## Translators: Edraak-specific
 ${_("Thank you for posting your certificate on Bayt.com \n"
     "To proceed in process please click on the link below")}
 

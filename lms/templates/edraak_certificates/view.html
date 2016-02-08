@@ -7,7 +7,6 @@
 <%inherit file="../main.html" />
 
 <%block name="pagetitle">
-    ## Translators: Edraak-specific
     ${_("Course Completion Certificate")}
 </%block>
 
@@ -20,7 +19,6 @@
             <div class="tab-content">
                 <div class="row">
                     <h1>
-                        ## Translators: Edraak-specific
                         ${_("Course Completion Certificate")}
                     </h1>
                     <a class="preview-certificate"
@@ -30,7 +28,6 @@
                     </a>
 
                     <p>
-                        ## Translators: Edraak-specific
                         ${_("Please note that the certificate will be issued with your name on it as provided "
                         "on your {link_start}dashboard{link_end}. Please double check the spelling. and we "
                         "prefer that the name is written in the same language you're issuing the certificate "
@@ -44,7 +41,6 @@
                     <form action="${reverse('edraak_certificates_download', args=[cert_course.id])}" method="get">
                         <p>
                             <br/>
-                            ## Translators: Edraak-specific
                             <button type="submit" class="download-button">${_('Download as PDF')}</button>
                         </p>
                     </form>
@@ -54,14 +50,12 @@
                     <p>
                         % if check_user_publish(user.id, cert_course.id):
                             <small>
-                                ## Translators: Edraak-specific
                                 <em>${_("Already posted to Bayt.com")}</em>
                             </small>
                             <br />
                         % else:
                             <a href="#bayt-modal" rel="leanModal"
                                 class="share-option">
-                                ## Translators: Edraak-specific
                                 ${_('Post to Bayt.com')}
                             </a>
                         % endif
@@ -115,7 +109,6 @@
 
         <header>
             <h2 id="bayt-modal-title" class="bayt-passed">
-                ## Translators: Edraak-specific
                 ${_("Do you want to post your certificate on Bayt?")}
             </h2>
             <hr/>
@@ -125,15 +118,12 @@
             <div id="bayt_error" class="modal-form-error"></div>
             <div>
                 <label style="margin-bottom: 20px;">
-                    ## Translators: Edraak-specific
                     ${_("Enter or Confirm your Bayt email")}.<br/>
                     <span style="font-size: 14px; font-style: italic">
-                        ## Translators: Edraak-specific
                         ${_("This will post the course completed on your Bayt CV.")}
                     </span>
                 </label><br>
                 <label>
-                    ## Translators: Edraak-specific
                     ${_("Bayt Email")}:
                 </label>
                 <input type="email" id="bayt_email" name="bayt_email" value="${user.email | h}">
@@ -143,7 +133,6 @@
                 <input type="hidden" id="cert_end" name="cert_end" value="${cert_end | h}">
             </div>
             <div class="submit">
-                ## Translators: Edraak-specific
                 <input name="submit" type="submit" value="${_('Post')}"/>
             </div>
         </form>
@@ -162,7 +151,6 @@
 
         <header>
             <h2 id="bayt-modal-title" class="bayt-passed">
-                ## Translators: Edraak-specific
                 ${_("Do you want to post your certificate on Bayt?")}
             </h2>
             <hr/>
@@ -172,15 +160,12 @@
             <div id="bayt_error" class="modal-form-error"></div>
             <div>
                 <label style="margin-bottom: 20px;">
-                    ## Translators: Edraak-specific
                     ${_("Enter or Confirm your Bayt email")}.<br/>
                     <span style="font-size: 14px; font-style: italic">
-                        ## Translators: Edraak-specific
                         ${_("This will post the course completed on your Bayt CV.")}
                     </span>
                 </label><br>
                 <label>
-                    ## Translators: Edraak-specific
                     ${_("Bayt Email")}:
                 </label>
                 <input type="email" id="bayt_email" name="bayt_email" value="${user.email | h}">
@@ -191,7 +176,6 @@
             </div>
 
             <div class="submit">
-                ## Translators: Edraak-specific
                 <input name="submit" type="submit" value="${_('Post')}"/>
             </div>
         </form>

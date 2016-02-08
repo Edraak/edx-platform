@@ -22,7 +22,6 @@ class CourseTrackingCodeUsage(models.Model):
                 raise
 
     def __unicode__(self):
-        # # Translators: Edraak-specific
         return _('{username} got tracked for {course_id}').format(
             username=self.user.username,
             course_id=self.course_id,
@@ -38,7 +37,6 @@ class CourseTrackingCode(models.Model):
     code = models.TextField()
 
     def __unicode__(self):
-        # # Translators: Edraak-specific
         return _('{course_id} course confirmation code').format(course_id=self.course_id)
 
     @classmethod

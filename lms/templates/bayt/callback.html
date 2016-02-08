@@ -4,12 +4,10 @@
 
 <section class="container activation">
   <section class="message">
-    ## Translators: Edraak-specific
     <h1>${_("Bayt Activation")}</h1>
     <hr class="horizontal-divider">
       % if status:
         <p>
-          ## Translators: Edraak-specific
           ${_("Your certificate has been posted to Bayt successfully. "
               "You well redirect to Edraak in 5 seconds. "
               "If not click {link_start}here{link_end}").format(
@@ -19,7 +17,6 @@
         </p>
       % else:
         <p>
-          ## Translators: Edraak-specific
           ${_("Please click {link_start}here{link_end}").format(
                  link_start='<a href="{}/en/register-j/">'.format(settings.BAYT_BASE),
                  link_end='</a>',

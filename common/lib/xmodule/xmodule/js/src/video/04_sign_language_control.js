@@ -32,11 +32,9 @@ define('video/04_sign_language_control.js', ['video/00_sign_language_state.js'],
     SignLanguageControl.prototype = {
         template: [
             '<a href="#" title="',
-                // Translators: Edraak-specific
                 gettext('Toggle Sign Language'),
                 '" class="sign-language is-hidden" role="button" aria-disabled="true">',
                     // This isn't really useful for blind people anyway, right?',
-                    // Translators: Edraak-specific
                     gettext('Toggle Sign Language'),
             '</a>'
         ].join(''),
@@ -50,7 +48,6 @@ define('video/04_sign_language_control.js', ['video/00_sign_language_state.js'],
                         '</div>',
                         '<div class="icon"></div>',
                         '<p>',
-                            // Translators: Edraak-specific'
                             gettext('Click on the sign language button to disable and enable the sign language subtitling.'),
                         '</p>',
                     '</div>',

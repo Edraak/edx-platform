@@ -18,17 +18,9 @@ var edx = edx || {};
             validate: {
 
                 msg: {
-                  // Should not be specific after merging the pull request in edX
-                  // Translators: Edraak-specific
                   email: gettext("The email address you've provided isn't formatted correctly."),
-                  // Should not be specific after merging the pull request in edX
-                  // Translators: Edraak-specific
                   min: gettext("%(field)s must have at least %(count)d characters."),
-                  // Should not be specific after merging the pull request in edX
-                  // Translators: Edraak-specific
                   max: gettext("%(field)s can only contain up to %(count)d characters."),
-                  // Should not be specific after merging the pull request in edX
-                  // Translators: Edraak-specific
                   required: gettext("Please enter your %(field)s.")
                 },
 
