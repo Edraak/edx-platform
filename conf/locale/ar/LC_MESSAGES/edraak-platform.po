@@ -1,7 +1,8 @@
 # 
 # Translators:
-# qrfahasan <ahasan@qrf.org>, 2015
+# qrfahasan <ahasan@qrf.org>, 2015-2016
 # Ahmed Jazzar <ajazzar@qrf.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # moayyad yaghi <moayyad.yaghi@gmail.com>, 2015
 # omarithawi <oithawi@qrf.org>, 2015
 msgid ""
@@ -9,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2015-11-04 11:43+0000\n"
-"Last-Translator: omarithawi <oithawi@qrf.org>\n"
+"PO-Revision-Date: 2016-02-08 11:04+0000\n"
+"Last-Translator: qrfahasan <ahasan@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,6 +28,21 @@ msgid ""
 msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
 #. Translators: Edraak-specific
+#: common/djangoapps/student/views.py:925
+#: lms/djangoapps/dashboard/support.py:51
+#: lms/djangoapps/edraak_forus/views.py:121
+msgid "Invalid course id"
+msgstr "رمز مساقٍ خاطئ"
+
+#. Translators: Edraak-specific
+#: common/djangoapps/student/views.py:1160
+msgid ""
+"If you're unable to find the password reset email, please check your email "
+"account's \"Spam\" or \"Junk\" folders to ensure the message was not "
+"filtered."
+msgstr "حاول البحث في صندوق البريد المهمل (spam/junk) إن لم تتمكن من إيجاد بريد إعادة ضبط كلمة السر في صندوق البريد الوارد."
+
+#. Translators: Edraak-specific
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py:179
 msgid ""
 "The default assumption is all the videos have sign-language enabled. This "
@@ -40,34 +56,122 @@ msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:250
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:283
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:254
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:287
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:265
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:298
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
 #. Translators: Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:270
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:303
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
+#. Translators: Edraak-specific
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:310
+msgid "This course is sponsored by:"
+msgstr "هذا المساق برعاية:"
+
 #. Translators: Keep newlines for formatting, Edraak-specific
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:282
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:322
 #, python-brace-format
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
+
+#. Translators: Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:73
+#: lms/djangoapps/edraak_forus/helpers.py:99
+msgid "The security check has failed on the provided parameters"
+msgstr "المتغيرات المُعطاة لم تتجاوز الفحص الأمني"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:108
+#, python-brace-format
+msgid "Invalid {field_label} has been provided"
+msgstr "الـ {field_label}  المعطى خاطئ"
+
+#. Translators: Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:120
+msgid "ForUs profile cannot be created for admins and staff."
+msgstr "لا يمكن للمشرفين وأعضاء التدريس استخدام حسابات فُرص."
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:125
+msgid "The provided email format is invalid"
+msgstr "البريد الإلكتروني خاطئ"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:129
+msgid "gender"
+msgstr "الجنس"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:133
+msgid "language"
+msgstr "اللغة"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:137
+msgid "country"
+msgstr "الدولة"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:141
+msgid "level of education"
+msgstr "المستوى التعليميّ"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:154
+msgid "The course has not yet been opened for enrollment"
+msgstr "هذا المساق لم يُفتح للتسجيل"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:158
+msgid "Enrollment for this course has been closed"
+msgstr "بابُ التسجيل لهذا المساق مغلق"
+
+#. Translators: Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:170
+msgid "course id"
+msgstr "رقم المساق"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:173
+msgid "The requested course does not exist"
+msgstr "المساق المطلوب غير متوفر"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:178
+#: lms/djangoapps/edraak_forus/helpers.py:181
+msgid "birth year"
+msgstr "سنة الميلاد"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:189
+msgid "future date has been provided"
+msgstr "تاريخ ارسال الطلب غير صحيح"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:193
+msgid "Request has expired"
+msgstr "انتهت صلاحية الطلب"
+
+#. Translators: This is for the ForUs API. Edraak-specific
+#: lms/djangoapps/edraak_forus/helpers.py:197
+msgid "date format"
+msgstr "شكل التاريخ"
 
 #. Translators: Edraak-specific
 #: lms/templates/registration/password_reset_email.html:5
@@ -79,7 +183,7 @@ msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلب�
 
 #. Translators: Edraak-specific
 #: openedx/core/djangoapps/user_api/views.py:81
-#: openedx/core/djangoapps/user_api/views.py:342
+#: openedx/core/djangoapps/user_api/views.py:345
 msgid "Please enter your Email."
 msgstr "يُرجى إدخال البريد الإلكتروني."
 
@@ -89,37 +193,37 @@ msgid "Please enter your password."
 msgstr "يُرجى إدخالُ كلمة المرور."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:381
+#: openedx/core/djangoapps/user_api/views.py:384
 msgid "Please enter your Full name."
 msgstr "يُرجى إدخال الاسم الكامل."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:422
+#: openedx/core/djangoapps/user_api/views.py:425
 msgid "Please enter your Username."
 msgstr "يُرجى إدخال اسم المستخدم."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:453
+#: openedx/core/djangoapps/user_api/views.py:456
 msgid "Please enter your Password."
 msgstr "يُرجى إدخال كلمة السر."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:483
+#: openedx/core/djangoapps/user_api/views.py:486
 msgid "Please enter your Highest level of education completed"
 msgstr "يُرجى تحديد أعلى مستوى تعليمي وصلت إليه."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:515
+#: openedx/core/djangoapps/user_api/views.py:518
 msgid "Please enter your Gender."
 msgstr "يُرجى تحديد الجنس."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:547
+#: openedx/core/djangoapps/user_api/views.py:550
 msgid "Please enter your Year of birth."
 msgstr "يُرجى إدخال سنة الميلاد."
 
 #. Translators: Edraak-specific
-#: openedx/core/djangoapps/user_api/views.py:640
+#: openedx/core/djangoapps/user_api/views.py:643
 msgid "Please select your Country."
 msgstr "يُرجى تحديد بلدك."
 
@@ -256,6 +360,33 @@ msgstr "البريد الإلكتروني"
 #: lms/templates/edraak_certificates/view.html:195
 msgid "Post"
 msgstr "نشر"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_forus/error.html:9
+msgid ""
+"An error have occurred while trying to use your account on {forus_link}."
+msgstr "حدث أخطأ أثناء محاولة استخدام حسابك على {forus_link}."
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_forus/error.html:13
+#: lms/templates/edraak_forus/error.html:29
+msgid "ForUs portal"
+msgstr "بوابة فُرص"
+
+#. Translators: Edraak-specific
+#: lms/templates/edraak_forus/error.html:25
+msgid ""
+"Please go to {forus_link}, and try again. If the problem persists, please "
+"email us at {email}."
+msgstr "الرجاء الرجوع إلى  {forus_link} وحاول مرة أخرى. في حالة تكررت المشكلة، تواصل معنا على {email}."
+
+#. Translators: Edraak-specific
+#: lms/templates/registration/activate_account_notice.html:18
+msgid ""
+"If you're unable to find the activation email, please check your email "
+"account's \"Spam\" or \"Junk\" folders to ensure the message was not "
+"filtered."
+msgstr "إن لم تستطع إيجاد رسالة التفعيل في صندوق البريد الوارد، فقم بتفقد صندوق البريد المهمل."
 
 #. Translators: Edraak-specific
 #: lms/templates/registration/password_reset_subject.txt:7
