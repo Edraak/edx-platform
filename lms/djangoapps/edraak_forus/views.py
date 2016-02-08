@@ -228,7 +228,7 @@ class RegistrationApiView(RegistrationView):
             if 'password' == field_name:
                 field['defaultValue'] = pipeline.make_random_password()
 
-        return json.dumps(registration_form)
+        return JsonResponse(registration_form)
 
     @method_decorator(csrf_exempt)
     def post(self, request):
@@ -265,4 +265,3 @@ def error(request):
     return render_to_response('edraak_forus/error.html', {
         'message': message
     })
-
