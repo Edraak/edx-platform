@@ -20830,18 +20830,18 @@ msgstr "شهادة{new_line}إتمام{new_line}مساق"
 #: lms/djangoapps/edraak_forus/helpers.py:73
 #: lms/djangoapps/edraak_forus/helpers.py:99
 msgid "The security check has failed on the provided parameters"
-msgstr "المتغيرات المُعطاة لم تتجاوز الفحص الأمني"
+msgstr "المتغيرات المُعطاة لم تجتاز الفحص الأمني"
 
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:108
 #, python-brace-format
 msgid "Invalid {field_label} has been provided"
-msgstr "الـ {field_label}  المعطى خاطئ"
+msgstr "{field_label}  المعطى خاطئ"
 
 #. Translators: Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:120
 msgid "ForUs profile cannot be created for admins and staff."
-msgstr "لا يمكن للمشرفين وأعضاء التدريس استخدام حسابات فُرص."
+msgstr "لا يمكن لمشرفي وأعضاء تدريس إدراك استخدام حسابات فُرص."
 
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:125
@@ -20856,12 +20856,12 @@ msgstr "الجنس"
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:133
 msgid "language"
-msgstr "اللغة"
+msgstr "رمز اللغة"
 
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:137
 msgid "country"
-msgstr "الدولة"
+msgstr "رمز الدولة"
 
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:141
@@ -20881,7 +20881,7 @@ msgstr "بابُ التسجيل لهذا المساق مغلق"
 #. Translators: Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:170
 msgid "course id"
-msgstr "رقم المساق"
+msgstr "رمز المساق"
 
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:173
@@ -20892,7 +20892,7 @@ msgstr "المساق المطلوب غير متوفر"
 #: lms/djangoapps/edraak_forus/helpers.py:178
 #: lms/djangoapps/edraak_forus/helpers.py:181
 msgid "birth year"
-msgstr "سنة الميلاد"
+msgstr "تاريخ الميلاد"
 
 #. Translators: This is for the ForUs API. Edraak-specific
 #: lms/djangoapps/edraak_forus/helpers.py:189
@@ -21111,7 +21111,7 @@ msgstr "نشر"
 #: lms/templates/edraak_forus/error.html:9
 msgid ""
 "An error have occurred while trying to use your account on {forus_link}."
-msgstr "حدث أخطأ أثناء محاولة استخدام حسابك على {forus_link}."
+msgstr "حدث خطأ أثناء محاولة استخدام حسابك على {forus_link}."
 
 #. Translators: Edraak-specific
 #: lms/templates/edraak_forus/error.html:13
@@ -21125,8 +21125,8 @@ msgid ""
 "Please go to {forus_link}, and try again. If the problem persists, please "
 "email us at {email}."
 msgstr ""
-"الرجاء الرجوع إلى  {forus_link} وحاول مرة أخرى. في حالة تكررت المشكلة، تواصل"
-" معنا على {email}."
+"الرجاء الرجوع إلى  {forus_link} والمحاولة مجدداً. إذا ظهرت المشكلة مرة أخرى،"
+" تواصل معنا على {email}."
 
 #. Translators: Edraak-specific
 #: lms/templates/registration/activate_account_notice.html:18
