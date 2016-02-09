@@ -1722,6 +1722,11 @@ msgstr ""
 msgid "Are you sure you want to restrict {email} access to “{container}”?"
 msgstr "هل أنت متأكد من رغبتك في تقييد وصول {email} إلى \"{container}\"؟"
 
+#. Translators: This label refers to access to course content.
+#: cms/static/js/views/modals/course_outline_modals.js
+msgid "Access"
+msgstr "الوصول"
+
 #: cms/static/js/views/pages/paged_container.js
 msgid "Hide Previews"
 msgstr "إخفاء المعاينة"

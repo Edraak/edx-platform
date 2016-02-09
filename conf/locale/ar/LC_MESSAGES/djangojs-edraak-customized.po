@@ -7160,42 +7160,51 @@ msgstr ""
 msgid "Use Current Transcript"
 msgstr "استخدام النص الحالي"
 
-#. Translators: Edraak-specific
-#: common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js:36
-#: common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js:40
+#: common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js:35
+#: common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js:38
 msgid "Toggle Sign Language"
 msgstr "فعِّل أو عطِّل فيديو لغة الإشارة"
 
-#. Translators: Edraak-specific'
-#: common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js:54
+#: common/lib/xmodule/xmodule/js/src/video/04_sign_language_control.js:51
 msgid ""
 "Click on the sign language button to disable and enable the sign language "
 "subtitling."
 msgstr ""
 "إضغط على زر لغة الإشارة لتفعيل أو تعطيل الترجمة بلغة الإشارة في هذا الفيديو."
 
-#. Translators: Edraak-specific
-#: common/static/js/utils/edx.utils.validate.js:23
+#: common/static/common/js/components/views/paging_header.js:24
+msgid "Showing %(first_index)s out of %(num_items)s total"
+msgstr "يتم عرض %(first_index)s من أصل %(num_items)s"
+
+#: common/static/common/js/components/views/paging_header.js:27
+msgid "Showing %(first_index)s-%(last_index)s out of %(num_items)s total"
+msgstr "يتم عرض %(first_index)s-%(last_index)s من أصل %(num_items)s"
+
+#: common/static/js/utils/edx.utils.validate.js:21
 msgid "The email address you've provided isn't formatted correctly."
 msgstr "البريد الإلكتروني الذي أدخلته غير صحيح."
 
-#. Translators: Edraak-specific
-#: common/static/js/utils/edx.utils.validate.js:26
+#: common/static/js/utils/edx.utils.validate.js:22
 msgid "%(field)s must have at least %(count)d characters."
 msgstr "%(field)s يجبُ أن يحتوي على %(count)d حروفٍ على الأقل."
 
-#. Translators: Edraak-specific
-#: common/static/js/utils/edx.utils.validate.js:29
+#: common/static/js/utils/edx.utils.validate.js:23
 msgid "%(field)s can only contain up to %(count)d characters."
 msgstr "%(field)s يجبُ أن يحتوي على %(count)d حروفٍ على الأكثر."
 
-#. Translators: Edraak-specific
-#: common/static/js/utils/edx.utils.validate.js:32
+#: common/static/js/utils/edx.utils.validate.js:24
 msgid "Please enter your %(field)s."
 msgstr "رجاءً قم بإدخال %(field)s."
 
-#. Translators: Edraak-specific
-#: lms/static/js/student_account/account.js:131
+#: lms/djangoapps/teams/static/teams/js/collections/topic.js:16
+msgid "team count"
+msgstr "عدد أعضاء الفريق"
+
+#: lms/djangoapps/teams/static/teams/js/views/topic_card.js:46
+msgid "View Teams in the %(topic_name)s Topic"
+msgstr "اعرض الفِرَق في موضوع: \"%(topic_name)s\""
+
+#: lms/static/js/student_account/account.js:130
 msgid ""
 "If you're unable to find the password reset email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
@@ -7204,8 +7213,7 @@ msgstr ""
 "حاول البحث في صندوق البريد المهمل إن لم تتمكن من إيجاد رسالة إعادة ضبط كلمة "
 "السر في صندوق البريد الوارد."
 
-#. Translators: Edraak-specific
-#: lms/static/js/student_account/views/account_settings_fields.js:15
+#: lms/static/js/student_account/views/account_settings_fields.js:13
 msgid ""
 "We've sent a confirmation message to {new_email_address}. Click the link in "
 "the message to update your email address."
@@ -7213,14 +7221,111 @@ msgstr ""
 "لقد أرسلنا لك رسالة تأكيد على {new_email_address}. اضغط على الرابط الموجود "
 "في الرسالة لتحديث بريدك الإلكتروني. "
 
-#. Translators: Edraak-specific
-#: lms/static/js/student_account/views/account_settings_fields.js:82
+#: lms/static/js/student_account/views/account_settings_fields.js:78
 msgid ""
 "We've sent a message to {email_address}. Click the link in the message to "
 "reset your password."
 msgstr ""
 "لقد أرسلنا لك رسالة تأكيد على {email_address}. اضغط على الرابط الموجود في "
 "الرسالة لتغيير كلمة السر. "
+
+#: cms/templates/js/paging-header.underscore:7
+#: common/static/common/templates/components/paging-footer.underscore:2
+msgid "Previous"
+msgstr "السابق"
+
+#: common/static/common/templates/image-modal.underscore:14
+msgid "Large"
+msgstr "الحجم الكبير"
+
+#: common/static/common/templates/image-modal.underscore:27
+msgid "Zoom In"
+msgstr "كبّر"
+
+#: common/static/common/templates/image-modal.underscore:35
+msgid "Zoom Out"
+msgstr "صغِّر"
+
+#: common/static/common/templates/components/paging-footer.underscore:5
+msgid "Page number"
+msgstr "رقم الصفحة"
+
+#: common/static/common/templates/discussion/thread-show.underscore:7
+#, python-format
+msgid "This post is visible only to %(group_name)s."
+msgstr "هذا المنشور خاص، ومرئي فقط للمجموعة \"%(group_name)s\"."
+
+#: common/static/common/templates/discussion/thread-show.underscore:13
+msgid "This post is visible to everyone."
+msgstr "هذا المنشور مرئي للجميع."
+
+#: common/static/common/templates/discussion/thread-show.underscore:21
+msgid "Discussion"
+msgstr "المناقشة"
+
+#: common/static/common/templates/discussion/thread-show.underscore:21
+msgid "Question"
+msgstr "سؤال"
+
+#: common/static/common/templates/discussion/thread-show.underscore:32
+#, python-format
+msgid "%(post_type)s posted %(time_ago)s by %(author)s"
+msgstr "%(post_type)s نُشر %(time_ago)s من قبل %(author)s"
+
+#: common/static/common/templates/discussion/thread-show.underscore:40
+msgid "Pinned"
+msgstr "مثبّت"
+
+#: common/static/common/templates/discussion/thread-show.underscore:43
+msgid "Reported"
+msgstr "مُبلّغ عنهُ"
+
+#: common/static/common/templates/discussion/thread-show.underscore:46
+msgid "Closed"
+msgstr "مُغلق"
+
+#: common/static/common/templates/discussion/thread-show.underscore:78
+#, python-format
+msgid "Related to: %(courseware_title_linked)s"
+msgstr "متعلق بـ: %(courseware_title_linked)s"
+
+#: lms/templates/edraak_forus/register.underscore:18
+msgid "Welcome to the Edraak platform!"
+msgstr "مرحباً بك في منصة إدراك"
+
+#: lms/templates/edraak_forus/register.underscore:24
+msgid "You're creating a new Edraak account using ForUs."
+msgstr "أنت الآن بصدد إنشاء حساب جديد على منصة إدراك بواسطة بوابة فُرص."
+
+#: lms/templates/edraak_forus/register.underscore:28
+msgid ""
+"Your Edraak profile will be created using the same registration information "
+"used for your profile/account on ForUs. To access the course, please fill "
+"out the following form."
+msgstr ""
+"سيتم استخدام نفس المعلومات التي سجلت بها على موقع فُرص. لإنشاء حسابك على "
+"إدراك للوصول إلى المساق، يُرجى إكمال النموذج التالي."
+
+#: lms/templates/student_account/login.underscore:16
+msgid ""
+"If you're unable to find the password reset email, please check your email "
+"account's \\\"Spam\\\" or \\\"Junk\\\" folders to ensure the message was not"
+" filtered."
+msgstr ""
+"إذا لم تستطع الحصول على البريد الإلكتروني لاستعادة كلمة السر، يُرجى أن تبحث "
+"في صندوق الرسائل المهملة (Spam) بدلاً من صندوق الوارد."
+
+#: cms/templates/js/signatory-editor.underscore:23
+msgid "Name "
+msgstr "الاسم"
+
+#: cms/templates/js/signatory-editor.underscore:31
+msgid "Title "
+msgstr "اللقب"
+
+#: cms/templates/js/signatory-editor.underscore:39
+msgid "Organization "
+msgstr "المؤسسة"
 
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
@@ -8840,6 +8945,11 @@ msgstr ""
 #: cms/static/js/views/manage_users_and_roles.js
 msgid "Are you sure you want to restrict {email} access to “{container}”?"
 msgstr "هل أنت متأكد من رغبتك في تقييد وصول {email} إلى \"{container}\"؟"
+
+#. Translators: This label refers to access to course content.
+#: cms/static/js/views/modals/course_outline_modals.js
+msgid "Access"
+msgstr "الوصول"
 
 #: cms/static/js/views/pages/paged_container.js
 msgid "Hide Previews"
