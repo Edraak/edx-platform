@@ -54,7 +54,7 @@
 # wd3bbas <mohed.alabbas@gmail.com>, 2014
 # Nabeel El-Dughailib <nabeel@qordoba.com>, 2014-2015
 # Najwan Al Rousan <najwanrousan@gmail.com>, 2013
-# Soha Assali <soha+transifex@qordoba.com>, 2015
+# Soha Assali <soha+transifex@qordoba.com>, 2015-2016
 # soliman osman <solimanosman@windowslive.com>, 2015
 # #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 # edX translation file
@@ -6207,6 +6207,14 @@ msgstr "مستعدّ"
 msgid "Imported"
 msgstr "جرى الاستيراد"
 
+#: cms/lib/xblock/tagging.py
+msgid "Learning outcomes"
+msgstr "نتائج التعلّم"
+
+#: cms/lib/xblock/tagging.py
+msgid "Dictionary with the available tags"
+msgstr "قاموس بالشارات المتوفرة"
+
 #: cms/templates/register.html lms/templates/register-form.html
 #: lms/templates/register-shib.html lms/templates/signup_modal.html
 msgid "Public Username"
@@ -9830,6 +9838,34 @@ msgstr ""
 #: cms/templates/widgets/header.html
 msgid "Account Navigation"
 msgstr "تصفّح الحساب"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Insert a heading"
+msgstr "أدخل عنوانًا"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Add a multiple choice question"
+msgstr "أضف سؤالًا متعدّد الخيارات"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Add a question with checkboxes"
+msgstr "أضف سؤالًا بمربّعات اختيار"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Insert a text response"
+msgstr "أدخل ردًّا نصيًّا"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Insert a numerical response"
+msgstr "أدخل ردًّا عدديًا"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Insert a dropdown response"
+msgstr "أدخل ردًّا ذا قائمة منسدلة"
+
+#: cms/templates/widgets/problem-edit.html
+msgid "Add an explanation for this question"
+msgstr "أضف شرحًا لهذا السؤال"
 
 #: cms/templates/widgets/sock.html
 msgid "Access the Open edX Portal"

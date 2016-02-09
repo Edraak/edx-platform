@@ -2,6 +2,7 @@
 Edraak internationalization tasks
 """
 from path import path
+import yaml
 from paver.easy import task, needs, sh, call_task, BuildFailure
 import polib
 from git import Repo
@@ -188,7 +189,7 @@ def i18n_make_updates(is_js, suffix):
 )
 def i18n_edraak_pull():
     """
-    Pulls Edraak-specific translation files.
+    Pulls  translation files.
     """
     files_to_add = (
         'edraak-platform-2015-theme.po',
@@ -250,11 +251,17 @@ def i18n_edraak_theme_push():
 @js_nonjs
 def i18n_edraak_push(is_js, suffix):
     """
-    Extracts Edraak-specific strings and appends it to the provided .PO file.
+    Extracts  strings and appends it to the provided .PO file.
 
     It searches for translation strings that are marked
-    with "# Translators: Edraak-specific" comment.
+    with "# Translators: " comment.
     """
+
+    edx_pofile = polib.pofile('conf/locale/ar/LC_MESSAGES/django{}.po'.format(suffix))
+
+    with open("conf/locale/config.yaml", 'r') as locale_config_file:
+        locale_config = yaml.load(locale_config_file)
+        partial_pofiles = locale_config['generate_merge']['django{}.po'.format(suffix)]
 
     with working_directory('conf/locale/en/LC_MESSAGES'):
         edraak_specific_path = path('edraak{}-platform.po'.format(suffix))
@@ -277,27 +284,13 @@ def i18n_edraak_push(is_js, suffix):
             'Generated-By': 'Paver',
         }
 
-        for po_path in sorted(os.listdir('.')):
-            # Avoid .mo files
-            if not po_path.endswith('.po'):
-                continue
-
-            if 'edraak' in po_path:
-                continue
-
-            if is_js:
-                if 'djangojs' not in po_path:
-                    # Only process js files when processing the JavaScript
-                    continue
-            else:
-                if 'djangojs' in po_path:
-                    # Ignore js files when processing Python
-                    continue
+        for po_path in partial_pofiles:
+            print 'processing', po_path
 
             pofile = polib.pofile(po_path)
 
             for entry in pofile:
-                if 'edraak-specific' in entry.comment.lower():
+                if entry not in edx_pofile:
                     edraak_specific.append(entry)
 
         edraak_specific.save(edraak_specific_path)

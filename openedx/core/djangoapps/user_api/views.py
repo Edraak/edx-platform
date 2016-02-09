@@ -77,7 +77,6 @@ class LoginSessionView(APIView):
             u"The email address you used to register with {platform_name}"
         ).format(platform_name=settings.PLATFORM_NAME)
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Email.")
         form_desc.add_field(
             "email",
@@ -98,7 +97,6 @@ class LoginSessionView(APIView):
         # meant to hold the user's password.
         password_label = _(u"Password")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your password.")
         form_desc.add_field(
             "password",
@@ -341,7 +339,6 @@ class RegistrationView(APIView):
         # a field on the registration form meant to hold the user's email address.
         email_placeholder = _(u"username@domain.com")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Email.")
         form_desc.add_field(
             "email",
@@ -380,7 +377,6 @@ class RegistrationView(APIView):
         # below a field meant to hold the user's full name.
         name_instructions = _(u"Needed for any certificates you may earn")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Full name.")
         form_desc.add_field(
             "name",
@@ -421,7 +417,6 @@ class RegistrationView(APIView):
         # a field on the registration form meant to hold the user's username.
         username_placeholder = _(u"JaneDoe")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Username.")
         form_desc.add_field(
             "username",
@@ -452,7 +447,6 @@ class RegistrationView(APIView):
         # meant to hold the user's password.
         password_label = _(u"Password")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Password.")
         form_desc.add_field(
             "password",
@@ -482,7 +476,6 @@ class RegistrationView(APIView):
         # form used to select the user's highest completed level of education.
         education_level_label = _(u"Highest level of education completed")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Highest level of education completed")
 
         # Translators: These fields appear in level of education dropdown menu on the
@@ -514,7 +507,6 @@ class RegistrationView(APIView):
         # form used to select the user's gender.
         gender_label = _(u"Gender")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Gender.")
 
         # Translators: These fields appear in gender dropdown menu on the
@@ -546,7 +538,6 @@ class RegistrationView(APIView):
         # form used to select the user's year of birth.
         yob_label = _(u"Year of birth")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please enter your Year of birth.")
         options = [(unicode(year), unicode(year)) for year in UserProfile.VALID_YEARS]
         form_desc.add_field(
@@ -639,7 +630,6 @@ class RegistrationView(APIView):
         # form used to select the country in which the user lives.
         country_label = _(u"Country")
 
-        # Translators: Edraak-specific
         error_msg = _(u"Please select your Country.")
 
         form_desc.add_field(

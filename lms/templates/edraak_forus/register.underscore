@@ -21,17 +21,11 @@
 
     <div class="forus-notes">
         <p>
-            <%-
-                // Translators: Edraak-specific
-                gettext("You're creating a new Edraak account using ForUs.")
-            %>
+            <%- gettext("You're creating a new Edraak account using ForUs.") %>
         </p>
 
         <p>
-            <%-
-                // Translators: Edraak-specific
-                gettext("Your Edraak profile will be created using the same registration information used for your profile/account on ForUs. To access the course, please fill out the following form.")
-            %>
+            <%- gettext("Your Edraak profile will be created using the same registration information used for your profile/account on ForUs. To access the course, please fill out the following form.") %>
         </p>
     </div>
 

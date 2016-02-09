@@ -69,7 +69,6 @@ def validate_forus_hmac(params):
         log.warn('HMAC is missing for email=`%s`', params.get('email'))
 
         raise ValidationError({
-            # Translators: Edraak-specific
             "forus_hmac": [_("The security check has failed on the provided parameters")]
         })
 
@@ -95,7 +94,6 @@ def validate_forus_hmac(params):
         )
 
         raise ValidationError({
-            # Translators: Edraak-specific
             "forus_hmac": [_("The security check has failed on the provided parameters")]
         })
 
@@ -104,7 +102,7 @@ def validate_forus_params_values(params):
     errors = defaultdict(lambda: [])
 
     def mark_as_invalid(field, field_label):
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         errors[field].append(_('Invalid {field_label} has been provided').format(
             field_label=field_label,
         ))
@@ -116,28 +114,27 @@ def validate_forus_params_values(params):
             user = User.objects.get(email=params.get('email'))
 
             if user.is_staff or user.is_superuser:
-                # Translators: Edraak-specific
                 errors['email'].append(_("ForUs profile cannot be created for admins and staff."))
         except User.DoesNotExist:
             pass
     except ValidationError:
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         errors['email'].append(_("The provided email format is invalid"))
 
     if params.get('gender') not in dict(UserProfile.GENDER_CHOICES):
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         mark_as_invalid('gender', _('gender'))
 
     if not is_enabled_language(params.get('lang')):
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         mark_as_invalid('lang', _('language'))
 
     if params.get('country') not in dict(countries):
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         mark_as_invalid('lang', _('country'))
 
     if params.get('level_of_education') not in dict(UserProfile.LEVEL_OF_EDUCATION_CHOICES):
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         mark_as_invalid('lang', _('level of education'))
 
     try:
@@ -150,11 +147,11 @@ def validate_forus_params_values(params):
         if not course.is_self_paced():
             if not course.enrollment_has_started():
 
-                # Translators: This is for the ForUs API. Edraak-specific
+                # Translators: This is for the ForUs API
                 errors['course_id'].append(_('The course has not yet been opened for enrollment'))
 
             if course.enrollment_has_ended():
-                # Translators: This is for the ForUs API. Edraak-specific
+                # Translators: This is for the ForUs API
                 errors['course_id'].append(_('Enrollment for this course has been closed'))
 
     except InvalidKeyError:
@@ -166,18 +163,17 @@ def validate_forus_params_values(params):
             )
         )
 
-        # Translators: Edraak-specific
         mark_as_invalid('course_id', _('course id'))
     except ItemNotFoundError:
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         errors['course_id'].append(_('The requested course does not exist'))
 
     try:
         if int(params['year_of_birth']) not in UserProfile.VALID_YEARS:
-            # Translators: This is for the ForUs API. Edraak-specific
+            # Translators: This is for the ForUs API
             mark_as_invalid('year_of_birth', _('birth year'))
     except ValueError:
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         mark_as_invalid('year_of_birth', _('birth year'))
 
     try:
@@ -185,15 +181,15 @@ def validate_forus_params_values(params):
         now = datetime.utcnow()
 
         if time > now:
-            # Translators: This is for the ForUs API. Edraak-specific
+            # Translators: This is for the ForUs API
             errors['time'].append(_('future date has been provided'))
 
         if time < (now - timedelta(days=1)):
-            # Translators: This is for the ForUs API. Edraak-specific
+            # Translators: This is for the ForUs API
             errors['time'].append(_('Request has expired'))
 
     except ValueError:
-        # Translators: This is for the ForUs API. Edraak-specific
+        # Translators: This is for the ForUs API
         mark_as_invalid('time', _('date format'))
 
     if len(errors):

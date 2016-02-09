@@ -7,7 +7,6 @@
 <%inherit file="../main.html" />
 
 <%block name="pagetitle">
-    ## Translators: Edraak-specific
     ${_("Please wait...")}
 </%block>
 
@@ -20,18 +19,15 @@
 <section class="container issue-certificate-fail">
   <section class="message">
     <h1 class="invalid">
-        ## Translators: Edraak-specific
         ${_("You have Not completed this course")}
     </h1>
     <hr class="horizontal-divider">
 
     <p>
-        ## Translators: Edraak-specific
         ${_("Unfortunately, you have not completed this course, you will not be able to issue a certificate.")}
     </p>
 
     <p>
-        ## Translators: Edraak-specific
         ${_("You will be redirected to your {link_start}dashboard{link_end} in 10 seconds.").format(
             link_start='<a href="{url}">'.format(url=reverse('dashboard')),
             link_end='</a>',

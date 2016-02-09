@@ -117,7 +117,6 @@ class AuthView(View):
             else:
                 return redirect('dashboard')
         except InvalidCourseIdError:
-            # Translators: Edraak-specific
             return forus_error_redirect(_("Invalid course id"))
         except Exception as e:
             log.exception(e)
