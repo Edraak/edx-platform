@@ -8222,13 +8222,50 @@ msgstr ""
 msgid "We've encountered an error. Refresh your browser and then try again."
 msgstr "نأسف لحدوث خطأ. يُجرى إعادة فتح متصفّحك ثمّ إعادة المحاولة."
 
+#: lms/static/js/groups/views/cohort_editor.js
+msgid "Saved cohort"
+msgstr "الشُعب المحفوظة"
+
+#: lms/static/js/groups/views/cohort_form.js
+msgid "You must specify a name for the cohort"
+msgstr "يجب أن تحدّد اسمًا للشعبة."
+
+#: lms/static/js/groups/views/cohort_form.js
+msgid "The cohort cannot be saved"
+msgstr "لا يمكن حفظ الشعبة"
+
+#: lms/static/js/groups/views/cohort_form.js
+msgid "The cohort cannot be added"
+msgstr "لا يمكن إضافة الشعبة"
+
+#: lms/static/js/groups/views/cohorts.js
+msgid "You currently have no cohorts configured"
+msgstr "ليس لديك حاليًّا أي شعب مضبوطة "
+
+#: lms/static/js/groups/views/cohorts.js
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Add Cohort"
+msgstr "إضافة شعبة"
+
+#: lms/static/js/groups/views/cohorts.js
+msgid ""
+"The {cohortGroupName} cohort has been created. You can manually add students"
+" to this cohort below."
+msgstr ""
+"نجح إنشاء شعبة {cohortGroupName}. ويمكنك أن تضيف الطلّاب بنفسك إلى هذه "
+"المجموعة أدناه."
+
+#: lms/static/js/groups/views/cohorts.js
+msgid "Assign students to cohorts by uploading a CSV file."
+msgstr "حمل ملف CSV لتوزيع الطلاب على الشعب"
+
 #: lms/static/js/groups/views/course_cohort_settings_notification.js
 msgid "Cohorts Enabled"
-msgstr "المجموعات مفعّلة"
+msgstr "الشعب المفعّلة"
 
 #: lms/static/js/groups/views/course_cohort_settings_notification.js
 msgid "Cohorts Disabled"
-msgstr "المجموعات غير مفعّلة"
+msgstr "الشعب غير المفعّلة"
 
 #: lms/static/js/instructor_dashboard/certificates.js
 msgid "Allow students to generate certificates for this course?"
@@ -9225,7 +9262,7 @@ msgid ""
 "students or specify a single cohort."
 msgstr ""
 "يمكن لمشرفي النقاشات ومشرفي المنتدى ومساعدي الأساتذة أن يجعلوا منشوراتهم "
-"مرئيّة لجميع الطلاب أو لمجموعة معيّنة يحدّدوها."
+"مرئيّة لجميع الطلاب أو لشعب معيّنة يحدّدوها."
 
 #: common/static/common/templates/discussion/new-post.underscore
 msgid "Title:"
@@ -10012,7 +10049,7 @@ msgstr "حذف من اللائحة"
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Specify whether discussion topics are divided by cohort"
-msgstr "يُرجى تحديد ما إذا كانت مواضيع النقاش موزَّعة بحسب المجموعات."
+msgstr "يُرجى تحديد ما إذا كانت مواضيع النقاش موزَّعة بحسب الشعب."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-course-wide.underscore
 msgid "Course-Wide Discussion Topics"
@@ -10022,7 +10059,7 @@ msgstr "مواضيع نقاش على نطاق المساق"
 msgid ""
 "Select the course-wide discussion topics that you want to divide by cohort."
 msgstr ""
-"يُرجى اختيار مواضيع النقاش على نطاق المساق التي تريد توزيعها بحسب المجموعات."
+"يُرجى اختيار مواضيع النقاش على نطاق المساق التي تريد توزيعها بحسب الشعب."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Content-Specific Discussion Topics"
@@ -10032,17 +10069,16 @@ msgstr "مواضيع نقاش خاصة بالمحتوى"
 msgid ""
 "Specify whether content-specific discussion topics are divided by cohort."
 msgstr ""
-"يُرجى تحديد ما إذا كانت مواضيع النقاش الخاصة بالمحتوى موزَّعة بحسب "
-"المجموعات."
+"يُرجى تحديد ما إذا كانت مواضيع النقاش الخاصة بالمحتوى موزَّعة بحسب الشعب."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Always cohort content-specific discussion topics"
 msgstr ""
-"يُرجى الحرص دائماً على تصنيف مواضيع النقاش الخاصة بالمحتوى بحسب المجموعات."
+"يُرجى الحرص دائماً على تصنيف مواضيع النقاش الخاصة بالمحتوى بحسب الشعب."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Cohort selected content-specific discussion topics"
-msgstr "مواضيع نقاش خاصة بالمحتوى تختارها المجموعة"
+msgstr "مواضيع نقاش خاصة بالمحتوى تختارها الشعبة"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "No content-specific discussion topics exist."
@@ -10050,7 +10086,19 @@ msgstr "لا توجد أي مواضيع نقاش خاصة بالمحتوى."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-subcategory.underscore
 msgid "Cohorted"
-msgstr "التوزيع على المجموعات"
+msgstr "التوزيع على الشعب"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Add students to this cohort"
+msgstr "إضافة الطلّاب إلى هذه الشعبة"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Note: Students can be in only one cohort. Adding students to this group "
+"overrides any previous group assignment."
+msgstr ""
+"ملاحظة: يمكن أن يتواجد الطلّاب في شعبة واحدة فقط. وتُلغي إضافة الطلّاب إلى "
+"هذه الشعبة أي تعيين سابق لهم."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid ""
@@ -10061,8 +10109,20 @@ msgstr ""
 "جديدة أو فواصل، للطلّاب الذين تودّ أن تضيفهم. *"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+msgid "Add a New Cohort"
+msgstr "إضافة شعبة جديدة"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+msgid "Enter the name of the cohort"
+msgstr "يُرجى إدخال اسم الشعبة"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+msgid "Cohort Name"
+msgstr "اسم الشعبة"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Cohort Assignment Method"
-msgstr "طريقة تعيين المجموعات"
+msgstr "طريقة تعيين الشعب"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Automatic"
@@ -10075,7 +10135,7 @@ msgstr "يدوي"
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid ""
 "There must be one cohort to which students can automatically be assigned."
-msgstr "يجب أن تتوفّر مجموعة واحدة يتعيَّن فيها الطلّاب تلقائيًا."
+msgstr "يجب أن تتوفّر شعبة واحدة يتعيَّن فيها الطلّاب تلقائيًا."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid ""
@@ -10098,20 +10158,42 @@ msgid ""
 "Learners are added to this cohort only when you provide their email "
 "addresses or usernames on this page."
 msgstr ""
-"لا يُضاف المتعلّمون إلى هذه المجموعة إلّا بعد ذكر عنوان البريد الإلكتروني أو"
-" اسم المستخدم الخاص بكل واحدٍ منهم على هذه الصفحة. "
+"لا يُضاف المتعلّمون إلى هذه الشعبة إلّا بعد ذكر عنوان البريد الإلكتروني أو "
+"اسم المستخدم الخاص بكل واحدٍ منهم على هذه الصفحة. "
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-group-header.underscore
 msgid "Learners are added to this cohort automatically."
-msgstr "يُضاف المتعلّمون إلى هذه المجموعة تلقائيًّا."
+msgstr "يُضاف المتعلّمون إلى هذه الشعبة تلقائيًّا."
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-selector.underscore
+msgid "Select a cohort"
+msgstr "اختر شعبة"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Enable Cohorts"
-msgstr "تمكين المجموعات"
+msgstr "فعل الشُعب"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Select a cohort to manage"
-msgstr "يُرجى اختيار مجموعة لإدارتها."
+msgstr "يُرجى اختيار شعبة لإدارتها."
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "View Cohort"
+msgstr "مشاهدة الشعبة"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Assign students to cohorts by uploading a CSV file"
+msgstr "حمل ملف CSV لتوزيع الطلاب على شعب"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid ""
+"To review student cohort assignments or see the results of uploading a CSV "
+"file, download course profile information or cohort results on "
+"%(link_start)s the Data Download page. %(link_end)s"
+msgstr ""
+"لمراجعة الواجبات المسندة إلى الطلّاب في كل شعبة أو رؤية نتائج تحميل ملف CSV،"
+" يُرجى تنزيل معلومات ملفّ المساق أو نتائج المجموعات عن طريق "
+"%(link_start)sصفحة تنزيل البيانات. %(link_end)s "
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Used"
@@ -10717,6 +10799,10 @@ msgstr "إنه وصف إعدادات المجموعة"
 #: cms/templates/js/group-configuration-editor.underscore
 msgid "Optional long description"
 msgstr "وصف اختياري مطوَّل"
+
+#: cms/templates/js/group-configuration-editor.underscore
+msgid "Groups"
+msgstr "الشُعب"
 
 #: cms/templates/js/group-configuration-editor.underscore
 msgid ""

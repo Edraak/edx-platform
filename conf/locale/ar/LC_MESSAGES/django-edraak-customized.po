@@ -22475,14 +22475,18 @@ msgstr ""
 "بترتيبها زمنيًّا."
 
 #: common/lib/xmodule/xmodule/course_module.py
+msgid "Cohort Configuration"
+msgstr "إعدادات الشعبة"
+
+#: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Enter policy keys and values to enable the cohort feature, define automated "
 "student assignment to groups, or identify any course-wide discussion topics "
 "as private to cohort members."
 msgstr ""
-"يُرجى إدخال المفاتيح والقيَم  لتفعيل ميزة المجموعات، أو تعريف ميّزة الإسناد "
-"الآلي لواجبات الطلّاب إلى المجموعات، أو تحديد مواضيع النقاش في مختلف أجزاء "
-"المساق بأنّها خاصة بأعضاء مجموعة معينة."
+"يُرجى إدخال المفاتيح والقيَم  لتفعيل ميزة الشعب، أو تعريف ميّزة الإسناد "
+"الآلي لواجبات الطلّاب إلى الشعب، أو تحديد مواضيع النقاش في مختلف أجزاء "
+"المساق بأنّها خاصة بأعضاء شعبة معينة."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -24741,6 +24745,10 @@ msgid "Date Report Run"
 msgstr "تاريخ تشغيل عملية إعداد التقرير"
 
 #: lms/djangoapps/instructor/views/api.py
+msgid "Cohort"
+msgstr "شعبة"
+
+#: lms/djangoapps/instructor/views/api.py
 msgid "Team"
 msgstr "الفريق"
 
@@ -24770,6 +24778,10 @@ msgstr ""
 "يجري حاليًّا إعداد تقرير التسجيل. ويحوي هذا التقرير معلومات عن المتعلِّمين "
 "الذين يمكنهم التسجيل في المساق. ويمكنك متابعة حالة هذا التقرير في قسم ’مهام "
 "الأستاذ المعلَّقة‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid "The file must contain a 'cohort' column containing cohort names."
+msgstr "يجب أن يحتوي الملف على عمود بعنوان ’cohort‘ وفيه أسماء الشُعب."
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/templates/instructor/instructor_dashboard_2/add_coupon_modal.html
@@ -25111,7 +25123,7 @@ msgstr "لم يُحدّد تاريخ الانتهاء"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Cohorts"
-msgstr "المجموعات"
+msgstr "الشُعب"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Extensions"
@@ -25207,7 +25219,7 @@ msgstr "أُنشِئَت الشهادات"
 #. {attempted} so far"
 #: lms/djangoapps/instructor_task/tasks.py
 msgid "cohorted"
-msgstr "جرى التوزيع إلى مجموعات"
+msgstr "جرى التوزيع إلى شُعب"
 
 #: lms/djangoapps/instructor_task/tasks_helper.py
 msgid "First Name"
@@ -26724,16 +26736,16 @@ msgstr "لم تُقدّم أي بيانات."
 
 #: openedx/core/djangoapps/course_groups/cohorts.py
 msgid "You cannot create two cohorts with the same name"
-msgstr "لا يمكنك إنشاء مجموعتين بنفس الاسم"
+msgstr "لا يمكنك إنشاء شعبتين بنفس الاسم"
 
 #: openedx/core/djangoapps/course_groups/cohorts.py
 msgid ""
 "There must be one cohort to which students can automatically be assigned."
-msgstr "يجب أن تتوفّر مجموعة واحدة يتعيَّن فيها الطلّاب تلقائيًا."
+msgstr "يجب أن تتوفّر شعبة واحدة يتعيَّن فيها الطلّاب تلقائيًا."
 
 #: openedx/core/djangoapps/course_groups/views.py
 msgid "A cohort with the same name already exists."
-msgstr "توجد مجموعة تحمل الاسم ذاته."
+msgstr "توجد شعبة تحمل الاسم ذاته."
 
 #: openedx/core/djangoapps/credentials/models.py
 #: openedx/core/djangoapps/programs/models.py
@@ -28502,6 +28514,15 @@ msgstr ""
 msgid "View {category} Details"
 msgstr "استعرض تفاصيل فئة {category}"
 
+#. Translators: This labels a cohort menu in forum navigation
+#: lms/templates/discussion/_thread_list_template.html
+msgid "Cohort:"
+msgstr "الشعبة:"
+
+#: lms/templates/discussion/_thread_list_template.html
+msgid "in all cohorts"
+msgstr "في كافة الشعب"
+
 #: lms/templates/discussion/index.html
 msgid "Discussion thread list"
 msgstr "قائمة مواضيع المناقشة "
@@ -29486,8 +29507,8 @@ msgid ""
 msgstr ""
 "يمكن لمشرفي النقاشات تعديل أو حذف أي منشور وإزالة إشارات إساءة الاستخدام "
 "وإغلاق وإعادة فتح المواضيع وتأييد ردود ورؤية المواد المنشورة من قِبل كافة "
-"المجموعات. ويوصفون بأنهم من ’الفريق‘. ويمكنهم أيضًا إضافة وإزالة أدوار وسطاء"
-" النقاش لإدارة عضوية فريق المساق. يمكنك إعطاء أدوار فريق المساق فقط "
+"الشعب. ويوصفون بأنهم من ’الفريق‘. ويمكنهم أيضًا إضافة وإزالة أدوار وسطاء "
+"النقاش لإدارة عضوية فريق المساق. يمكنك إعطاء أدوار فريق المساق فقط "
 "للمستخدمين المسجلين."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
@@ -29504,7 +29525,7 @@ msgid ""
 msgstr ""
 "يمكن لوسطاء النقاشات تعديل أو حذف أي منشور وإزالة إشارات إساءة الاستخدام "
 "وإغلاق وإعادة فتح المواضيع وتأييد ردود ورؤية المواد المنشورة من قِبل كافة "
-"المجموعات. ويوصفون بأنهم من ’الفريق‘. ولا يمكنهم إدارة عضوية فريق المساق من "
+"الشُعب. ويوصفون بأنهم من ’الفريق‘. ولا يمكنهم إدارة عضوية فريق المساق من "
 "خلال إضافة أو إزالة أدوار وسطاء النقاش. يمكنك إعطاء أدوار فريق المساق فقط "
 "للمستخدمين المسجلين."
 
@@ -29524,8 +29545,8 @@ msgstr ""
 "سيشكّلون عنصرًا مساعدًا للغاية على صفحات النقاشات. وهم مخولون بتعديل أو حذف "
 "أي منشور، وإزالة إشارات إساءة الاستخدام، وفتح وإغلاق المواضيع، وتأييد ردود، "
 "ورؤية المواد المنشورة من كافة المجموعات. ويتم الإشارة إلى المواد التي يقومون"
-" بنشرها على أنها خاصة بـ’مساعد المشرف للمجموعة‘. يمكنك إعطاء أدوار فريق "
-"المساق فقط للمستخدمين المسجلين."
+" بنشرها على أنها خاصة بـ’مساعد المشرف للشعبة‘. يمكنك إعطاء أدوار فريق المساق"
+" فقط للمستخدمين المسجلين."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "CCX Coaches"
@@ -30207,9 +30228,9 @@ msgid ""
 "create cohort-specific courseware. In other words, you can customize the "
 "content that particular cohorts see in your course."
 msgstr ""
-"إذا لديك مجموعات مفعَّلة في مساقك، يمكنك استخدام مجموعات المحتويات لإنشاء "
-"محتويات في المساق مخصَّصة للمجموعات. وبتعبير آخر، يمكنك تخصيص المحتوى الذي "
-"تراه مجموعات معيَّنة في مساقك. "
+"إذا كانت الشعب مفعَّلة في مساقك، يمكنك استخدام مجموعات المحتوى لإنشاء "
+"محتويات في المساق مخصَّصة للشعب. وبتعبير آخر، يمكنك تخصيص المحتوى الذي تراه "
+"شعب معيَّنة في مساقك. "
 
 #: cms/templates/group_configurations.html
 msgid ""
@@ -30219,10 +30240,10 @@ msgid ""
 "Only learners in the cohorts that are associated with the specified content "
 "groups see the additional content."
 msgstr ""
-"يمكن ربط كل مجموعة محتوى تُنشِئها بمجموعة واحدة أو أكثر. وبالإضافة إلى محتوى"
-" المساق المتاح لجميع الطلّاب، يمكنك جعل بعض المحتويات مرئيّة لمجموعات "
-"محتويات معيَّنة فقط. ولا يمكن إلّا للمتعلّمين في المجموعات المرتبطة بمجموعات"
-" المحتويات المعيَّنة أن يروا المحتوى الإضافي. "
+"يمكن ربط كل مجموعة محتوى تُنشِئها بشعبة واحدة أو أكثر. وبالإضافة إلى محتوى "
+"المساق المتاح لجميع الطلّاب، يمكنك جعل بعض المحتويات مرئيّة لمجموعات محتويات"
+" معيَّنة فقط. ولا يمكن إلّا للمتعلّمين في المجموعات المرتبطة بمجموعات "
+"المحتويات المعيَّنة أن يروا المحتوى الإضافي. "
 
 #: cms/templates/group_configurations.html
 msgid ""
