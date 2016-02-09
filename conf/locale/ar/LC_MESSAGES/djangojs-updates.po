@@ -2231,7 +2231,7 @@ msgstr "سؤال"
 
 #: common/static/common/templates/discussion/thread-type.underscore
 msgid "Discussion"
-msgstr "حوار"
+msgstr "المناقشة"
 
 #: common/static/common/templates/discussion/thread-type.underscore
 msgid ""
