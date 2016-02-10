@@ -27567,6 +27567,15 @@ msgid "Batch Enrollment"
 msgstr "تسجيل المجموعات"
 
 #: lms/templates/ccx/enrollment.html
+#: lms/templates/instructor/instructor_dashboard_2/membership.html
+msgid ""
+"You will not get notification for emails that bounce, so please double-check"
+" spelling."
+msgstr ""
+"لن تتلقّى إشعارًا بعناوين الطلاب الاكترونية الخاطئة التي لم تضف الى الشعبة، "
+"لذا يُرجى إعادة التحقّق من عدم وجود أخطاء إملائية."
+
+#: lms/templates/ccx/enrollment.html
 msgid "Student List Management"
 msgstr "إدارة قوائم الطلاب"
 

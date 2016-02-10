@@ -1031,7 +1031,7 @@ msgid ""
 " to this cohort below."
 msgstr ""
 "نجح إنشاء شعبة {cohortGroupName}. ويمكنك أن تضيف الطلّاب بنفسك إلى هذه "
-"المجموعة أدناه."
+"الشعبة أدناه."
 
 #: lms/static/js/groups/views/cohorts.js
 msgid "Assign students to cohorts by uploading a CSV file."
@@ -2886,6 +2886,14 @@ msgstr ""
 "يُرجى إدخال عناوين البريد الإلكتروني و/أو أسماء المستخدمين، مفصولة بأسطر "
 "جديدة أو فواصل، للطلّاب الذين تودّ أن تضيفهم. *"
 
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"You will not receive notification for emails that bounce, so double-check "
+"your spelling."
+msgstr ""
+"لن تتلقّى إشعارًا بعناوين الطلاب الاكترونية الخاطئة التي لم تضف الى الشعبة، "
+"لذا يُرجى إعادة التحقّق من عدم وجود أخطاء إملائية."
+
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Add a New Cohort"
 msgstr "إضافة شعبة جديدة"
@@ -2949,7 +2957,7 @@ msgstr "اختر شعبة"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Enable Cohorts"
-msgstr "فعل الشُعب"
+msgstr "فعّل الشُعب"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Select a cohort to manage"
@@ -2969,9 +2977,9 @@ msgid ""
 "file, download course profile information or cohort results on "
 "%(link_start)s the Data Download page. %(link_end)s"
 msgstr ""
-"لمراجعة الواجبات المسندة إلى الطلّاب في كل شعبة أو رؤية نتائج تحميل ملف CSV،"
-" يُرجى تنزيل معلومات ملفّ المساق أو نتائج المجموعات عن طريق "
-"%(link_start)sصفحة تنزيل البيانات. %(link_end)s "
+"لمراجعة علامات الطلّاب في كل شعبة أو رؤية نتائج تحميل ملف CSV، يُرجى تنزيل "
+"معلومات ملفّ المساق أو نتائج الشعب عن طريق %(link_start)sصفحة تنزيل "
+"البيانات. %(link_end)s "
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Used"
