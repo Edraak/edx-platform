@@ -2851,12 +2851,11 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Always cohort content-specific discussion topics"
-msgstr ""
-"يُرجى الحرص دائماً على تصنيف مواضيع النقاش الخاصة بالمحتوى بحسب الشعب."
+msgstr "تصنيف كل النقاشات حسب الشعب"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "Cohort selected content-specific discussion topics"
-msgstr "مواضيع نقاش خاصة بالمحتوى تختارها الشعبة"
+msgstr "تصنيف بعض النقاشات حسب الشعب"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-discussions-inline.underscore
 msgid "No content-specific discussion topics exist."
@@ -2908,7 +2907,7 @@ msgstr "اسم الشعبة"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Cohort Assignment Method"
-msgstr "طريقة تعيين الشعب"
+msgstr "طريقة توزيع الشعب"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Automatic"
@@ -2922,6 +2921,10 @@ msgstr "يدوي"
 msgid ""
 "There must be one cohort to which students can automatically be assigned."
 msgstr "يجب أن تتوفّر شعبة واحدة يتعيَّن فيها الطلّاب تلقائيًا."
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
+msgid "Associated Content Group"
+msgstr "مجموعة المحتوى"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid ""
@@ -2944,8 +2947,8 @@ msgid ""
 "Learners are added to this cohort only when you provide their email "
 "addresses or usernames on this page."
 msgstr ""
-"لا يُضاف المتعلّمون إلى هذه الشعبة إلّا بعد ذكر عنوان البريد الإلكتروني أو "
-"اسم المستخدم الخاص بكل واحدٍ منهم على هذه الصفحة. "
+"لا يُضاف المتعلّمون إلى هذه الشعبة إلّا عند تحديد عنوان البريد الإلكتروني أو"
+" اسم المستخدم الخاص بكل واحدٍ منهم على هذه الصفحة. "
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-group-header.underscore
 msgid "Learners are added to this cohort automatically."

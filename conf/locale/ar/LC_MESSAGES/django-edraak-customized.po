@@ -26966,16 +26966,6 @@ msgstr "تعذّر حفظ القيمة '{value}' كتفضيل '{key}' للمست
 msgid "No data provided for user preference update"
 msgstr "لم تتوفّر أيّة بيانات لتحديث تفضيل المستخدم"
 
-#. Translators: This example email address is used as a placeholder in
-#. a field on the login form meant to hold the user's email address.
-#. Translators: This example email address is used as a placeholder in
-#. a field on the registration form meant to hold the user's email address.
-#. Translators: This example email address is used as a placeholder in
-#. a field on the password reset form meant to hold the user's email address.
-#: openedx/core/djangoapps/user_api/views.py
-msgid "username@domain.com"
-msgstr "البريد الإلكتروني username@domain.com"
-
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: This label appears above a field on the login form
 #. meant to hold the user's password.
