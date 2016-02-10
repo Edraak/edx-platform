@@ -21115,14 +21115,6 @@ msgstr ""
 msgid "Password reset on {platform_name}"
 msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
 
-#. Translators: 'Discussion' refers to the tab in the courseware that leads to
-#. the discussion forums
-#: cms/djangoapps/contentstore/views/component.py
-#: lms/djangoapps/courseware/tabs.py
-#: lms/djangoapps/django_comment_client/forum/views.py
-msgid "Discussion"
-msgstr "حوار"
-
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: cms/templates/course_outline.html lms/templates/seq_module.html
