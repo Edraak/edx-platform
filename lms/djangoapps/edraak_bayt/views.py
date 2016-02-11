@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from httplib2 import Http
 import logging
 
-from edraak_misc.utils import validate_email
+from edraak_misc.utils import validate_email, get_absolute_url_prefix
 
 from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
@@ -43,10 +43,9 @@ def get_student_email(request):
             'secret_key': settings.BAYT_SECRET_KEY,
             'valid_until': cert_end,
             'certificate_name': course_name.encode('UTF-8'),
-            'email_address': user_email
+            'email_address': user_email,
         }
         url = "https://api.bayt.com/api/edraak-api/post.adp?" + urllib.urlencode(param)
-        print url
         resp, content = h.request(url)
         json_content = simplejson.loads(content)
         if json_content['status'] == "NOT EXISTS":
@@ -63,20 +62,18 @@ def get_student_email(request):
             'course_name': course_name.encode('UTF-8'),
             'access_token': access_token,
             'course_id': course_id.encode('UTF-8'),
-            'user_id': user_id
+            'user_id': user_id,
         }
-        if not settings.DEBUG:
-            url = "https://edraak.org/bayt-activation?" + urllib.urlencode(param)
-        else:
-            url = request.META['HTTP_HOST'] + "/bayt-activation?" + urllib.urlencode(param)
-        context = {
-            'encoded_url': url
-        }
-        message = render_to_string('bayt/verification_email.txt', context)
+
+        message = render_to_string('bayt/verification_email.txt', {
+            'activation_url': get_absolute_url_prefix(request) + "/bayt-activation?" + urllib.urlencode(param)
+        })
+
         if not (settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING')):
             from_address = microsite.get_value('email_from_address', settings.DEFAULT_FROM_EMAIL)
             try:
-                send_mail('Bayt Edraak Verification', message, from_address, [user_email], fail_silently=False)
+                subject = _('Verify you account on Bayt to post Edraak certificate')
+                send_mail(subject, message, from_address, [user_email], fail_silently=False)
                 # here we have to send an auth email to user email that contains a link to
                 # get back to here and then post the certificate
                 return JsonResponse({"success": True, "error": False, "redirect_to": False})
