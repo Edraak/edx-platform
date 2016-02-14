@@ -10,11 +10,10 @@ from django.contrib.auth.decorators import login_required
 from httplib2 import Http
 import logging
 
-from edraak_misc.utils import validate_email
+from edraak_misc.utils import validate_email, get_absolute_url_prefix
 
 from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
-from microsite_configuration import microsite
 from .models import BaytPublishedCertificate
 
 log = logging.getLogger(__name__)
@@ -37,6 +36,7 @@ def get_student_email(request):
     except User.DoesNotExist:
         ## close the pop-up because there is sth wrong
         return JsonResponse({"success": False, "error": 'Invalid ID'})
+
     if user.email == user_email:
         h = Http()
         param = {
@@ -45,10 +45,11 @@ def get_student_email(request):
             'certificate_name': course_name.encode('UTF-8'),
             'email_address': user_email
         }
+
         url = "https://api.bayt.com/api/edraak-api/post.adp?" + urllib.urlencode(param)
-        print url
         resp, content = h.request(url)
         json_content = simplejson.loads(content)
+
         if json_content['status'] == "NOT EXISTS":
             return JsonResponse({"success": True, "error": False, "redirect_to": True, "response": content})
         else:
@@ -63,27 +64,22 @@ def get_student_email(request):
             'course_name': course_name.encode('UTF-8'),
             'access_token': access_token,
             'course_id': course_id.encode('UTF-8'),
-            'user_id': user_id
+            'cert_end': cert_end,
+            'user_id': user_id,
         }
-        if not settings.DEBUG:
-            url = "https://edraak.org/bayt-activation?" + urllib.urlencode(param)
-        else:
-            url = request.META['HTTP_HOST'] + "/bayt-activation?" + urllib.urlencode(param)
-        context = {
-            'encoded_url': url
-        }
-        message = render_to_string('bayt/verification_email.txt', context)
-        if not (settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING')):
-            from_address = microsite.get_value('email_from_address', settings.DEFAULT_FROM_EMAIL)
-            try:
-                send_mail('Bayt Edraak Verification', message, from_address, [user_email], fail_silently=False)
-                # here we have to send an auth email to user email that contains a link to
-                # get back to here and then post the certificate
-                return JsonResponse({"success": True, "error": False, "redirect_to": False})
-            except:
-                log.warning('Unable to send activation email to user', exc_info=True)
-                return JsonResponse({"success": False, "error": True, "redirect_to": False})
-        else:
+
+        message = render_to_string('bayt/verification_email.txt', {
+            'activation_url': get_absolute_url_prefix(request) + "/bayt-activation?" + urllib.urlencode(param)
+        })
+
+        try:
+            subject = _('Verify your email to share your Edraak certificate on Baytq')
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user_email], fail_silently=False)
+            # here we have to send an auth email to user email that contains a link to
+            # get back to here and then post the certificate
+            return JsonResponse({"success": True, "error": False, "redirect_to": False})
+        except:
+            log.warning('Unable to send activation email to user', exc_info=True)
             return JsonResponse({"success": False, "error": True, "redirect_to": False})
 
 @login_required
@@ -117,4 +113,9 @@ def activation(request):
         BaytPublishedCertificate.objects.create(user_id=user_id, course_id=course_id)
         return render_to_response("bayt/callback.html", {"status": True})
     else:
+        log.warning(
+            "Access tokens don't match: current='%s' original='%s'",
+            current_access_token,
+            access_token,
+        )
         return JsonResponse({"success": False, "error": True, "redirect_to": False})
