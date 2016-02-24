@@ -14,10 +14,9 @@
 
 define(
 'video/01_initialize.js',
-['video/03_video_player.js', 'video/00_i18n.js', 'video/00_sign_language_state.js'],
-function (VideoPlayer, i18n, SignLanguageState) {
-    var moment = window.moment;
-
+['video/03_video_player.js', 'video/00_i18n.js', 'moment', 'video/00_sign_language_state.js'],
+function (VideoPlayer, i18n, moment, SignLanguageState) {
+    var moment = moment || window.moment;
     /**
      * @function
      *
@@ -473,53 +472,6 @@ function (VideoPlayer, i18n, SignLanguageState) {
         });
     }
 
-    function loadYoutubePlayer() {
-        if (this.htmlPlayerLoaded) { return; }
-
-        console.log(
-            '[Video info]: Fetch metadata for YouTube video.'
-        );
-
-        this.fetchMetadata();
-        this.parseSpeed();
-    }
-
-    function loadHtmlPlayer() {
-
-        // When the youtube link doesn't work for any reason
-        // (for example, firewall) any
-        // alternate sources should automatically play.
-        if (!_prepareHTML5Video(this)) {
-            console.log(
-                '[Video info]: Continue loading ' +
-                'YouTube video.'
-            );
-
-            // Non-YouTube sources were not found either.
-
-            this.el.find('.video-player div')
-                .removeClass('hidden');
-            this.el.find('.video-player h3')
-                .addClass('hidden');
-
-            // If in reality the timeout was to short, try to
-            // continue loading the YouTube video anyways.
-            this.loadYoutubePlayer();
-        } else {
-            console.log(
-                '[Video info]: Start HTML5 player.'
-            );
-
-            // In-browser HTML5 player does not support quality
-            // control.
-            this.el.find('a.quality_control').hide();
-
-	        // In-browser HTML5 player does not support sign-language control.
-            this.el.find('a.sign-language').hide();
-            _renderElements(this);
-        }
-    }
-
     // function initialize(element)
     // The function set initial configuration and preparation.
 
@@ -585,23 +537,58 @@ function (VideoPlayer, i18n, SignLanguageState) {
         } else {
             _renderElements(this);
 
-            _waitForYoutubeApi(this);
+            this.youtubeXhr
+                .always(function (json, status) {
+                    // It will work for both if statusCode is 200 or 410.
+                    var didSucceed = (json.error && json.error.code === 410) || status === 'success' || status === 'notmodified';
+                    if (!didSucceed) {
+                        console.log(
+                            '[Video info]: YouTube returned an error for ' +
+                            'video with id "' + id + '".'
+                        );
 
-            var scriptTag = document.createElement('script');
+                        // When the youtube link doesn't work for any reason
+                        // (for example, the great firewall in china) any
+                        // alternate sources should automatically play.
+                        if (!_prepareHTML5Video(self)) {
+                            console.log(
+                                '[Video info]: Continue loading ' +
+                                'YouTube video.'
+                            );
 
-            scriptTag.src = this.config.ytApiUrl;
-            scriptTag.async = true;
+                            // Non-YouTube sources were not found either.
 
-            $(scriptTag).on('load', function() {
-                self.loadYoutubePlayer();
-            });
-            $(scriptTag).on('error', function() {
-                console.log(
-                    '[Video info]: YouTube returned an error for ' +
-                    'video with id "' + self.id + '".'
-                );
-                self.loadHtmlPlayer();
-            });
+                            el.find('.video-player div')
+                                .removeClass('hidden');
+                            el.find('.video-player h3')
+                                .addClass('hidden');
+
+                            // If in reality the timeout was to short, try to
+                            // continue loading the YouTube video anyways.
+                            self.fetchMetadata();
+                            self.parseSpeed();
+                        } else {
+                            console.log(
+                                '[Video info]: Change player mode to HTML5.'
+                            );
+
+                            // In-browser HTML5 player does not support quality
+                            // control.
+                            el.find('a.quality_control').hide();
+                        }
+                    } else {
+                        console.log(
+                            '[Video info]: Start player in YouTube mode.'
+                        );
+
+                        self.fetchMetadata();
+                        self.parseSpeed();
+                    }
+
+                    _setConfigurations(self);
+                    _renderElements(self);
+                });
+        }
 
             window.Video.loadYouTubeIFrameAPI(scriptTag);
         }

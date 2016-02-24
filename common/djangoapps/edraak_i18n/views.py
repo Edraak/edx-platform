@@ -5,7 +5,7 @@ from openedx.core.djangoapps.user_api.preferences.api import set_user_preference
 from django.utils.translation import check_for_language
 from django.views.decorators.csrf import csrf_exempt
 
-from django_locale.trans_real import LANGUAGE_SESSION_KEY
+from django.utils.translation import LANGUAGE_SESSION_KEY
 from dark_lang import DARK_LANGUAGE_KEY
 
 
