@@ -2,10 +2,11 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 
 from util.json_request import JsonResponse
+from openedx.core.lib.courses import course_image_url
+
 from courseware.courses import (
     get_courses,
     sort_by_announcement,
-    course_image_url,
     get_course_about_section,
 )
 
