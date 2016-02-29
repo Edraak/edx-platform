@@ -31,7 +31,7 @@ from lang_pref import LANGUAGE_KEY
 
 from xmodule.modulestore.django import modulestore
 
-from django_locale.trans_real import LANGUAGE_SESSION_KEY
+from django.utils.translation import LANGUAGE_SESSION_KEY
 
 from student.models import AlreadyEnrolledError
 from student.helpers import enroll, get_next_url_for_login_page, InvalidCourseIdError
