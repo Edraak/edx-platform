@@ -33,7 +33,7 @@ class BlocksView(DeveloperErrorViewMixin, ListAPIView):
             &requested_fields=graded,format,student_view_multi_device,lti_url
             &block_counts=video
             &student_view_data=video
-            &block_type_filter=problem,html
+            &block_types_filter=problem,html
 
     **Parameters**:
 
@@ -102,7 +102,6 @@ class BlocksView(DeveloperErrorViewMixin, ListAPIView):
           video, and discussion.
 
           Example: block_types_filter=vertical,html
-
 
     **Response Values**
 
@@ -201,7 +200,7 @@ class BlocksView(DeveloperErrorViewMixin, ListAPIView):
                     params.cleaned_data.get('block_counts', []),
                     params.cleaned_data.get('student_view_data', []),
                     params.cleaned_data['return_type'],
-                    params.cleaned_data.get('block_type_filter', None),
+                    params.cleaned_data.get('block_types_filter', None),
                 )
             )
         except ItemNotFoundError as exception:
@@ -225,7 +224,7 @@ class BlocksInCourseView(BlocksView):
             &requested_fields=graded,format,student_view_multi_device,lti_url
             &block_counts=video
             &student_view_data=video
-            &block_type_filter=problem,html
+            &block_types_filter=problem,html
 
 
     **Parameters**:
