@@ -94,9 +94,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-02-04 20:01+0000\n"
-"PO-Revision-Date: 2016-02-09 14:39+0000\n"
-"Last-Translator: qrfahasan <ahasan@qrf.org>\n"
+"POT-Creation-Date: 2016-03-17 10:59+0000\n"
+"PO-Revision-Date: 2016-02-12 08:07+0000\n"
+"Last-Translator: Soha Assali <soha+transifex@qordoba.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -139,6 +139,7 @@ msgstr "جاري التحميل"
 msgid "Name"
 msgstr "الاسم"
 
+#: cms/static/js/views/assets.js lms/static/js/Markdown.Editor.js
 #: cms/templates/js/asset-upload-modal.underscore
 #: lms/templates/instructor/instructor_dashboard_2/certificate-bulk-white-list.underscore
 msgid "Choose File"
@@ -171,6 +172,10 @@ msgstr "عرض بشاشة كاملة"
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Subscript"
 msgstr "رمز سفلي"
+
+#: common/lib/xmodule/xmodule/js/src/problem/edit.js
+msgid "Explanation"
+msgstr "الإيضاح"
 
 #: common/lib/xmodule/xmodule/js/src/sequence/display.js
 msgid ""
@@ -827,6 +832,79 @@ msgstr ""
 "نأسف لحدوث خطأ في الحصول على تاريخ مهامّ امتحان الدخول للطالب "
 "'{student_id}'. يُرجى التأكّد من صحّة رقم الطالب."
 
+#: lms/static/js/Markdown.Editor.js
+msgid "e.g. 'http://google.com/'"
+msgstr "مثال: 'http://google.com/'"
+
+#: lms/static/js/Markdown.Editor.js
+msgid "Link Description"
+msgstr "وصف الرابط"
+
+#: lms/static/js/Markdown.Editor.js
+msgid "e.g. 'google'"
+msgstr "مثال: 'google'"
+
+#: lms/static/js/Markdown.Editor.js
+msgid "Please provide a description of the link destination."
+msgstr "يُرجى إضافة توصيف لوجهة الرابط."
+
+#: lms/static/js/Markdown.Editor.js
+msgid "Insert Image (upload file or type URL)"
+msgstr "حمّل الصورة (سواء برفع ملف أو بإدخال رابط)"
+
+#: lms/static/js/Markdown.Editor.js
+msgid ""
+"Type in a URL or use the \"Choose File\" button to upload a file from your "
+"machine. (e.g. 'http://example.com/img/clouds.jpg')"
+msgstr ""
+"أضف رابطًا أو استخدم زر ’اختر ملف‘ لتحميل ملف موجود من على جهازك. (مثال: "
+"'http://example.com/img/clouds.jpg')"
+
+#: lms/static/js/Markdown.Editor.js
+msgid "Image Description"
+msgstr "وصف الصورة"
+
+#: lms/static/js/Markdown.Editor.js
+msgid ""
+"Please describe this image or agree that it has no contextual value by "
+"checking the checkbox."
+msgstr ""
+"يُرجى وصف هذه الصورة أو الموافقة على عدم احتوائها على قيمة سياقية وذلك "
+"بتحديد مربع الاختيار."
+
+#: lms/static/js/Markdown.Editor.js
+msgid ""
+"e.g. 'Sky with clouds'. The description is helpful for users who cannot see "
+"the image."
+msgstr ""
+"مثال 'Sky with clouds'. يفيد هذا التوصيف المستخدمين الذين يتعذّر عليهم رؤية "
+"الصورة."
+
+#: lms/static/js/Markdown.Editor.js
+msgid "How to create useful text alternatives."
+msgstr "كيفية إنشاء بدائل نصيّة مفيدة."
+
+#: lms/static/js/Markdown.Editor.js
+msgid ""
+"This image is for decorative purposes only and does not require a "
+"description."
+msgstr "استُخدمت هذه الصورة لأهداف تزينية فقط ولا تتطلّب توصيفًا."
+
+#: lms/static/js/Markdown.Editor.js
+msgid "Please provide a valid URL."
+msgstr "يُرجى إضافة رابط صحيح."
+
+#. Translators: 'errorCount' is the number of errors found in the form.
+#: lms/static/js/Markdown.Editor.js
+msgid "%(errorCount)s error found in form."
+msgid_plural "%(errorCount)s errors found in form."
+msgstr[0] "وُجِدَ %(errorCount)s خطأ في النموذج."
+msgstr[1] "وُجِدَ %(errorCount)s خطأ في النموذج."
+msgstr[2] "وُجِدَ %(errorCount)s خطأ في النموذج."
+msgstr[3] "وُجِدَت %(errorCount)s أخطاء في النموذج."
+msgstr[4] "وُجِدَت %(errorCount)s أخطاء في النموذج."
+msgstr[5] "وُجِدَت %(errorCount)s أخطاء في النموذج."
+
 #: lms/static/js/bookmarks/views/bookmark_button.js
 msgid "Click to add"
 msgstr "اضغط للإضافة"
@@ -920,28 +998,62 @@ msgid " learner is not enrolled in course and not added to the exception"
 msgstr "لم يُسجّل المتعلّمون في المساق ولم تجري إضافتهم إلى الاستثناء"
 
 #: lms/static/js/certificates/views/certificate_invalidation_view.js
-msgid "Certificate of "
-msgstr "الشهادة"
+msgid ""
+"Certificate of <%= user %> has already been invalidated. Please check your "
+"spelling and retry."
+msgstr ""
+"سبق أن أُلغيت شهادة المستخدم <%= user %>. يُرجى التأكّد من التهجئة وأعادة "
+"المحاولة."
 
 #: lms/static/js/certificates/views/certificate_invalidation_view.js
-msgid " has already been invalidated. Please check your spelling and retry."
-msgstr "جرى إلغاؤها. يٌرجى التأكّد من التهجئة وإعادة المحاولة."
+msgid "Certificate has been successfully invalidated for <%= user %>."
+msgstr "جرى إلغاء الشهادة بنجاح لـلمستخدم <%= user %>."
 
 #: lms/static/js/certificates/views/certificate_invalidation_view.js
-msgid "Certificate has been successfully invalidated for "
-msgstr "جرى إلغاء الشهادة بنجاح لـ"
-
-#: lms/static/js/certificates/views/certificate_invalidation_view.js
+#: lms/static/js/certificates/views/certificate_whitelist.js
+#: lms/static/js/certificates/views/certificate_whitelist_editor.js
 msgid "Server Error, Please refresh the page and try again."
 msgstr "خطأ في المخدّم، يُرجى تحديث الصفحة وإعادة المحاولة."
 
 #: lms/static/js/certificates/views/certificate_invalidation_view.js
-msgid "The certificate for this learner has been re-validated and "
-msgstr "جرت إعادة توثيق الشهادة لهذا المتعلّم و"
+msgid ""
+"The certificate for this learner has been re-validated and the system is re-"
+"running the grade for this learner."
+msgstr ""
+"جرت إعادة توثيق شهادة هذا المتعلّم ويعمل النظام على إعادة عرض علامته "
+"الممنوحة."
 
 #: lms/static/js/certificates/views/certificate_invalidation_view.js
-msgid "Could not find Certificate Invalidation in the list. "
-msgstr "تعذّر إيجاد إلغاء الشهادة في اللائحة."
+msgid ""
+"Could not find Certificate Invalidation in the list. Please refresh the page"
+" and try again"
+msgstr ""
+"تعذّر إيجاد خيار إلغاء توثيق الشهادة ضمن اللائحة. يُرجى تحديث الصفحة وإعادة "
+"المحاولة من جديد."
+
+#: lms/static/js/certificates/views/certificate_whitelist.js
+msgid "Student Removed from certificate white list successfully."
+msgstr "جرت إزالة اسم الطالب من شهادات القائمة البيضاء بنجاح."
+
+#: lms/static/js/certificates/views/certificate_whitelist.js
+msgid ""
+"Could not find Certificate Exception in white list. Please refresh the page "
+"and try again"
+msgstr ""
+"تعذّر إيجاد خيار استثناء الشهادة ضمن اللائحة البيضاء. يُرجى تحديث الصفحة "
+"وإعادة المحاولة من جديد."
+
+#: lms/static/js/certificates/views/certificate_whitelist_editor.js
+msgid "<%= user %> already in exception list."
+msgstr "سبق أن أُدرج المستخدم <%= user %> على لائحة الاستثناء."
+
+#: lms/static/js/certificates/views/certificate_whitelist_editor.js
+msgid ""
+"<%= user %> has been successfully added to the exception list. Click "
+"Generate Exception Certificate below to send the certificate."
+msgstr ""
+"أُُضيف المستخدم <%= user %> بنجاح إلى قائمة الاستثناء. انقر على ’إنشاء شهادة"
+" استثناء‘ أدناه لإرسال الشهادة."
 
 #: lms/static/js/discovery/views/search_form.js
 msgid "Viewing %s course"
@@ -1761,6 +1873,10 @@ msgstr ""
 msgid "Are you sure you want to restrict {email} access to “{container}”?"
 msgstr "هل أنت متأكد من رغبتك في تقييد وصول {email} إلى \"{container}\"؟"
 
+#: cms/static/js/views/modals/course_outline_modals.js
+msgid "Basic"
+msgstr "أساسي"
+
 #. Translators: This label refers to access to course content.
 #: cms/static/js/views/modals/course_outline_modals.js
 msgid "Access"
@@ -1833,6 +1949,17 @@ msgstr "لم تُحدَّد الدرجة الدنيا للنجاح في المس
 #: cms/static/js/views/settings/main.js
 msgid "Course pacing cannot be changed once a course has started."
 msgstr "لا يمكن تغيير  تنظيم المساق بمجرّد ابتدائه."
+
+#: cms/static/js/views/utils/xblock_utils.js
+msgid ""
+"Any content that has listed this content as a prerequisite will also have "
+"access limitations removed."
+msgstr ""
+"ستُحذف أي محدّدات للوصول لأي محتوى كان قد أردج هذا المحتوى كمتطلّب أساسي."
+
+#: cms/static/js/views/utils/xblock_utils.js
+msgid "Delete this %(xblock_type)s (and prerequisite)?"
+msgstr "أتودّ حذف أنواع %(xblock_type)s هذه (بالإضافة إلى المتطلّب الأساسي)؟"
 
 #: cms/static/js/views/video/transcripts/file_uploader.js
 msgid "Please select a file in .srt format."
@@ -1931,32 +2058,32 @@ msgid "Find discussions"
 msgstr "إيجاد النقاشات"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
-msgid "Focus in on specific topics"
-msgstr "التركيز على مواضيع محدّدة"
+msgid "Use the Discussion Topics menu to find specific topics."
+msgstr "استخدم قائمة مواضيع النقاش لتجد موضوعات معينة."
 
 #: common/static/common/templates/discussion/discussion-home.underscore
-msgid "Search for specific posts"
-msgstr "البحث عن منشورات محدّدة"
+msgid "Search all posts"
+msgstr "البحث في كافّة المنشورات"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
-msgid "Sort by date, vote, or comments"
-msgstr "الترتيب بحسب التاريخ أو الأصوات أو التعليقات"
+msgid "Filter and sort topics"
+msgstr "تصفية وتصنيف المواضيع"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
 msgid "Engage with posts"
 msgstr "شارك في المنشورات"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
-msgid "Upvote posts and good responses"
-msgstr "صوِّت لتحسين تقييم المنشورات والردود الجيّدة"
+msgid "Vote for good posts and responses"
+msgstr "صوّت للردود والمنشورات الجيّدة"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
-msgid "Report Forum Misuse"
-msgstr "أبلِغ عن إساءة استخدامٍ للمنتدى"
+msgid "Report abuse, topics, and responses"
+msgstr "أبلغ عن أساءة أو مواضيع أو ردود"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
-msgid "Follow posts for updates"
-msgstr "تابع المنشورات للاطّلاع على التحديثات"
+msgid "Follow or unfollow posts"
+msgstr "تابع أو ألغي متابعة منشورات"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
 msgid "Receive updates"
@@ -2262,8 +2389,8 @@ msgid "Topic Area:"
 msgstr "مجال الموضوع:"
 
 #: common/static/common/templates/discussion/topic.underscore
-msgid "Discussion topics; current selection is: "
-msgstr "مواضيع النقاشات؛ الاختيار الحالي هو: "
+msgid "Discussion topics; currently listing: "
+msgstr "مواضيع النقاش، المواضيع المُدرجة على اللائحة حاليًا: "
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Filter topics"
@@ -2639,6 +2766,14 @@ msgid "timed"
 msgstr "مؤقّت"
 
 #: lms/templates/courseware/proctored-exam-status.underscore
+msgid ""
+"To receive credit on a problem, you must click \"Check\" or \"Final Check\" "
+"on it before you select \"End My Exam\"."
+msgstr ""
+"يجب النقر على ’مراجعة‘ أو ’مراجعة نهائية‘ على المادة الدراسية قبل اختيار "
+"’أنهي امتحاني‘ لتلقي مادة دراسية لبرنامج معيّن."
+
+#: lms/templates/courseware/proctored-exam-status.underscore
 msgid "End My Exam"
 msgstr "أنهي امتحاني"
 
@@ -2745,6 +2880,10 @@ msgid ""
 msgstr ""
 "أضف اسم المستخدم أو عنوان البريد الإلكتروني أدناه لإلغاء شهادة ممنوحة "
 "لمتعلّم معيّن."
+
+#: lms/templates/instructor/instructor_dashboard_2/certificate-invalidation.underscore
+msgid "Add notes about this learner"
+msgstr "أضف ملاحظات تخصّ هذا المتعلّم"
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-invalidation.underscore
 msgid "Invalidate Certificate"
@@ -3315,9 +3454,49 @@ msgstr ""
 msgid "Return to Your Dashboard"
 msgstr "العودة إلى لوحة المعلومات"
 
+#: cms/templates/js/access-editor.underscore
+msgid "Limit Access"
+msgstr "الحدّ من صلاحية الوصول"
+
+#: cms/templates/js/access-editor.underscore
+msgid ""
+"Select a prerequisite subsection and enter a minimum score percentage to "
+"limit access to this subsection."
+msgstr ""
+"اختر قسم متطلّب أساسي فرعي وأدخل النسبة المئوية الدنيا للمجموع للحّد من "
+"إمكانية الوصول إلى هذا القسم الفرعي."
+
+#: cms/templates/js/access-editor.underscore
+msgid "Prerequisite:"
+msgstr "المتطلّب الأساسي:"
+
+#: cms/templates/js/access-editor.underscore
+msgid "No prerequisite"
+msgstr "لا يوجد متطلّبات أساسية"
+
+#: cms/templates/js/access-editor.underscore
+msgid "Minimum Score:"
+msgstr "الحدّ الأدنى للمجموع:"
+
+#: cms/templates/js/access-editor.underscore
+msgid "The minimum score percentage must be a whole number between 0 and 100."
+msgstr "يجب أن تكون النسبة المئوية الدنيا للمجموع عددّا صحيحًا بين 0 و 100."
+
+#: cms/templates/js/access-editor.underscore
+msgid "Use as a Prerequisite"
+msgstr "استخدمه كمتطلّب أساسي"
+
+#: cms/templates/js/access-editor.underscore
+msgid "Make this subsection available as a prerequisite to other content"
+msgstr "اجعل من محتوى هذه القسم الفرعي متوفرًا كمتطلب أساسي لمحتوى آخر."
+
 #: cms/templates/js/active-video-upload-list.underscore
 msgid "Drag and drop or click here to upload video files."
 msgstr "استخدم خاصية السحب والإفلات أو اضغط هنا لتحميل ملفّات الفيديو ."
+
+#: cms/templates/js/active-video-upload-list.underscore
+msgid "Active Uploads"
+msgstr "التحميلات النشطة"
 
 #: cms/templates/js/add-xblock-component-button.underscore
 msgid "Add Component:"
@@ -3327,6 +3506,14 @@ msgstr "إضافة مكوِّن:"
 #: cms/templates/js/add-xblock-component-menu.underscore
 msgid "%(type)s Component Template Menu"
 msgstr "قائمة نماذج مكوّنات %(type)s"
+
+#: cms/templates/js/asset-library.underscore
+msgid "Show All"
+msgstr "عرض الكل"
+
+#: cms/templates/js/asset-library.underscore
+msgid "Other"
+msgstr "غير ذلك"
 
 #: cms/templates/js/asset-library.underscore
 msgid "You haven't added any assets to this course yet."
@@ -3381,6 +3568,17 @@ msgstr "تجاوز رقم المساق"
 #: cms/templates/js/certificate-editor.underscore
 msgid "Certificate Signatories"
 msgstr "الموقّعون على الشهادة"
+
+#: cms/templates/js/certificate-details.underscore
+#: cms/templates/js/certificate-editor.underscore
+msgid ""
+"It is strongly recommended that you include four or fewer signatories. If "
+"you include additional signatories, preview the certificate in Print View to"
+" ensure the certificate will print correctly on one page."
+msgstr ""
+"يُوصى بشدة بتضمين 4 موقعيّن على الأكثر. راجع الشهادة في وضع ’مراجعة "
+"الطباعة‘، في حال إضافتك للمزيد من الموقعّين، لضمان طباعة الشهادة بالشكل "
+"الصحيح على صفحة واحدة. "
 
 #: cms/templates/js/certificate-editor.underscore
 msgid "Certificate Information"
@@ -3454,6 +3652,10 @@ msgstr "إنه اسم المجموعة:"
 #: cms/templates/js/content-group-editor.underscore
 msgid "This content group is used in one or more units."
 msgstr "مجموعة المحتوى هذه مستخدمة في وحدة واحدة أو أكثر."
+
+#: cms/templates/js/course-outline.underscore
+msgid "Prerequisite: %(prereq_display_name)s"
+msgstr "متطلّب أساسي: %(prereq_display_name)s"
 
 #: cms/templates/js/course-outline.underscore
 msgid "Contains staff only content"
@@ -3725,6 +3927,11 @@ msgid "View Live"
 msgstr "عرض النسخة الحالية المنشورة"
 
 #: cms/templates/js/signatory-details.underscore
+#: cms/templates/js/signatory-editor.underscore
+msgid "Signatory"
+msgstr "مُوقّع"
+
+#: cms/templates/js/signatory-details.underscore
 msgid "Organization"
 msgstr "المؤسّسة"
 
@@ -3857,24 +4064,77 @@ msgid "Delete the user, {username}"
 msgstr "حذف المستخدم،  {username} "
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
+msgid "Set as a Special Exam"
+msgstr "عيّن امتحانًا مخصّصًا"
+
+#: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Timed"
 msgstr "مؤقّت"
+
+#: cms/templates/js/timed-examination-preference-editor.underscore
+msgid ""
+"Use a timed exam to limit the time learners can spend on problems in this "
+"subsection. Learners must submit answers before the time expires. You can "
+"allow additional time for individual learners through the Instructor "
+"Dashboard."
+msgstr ""
+"استخدم امتحانًا مؤقّتًا للحدّ من الوقت الذي يمكن للمتعلّمين قضاؤه في حل "
+"مسائل هذا القسم الفرعي. يجب أن يقدّم المتعلّمون الإجابات قبل انتهاء الوقت "
+"المحدّد. كما ويمكنك السماح لأحد المتعلّمين بوقت إضافي باستخدام لوحة معلومات "
+"الأستاذ."
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Proctored"
 msgstr "مُراقب"
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
+msgid ""
+"Proctored exams are timed and they record video of each learner taking the "
+"exam. The videos are then reviewed to ensure that learners follow all "
+"examination rules."
+msgstr ""
+"الامتحانات المراقبة محدّدة التوقيت، وسيُسجّل مقطع فيديو لكل متعلّم يُجري "
+"امتحانًا لتُراجع مقاطع الفيديو هذه بعد ذلك بهدف ضمان التزام المتعلّمين بجميع"
+" القواعد الامتحانية."
+
+#: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Practice Proctored"
 msgstr "تمرّن من خلال خوض امتحان مراقَب"
+
+#: cms/templates/js/timed-examination-preference-editor.underscore
+msgid ""
+"Use a practice proctored exam to introduce learners to the proctoring tools "
+"and processes. Results of a practice exam do not affect a learner's grade."
+msgstr ""
+"استخدم امتحان تدريبي مراقب لتعريف المتعلّمين بإجراءات وأدوات المراقبة. لن "
+"تؤثر نتائج الامتحان التدريبي على الدرجة النهائية الممنوحة للمتعلّم."
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Time Allotted (HH:MM):"
 msgstr "الوقت المخصَّص (HH:MM): "
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
+msgid ""
+"Select a time allotment for the exam. If it is over 24 hours, type in the "
+"amount of time. You can grant individual learners extra time to complete the"
+" exam through the Instructor Dashboard."
+msgstr ""
+"اختر فترة زمنية مخصّصة لإجراء الامتحان. إذا زادت القيمة عن 24 ساعة،أدخل "
+"مقدارًا من الوقت. يمكنك كمج متعلّمين محددين زمنًا إضافيًا لإجراء الامتحان من"
+" خلال لوحة معلومات الأستاذ."
+
+#: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Review Rules"
 msgstr "قواعد المراجعة"
+
+#: cms/templates/js/timed-examination-preference-editor.underscore
+msgid ""
+"Specify any additional rules or rule exceptions that the proctoring review "
+"team should enforce when reviewing the videos. For example, you could "
+"specify that calculators are allowed."
+msgstr ""
+"حدّد أي قواعد إضافية أو استنثاءات القواعد التي يجب أن تُطبّق عند مراجعة "
+"مقاطع الفيديو. مثال، يمكنك نحديد فيما إذا كانت الآلات الحاسبة مسموحة."
 
 #: cms/templates/js/validation-error-modal.underscore
 msgid ""
