@@ -2,33 +2,41 @@
 
 <%inherit file="../main.html" />
 
+<%block headextra>
+  % if status:
+    <meta http-equiv="refresh" content="5; url=${redirect_url}" />
+  % endif
+</%block>
+
 <section class="container activation">
   <section class="message">
-    <h1>${_("Bayt Activation")}</h1>
-    <hr class="horizontal-divider">
+    <h1>
+      % if status:
+        ${_("Bayt.com Account Activation")}
+      % else:
+        ${_("Bayt.com Account not Found")}
+      % endif
+    </h1>
+
+      <hr class="horizontal-divider">
       % if status:
         <p>
           ${_("Your certificate has been posted to Bayt successfully. "
               "You well redirect to Edraak in 5 seconds. "
               "If not click {link_start}here{link_end}").format(
-                 link_start='<a href="{}">'.format(settings.SITE_NAME),
+                 link_start='<a href="{}">'.format(redirect_url),
                  link_end='</a>',
           )}
         </p>
       % else:
         <p>
-          ${_("Please click {link_start}here{link_end}").format(
-                 link_start='<a href="{}/en/register-j/">'.format(settings.BAYT_BASE),
+          ${_("You don't have a Bayt.com with the email you've entered yet. "
+              "To register a new Bayt.com account, please click {link_start}here{link_end}.").format(
+                 link_start='<a href="{}">'.format(redirect_url),
                  link_end='</a>',
           )}
         </p>
       % endif
   </section>
 </section>
-<script>
-        % if status:
-            setTimeout("window.location='${settings.SITE_NAME}'", 5000);
-        % else:
-            setTimeout("window.location='${settings.BAYT_BASE}/en/register-j/'", 500);
-        % endif
-</script>
+

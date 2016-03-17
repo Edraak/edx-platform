@@ -83,7 +83,7 @@
             }, function (data) {
                 if (data.success) {
                     if (data.redirect_to) {
-                        window.location.replace("${settings.BAYT_BASE}/en/register-j/");
+                        window.location.replace(data.redirect_to);
                     } else {
                         $(".close-modal").click();
                         location.reload();

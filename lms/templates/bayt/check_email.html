@@ -1,0 +1,17 @@
+<%! from django.utils.translation import ugettext as _ %>
+
+<%inherit file="../main.html" />
+
+<section class="container activation">
+    <section class="message">
+        <h1>${_("Verification Email has been Sent")}</h1>
+        <hr class="horizontal-divider">
+        <p>
+            ${_("Your verification email has been sent. "
+                "Please check your email's inbox (and sometimes spam) for the address '{email}', "
+                "and click the activation link.").format(
+                     email=email,
+            )}
+        </p>
+    </section>
+</section>
