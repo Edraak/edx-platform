@@ -20773,6 +20773,10 @@ msgstr ""
 "حاول البحث في صندوق البريد المهمل (spam/junk) إن لم تتمكن من إيجاد بريد "
 "إعادة ضبط كلمة السر في صندوق البريد الوارد."
 
+#: common/djangoapps/util/views.py:72
+msgid "Invalid syntax"
+msgstr "تعبيرٌ رياضيٌ خاطئ"
+
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py:178
 msgid ""
 "The default assumption is all the videos have sign-language enabled. This "

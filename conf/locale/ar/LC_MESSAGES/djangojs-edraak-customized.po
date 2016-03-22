@@ -7315,6 +7315,18 @@ msgstr ""
 "إذا لم تستطع الحصول على البريد الإلكتروني لاستعادة كلمة السر، يُرجى أن تبحث "
 "في صندوق الرسائل المهملة (Spam) بدلاً من صندوق الوارد."
 
+#: cms/templates/js/signatory-editor.underscore:23
+msgid "Name "
+msgstr "الاسم"
+
+#: cms/templates/js/signatory-editor.underscore:31
+msgid "Title "
+msgstr "اللقب"
+
+#: cms/templates/js/signatory-editor.underscore:39
+msgid "Organization "
+msgstr "المؤسسة"
+
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 #: cms/static/js/certificates/views/signatory_details.js
