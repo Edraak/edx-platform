@@ -2005,6 +2005,10 @@ msgstr "صيغة خاطئة لرابط url."
 msgid "New %(component_type)s"
 msgstr "إضافة %(component_type)s"
 
+#: cms/static/js/xblock_asides/structured_tags.js
+msgid "Updating Tags"
+msgstr "تحديث الشَارات"
+
 #: cms/templates/js/asset-library.underscore
 #: cms/templates/js/basic-modal.underscore
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
