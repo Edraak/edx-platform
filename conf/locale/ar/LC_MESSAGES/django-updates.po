@@ -8829,16 +8829,6 @@ msgstr ""
 "{end_ul_tag}\n"
 "{end_p_tag}\n"
 
-#: lms/templates/registration/activate_account_notice.html
-msgid ""
-"You've successfully created an account on {platform_name}. We've sent an "
-"account activation message to {email}. To activate your account and start "
-"enrolling in courses, click the link in the message."
-msgstr ""
-"لقد أنشأت حسابك بنجاح على {platform_name}، وقد أرسلنا رسالة إلكترونية لتفعيل الحساب {email}، انقر على الرابط الموجود في الرسالة لتفعيل حسابك والبدء بالتسجيل في المساقات.\n"
-"\n"
-"إذا لم تصلك الرسالة في صندوق الوارد، فضلًا تفقد صندوق الرسائل المهملة."
-
 #: lms/templates/registration/password_reset_done.html
 msgid "Password reset successful"
 msgstr "تم تغيير كلمة السر بنجاح "
