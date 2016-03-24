@@ -308,7 +308,10 @@ def i18n_edraak_push(is_js, suffix):
             pofile = polib.pofile(po_path)
 
             for entry in pofile:
-                if entry not in edx_pofile:
+                new_entry = entry not in edx_pofile
+                marked_as_specific = 'edraak-specific' in entry.comment.lower()
+
+                if new_entry or marked_as_specific:
                     edraak_specific.append(entry)
 
         edraak_specific.save(edraak_specific_path)
