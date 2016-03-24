@@ -3847,6 +3847,14 @@ msgstr ""
 "خدمة ’EdxNotes‘ غير متوفّرة حاليًّا. يُرجى إعادة المحاولة بعد بضع دقائق. "
 
 #: lms/djangoapps/edxnotes/helpers.py
+msgid "Invalid JSON response received from notes api."
+msgstr "جرى استلام رد ’JSON‘ غير صالح من واجهة تطبيق Notes البرمجية."
+
+#: lms/djangoapps/edxnotes/helpers.py
+msgid "Incorrect data received from notes api."
+msgstr "جرى استلام بيانات غير صحيحة من واجهة تطبيق ’Notes‘ البرمجية."
+
+#: lms/djangoapps/edxnotes/helpers.py
 msgid "No endpoint was provided for EdxNotes."
 msgstr "لم تُحدَّد نقطة انتهاء لخدمة ’EdxNotes‘."
 
@@ -4041,6 +4049,37 @@ msgstr ""
 "تعذّرت إعادة التقييم باستخدام all_students و unique_student_identifier."
 
 #: lms/djangoapps/instructor/views/api.py
+msgid "The ORA data report is being generated."
+msgstr "جاري إنشاء تقرير بيانات ’ORA‘."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"An ORA data report generation task is already in progress. Check the "
+"'Pending Tasks' table for the status of the task. When completed, the report"
+" will be available for download in the table below."
+msgstr ""
+"سبق أن بدأت معالجة مهمّة إعداد تقرير حول بيانات ’ORA‘. يُرجى التحقق من جدول "
+"’المهام المعلَّقة‘ لمتابعة حالة المهمة. وعندما تكتمل، سيصبح التقرير متاحًا "
+"للتنزيل في الجدول أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The problem grade report is being created. To view the status of the report,"
+" see Pending Tasks below."
+msgstr ""
+"يجري حاليًّا إعداد تقرير درجات المسائل. يمكنك متابعة حالة هذا التقرير في قسم"
+" ’المهام المعلَّقة‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"A problem grade report is already being generated. To view the status of the"
+" report, see Pending Tasks below. You will be able to download the report "
+"when it is complete."
+msgstr ""
+"سبق أن بدأ إعداد تقرير درجات المسائل. يمكنك متابعة حالة هذا التقرير في قسم "
+"’المهام المعلَّقة‘ أدناه. ويمكنك تنزيل التقرير حالما يَكتمل."
+
+#: lms/djangoapps/instructor/views/api.py
 msgid ""
 "Successfully removed invalid due date extension (unit has no due date)."
 msgstr ""
@@ -4130,7 +4169,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Invalid Json data, Please refresh the page and then try again."
-msgstr "عذرًا، بيانات Json غير صالحة. يُرجى تحديث الصفحة والمحاولة من جديد."
+msgstr "عذرًا، بيانات ’JSON‘ غير صالحة. يُرجى تحديث الصفحة والمحاولة من جديد."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Invalid data, user_id must be present for all certificate exceptions."
@@ -6314,6 +6353,10 @@ msgstr "مستعدّ"
 #: cms/djangoapps/contentstore/views/videos.py
 msgid "Imported"
 msgstr "جرى الاستيراد"
+
+#: cms/lib/xblock/tagging.py
+msgid "Difficulty"
+msgstr "الصعوبة"
 
 #: cms/lib/xblock/tagging.py
 msgid "Dictionary with the available tags"
