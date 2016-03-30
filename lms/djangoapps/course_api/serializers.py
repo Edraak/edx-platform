@@ -52,6 +52,7 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     start = serializers.DateTimeField()
     start_display = serializers.CharField()
     start_type = serializers.CharField()
+    pacing = serializers.CharField()
 
     def get_blocks_url(self, course_overview):
         """

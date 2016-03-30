@@ -48,6 +48,7 @@ class CourseDetailView(DeveloperErrorViewMixin, RetrieveAPIView):
             * `"string"`: manually set
             * `"timestamp"`: generated form `start` timestamp
             * `"empty"`: the start date should not be shown
+        * pacing: Course pacing. Possible values: instructor, self
 
     **Parameters:**
 
@@ -85,7 +86,8 @@ class CourseDetailView(DeveloperErrorViewMixin, RetrieveAPIView):
                 "org": "edX",
                 "start": "2015-07-17T12:00:00Z",
                 "start_display": "July 17, 2015",
-                "start_type": "timestamp"
+                "start_type": "timestamp",
+                "pacing": "instructor"
             }
     """
 

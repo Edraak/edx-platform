@@ -3,6 +3,7 @@ Declaration of CourseOverview model
 """
 import json
 import logging
+from urlparse import urlparse, urlunparse
 
 from django.db import models, transaction
 from django.db.models.fields import BooleanField, DateTimeField, DecimalField, TextField, FloatField, IntegerField
@@ -324,6 +325,20 @@ class CourseOverview(TimeStampedModel):
         """
         return course_metadata_utils.display_name_with_default(self)
 
+    @property
+    def display_name_with_default_escaped(self):
+        """
+        DEPRECATED: use display_name_with_default
+
+        Return html escaped reasonable display name for the course.
+
+        Note: This newly introduced method should not be used.  It was only
+        introduced to enable a quick search/replace and the ability to slowly
+        migrate and test switching to display_name_with_default, which is no
+        longer escaped.
+        """
+        return course_metadata_utils.display_name_with_default_escaped(self)
+
     def has_started(self):
         """
         Returns whether the the course has started.
@@ -547,7 +562,6 @@ class CourseOverview(TimeStampedModel):
         """
         return 'self' if self.self_paced else 'instructor'
 
-
     def __unicode__(self):
         """Represent ourselves with the course key."""
         return unicode(self.id)
@@ -677,8 +691,9 @@ class CourseOverviewImageSet(TimeStampedModel):
         # an error or the course has no source course_image), our url fields
         # just keep their blank defaults.
         try:
-            image_set.save()
-            course_overview.image_set = image_set
+            with transaction.atomic():
+                image_set.save()
+                course_overview.image_set = image_set
         except (IntegrityError, ValueError):
             # In the event of a race condition that tries to save two image sets
             # to the same CourseOverview, we'll just silently pass on the one
