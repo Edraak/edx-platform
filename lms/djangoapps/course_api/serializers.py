@@ -51,6 +51,7 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     start_type = serializers.CharField()
     start_display = serializers.CharField()
     end = serializers.DateTimeField()
+    pacing = serializers.CharField()
 
     enrollment_start = serializers.DateTimeField()
     enrollment_end = serializers.DateTimeField()

@@ -43,7 +43,7 @@ class CourseOverview(TimeStampedModel):
         app_label = 'course_overviews'
 
     # IMPORTANT: Bump this whenever you modify this model and/or add a migration.
-    VERSION = 3
+    VERSION = 4
 
     # Cache entry versioning.
     version = IntegerField()
@@ -96,6 +96,7 @@ class CourseOverview(TimeStampedModel):
     short_description = TextField(null=True)
     course_video_url = TextField(null=True)
     effort = TextField(null=True)
+    self_paced = BooleanField(default=False)
 
     @classmethod
     def _create_from_course(cls, course):
@@ -179,6 +180,7 @@ class CourseOverview(TimeStampedModel):
             short_description=CourseDetails.fetch_about_attribute(course.id, 'short_description'),
             effort=CourseDetails.fetch_about_attribute(course.id, 'effort'),
             course_video_url=CourseDetails.fetch_video_url(course.id),
+            self_paced=course.self_paced,
         )
 
     @classmethod
@@ -525,6 +527,17 @@ class CourseOverview(TimeStampedModel):
             urls['large'] = self.image_set.large_url or raw_image_url
 
         return urls
+
+    @property
+    def pacing(self):
+        """ Returns the pacing for the course.
+
+        Potential values:
+            self: Self-paced courses
+            instructor: Instructor-led courses
+        """
+        return 'self' if self.self_paced else 'instructor'
+
 
     def __unicode__(self):
         """Represent ourselves with the course key."""
