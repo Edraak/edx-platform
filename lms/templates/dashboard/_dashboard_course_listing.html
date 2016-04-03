@@ -64,16 +64,16 @@ from student.helpers import (
       % if show_courseware_link:
         % if not is_course_blocked:
             <a href="${course_target}" data-course-key="${enrollment.course_id}" class="cover">
-              <div style="background-image: url('${course_image_url(course)}')" class="course-image" alt="${_('{course_number} {course_name} Home Page').format(course_number=course_overview.number, course_name=course_overview.display_name_with_default) |h}" />
+              <img src="${course_overview.course_image_url}" class="course-image" alt="${_('{course_number} {course_name} Home Page').format(course_number=course_overview.number, course_name=course_overview.display_name_with_default) |h}" />
             </a>
         % else:
             <a class="fade-cover">
-              <div style="background-image: url('${course_image_url(course)}')" class="course-image" alt="${_('{course_number} {course_name} Cover Image').format(course_number=course_overview.number, course_name=course_overview.display_name_with_default) |h}" />
+              <img src="${course_overview.course_image_url}" class="course-image" alt="${_('{course_number} {course_name} Cover Image').format(course_number=course_overview.number, course_name=course_overview.display_name_with_default) |h}" />
             </a>
         % endif
       % else:
         <a class="cover">
-          <div style="background-image: url('${course_image_url(course)}')" class="course-image" alt="${_('{course_number} {course_name} Cover Image').format(course_number=course_overview.number, course_name=course_overview.display_name_with_default) | h}" />
+          <img src="${course_overview.course_image_url}" class="course-image" alt="${_('{course_number} {course_name} Cover Image').format(course_number=course_overview.number, course_name=course_overview.display_name_with_default) | h}" />
         </a>
       % endif
       % if settings.FEATURES.get('ENABLE_VERIFIED_CERTIFICATES') and course_verified_certs.get('display_mode') != 'audit':
@@ -270,7 +270,7 @@ from student.helpers import (
                 </ul>
               </div>
             </div>
-            <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course=course" />
+            <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course_overview=course_overview" />
           </div>
         </div>
       </div>
@@ -388,7 +388,7 @@ from student.helpers import (
     </ul>
   </footer>
   <div class="tracking-code">
-    ${CourseTrackingCode.get_tracking_code_once(user, course.id)}
+    ${CourseTrackingCode.get_tracking_code_once(user, course_overview.id)}
   </div>
 </article>
 </div>
