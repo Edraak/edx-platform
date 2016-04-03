@@ -4,11 +4,11 @@
     from edraak_misc.utils import is_certificate_allowed
 %>
 
-<%page args="course" />
+<%page args="course_overview" />
 
 ## TODO: Activate this
-% if is_certificate_allowed(user, course):
-    <a href="${reverse('edraak_certificates_issue', args=[course.id])}" class="issue-certificate">
+% if is_certificate_allowed(user, course_overview):
+    <a href="${reverse('edraak_certificates_issue', args=[course_overview.id])}" class="issue-certificate">
         ${_("Issue Certificate")}
     </a>
 % endif
