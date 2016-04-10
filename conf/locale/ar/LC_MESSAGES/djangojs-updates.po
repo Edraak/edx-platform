@@ -94,8 +94,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-03-17 10:59+0000\n"
-"PO-Revision-Date: 2016-02-12 08:07+0000\n"
+"POT-Creation-Date: 2016-03-30 19:38+0000\n"
+"PO-Revision-Date: 2016-04-01 18:45+0000\n"
 "Last-Translator: Soha Assali <soha+transifex@qordoba.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -114,7 +114,7 @@ msgstr ""
 #: cms/static/js/views/course_info_update.js
 #: cms/static/js/views/edit_textbook.js
 #: cms/static/js/views/list_item_editor.js
-#: cms/static/js/views/modals/edit_xblock.js cms/static/js/views/overview.js
+#: cms/static/js/views/modals/edit_xblock.js
 #: cms/static/js/views/overview_assignment_grader.js
 #: cms/static/js/views/utils/xblock_utils.js lms/static/js/ccx/schedule.js
 #: lms/static/js/views/fields.js
@@ -480,8 +480,8 @@ msgstr ""
 "أعضاء الفريق وسيتعذّر الوصول إلى مناقشات أعضاء الفريق في المستقبل."
 
 #: lms/djangoapps/teams/static/teams/js/views/instructor_tools.js
-msgid "Team \"%(team)s\" successfully deleted."
-msgstr "لقد جرى حذف الفرق \"%(team)s\" بنجاح."
+msgid "Team \"{team}\" successfully deleted."
+msgstr "لقد جرى حذف الفريق \"{team}\" بنجاح."
 
 #: lms/djangoapps/teams/static/teams/js/views/my_teams.js
 msgid "You are not currently a member of any team."
@@ -1752,6 +1752,10 @@ msgstr "يجب أن يأتي تاريخ بدء المساق بعد تاريخ ا
 msgid "Please enter an integer between %(min)s and %(max)s."
 msgstr "يُرجى إدخال عدد صحيح يتراوح بين %(min)s و%(max)s."
 
+#: cms/static/js/models/settings/course_grader.js
+msgid "Cannot drop more <%= types %> assignments than are assigned."
+msgstr "لا يمكن إتاحة أنواع مهام <%= types %> أكثر مما تمّ تعيينه."
+
 #: cms/static/js/models/settings/course_grading_policy.js
 msgid "Not able to set passing grade to less than %(minimum_grade_cutoff)s%."
 msgstr "لم يمكن تحديد درجة النجاح عند أقلّ من %(minimum_grade_cutoff)s%."
@@ -1772,9 +1776,34 @@ msgstr "يجب أن يتوفّر اسم ومادّة لجميع الفصول."
 msgid "Your video uploads are not complete."
 msgstr "عمليات تحميل ملف الفيديو الخاص بك غير مكتملة."
 
+#. Translators: 'count' is number of units that the group
+#. configuration is used in.
+#: cms/static/js/views/content_group_details.js
+#: cms/static/js/views/group_configuration_details.js
+msgid "Used in {count} unit"
+msgid_plural "Used in {count} units"
+msgstr[0] "مستخدم في {count} وحدة"
+msgstr[1] "مستخدم في {count} وحدة"
+msgstr[2] "مستخدم في {count} وحدة"
+msgstr[3] "مستخدم في {count} وحدة"
+msgstr[4] "مستخدم في {count} وحدة"
+msgstr[5] "مستخدم في {count} وحدة"
+
 #: cms/static/js/views/content_group_list.js
 msgid "Add your first content group"
 msgstr "أضف مجموعة المحتوى الأولى"
+
+#. Translators: 'count' is number of groups that the group
+#. configuration contains.
+#: cms/static/js/views/group_configuration_details.js
+msgid "Contains {count} group"
+msgid_plural "Contains {count} groups"
+msgstr[0] "تتضمّن {count} مجموعة"
+msgstr[1] "تتضمّن {count} مجموعة"
+msgstr[2] "تتضمّن {count} مجموعة"
+msgstr[3] "تتضمّن {count} مجموعة"
+msgstr[4] "تتضمّن {count} مجموعة"
+msgstr[5] "تتضمّن {count} مجموعة"
 
 #: cms/static/js/views/group_configurations_list.js
 msgid "Add your first group configuration"
@@ -1937,6 +1966,14 @@ msgstr ""
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
 msgstr "المجموع %(total_items)s "
+
+#: cms/static/js/views/settings/advanced.js
+msgid ""
+"No validation is performed on policy keys or value pairs. If you are having "
+"difficulties, check your formatting."
+msgstr ""
+"لم يجري تنفيذ عملية تحقّق من صحّة زوج القيم أو مفاتيح السياسة. في حال كنت "
+"تواجه أية مشكلات، يُرجى مراجعة التنسيق."
 
 #: cms/static/js/views/settings/main.js
 msgid "Course Credit Requirements"
@@ -3071,19 +3108,17 @@ msgstr "مجموعة المحتوى"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid ""
-"%(screen_reader_start)sWarning:%(screen_reader_end)s The previously selected"
-" content group was deleted. Select another content group."
+"{screen_reader_start}Warning:{screen_reader_end} The previously selected "
+"content group was deleted. Select another content group."
 msgstr ""
-"%(screen_reader_start)sWarning:%(screen_reader_end)s حّذفت مجموعة المحتوى "
-"المحدّدة سابقًا. يُرجى اختيار مجموعة محتوى أخرى."
+"{screen_reader_start}تحذير:{screen_reader_end} حّذفت مجموعة المحتوى المحدّدة"
+" سابقًا. يُرجى اختيار مجموعة محتوى أخرى."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid ""
-"%(screen_reader_start)sWarning:%(screen_reader_end)s No content groups "
-"exist."
+"{screen_reader_start}Warning:{screen_reader_end} No content groups exist."
 msgstr ""
-"%(screen_reader_start)sWarning:%(screen_reader_end)s تعذّر إيجاد مجموعات "
-"محتوى."
+"{screen_reader_start}تحذير:{screen_reader_end}  تعذّر إيجاد مجموعات محتوى."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-group-header.underscore
 msgid ""
@@ -3120,12 +3155,12 @@ msgstr "حمل ملف CSV لتوزيع الطلاب على شعب"
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid ""
 "To review student cohort assignments or see the results of uploading a CSV "
-"file, download course profile information or cohort results on "
-"%(link_start)s the Data Download page. %(link_end)s"
+"file, download course profile information or cohort results on {link_start} "
+"the Data Download page. {link_end}"
 msgstr ""
-"لمراجعة علامات الطلّاب في كل شعبة أو رؤية نتائج تحميل ملف CSV، يُرجى تنزيل "
-"معلومات ملفّ المساق أو نتائج الشعب عن طريق %(link_start)sصفحة تنزيل "
-"البيانات. %(link_end)s "
+"لمراجعة الواجبات المسندة إلى الطلّاب في كل مجموعة أو رؤية نتائج تحميل ملف "
+"’CSV‘، يُرجى تنزيل معلومات ملفّ المساق أو نتائج المجموعات عن طريق "
+"{link_start} صفحة تنزيل البيانات. {link_end}"
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Used"
@@ -3649,6 +3684,14 @@ msgstr ""
 msgid "Cannot delete when in use by a unit"
 msgstr "يتعذّر حذف العناصر المٌستخدمة من قبل الوحدة "
 
+#: cms/templates/js/content-group-details.underscore
+msgid ""
+"This content group is not in use. Add a content group to any unit from the "
+"{linkStart}Course Outline{linkEnd}."
+msgstr ""
+"إنّ مجموعة المحتوى هذه ليست قيد الاستخدام. يُرجى إضافة مجموعة محتوى إلى أي  "
+"وحدة من خلال {linkStart}نبذة عن المساق{linkEnd}."
+
 #: cms/templates/js/content-group-editor.underscore
 msgid "This is the name of the group"
 msgstr "إنه اسم المجموعة:"
@@ -3708,16 +3751,51 @@ msgid "Click to add a new %(xblock_type)s"
 msgstr "يُرجى النقر لإضافة وحدات %(xblock_type)s جديدة"
 
 #: cms/templates/js/course_grade_policy.underscore
+msgid ""
+"The general category for this type of assignment, for example, Homework or "
+"Midterm Exam. This name is visible to learners."
+msgstr ""
+"فئة التصنيف العامّة لمهمّة من هذا النوع، مثل، الواجب البيتي أو الامتحان "
+"النصفي. سيكون هذا الاسم مرئيًّا من قبل المتعلمين."
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid ""
+"This short name for the assignment type (for example, HW or Midterm) appears"
+" next to assignments on a learner's Progress page."
+msgstr ""
+"يظهر الاسم المختصر لنوع المهمّة (مثل HW أو Midterm) بجانب المهام في صفحة "
+"التطوّر الخاصّة بالمتعلّم."
+
+#: cms/templates/js/course_grade_policy.underscore
 msgid "Weight of Total Grade"
 msgstr "وزن الدرجة الإجمالية"
 
 #: cms/templates/js/course_grade_policy.underscore
-msgid "total exercises assigned"
-msgstr "إجمالي التمارين التي جرى تعيينها"
+msgid ""
+"The weight of all assignments of this type as a percentage of the total "
+"grade, for example, 40. Do not include the percent symbol."
+msgstr ""
+"وزن جميع المهام من هذا النوع كنسبة مئوية للدرجة النهائية، مثل، 40. يجب عدم "
+"استخدام رمز النسبة المئوية."
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid ""
+"The number of subsections in the course that contain problems of this "
+"assignment type."
+msgstr ""
+"عدد الأقسام الفرعية لهذا المساق، التي تتضمن مسائل لمهمّة من هذا النوع."
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Number of Droppable"
 msgstr "عدد المساقات التي يمكن الانسحاب منها"
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid ""
+"The number of assignments of this type that will be dropped. The lowest "
+"scoring assignments are dropped first."
+msgstr ""
+"سيجري تخفيض عدد المهام من هذا النوع. سيتم إلغاء المهام ذات أقل مجموع درجات "
+"أولًا."
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid "You have no handouts defined"
@@ -3778,6 +3856,14 @@ msgstr "مقيّيم بدرجة: "
 #: cms/templates/js/group-configuration-editor.underscore
 msgid "Cannot delete when in use by an experiment"
 msgstr "لا يمكن إجراء الحذف مادامت مستخدمة من قبل إحدى الاختبارات"
+
+#: cms/templates/js/group-configuration-details.underscore
+msgid ""
+"This Group Configuration is not in use. Start by adding a content experiment"
+" to any Unit via the {linkStart}Course Outline{linkEnd}."
+msgstr ""
+"لم يُستخدم إعداد المجموعة هذا. يُرجى البدء بإضافة محتوى التجارب إلى أي  وحدة"
+" بزيارة  {linkStart}نبذة عن المساق{linkEnd}."
 
 #: cms/templates/js/group-configuration-editor.underscore
 msgid "This is the Name of the Group Configuration"
