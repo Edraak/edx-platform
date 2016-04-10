@@ -31,7 +31,7 @@
 # Najwan Al Rousan <najwanrousan@gmail.com>, 2013
 # Najwan Al Rousan <najwanrousan@gmail.com>, 2013
 # Ned Batchelder <ned@edx.org>, 2015-2016
-# omarithawi <oithawi@qrf.org>, 2014-2015
+# omarithawi <oithawi@qrf.org>, 2014-2016
 # Osama M. Mneina <o.mneina@gmail.com>, 2014
 # RaghadG <raghad_g@yahoo.com>, 2014
 # SiddigSami <siddigsami@live.com>, 2014-2015
@@ -47,6 +47,7 @@
 # abdallah.nassif <abdallah_n@hotmail.com>, 2013
 # Abdallah Nassif <abdoosh00@gmail.com>, 2015
 # Ahmed Jazzar <ajazzar@qrf.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # a.nassif <a.nassif@sit-mena.com>, 2013
 # Assyass Mahmoud <mahmoud.assyass@edu.uiz.ac.ma>, 2015
 # AzizAhmed <dr.zezo@gmail.com>, 2014
@@ -114,7 +115,7 @@
 # Nabeel El-Dughailib <nabeel@qordoba.com>, 2014-2015
 # Najwan Al Rousan <najwanrousan@gmail.com>, 2013
 # Ned Batchelder <ned@edx.org>, 2016
-# omarithawi <oithawi@qrf.org>, 2015
+# omarithawi <oithawi@qrf.org>, 2015-2016
 # Sarina Canelake <sarina@edx.org>, 2014
 # Soha Assali <soha+transifex@qordoba.com>, 2015-2016
 # soliman osman <solimanosman@windowslive.com>, 2015
@@ -192,6 +193,16 @@ msgstr "الاسم"
 msgid "Video ID"
 msgstr "الرقم التعريفي للفيديو"
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
+#. Translators: This is listed as the duration for a video that has not
+#. yet reached the point in its processing by the servers where its
+#. duration is determined.
+#: cms/djangoapps/contentstore/views/videos.py
+#: openedx/core/djangoapps/api_admin/models.py cms/templates/index.html
+#: lms/templates/dashboard/_dashboard_status_verification.html
+msgid "Pending"
+msgstr "قيد الانتظار"
+
 #: common/djangoapps/config_models/admin.py
 msgid "Revert to the selected configuration"
 msgstr "العودة إلى الإعدادات المختارة"
@@ -254,15 +265,15 @@ msgstr ""
 
 #: common/djangoapps/course_modes/helpers.py
 msgid "Your verification is pending"
-msgstr "عملية التحقّق من هويّتك معلَّقة "
+msgstr "عملية التحقّق من هويّتك قيد الانتظار "
 
 #: common/djangoapps/course_modes/helpers.py
 msgid "Verified: Pending Verification"
-msgstr "شهادة موثَّقة: عملية التحقّق من هويّة الطالب معلَّقة "
+msgstr "شهادة موثَّقة: عملية التحقّق من هويّة الطالب قيد الانتظار "
 
 #: common/djangoapps/course_modes/helpers.py
 msgid "ID verification pending"
-msgstr "عملية التحقّق من هويّة الطالب معلَّقة "
+msgstr "عملية التحقّق من هويّة الطالب قيد الانتظار"
 
 #: common/djangoapps/course_modes/helpers.py
 msgid "You're enrolled as a verified student"
@@ -564,6 +575,10 @@ msgstr ""
 #: common/djangoapps/student/views.py
 msgid "The course you are looking for does not start until {date}."
 msgstr "عذرًا، المساق الذي تبحث عنه لن يبدأ حتى {date}. "
+
+#: common/djangoapps/student/views.py
+msgid "The course you are looking for is closed for enrollment as of {date}."
+msgstr "المساق الذي تبحث عنه مغلق لالالتحاق اعتبارا من {تاريخ}"
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
@@ -1584,6 +1599,16 @@ msgstr "قائمة القواميس التي تحتوي على إعدادات �
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
+"For HTML textbooks that appear as separate tabs in the course, enter the "
+"name of the tab (usually the title of the book) as well as the URLs and "
+"titles of each chapter in the book."
+msgstr ""
+"بالنسبة للكتب ذات صيغة HTML والتي تظهر بشكل علامات تبويب منفصلة في المساق، "
+"يُرجى إدخال اسم علامة التبويب (يكون عادةً اسم الكتاب) بالإضافة إلى الروابط "
+"والعناوين الخاصة بكل فصل موجود بالكتاب."
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
 "Enter the remote gradebook mapping. Only use this setting when "
 "REMOTE_GRADEBOOK_URL has been specified."
 msgstr ""
@@ -1667,6 +1692,14 @@ msgstr ""
 #: lms/templates/courseware/info.html
 msgid "Course Handouts"
 msgstr "منشورات المساق"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"True if timezones should be shown on dates in the course. Deprecated in "
+"favor of due_date_display_format."
+msgstr ""
+"تكون القيمة صحيحة إذا توجّب إظهار المناطق الزمنية في تواريخ المساق. تخفيض "
+"القيمة لصالح due_date_display_format."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -1806,6 +1839,28 @@ msgid ""
 msgstr ""
 "السماح للمساقات بتقاسم صف ’css‘ 1‘ ذاته خلال عمليات التشغيل حتى لو كانت تحمل"
 " أرقامًا مختلفة."
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Enter the course organization that you want to appear in the course. This "
+"setting overrides the organization that you entered when you created the "
+"course. To use the organization that you entered when you created the "
+"course, enter null."
+msgstr ""
+"يُرجى إدخال رقم المؤسسة الذي تودّ أن يظهر في المساق.  يُلغي هذا الإعداد رقم "
+"المؤسسة الذي أُدخل عندما أُنشِئَ المساق. لاستخدام الرقم المُدخل عند إنشاء "
+"المساق، يُرجى إدخال القيمة ’null‘."
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid ""
+"Enter the course number that you want to appear in the course. This setting "
+"overrides the course number that you entered when you created the course. To"
+" use the course number that you entered when you created the course, enter "
+"null."
+msgstr ""
+"أدخل رقم المساق الذي تودّ أن يظهر ضمن المساق. يُلغي هذا الإعداد رقم المساق "
+"الذي أُدخل عندما أُنشِئَ المساق. لاستخدام الرقم المُدخل عند إنشاء المساق، "
+"يُرجى إدخال القيمة ’null‘."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -3947,7 +4002,7 @@ msgid ""
 "report, see Pending Tasks below."
 msgstr ""
 "يجري حاليًّا إعداد تقرير إجابات المسائل. يمكنك متابعة حالة هذا التقرير في "
-"قسم ’المهام المعلَّقة‘ أدناه."
+"قسم ’المهام القيد الانتظار‘ أدناه."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -3955,8 +4010,8 @@ msgid ""
 " 'Pending Tasks' table for the status of the task. When completed, the "
 "report will be available for download in the table below."
 msgstr ""
-"مهمّة إعداد تقرير إجابات المسائل قيد المعالجة. يُرجى تفقّد قسم ’المهام "
-"المعلَّقة‘ لمتابعة حالة تلك المهمّة. سيتوفّر التقرير  للتنزيل في الجدول "
+"مهمّة إعداد تقرير إجابات المسائل قيد المعالجة. يُرجى تفقّد قسم ’المهام القيد"
+" الانتظار‘ لمتابعة حالة تلك المهمّة. سيتوفّر التقرير  للتنزيل في الجدول "
 "أدناه ما أن تكتمل المهمّة."
 
 #: lms/djangoapps/instructor/views/api.py
@@ -3996,6 +4051,32 @@ msgid "Team"
 msgstr "الفريق"
 
 #: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The enrolled learner profile report is being created. To view the status of "
+"the report, see Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير ملف المتعلم. لمتابعة سير العملية انظر ’’المهام القيد "
+"الانتظار‘‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"This enrollment report is currently being created. To view the status of the"
+" report, see Pending Tasks below. You will be able to download the report "
+"when it is complete."
+msgstr ""
+"يُعدُّ الآن تقرير التسجيل. لمتابعة سير العملية انظر ’’المهام القيد "
+"الانتظار‘‘ أدناه. ويمكنك أن تحمِّل التقرير حالما يَكتمل."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The enrollment report is being created. This report contains information "
+"about learners who can enroll in the course. To view the status of the "
+"report, see Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير التسجيل. وفيه معلومات عن المتعلِّمين الذين يمكنهم التسجيل "
+"في المساق. لمتابعة سير العملية انظر ’’المهام القيد الانتظار‘‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
 msgid "The file must contain a 'cohort' column containing cohort names."
 msgstr "يجب أن يحتوي الملف على عمود بعنوان ’cohort‘ وفيه أسماء الشُعب."
 
@@ -4029,6 +4110,74 @@ msgstr "إجمالي سعر المقاعد المخصوم"
 #: lms/djangoapps/instructor/views/api.py
 msgid "Total Discounted Amount"
 msgstr "إجمالي المبلغ المخصوم"
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The detailed enrollment report is being created. To view the status of the "
+"report, see Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير مفصَّل حول التسجيل. لمتابعة سير العملية انظر ’’المهام "
+"القيد الانتظار‘‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The detailed enrollment report is being created. To view the status of the "
+"report, see Pending Tasks below. You will be able to download the report "
+"when it is complete."
+msgstr ""
+"يُعدُّ الآن تقرير مفصَّل حول التسجيل. لمتابعة سير العملية انظر ’’المهام "
+"القيد الانتظار‘‘ أدناه. ويمكنك أن تحمِّل التقرير حالما يَكتمل."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The executive summary report is being created. To view the status of the "
+"report, see Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير الملخَّص التنفيذي. لمتابعة سير العملية انظر ’’المهام القيد"
+" الانتظار‘‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The executive summary report is currently being created. To view the status "
+"of the report, see Pending Tasks below. You will be able to download the "
+"report when it is complete."
+msgstr ""
+"يُعدُّ الآن تقرير الملخَّص التنفيذي. لمتابعة سير العملية انظر ’’المهام القيد"
+" الانتظار‘‘ أدناه. ويمكنك أن تحمِّل التقرير حالما يَكتمل."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The survey report is being created. To view the status of the report, see "
+"Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير الاستبيان. يمكنك متابعة حالة هذا التقرير في قسم ’’المهام "
+"القيد الانتظار‘‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The survey report is currently being created. To view the status of the "
+"report, see Pending Tasks below. You will be able to download the report "
+"when it is complete."
+msgstr ""
+"يُعدُّ الآن تقرير الاستبيان. لمتابعة سير العملية انظر ’’المهام القيد "
+"الانتظار‘‘ أدناه. ويمكنك أن تحمِّل التقرير حالما يَكتمل."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The proctored exam results report is being created. To view the status of "
+"the report, see Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير نتائج الامتحان المراقَب. لمتابعة سير العملية انظر ’’المهام"
+" القيد الانتظار‘‘ أدناه. "
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The proctored exam results report is currently being created. To view the "
+"status of the report, see Pending Tasks below. You will be able to download "
+"the report when it is complete."
+msgstr ""
+"يُعدُّ الآن تقرير نتائج الامتحان المراقب. لمتابعة سير العملية انظر ’’المهام "
+"القيد الانتظار‘‘ أدناه. ويمكنك أن تحمِّل التقرير حالما يَكتمل."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Could not parse amount as a decimal"
@@ -4086,8 +4235,25 @@ msgid ""
 " will be available for download in the table below."
 msgstr ""
 "سبق أن بدأت معالجة مهمّة إعداد تقرير حول بيانات ’ORA‘. يُرجى التحقق من جدول "
-"’المهام المعلَّقة‘ لمتابعة حالة المهمة. وعندما تكتمل، سيصبح التقرير متاحًا "
-"للتنزيل في الجدول أدناه."
+"’المهام القيد الانتظار‘ لمتابعة حالة المهمة. وعندما تكتمل، سيصبح التقرير "
+"متاحًا للتنزيل في الجدول أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The grade report is being created. To view the status of the report, see "
+"Pending Tasks below."
+msgstr ""
+"يُعدُّ الآن تقرير الدرجات. لمتابعة سير العملية انظر ’’المهام القيد "
+"الانتظار‘‘ أدناه."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The grade report is currently being created. To view the status of the "
+"report, see Pending Tasks below. You will be able to download the report "
+"when it is complete."
+msgstr ""
+"يُعدُّ الآن تقرير الدرجات. لمتابعة سير العملية انظر ’’المهام القيد "
+"الانتظار‘‘ أدناه. ويمكنك أن تحمِّل التقرير حالما يَكتمل."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -4095,7 +4261,7 @@ msgid ""
 " see Pending Tasks below."
 msgstr ""
 "يجري حاليًّا إعداد تقرير درجات المسائل. يمكنك متابعة حالة هذا التقرير في قسم"
-" ’المهام المعلَّقة‘ أدناه."
+" ’المهام القيد الانتظار‘ أدناه."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -4104,7 +4270,7 @@ msgid ""
 "when it is complete."
 msgstr ""
 "سبق أن بدأ إعداد تقرير درجات المسائل. يمكنك متابعة حالة هذا التقرير في قسم "
-"’المهام المعلَّقة‘ أدناه. ويمكنك تنزيل التقرير حالما يَكتمل."
+"’المهام القيد الانتظار‘ أدناه. ويمكنك تنزيل التقرير حالما يَكتمل."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -4128,7 +4294,7 @@ msgid ""
 "Tasks\" section."
 msgstr ""
 "بدأت مهمّة إعداد الشهادات لجميع الطلّاب في هذا المساق. يمكنك متابعة حالة "
-"مهمّة هذا الإعداد في قسم ’مهام الأستاذ المعلَّقة‘."
+"مهمّة هذا الإعداد في قسم ’مهام الأستاذ القيد الانتظار‘."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -4147,7 +4313,7 @@ msgid ""
 "the generation task in the \"Pending Tasks\" section."
 msgstr ""
 "بدأت الآن مهمّة إعادة إنشاء الشهادة. يمكنك متابعة حالة مهمّة الإعداد هذه في"
-"  قسم ’المهام المعلّقة‘."
+"  قسم ’المهام القيد الانتظار‘."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Student (username/email={user}) already in certificate exception list."
@@ -5852,9 +6018,17 @@ msgstr "إقرأ قائمة المساقات التي عُيّنت كمدرّس 
 msgid "To see if you are a global staff user"
 msgstr "لترى إن كنت طاقم مساق عامّاً"
 
+#: lms/templates/provider/authorize.html
+msgid "Manage your data: %(permission)s"
+msgstr "أدِر بياناتك:  %(permission)s"
+
 #: lms/templates/registration/password_reset_complete.html
 msgid "Your Password Reset is Complete"
 msgstr "استُكملت عملية تغيير كلمة المرور الخاصة بك"
+
+#: lms/templates/registration/password_reset_complete.html
+msgid "Password Reset Complete"
+msgstr "تمت إعادة ضبط كلمة السر"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid ""
@@ -5874,12 +6048,37 @@ msgstr ""
 "إعادة ضبط كلمة السر الخاصة بك للمنصّة %(platform_name)s\n"
 
 #: lms/templates/registration/password_reset_confirm.html
+msgid "Error Resetting Password"
+msgstr "مشكلة في إعادة ضبط كلمة السر"
+
+#: lms/templates/registration/password_reset_confirm.html
+msgid "You must enter and confirm your new password."
+msgstr "يجب أن تَدخل وتؤكِّد كلمة السر الجديدة"
+
+#: lms/templates/registration/password_reset_confirm.html
 msgid "The text in both password fields must match."
 msgstr "لم يتطابق النص في حقلي كلمة المرور."
 
+#: lms/templates/registration/password_reset_confirm.html
+msgid "Reset Your Password"
+msgstr "غير كلمة سر حسابك"
+
+#: lms/templates/registration/password_reset_confirm.html
+msgid "Enter and confirm your new password."
+msgstr "ادخل وأكد كلمة سر حسابك الجديدة"
+
+#: lms/templates/registration/password_reset_confirm.html
+msgid "New Password"
+msgstr "كلمة السر الجديدة"
+
+#: lms/templates/registration/password_reset_confirm.html
+msgid "Confirm Password"
+msgstr "أكِّد كلمة السر"
+
+#: lms/templates/registration/password_reset_confirm.html
 #: lms/templates/forgot_password_modal.html
 msgid "Reset My Password"
-msgstr "تغيير السر الخاصة بي"
+msgstr "أعد ضبط كلمة سرِّ حسابي"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Invalid Password Reset Link"
@@ -6479,6 +6678,10 @@ msgstr "مستعدّ"
 msgid "Imported"
 msgstr "جرى الاستيراد"
 
+#: cms/djangoapps/course_creators/models.py
+msgid "pending"
+msgstr "قيد الانتظار"
+
 #: cms/lib/xblock/tagging.py
 msgid "Difficulty"
 msgstr "الصعوبة"
@@ -6486,6 +6689,10 @@ msgstr "الصعوبة"
 #: cms/lib/xblock/tagging.py
 msgid "Dictionary with the available tags"
 msgstr "قاموس بالشارات المتوفرة"
+
+#: cms/templates/login.html themes/red-theme/cms/templates/login.html
+msgid "Don't have a {studio_name} Account? Sign up!"
+msgstr "إن لم يكن لك حساب في {studio_name}، أنشئهُ الآن!"
 
 #: cms/templates/register.html lms/templates/register-form.html
 #: lms/templates/register-shib.html lms/templates/signup_modal.html
@@ -6842,6 +7049,34 @@ msgstr ""
 #: lms/templates/calculator/toggle_calculator.html
 msgid "Calculator Input"
 msgstr "الإدخال في الآلة الحاسبة"
+
+#: lms/templates/calculator/toggle_calculator.html
+msgid "Operators"
+msgstr "المعامِلات الحسابية"
+
+#: lms/templates/calculator/toggle_calculator.html
+msgid "Basic functions"
+msgstr "الاقترانات الأساسية"
+
+#: lms/templates/calculator/toggle_calculator.html
+msgid "Trigonometric functions"
+msgstr "الاقترانات المثلثية"
+
+#. Translators: Please see http://en.wikipedia.org/wiki/Scientific_notation
+#: lms/templates/calculator/toggle_calculator.html
+msgid "Scientific notation"
+msgstr "الكتابة العلميّة للأعداد"
+
+#. Translators: this is part of scientific notation. Please see
+#. http://en.wikipedia.org/wiki/Scientific_notation#E_notation
+#: lms/templates/calculator/toggle_calculator.html
+msgid "e notation"
+msgstr "الكتابة البرمجية للأعداد"
+
+#. Translators: 1e is a mathematical symbol. Please do not translate.
+#: lms/templates/calculator/toggle_calculator.html
+msgid "1e and the exponent"
+msgstr "‏1e والأُسّ"
 
 #: lms/templates/calculator/toggle_calculator.html
 msgid "Calculator Output"
@@ -7659,6 +7894,10 @@ msgid "I'm learning on {platform_name}:"
 msgstr "أنا أتعلم على {platform_name}:"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
+msgid "Course options for"
+msgstr "خيارات المساق ل"
+
+#: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Available Actions"
 msgstr "الإجراءات المتاحة"
 
@@ -8192,7 +8431,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/send_email.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Pending Tasks"
-msgstr "مهام معلقة"
+msgstr "مهام قيد الانتظار"
 
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html
 msgid "Regenerate Certificates"
@@ -8332,6 +8571,10 @@ msgstr "قم بتزيل ملف CSV بالشهادات الممنوحة"
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Generate Problem Grade Report"
 msgstr "إعداد تقرير درجات المسائل"
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Generate ORA Data Report"
+msgstr "أعِدَّ تقريرَ بيانات ORA"
 
 #: lms/templates/instructor/instructor_dashboard_2/e-commerce.html
 msgid "Enrollment Codes"
@@ -8913,7 +9156,7 @@ msgid ""
 "problem and student, click on this button:"
 msgstr ""
 "تجري عمليات إعادة التقييم في الخلفية، بينما تظهر حالة أي مهمّات مفعّلة في "
-"جدول ’المهمّات المعلّقة‘. لاستعراض الحالة الخاصة بكافة المهمّات التي تم "
+"جدول ’المهام القيد الانتظار‘. لاستعراض الحالة الخاصة بكافة المهمّات التي تم "
 "تقديمها لهذه المسألة وهذا الطالب، اضغط هذا الزر:"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
@@ -10025,6 +10268,10 @@ msgid "Program Administration"
 msgstr "إدارة البرنامج"
 
 #: cms/templates/register.html
+msgid "Preferred Language"
+msgstr "اللغة المفضّلة"
+
+#: cms/templates/register.html
 msgid "I agree to the {a_start} Terms of Service {a_end}"
 msgstr "أوافق على {a_start} شروط الخدمة {a_end} وميثاق الشرف"
 
@@ -10185,6 +10432,39 @@ msgstr "معهد ماساتشوستس للتكنولوجيا"
 #: cms/templates/temp-course-landing.html
 msgid "Forgot?"
 msgstr "نسيت؟"
+
+#: cms/templates/temp-course-landing.html
+msgid ""
+"Ut laoreet dolore magna aliquam erat volutpat ut wisi enim ad minim veniam "
+"quis nostrud. Est usus legentis in iis qui, facit eorum claritatem "
+"Investigationes demonstraverunt lectores. Vel illum dolore eu feugiat nulla "
+"facilisis at vero eros, et accumsan et iusto? Te feugait nulla facilisi nam "
+"liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming!"
+" Et quinta decima eodem modo typi qui nunc nobis, videntur parum clari fiant"
+" sollemnes in? Diam nonummy nibh euismod tincidunt exerci tation "
+"ullamcorper, suscipit lobortis nisl ut aliquip ex? Nunc putamus parum, "
+"claram anteposuerit litterarum formas humanitatis per seacula quarta decima."
+msgstr ""
+"هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من"
+" مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى"
+" إضافة إلى زيادة عدد الحروف التى يولدها التطبيق، إذا كنت تحتاج إلى عدد أكبر "
+"من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو"
+" مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه "
+"الخصوص، حيث يحتاج العميل فى كثير من الأحيان أن يطلع على صورة حقيقية لتصميم "
+"الموقع، ومن هنا وجب على المصمم أن يضع نصوصا مؤقتة على التصميم ليظهر للعميل "
+"الشكل كاملاً،دور مولد النص العربى أن يوفر على المصمم عناء البحث عن نص بديل "
+"لا علاقة له بالموضوع الذى يتحدث عنه التصميم فيظهر بشكل لا يليق، هذا النص "
+"يمكن أن يتم تركيبه على أي تصميم دون مشكلة فلن يبدو وكأنه نص منسوخ، غير منظم،"
+" غير منسق، أو حتى غير مفهوم. لأنه مازال نصاً بديلاً ومؤقتاً."
+
+#: cms/templates/temp-course-landing.html
+msgid ""
+"Gothica quam nunc putamus parum claram anteposuerit litterarum formas "
+"humanitatis per seacula. Facilisi nam liber tempor cum soluta nobis "
+"eleifend."
+msgstr ""
+"هذا النص يمكن أن يتم تركيبه على أي تصميم دون مشكلة فلن يبدو وكأنه نص منسوخ، "
+"غير منظم، غير منسق، أو حتى غير مفهوم. لأنه مازال نصاً بديلاً ومؤقتاً."
 
 #: cms/templates/videos_index.html
 msgid "Maximum Video File Size"

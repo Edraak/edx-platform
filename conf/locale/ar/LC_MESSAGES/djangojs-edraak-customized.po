@@ -3831,13 +3831,6 @@ msgstr "غير مقيَّم"
 msgid "Date added"
 msgstr "تاريخ الإضافة "
 
-#. Translators: This is listed as the duration for a video
-#. that has not yet reached the point in its processing by
-#. the servers where its duration is determined.
-#: cms/static/js/views/previous_video_upload.js
-msgid "Pending"
-msgstr "معلّق"
-
 #: cms/static/js/views/show_textbook.js
 msgid "Delete “<%= name %>”?"
 msgstr "هل تريد حذف “<%= name %>”؟"
@@ -5851,6 +5844,11 @@ msgstr ""
 msgid "Error generating problem grade report. Please try again."
 msgstr "نأسف لحدوث خطأ في إنشاء تقرير درجات المسائل. يُرجى إعادة المحاولة."
 
+#: lms/static/coffee/src/instructor_dashboard/data_download.js
+msgid "Error generating ORA data report. Please try again."
+msgstr ""
+"نأسف لحدوث خطأ أثناء إنشاء تقرير ORA. يُرجى إعادة المحاولة في وقتٍ لاحق."
+
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Enter username or email"
 msgstr "أدخل اسم المستخدم أو البريد الإلكتروني"
@@ -7097,6 +7095,13 @@ msgstr ""
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
 msgstr "المجموع %(total_items)s "
+
+#. Translators: This is listed as the duration for a video
+#. that has not yet reached the point in its processing by
+#. the servers where its duration is determined.
+#: cms/static/js/views/previous_video_upload.js
+msgid "Pending"
+msgstr "قيد الانتظار"
 
 #: cms/static/js/views/settings/advanced.js
 msgid ""
