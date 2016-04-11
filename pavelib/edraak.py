@@ -89,6 +89,23 @@ def i18n_po_pull_edraak():
         sh(cmd)
 
 
+def i18n_remove_duplicates(pofile):
+    """
+    Removes duplicates from a POFile list, i.e. make it unique!
+
+    This reduces the load on the JavaScript djangojs.mo and makes
+    the pavelib/edraak.py process more solid and explicit.
+    """
+
+    existing_strings = {}
+
+    for entry in reversed(pofile):
+        if entry.msgid not in existing_strings:
+            existing_strings[entry.msgid] = True
+        else:
+            pofile.remove(entry)
+
+
 @task
 @js_nonjs
 def i18n_edraak_generate_files(is_js, suffix):
@@ -112,6 +129,7 @@ def i18n_edraak_generate_files(is_js, suffix):
 
         # Save a backup in git for later inspection,
         # and keep django.po untouched
+        i18n_remove_duplicates(django_pofile)
         django_pofile.save('django{}-edraak-customized.po'.format(suffix))
         django_pofile.save_as_mofile('django{}.mo'.format(suffix))
 
@@ -290,7 +308,10 @@ def i18n_edraak_push(is_js, suffix):
             pofile = polib.pofile(po_path)
 
             for entry in pofile:
-                if entry not in edx_pofile:
+                new_entry = entry not in edx_pofile
+                marked_as_specific = 'edraak-specific' in entry.comment.lower()
+
+                if new_entry or marked_as_specific:
                     edraak_specific.append(entry)
 
         edraak_specific.save(edraak_specific_path)
