@@ -384,7 +384,7 @@ CMS.URL.UPLOAD_ASSET = '${upload_asset_url}';
                     <select class="input" id="pre-requisite-course">
                         <option value="">${_("None")}</option>
                         % for course_info in sorted(possible_pre_requisite_courses, key=lambda s: s['display_name'].lower() if s['display_name'] is not None else ''):
-                        <option value="${course_info['course_key']}">${course_info['display_name']}</option>
+                        <option value="${course_info['course_key']}">${course_info['display_name']} (${course_info['course_key']})</option>
                         % endfor
                     </select>
                     <span class="tip tip-inline">${_("Course that students must complete before beginning this course")}</span>
