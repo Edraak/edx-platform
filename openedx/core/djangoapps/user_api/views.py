@@ -654,7 +654,7 @@ class RegistrationView(APIView):
             # in order to register a new account.
             terms_text = _(u"Terms of Service and Honor Code")
 
-        terms_link = u"<a href=\"{url}\">{terms_text}</a>".format(
+        terms_link = u"<a href=\"{url}\" target=\"_blank\">{terms_text}</a>".format(
             url=marketing_link("HONOR"),
             terms_text=terms_text
         )
