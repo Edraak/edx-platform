@@ -40,7 +40,9 @@
                     @extend %t-title6;
                     position: relative;
                     display: block;
-                    padding: ($baseline*.75) $baseline ($baseline*.75) ($baseline*2);
+                    padding: ($baseline*.75) 0;
+                    @include padding-left($baseline*2);
+                    @include padding-right($baseline);
                     @include text-align(left);
 
                     .icon {
