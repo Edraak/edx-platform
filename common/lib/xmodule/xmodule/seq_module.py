@@ -164,9 +164,16 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
         raise NotFoundError('Unexpected dispatch type')
 
     def student_view(self, context):
+        display_items = self.get_display_items()
+
+        
         # If we're rendering this sequence, but no position is set yet,
         # default the position to the first element
-        if self.position is None:
+        if context.get('requested_child') == 'first':
+            self.position = 1
+        elif context.get('requested_child') == 'last':
+            self.position = len(display_items) or 1
+        elif self.position is None or self.position > len(display_items):
             self.position = 1
 
         ## Returns a set of all types of all sub-children
@@ -212,6 +219,8 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             'position': self.position,
             'tag': self.location.category,
             'ajax_url': self.system.ajax_url,
+            'next_url': context.get('next_url'),
+            'prev_url': context.get('prev_url'),
         }
 
         fragment.add_content(self.system.render_template("seq_module.html", params))

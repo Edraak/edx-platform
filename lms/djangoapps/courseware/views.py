@@ -159,7 +159,7 @@ def courses(request):
     return render_to_response("courseware/courses.html", {'courses': courses})
 
 
-def render_accordion(user, request, course, chapter, section, field_data_cache):
+def render_accordion(request, course, toc):
     """
     Draws navigation bar. Takes current position in accordion as
     parameter.
@@ -170,9 +170,6 @@ def render_accordion(user, request, course, chapter, section, field_data_cache):
 
     Returns the html string
     """
-    # grab the table of contents
-    toc = toc_for_course(user, request, course, chapter, section, field_data_cache)
-
     context = dict([
         ('toc', toc),
         ('course_id', course.id.to_deprecated_string()),
@@ -182,35 +179,46 @@ def render_accordion(user, request, course, chapter, section, field_data_cache):
     return render_to_string('courseware/accordion.html', context)
 
 
-def get_current_child(xmodule, min_depth=None):
+def get_current_child(xmodule, min_depth=None, requested_child=None):
     """
     Get the xmodule.position's display item of an xmodule that has a position and
     children.  If xmodule has no position or is out of bounds, return the first
     child with children extending down to content_depth.
-
     For example, if chapter_one has no position set, with two child sections,
     section-A having no children and section-B having a discussion unit,
     `get_current_child(chapter, min_depth=1)`  will return section-B.
-
     Returns None only if there are no children at all.
     """
+    def _get_child(children):
+        """
+        Returns either the first or last child based on the value of
+        the requested_child parameter.  If requested_child is None,
+        returns the first child.
+        """
+        if requested_child == 'first':
+            return children[0]
+        elif requested_child == 'last':
+            return children[-1]
+        else:
+            return children[0]
+
     def _get_default_child_module(child_modules):
         """Returns the first child of xmodule, subject to min_depth."""
         if not child_modules:
             default_child = None
         elif not min_depth > 0:
-            default_child = child_modules[0]
+            default_child = _get_child(child_modules)
         else:
             content_children = [child for child in child_modules if
                                 child.has_children_at_depth(min_depth - 1) and child.get_display_items()]
-            default_child = content_children[0] if content_children else None
+            default_child = _get_child(content_children) if content_children else None
 
         return default_child
 
     if not hasattr(xmodule, 'position'):
         return None
 
-    if xmodule.position is None:
+    if xmodule.position is None or requested_child:
         return _get_default_child_module(xmodule.get_display_items())
     else:
         # position is 1-indexed.
@@ -424,7 +432,6 @@ def _index_bulk_op(request, course_key, chapter, section, position):
 
         context = {
             'csrf': csrf(request)['csrf_token'],
-            'accordion': render_accordion(user, request, course, chapter, section, field_data_cache),
             'COURSE_TITLE': course.display_name_with_default_escaped,
             'course': course,
             'init': '',
@@ -434,6 +441,8 @@ def _index_bulk_op(request, course_key, chapter, section, position):
             'masquerade': masquerade,
             'xqa_server': settings.FEATURES.get('XQA_SERVER', "http://your_xqa_server.com"),
         }
+        table_of_contents, __, __ = toc_for_course(user, request, course, chapter, section, field_data_cache)
+        context['accordion'] = render_accordion(request, course, table_of_contents)
 
         now = datetime.now(UTC())
         effective_start = _adjust_start_date_for_beta_testers(user, course, course_key)
@@ -451,7 +460,6 @@ def _index_bulk_op(request, course_key, chapter, section, position):
             if course_has_entrance_exam(course):
                 exam_chapter = get_entrance_exam_content(request, course)
                 if exam_chapter:
-                    exam_section = None
                     if exam_chapter.get_children():
                         exam_section = exam_chapter.get_children()[0]
                         if exam_section:
@@ -563,6 +571,86 @@ def _index_bulk_op(request, course_key, chapter, section, position):
                 }
             ))
 
+        if section is None:
+            section_descriptor = get_current_child(chapter_descriptor, requested_child=request.GET.get("child"))
+            if section_descriptor:
+                section = section_descriptor.url_name
+            else:
+                # Something went wrong -- perhaps this chapter has no sections visible to the user.
+                # Clearing out the last-visited state and showing "first-time" view by redirecting
+                # to courseware.
+                course.position = None
+                course.save()
+                return redirect(reverse('courseware', args=[course.id.to_deprecated_string()]))
+        else:
+            section_descriptor = chapter_descriptor.get_child_by(lambda m: m.location.name == section)
+
+        if section_descriptor is None:
+            # Specifically asked-for section doesn't exist
+            if masquerade and masquerade.role == 'student':  # don't 404 if staff is masquerading as student
+                log.debug('staff masquerading as student: no section %s', section)
+                return redirect(reverse('courseware', args=[course.id.to_deprecated_string()]))
+            raise Http404
+
+        # Allow chromeless operation
+        if section_descriptor.chrome:
+            chrome = [s.strip() for s in section_descriptor.chrome.lower().split(",")]
+            if 'accordion' not in chrome:
+                context['disable_accordion'] = True
+            if 'tabs' not in chrome:
+                context['disable_tabs'] = True
+
+        if section_descriptor.default_tab:
+            context['default_tab'] = section_descriptor.default_tab
+
+        # cdodge: this looks silly, but let's refetch the section_descriptor with depth=None
+        # which will prefetch the children more efficiently than doing a recursive load
+        section_descriptor = modulestore().get_item(section_descriptor.location, depth=None)
+
+        # Load all descendants of the section, because we're going to display its
+        # html, which in general will need all of its children
+        field_data_cache.add_descriptor_descendents(
+            section_descriptor, depth=None
+        )
+
+        section_module = get_module_for_descriptor(
+            user,
+            request,
+            section_descriptor,
+            field_data_cache,
+            course_key,
+            position,
+            course=course
+        )
+
+        # Save where we are in the chapter.
+        save_child_position(chapter_descriptor, section)
+
+        table_of_contents, prev_section_info, next_section_info = toc_for_course(
+            user, request, course, chapter, section, field_data_cache
+        )
+        context['accordion'] = render_accordion(request, course, table_of_contents)
+
+        def _compute_section_url(section_info, requested_child):
+            """
+            Returns the section URL for the given section_info with the given child parameter.
+            """
+            return "{url}?child={requested_child}".format(
+                url=reverse(
+                    'courseware_section',
+                    args=[unicode(course.id), section_info['chapter_url_name'], section_info['url_name']],
+                ),
+                requested_child=requested_child,
+            )
+
+        section_render_context = {
+            'activate_block_id': request.GET.get('activate_block_id'),
+            'requested_child': request.GET.get("child"),
+            'prev_url': _compute_section_url(prev_section_info, 'last') if prev_section_info else None,
+            'next_url': _compute_section_url(next_section_info, 'first') if next_section_info else None,
+        }
+        context['fragment'] = section_module.render(STUDENT_VIEW, section_render_context)
+        context['section_title'] = section_descriptor.display_name_with_default_escaped
         result = render_to_response('courseware/courseware.html', context)
     except Exception as e:
 
