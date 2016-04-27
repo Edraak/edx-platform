@@ -134,10 +134,10 @@ def get_pre_requisite_courses_not_completed(user, enrolled_courses):  # pylint: 
                 if key == 'courses' and value:
                     for required_course in value:
                         required_course_key = CourseKey.from_string(required_course)
-                        required_course_overview = CourseOverview.get_from_id(required_course_key)
+                        required_course_display = CourseOverview.get_from_id(required_course_key).display_name
                         required_courses.append({
                             'key': required_course_key,
-                            'display': get_course_display_string(required_course_overview)
+                            'display': required_course_display
                         })
         # If there are required courses, add them to the result dict.
         if required_courses:
