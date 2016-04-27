@@ -38,7 +38,7 @@ from student.helpers import enroll, get_next_url_for_login_page, InvalidCourseId
 
 from openedx.core.djangoapps.user_api.views import RegistrationView
 
-from course_modes.helpers import get_mktg_enroll_success_redirect
+from course_modes.helpers import SUCCESS_ENROLL_PAGE, get_mktg_for_course
 
 from .models import ForusProfile
 from .helpers import validate_forus_params, forus_error_redirect, is_enabled_language
@@ -108,7 +108,7 @@ class AuthView(View):
     def enroll(self, request, user, course_key):
         try:
             enroll(user, course_key, request, check_access=True)
-            course_url = get_mktg_enroll_success_redirect(unicode(course_key))
+            course_url = get_mktg_for_course(SUCCESS_ENROLL_PAGE, unicode(course_key))
             return redirect(course_url)
         except AlreadyEnrolledError:
             course = modulestore().get_course(course_key)
