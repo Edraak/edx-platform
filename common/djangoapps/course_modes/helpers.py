@@ -1,5 +1,5 @@
 """ Helper methods for CourseModes. """
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import get_language, ugettext_lazy as _
 
 from course_modes.models import CourseMode
 from student.helpers import (
@@ -16,31 +16,40 @@ DISPLAY_HONOR = "honor"
 DISPLAY_AUDIT = "audit"
 DISPLAY_PROFESSIONAL = "professional"
 
+COURSE_INFO_PAGE = "COURSE_INFO"
+SUCCESS_ENROLL_PAGE = "ENROLL_SUCCESS"
 
-def get_mktg_enroll_success_redirect(course_id):
+
+def get_mktg_url(page):
+    lang = ''
+
+    if get_language() != 'ar':
+        lang = 'en/'
+
+    url = '{root}{lang}{page}'.format(
+        root=settings.MKTG_URLS['ROOT'],
+        lang=lang,
+        page=page
+    )
+    return url
+
+
+def get_mktg_for_course(page, course_id):
     """
-    Provide a success page option after course enrollment in the marketing site.
+    Redirects learner to the marketing site desired page
 
-    This provides an alternative to redirecting the user to the dashboard after successful enrollment.
-
-    This function is enabled once `MKTG_URLS['ENROLL_SUCCESS']` is set in the settings.
-
+    :param page: desired page
     :param course_id: Course ID as string.
     :return (unicode) Redirect URL.
     """
     if settings.FEATURES.get('ENABLE_MKTG_SITE'):
-        enroll_success_url = settings.MKTG_URLS.get('ENROLL_SUCCESS')
+        url = settings.MKTG_URLS.get(page)
 
-        if enroll_success_url:
-            # TODO: Handle language-based URL e.g. /about/ vs. /en/about/
-            return '{root}{path}'.format(
-                root=settings.MKTG_URLS['ROOT'],
-                path=enroll_success_url.format(
-                    course_id=course_id,
-                ),
-            )
+        if url:
+            return get_mktg_url(url.format(course_id=course_id))
 
     return reverse('dashboard')
+
 
 def enrollment_mode_display(mode, verification_status, course_id):
     """ Select appropriate display strings and CSS classes.

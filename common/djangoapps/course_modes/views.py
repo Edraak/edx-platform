@@ -26,7 +26,7 @@ from xmodule.modulestore.django import modulestore
 
 from embargo import api as embargo_api
 
-from helpers import get_mktg_enroll_success_redirect
+from helpers import SUCCESS_ENROLL_PAGE, get_mktg_for_course
 
 
 class ChooseModeView(View):
@@ -94,7 +94,7 @@ class ChooseModeView(View):
         # in the "honor" track by this point, so we send the user
         # to the dashboard.
         if not CourseMode.has_verified_mode(modes):
-            return redirect(get_mktg_enroll_success_redirect(course_id))
+            return redirect(get_mktg_for_course(SUCCESS_ENROLL_PAGE, unicode(course_id)))
 
         # If a user has already paid, redirect them to the dashboard.
         if is_active and (enrollment_mode in CourseMode.VERIFIED_MODES + [CourseMode.NO_ID_PROFESSIONAL_MODE]):
