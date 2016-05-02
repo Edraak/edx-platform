@@ -2,8 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from ratelimitbackend import admin
-from edraak_validation import UnicodeUserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 
 from xmodule.modulestore.django import modulestore
 from opaque_keys import InvalidKeyError
@@ -166,6 +165,16 @@ class UserProfileAdmin(admin.ModelAdmin): #SYNCTODO: check omar's https://github
         model = UserProfile
 
 
+class UnicodeFriendlyUserAdmin(UserAdmin):
+    """
+    Allows editing the users while skipping the username check, so we can have Unicode username with no problems.
+    """
+    def get_readonly_fields(self, *args, **kwargs):
+        return super(UserAdmin, self).get_readonly_fields(*args, **kwargs) + (
+            'username',
+        )
+
+
 admin.site.register(UserTestGroup)
 
 admin.site.register(CourseEnrollmentAllowed)
@@ -184,5 +193,4 @@ admin.site.register(CourseEnrollment, CourseEnrollmentAdmin)
 
 admin.site.register(UserProfile, UserProfileAdmin)
 
-# Edraak: Support Unicode in admin/user pages
-admin.site.register(User, UnicodeUserAdmin)
+admin.site.register(User, UnicodeFriendlyUserAdmin)
