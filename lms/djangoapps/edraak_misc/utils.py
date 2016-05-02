@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.core.validators import validate_email as django_validate_email, ValidationError as DjangoValidationError
+from django.db import transaction
 from validate_email import validate_email as strict_validate_email
 from django.core.cache import cache
 from xmodule.modulestore.django import modulestore
@@ -45,6 +46,7 @@ def cached_function(cache_key_format, timeout=30):
     cache_key_format='edraak_misc.utils.is_student_pass.{0.id}.{2}',
     timeout=60*5  # Cache up to 5 minutes
 )
+@transaction.non_atomic_requests
 def is_student_pass(user, request, course_id):
     course_key = locator.CourseLocator.from_string(course_id)
     course = modulestore().get_course(course_key)
