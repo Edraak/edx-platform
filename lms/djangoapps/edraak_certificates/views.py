@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 
 from dateutil.relativedelta import relativedelta
 from edxmako.shortcuts import render_to_response
@@ -30,6 +31,7 @@ def issue(request, course_id):
     })
 
 
+@transaction.non_atomic_requests
 @login_required
 def view(request, course_id):
     user = request.user
@@ -52,6 +54,7 @@ def view(request, course_id):
     })
 
 
+@transaction.non_atomic_requests
 @login_required
 def download(request, course_id):
     user = request.user
@@ -71,6 +74,7 @@ def download(request, course_id):
         return redirect(reverse('dashboard'))
 
 
+@transaction.non_atomic_requests
 @login_required
 def preview(request, course_id):
     user = request.user
