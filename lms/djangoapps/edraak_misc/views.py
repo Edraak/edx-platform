@@ -1,13 +1,20 @@
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
+from django.db import transaction
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
+
+from edxmako.shortcuts import render_to_response
+
 from util.json_request import JsonResponse
 from util.cache import cache_if_anonymous
-from django.conf import settings
+
 from courseware.courses import get_courses, sort_by_announcement
-from edxmako.shortcuts import render_to_response
-from django.contrib.auth.models import AnonymousUser
 from .utils import is_student_pass, edraak_courses_logic
 
 
+@transaction.non_atomic_requests
+@login_required
 def check_student_grades(request):
     user = request.user
     course_id = request.POST['course_id']
