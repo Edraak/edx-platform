@@ -11,7 +11,7 @@ from .views import (
     EnrollmentCourseDetailView
 )
 
-USERNAME_PATTERN = '(?P<username>[\w.@+-]+)'
+USERNAME_PATTERN = settings.USERNAME_PATTERN
 
 urlpatterns = patterns(
     'enrollment.views',
