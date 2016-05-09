@@ -48,7 +48,13 @@ from django_comment_client.permissions import has_permission
     </article>
 </script>
 
-% for template_name in ['thread-show']:
+<%
+template_names = [
+    'thread-show', 'customwmd-prompt'
+]
+%>
+
+% for template_name in template_names:
 <script aria-hidden="true" type="text/template" id="${template_name}-template">
     <%static:include path="common/templates/discussion/${template_name}.underscore" />
 </script>
