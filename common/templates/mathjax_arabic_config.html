@@ -1,0 +1,53 @@
+## mako
+## File:   templates/mathjax_arabic_config.html
+##
+## Include the arabic.js MathJax extension that allows rendering beautiful Arabic math.
+##
+
+<%!
+    from django.conf import settings
+
+    def get_contrib_prefix():
+        if settings.ARABIC_MATHJAX_VERSION:
+            return '{base}{arabic}/{version}'.format(
+                base=settings.STATIC_URL_BASE,
+                arabic='arabic-math',
+                version=settings.ARABIC_MATHJAX_VERSION,
+            )
+
+        return settings.MATHJAX_CONTRIB_PREFIX
+%>
+
+% if settings.FEATURES.get('ENABLE_ARABIC_MATHJAX'):
+    <script type="text/x-mathjax-config">
+    ## Define the "Contrib" repo for MathJax extensions
+    MathJax.Ajax.config.path["Contrib"] = "${get_contrib_prefix()}";
+
+    MathJax.Hub.Config({
+        extensions: [
+            "[Contrib]/arabic/arabic.js"
+        ]
+    });
+
+    ## Hack #1: The `arabic.js` isn't playing well with MathJax v2.6 within the studio and LMS
+    ## This hack solves it by copying the configs from the arabic.js extension
+    ## Not sure why!
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            undefinedFamily: 'Amiri'
+        }
+    });
+
+    </script>
+
+    <script type="text/x-mathjax-config">
+    ##  Hack #3.b
+    MathJax.Hub.Register.MessageHook("End PreProcess", function () {
+        ##  This scripts applys the fixup style for the Droid Naskh
+        $('.MathJax_Preview')
+            .parent()
+            .addClass('naskhfixup');
+    });
+
+    </script>
+% endif
