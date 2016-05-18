@@ -9,6 +9,9 @@ from student.models import UserProfile, UserTestGroup, CourseEnrollmentAllowed, 
 from student.models import (
     CourseEnrollment, Registration, PendingNameChange, CourseAccessRole, LinkedInAddToProfileConfiguration
 )
+
+from student.models import LoginFailures
+
 from ratelimitbackend import admin
 from edraak_validation import UnicodeUserAdmin
 from django.contrib.auth.models import User
@@ -172,6 +175,26 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     class Meta:
         model = UserProfile
+
+
+class LoginFailuresAdmin(admin.ModelAdmin):
+    search_fields = (
+        'user__email', 'user__username', 'user__pk',
+    )
+
+    readonly_fields = (
+        'user', 'failure_count', 'lockout_until',
+    )
+
+    list_display = (
+        'email', 'username', 'failure_count', 'lockout_until',
+    )
+
+    def email(self, login_failures):
+        return login_failures.user.email
+
+    def username(self, login_failures):
+        return login_failures.user.username
 
 
 admin.site.register(UserProfile, UserProfileAdmin)

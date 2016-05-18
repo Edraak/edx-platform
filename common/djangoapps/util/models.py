@@ -9,6 +9,8 @@ from django.utils.text import compress_string
 
 from config_models.models import ConfigurationModel
 
+import student.models
+import edraak_ratelimit.models
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
@@ -85,3 +87,25 @@ class CompressedTextField(models.TextField):
         args, kwargs = introspector(self)
         # That's our definition!
         return field_class, args, kwargs
+
+
+class StudentAccountLock(student.models.LoginFailures):
+    """
+    Make a proxy/fake LoginFailures model, to organize the admin panel a bit.
+
+    The name of the model is also adjusted to be user friendly.
+    """
+
+    class Meta:
+        proxy = True
+
+
+class IPLock(edraak_ratelimit.models.RateLimitedIP):
+    """
+    Make a proxy/fake RateLimitedIP model, to organize the admin panel a bit.
+
+    The name of the model is also adjusted to be user friendly.
+    """
+
+    class Meta:
+        proxy = True
