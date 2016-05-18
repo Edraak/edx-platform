@@ -269,7 +269,7 @@ LOGIN_URL = EDX_ROOT_URL + '/signin'
 
 # use the ratelimit backend to prevent brute force attacks
 AUTHENTICATION_BACKENDS = (
-    'ratelimitbackend.backends.RateLimitModelBackend',
+    'edraak_ratelimit.backends.EdraakRateLimitModelBackend',
 )
 
 LMS_BASE = None
@@ -792,6 +792,7 @@ INSTALLED_APPS = (
 
     # Edraak specific modules
     'edraak_i18n',
+    'edraak_ratelimit',
 
     # Course action state
     'course_action_state',

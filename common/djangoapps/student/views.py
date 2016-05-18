@@ -1091,9 +1091,16 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
     user_found_by_email_lookup = user
     if user_found_by_email_lookup and LoginFailures.is_feature_enabled():
         if LoginFailures.is_user_locked_out(user_found_by_email_lookup):
+            minutes = settings.MAX_FAILED_LOGIN_ATTEMPTS_LOCKOUT_PERIOD_SECS / 60
+            message = ungettext(
+                "This account has been temporarily locked due to excessive login failures. Try again in {number} minute.",  # noqa
+                "This account has been temporarily locked due to excessive login failures. Try again in {number} minutes.",  # noqa
+                minutes,
+            ).format(number=minutes)
+
             return JsonResponse({
                 "success": False,
-                "value": _('This account has been temporarily locked due to excessive login failures. Try again later.'),
+                "value": message,
             })  # TODO: this should be status code 429  # pylint: disable=fixme
 
     # see if the user must reset his/her password due to any policy settings
@@ -1115,9 +1122,17 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             user = authenticate(username=username, password=password, request=request)
         # this occurs when there are too many attempts from the same IP address
         except RateLimitException:
+            minutes = BadRequestRateLimiter.minutes
+
+            message = ungettext(
+                "Too many failed login attempts. Try again in {number} minute.",
+                "Too many failed login attempts. Try again in {number} minutes.",
+                minutes,
+            ).format(number=minutes)
+
             return JsonResponse({
                 "success": False,
-                "value": _('Too many failed login attempts. Try again later.'),
+                "value": message,
             })  # TODO: this should be status code 429  # pylint: disable=fixme
 
     if user is None:
