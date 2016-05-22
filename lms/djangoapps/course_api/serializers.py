@@ -60,6 +60,14 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     # 'course_id' is a deprecated field, please use 'id' instead.
     course_id = serializers.CharField(source='id', read_only=True)
 
+    pre_requisite_courses = serializers.SerializerMethodField()
+
+    def get_pre_requisite_courses(self, course_overview):
+        """
+        Get the the prerequisite courses list of IDs.
+        """
+        return course_overview.pre_requisite_courses
+
     def get_blocks_url(self, course_overview):
         """
         Get the representation for SerializerMethodField `blocks_url`

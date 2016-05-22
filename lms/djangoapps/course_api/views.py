@@ -52,6 +52,7 @@ class CourseDetailView(DeveloperErrorViewMixin, RetrieveAPIView):
             * `"timestamp"`: generated from the `start` timestamp
             * `"empty"`: no start date is specified
         * pacing: Course pacing. Possible values: instructor, self
+        * pre_requisite_courses: List of perquisite courses IDs.
 
         Deprecated fields:
 
@@ -96,7 +97,10 @@ class CourseDetailView(DeveloperErrorViewMixin, RetrieveAPIView):
                 "start": "2015-07-17T12:00:00Z",
                 "start_display": "July 17, 2015",
                 "start_type": "timestamp",
-                "pacing": "instructor"
+                "pacing": "instructor",
+                "pre_requisite_courses": [
+                    "course-v1:edX+DemoX+Demo_Course"
+                ]
             }
     """
 
@@ -184,8 +188,11 @@ class CourseListView(DeveloperErrorViewMixin, ListAPIView):
                 "org": "edX",
                 "start": "2015-07-17T12:00:00Z",
                 "start_display": "July 17, 2015",
-                "start_type": "timestamp"
-              }
+                "start_type": "timestamp",
+                "pre_requisite_courses": [
+                    "course-v1:edX+DemoX+Demo_Course"
+                ]
+            }
             ]
     """
 
