@@ -656,11 +656,13 @@ class TestTOC(ModuleStoreTestCase):
 
             course = self.store.get_course(self.toy_course.id, depth=2)
             with check_mongo_calls(toc_finds):
-                actual = render.toc_for_course(
+                actual, prev_sequential, next_sequential = render.toc_for_course(
                     self.request.user, self.request, course, self.chapter, None, self.field_data_cache
                 )
         for toc_section in expected:
             self.assertIn(toc_section, actual)
+        self.assertIsNone(prev_sequential)
+        self.assertIsNone(next_sequential)
 
     # Mongo makes 3 queries to load the course to depth 2:
     #     - 1 for the course
@@ -695,11 +697,13 @@ class TestTOC(ModuleStoreTestCase):
                           'url_name': 'secret:magic', 'display_name': 'secret:magic', 'display_id': 'secretmagic'}])
 
             with check_mongo_calls(toc_finds):
-                actual = render.toc_for_course(
+                actual, prev_sequential, next_sequential = render.toc_for_course(
                     self.request.user, self.request, self.toy_course, self.chapter, section, self.field_data_cache
                 )
             for toc_section in expected:
                 self.assertIn(toc_section, actual)
+            self.assertEquals(prev_sequential['url_name'], 'Toy_Videos')
+            self.assertEquals(next_sequential['url_name'], 'video_123456789012')
 
 
 @attr('shard_1')
@@ -835,7 +839,7 @@ class TestProctoringRendering(ModuleStoreTestCase):
         """
         self._setup_test_data(enrollment_mode, is_practice_exam, attempt_status)
 
-        actual = render.toc_for_course(
+        actual, prev_sequential, next_sequential = render.toc_for_course(
             self.request.user,
             self.request,
             self.toy_course,
@@ -850,6 +854,8 @@ class TestProctoringRendering(ModuleStoreTestCase):
         else:
             # we expect there not to be a 'proctoring' key in the dict
             self.assertNotIn('proctoring', section_actual)
+        self.assertIsNone(prev_sequential)
+        self.assertEquals(next_sequential['url_name'], u"Welcome")
 
     @ddt.data(
         (
@@ -1024,6 +1030,89 @@ class TestProctoringRendering(ModuleStoreTestCase):
 
 
 @attr('shard_1')
+class TestGatedSubsectionRendering(SharedModuleStoreTestCase, MilestonesTestCaseMixin):
+    @classmethod
+    def setUpClass(cls):
+        super(TestGatedSubsectionRendering, cls).setUpClass()
+        cls.course = CourseFactory.create()
+        cls.course.enable_subsection_gating = True
+        cls.course.save()
+        cls.store.update_item(cls.course, 0)
+
+    """
+    Test the toc for a course is rendered correctly when there is gated content
+    """
+    def setUp(self):
+        """
+        Set up the initial test data
+        """
+        super(TestGatedSubsectionRendering, self).setUp()
+
+        self.chapter = ItemFactory.create(
+            parent=self.course,
+            category="chapter",
+            display_name="Chapter"
+        )
+        self.open_seq = ItemFactory.create(
+            parent=self.chapter,
+            category='sequential',
+            display_name="Open Sequential"
+        )
+        self.gated_seq = ItemFactory.create(
+            parent=self.chapter,
+            category='sequential',
+            display_name="Gated Sequential"
+        )
+        self.request = RequestFactory().get('%s/%s/%s' % ('/courses', self.course.id, self.chapter.display_name))
+        self.request.user = UserFactory()
+        self.field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+            self.course.id, self.request.user, self.course, depth=2
+        )
+        gating_api.add_prerequisite(self.course.id, self.open_seq.location)
+        gating_api.set_required_content(self.course.id, self.gated_seq.location, self.open_seq.location, 100)
+
+    def _find_url_name(self, toc, url_name):
+        """
+        Helper to return the TOC section associated with url_name
+        """
+
+        for entry in toc:
+            if entry['url_name'] == url_name:
+                return entry
+
+        return None
+
+    def _find_sequential(self, toc, chapter_url_name, sequential_url_name):
+        """
+        Helper to return the sequential associated with sequential_url_name
+        """
+
+        chapter = self._find_url_name(toc, chapter_url_name)
+        if chapter:
+            return self._find_url_name(chapter['sections'], sequential_url_name)
+
+        return None
+
+    def test_toc_with_gated_sequential(self):
+        """
+        Test generation of TOC for a course with a gated subsection
+        """
+        actual, prev_sequential, next_sequential = render.toc_for_course(
+            self.request.user,
+            self.request,
+            self.course,
+            self.chapter.display_name,
+            self.open_seq.display_name,
+            self.field_data_cache
+        )
+        self.assertIsNotNone(self._find_sequential(actual, 'Chapter', 'Open_Sequential'))
+        self.assertIsNone(self._find_sequential(actual, 'Chapter', 'Gated_Sequential'))
+        self.assertIsNone(self._find_sequential(actual, 'Non-existant_Chapter', 'Non-existant_Sequential'))
+        self.assertIsNone(prev_sequential)
+        self.assertIsNone(next_sequential)
+
+
+@attr('shard_1')
 @ddt.ddt
 class TestHtmlModifiers(ModuleStoreTestCase):
     """
@@ -1103,7 +1192,7 @@ class TestHtmlModifiers(ModuleStoreTestCase):
         result_fragment = module.render(STUDENT_VIEW)
 
         self.assertIn(
-            '/c4x/{org}/{course}/asset/_file.jpg'.format(
+            '/c4x/{org}/{course}/asset/file.jpg'.format(
                 org=self.course.location.org,
                 course=self.course.location.course,
             ),

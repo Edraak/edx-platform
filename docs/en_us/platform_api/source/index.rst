@@ -24,6 +24,7 @@ Supported APIs
 .. toctree::
     :maxdepth: 2
 
+    courses/index
     enrollment/index
     mobile/index
     profile_images/index

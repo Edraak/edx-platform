@@ -49,5 +49,4 @@ def get_redirect_url(course_key, usage_key):
         )
 
     redirect_url += "?{}".format(urlencode({'activate_block_id': unicode(final_target_id)}))
-
     return redirect_url

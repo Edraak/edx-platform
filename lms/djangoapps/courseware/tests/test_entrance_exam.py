@@ -586,7 +586,7 @@ class EntranceExamTestCases(LoginEnrollmentTestCase, ModuleStoreTestCase):
             self.request.user,
             self.entrance_exam
         )
-        return toc_for_course(
+        toc, __, __ = toc_for_course(
             self.request.user,
             self.request,
             self.course,
@@ -594,6 +594,7 @@ class EntranceExamTestCases(LoginEnrollmentTestCase, ModuleStoreTestCase):
             self.exam_1.url_name,
             self.field_data_cache
         )
+        return toc
 
 
 def answer_entrance_exam_problem(course, request, problem, user=None):
