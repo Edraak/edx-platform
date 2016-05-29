@@ -14,7 +14,6 @@ class TransformerRegistry(PluginManager):
     `BlockStructureTransformer`.
     """
     NAMESPACE = 'openedx.block_structure_transformer'
-    USE_PLUGIN_MANAGER = True
 
     @classmethod
     def get_registered_transformers(cls):
@@ -25,10 +24,7 @@ class TransformerRegistry(PluginManager):
             {BlockStructureTransformer} - All transformers that are
                 registered with the platform's PluginManager.
         """
-        if cls.USE_PLUGIN_MANAGER:
-            return set(cls.get_available_plugins().itervalues())
-        else:
-            return set()
+        return set(cls.get_available_plugins().itervalues())
 
     @classmethod
     def find_unregistered(cls, transformers):
@@ -42,7 +38,7 @@ class TransformerRegistry(PluginManager):
                 transformers to check in the registry.
 
         Returns:
-            set([string]) - Set of names of a subset of the given
+            [string] - The names of a subset of the given
                 transformers that weren't found in the registry.
         """
         registered_transformer_names = set(reg_trans.name() for reg_trans in cls.get_registered_transformers())

@@ -158,23 +158,11 @@ class @Sequence
       old: @position
       new: new_position
       id: @id
-      current_tab: @position
-      tab_count: @num_contents
-      widget_placement: widget_placement
 
-    if (direction == 'next') and (@position >= @contents.length)
-      window.location.href = @nextUrl
-    else if (direction == 'previous') and (@position == 1)
-      window.location.href = @prevUrl
-    else
-      # If the bottom nav is used, scroll to the top of the page on change.
-      if is_bottom_nav 
-        $.scrollTo 0, 150
-      offset =
-        next: 1
-        previous: -1
-      new_position = @position + offset[direction]
-      @render new_position
+    # If the bottom nav is used, scroll to the top of the page on change.
+    if $(event.target).closest('nav[class="sequence-bottom"]').length > 0
+      $.scrollTo 0, 150
+    @render new_position
 
   link_for: (position) ->
     @$("#sequence-list a[data-element=#{position}]")
