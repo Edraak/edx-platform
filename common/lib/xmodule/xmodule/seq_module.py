@@ -166,11 +166,7 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
     def student_view(self, context):
         # If we're rendering this sequence, but no position is set yet,
         # default the position to the first element
-        if context.get('requested_child') == 'first':
-            self.position = 1
-        elif context.get('requested_child') == 'last':
-            self.position = len(display_items) or 1
-        elif self.position is None or self.position > len(display_items):
+        if self.position is None:
             self.position = 1
 
         ## Returns a set of all types of all sub-children
@@ -206,7 +202,7 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
                 'id': child.scope_ids.usage_id.to_deprecated_string(),
             }
             if childinfo['title'] == '':
-                childinfo['title'] = child.display_name_with_default_escaped
+                childinfo['title'] = child.display_name_with_default
             contents.append(childinfo)
 
         params = {
@@ -216,8 +212,6 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             'position': self.position,
             'tag': self.location.category,
             'ajax_url': self.system.ajax_url,
-            'next_url': context.get('next_url'),
-            'prev_url': context.get('prev_url'),
         }
 
         fragment.add_content(self.system.render_template("seq_module.html", params))

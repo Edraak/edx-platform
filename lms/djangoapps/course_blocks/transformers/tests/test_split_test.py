@@ -11,7 +11,7 @@ from xmodule.modulestore.tests.factories import check_mongo_calls, check_mongo_c
 
 from ...api import get_course_blocks
 from ..user_partitions import UserPartitionTransformer, _get_user_partition_groups
-from .helpers import CourseStructureTestCase, create_location
+from .test_helpers import CourseStructureTestCase, create_location
 
 
 @ddt.ddt
@@ -20,7 +20,6 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
     SplitTestTransformer Test
     """
     TEST_PARTITION_ID = 0
-    TRANSFORMER_CLASS_TO_TEST = UserPartitionTransformer
 
     def setUp(self):
         """
@@ -47,6 +46,8 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
 
         # Enroll user in course.
         CourseEnrollmentFactory.create(user=self.user, course_id=self.course.id, is_active=True)
+
+        self.transformer = UserPartitionTransformer()
 
     def get_course_hierarchy(self):
         """
@@ -192,7 +193,7 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
         block_structure1 = get_course_blocks(
             self.user,
             self.course.location,
-            self.transformers,
+            transformers={self.transformer},
         )
         self.assertEqual(
             set(block_structure1.get_block_keys()),
@@ -207,16 +208,17 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
         self.assertEquals(len(user_groups), 1)
 
         # calling twice should result in the same block set
-        block_structure1 = get_course_blocks(
-            self.user,
-            self.course.location,
-            self.transformers,
-        )
+        with check_mongo_calls_range(min_finds=1):
+            block_structure1 = get_course_blocks(
+                self.user,
+                self.course.location,
+                transformers={self.transformer},
+            )
         with check_mongo_calls(0):
             block_structure2 = get_course_blocks(
                 self.user,
                 self.course.location,
-                self.transformers,
+                transformers={self.transformer},
             )
         self.assertEqual(
             set(block_structure1.get_block_keys()),

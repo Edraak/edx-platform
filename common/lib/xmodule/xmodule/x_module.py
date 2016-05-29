@@ -24,7 +24,6 @@ from xblock.fields import (
     String, Dict, ScopeIds, Reference, ReferenceList,
     ReferenceValueDict, UserScope
 )
-
 from xblock.fragment import Fragment
 from xblock.runtime import Runtime, IdReader, IdGenerator
 from xmodule import course_metadata_utils
@@ -350,21 +349,6 @@ class XModuleMixin(XModuleFields, XBlock):
         return course_metadata_utils.display_name_with_default(self)
 
     @property
-    def display_name_with_default_escaped(self):
-        """
-        DEPRECATED: use display_name_with_default
-
-        Return an html escaped display name for the module: use display_name if
-        defined in metadata, otherwise convert the url name.
-
-        Note: This newly introduced method should not be used.  It was only
-        introduced to enable a quick search/replace and the ability to slowly
-        migrate and test switching to display_name_with_default, which is no
-        longer escaped.
-        """
-        return course_metadata_utils.display_name_with_default_escaped(self)
-
-    @property
     def xblock_kvs(self):
         """
         Retrieves the internal KeyValueStore for this XModule.
@@ -440,7 +424,7 @@ class XModuleMixin(XModuleFields, XBlock):
         if self.has_children:
             return sum((child.get_content_titles() for child in self.get_children()), [])
         else:
-            return [self.display_name_with_default_escaped]
+            return [self.display_name_with_default]
 
     def get_children(self, usage_id_filter=None, usage_key_filter=None):  # pylint: disable=arguments-differ
         """Returns a list of XBlock instances for the children of
@@ -1743,28 +1727,6 @@ class ModuleSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):
 
     def publish(self, block, event_type, event):
         pass
-
-    def service(self, block, service_name):
-        """
-        Runtime-specific override for the XBlock service manager.  If a service is not currently
-        instantiated and is declared as a critical requirement, an attempt is made to load the
-        module.
-
-        Arguments:
-            block (an XBlock): this block's class will be examined for service
-                decorators.
-            service_name (string): the name of the service requested.
-
-        Returns:
-            An object implementing the requested service, or None.
-        """
-        # getting the service from parent module. making sure of block service declarations.
-        service = super(ModuleSystem, self).service(block=block, service_name=service_name)
-        # Passing the block to service if it is callable e.g. ModuleI18nService. It is the responsibility of calling
-        # service to handle the passing argument.
-        if callable(service):
-            return service(block)
-        return service
 
 
 class CombinedSystem(object):

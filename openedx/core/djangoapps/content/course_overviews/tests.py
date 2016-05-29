@@ -103,7 +103,6 @@ class CourseOverviewTestCase(ModuleStoreTestCase):
             'number',
             'url_name',
             'display_name_with_default',
-            'display_name_with_default_escaped',
             'start_date_is_still_default',
             'pre_requisite_courses',
             'enrollment_domain',
@@ -451,14 +450,14 @@ class CourseOverviewTestCase(ModuleStoreTestCase):
     def test_get_select_courses(self):
         course_ids = [CourseFactory.create().id for __ in range(3)]
         select_course_ids = course_ids[:len(course_ids) - 1]  # all items except the last
-        self.assertEqual(
+        self.assertSetEqual(
             {course_overview.id for course_overview in CourseOverview.get_select_courses(select_course_ids)},
             set(select_course_ids),
         )
 
     def test_get_all_courses(self):
         course_ids = [CourseFactory.create(emit_signals=True).id for __ in range(3)]
-        self.assertEqual(
+        self.assertSetEqual(
             {course_overview.id for course_overview in CourseOverview.get_all_courses()},
             set(course_ids),
         )
@@ -477,20 +476,14 @@ class CourseOverviewTestCase(ModuleStoreTestCase):
                 for __ in range(3)
             ])
 
-        self.assertEqual(
-            {c.id for c in CourseOverview.get_all_courses()},
-            {c.id for c in org_courses[0] + org_courses[1]},
-        )
-
-        self.assertEqual(
+        self.assertSetEqual(
             {c.id for c in CourseOverview.get_all_courses(org='test_org_1')},
             {c.id for c in org_courses[1]},
         )
 
-        # Test case-insensitivity.
-        self.assertEqual(
-            {c.id for c in CourseOverview.get_all_courses(org='TEST_ORG_1')},
-            {c.id for c in org_courses[1]},
+        self.assertSetEqual(
+            {c.id for c in CourseOverview.get_all_courses()},
+            {c.id for c in org_courses[0] + org_courses[1]},
         )
 
 
@@ -825,24 +818,3 @@ class CourseOverviewImageSetTestCase(ModuleStoreTestCase):
                 }
             )
             return course_overview
-
-    def test_get_all_courses_by_mobile_available(self):
-        non_mobile_course = CourseFactory.create(emit_signals=True)
-        mobile_course = CourseFactory.create(mobile_available=True, emit_signals=True)
-
-        test_cases = (
-            (None, {non_mobile_course.id, mobile_course.id}),
-            (dict(mobile_available=True), {mobile_course.id}),
-            (dict(mobile_available=False), {non_mobile_course.id}),
-        )
-
-        for filter_, expected_courses in test_cases:
-            self.assertEqual(
-                {
-                    course_overview.id
-                    for course_overview in
-                    CourseOverview.get_all_courses(filter_=filter_)
-                },
-                expected_courses,
-                "testing CourseOverview.get_all_courses with filter_={}".format(filter_),
-            )

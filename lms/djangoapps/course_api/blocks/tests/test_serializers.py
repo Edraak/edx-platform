@@ -3,8 +3,6 @@ Tests for Course Blocks serializers
 """
 from mock import MagicMock
 
-from course_blocks.tests.helpers import EnableTransformerRegistryMixin
-from openedx.core.lib.block_structure.transformers import BlockStructureTransformers
 from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
 from xmodule.modulestore.tests.factories import ToyCourseFactory
@@ -12,10 +10,10 @@ from lms.djangoapps.course_blocks.api import get_course_blocks, COURSE_BLOCK_ACC
 
 from ..transformers.blocks_api import BlocksAPITransformer
 from ..serializers import BlockSerializer, BlockDictSerializer
-from .helpers import deserialize_usage_key
+from .test_utils import deserialize_usage_key
 
 
-class TestBlockSerializerBase(EnableTransformerRegistryMixin, SharedModuleStoreTestCase):
+class TestBlockSerializerBase(SharedModuleStoreTestCase):
     """
     Base class for testing BlockSerializer and BlockDictSerializer
     """
@@ -35,8 +33,8 @@ class TestBlockSerializerBase(EnableTransformerRegistryMixin, SharedModuleStoreT
         )
         self.block_structure = get_course_blocks(
             self.user,
-            self.course.location,
-            BlockStructureTransformers(COURSE_BLOCK_ACCESS_TRANSFORMERS + [blocks_api_transformer]),
+            root_block_usage_key=self.course.location,
+            transformers=COURSE_BLOCK_ACCESS_TRANSFORMERS + [blocks_api_transformer],
         )
         self.serializer_context = {
             'request': MagicMock(),
@@ -70,7 +68,6 @@ class TestBlockSerializerBase(EnableTransformerRegistryMixin, SharedModuleStoreT
             'block_counts',
             'student_view_data',
             'student_view_multi_device',
-            'lti_url',
         ])
 
     def assert_extended_block(self, serialized_block):
@@ -82,7 +79,6 @@ class TestBlockSerializerBase(EnableTransformerRegistryMixin, SharedModuleStoreT
                 'id', 'type', 'lms_web_url', 'student_view_url',
                 'display_name', 'graded',
                 'block_counts', 'student_view_multi_device',
-                'lti_url',
             },
             set(serialized_block.iterkeys()),
         )
@@ -118,7 +114,8 @@ class TestBlockSerializer(TestBlockSerializerBase):
     def test_additional_requested_fields(self):
         self.add_additional_requested_fields()
         serializer = self.create_serializer()
-        self.assertEqual(5, len(serializer.data))
+        for serialized_block in serializer.data:
+            self.assert_extended_block(serialized_block)
 
 
 class TestBlockDictSerializer(TestBlockSerializerBase):

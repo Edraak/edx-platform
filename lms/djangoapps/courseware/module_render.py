@@ -67,8 +67,8 @@ from xblock.runtime import KvsFieldData
 from xmodule.contentstore.django import contentstore
 from xmodule.error_module import ErrorDescriptor, NonStaffErrorDescriptor
 from xmodule.exceptions import NotFoundError, ProcessingError
+from xmodule.modulestore.django import modulestore, ModuleI18nService
 from xmodule.lti_module import LTIModule
-from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from xmodule.x_module import XModuleDescriptor
 from xmodule.mixin import wrap_with_license
@@ -150,7 +150,7 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
             user, request, course, field_data_cache, course.id, course=course
         )
         if course_module is None:
-            return None, None, None
+            return None
 
         toc_chapters = list()
         chapters = course_module.get_display_items()
@@ -162,13 +162,10 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
         if not user_must_complete_entrance_exam(request, user, course):
             required_content = [content for content in required_content if not content == course.entrance_exam_id]
 
-        previous_of_active_section, next_of_active_section = None, None
-        last_processed_section, last_processed_chapter = None, None
-        found_active_section = False
         for chapter in chapters:
             # Only show required content, if there is required content
-            # chapter.hide_from_toc is read-only (bool)
-            display_id = slugify(chapter.display_name_with_default_escaped)
+            # chapter.hide_from_toc is read-only (boo)
+            display_id = slugify(chapter.display_name_with_default)
             local_hide_from_toc = False
             if required_content:
                 if unicode(chapter.location) not in required_content:
@@ -180,101 +177,82 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
 
             sections = list()
             for section in chapter.get_display_items():
-                # skip the section if it is gated/hidden from the user
-                if gated_content and unicode(section.location) in gated_content:
-                    continue
-                if section.hide_from_toc:
-                    continue
 
-                is_section_active = (chapter.url_name == active_chapter and section.url_name == active_section)
-                if is_section_active:
-                    found_active_section = True
+                active = (chapter.url_name == active_chapter and
+                          section.url_name == active_section)
 
-                section_context = {
-                    'display_name': section.display_name_with_default_escaped,
-                    'url_name': section.url_name,
-                    'format': section.format if section.format is not None else '',
-                    'due': section.due,
-                    'active': is_section_active,
-                    'graded': section.graded,
-                }
-                _add_timed_exam_info(user, course, section, section_context)
+                if not section.hide_from_toc:
+                    section_context = {
+                        'display_name': section.display_name_with_default,
+                        'url_name': section.url_name,
+                        'format': section.format if section.format is not None else '',
+                        'due': section.due,
+                        'active': active,
+                        'graded': section.graded,
+                    }
 
-                # update next and previous of active section, if applicable
-                if is_section_active:
-                    if last_processed_section:
-                        previous_of_active_section = last_processed_section.copy()
-                        previous_of_active_section['chapter_url_name'] = last_processed_chapter.url_name
-                elif found_active_section and not next_of_active_section:
-                    next_of_active_section = section_context.copy()
-                    next_of_active_section['chapter_url_name'] = chapter.url_name
+                    #
+                    # Add in rendering context if exam is a timed exam (which includes proctored)
+                    #
 
-                sections.append(section_context)
-                last_processed_section = section_context
-                last_processed_chapter = chapter
+                    section_is_time_limited = (
+                        getattr(section, 'is_time_limited', False) and
+                        settings.FEATURES.get('ENABLE_SPECIAL_EXAMS', False)
+                    )
+                    if section_is_time_limited:
+                        # We need to import this here otherwise Lettuce test
+                        # harness fails. When running in 'harvest' mode, the
+                        # test service appears to get into trouble with
+                        # circular references (not sure which as edx_proctoring.api
+                        # doesn't import anything from edx-platform). Odd thing
+                        # is that running: manage.py lms runserver --settings=acceptance
+                        # works just fine, it's really a combination of Lettuce and the
+                        # 'harvest' management command
+                        #
+                        # One idea is that there is some coupling between
+                        # lettuce and the 'terrain' Djangoapps projects in /common
+                        # This would need more investigation
+                        from edx_proctoring.api import get_attempt_status_summary
 
+                        #
+                        # call into edx_proctoring subsystem
+                        # to get relevant proctoring information regarding this
+                        # level of the courseware
+                        #
+                        # This will return None, if (user, course_id, content_id)
+                        # is not applicable
+                        #
+                        timed_exam_attempt_context = None
+                        try:
+                            timed_exam_attempt_context = get_attempt_status_summary(
+                                user.id,
+                                unicode(course.id),
+                                unicode(section.location)
+                            )
+                        except Exception, ex:  # pylint: disable=broad-except
+                            # safety net in case something blows up in edx_proctoring
+                            # as this is just informational descriptions, it is better
+                            # to log and continue (which is safe) than to have it be an
+                            # unhandled exception
+                            log.exception(ex)
+
+                        if timed_exam_attempt_context:
+                            # yes, user has proctoring context about
+                            # this level of the courseware
+                            # so add to the accordion data context
+                            section_context.update({
+                                'proctoring': timed_exam_attempt_context,
+                            })
+
+                    sections.append(section_context)
             toc_chapters.append({
-                'display_name': chapter.display_name_with_default_escaped,
+                'display_name': chapter.display_name_with_default,
                 'display_id': display_id,
                 'url_name': chapter.url_name,
                 'sections': sections,
                 'active': chapter.url_name == active_chapter
             })
-        return toc_chapters, previous_of_active_section, next_of_active_section
-
-
-def _add_timed_exam_info(user, course, section, section_context):
-    """
-    Add in rendering context if exam is a timed exam (which includes proctored)
-    """
-    section_is_time_limited = (
-        getattr(section, 'is_time_limited', False) and
-        settings.FEATURES.get('ENABLE_SPECIAL_EXAMS', False)
-    )
-    if section_is_time_limited:
-        # We need to import this here otherwise Lettuce test
-        # harness fails. When running in 'harvest' mode, the
-        # test service appears to get into trouble with
-        # circular references (not sure which as edx_proctoring.api
-        # doesn't import anything from edx-platform). Odd thing
-        # is that running: manage.py lms runserver --settings=acceptance
-        # works just fine, it's really a combination of Lettuce and the
-        # 'harvest' management command
-        #
-        # One idea is that there is some coupling between
-        # lettuce and the 'terrain' Djangoapps projects in /common
-        # This would need more investigation
-        from edx_proctoring.api import get_attempt_status_summary
-
-        #
-        # call into edx_proctoring subsystem
-        # to get relevant proctoring information regarding this
-        # level of the courseware
-        #
-        # This will return None, if (user, course_id, content_id)
-        # is not applicable
-        #
-        timed_exam_attempt_context = None
-        try:
-            timed_exam_attempt_context = get_attempt_status_summary(
-                user.id,
-                unicode(course.id),
-                unicode(section.location)
-            )
-        except Exception, ex:  # pylint: disable=broad-except
-            # safety net in case something blows up in edx_proctoring
-            # as this is just informational descriptions, it is better
-            # to log and continue (which is safe) than to have it be an
-            # unhandled exception
-            log.exception(ex)
-
-        if timed_exam_attempt_context:
-            # yes, user has proctoring context about
-            # this level of the courseware
-            # so add to the accordion data context
-            section_context.update({
-                'proctoring': timed_exam_attempt_context,
-            })
+        return toc_chapters
 
 
 def get_module(user, request, usage_key, field_data_cache,
@@ -730,6 +708,7 @@ def get_module_system_for_user(user, student_data,  # TODO  # pylint: disable=to
         wrappers=block_wrappers,
         get_real_user=user_by_anonymous_id,
         services={
+            'i18n': ModuleI18nService(),
             'fs': FSService(),
             'field-data': field_data,
             'user': DjangoXBlockUserService(user, user_is_staff=user_is_staff),
@@ -960,7 +939,7 @@ def get_module_by_usage_id(request, course_id, usage_id, disable_staff_debug_inf
 
     tracking_context = {
         'module': {
-            'display_name': descriptor.display_name_with_default_escaped,
+            'display_name': descriptor.display_name_with_default,
             'usage_key': unicode(descriptor.location),
         }
     }

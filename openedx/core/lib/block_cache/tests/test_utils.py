@@ -1,11 +1,7 @@
 """
-Common utilities for tests in block_structure module
+Common utilities for tests in block_cache module
 """
-from contextlib import contextmanager
-from mock import patch
-from xmodule.modulestore.exceptions import ItemNotFoundError
-
-from ..block_structure import BlockStructureBlockData
+# pylint: disable=protected-access
 from ..transformer import BlockStructureTransformer
 
 
@@ -59,14 +55,9 @@ class MockModulestore(object):
         """
         Returns the mock XBlock (MockXBlock) associated with the
         given block_key.
-
-        Raises ItemNotFoundError if the item is not found.
         """
         self.get_items_call_count += 1
-        item = self.blocks.get(block_key)
-        if not item:
-            raise ItemNotFoundError
-        return item
+        return self.blocks.get(block_key)
 
 
 class MockCache(object):
@@ -77,13 +68,11 @@ class MockCache(object):
     def __init__(self):
         # An in-memory map of cache keys to cache values.
         self.map = {}
-        self.set_call_count = 0
 
     def set(self, key, val):
         """
         Associates the given key with the given value in the cache.
         """
-        self.set_call_count += 1
         self.map[key] = val
 
     def get(self, key, default=None):
@@ -92,6 +81,20 @@ class MockCache(object):
         returns default if not found.
         """
         return self.map.get(key, default)
+
+    def set_many(self, map_):
+        """
+        For each dictionary entry in the given map, updates the cache
+        with that entry.
+        """
+        for key, val in map_.iteritems():
+            self.set(key, val)
+
+    def get_many(self, keys):
+        """
+        Returns a dictionary of entries for each key found in the cache.
+        """
+        return {key: self.map[key] for key in keys if key in self.map}
 
     def delete(self, key):
         """
@@ -138,18 +141,6 @@ class MockTransformer(BlockStructureTransformer):
         pass
 
 
-@contextmanager
-def mock_registered_transformers(transformers):
-    """
-    Context manager for mocking the transformer registry to return the given transformers.
-    """
-    with patch(
-        'openedx.core.lib.block_structure.transformer_registry.TransformerRegistry.get_registered_transformers'
-    ) as mock_available_transforms:
-        mock_available_transforms.return_value = {transformer for transformer in transformers}
-        yield
-
-
 class ChildrenMapTestMixin(object):
     """
     A Test Mixin with utility methods for testing with block structures
@@ -181,7 +172,7 @@ class ChildrenMapTestMixin(object):
     #  5  6
     DAG_CHILDREN_MAP = [[1, 2], [3], [3, 4], [5, 6], [], [], []]
 
-    def create_block_structure(self, children_map, block_structure_cls=BlockStructureBlockData):
+    def create_block_structure(self, block_structure_cls, children_map):
         """
         Factory method for creating and returning a block structure
         for the given children_map.
@@ -192,7 +183,7 @@ class ChildrenMapTestMixin(object):
         # _add_relation
         for parent, children in enumerate(children_map):
             for child in children:
-                block_structure._add_relation(parent, child)  # pylint: disable=protected-access
+                block_structure._add_relation(parent, child)
         return block_structure
 
     def get_parents_map(self, children_map):
