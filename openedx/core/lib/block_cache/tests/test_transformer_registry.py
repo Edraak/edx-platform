@@ -3,10 +3,11 @@ Tests for transformer_registry.py
 """
 
 import ddt
+from mock import patch
 from unittest import TestCase
 
 from ..transformer_registry import TransformerRegistry
-from .helpers import MockTransformer, mock_registered_transformers
+from .test_utils import MockTransformer
 
 
 class TestTransformer1(MockTransformer):
@@ -54,8 +55,14 @@ class TransformerRegistryTestCase(TestCase):
     @ddt.unpack
     def test_find_unregistered(self, transformers, expected_unregistered):
 
-        with mock_registered_transformers([TestTransformer1, TestTransformer2]):
+        with (
+            patch('openedx.core.lib.block_cache.transformer_registry.TransformerRegistry.get_available_plugins')
+        ) as mock_registry:
+            mock_registry.return_value = {
+                transformer.name(): transformer
+                for transformer in [TestTransformer1, TestTransformer2]
+            }
+
             self.assertSetEqual(
-                TransformerRegistry.find_unregistered(transformers),
-                set(expected_unregistered),
+                TransformerRegistry.find_unregistered(transformers), set(expected_unregistered)
             )

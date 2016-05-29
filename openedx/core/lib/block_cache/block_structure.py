@@ -70,7 +70,7 @@ class BlockStructure(object):
         traversal since it's the more common case and we currently
         need to support DAGs.
         """
-        return self.get_block_keys()
+        return self.topological_traversal()
 
     #--- Block structure relation methods ---#
 
@@ -101,21 +101,6 @@ class BlockStructure(object):
             [UsageKey] - A list of usage keys of the block's children.
         """
         return self._block_relations[usage_key].children if self.has_block(usage_key) else []
-
-    def set_root_block(self, usage_key):
-        """
-        Sets the given usage key as the new root of the block structure.
-
-        Note: This method does *not* prune the rest of the structure. For
-        performance reasons, it is left to the caller to decide when exactly
-        to prune.
-
-        Arguments:
-            usage_key - The usage key of the block that is to be set as the
-                new root of the block structure.
-        """
-        self.root_block_usage_key = usage_key
-        self._block_relations[usage_key].parents = []
 
     def has_block(self, usage_key):
         """
@@ -192,7 +177,7 @@ class BlockStructure(object):
         )
 
     #--- Internal methods ---#
-    # To be used within the block_structure framework or by tests.
+    # To be used within the block_cache framework or by tests.
 
     def _prune_unreachable(self):
         """
@@ -503,8 +488,18 @@ class BlockStructureBlockData(BlockStructure):
         for _ in self.topological_traversal(filter_func=filter_func, **kwargs):
             pass
 
+    def get_block_keys(self):
+        """
+        Returns the block keys in the block structure.
+
+        Returns:
+            iterator(UsageKey) - An iterator of the usage
+            keys of all the blocks in the block structure.
+        """
+        return self._block_relations.iterkeys()
+
     #--- Internal methods ---#
-    # To be used within the block_structure framework or by tests.
+    # To be used within the block_cache framework or by tests.
 
     def _get_transformer_data_version(self, transformer):
         """
@@ -576,7 +571,7 @@ class BlockStructureModulestoreData(BlockStructureBlockData):
         return self._xblock_map[usage_key]
 
     #--- Internal methods ---#
-    # To be used within the block_structure framework or by tests.
+    # To be used within the block_cache framework or by tests.
 
     def _add_xblock(self, usage_key, xblock):
         """

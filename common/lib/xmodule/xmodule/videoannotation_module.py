@@ -128,7 +128,7 @@ class VideoAnnotationModule(AnnotatableFields, XModule):
 
         context = {
             'course_key': self.runtime.course_id,
-            'display_name': self.display_name_with_default_escaped,
+            'display_name': self.display_name_with_default,
             'instructions_html': self.instructions,
             'sourceUrl': self.sourceurl,
             'typeSource': extension,

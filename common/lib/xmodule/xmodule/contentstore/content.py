@@ -1,8 +1,5 @@
 import re
 import uuid
-
-from xmodule.assetstore.assetmgr import AssetManager
-
 XASSET_LOCATION_TAG = 'c4x'
 XASSET_SRCREF_PREFIX = 'xasset:'
 
@@ -19,8 +16,6 @@ from urllib import urlencode
 from opaque_keys.edx.locator import AssetLocator
 from opaque_keys.edx.keys import CourseKey, AssetKey
 from opaque_keys import InvalidKeyError
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.exceptions import NotFoundError
 from PIL import Image
 
 
@@ -142,86 +137,32 @@ class StaticContent(object):
                 return AssetKey.from_string(path[1:])
 
     @staticmethod
-    def get_asset_key_from_path(course_key, path):
+    def convert_legacy_static_url_with_course_id(path, course_id):
         """
-        Parses a path, extracting an asset key or creating one.
-
-        Args:
-            course_key: key to the course which owns this asset
-            path: the path to said content
-
-        Returns:
-            AssetKey: the asset key that represents the path
+        Returns a path to a piece of static content when we are provided with a filepath and
+        a course_id
         """
+        # Generate url of urlparse.path component
+        scheme, netloc, orig_path, params, query, fragment = urlparse(path)
+        loc = StaticContent.compute_location(course_id, orig_path)
+        loc_url = StaticContent.serialize_asset_key_with_slash(loc)
 
-        # Clean up the path, removing any static prefix and any leading slash.
-        if path.startswith('/static/'):
-            path = path[len('/static/'):]
-
-        path = path.lstrip('/')
-
-        try:
-            return AssetKey.from_string(path)
-        except InvalidKeyError:
-            # If we couldn't parse the path, just let compute_location figure it out.
-            # It's most likely a path like /image.png or something.
-            return StaticContent.compute_location(course_key, path)
-
-    @staticmethod
-    def get_canonicalized_asset_path(course_key, path, base_url, excluded_exts):
-        """
-        Returns a fully-qualified path to a piece of static content.
-
-        If a static asset CDN is configured, this path will include it.
-        Otherwise, the path will simply be relative.
-
-        Args:
-            course_key: key to the course which owns this asset
-            path: the path to said content
-
-        Returns:
-            string: fully-qualified path to asset
-        """
-
-        # Break down the input path.
-        _, _, relative_path, params, query_string, fragment = urlparse(path)
-
-        # Convert our path to an asset key if it isn't one already.
-        asset_key = StaticContent.get_asset_key_from_path(course_key, relative_path)
-
-        # Check the status of the asset to see if this can be served via CDN aka publicly.
-        serve_from_cdn = False
-        try:
-            content = AssetManager.find(asset_key, as_stream=True)
-            is_locked = getattr(content, "locked", True)
-            serve_from_cdn = not is_locked
-        except (ItemNotFoundError, NotFoundError):
-            # If we can't find the item, just treat it as if it's locked.
-            serve_from_cdn = False
-
-        # See if this is an allowed file extension to serve.  Some files aren't served through the
-        # CDN in order to avoid same-origin policy/CORS-related issues.
-        for excluded_ext in excluded_exts:
-            if relative_path.lower().endswith(excluded_ext.lower()):
-                serve_from_cdn = False
-                break
-
-        # Update any query parameter values that have asset paths in them. This is for assets that
-        # require their own after-the-fact values, like a Flash file that needs the path of a config
-        # file passed to it e.g. /static/visualization.swf?configFile=/static/visualization.xml
-        query_params = parse_qsl(query_string)
-        updated_query_params = []
-        for query_name, query_val in query_params:
-            if query_val.startswith("/static/"):
-                new_val = StaticContent.get_canonicalized_asset_path(course_key, query_val, base_url, excluded_exts)
-                updated_query_params.append((query_name, new_val))
+        # parse the query params for "^/static/" and replace with the location url
+        orig_query = parse_qsl(query)
+        new_query_list = []
+        for query_name, query_value in orig_query:
+            if query_value.startswith("/static/"):
+                new_query = StaticContent.compute_location(
+                    course_id,
+                    query_value[len('/static/'):],
+                )
+                new_query_url = StaticContent.serialize_asset_key_with_slash(new_query)
+                new_query_list.append((query_name, new_query_url))
             else:
-                updated_query_params.append((query_name, query_val))
+                new_query_list.append((query_name, query_value))
 
-        serialized_asset_key = StaticContent.serialize_asset_key_with_slash(asset_key)
-        base_url = base_url if serve_from_cdn else ''
-
-        return urlunparse((None, base_url, serialized_asset_key, params, urlencode(updated_query_params), fragment))
+        # Reconstruct with new path
+        return urlunparse((scheme, netloc, loc_url, params, urlencode(new_query_list), fragment))
 
     def stream_data(self):
         yield self._data
