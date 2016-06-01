@@ -575,11 +575,12 @@ body.discussion {
     display: inline-block;
     font-size: 13px;
     margin-right: 4px;
+    white-space: nowrap;  // Prevent word-break in Arabic in Google Chrome
   }
 
   .new-post-icon {
     display: block;
-    float: left;
+    @include float(left);
     width: 16px;
     height: 17px;
     margin-top: 8px;
