@@ -19,7 +19,7 @@ EDRAAK_RESOURCES = (
 
 ARABIC_LOCALE_DIR = 'conf/locale/ar/LC_MESSAGES/'
 
-OTHER_RTL_LOCALES = ('eo', 'rtl', 'he', 'fa',)
+OTHER_RTL_LOCALES = ('eo', 'rtl', 'he',)
 
 git_repo = Repo('.')
 
