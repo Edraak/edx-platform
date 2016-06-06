@@ -3391,6 +3391,10 @@ msgid "in {relative_date} - {absolute_date}"
 msgstr ""
 
 #: lms/djangoapps/courseware/date_summary.py
+msgid "UTC"
+msgstr ""
+
+#: lms/djangoapps/courseware/date_summary.py
 msgid "You are still eligible to upgrade to a Verified Certificate!"
 msgstr ""
 
@@ -19087,10 +19091,6 @@ msgstr "{relative} مضى - {absolute}"
 #: lms/djangoapps/courseware/date_summary.py
 msgid "in {relative} - {absolute}"
 msgstr "في {relative} - {absolute}"
-
-#: lms/djangoapps/courseware/date_summary.py
-msgid "UTC"
-msgstr "التوقيت العالمي المنسّق"
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Today is {date}"
