@@ -16196,6 +16196,10 @@ msgstr ""
 msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
 
+#: lms/djangoapps/bulk_email/tasks.py:406
+msgid "\"{course_title}\" Course Staff"
+msgstr "طاقم مساق \"{course_title}\""
+
 #: lms/djangoapps/edraak_bayt/views.py:39
 msgid "Invalid Email"
 msgstr "البريد الإلكتروني غير صحيح"
