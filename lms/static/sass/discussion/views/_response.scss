@@ -196,7 +196,7 @@
 
     .discussion-submit-comment {
       @include blue-button;
-      float: left;
+      @include float(left);
       margin-top: 8px;
     }
 
