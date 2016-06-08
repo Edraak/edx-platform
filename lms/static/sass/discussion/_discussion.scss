@@ -175,14 +175,15 @@ body.discussion {
   }
 
   .wmd-spacer1 {
-    @include left(50px);
+    left: 50px;
   }
+
   .wmd-spacer2 {
-    @include left(175px);
+    left: 175px;
   }
 
   .wmd-spacer3 {
-    @include left(300px);
+    left: 300px;
   }
 
   .wmd-prompt-background {
