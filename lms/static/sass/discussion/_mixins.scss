@@ -123,11 +123,12 @@
 @mixin forum-post-label($color) {
   @extend %t-weight4;
   @include font-size(9);
-  display: inline;
+  line-height: 19px;  // Set the height of the box, and make the text centered vertically
+  display: inline-block;  // Add some space between labels
   margin-top: ($baseline/4);
   border: 1px solid;
   border-radius: 3px;
-  padding: 1px 6px;
+  padding: 0 6px;
   text-transform: uppercase;
   white-space: nowrap;
 
