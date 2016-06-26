@@ -1,0 +1,101 @@
+// Edraak: Extracting this here in order to make it globally usable outside the forum
+//         particularly for the forum widget in the courseware.
+
+.wmd-prompt-background {
+  background-color: black;
+}
+
+.wmd-prompt-dialog {
+  @extend .modal;
+  background: $white;
+  padding: $baseline;
+  border: 1px solid #999999;
+
+  $spacing: 10px;
+
+  #editor-dialog-title {
+    border-bottom: 1px rgb(189, 189, 189) solid;
+    padding-bottom: $spacing;
+    margin-bottom: $spacing;
+  }
+
+  .form-actions {
+    text-align: center;
+  }
+
+  > div {
+    font-size: 0.8em;
+    font-family: $sans-serif;
+  }
+
+  b {
+    font-size: 16px;
+  }
+
+  .form {
+    width: 400px;
+    margin: 0 auto;
+
+    $text-width: 380px;
+
+    .field-label {
+      @include margin-vert($spacing);
+    }
+
+    .field-input {
+      @include float(left);
+      @include margin-right($spacing);
+      margin-bottom: $spacing;
+
+      &.has-error {
+        margin-bottom: 0;
+      }
+    }
+
+    .field-message {
+      width: $text-width;
+
+      .field-message-content {
+        color: white;
+      }
+    }
+
+    .field-hint {
+      width: $text-width;
+      font-size: 12px;
+      margin-top: $spacing;
+      color: black;
+    }
+
+    input[type="text"] {
+      border-radius: 3px;
+      color: $gray-d3;
+      width: 400px;
+      padding: 0 12px;
+    }
+
+    input[type="button"], button {
+      border: 1px solid $gray-d3;
+      font-size: 14px;
+      font-family: $sans-serif;
+    }
+
+    .file-upload {
+      .input-text {
+        width: 230px;
+      }
+
+      .field-message.has-error {
+        margin-top: -1px;
+        width: 210px;
+      }
+
+      .form-btn {
+        margin: 0 0 0 10px;
+        height: 35px;
+        width: 130px;
+        padding: 6px;
+      }
+    }
+  }
+}
