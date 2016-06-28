@@ -59,11 +59,16 @@ define(["domReady", "jquery", "underscore", "js/utils/cancel_on_escape", "js/vie
                 run: run
             };
 
+            // Go into course creating state
+            $('.new-course-save').addClass('is-disabled').attr('aria-disabled', true).addClass('is-processing').html(
+               '<i class="icon fa fa-refresh fa-spin"></i> ' + gettext('Creating a new course')
+            );
+
             analytics.track('Created a Course', course_info);
             CreateCourseUtils.create(course_info, function (errorMessage) {
                 $('.create-course .wrap-error').addClass('is-shown');
                 $('#course_creation_error').html('<p>' + errorMessage + '</p>');
-                $('.new-course-save').addClass('is-disabled').attr('aria-disabled', true);
+                $('.new-course-save').removeClass('is-processing').text('Create');
             });
         };
 
