@@ -182,7 +182,7 @@
       color: $white;
 
       &:after {
-        border-right-color: $blue-d1;
+        @include border-color(transparent, $blue-d1, transparent, transparent);
       }
     }
   }
@@ -206,7 +206,7 @@
       color: $base-font-color;
 
       &:after {
-        border-right-color: $gray-l4;
+        @include border-color(transparent, $gray-l4, transparent, transparent);
       }
     }
   }
@@ -287,6 +287,13 @@
   padding: ($baseline/10) ($baseline/5);
   min-width: 2em; // Fit most comment counts but allow expansion if necessary
   background-color: $gray-l4;
+
+  &.is-unread {
+    background-color: $blue-l3;
+    &:after {
+      @include border-color(transparent, $blue-l3, transparent, transparent);
+    }
+  }
 
   // Speech bubble tail
   &:after {

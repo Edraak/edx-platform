@@ -175,51 +175,15 @@ body.discussion {
   }
 
   .wmd-spacer1 {
-    @include left(50px);
+    left: 50px;
   }
+
   .wmd-spacer2 {
-    @include left(175px);
+    left: 175px;
   }
 
   .wmd-spacer3 {
-    @include left(300px);
-  }
-
-  .wmd-prompt-background {
-    background-color: Black;
-  }
-
-  .wmd-prompt-dialog {
-    @extend .modal;
-    background: $white;
-  }
-
-  .wmd-prompt-dialog {
-    padding: $baseline;
-
-    > div {
-      font-size: 0.8em;
-      font-family: $sans-serif;
-    }
-
-    b {
-      font-size: 16px;
-    }
-
-    > form > input[type="text"] {
-      border-radius: 3px;
-      color: $gray-d3;
-    }
-
-    > form > input[type="button"] {
-      border: 1px solid #888;
-      font-size: 14px;
-      font-family: $sans-serif;
-    }
-
-    > form > input[type="file"] {
-      margin-bottom: 18px;
-    }
+    left: 300px;
   }
 }
 
