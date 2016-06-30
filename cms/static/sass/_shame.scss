@@ -139,6 +139,21 @@ div.wrapper-comp-editor.is-inactive ~ div.launch-latex-compiler{
   }
 }
 
+
+// ====================
+
+// Tiny MCE editor
+// I made this hack that fixes the problem, because I couldn't fix it in a better way.
+// Author: Omar Al-Ithawi
+.mce-window {
+  @media (max-height: 630px) {
+    // Small screens only.
+    @include transform(scale(0.85));
+    @include transform-origin(top);
+  }
+}
+
+
 // ====================
 
 // TODOs:
