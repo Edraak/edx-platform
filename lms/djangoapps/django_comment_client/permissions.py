@@ -84,7 +84,7 @@ def _check_condition(user, condition, content):
         if not content:
             return False
         try:
-            commentable_id = content['commentable_id']
+            commentable_id = content['commentable_id'].encode("utf-8")
             request_cache_dict = RequestCache.get_request_cache().data
             cache_key = "django_comment_client.check_team_member.{}.{}".format(user.id, commentable_id)
             if cache_key in request_cache_dict:
