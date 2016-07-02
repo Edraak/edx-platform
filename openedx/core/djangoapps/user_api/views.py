@@ -165,7 +165,7 @@ class LoginSessionView(APIView):
 class RegistrationView(APIView):
     """HTTP end-points for creating a new user. """
 
-    DEFAULT_FIELDS = ["email", "name", "username", "password"]
+    DEFAULT_FIELDS = ["email", "name", "username", "password", "is_third_party_auth"]
 
     EXTRA_FIELDS = [
         "city",
@@ -355,6 +355,29 @@ class RegistrationView(APIView):
             error_messages={
                 "required": error_msg
             }
+        )
+
+    def _add_is_third_party_auth_field(self, form_desc, required):
+        """
+        Add the hidden third party auth indicator.
+
+        This field is used to detect timed-out social login attempts.
+
+        Arguments:
+            form_desc: A form description
+
+        Keyword Arguments:
+            required (bool): Whether this field is required.
+            * This value is actually ignored, but needed to comply with the caller expected signature.
+
+        """
+
+        form_desc.add_field(
+            "is_third_party_auth",
+            label="",
+            field_type="hidden",
+            default="",
+            required=False,
         )
 
     def _add_name_field(self, form_desc, required=True):
@@ -774,6 +797,12 @@ class RegistrationView(APIView):
                         instructions="",
                         restrictions={}
                     )
+
+                    form_desc.override_field_properties(
+                        "is_third_party_auth",
+                        default="true",
+                    )
+
 
 
 class PasswordResetView(APIView):
