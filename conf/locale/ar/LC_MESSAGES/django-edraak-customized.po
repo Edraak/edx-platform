@@ -2584,6 +2584,14 @@ msgstr ""
 " في مساقات التعلّم الذاتي، تاريخ لتسليم الفروض كما ويُسمح للمتعلّمين التقدّم"
 " في مواد  المساق بأي سرعة وفي أي وقت يسبق نهاية المساق."
 
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid "Discussion Id"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/discussion_module.py
+msgid "The id is a unique identifier for the discussion. It is non editable."
+msgstr ""
+
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Source code for LaTeX documents. This feature is not well-supported."
 msgstr ""
@@ -16196,9 +16204,9 @@ msgstr ""
 msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
 
-#: lms/djangoapps/bulk_email/tasks.py:406
-msgid "\"{course_title}\" Course Staff"
-msgstr "طاقم مساق \"{course_title}\""
+#: lms/djangoapps/courseware/views.py:1568
+msgid "income in US Dollars ($)"
+msgstr "الدخل بالدولار الأمريكي ($)"
 
 #: lms/djangoapps/edraak_bayt/views.py:39
 msgid "Invalid Email"
@@ -16507,6 +16515,13 @@ msgid ""
 msgstr ""
 "الرجاء الرجوع إلى  {forus_link} والمحاولة مجدداً. إذا ظهرت المشكلة مرة أخرى،"
 " تواصل معنا على {email}."
+
+#: lms/templates/instructor/instructor_dashboard_2/certificates.html:81
+msgid ""
+"When you are ready to generate certificates for your course, click Generate "
+"Certificates. You do not need to do this<br/>if you have set the certificate"
+" mode to on-demand generation."
+msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html:108
 msgid ""
@@ -17496,40 +17511,6 @@ msgstr ""
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "General"
 msgstr "عام"
-
-#: common/lib/xmodule/xmodule/discussion_module.py
-msgid "Discussion Id"
-msgstr "رقم المناقشة"
-
-#: common/lib/xmodule/xmodule/discussion_module.py
-msgid "The id is a unique identifier for the discussion. It is non editable."
-msgstr ""
-"الرقم التعريفي هو عبارة عن معرّف فريد من نوعه لتمييز مناقشة معيّنة عن غيرها."
-" وهو غير قابل للتعديل. "
-
-#: common/lib/xmodule/xmodule/discussion_module.py
-msgid "Category"
-msgstr "الفئة"
-
-#: common/lib/xmodule/xmodule/discussion_module.py
-msgid ""
-"A category name for the discussion. This name appears in the left pane of "
-"the discussion forum for the course."
-msgstr ""
-"هو اسم فئة النقاشات. يظهر هذا الاسم على الجانب الأيسر من منتدى النقاشات "
-"الخاص بالمساق."
-
-#: common/lib/xmodule/xmodule/discussion_module.py
-msgid "Subcategory"
-msgstr "فئة فرعية"
-
-#: common/lib/xmodule/xmodule/discussion_module.py
-msgid ""
-"A subcategory name for the discussion. This name appears in the left pane of"
-" the discussion forum for the course."
-msgstr ""
-"اسم الفئة الفرعية في النقاشات. يظهر هذا الاسم في الجانب الأيسر من منتدى "
-"النقاشات الخاص بالمساق."
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
@@ -19024,6 +19005,24 @@ msgstr ""
 "مسار صفحة ’السحب لفحص المراجعة‘ الخاصة بمساق واحد، والمُستضافة من قبل خدمة "
 "التجارة الإلكترونية."
 
+#: lms/djangoapps/commerce/models.py
+#: openedx/core/djangoapps/credentials/models.py
+#: openedx/core/djangoapps/credit/models.py
+#: openedx/core/djangoapps/programs/models.py
+msgid "Cache Time To Live"
+msgstr "مدّة بقاء البيانات في الذاكرة المؤقّتة \"Cache\""
+
+#: lms/djangoapps/commerce/models.py
+#: openedx/core/djangoapps/credentials/models.py
+#: openedx/core/djangoapps/credit/models.py
+#: openedx/core/djangoapps/programs/models.py
+msgid ""
+"Specified in seconds. Enable caching by setting this to a value greater than"
+" 0."
+msgstr ""
+"محدّد بالثواني. فعّل ميزة الاحتفاظ بالبيانات في الذاكرة المؤقتة Cache بتعيين"
+" هذه القيمة لتصبح أكبر من 0."
+
 #: lms/djangoapps/commerce/signals.py
 msgid ""
 "A refund request has been initiated for {username} ({email}). To process "
@@ -19267,10 +19266,6 @@ msgid ""
 msgstr ""
 "اختر المساق الذي ترغب بالحصول على شهادة موثّقة له. في حال لم يظهر المساق ضمن"
 " القائمة، يُرجى التأكّد من أنك قد سجّلت في مسار مراقب لهذا المساق."
-
-#: lms/djangoapps/courseware/views/views.py
-msgid "income in US Dollars ($)"
-msgstr "الدخل بالدولار الأمريكي ($)"
 
 #: lms/djangoapps/courseware/views/views.py
 msgid "Specify your annual household income in US Dollars."
@@ -21746,22 +21741,6 @@ msgstr "فعّل إصدار الوثائق المعتمدة في استديو"
 msgid "Enable authoring of Credential Service credentials in Studio."
 msgstr "فعّل خدمة إصدار الوثائق المُعتمدة في استديو"
 
-#: openedx/core/djangoapps/credentials/models.py
-#: openedx/core/djangoapps/credit/models.py
-#: openedx/core/djangoapps/programs/models.py
-msgid "Cache Time To Live"
-msgstr "مدّة بقاء البيانات في الذاكرة المؤقّتة \"Cache\""
-
-#: openedx/core/djangoapps/credentials/models.py
-#: openedx/core/djangoapps/credit/models.py
-#: openedx/core/djangoapps/programs/models.py
-msgid ""
-"Specified in seconds. Enable caching by setting this to a value greater than"
-" 0."
-msgstr ""
-"محدّد بالثواني. فعّل ميزة الاحتفاظ بالبيانات في الذاكرة المؤقتة Cache بتعيين"
-" هذه القيمة لتصبح أكبر من 0."
-
 #: openedx/core/djangoapps/credit/email_utils.py
 msgid "Course Credit Eligibility"
 msgstr "الأهلية لمواد المساق الدراسيّة"
@@ -22007,10 +21986,10 @@ msgstr "عنوان البريد الإلكتروني الذي استخدمته �
 #. Translators: This label appears above a field on the registration form
 #. meant to hold the user's password.
 #: openedx/core/djangoapps/user_api/views.py cms/templates/login.html
-#: cms/templates/register.html cms/templates/temp-course-landing.html
-#: lms/templates/login.html lms/templates/provider_login.html
-#: lms/templates/register-form.html lms/templates/signup_modal.html
-#: lms/templates/sysadmin_dashboard.html
+#: cms/templates/register.html lms/templates/login.html
+#: lms/templates/provider_login.html lms/templates/register-form.html
+#: lms/templates/signup_modal.html lms/templates/sysadmin_dashboard.html
+#: themes/red-theme/cms/templates/login.html
 #: themes/stanford-style/lms/templates/register-form.html
 msgid "Password"
 msgstr "كلمة المرور"
@@ -22120,6 +22099,30 @@ msgstr "%(min_score)s ليست نسبة درجة صحيحة"
 #: openedx/core/lib/gating/api.py
 msgid "Gating milestone for {usage_key}"
 msgstr "تقييد الإنجاز الهام من أجل {usage_key}"
+
+#: openedx/core/lib/xblock_builtin/xblock_discussion/xblock_discussion.py
+msgid "Category"
+msgstr "الفئة"
+
+#: openedx/core/lib/xblock_builtin/xblock_discussion/xblock_discussion.py
+msgid ""
+"A category name for the discussion. This name appears in the left pane of "
+"the discussion forum for the course."
+msgstr ""
+"هو اسم فئة النقاشات. يظهر هذا الاسم على الجانب الأيسر من منتدى النقاشات "
+"الخاص بالمساق."
+
+#: openedx/core/lib/xblock_builtin/xblock_discussion/xblock_discussion.py
+msgid "Subcategory"
+msgstr "فئة فرعية"
+
+#: openedx/core/lib/xblock_builtin/xblock_discussion/xblock_discussion.py
+msgid ""
+"A subcategory name for the discussion. This name appears in the left pane of"
+" the discussion forum for the course."
+msgstr ""
+"اسم الفئة الفرعية في النقاشات. يظهر هذا الاسم في الجانب الأيسر من منتدى "
+"النقاشات الخاص بالمساق."
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -22877,16 +22880,6 @@ msgstr ""
 "الويب."
 
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html
-msgid ""
-"When you are ready to generate certificates for your course, click Generate "
-"Certificates. You do not need to do this<br/>if you have set the certificate"
-" mode to on-demand generation."
-msgstr ""
-"عندما تكون جاهزًا لإنشاء شهادات مساقك، يٌرجى النقر على زر \"أنشئ الشهادات\"."
-" لست بحاجة للقيام بذلك <br/> إذا كنت قد عيّنت وضع الشهادة على الوضع \"إنشاء "
-"عند الطلب\"."
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 #: lms/templates/instructor/instructor_dashboard_2/e-commerce.html
@@ -22898,14 +22891,6 @@ msgstr "مهام قيد الانتظار"
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html
 msgid "Regenerate Certificates"
 msgstr "إعادة إنشاء الشهادات"
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html
-msgid ""
-"To regenerate certificates for your course, choose the learners who will "
-"receive regenerated certificates and click <br/> Regenerate Certificates."
-msgstr ""
-"لإعادة إنشاء شهادات مساقك، يٌرجى اختيار المتعلّمين الذين سيحصلون على شهادات "
-"أُعيد إنشاؤها ومن ثم النقر على <br/> أعد إنشاء الشهادات."
 
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html
 msgid ""
@@ -23430,51 +23415,6 @@ msgstr ""
 "الذاتي حيث يُسمح للمتعلّمين إتمام مواد المساق في أي وقت قبل تاريخ انتهاء "
 "المساق."
 
-#: cms/templates/temp-course-landing.html
-msgid "Circuits and Electronics"
-msgstr "الدارات والإلكترونيات"
-
-#: cms/templates/temp-course-landing.html
-msgid "Massachusetts Institute of Technology"
-msgstr "معهد ماساتشوستس للتكنولوجيا"
-
-#: cms/templates/temp-course-landing.html
-msgid "Forgot?"
-msgstr "نسيت؟"
-
-#: cms/templates/temp-course-landing.html
-msgid ""
-"Ut laoreet dolore magna aliquam erat volutpat ut wisi enim ad minim veniam "
-"quis nostrud. Est usus legentis in iis qui, facit eorum claritatem "
-"Investigationes demonstraverunt lectores. Vel illum dolore eu feugiat nulla "
-"facilisis at vero eros, et accumsan et iusto? Te feugait nulla facilisi nam "
-"liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming!"
-" Et quinta decima eodem modo typi qui nunc nobis, videntur parum clari fiant"
-" sollemnes in? Diam nonummy nibh euismod tincidunt exerci tation "
-"ullamcorper, suscipit lobortis nisl ut aliquip ex? Nunc putamus parum, "
-"claram anteposuerit litterarum formas humanitatis per seacula quarta decima."
-msgstr ""
-"هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من"
-" مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى"
-" إضافة إلى زيادة عدد الحروف التى يولدها التطبيق، إذا كنت تحتاج إلى عدد أكبر "
-"من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو"
-" مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه "
-"الخصوص، حيث يحتاج العميل فى كثير من الأحيان أن يطلع على صورة حقيقية لتصميم "
-"الموقع، ومن هنا وجب على المصمم أن يضع نصوصا مؤقتة على التصميم ليظهر للعميل "
-"الشكل كاملاً،دور مولد النص العربى أن يوفر على المصمم عناء البحث عن نص بديل "
-"لا علاقة له بالموضوع الذى يتحدث عنه التصميم فيظهر بشكل لا يليق، هذا النص "
-"يمكن أن يتم تركيبه على أي تصميم دون مشكلة فلن يبدو وكأنه نص منسوخ، غير منظم،"
-" غير منسق، أو حتى غير مفهوم. لأنه مازال نصاً بديلاً ومؤقتاً."
-
-#: cms/templates/temp-course-landing.html
-msgid ""
-"Gothica quam nunc putamus parum claram anteposuerit litterarum formas "
-"humanitatis per seacula. Facilisi nam liber tempor cum soluta nobis "
-"eleifend."
-msgstr ""
-"هذا النص يمكن أن يتم تركيبه على أي تصميم دون مشكلة فلن يبدو وكأنه نص منسوخ، "
-"غير منظم، غير منسق، أو حتى غير مفهوم. لأنه مازال نصاً بديلاً ومؤقتاً."
-
 #: cms/templates/videos_index.html
 msgid "Maximum Video File Size"
 msgstr "الحجم الأقصى لملف الفيديو"
@@ -23613,8 +23553,8 @@ msgid "Powered by Open edX"
 msgstr "مدعوم من قبل منصة أوبن إدكس"
 
 #: templates/theme-footer.html:82
-msgid "{copy} 2015 Edraak, Some rights reserved"
-msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
+msgid "{copy} 2016 Edraak, Some rights reserved"
+msgstr " {copy} بعض الحقوق محفوظة ٢٠١٦ إدراك"
 
 #: templates/theme-header.html:55
 msgid "Welcome {full_name}"

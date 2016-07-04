@@ -2685,6 +2685,15 @@ msgstr ""
 msgid "My Team"
 msgstr "فريقي"
 
+#. Translators: sr_start and sr_end surround text meant only for screen
+#. readers.
+#. The whole string will be shown to users as "Browse teams" if they are using
+#. a
+#. screenreader, and "Browse" otherwise.
+#: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
+msgid "Browse %(sr_start)s teams %(sr_end)s"
+msgstr "تصفّح %(sr_start) الفرق %(sr_end)"
+
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Your request could not be completed. Reload the page and try again."
 msgstr ""
@@ -2704,6 +2713,10 @@ msgstr ""
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Team Search"
 msgstr "بحث الفريق"
+
+#: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
+msgid "Showing results for \"%(searchString)s\""
+msgstr "تظهر نتائج البحث ذات الصلة بالعبارة \"%(searchString)\""
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Create a New Team"
@@ -4132,14 +4145,6 @@ msgstr "الحسابات المترابطة"
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Connect your {accountName} account"
 msgstr "اربط حسابك {accountName}"
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid ""
-"We've sent a confirmation message to {new_email_address}. Click the link in "
-"the message to update your email address."
-msgstr ""
-"لقد قمنا بإرسال رسالة تأكيد إلى عنوان البريد الإلكتروني {email_address}. "
-"الرجاء النقر على الرابط المتاح في هذه الرسالة لتحديث عنوان بريدك الإلكتروني."
 
 #: lms/static/js/student_account/views/account_settings_fields.js
 msgid ""
@@ -5769,11 +5774,6 @@ msgid "Update comment"
 msgstr "تحديث التعليق"
 
 #: common/static/common/templates/discussion/response-comment-show.underscore
-#, python-format
-msgid "posted %(time_ago)s by %(author)s"
-msgstr "نُشِر  %(time_ago)s من قِبل %(author)s"
-
-#: common/static/common/templates/discussion/response-comment-show.underscore
 #: common/static/common/templates/discussion/thread-response-show.underscore
 #: common/static/common/templates/discussion/thread-show.underscore
 msgid "Reported"
@@ -6040,6 +6040,11 @@ msgid ""
 msgstr ""
 "<button data-provider=\"%s\" data-course-key=\"%s\" data-username=\"%s\" "
 "class=\"complete-course\" onClick=completeOrder(this)>%s</button>"
+
+#: lms/templates/commerce/receipt.underscore
+#, python-format
+msgid "Thank you! We have received your payment for %(course_name)s."
+msgstr ""
 
 #: lms/templates/commerce/receipt.underscore
 #: lms/templates/verify_student/payment_confirmation_step.underscore
@@ -7237,6 +7242,7 @@ msgstr ""
 msgid "Verified Certificate for %(courseName)s"
 msgstr ""
 
+#: cms/static/cms/js/xblock/cms.runtime.v1.js
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 #: cms/static/js/certificates/views/signatory_details.js
@@ -7246,10 +7252,9 @@ msgstr ""
 #: cms/static/js/views/course_info_update.js
 #: cms/static/js/views/edit_textbook.js
 #: cms/static/js/views/list_item_editor.js
-#: cms/static/js/views/modals/edit_xblock.js
-#: cms/static/js/views/overview_assignment_grader.js
-#: cms/static/js/views/utils/xblock_utils.js lms/static/js/ccx/schedule.js
-#: lms/static/js/views/fields.js
+#: cms/static/js/views/modals/edit_xblock.js cms/static/js/views/tabs.js
+#: cms/static/js/views/tabs.js.c cms/static/js/views/utils/xblock_utils.js
+#: lms/static/js/ccx/schedule.js lms/static/js/views/fields.js
 msgid "Saving"
 msgstr "يجري الحفظ"
 
@@ -7349,10 +7354,6 @@ msgstr ""
 "زر الإرسال \"ENTER\""
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Open language menu."
-msgstr "فتح  قائمة اللغة."
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Hide closed captions"
 msgstr "إخفاء العناوين الفرعيّة التي جرى إغلاقها"
 
@@ -7432,23 +7433,10 @@ msgstr "النشاط الأخير بتاريخ %(date)s"
 msgid "Teams Pagination"
 msgstr "ترقيم صفحات الفِرق"
 
-#. Translators: sr_start and sr_end surround text meant only for screen
-#. readers.
-#. The whole string will be shown to users as "Browse teams" if they are using
-#. a
-#. screenreader, and "Browse" otherwise.
-#: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
-msgid "Browse %(sr_start)s teams %(sr_end)s"
-msgstr "تصفّح %(sr_start)s الفرق %(sr_end)s"
-
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid ""
 "Your request could not be completed due to a server problem. Reload the page"
 msgstr "تعذر استكمال طلبك بسبب مشكلة في الخادم. قم بإعادة تحميل الصفحة"
-
-#: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
-msgid "Showing results for \"%(searchString)s\""
-msgstr "تظهر نتائج البحث ذات الصلة بالعبارة \"%(searchString)s\""
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error generating ORA data report. Please try again."
@@ -7724,11 +7712,6 @@ msgstr "معلومات الحساب الأساسية"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
-"These settings include basic information about your account. You can also "
-msgstr "هذه الإعدادات تحتوي على معلومات حسابك الأساسية. يمكنك أيضاً"
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
 "The name that is used for ID verification and appears on your certificates. "
 "Other learners never see your full name. Make sure to enter your name "
 "exactly as it appears on your government-issued photo ID, including any non-"
@@ -7743,10 +7726,6 @@ msgid "Reset Your Password"
 msgstr "غير كلمة سر حسابك"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
-msgid "When you click \"Reset Your Password\", edX will send a message "
-msgstr "ستصلك رسالة على بريدك الإلكتروني  عند النقر على \"إعادة ضبط كلمة السر\""
-
-#: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Additional Information"
 msgstr "معلومات إضافية"
 
@@ -7755,29 +7734,14 @@ msgstr "معلومات إضافية"
 msgid "Linked Accounts"
 msgstr "الحسابات المربوطة"
 
-#: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"You can link your social media accounts to your edX account to make signing "
-"in to edx.org "
-msgstr ""
-"يمكنك ربط حساباتك على شبكات التواصل الاجتماعي بهذا الحساب لتسهيل عملية تسجيل"
-" الدخول لاحقاً"
-
 #: lms/static/js/student_account/views/account_settings_fields.js
 msgid ""
 "We've sent a confirmation message to {new_email_address}. Click the link in "
-"the "
+"the message to update your email address."
 msgstr ""
-"قمنا بإرسال رسالة تأكيد إلى {new_email_address}. قم بالنقر على الرابط "
-"الموجود في"
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid ""
-"We've sent a message to {email_address}. Click the link in the message to "
-"reset "
-msgstr ""
-"قمنا بإرسال رسالة إلى {new_email_address}. قم بالنقر على الرابط الموجود في "
-"الرسالة للتغيير"
+"لقد قمنا بإرسال رسالة تأكيد إلى عنوان البريد الإلكتروني {new_email_address}."
+" الرجاء النقر على الرابط المتاح في هذه الرسالة لتحديث عنوان بريدك "
+"الإلكتروني."
 
 #: lms/static/js/student_account/views/account_settings_fields.js
 msgid "Link your {accountName} account"
@@ -7788,20 +7752,12 @@ msgid "Unlink This Account"
 msgstr "افصل هذا الحساب"
 
 #: lms/static/js/student_account/views/account_settings_fields.js
-msgid "You can use your {accountName} account to sign in to your edX account."
-msgstr "يمكنك استخدام حسابك على {accountName} لتسجيل الدخول إلى حسابك."
-
-#: lms/static/js/student_account/views/account_settings_fields.js
 msgid "Unlink your {accountName} account"
 msgstr "افصل حسابك على {accountName}"
 
 #: lms/static/js/student_account/views/account_settings_fields.js
 msgid "Link Your Account"
 msgstr "اربط حسابك"
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid "Link your {accountName} account to your edX account and "
-msgstr "اربط حسابك على {accountName} بهذا الحساب و"
 
 #: lms/static/js/student_account/views/account_settings_view.js
 msgid "Account Information"
@@ -7955,6 +7911,7 @@ msgstr "غير مجدوَل"
 #: cms/templates/js/edit-chapter.underscore
 #: lms/templates/ccx/schedule.underscore
 #: lms/templates/commerce/receipt.underscore
+#: lms/templates/learner_dashboard/course_card.underscore
 #: lms/templates/learner_dashboard/program_card.underscore
 msgid "gettext("
 msgstr "وظيفة gettext("
@@ -8004,6 +7961,11 @@ msgid ""
 msgstr ""
 "يمكن لمشرفي النقاشات ومشرفي المنتدى ومساعدي الأساتذة أن يجعلوا منشوراتهم "
 "مرئيّة لجميع الطلاب أو لشعب معيّنة يحدّدوها."
+
+#: common/static/common/templates/discussion/response-comment-show.underscore
+#, python-format
+msgid "posted %(time_ago)s by %(author)s"
+msgstr "منشور %(author)s بواسطة %(time_ago)s"
 
 #: common/static/common/templates/discussion/thread-list-item.underscore
 #: common/static/common/templates/discussion/thread-response-show.underscore
@@ -8298,12 +8260,6 @@ msgstr ""
 #: lms/templates/commerce/provider.underscore
 msgid "Get Credit"
 msgstr "احصل على مادّة دراسية"
-
-#: lms/templates/commerce/receipt.underscore
-#, python-format
-msgid "Thank you! We have received your payment for %(course_name)s."
-msgstr ""
-"شكرًا جزيلًا! لقد استلمنا المبلغ الذي سددته لقاء المشاركة في %(course_name)s"
 
 #: lms/templates/commerce/receipt.underscore
 msgid "/verify_student/verify-now/{courseKey}/"
@@ -8669,28 +8625,12 @@ msgstr ""
 " الآن."
 
 #: lms/templates/learner_dashboard/program_header_view.underscore
+msgid "{organization}\\'s logo"
+msgstr "شعار ال{organization}"
+
+#: lms/templates/learner_dashboard/program_header_view.underscore
 msgid "Programs"
 msgstr "البرامج"
-
-#: lms/templates/learner_dashboard/program_header_view.underscore
-msgid "{category}\\'s program"
-msgstr "برامج ال{category}"
-
-#: lms/templates/learner_dashboard/program_header_view.underscore
-msgid "{organization}\\'s logo"
-msgstr "شعار ال{category}"
-
-#: lms/templates/learner_dashboard/program_header_view.underscore
-msgid ""
-"To complete the {program} XSeries and earn an XSeries Certificate you must "
-"successfully earn a Verified Certificate in all courses shown below."
-msgstr ""
-"يجب أن تحصل على شهادة موقة في جميع المساقات الموضحة في الأسفل لإكمال سلسة "
-"مساقات {program} والحصول على شهادة إتمام هذه السلسلة."
-
-#: lms/templates/student_account/account_settings_section.underscore
-msgid "section.subtitle"
-msgstr "section.subtitle"
 
 #: lms/templates/student_profile/badge.underscore
 #, python-format
