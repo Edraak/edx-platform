@@ -5,13 +5,15 @@
 # Translators:
 # qrfahasan <ahasan@qrf.org>, 2015
 # Ahmed Jazzar <ajazzar@qrf.org>, 2015
+# Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # Areej Huniti <ahuniti@qrf.org>, 2015
+# Sherif Halawa <shalawa@qrf.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-06-07 10:51+0300\n"
-"PO-Revision-Date: 2015-10-18 10:42+0000\n"
+"POT-Creation-Date: 2016-06-29 12:10+0300\n"
+"PO-Revision-Date: 2016-06-29 09:33+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -57,8 +59,8 @@ msgid "Powered by Open edX"
 msgstr "مدعوم من قبل منصة أوبن إدكس"
 
 #: templates/theme-footer.html:82
-msgid "{copy} 2015 Edraak, Some rights reserved"
-msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
+msgid "{copy} 2016 Edraak, Some rights reserved"
+msgstr " {copy} بعض الحقوق محفوظة ٢٠١٦ إدراك"
 
 #: templates/theme-header.html:55
 msgid "Welcome {full_name}"
