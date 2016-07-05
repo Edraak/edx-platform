@@ -1,0 +1,2 @@
+# Use our fork to support `COUNTRIES_FIRST_SORT`
+-e git+https://github.com/Edraak/django-countries.git@a801b4b54f699da70bac2621ad5611d0adf4f14c#egg=django-countries
