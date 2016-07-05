@@ -2481,14 +2481,45 @@ ANALYTICS_DASHBOARD_NAME = PLATFORM_NAME + " Insights"
 INVOICE_CORP_ADDRESS = "Please place your corporate address\nin this configuration"
 INVOICE_PAYMENT_INSTRUCTIONS = "This is where you can\nput directions on how people\nbuying registration codes"
 
+# Settings for django-countries
 # Country code overrides
-# Used by django-countries
 COUNTRIES_OVERRIDE = {
     # Taiwan is specifically not translated to avoid it being translated as "Taiwan (Province of China)"
     "TW": "Taiwan",
     "IL": None,
     "EH": None,
 }
+
+
+# Show the Arabic countries first
+COUNTRIES_FIRST = [
+    'DZ',
+    'BH',
+    'KM',
+    'DJ',
+    'EG',
+    'IQ',
+    'JO',
+    'KW',
+    'LB',
+    'LY',
+    'MR',
+    'MA',
+    'OM',
+    'PS',
+    'QA',
+    'SA',
+    'SO',
+    'SD',
+    'SY',
+    'TN',
+    'AE',
+    'YE',
+]
+
+COUNTRIES_FIRST_SORT = True  # Since the order depends on the name after translation
+
+COUNTRIES_FIRST_BREAK = '--'
 
 # which access.py permission name to check in order to determine if a course is visible in
 # the course catalog. We default this to the legacy permission 'see_exists'.
