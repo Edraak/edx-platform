@@ -1,14 +1,18 @@
 """
 Edraak internationalization tasks
 """
+import tempfile
+import os
 from path import path
 import yaml
-from paver.easy import task, needs, sh, call_task, BuildFailure
+from paver.easy import task, needs, sh, BuildFailure
 import polib
 from git import Repo
-import os
 import contextlib
 from shutil import copyfile
+from polib import pofile, POFile
+from txclib.project import Project
+import openassessment
 
 from .utils.cmd import django_cmd
 
@@ -16,6 +20,20 @@ EDRAAK_RESOURCES = (
     'edraak-platform',
     'edraak-platform-2015-theme',
 )
+
+
+POFILE_DUMMY_METADATA = {
+    'Project-Id-Version': 'Edraak 1',
+    'Report-Msgid-Bugs-To': 'dev@qrf.org',
+    'POT-Creation-Date': '2014-12-15 11:17+0200',
+    'PO-Revision-Date': 'YEAR-MO-DA HO:MI+ZONE',
+    'Last-Translator': 'Edraak Dev <dev@qrf.org>',
+    'Language-Team': 'Edraak Dev <dev@qrf.org>',
+    'MIME-Version': '1.0',
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Content-Transfer-Encoding': '8bit',
+    'Generated-By': 'Paver',
+}
 
 ARABIC_LOCALE_DIR = 'conf/locale/ar/LC_MESSAGES/'
 
@@ -34,6 +52,33 @@ def working_directory(path):
     os.chdir(path)
     yield
     os.chdir(prev_cwd)
+
+
+@contextlib.contextmanager
+def get_tx_pofile(resource):
+    """
+    Retrieves reviewed translations from Transifex into a temporary pofile.
+    :param resource:
+    :return: POFile
+    """
+    try:
+        p = Project()
+        p.url_info = {
+            'host': 'https://www.transifex.com',
+            'project': 'edx-platform',
+            'resource': resource,
+        }
+
+        content, encoding = p.do_url_request('pull_reviewed_file', language='ar')
+
+        __, content_path = tempfile.mkstemp(suffix='.po')
+
+        with open(content_path, 'w') as content_fd:
+            content_fd.write(content.encode(encoding))
+
+        yield pofile(content_path)
+    finally:
+        os.remove(content_path)
 
 
 def js_nonjs(func):
@@ -117,6 +162,7 @@ def i18n_edraak_generate_files(is_js, suffix):
 
         resources = [
             'edraak{}-platform'.format(suffix),
+            'django{}-openassessment-updates'.format(suffix),
             'django{}-updates'.format(suffix),
         ]
 
@@ -202,6 +248,7 @@ def i18n_make_updates(is_js, suffix):
     'pavelib.i18n.i18n_clean',
     'pavelib.edraak.i18n_po_pull_edx',
     'pavelib.edraak.i18n_po_pull_edraak',
+    'pavelib.edraak.i18n_edraak_ora_pull',
     'pavelib.edraak.i18n_make_updates',
     'pavelib.edraak.i18n_edraak_generate_files',
 )
@@ -215,6 +262,9 @@ def i18n_edraak_pull():
 
         'django-edraak-customized.po',
         'djangojs-edraak-customized.po',
+
+        'django-openassessment-updates.po',
+        'djangojs-openassessment-updates.po',
 
         'django-updates.po',
         'djangojs-updates.po',
@@ -287,20 +337,9 @@ def i18n_edraak_push(is_js, suffix):
         if edraak_specific_path.exists():
             edraak_specific_path.unlink()
 
-        edraak_specific = polib.POFile()
+        edraak_specific = POFile()
 
-        edraak_specific.metadata = {
-            'Project-Id-Version': 'Edraak 1',
-            'Report-Msgid-Bugs-To': 'dev@qrf.org',
-            'POT-Creation-Date': '2014-12-15 11:17+0200',
-            'PO-Revision-Date': 'YEAR-MO-DA HO:MI+ZONE',
-            'Last-Translator': 'Edraak Dev <dev@qrf.org>',
-            'Language-Team': 'Edraak Dev <dev@qrf.org>',
-            'MIME-Version': '1.0',
-            'Content-Type': 'text/plain; charset=utf-8',
-            'Content-Transfer-Encoding': '8bit',
-            'Generated-By': 'Paver',
-        }
+        edraak_specific.metadata = POFILE_DUMMY_METADATA
 
         for po_path in partial_pofiles:
             print 'processing', po_path
@@ -317,3 +356,25 @@ def i18n_edraak_push(is_js, suffix):
         edraak_specific.save(edraak_specific_path)
 
         sh('tx push -l en -s -r edraak.edraak{}-platform'.format(suffix))
+
+
+@task
+@js_nonjs
+def i18n_edraak_ora_pull(is_js, suffix):
+    module_dir = path(openassessment.__file__).dirname()
+    current_pofile = pofile(module_dir / 'locale/ar/LC_MESSAGES/django{}.po'.format(suffix))
+
+    resource_name = 'openassessment-js' if is_js else 'openassessment'
+
+    new_pofile = POFile()
+
+    with get_tx_pofile(resource_name) as latest_pofile:
+        for entry in current_pofile:
+            if not entry.translated():
+                translated_entry = latest_pofile.find(entry.msgid)
+
+                if translated_entry and translated_entry.translated():
+                    new_pofile.append(translated_entry)
+
+    with working_directory(ARABIC_LOCALE_DIR):
+        new_pofile.save('django{}-openassessment-updates.po'.format(suffix))
