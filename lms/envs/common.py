@@ -2485,7 +2485,7 @@ INVOICE_PAYMENT_INSTRUCTIONS = "This is where you can\nput directions on how peo
 # Country code overrides
 COUNTRIES_OVERRIDE = {
     # Taiwan is specifically not translated to avoid it being translated as "Taiwan (Province of China)"
-    "TW": "Taiwan",
+    # "TW": "Taiwan",   # Edraak: We are not overriding Taiwan anymore, because we want it to be translated
     "IL": None,
     "EH": None,
 }
