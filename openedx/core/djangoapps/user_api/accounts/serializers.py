@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
 from openedx.core.djangoapps.user_api.serializers import ReadOnlyFieldsSerializerMixin
+from django.utils.translation import ugettext as _
 
 from student.models import UserProfile, LanguageProficiency
 from ..models import UserPreference
@@ -188,6 +189,20 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer, Rea
         if len(language_proficiencies) != len(unique_language_proficiencies):
             raise serializers.ValidationError("The language_proficiencies field must consist of unique languages")
         return value
+
+    def validate(self, attrs):
+        extra_fields = settings.REGISTRATION_EXTRA_FIELDS
+        validation_errors = {}
+
+        for field, option in extra_fields.iteritems():
+            if field in attrs:
+                if 'required' == option and not attrs[field]:
+                    validation_errors[field] = _("This field is required.")
+
+        if validation_errors:
+            raise serializers.ValidationError(validation_errors)
+
+        return attrs
 
     def transform_gender(self, user_profile, value):  # pylint: disable=unused-argument
         """ Converts empty string to None, to indicate not set. Replaced by to_representation in version 3. """
