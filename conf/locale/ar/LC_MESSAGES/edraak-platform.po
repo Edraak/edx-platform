@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2016-06-29 09:18+0000\n"
-"Last-Translator: Sherif Halawa <shalawa@qrf.org>\n"
+"PO-Revision-Date: 2016-07-14 03:49+0000\n"
+"Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,99 +21,65 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: common/djangoapps/course_modes/models.py:657
-msgid ""
-"The time period before a course ends in which a course mode will expire"
-msgstr ""
-
-#: common/djangoapps/student/edraak_validation.py:15
+#: common/djangoapps/student/edraak_validation.py:18
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "يرجى إدخال ٣٠ حرفاً أول أقل. يُسمح باستخدام الحروف والأرقام بالإضافة للرموز التالية: @ . + - _ فقط."
 
-#: common/djangoapps/student/edraak_validation.py:18
+#: common/djangoapps/student/edraak_validation.py:21
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
 msgstr "يُسمح باستخدام الحروف والأرقام بالإضافة للرموز التالية: @ . + - _ فقط."
 
-#: common/djangoapps/student/edraak_validation.py:25
+#: common/djangoapps/student/edraak_validation.py:41
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
 msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
-#: common/djangoapps/student/views.py:1206
+#: common/djangoapps/student/views.py:1050
+msgid ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minute."
+msgid_plural ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1082
+msgid "Too many failed login attempts. Try again in {number} minute."
+msgid_plural "Too many failed login attempts. Try again in {number} minutes."
+msgstr[0] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[1] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[2] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[3] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقائق."
+msgstr[4] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[5] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+
+#: common/djangoapps/student/views.py:1174
 msgid ""
 "If you're unable to find the password reset email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
 "filtered."
 msgstr "حاول البحث في صندوق البريد المهمل (spam/junk) إن لم تتمكن من إيجاد بريد إعادة ضبط كلمة السر في صندوق البريد الوارد."
 
-#: common/djangoapps/util/views.py:119
+#: common/djangoapps/util/views.py:72
 msgid "Invalid syntax"
 msgstr "تعبيرٌ رياضيٌ خاطئ"
 
-#: common/lib/xmodule/xmodule/video_module/video_xfields.py:177
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:178
 msgid ""
 "The default assumption is all the videos have sign-language enabled. This "
 "option allows the course authors to provide alternative video without sign-"
 "language subtitling."
 msgstr "على افتراض أن جميع الفيديوهات مترجمة بلغة الإشارة. بواسطة هذا الخيار تستطيع أن تضيف فيديو بديل بدون لغة الإشارة."
 
-#: common/lib/xmodule/xmodule/video_module/video_xfields.py:179
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:180
 msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
-
-#: lms/djangoapps/courseware/views.py:1416
-msgid ""
-"{platform_name} now offers financial assistance for learners who want to earn Verified Certificates but who may not be able to pay the Verified Certificate fee. Eligible learners may receive up to 90{percent_sign} off the Verified Certificate fee for a course.\n"
-"To apply for financial assistance, enroll in the audit track for a course that offers Verified Certificates, and then complete this application. Note that you must complete a separate application for each course you take.\n"
-" We plan to use this information to evaluate your application for financial assistance and to further develop our financial assistance program."
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1429
-msgid "Annual Household Income"
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1431
-msgid ""
-"Tell us about your current financial situation. Why do you need assistance?"
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1434
-msgid ""
-"Tell us about your learning or professional goals. How will a Verified "
-"Certificate in this course help you achieve these goals?"
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1438
-msgid ""
-"Tell us about your plans for this course. What steps will you take to help "
-"you complete the course work and receive a certificate?"
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1441
-msgid "Use between 250 and 500 words or so in your response."
-msgstr "فليكن ردك يحتوي على ٢٥٠ إلى ٥٠٠ كلمة."
-
-#: lms/djangoapps/courseware/views.py:1559
-msgid ""
-"Select the course for which you want to earn a verified certificate. If the "
-"course does not appear in the list, make sure that you have enrolled in the "
-"audit track for the course."
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1568
-msgid "income in US Dollars ($)"
-msgstr "الدخل بالدولار الأمريكي ($)"
-
-#: lms/djangoapps/courseware/views.py:1572
-msgid "Specify your annual household income in US Dollars."
-msgstr ""
-
-#: lms/djangoapps/courseware/views.py:1617
-msgid ""
-"I allow edX to use the information provided in this application (except for "
-"financial information) for edX marketing purposes."
-msgstr ""
 
 #: lms/djangoapps/edraak_bayt/views.py:39
 msgid "Invalid Email"
@@ -123,31 +89,31 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:282
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:284
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:285
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:287
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:295
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:299
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:301
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:305
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:307
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:316
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:318
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -242,32 +208,6 @@ msgstr "{username} سجل في مساق {course_id}"
 msgid "{course_id} course confirmation code"
 msgstr "رمز تسجيل {course_id}"
 
-#: lms/djangoapps/instructor/views/api.py:2843
-msgid ""
-"The record is not in the correct format. Please add a valid username or "
-"email address."
-msgstr ""
-
-#: lms/djangoapps/instructor/views/api.py:2847
-msgid ""
-"Student username/email field is required and can not be empty. Kindly fill "
-"in username/email and then press \"Add to Exception List\" button."
-msgstr ""
-
-#: lms/djangoapps/instructor/views/api.py:2852
-msgid ""
-"{user} does not exist in the LMS. Please check your spelling and retry."
-msgstr ""
-
-#: lms/djangoapps/instructor/views/api.py:2856
-msgid ""
-"{user} is not enrolled in this course. Please check your spelling and retry."
-msgstr ""
-
-#: lms/djangoapps/instructor/views/api.py:2953
-msgid "user \"{user}\" in row# {row}"
-msgstr ""
-
 #: lms/templates/registration/password_reset_email.html:4
 #, python-format
 msgid ""
@@ -276,7 +216,7 @@ msgid ""
 msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعادة ضبط كلمة السر الخاصة بك على %(platform_name)s."
 
 #: openedx/core/djangoapps/user_api/views.py:80
-#: openedx/core/djangoapps/user_api/views.py:344
+#: openedx/core/djangoapps/user_api/views.py:342
 msgid "Please enter your Email."
 msgstr "يُرجى إدخال البريد الإلكتروني."
 
@@ -284,56 +224,47 @@ msgstr "يُرجى إدخال البريد الإلكتروني."
 msgid "Please enter your password."
 msgstr "يُرجى إدخالُ كلمة المرور."
 
-#: openedx/core/djangoapps/user_api/views.py:382
+#: openedx/core/djangoapps/user_api/views.py:380
 msgid "Please enter your Full name."
 msgstr "يُرجى إدخال الاسم الكامل."
 
-#: openedx/core/djangoapps/user_api/views.py:422
+#: openedx/core/djangoapps/user_api/views.py:420
 msgid "Please enter your Username."
 msgstr "يُرجى إدخال اسم المستخدم."
 
-#: openedx/core/djangoapps/user_api/views.py:452
+#: openedx/core/djangoapps/user_api/views.py:450
 msgid "Please enter your Password."
 msgstr "يُرجى إدخال كلمة السر."
 
-#: openedx/core/djangoapps/user_api/views.py:531
+#: openedx/core/djangoapps/user_api/views.py:479
+msgid "Please enter your Highest level of education completed"
+msgstr "يُرجى اختيار أعلى مستوى تعليمي وصلت إليه"
+
+#: openedx/core/djangoapps/user_api/views.py:510
+msgid "Please enter your Gender."
+msgstr "يُرجى اختيار الجنس."
+
+#: openedx/core/djangoapps/user_api/views.py:541
 msgid "Please enter your Year of birth."
 msgstr "يُرجى إدخال سنة الميلاد."
 
-#: cms/djangoapps/contentstore/views/course.py:749
-msgid ""
-"You must link this course to an organization in order to continue. "
-"Organization you selected does not exist in the system, you will need to add"
-" it to the system"
-msgstr ""
+#: cms/djangoapps/contentstore/views/import_export.py:252
+msgid "Could not find the {0} file in the package."
+msgstr "لم يتم العثور على الملف {0} في الملف المضغوط."
 
-#: common/templates/course_modes/choose.html:82
-msgid ""
-"Become eligible for academic credit and highlight your new skills and "
-"knowledge with a verified certificate. Use this valuable credential to "
-"qualify for academic credit, advance your career, or strengthen your school "
-"applications."
-msgstr ""
+#: lms/templates/dashboard.html:92
+msgid "My Courses"
+msgstr "مساقاتي"
 
-#: common/templates/course_modes/choose.html:148
-msgid ""
-"Audit this course for free and have complete access to all the course "
-"material, activities, tests, and forums."
-msgstr ""
+#. Translators: Missing from Transifex, so marking it as Edraak-specific to
+#. override
+#: lms/templates/dashboard.html:181
+msgid "Want to change your account settings?"
+msgstr "هل تريد تغيير إعدادات حسابك؟"
 
-#: common/templates/course_modes/choose.html:166
-msgid "Audit This Course (No Certificate)"
-msgstr ""
-
-#. Translators: b_start notes the beginning of a section of text bolded for
-#. emphasis, and b_end marks the end of the bolded text.
-#: common/templates/course_modes/choose.html:169
-msgid ""
-"Audit this course for free and have complete access to all the course "
-"material, activities, tests, and forums.  {b_start}Please note that this "
-"track does not offer a certificate for learners who earn a passing "
-"grade.{b_end}"
-msgstr ""
+#: lms/templates/dashboard.html:183
+msgid "Click on your username above."
+msgstr "اضغط على اسمك في الشريط العلوي."
 
 #: lms/templates/bayt/callback.html:15
 msgid "Bayt.com Account Activation"
@@ -365,31 +296,25 @@ msgid ""
 "sometimes spam) for the address '{email}', and click the activation link."
 msgstr "تم إرسال رسالة التفعيل. يرجى الضغط على رابط التفعيل الموجود في الرسالة في صندوق بريد '{email}'. إن لم تجد الرسالة في صندوق الوارد، فابحث في صندوق الرسائل المهملة (أو Spam)."
 
-#: lms/templates/ccx/schedule.html:49
-msgid "Time"
-msgstr ""
-
-#: lms/templates/ccx/schedule.html:99 lms/templates/ccx/schedule.html:114
-msgid "yyyy-mm-dd"
-msgstr ""
-
-#: lms/templates/ccx/schedule.html:102 lms/templates/ccx/schedule.html:117
-msgid "time"
-msgstr ""
-
-#. Translators: link_to_provider_site is a link to an external webpage. The
-#. text of the link will be the name of a  credit provider, such as 'State
-#. University' or 'Happy Fun Company'.
-#: lms/templates/dashboard/_dashboard_credit_info.html:31
+#: lms/templates/bayt/verification_email.txt:3
 msgid ""
-"Thank you for your payment. To receive course credit, you must now request "
-"credit at the {link_to_provider_site} website. Select <b>Request Credit</b> "
-"to get started."
-msgstr ""
+"Thank you for posting your certificate on Bayt.com \n"
+"To proceed in process please click on the link below"
+msgstr "شكراً على نشر شهادتك على موقع بيت.كوم. بإمكانك الضغط على الرابط أدناه للمتابعة."
 
-#: lms/templates/dashboard/_dashboard_credit_info.html:36
-msgid "Request Credit"
-msgstr ""
+#: lms/templates/courseware/progress.html:62
+msgid ""
+"You can now access your certificate. If you keep working and receive a "
+"higher grade, you can request an updated certificate."
+msgstr "يمكنك الآن تحميل شهادة إتمام المساق، وإن اجتهدت وحصلت على علامة أعلى سيكون بإمكانك طلب تحديث شهادتك."
+
+#. Translators: Missing from Transifex, so marking it as Edraak-specific to
+#. override
+#: lms/templates/dashboard/_dashboard_course_listing.html:205
+#: lms/templates/dashboard/_dashboard_course_listing.html:211
+#, python-format
+msgid "Are you sure you want to unenroll from %(course_number)s?"
+msgstr "أأنت متأكد من رغبتك في الانسحاب من %(course_number)s؟ "
 
 #: lms/templates/edraak_certificates/_dashboard_certificate_link.html:12
 msgid "Issue Certificate"
@@ -488,119 +413,18 @@ msgid ""
 "email us at {email}."
 msgstr "الرجاء الرجوع إلى  {forus_link} والمحاولة مجدداً. إذا ظهرت المشكلة مرة أخرى، تواصل معنا على {email}."
 
-#: lms/templates/financial-assistance/financial-assistance.html:12
-msgid "Financial Assistance Application"
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:19
-msgid "A Note to Learners"
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:20
-msgid "Dear edX Learner,"
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:21
-msgid ""
-"EdX Financial Assistance is a program we created to give learners in all "
-"financial circumstances a chance to earn a Verified Certificate upon "
-"successful completion of an edX course."
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:22
-msgid ""
-"If you are interested in working toward a Verified Certificate, but cannot "
-"afford to pay the fee, please apply now. Please note that financial "
-"assistance is limited and may not be awarded to all eligible candidates."
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:23
-msgid ""
-"In order to be eligible for edX Financial Assistance, you must demonstrate "
-"that paying the Verified Certificate fee would cause you economic hardship. "
-"To apply, you will be asked to answer a few questions about why you are "
-"applying and how the Verified Certificate will benefit you."
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:24
-msgid ""
-"If your application is approved, we'll give you instructions for verifying "
-"your identity on edx.org so you can start working toward completing your edX"
-" course."
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:25
-msgid ""
-"EdX is committed to making it possible for you to take high quality courses "
-"from leading institutions regardless of your financial situation, earn a "
-"Verified Certificate, and share your success with others."
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:26
-msgid "Sincerely, Anant"
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:34
-msgid "Back to Student FAQs"
-msgstr ""
-
-#: lms/templates/financial-assistance/financial-assistance.html:36
-msgid "Apply for Financial Assistance"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:81
-msgid ""
-"When you are ready to generate certificates for your course, click Generate "
-"Certificates. You do not need to do this<br/>if you have set the certificate"
-" mode to on-demand generation."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:108
-msgid ""
-"To regenerate certificates for your course, chose the learners who will "
-"receive regenerated certificates and click <br/> Regenerate Certificates."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:113
-msgid ""
-"Regenerate for learners who have already received certificates. ({count})"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:118
-msgid "Regenerate for learners who have not received certificates. ({count})"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:123
-msgid "Regenerate for learners in an error state. ({count})"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:134
-msgid "Certificate Generation History"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:159
-msgid "SET CERTIFICATE EXCEPTIONS"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:161
-msgid ""
-"Set exceptions to generate certificates for learners who did not qualify for"
-" a certificate but have been given an exception by the course team. After "
-"you add learners to the exception list, click Generate Exception "
-"Certificates below."
-msgstr ""
-
 #: lms/templates/registration/activate_account_notice.html:5
-msgid "Just one more step to start learning with us!"
-msgstr "بقيت خطوة واحدة لإنشاء حسابك!"
+msgid "Just one more step!"
+msgstr "تبقت خطوة واحدة لإنشاء حسابك!"
 
 #: lms/templates/registration/activate_account_notice.html:7
 msgid ""
-"To activate your account, please click the link in the activation email "
-"which has been sent to {email}."
-msgstr "تفقد بريدك الإلكتروني {email}  لتفعيل حسابك عبر الضغط على رابط التفعيل الذي ستجده في رسالة تحت اسم \"فعِّل حسابك على إدراك\"."
+"We've sent an account activation message to {email}. To activate your "
+"account on Edraak and start enrolling in courses, click the link in the "
+"message."
+msgstr "تم إسال رابط تفعيل الحساب إلى {email}. للبدء بالتعلم عبر إدراك والتسجيل في المساقات قم بالنقر على رابط التفعيل الموجود في الرسالة المرسلة."
 
-#: lms/templates/registration/activate_account_notice.html:15
+#: lms/templates/registration/activate_account_notice.html:17
 msgid ""
 "If you're unable to find the activation email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
@@ -610,7 +434,3 @@ msgstr "إن لم تجد الرسالة في الصندوق الوارد، تف�
 #: lms/templates/registration/password_reset_subject.txt:6
 msgid "Password reset on {platform_name}"
 msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
-
-#: cms/templates/index.html:82
-msgid "Note: The organization name is part of the course URL"
-msgstr " إن لم تجد الرسالة في الصندوق الوارد؛ تفقد الرسائل المزعجة/غير المرغوب فيها أو البريد الغير هام. "
