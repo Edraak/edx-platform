@@ -5369,10 +5369,6 @@ msgstr "ندعم تحميل ملفّات بصيغة .tar.gz فقط."
 msgid "File upload corrupted. Please try again"
 msgstr "نأسف لفشل تحميل الملف. يُرجى المحاولة مجدّدًا."
 
-#: cms/djangoapps/contentstore/views/import_export.py
-msgid "Could not find the {0} file in the package."
-msgstr "نأسف لتعذّر إيجاد الملف {0} في الحزمة."
-
 #: cms/djangoapps/contentstore/views/item.py
 msgid "Invalid data"
 msgstr "بيانات غير صالحة"
@@ -5876,10 +5872,6 @@ msgstr "اعرف المزيد"
 #: lms/templates/course.html
 msgid "Starts"
 msgstr "البداية"
-
-#: lms/templates/dashboard.html
-msgid "My Courses"
-msgstr "مساقاتي"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't enrolled in any courses yet."
@@ -6595,10 +6587,6 @@ msgstr "إعادة الضبط"
 #: lms/templates/verify_student/face_upload.html
 msgid "Save"
 msgstr "حفظ"
-
-#: lms/templates/problem.html
-msgid "You have used {num_used} of {num_total} submissions"
-msgstr "لقد استخدمتَ {num_used} تقديمات من أصل {num_total}"
 
 #: lms/templates/provider_login.html
 msgid "Log In"
@@ -16161,24 +16149,48 @@ msgid ""
 "#%(r2)d"
 msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة #%(r1)d والمراجعة #%(r2)d "
 
-#: common/djangoapps/student/edraak_validation.py:15
+#: common/djangoapps/student/edraak_validation.py:18
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 "يرجى إدخال ٣٠ حرفاً أول أقل. يُسمح باستخدام الحروف والأرقام بالإضافة للرموز "
 "التالية: @ . + - _ فقط."
 
-#: common/djangoapps/student/edraak_validation.py:18
+#: common/djangoapps/student/edraak_validation.py:21
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
 msgstr ""
 "يُسمح باستخدام الحروف والأرقام بالإضافة للرموز التالية: @ . + - _ فقط."
 
-#: common/djangoapps/student/edraak_validation.py:25
+#: common/djangoapps/student/edraak_validation.py:41
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
 msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
-#: common/djangoapps/student/views.py:1206
+#: common/djangoapps/student/views.py:1050
+msgid ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minute."
+msgid_plural ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1082
+msgid "Too many failed login attempts. Try again in {number} minute."
+msgid_plural "Too many failed login attempts. Try again in {number} minutes."
+msgstr[0] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[1] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[2] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[3] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقائق."
+msgstr[4] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[5] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+
+#: common/djangoapps/student/views.py:1174
 msgid ""
 "If you're unable to find the password reset email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
@@ -16187,11 +16199,11 @@ msgstr ""
 "حاول البحث في صندوق البريد المهمل (spam/junk) إن لم تتمكن من إيجاد بريد "
 "إعادة ضبط كلمة السر في صندوق البريد الوارد."
 
-#: common/djangoapps/util/views.py:119
+#: common/djangoapps/util/views.py:72
 msgid "Invalid syntax"
 msgstr "تعبيرٌ رياضيٌ خاطئ"
 
-#: common/lib/xmodule/xmodule/video_module/video_xfields.py:177
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:178
 msgid ""
 "The default assumption is all the videos have sign-language enabled. This "
 "option allows the course authors to provide alternative video without sign-"
@@ -16200,13 +16212,9 @@ msgstr ""
 "على افتراض أن جميع الفيديوهات مترجمة بلغة الإشارة. بواسطة هذا الخيار تستطيع "
 "أن تضيف فيديو بديل بدون لغة الإشارة."
 
-#: common/lib/xmodule/xmodule/video_module/video_xfields.py:179
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:180
 msgid "Youtube ID for non-sign language version"
 msgstr "الرقم التعريفي للفيديو على يوتيوب - بدون لغة الإشارة"
-
-#: lms/djangoapps/courseware/views.py:1568
-msgid "income in US Dollars ($)"
-msgstr "الدخل بالدولار الأمريكي ($)"
 
 #: lms/djangoapps/edraak_bayt/views.py:39
 msgid "Invalid Email"
@@ -16216,7 +16224,7 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:282
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:284
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
@@ -16225,7 +16233,7 @@ msgstr ""
 "على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد "
 "ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:285
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:287
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
@@ -16233,19 +16241,19 @@ msgstr ""
 "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا "
 "على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:295
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:299
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:301
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:305
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:307
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:316
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:318
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -16350,7 +16358,7 @@ msgstr ""
 "%(platform_name)s."
 
 #: openedx/core/djangoapps/user_api/views.py:80
-#: openedx/core/djangoapps/user_api/views.py:344
+#: openedx/core/djangoapps/user_api/views.py:342
 msgid "Please enter your Email."
 msgstr "يُرجى إدخال البريد الإلكتروني."
 
@@ -16358,21 +16366,47 @@ msgstr "يُرجى إدخال البريد الإلكتروني."
 msgid "Please enter your password."
 msgstr "يُرجى إدخالُ كلمة المرور."
 
-#: openedx/core/djangoapps/user_api/views.py:382
+#: openedx/core/djangoapps/user_api/views.py:380
 msgid "Please enter your Full name."
 msgstr "يُرجى إدخال الاسم الكامل."
 
-#: openedx/core/djangoapps/user_api/views.py:422
+#: openedx/core/djangoapps/user_api/views.py:420
 msgid "Please enter your Username."
 msgstr "يُرجى إدخال اسم المستخدم."
 
-#: openedx/core/djangoapps/user_api/views.py:452
+#: openedx/core/djangoapps/user_api/views.py:450
 msgid "Please enter your Password."
 msgstr "يُرجى إدخال كلمة السر."
 
-#: openedx/core/djangoapps/user_api/views.py:531
+#: openedx/core/djangoapps/user_api/views.py:479
+msgid "Please enter your Highest level of education completed"
+msgstr "يُرجى اختيار أعلى مستوى تعليمي وصلت إليه"
+
+#: openedx/core/djangoapps/user_api/views.py:510
+msgid "Please enter your Gender."
+msgstr "يُرجى اختيار الجنس."
+
+#: openedx/core/djangoapps/user_api/views.py:541
 msgid "Please enter your Year of birth."
 msgstr "يُرجى إدخال سنة الميلاد."
+
+#: cms/djangoapps/contentstore/views/import_export.py:252
+msgid "Could not find the {0} file in the package."
+msgstr "لم يتم العثور على الملف {0} في الملف المضغوط."
+
+#: lms/templates/dashboard.html:92
+msgid "My Courses"
+msgstr "مساقاتي"
+
+#. Translators: Missing from Transifex, so marking it as Edraak-specific to
+#. override
+#: lms/templates/dashboard.html:181
+msgid "Want to change your account settings?"
+msgstr "هل تريد تغيير إعدادات حسابك؟"
+
+#: lms/templates/dashboard.html:183
+msgid "Click on your username above."
+msgstr "اضغط على اسمك في الشريط العلوي."
 
 #: lms/templates/bayt/callback.html:15
 msgid "Bayt.com Account Activation"
@@ -16410,6 +16444,30 @@ msgstr ""
 "تم إرسال رسالة التفعيل. يرجى الضغط على رابط التفعيل الموجود في الرسالة في "
 "صندوق بريد '{email}'. إن لم تجد الرسالة في صندوق الوارد، فابحث في صندوق "
 "الرسائل المهملة (أو Spam)."
+
+#: lms/templates/bayt/verification_email.txt:3
+msgid ""
+"Thank you for posting your certificate on Bayt.com \n"
+"To proceed in process please click on the link below"
+msgstr ""
+"شكراً على نشر شهادتك على موقع بيت.كوم. بإمكانك الضغط على الرابط أدناه "
+"للمتابعة."
+
+#: lms/templates/courseware/progress.html:62
+msgid ""
+"You can now access your certificate. If you keep working and receive a "
+"higher grade, you can request an updated certificate."
+msgstr ""
+"يمكنك الآن تحميل شهادة إتمام المساق، وإن اجتهدت وحصلت على علامة أعلى سيكون "
+"بإمكانك طلب تحديث شهادتك."
+
+#. Translators: Missing from Transifex, so marking it as Edraak-specific to
+#. override
+#: lms/templates/dashboard/_dashboard_course_listing.html:205
+#: lms/templates/dashboard/_dashboard_course_listing.html:211
+#, python-format
+msgid "Are you sure you want to unenroll from %(course_number)s?"
+msgstr "أأنت متأكد من رغبتك في الانسحاب من %(course_number)s؟ "
 
 #: lms/templates/edraak_certificates/_dashboard_certificate_link.html:12
 msgid "Issue Certificate"
@@ -16516,32 +16574,20 @@ msgstr ""
 "الرجاء الرجوع إلى  {forus_link} والمحاولة مجدداً. إذا ظهرت المشكلة مرة أخرى،"
 " تواصل معنا على {email}."
 
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:81
-msgid ""
-"When you are ready to generate certificates for your course, click Generate "
-"Certificates. You do not need to do this<br/>if you have set the certificate"
-" mode to on-demand generation."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/certificates.html:108
-msgid ""
-"To regenerate certificates for your course, chose the learners who will "
-"receive regenerated certificates and click <br/> Regenerate Certificates."
-msgstr ""
-
 #: lms/templates/registration/activate_account_notice.html:5
-msgid "Just one more step to start learning with us!"
-msgstr "بقيت خطوة واحدة لإنشاء حسابك!"
+msgid "Just one more step!"
+msgstr "تبقت خطوة واحدة لإنشاء حسابك!"
 
 #: lms/templates/registration/activate_account_notice.html:7
 msgid ""
-"To activate your account, please click the link in the activation email "
-"which has been sent to {email}."
+"We've sent an account activation message to {email}. To activate your "
+"account on Edraak and start enrolling in courses, click the link in the "
+"message."
 msgstr ""
-"تفقد بريدك الإلكتروني {email}  لتفعيل حسابك عبر الضغط على رابط التفعيل الذي "
-"ستجده في رسالة تحت اسم \"فعِّل حسابك على إدراك\"."
+"تم إسال رابط تفعيل الحساب إلى {email}. للبدء بالتعلم عبر إدراك والتسجيل في "
+"المساقات قم بالنقر على رابط التفعيل الموجود في الرسالة المرسلة."
 
-#: lms/templates/registration/activate_account_notice.html:15
+#: lms/templates/registration/activate_account_notice.html:17
 msgid ""
 "If you're unable to find the activation email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
@@ -16553,12 +16599,6 @@ msgstr ""
 #: lms/templates/registration/password_reset_subject.txt:6
 msgid "Password reset on {platform_name}"
 msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
-
-#: cms/templates/index.html:82
-msgid "Note: The organization name is part of the course URL"
-msgstr ""
-" إن لم تجد الرسالة في الصندوق الوارد؛ تفقد الرسائل المزعجة/غير المرغوب فيها "
-"أو البريد الغير هام. "
 
 #. Translators: 'Discussion' refers to the tab in the courseware that leads to
 #. the discussion forums
@@ -22209,6 +22249,10 @@ msgstr "استكشاف الدورات التدريبية"
 msgid "Toggle Answer Visibility"
 msgstr "بدّل إمكانية رؤية الإجابة"
 
+#: lms/templates/problem.html
+msgid "You have used {num_used} of {num_total} submissions"
+msgstr "لقد استخدمتَ {num_used} محاولات من أصل {num_total}"
+
 #: lms/templates/register-form.html lms/templates/register-shib.html
 #: themes/stanford-style/lms/templates/register-form.html
 #: themes/stanford-style/lms/templates/register-shib.html
@@ -23553,45 +23597,45 @@ msgid "Powered by Open edX"
 msgstr "مدعوم من قبل منصة أوبن إدكس"
 
 #: templates/theme-footer.html:82
-msgid "{copy} 2016 Edraak, Some rights reserved"
-msgstr " {copy} بعض الحقوق محفوظة ٢٠١٦ إدراك"
+msgid "{copy} 2015 Edraak, Some rights reserved"
+msgstr "بعض الحقوق محفوظة  {copy}  ٢٠١٥ إدراك"
 
-#: templates/theme-header.html:55
+#: templates/theme-header.html:53
 msgid "Welcome {full_name}"
 msgstr "أهلاً {full_name}"
 
-#: templates/theme-header.html:103
+#: templates/theme-header.html:101
 msgctxt "edraak-2015"
 msgid "ABOUT"
 msgstr "عن إدراك"
 
-#: templates/theme-header.html:108
+#: templates/theme-header.html:106
 msgctxt "edraak-2015"
 msgid "How it Works"
 msgstr "كيف تتعلم عبر إدراك"
 
-#: templates/theme-header.html:113
+#: templates/theme-header.html:111
 msgctxt "edraak-2015"
 msgid "Courses"
 msgstr "المساقات"
 
-#: templates/theme-header.html:118
+#: templates/theme-header.html:116
 msgctxt "edraak-2015"
 msgid "Teach"
 msgstr "علّم"
 
-#: templates/theme-header.html:125
+#: templates/theme-header.html:123
 msgid "Sign Out"
 msgstr "تسجيل الخروج"
 
-#: templates/theme-header.html:130
+#: templates/theme-header.html:128
 msgid "Dashboard"
 msgstr "لوحة المعلومات"
 
-#: templates/theme-header.html:136
+#: templates/theme-header.html:134
 msgid "Sign in"
 msgstr "دخول"
 
-#: templates/theme-header.html:141
+#: templates/theme-header.html:139
 msgid "Register"
 msgstr "سجّل الآن"

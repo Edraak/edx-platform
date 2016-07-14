@@ -2190,22 +2190,6 @@ msgstr "يُرجى عدم إدخال أي مسافات في هذا الحقل."
 msgid "Please do not use any spaces or special characters in this field."
 msgstr "يُرجى عدم إدخال أي مسافات أو أحرف خاصة في هذا الحقل."
 
-#: common/static/common/js/components/views/paging_header.js
-msgid "Showing %(first_index)s out of %(num_items)s total"
-msgstr "إظهار %(first_index)s من أصل %(num_items)s."
-
-#: common/static/common/js/components/views/paging_header.js
-msgid "Showing %(first_index)s-%(last_index)s out of %(num_items)s total"
-msgstr "إظهار %(first_index)s-%(last_index)s من أصل %(num_items)s."
-
-#: common/static/common/js/utils/edx.utils.validate.js
-msgid "The email address you've provided isn't formatted correctly."
-msgstr "صيغة عنوان البريد الإلكتروني الذي ذكرته غير صحيحة"
-
-#: common/static/common/js/utils/edx.utils.validate.js
-msgid "Please enter your %(field)s."
-msgstr "يُرجى إدخال بيانات %(field)s."
-
 #: common/static/js/capa/drag_and_drop/base_image.js
 msgid "Drop target image"
 msgstr "إسقاط الصورة المطلوبة"
@@ -2483,12 +2467,6 @@ msgstr "الشواغر المتاحة"
 #: lms/templates/edxnotes/tab-item.underscore
 msgid "name"
 msgstr "الاسم  "
-
-#. Translators: This refers to the number of teams (a count of how many teams
-#. there are)
-#: lms/djangoapps/teams/static/teams/js/collections/topic.js
-msgid "team count"
-msgstr "عدد أعضاء الفريق"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Create"
@@ -2786,10 +2764,6 @@ msgstr[5] "%(team_count)s فريقاً"
 #: lms/djangoapps/teams/static/teams/js/views/topic_card.js
 msgid "Topic"
 msgstr "الموضوع"
-
-#: lms/djangoapps/teams/static/teams/js/views/topic_card.js
-msgid "View Teams in the %(topic_name)s Topic"
-msgstr "استعراض الفِرق في موضوع %(topic_name)s"
 
 #. Translators: this string is shown at the bottom of the teams page
 #. to find a team to join or else to create a new one. There are three
@@ -4152,14 +4126,6 @@ msgid ""
 msgstr ""
 "يجب أن تسجّل خروجك ثمّ تُعيد تسجيل دخولك ليجري تفعيل التغييرات التي أدخلتها "
 "على اللغة."
-
-#: lms/static/js/student_account/views/account_settings_fields.js
-msgid ""
-"We've sent a message to {email_address}. Click the link in the message to "
-"reset your password."
-msgstr ""
-"لقد قمنا بإرسال رسالة إلى عنوان البريد الإلكتروني {email_address}. الرجاء "
-"النقر على الرابط المتاح في هذه الرسالة لإعادة ضبط كلمة السر."
 
 #: lms/static/js/student_account/views/account_settings_fields.js
 msgid "Unlink"
@@ -5576,33 +5542,11 @@ msgstr "تحذير"
 msgid "Actions"
 msgstr "الإجراءات"
 
-#: cms/templates/js/paging-header.underscore
-#: common/static/common/templates/components/paging-footer.underscore
-#: common/static/common/templates/discussion/pagination.underscore
-msgid "Previous"
-msgstr "السابق"
-
 #: cms/templates/js/previous-video-upload-list.underscore
 #: lms/djangoapps/support/static/support/templates/certificates_results.underscore
 #: lms/templates/verify_student/enrollment_confirmation_step.underscore
 msgid "Status"
 msgstr "الحالة"
-
-#: common/static/common/templates/image-modal.underscore
-msgid "Large"
-msgstr "كبير "
-
-#: common/static/common/templates/image-modal.underscore
-msgid "Zoom In"
-msgstr "تكبير"
-
-#: common/static/common/templates/image-modal.underscore
-msgid "Zoom Out"
-msgstr "تصغير"
-
-#: common/static/common/templates/components/paging-footer.underscore
-msgid "Page number"
-msgstr "رقم الصفحة"
 
 #: common/static/common/templates/components/paging-footer.underscore
 msgid "Enter the page number you'd like to quickly navigate to."
@@ -5773,12 +5717,6 @@ msgstr "تعديل التعليق"
 msgid "Update comment"
 msgstr "تحديث التعليق"
 
-#: common/static/common/templates/discussion/response-comment-show.underscore
-#: common/static/common/templates/discussion/thread-response-show.underscore
-#: common/static/common/templates/discussion/thread-show.underscore
-msgid "Reported"
-msgstr "مبلَّغ عنه"
-
 #: common/static/common/templates/discussion/thread-edit.underscore
 msgid "Editing post"
 msgstr "تعديل المنشور "
@@ -5802,11 +5740,6 @@ msgstr "سؤال مُجاب عليه"
 #: common/static/common/templates/discussion/thread-list-item.underscore
 msgid "unanswered question"
 msgstr "سؤال غير مُجاب عليه"
-
-#: common/static/common/templates/discussion/thread-list-item.underscore
-#: common/static/common/templates/discussion/thread-show.underscore
-msgid "Pinned"
-msgstr "مُثَبَّت"
 
 #: common/static/common/templates/discussion/thread-list-item.underscore
 msgid "Following"
@@ -5866,36 +5799,9 @@ msgstr "مصادقة عليها %(time_ago)s"
 msgid "Add a comment"
 msgstr "إضافة تعليق "
 
-#: common/static/common/templates/discussion/thread-show.underscore
-#, python-format
-msgid "%(post_type)s posted %(time_ago)s by %(author)s"
-msgstr "%(post_type)s منشور %(time_ago)s من قِبل %(author)s"
-
-#: common/static/common/templates/discussion/thread-show.underscore
-msgid "Closed"
-msgstr "مُغلق"
-
-#: common/static/common/templates/discussion/thread-show.underscore
-#, python-format
-msgid "Related to: %(courseware_title_linked)s"
-msgstr "متعلِّقٌ بِـ: %(courseware_title_linked)s"
-
-#: common/static/common/templates/discussion/thread-show.underscore
-#, python-format
-msgid "This post is visible only to %(group_name)s."
-msgstr "هذا المنشور مرئيٌّ فقط لـ %(group_name)s."
-
-#: common/static/common/templates/discussion/thread-show.underscore
-msgid "This post is visible to everyone."
-msgstr "هذا المنشور مرئيٌّ للجميع."
-
 #: common/static/common/templates/discussion/thread-type.underscore
 msgid "Post type:"
 msgstr "نوع المنشور:"
-
-#: common/static/common/templates/discussion/thread-type.underscore
-msgid "Question"
-msgstr "سؤال"
 
 #: common/static/common/templates/discussion/thread-type.underscore
 msgid ""
@@ -7183,6 +7089,30 @@ msgid ""
 msgstr ""
 "إضغط على زر لغة الإشارة لتفعيل أو تعطيل الترجمة بلغة الإشارة في هذا الفيديو."
 
+#: common/static/common/js/components/views/paging_header.js:24
+msgid "Showing %(first_index)s out of %(num_items)s total"
+msgstr "يتم عرض %(first_index)s من أصل %(num_items)s"
+
+#: common/static/common/js/components/views/paging_header.js:27
+msgid "Showing %(first_index)s-%(last_index)s out of %(num_items)s total"
+msgstr "يتم عرض %(first_index)s-%(last_index)s من أصل %(num_items)s"
+
+#: common/static/js/utils/edx.utils.validate.js:21
+msgid "The email address you've provided isn't formatted correctly."
+msgstr "البريد الإلكتروني الذي أدخلته غير صحيح."
+
+#: common/static/js/utils/edx.utils.validate.js:24
+msgid "Please enter your %(field)s."
+msgstr "أدخل %(field)s."
+
+#: lms/djangoapps/teams/static/teams/js/collections/topic.js:16
+msgid "team count"
+msgstr "عدد أعضاء الفريق"
+
+#: lms/djangoapps/teams/static/teams/js/views/topic_card.js:46
+msgid "View Teams in the %(topic_name)s Topic"
+msgstr "اعرض الفِرَق في موضوع: \"%(topic_name)s\""
+
 #: lms/static/js/student_account/account.js:130
 msgid ""
 "If you're unable to find the password reset email, please check your email "
@@ -7192,9 +7122,69 @@ msgstr ""
 "حاول البحث في صندوق البريد المهمل إن لم تتمكن من إيجاد رسالة إعادة ضبط كلمة "
 "السر في صندوق البريد الوارد."
 
-#: lms/static/js/student_account/views/account_settings_fields.js:82
-msgid "We've sent a message to {email_address}. "
+#: lms/static/js/student_account/views/account_settings_fields.js:78
+msgid ""
+"We've sent a message to {email_address}. Click the link in the message to "
+"reset your password."
 msgstr ""
+"لقد أرسلنا لك رسالة تأكيد على {email_address}. اضغط على الرابط الموجود في "
+"الرسالة لتغيير كلمة السر. "
+
+#: cms/templates/js/paging-header.underscore:7
+#: common/static/common/templates/components/paging-footer.underscore:2
+msgid "Previous"
+msgstr "السابق"
+
+#: common/static/common/templates/image-modal.underscore:14
+msgid "Large"
+msgstr "الحجم الكبير"
+
+#: common/static/common/templates/image-modal.underscore:27
+msgid "Zoom In"
+msgstr "كبّر"
+
+#: common/static/common/templates/image-modal.underscore:35
+msgid "Zoom Out"
+msgstr "صغِّر"
+
+#: common/static/common/templates/components/paging-footer.underscore:5
+msgid "Page number"
+msgstr "رقم الصفحة"
+
+#: common/static/common/templates/discussion/thread-show.underscore:7
+#, python-format
+msgid "This post is visible only to %(group_name)s."
+msgstr "هذا المنشور خاص، ومرئي فقط للمجموعة \"%(group_name)s\"."
+
+#: common/static/common/templates/discussion/thread-show.underscore:13
+msgid "This post is visible to everyone."
+msgstr "هذا المنشور مرئي للجميع."
+
+#: common/static/common/templates/discussion/thread-show.underscore:21
+msgid "Question"
+msgstr "سؤال"
+
+#: common/static/common/templates/discussion/thread-show.underscore:32
+#, python-format
+msgid "%(post_type)s posted %(time_ago)s by %(author)s"
+msgstr "%(post_type)s نُشر %(time_ago)s من قبل %(author)s"
+
+#: common/static/common/templates/discussion/thread-show.underscore:40
+msgid "Pinned"
+msgstr "مثبّت"
+
+#: common/static/common/templates/discussion/thread-show.underscore:43
+msgid "Reported"
+msgstr "مُبلّغ عنهُ"
+
+#: common/static/common/templates/discussion/thread-show.underscore:46
+msgid "Closed"
+msgstr "مُغلق"
+
+#: common/static/common/templates/discussion/thread-show.underscore:78
+#, python-format
+msgid "Related to: %(courseware_title_linked)s"
+msgstr "متعلق بـ: %(courseware_title_linked)s"
 
 #: lms/templates/edraak_forus/register.underscore:18
 msgid "Welcome to the Edraak platform!"
@@ -7221,26 +7211,6 @@ msgid ""
 msgstr ""
 "إذا لم تستطع الحصول على البريد الإلكتروني لاستعادة كلمة السر، يُرجى أن تبحث "
 "في صندوق الرسائل المهملة (Spam) بدلاً من صندوق الوارد."
-
-#: lms/templates/verify_student/make_payment_step_ab_testing.underscore:10
-#, python-format
-msgid "You are enrolling in %(courseName)s"
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step_ab_testing.underscore:17
-#, python-format
-msgid "Upgrade to a Verified Certificate for %(courseName)s"
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step_ab_testing.underscore:37
-#, python-format
-msgid "Professional Certificate for %(courseName)s"
-msgstr ""
-
-#: lms/templates/verify_student/make_payment_step_ab_testing.underscore:41
-#, python-format
-msgid "Verified Certificate for %(courseName)s"
-msgstr ""
 
 #: cms/static/cms/js/xblock/cms.runtime.v1.js
 #: cms/static/coffee/src/views/tabs.js
