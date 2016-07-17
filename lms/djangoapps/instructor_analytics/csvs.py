@@ -24,7 +24,8 @@ def create_csv_response(filename, header, datarows):
         quotechar='"',
         quoting=csv.QUOTE_ALL)
 
-    csvwriter.writerow(header)
+    csvwriter.writerow([s.encode('utf-8') for s in header])
+
     for datarow in datarows:
         encoded_row = [unicode(s).encode('utf-8') for s in datarow]
         csvwriter.writerow(encoded_row)
