@@ -1,6 +1,8 @@
 <%! from django.core.urlresolvers import reverse %>
 <%! from django.utils.translation import ugettext as _ %>
+<%! from course_modes.helpers import get_mktg_url as marketing_url %>
 <%namespace file="../main.html" import="stanford_theme_enabled" />
+
 ## Again, ugly hack that needs to be changed
 ## TODO: this probably needs better formatting to look nice in an
 ##       email client (Mako leaves awkward whitespace)
@@ -16,10 +18,14 @@
       "did not make this request, please contact us immediately. Contact "
       "information is listed at:").format(platform_name=settings.PLATFORM_NAME, old_email=old_email, new_email=new_email)}
 
-  % if is_secure:
-    https://${ site }${reverse('contact')}
+  % if settings.FEATURES.get('ENABLE_MKTG_SITE'):
+    ${marketing_url('contact-us')}
   % else:
-    http://${ site }${reverse('contact')}
+    % if is_secure:
+      https://${ site }${reverse('contact')}
+    % else:
+      http://${ site }${reverse('contact')}
+    % endif
   % endif
 % endif
 
