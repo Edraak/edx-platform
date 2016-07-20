@@ -28,13 +28,20 @@
                     </a>
 
                     <p>
-                        ${_("Please note that the certificate will be issued with your name on it as provided "
-                        "on your {link_start}dashboard{link_end}. Please double check the spelling. and we "
-                        "prefer that the name is written in the same language you're issuing the certificate "
-                        "with. To change it, go to the {link_start}dashboard{link_end} and click on (edit) "
-                        "link beside your name.").format(
-                          link_start='<a target="_blank" href="{}">'.format(reverse('dashboard')),
-                          link_end='</a>',
+                        ${_("Please note that the certificate will be issued with your full name on it as provided "
+                            "on your {link_start}account settings{link_end}.").format(
+                              link_start='<a target="_blank" href="{}">'.format(reverse('account_settings')),
+                              link_end='</a>',
+                        )}
+                    </p>
+
+                    <p>
+                        ${_("Please double check your name. We prefer "
+                            "that the name is written in the same language you're issuing the certificate "
+                            "with. To change it, go to the {link_start}account settings{link_end} and edit "
+                            "your full name.").format(
+                              link_start='<a target="_blank" href="{}">'.format(reverse('account_settings')),
+                              link_end='</a>',
                         )}
                     </p>
 
