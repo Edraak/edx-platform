@@ -66,20 +66,21 @@
                                 helpMessage: gettext('When you click "Reset Password", a message will be sent to your email address. Click the link in the message to reset your password.')
                             })
                         },
-                        {
-                            view: new AccountSettingsFieldViews.LanguagePreferenceFieldView({
-                                model: userPreferencesModel,
-                                title: gettext('Language'),
-                                valueAttribute: 'pref-lang',
-                                required: true,
-                                refreshPageOnSave: true,
-                                helpMessage: interpolate_text(
-                                    gettext('The language used throughout this site. This site is currently available in a limited number of languages.'), {platform_name: platformName}
-                                ),
-                                options: fieldsData.language.options,
-                                persistChanges: true
-                            })
-                        },
+                        // Edraak: Removing this field because it's useless, according to QA
+                        //{
+                        //    view: new AccountSettingsFieldViews.LanguagePreferenceFieldView({
+                        //        model: userPreferencesModel,
+                        //        title: gettext('Language'),
+                        //        valueAttribute: 'pref-lang',
+                        //        required: true,
+                        //        refreshPageOnSave: true,
+                        //        helpMessage: interpolate_text(
+                        //            gettext('The language used throughout this site. This site is currently available in a limited number of languages.'), {platform_name: platformName}
+                        //        ),
+                        //        options: fieldsData.language.options,
+                        //        persistChanges: true
+                        //    })
+                        //},
                         {
                             view: new FieldViews.DropdownFieldView({
                                 model: userAccountModel,
@@ -121,16 +122,17 @@
                                 options: fieldsData['year_of_birth']['options'],
                                 persistChanges: true
                             })
-                        },
-                        {
-                            view: new AccountSettingsFieldViews.LanguageProficienciesFieldView({
-                                model: userAccountModel,
-                                title: gettext('Preferred Language'),
-                                valueAttribute: 'language_proficiencies',
-                                options: fieldsData.preferred_language.options,
-                                persistChanges: true
-                            })
                         }
+                        // Edraak: Removing this field because it's useless, according to QA
+                        //{
+                        //    view: new AccountSettingsFieldViews.LanguageProficienciesFieldView({
+                        //        model: userAccountModel,
+                        //        title: gettext('Preferred Language'),
+                        //        valueAttribute: 'language_proficiencies',
+                        //        options: fieldsData.preferred_language.options,
+                        //        persistChanges: true
+                        //    })
+                        //}
                     ]
                 }
             ];
