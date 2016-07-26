@@ -42,7 +42,7 @@ def working_directory(path):
 
 
 @contextlib.contextmanager
-def get_tx_pofile(resource):
+def get_edx_tx_pofile(resource):
     """
     Retrieves reviewed translations from Transifex into a temporary pofile.
     :param resource:
@@ -366,13 +366,12 @@ def i18n_edraak_ora_pull(is_js, suffix):
 
     new_pofile = POFile()
 
-    with get_tx_pofile(resource_name) as latest_pofile:
+    with get_edx_tx_pofile(resource_name) as latest_pofile:
         for entry in current_pofile:
-            if not entry.translated():
-                translated_entry = latest_pofile.find(entry.msgid)
+            translated_entry = latest_pofile.find(entry.msgid)
 
-                if translated_entry and translated_entry.translated():
-                    new_pofile.append(translated_entry)
+            if translated_entry and translated_entry.translated():
+                new_pofile.append(translated_entry)
 
     with working_directory(ARABIC_LOCALE_DIR):
         new_pofile.save('django{}-openassessment-updates.po'.format(suffix))
