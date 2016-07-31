@@ -3,6 +3,7 @@ Declaration of CourseOverview model
 """
 import json
 import logging
+from urlparse import urlparse, urlunparse
 
 from django.db import models, transaction
 from django.db.models.fields import BooleanField, DateTimeField, DecimalField, TextField, FloatField, IntegerField
@@ -324,6 +325,20 @@ class CourseOverview(TimeStampedModel):
         """
         return course_metadata_utils.display_name_with_default(self)
 
+    @property
+    def display_name_with_default_escaped(self):
+        """
+        DEPRECATED: use display_name_with_default
+
+        Return html escaped reasonable display name for the course.
+
+        Note: This newly introduced method should not be used.  It was only
+        introduced to enable a quick search/replace and the ability to slowly
+        migrate and test switching to display_name_with_default, which is no
+        longer escaped.
+        """
+        return course_metadata_utils.display_name_with_default_escaped(self)
+
     def has_started(self):
         """
         Returns whether the the course has started.
@@ -456,20 +471,29 @@ class CourseOverview(TimeStampedModel):
         return course_overviews
 
     @classmethod
-    def get_all_courses(cls, org=None):
+    def get_all_courses(cls, org=None, filter_=None):
         """
         Returns all CourseOverview objects in the database.
 
         Arguments:
-            org (string): Optional parameter that allows filtering
-                by organization.
+            org (string): Optional parameter that allows case-insensitive
+                filtering by organization.
+            filter_ (dict): Optional parameter that allows custom filtering.
         """
         # Note: If a newly created course is not returned in this QueryList,
         # make sure the "publish" signal was emitted when the course was
-        # created.  For tests using CourseFactory, use emit_signals=True.
+        # created. For tests using CourseFactory, use emit_signals=True.
         course_overviews = CourseOverview.objects.all()
+
         if org:
-            course_overviews = course_overviews.filter(org=org)
+            # In rare cases, courses belonging to the same org may be accidentally assigned
+            # an org code with a different casing (e.g., Harvardx as opposed to HarvardX).
+            # Case-insensitive exact matching allows us to deal with this kind of dirty data.
+            course_overviews = course_overviews.filter(org__iexact=org)
+
+        if filter_:
+            course_overviews = course_overviews.filter(**filter_)
+
         return course_overviews
 
     @classmethod
@@ -537,7 +561,6 @@ class CourseOverview(TimeStampedModel):
             instructor: Instructor-led courses
         """
         return 'self' if self.self_paced else 'instructor'
-
 
     def __unicode__(self):
         """Represent ourselves with the course key."""
@@ -668,8 +691,9 @@ class CourseOverviewImageSet(TimeStampedModel):
         # an error or the course has no source course_image), our url fields
         # just keep their blank defaults.
         try:
-            image_set.save()
-            course_overview.image_set = image_set
+            with transaction.atomic():
+                image_set.save()
+                course_overview.image_set = image_set
         except (IntegrityError, ValueError):
             # In the event of a race condition that tries to save two image sets
             # to the same CourseOverview, we'll just silently pass on the one
