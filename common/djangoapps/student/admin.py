@@ -1,32 +1,27 @@
-'''
-django admin pages for courseware model
-'''
+""" Django admin pages for student app """
 from django import forms
-from config_models.admin import ConfigurationModelAdmin
 from django.contrib.auth.models import User
-
-from student.models import UserProfile, UserTestGroup, CourseEnrollmentAllowed, DashboardConfiguration
-from student.models import (
-    CourseEnrollment, Registration, PendingNameChange, CourseAccessRole, LinkedInAddToProfileConfiguration
-)
-
-from student.models import LoginFailures
-
 from ratelimitbackend import admin
-from edraak_validation import UnicodeUserAdmin
-from django.contrib.auth.models import User
-from student.roles import REGISTERED_ACCESS_ROLES
+from django.contrib.auth.admin import UserAdmin
 
 from xmodule.modulestore.django import modulestore
-
-from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
+
+from config_models.admin import ConfigurationModelAdmin
+from student.models import (
+    UserProfile, UserTestGroup, CourseEnrollmentAllowed, DashboardConfiguration, CourseEnrollment, Registration,
+    PendingNameChange, CourseAccessRole, LinkedInAddToProfileConfiguration
+)
+from student.roles import REGISTERED_ACCESS_ROLES
 
 
 class CourseAccessRoleForm(forms.ModelForm):
     """Form for adding new Course Access Roles view the Django Admin Panel."""
-    class Meta:
+
+    class Meta(object):
         model = CourseAccessRole
+        fields = '__all__'
 
     email = forms.EmailField(required=True)
     COURSE_ACCESS_ROLES = [(role_name, role_name) for role_name in REGISTERED_ACCESS_ROLES.keys()]
@@ -100,6 +95,11 @@ class CourseAccessRoleForm(forms.ModelForm):
 
         return cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(CourseAccessRoleForm, self).__init__(*args, **kwargs)
+        if self.instance.user_id:
+            self.fields['email'].initial = self.instance.user.email
+
 
 class CourseAccessRoleAdmin(admin.ModelAdmin):
     """Admin panel for the Course Access Role. """
@@ -128,80 +128,54 @@ class CourseAccessRoleAdmin(admin.ModelAdmin):
 class LinkedInAddToProfileConfigurationAdmin(admin.ModelAdmin):
     """Admin interface for the LinkedIn Add to Profile configuration. """
 
-    class Meta:
+    class Meta(object):
         model = LinkedInAddToProfileConfiguration
 
     # Exclude deprecated fields
     exclude = ('dashboard_tracking_code',)
 
 
-class UserProfileAdmin(admin.ModelAdmin):
-    """
-    Admin interface for the user profile.
-    """
+class CourseEnrollmentAdmin(admin.ModelAdmin):
+    """ Admin interface for the CourseEnrollment model. """
+    list_display = ('id', 'course_id', 'mode', 'user', 'is_active',)
+    list_filter = ('mode', 'is_active',)
+    raw_id_fields = ('user',)
+    search_fields = ('course_id', 'mode', 'user__username',)
 
-    search_fields = (
-        'user__email', 'user__username', 'user__pk',
-    )
+    def queryset(self, request):
+        return super(CourseEnrollmentAdmin, self).queryset(request).select_related('user')
 
-    list_display = (
-        'name', 'username',  'email', 'user_pk',
-    )
+    class Meta(object):
+        model = CourseEnrollment
 
-    readonly_fields = (
-        'user',
-    )
 
-    def username(self, profile):
-        """
-        Provide the `username` for `list_display` profiles admin.
-        """
+class UserProfileAdmin(admin.ModelAdmin): #SYNCTODO: check omar's https://github.com/Edraak/edx-platform/pull/108/files
+    """ Admin interface for UserProfile model. """
+    list_display = ('user', 'name',)
+    raw_id_fields = ('user',)
+    search_fields = ('user__username', 'user__first_name', 'user__last_name', 'user__email', 'name',)
 
-        return profile.user.username
+    def get_readonly_fields(self, request, obj=None):
+        # The user field should not be editable for an existing user profile.
+        if obj:
+            return self.readonly_fields + ('user',)
+        return self.readonly_fields
 
-    def email(self, profile):
-        """
-        Provide the `email` for `list_display` profiles admin.
-        """
-
-        return profile.user.email
-
-    def user_pk(self, profile):
-        """
-        Provide the `user_pk` for `list_display` profiles admin.
-        """
-
-        return profile.user.pk
-
-    class Meta:
+    class Meta(object):
         model = UserProfile
 
 
-class LoginFailuresAdmin(admin.ModelAdmin):
-    search_fields = (
-        'user__email', 'user__username', 'user__pk',
-    )
+class UnicodeFriendlyUserAdmin(UserAdmin):
+    """
+    Allows editing the users while skipping the username check, so we can have Unicode username with no problems.
+    """
+    def get_readonly_fields(self, *args, **kwargs):
+        return super(UserAdmin, self).get_readonly_fields(*args, **kwargs) + (
+            'username',
+        )
 
-    readonly_fields = (
-        'user', 'failure_count', 'lockout_until',
-    )
-
-    list_display = (
-        'email', 'username', 'failure_count', 'lockout_until',
-    )
-
-    def email(self, login_failures):
-        return login_failures.user.email
-
-    def username(self, login_failures):
-        return login_failures.user.username
-
-
-admin.site.register(UserProfile, UserProfileAdmin)
 
 admin.site.register(UserTestGroup)
-
-admin.site.register(CourseEnrollment)
 
 admin.site.register(CourseEnrollmentAllowed)
 
@@ -215,5 +189,8 @@ admin.site.register(DashboardConfiguration, ConfigurationModelAdmin)
 
 admin.site.register(LinkedInAddToProfileConfiguration, LinkedInAddToProfileConfigurationAdmin)
 
-# Edraak: Support Unicode in admin/user pages
-admin.site.register(User, UnicodeUserAdmin)
+admin.site.register(CourseEnrollment, CourseEnrollmentAdmin)
+
+admin.site.register(UserProfile, UserProfileAdmin)
+
+admin.site.register(User, UnicodeFriendlyUserAdmin)

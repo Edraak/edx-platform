@@ -15,11 +15,15 @@ from django.utils import translation
 
 static_dir = path.join(path.dirname(__file__), 'assets')
 
-light_font_url = path.join(static_dir, "DINNextLTArabic-Light.ttf")
-pdfmetrics.registerFont(TTFont("DIN Next LT Arabic Light", light_font_url, validate=True))
+fonts = {
+    'sahlnaskh-regular.ttf': 'Sahl Naskh Regular',
+    'sahlnaskh-bold.ttf': 'Sahl Naskh Bold',
+}
 
-bold_font_url = path.join(static_dir, "DinTextArabic-Bold.ttf")
-pdfmetrics.registerFont(TTFont("DIN Next LT Arabic Bold", bold_font_url, validate=True))
+for font_file, font_name in fonts.iteritems():
+    font_path = path.join(static_dir, font_file)
+    pdfmetrics.registerFont(TTFont(font_name, font_path, validate=True))
+
 
 SIZE = landscape(A4)
 
@@ -46,16 +50,16 @@ def get_organization_logo(organization):
         return 'crescent-petroleum.jpg'
     elif organization == 'auc':
         return 'auc.jpg'
-    elif organization == 'pmijo':
-        return 'pmijo.jpg'
     else:
         return None
+
 
 def get_course_sponsor(course_id):
     if course_id == "BritishCouncil/Eng100/T4_2015":
         return "crescent_petroleum"
     else:
         return None
+
 
 def text_to_bidi(text):
     text = normalize_spaces(text)
@@ -102,12 +106,8 @@ class EdraakCertificate(object):
         previous_locale = translation.get_language()
         forced_language = 'en' if self.is_english_course() else 'ar'
 
-        translation.activate(forced_language)
-        translated_text = translation.ugettext(text)
-        translation.deactivate()
-        translation.activate(previous_locale)
-
-        return translated_text
+        with translation.override(forced_language):
+            return translation.ugettext(text)
 
     def init_context(self):
         ctx = canvas.Canvas(self.temp_file.name)
@@ -137,9 +137,9 @@ class EdraakCertificate(object):
 
     def _set_font(self, size, is_bold):
         if is_bold:
-            font = "DIN Next LT Arabic Bold"
+            font = 'Sahl Naskh Bold'
         else:
-            font = "DIN Next LT Arabic Light"
+            font = 'Sahl Naskh Regular'
 
         self.ctx.setFont(font, size)
         self.ctx.setFillColorRGB(66 / 255.0, 74 / 255.0, 82 / 255.0)
@@ -296,11 +296,13 @@ class EdraakCertificate(object):
 
         self.draw_bidi_text(self._("This is to certify that:"), x, 5.8, size=0.25)
 
-        self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=0.5, bold=True)
+        user_profile_size = 0.42 if contains_rtl_text(self.user_profile_name) else 0.5
+        self.draw_single_line_bidi_text(self.user_profile_name, x, 5.124, size=user_profile_size, bold=True)
 
         self.draw_bidi_text(self._("Successfully completed:"), x, 4.63, size=0.25)
 
-        self.draw_bidi_text(self.course_name, x, 4.1, size=0.33, bold=True)
+        course_name_size = 0.31 if contains_rtl_text(self.course_name) else 0.33
+        self.draw_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
 
         sponsor = get_course_sponsor(self.course_id)
         if sponsor:
@@ -309,9 +311,9 @@ class EdraakCertificate(object):
             self.add_course_sponsor_logo(sponsor)
 
         if not self.is_english_course():
-            self.draw_bidi_text(self.course_desc, x, 3.78, size=0.16)
+            self.draw_bidi_text(self.course_desc, x, 3.74, size=0.16)
         else:
-            self.draw_english_text(self.course_desc, x, 3.78, size=0.16)
+            self.draw_english_text(self.course_desc, x, 3.74, size=0.16)
 
         date_x = 2.01
 
@@ -327,9 +329,9 @@ class EdraakCertificate(object):
         self.draw_single_line_bidi_text(self.instructor, x, 1.8, size=0.26, bold=True)
 
         if not self.is_english_course():
-            self.draw_bidi_text(self.course_org_disclaimer(), x, 1.48, size=0.16)
+            self.draw_bidi_text(self.course_org_disclaimer(), x, 1.44, size=0.16)
         else:
-            self.draw_english_text(self.course_org_disclaimer(), x, 1.48, size=0.16)
+            self.draw_english_text(self.course_org_disclaimer(), x, 1.44, size=0.16)
 
         self.draw_bidi_center_text(self.course_end_date, date_x, 4.82, size=0.27)
 

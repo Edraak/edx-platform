@@ -26,7 +26,6 @@ class CourseMetadata(object):
         'enrollment_end',
         'tabs',
         'graceperiod',
-        'checklists',
         'show_timezone',
         'format',
         'graded',
@@ -46,6 +45,11 @@ class CourseMetadata(object):
         'language',
         'certificates',
         'minimum_grade_credit',
+        'default_time_limit_minutes',
+        'is_proctored_enabled',
+        'is_time_limited',
+        'is_practice_exam',
+        'self_paced'
     ]
 
     @classmethod
@@ -68,13 +72,9 @@ class CourseMetadata(object):
         if not settings.FEATURES.get('ENABLE_VIDEO_UPLOAD_PIPELINE'):
             filtered_list.append('video_upload_pipeline')
 
-        # Do not show facebook_url if the feature is disabled.
-        if not settings.FEATURES.get('ENABLE_MOBILE_SOCIAL_FACEBOOK_FEATURES'):
-            filtered_list.append('facebook_url')
-
         # Do not show social sharing url field if the feature is disabled.
-        if (not settings.FEATURES.get('SOCIAL_SHARING_SETTINGS') or
-                not settings.FEATURES.get("SOCIAL_SHARING_SETTINGS").get("CUSTOM_COURSE_URLS")):
+        if (not hasattr(settings, 'SOCIAL_SHARING_SETTINGS') or
+                not getattr(settings, 'SOCIAL_SHARING_SETTINGS', {}).get("CUSTOM_COURSE_URLS")):
             filtered_list.append('social_sharing_url')
 
         # Do not show teams configuration if feature is disabled.

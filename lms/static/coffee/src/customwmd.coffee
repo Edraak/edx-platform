@@ -155,6 +155,7 @@ $ ->
               alert error
               if startUploadHandler
                 $('#file-upload').unbind('change').change(startUploadHandler)
+                $('#new-link-image-cancel').click()  # Hide the box, to re-create it
               console.log error
             else
               $(input).attr('value', fileURL)
@@ -162,6 +163,7 @@ $ ->
             alert(e)
             if startUploadHandler
               $('#file-upload').unbind('change').change(startUploadHandler)
+              $('#new-link-image-cancel').click()  # Hide the box, to re-create it
 
       imageUploadHandler = (elem, input) ->
         ajaxFileUpload(imageUploadUrl, input, imageUploadHandler)

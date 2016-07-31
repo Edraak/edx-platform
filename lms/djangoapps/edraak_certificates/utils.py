@@ -20,7 +20,7 @@ def generate_certificate(request, course_id):
     course_end_date = ''
     if course.end:
         course_end_date = str(course.end.date())
-    course_short_desc = get_course_about_section(course, 'short_description')
+    course_short_desc = get_course_about_section(request, course, 'short_description')
 
     instructor_name = ''
     role = CourseInstructorRole(course_key)

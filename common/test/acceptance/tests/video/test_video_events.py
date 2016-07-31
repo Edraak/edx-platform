@@ -3,7 +3,7 @@
 import datetime
 import json
 import ddt
-from unittest import skip
+import unittest
 
 from ..helpers import EventsTestMixin
 from .test_video_module import VideoBaseTest
@@ -61,7 +61,7 @@ class VideoEventsTestMixin(EventsTestMixin, VideoBaseTest):
 class VideoEventsTest(VideoEventsTestMixin):
     """ Test video player event emission """
 
-    @skip("Failing on Cypress")
+    @unittest.skip('AN-5867')
     def test_video_control_events(self):
         """
         Scenario: Video component is rendered in the LMS in Youtube mode without HTML5 sources
@@ -185,7 +185,7 @@ class VideoBumperEventsTest(VideoEventsTestMixin):
             u'video_bumper': {
                 u'value': {
                     "transcripts": {},
-                    "video_id": "edx_video_id"
+                    "video_id": "video_001"
                 }
             }
         }

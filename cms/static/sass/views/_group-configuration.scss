@@ -4,12 +4,12 @@
 
   .content-primary, .content-supplementary {
     @include box-sizing(border-box);
-    float: left;
+    @include float(left);
   }
 
   .content-primary {
     width: flex-grid(9, 12);
-    margin-right: flex-gutter();
+    @include margin-right(flex-gutter());
 
     .notice-moduledisabled {
       @extend %ui-well;
@@ -59,12 +59,12 @@
           @extend %cont-truncated;
           @extend %t-title5;
           @extend %t-strong;
-          margin-right: ($baseline*14);
+          @include margin-right($baseline*14);
           color: $black;
 
           .toggle {
             display: inline-block;
-            padding-left: $baseline;
+            @include padding-right($baseline);
             color: $black;
 
             &:hover, &:focus {
@@ -77,7 +77,14 @@
               display: inline-block;
               width: ($baseline*0.75);
               vertical-align: baseline;
-              margin-left: -$baseline;
+              @include margin-left($baseline);
+
+              &.fa-caret-right:before {
+                @include rtl {
+                  // Flip to fa-caret-left on RTL
+                  content: "\f0d9";
+                }
+              }
             }
 
             &.is-selectable {
@@ -98,17 +105,18 @@
       .collection-info {
         @extend %t-copy-sub1;
         color: $gray-l1;
-        margin-left: $baseline;
+        @include margin-left($baseline);
+
 
         &.group-configuration-info-inline {
           display: table;
           width: 70%;
-          margin: ($baseline/4) 0 ($baseline/2) $baseline;
+          @include margin($baseline/4, 0, $baseline/2, $baseline);
 
           li {
             @include box-sizing(border-box);
             display: table-cell;
-            margin-right: 1%;
+            @include margin-right(1%);
 
             &.group-configuration-usage-count {
               font-style: italic;
@@ -125,12 +133,12 @@
         &.collection-info-inline {
           display: table;
           width: 70%;
-          margin: ($baseline/4) 0 ($baseline/2) $baseline;
+          @include margin($baseline/4, 0, $baseline/2, $baseline);
 
           li {
             @include box-sizing(border-box);
             display: table-cell;
-            margin-right: 1%;
+            @include margin-right(1%);
             padding: ($baseline/4) 0;
 
             &.collection-usage-count {
@@ -150,7 +158,7 @@
       }
 
       .collection-items {
-        margin-left: $baseline;
+        @include margin-left($baseline);
         margin-bottom: ($baseline*0.75);
 
         .item {
@@ -169,7 +177,7 @@
             display: inline-block;
             vertical-align: middle;
             width: 75%;
-            margin-right: 5%;
+            @include margin-right(5%);
           }
         }
       }
@@ -180,13 +188,13 @@
           @include transition(opacity .15s .25s ease-in-out);
           position: absolute;
           top: $baseline;
-          right: $baseline;
+          @include right($baseline);
           opacity: 0.0;
 
           .action {
             display: inline-block;
             vertical-align: middle;
-            margin-right: ($baseline/4);
+            @include margin-right($baseline/4);
 
             .edit {
               @extend %ui-btn-non-blue;
@@ -207,7 +215,7 @@
       .collection-references {
         @extend %t-copy-sub1;
         box-shadow: 0 2px 2px 0 $shadow inset;
-        padding: $baseline ($baseline*1.5) $baseline ($baseline*2.5);
+        @include padding($baseline, $baseline*1.5, $baseline, $baseline*2.5);
         color: $gray-l1;
 
         .usage {
@@ -221,12 +229,12 @@
             }
 
             .fa-warning {
-              margin: ($baseline/4) ($baseline/2) 0 ($baseline*1.5);
+              @include margin($baseline/4, $baseline/2, 0, $baseline*1.5);
               color: $orange;
             }
 
             .fa-times-circle {
-              margin: ($baseline/4) ($baseline/2) 0 ($baseline*1.5);
+              @include margin($baseline/4, $baseline/2, 0, $baseline*1.5);
               color: $red-l2;
             }
           }
@@ -237,12 +245,12 @@
         @extend %t-copy-sub1;
         background-color: $gray-l6;
         margin-top: $baseline;
-        padding: $baseline ($baseline*1.5) $baseline ($baseline*1.5);
+        @include padding($baseline, $baseline*1.5, $baseline, $baseline*1.5);
 
         .fa-warning {
-          margin: ($baseline/2) $baseline 0 0;
+          @include margin($baseline/2, $baseline, 0, 0);
           color: $orange;
-          float: left;
+          @include float(left);
         }
 
         .collection-validation-text {
@@ -283,7 +291,7 @@
         }
 
         .field {
-          margin: 0 0 ($baseline*0.75) 0;
+          @include margin(0, 0, $baseline*0.75, 0);
 
           &:last-child {
             @extend %wipe-last-child;
@@ -296,7 +304,7 @@
             }
 
             label:after {
-              margin-left: ($baseline/4);
+              @include margin-left($baseline/4);
               content: "*";
             }
           }
@@ -312,7 +320,7 @@
           label {
             @extend %t-copy-sub1;
             @include transition(color, 0.15s, ease-in-out);
-            margin: 0 0 ($baseline/4) 0;
+            @include margin(0, 0, $baseline/4, 0);
 
             &.is-focused {
               color: $blue;
@@ -372,7 +380,7 @@
           @extend %t-strong;
 
           &:after {
-            margin-left: ($baseline/4);
+            @include margin-left($baseline/4);
             content: "*";
           }
         }
@@ -389,14 +397,14 @@
           .group-configuration-id {
             display: inline-block;
             width: 45%;
-            text-align: right;
+            @include text-align(right);
             vertical-align: top;
             color: $gray-l1;
 
             .group-configuration-value {
               @extend %t-strong;
               white-space: nowrap;
-              margin-left: ($baseline*0.5);
+              @include margin-left($baseline*0.5);
             }
           }
         }
@@ -409,10 +417,10 @@
           background: $gray-l6;
 
           .action {
-            margin-right: ($baseline/4);
+            @include margin-right($baseline/4);
 
             &:last-child {
-              margin-right: 0;
+              @include margin-right(0);
             }
           }
 
@@ -428,7 +436,7 @@
           }
 
           .wrapper-delete-button {
-            float: right;
+            @include float(right);
             padding: ($baseline/4) ($baseline/2);
 
             .is-disabled {
@@ -439,7 +447,7 @@
 
         .copy {
           @extend %t-copy-sub2;
-          margin: ($baseline) 0 ($baseline/2) 0;
+          @include margin($baseline, 0, $baseline/2, 0);
           color: $gray;
 
           strong {
@@ -454,7 +462,7 @@
         @extend %t-strong;
         display: block;
         width: 100%;
-        margin: ($baseline*1.5) 0 0 0;
+        @include margin($baseline*1.5, 0, 0, 0);
         padding: ($baseline/2);
       }
     }
@@ -496,7 +504,7 @@
         .group-configuration-info {
           @extend %t-copy-sub1;
           color: $gray-l1;
-          margin-left: $baseline;
+          @include margin-left($baseline);
 
           .group-configuration-label {
             text-transform: uppercase;
@@ -509,7 +517,7 @@
         }
 
         .groups {
-          margin-left: $baseline;
+          @include margin-left($baseline);
           margin-bottom: ($baseline*0.75);
 
           .group {
@@ -528,7 +536,7 @@
               display: inline-block;
               vertical-align: middle;
               width: 75%;
-              margin-right: 5%;
+              @include margin-right(5%);
             }
 
             .group-allocation {
@@ -536,7 +544,7 @@
               vertical-align: middle;
               width: 20%;
               color: $gray-l1;
-              text-align: right;
+              @include text-align(right);
             }
           }
         }
@@ -545,7 +553,7 @@
       .group-configuration-edit {
 
         .add-collection-name label {
-          padding-right: 5%;
+          @include padding-right(5%);
           overflow: hidden;
           text-overflow: ellipsis;
           vertical-align: bottom;
@@ -553,14 +561,14 @@
 
         .field-group {
           @include clearfix();
-          margin: 0 0 ($baseline/2) 0;
-          padding: ($baseline/4) 0 0 0;
+          @include margin(0, 0, $baseline/2, 0);
+          @include padding($baseline/4, 0, 0, 0);
 
           .group-allocation,
           .field {
             display: inline-block;
             vertical-align: middle;
-            margin: 0 3% 0 0;
+            @include margin(0, 3%, 0, 0);
           }
 
           .group-allocation {

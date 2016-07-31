@@ -6,6 +6,7 @@ import decimal
 from ipware.ip import get_ip
 
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic.base import View
@@ -20,12 +21,12 @@ from courseware.access import has_access
 from student.models import CourseEnrollment
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from opaque_keys.edx.keys import CourseKey
-from util.db import commit_on_success_with_read_committed
+from util.db import outer_atomic
 from xmodule.modulestore.django import modulestore
 
 from embargo import api as embargo_api
 
-from helpers import get_mktg_enroll_success_redirect
+from helpers import SUCCESS_ENROLL_PAGE, get_mktg_for_course
 
 
 class ChooseModeView(View):
@@ -39,7 +40,12 @@ class ChooseModeView(View):
 
     """
 
+    @method_decorator(transaction.non_atomic_requests)
+    def dispatch(self, *args, **kwargs):        # pylint: disable=missing-docstring
+        return super(ChooseModeView, self).dispatch(*args, **kwargs)
+
     @method_decorator(login_required)
+    @method_decorator(transaction.atomic)
     def get(self, request, course_id, error=None):
         """Displays the course mode choice page.
 
@@ -88,7 +94,7 @@ class ChooseModeView(View):
         # in the "honor" track by this point, so we send the user
         # to the dashboard.
         if not CourseMode.has_verified_mode(modes):
-            return redirect(get_mktg_enroll_success_redirect(course_id))
+            return redirect(get_mktg_for_course(SUCCESS_ENROLL_PAGE, unicode(course_id)))
 
         # If a user has already paid, redirect them to the dashboard.
         if is_active and (enrollment_mode in CourseMode.VERIFIED_MODES + [CourseMode.NO_ID_PROFESSIONAL_MODE]):
@@ -116,12 +122,13 @@ class ChooseModeView(View):
             "course_modes_choose_url": reverse("course_modes_choose", kwargs={'course_id': course_key.to_deprecated_string()}),
             "modes": modes,
             "has_credit_upsell": has_credit_upsell,
-            "course_name": course.display_name_with_default,
+            "course_name": course.display_name_with_default_escaped,
             "course_org": course.display_org_with_default,
             "course_num": course.display_number_with_default,
             "chosen_price": chosen_price,
             "error": error,
-            "responsive": True
+            "responsive": True,
+            "nav_hidden": True,
         }
         if "verified" in modes:
             context["suggested_prices"] = [
@@ -136,8 +143,9 @@ class ChooseModeView(View):
 
         return render_to_response("course_modes/choose.html", context)
 
+    @method_decorator(transaction.non_atomic_requests)
     @method_decorator(login_required)
-    @method_decorator(commit_on_success_with_read_committed)
+    @method_decorator(outer_atomic(read_committed=True))
     def post(self, request, course_id):
         """Takes the form submission from the page and parses it.
 
@@ -168,10 +176,14 @@ class ChooseModeView(View):
         if requested_mode not in allowed_modes:
             return HttpResponseBadRequest(_("Enrollment mode not supported"))
 
-        if requested_mode == 'honor':
-            # The user will have already been enrolled in the honor mode at this
+        if requested_mode == 'audit':
+            # The user will have already been enrolled in the audit mode at this
             # point, so we just redirect them to the dashboard, thereby avoiding
             # hitting the database a second time attempting to enroll them.
+            return redirect(reverse('dashboard'))
+
+        if requested_mode == 'honor':
+            CourseEnrollment.enroll(user, course_key, mode=requested_mode)
             return redirect(reverse('dashboard'))
 
         mode_info = allowed_modes[requested_mode]
@@ -218,6 +230,8 @@ class ChooseModeView(View):
             return 'verified'
         if 'honor_mode' in request_dict:
             return 'honor'
+        if 'audit_mode' in request_dict:
+            return 'audit'
         else:
             return None
 

@@ -37,7 +37,6 @@
 @import 'elements/header';
 @import 'elements/footer';
 @import 'elements/sock';
-@import 'elements/tender-widget';
 @import 'elements/system-feedback'; // alerts, notifications, states
 @import 'elements/system-help'; // help UI
 @import 'elements/modal'; // interstitial UI, dialogs, modal windows
@@ -62,7 +61,6 @@
 @import 'views/unit';
 @import 'views/container';
 @import 'views/users';
-@import 'views/checklists';
 @import 'views/textbooks';
 @import 'views/export-git';
 @import 'views/group-configuration';
@@ -78,8 +76,6 @@
 @import 'xmodule/modules/css/module-styles.scss';
 @import 'xmodule/descriptors/css/module-styles.scss';
 @import 'elements/xmodules'; // styling for Studio-specific contexts
-
-@import 'edraak/arabic-mathjax';  // Styles and hacks for the Arabic MathJax
 
 @import 'developer'; // used for any developer-created scss that needs further polish/refactoring
 @import 'shame';     // used for any bad-form/orphaned scss

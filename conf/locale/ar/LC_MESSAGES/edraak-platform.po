@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2016-03-24 14:18+0000\n"
+"PO-Revision-Date: 2016-07-14 03:49+0000\n"
 "Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,31 @@ msgid ""
 " or hyphens."
 msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
-#: common/djangoapps/student/views.py:1159
+#: common/djangoapps/student/views.py:1050
+msgid ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minute."
+msgid_plural ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1082
+msgid "Too many failed login attempts. Try again in {number} minute."
+msgid_plural "Too many failed login attempts. Try again in {number} minutes."
+msgstr[0] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[1] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[2] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[3] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقائق."
+msgstr[4] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+msgstr[5] "لقد نفدت محاولات الدخول منك. يرجى المحاولة خلال {number} دقيقة."
+
+#: common/djangoapps/student/views.py:1174
 msgid ""
 "If you're unable to find the password reset email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
@@ -65,31 +89,31 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:282
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:284
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:285
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:287
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:295
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:299
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:301
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:305
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:307
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:316
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:318
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -214,11 +238,11 @@ msgstr "يُرجى إدخال كلمة السر."
 
 #: openedx/core/djangoapps/user_api/views.py:479
 msgid "Please enter your Highest level of education completed"
-msgstr "يُرجى تحديد أعلى مستوى تعليمي وصلت إليه."
+msgstr "يُرجى اختيار أعلى مستوى تعليمي وصلت إليه"
 
 #: openedx/core/djangoapps/user_api/views.py:510
 msgid "Please enter your Gender."
-msgstr "يُرجى تحديد الجنس."
+msgstr "يُرجى اختيار الجنس."
 
 #: openedx/core/djangoapps/user_api/views.py:541
 msgid "Please enter your Year of birth."
@@ -276,7 +300,7 @@ msgstr "تم إرسال رسالة التفعيل. يرجى الضغط على ر
 msgid ""
 "Thank you for posting your certificate on Bayt.com \n"
 "To proceed in process please click on the link below"
-msgstr "شكراً على نشر شهادتك على موقع بيت.كوم. للمتابعة إضغط على الرابط أدناه."
+msgstr "شكراً على نشر شهادتك على موقع بيت.كوم. بإمكانك الضغط على الرابط أدناه للمتابعة."
 
 #: lms/templates/courseware/progress.html:62
 msgid ""
@@ -405,7 +429,7 @@ msgid ""
 "If you're unable to find the activation email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
 "filtered."
-msgstr "إن لم تستطع إيجاد رسالة التفعيل في صندوق البريد الوارد، فقم بتفقد صندوق البريد المهمل."
+msgstr "إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/الغير مرغوب فيها أو البريد الغير هام."
 
 #: lms/templates/registration/password_reset_subject.txt:6
 msgid "Password reset on {platform_name}"

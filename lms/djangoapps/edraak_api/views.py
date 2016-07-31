@@ -4,18 +4,22 @@ from django.contrib.auth.models import AnonymousUser
 from django.conf import settings
 
 from util.json_request import JsonResponse
+from openedx.core.lib.courses import course_image_url
+
 from courseware.courses import (
     get_courses,
+    get_course,
     sort_by_announcement,
-    course_image_url,
     get_course_about_section,
 )
 
 import branding
+import logging
 from courseware.access import has_access
 
 from edraak_misc.utils import edraak_courses_logic, get_absolute_url_prefix
 
+log = logging.getLogger(__name__)
 
 def _get_course_status(course):
     if course.has_ended():
@@ -64,26 +68,33 @@ def courses(request, show_hidden):
 
     prefix = get_absolute_url_prefix(request)
 
-    for course in courses_list:
-        video_tag = get_course_about_section(course, "video")
-        youtube_id = video_tag[video_tag.find("embed") + 6:video_tag.find("?")]
+    for course_overview in courses_list:
 
-        courses_json_list.append({
-            "id": unicode(course.id),
-            "number": course.display_number_with_default,
-            "name": course.display_name_with_default,
-            "organization": course.display_org_with_default,
-            "description": get_course_about_section(course, "short_description").strip(),
-            "startDate": course.start,
-            "endDate": course.end,
-            "enrollmentStartDate": course.enrollment_start,
-            "enrollmentEndDate": course.enrollment_end,
-            "overview": get_course_about_section(course, "overview").strip(),
-            "aboutPage": prefix + reverse('about_course', args=[unicode(course.id)]),
-            "image": prefix + course_image_url(course),
-            "state": _get_course_status(course),
-            "youtube_id": youtube_id,
-            "effort": get_course_about_section(course, "effort").strip(),
-        })
+        try:
+            course = get_course(course_overview.id)
+
+            video_tag = get_course_about_section(request, course, "video")
+            youtube_id = video_tag[video_tag.find("embed") + 6:video_tag.find("?")]
+
+            courses_json_list.append({
+                "id": unicode(course.id),
+                "number": course.display_number_with_default,
+                "name": course.display_name_with_default_escaped,
+                "organization": course.display_org_with_default,
+                "description": get_course_about_section(request, course, "short_description").strip(),
+                "startDate": course.start,
+                "endDate": course.end,
+                "enrollmentStartDate": course.enrollment_start,
+                "enrollmentEndDate": course.enrollment_end,
+                "overview": get_course_about_section(request, course, "overview").strip(),
+                "aboutPage": prefix + reverse('about_course', args=[unicode(course.id)]),
+                "image": prefix + course_image_url(course),
+                "state": _get_course_status(course),
+                "youtube_id": youtube_id,
+                "effort": get_course_about_section(request, course, "effort").strip(),
+            })
+        except ValueError:
+            log.error(u"Course with id '{0}' not found".format(course_overview.id))
+
 
     return JsonResponse(courses_json_list)

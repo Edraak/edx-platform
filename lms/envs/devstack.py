@@ -1,6 +1,7 @@
 """
 Specific overrides to the base prod settings to make development easier.
 """
+from os.path import abspath, dirname, join
 
 from .aws import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
@@ -11,11 +12,12 @@ MEDIA_ROOT = "/edx/var/edxapp/uploads"
 
 DEBUG = True
 USE_I18N = True
-TEMPLATE_DEBUG = True
+DEFAULT_TEMPLATE_ENGINE['OPTIONS']['debug'] = True
 SITE_NAME = 'localhost:8000'
 PLATFORM_NAME = ENV_TOKENS.get('PLATFORM_NAME', 'Devstack')
 # By default don't use a worker, execute tasks as if they were local functions
 CELERY_ALWAYS_EAGER = True
+HTTPS = 'off'
 
 ################################ LOGGERS ######################################
 
@@ -29,11 +31,16 @@ LOGGING = get_logger_config(LOG_DIR,
                             debug=False,
                             service_variant=SERVICE_VARIANT)
 
+# Silence noisy logs
 import logging
-
-# Disable noisy loggers
-for pkg_name in ['track.contexts', 'track.middleware', 'dd.dogapi']:
-    logging.getLogger(pkg_name).setLevel(logging.CRITICAL)
+LOG_OVERRIDES = [
+    ('track.contexts', logging.CRITICAL),
+    ('track.middleware', logging.CRITICAL),
+    ('dd.dogapi', logging.CRITICAL),
+    ('django_comment_client.utils', logging.CRITICAL),
+]
+for log_name, log_level in LOG_OVERRIDES:
+    logging.getLogger(log_name).setLevel(log_level)
 
 
 ################################ EMAIL ########################################
@@ -89,6 +96,22 @@ def should_show_debug_toolbar(_):
 
 ########################### PIPELINE #################################
 
+PIPELINE_ENABLED = False
+STATICFILES_STORAGE = 'openedx.core.storage.DevelopmentStorage'
+
+# Revert to the default set of finders as we don't want the production pipeline
+STATICFILES_FINDERS = [
+    'openedx.core.djangoapps.theming.finders.ComprehensiveThemeFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Disable JavaScript compression in development
+PIPELINE_JS_COMPRESSOR = None
+
+# Whether to run django-require in debug mode.
+REQUIRE_DEBUG = DEBUG
+
 PIPELINE_SASS_ARGUMENTS = '--debug-info --require {proj_dir}/static/sass/bourbon/lib/bourbon.rb'.format(proj_dir=PROJECT_ROOT)
 
 ########################### VERIFIED CERTIFICATES #################################
@@ -114,7 +137,7 @@ FEATURES['ENABLE_VIDEO_ABSTRACTION_LAYER_API'] = True
 
 ########################## SECURITY #######################
 FEATURES['ENFORCE_PASSWORD_POLICY'] = False
-FEATURES['ENABLE_MAX_FAILED_LOGIN_ATTEMPTS'] = True  # So Omar don't get confused all the time!
+FEATURES['ENABLE_MAX_FAILED_LOGIN_ATTEMPTS'] = False
 FEATURES['SQUELCH_PII_IN_LOGS'] = False
 FEATURES['PREVENT_CONCURRENT_LOGINS'] = False
 FEATURES['ADVANCED_SECURITY'] = False
@@ -125,6 +148,8 @@ PASSWORD_COMPLEXITY = {}
 ########################### Milestones #################################
 FEATURES['MILESTONES_APP'] = True
 
+########################### Milestones #################################
+FEATURES['ORGANIZATIONS_APP'] = True
 
 ########################### Entrance Exams #################################
 FEATURES['ENTRANCE_EXAMS'] = True
@@ -147,7 +172,7 @@ FEATURES['CERTIFICATES_HTML_VIEW'] = True
 
 
 ########################## Course Discovery #######################
-from django.utils.translation import ugettext as _
+_ = lambda s: s
 LANGUAGE_MAP = {'terms': {lang: display for lang, display in ALL_LANGUAGES}, 'name': _('Language')}
 COURSE_DISCOVERY_MEANINGS = {
     'org': {
@@ -164,6 +189,8 @@ COURSE_DISCOVERY_MEANINGS = {
 }
 
 FEATURES['ENABLE_COURSE_DISCOVERY'] = True
+# Setting for overriding default filtering facets for Course discovery
+# COURSE_DISCOVERY_FILTERS = ["org", "language", "modes"]
 FEATURES['COURSES_ARE_BROWSEABLE'] = True
 HOMEPAGE_COURSE_MAX = 9
 
@@ -191,12 +218,20 @@ FEATURES['ENABLE_COSMETIC_DISPLAY_PRICE'] = True
 if FEATURES.get('ENABLE_THIRD_PARTY_AUTH') and 'third_party_auth.dummy.DummyBackend' not in AUTHENTICATION_BACKENDS:
     AUTHENTICATION_BACKENDS = ['third_party_auth.dummy.DummyBackend'] + list(AUTHENTICATION_BACKENDS)
 
+############## ECOMMERCE API CONFIGURATION SETTINGS ###############
+ECOMMERCE_PUBLIC_URL_ROOT = "http://localhost:8002"
+
+###################### Cross-domain requests ######################
+FEATURES['ENABLE_CORS_HEADERS'] = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = ()
+CORS_ORIGIN_ALLOW_ALL = True
+
+
 #####################################################################
 # See if the developer has any local overrides.
-try:
-    from .private import *      # pylint: disable=wildcard-import
-except ImportError:
-    pass
+if os.path.isfile(join(dirname(abspath(__file__)), 'private.py')):
+    from .private import *  # pylint: disable=import-error,wildcard-import
 
 #####################################################################
 # Lastly, run any migrations, if needed.

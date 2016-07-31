@@ -14,10 +14,9 @@
 
 define(
 'video/01_initialize.js',
-['video/03_video_player.js', 'video/00_i18n.js', 'video/00_sign_language_state.js'],
-function (VideoPlayer, i18n, SignLanguageState) {
-    var moment = window.moment;
-
+['video/03_video_player.js', 'video/00_i18n.js', 'moment'],
+function (VideoPlayer, i18n, moment) {
+    var moment = moment || window.moment;
     /**
      * @function
      *
@@ -513,9 +512,6 @@ function (VideoPlayer, i18n, SignLanguageState) {
             // In-browser HTML5 player does not support quality
             // control.
             this.el.find('a.quality_control').hide();
-
-	        // In-browser HTML5 player does not support sign-language control.
-            this.el.find('a.sign-language').hide();
             _renderElements(this);
         }
     }
@@ -600,7 +596,11 @@ function (VideoPlayer, i18n, SignLanguageState) {
                     '[Video info]: YouTube returned an error for ' +
                     'video with id "' + self.id + '".'
                 );
-                self.loadHtmlPlayer();
+                // If the video is already loaded in `_waitForYoutubeApi` by the
+                // time we get here, then we shouldn't load it again.
+                if (!self.htmlPlayerLoaded) {
+                    self.loadHtmlPlayer();
+                }
             });
 
             window.Video.loadYouTubeIFrameAPI(scriptTag);
@@ -718,10 +718,6 @@ function (VideoPlayer, i18n, SignLanguageState) {
 
     function youtubeId(speed) {
         var currentSpeed = this.isFlashMode() ? this.speed : '1.0';
-
-        if (this.config.nonSignLanguageVideoId && !SignLanguageState.getIsActive()) {
-            return this.config.nonSignLanguageVideoId;
-        }
 
         return  this.videos[speed] ||
                 this.videos[currentSpeed] ||

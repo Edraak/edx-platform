@@ -6,7 +6,7 @@ from django.conf import settings
 
 from .views import UserDetail, UserCourseEnrollmentsList, UserCourseStatus
 
-USERNAME_PATTERN = r'(?P<username>[\w.+-]+)'
+USERNAME_PATTERN = settings.USERNAME_PATTERN
 
 urlpatterns = patterns(
     'mobile_api.users.views',
