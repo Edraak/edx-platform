@@ -6827,7 +6827,7 @@ msgstr ""
 msgid ""
 "Are you sure you want to unenroll from %(course_name)s (%(course_number)s)?"
 msgstr ""
-"هل أنت متأكّد من رغبتك في إلغاء تسجيلك في المساقات %(course_name)s "
+"هل أنت متأكّد من رغبتك في إلغاء تسجيلك في مساق %(course_name)s "
 "(%(course_number)s)؟"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html

@@ -16551,7 +16551,7 @@ msgid ""
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
 "filtered."
 msgstr ""
-"إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/الغير مرغوب فيها "
+"إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/غير المرغوب فيها "
 "أو البريد الغير هام."
 
 #: lms/templates/registration/password_reset_subject.txt:6
@@ -23228,7 +23228,7 @@ msgstr ""
 msgid ""
 "Are you sure you want to unenroll from %(course_name)s (%(course_number)s)?"
 msgstr ""
-"هل أنت متأكّد من رغبتك في إلغاء تسجيلك في المساقات %(course_name)s "
+"هل أنت متأكّد من رغبتك في إلغاء تسجيلك في مساق %(course_name)s "
 "(%(course_number)s)؟"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
