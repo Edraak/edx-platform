@@ -13,6 +13,9 @@
             <p>
                 <%- gettext("We've sent instructions for resetting your password to the email address you provided.") %>
             </p>
+            <p>
+                <%- gettext("If you're unable to find the password reset email, please check your email account's \"Spam\" or \"Junk\" folders to ensure the message was not filtered.") %>
+            </p>
         </div>
     </div>
 
