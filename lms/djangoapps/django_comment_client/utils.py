@@ -125,9 +125,9 @@ def hack_remove_unwanted_modules(course, categories):
     """
 
     import re
-    SOLAR_ENERGY_COURSE = u'ET.3034TU'
+    SOLAR_ENERGY_COURSES = [u'ET.3034TU', u'SE-Pt2']
 
-    if SOLAR_ENERGY_COURSE != course.id.course:
+    if course.id.course not in SOLAR_ENERGY_COURSES:
         return categories
 
     def has_english_text(text):
