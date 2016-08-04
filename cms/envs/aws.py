@@ -363,6 +363,10 @@ CSRF_COOKIE_DOMAIN = ENV_TOKENS.get('CSRF_COOKIE_DOMAIN')
 # Example: {'CN': 'http://api.xuetangx.com/edx/video?s3_url='}
 VIDEO_CDN_URL = ENV_TOKENS.get('VIDEO_CDN_URL', {})
 
+##### Arabic MathJax configuration
+ARABIC_MATHJAX_VERSION = ENV_TOKENS.get('ARABIC_MATHJAX_VERSION')
+MATHJAX_CONTRIB_PREFIX = ENV_TOKENS.get('MATHJAX_CONTRIB_PREFIX')
+
 if FEATURES['ENABLE_COURSEWARE_INDEX'] or FEATURES['ENABLE_LIBRARY_INDEX']:
     # Use ElasticSearch for the search engine
     SEARCH_ENGINE = "search.elastic.ElasticSearchEngine"
