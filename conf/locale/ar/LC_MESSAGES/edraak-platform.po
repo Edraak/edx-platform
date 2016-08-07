@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2016-07-31 13:33+0000\n"
-"Last-Translator: omarithawi <oithawi@qrf.org>\n"
+"PO-Revision-Date: 2016-08-07 09:14+0000\n"
+"Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,14 +41,38 @@ msgid ""
 " or hyphens."
 msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
-#: common/djangoapps/student/views.py:1206
+#: common/djangoapps/student/views.py:1096
+msgid ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minute."
+msgid_plural ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1128
+msgid "Too many failed login attempts. Try again in {number} minute."
+msgid_plural "Too many failed login attempts. Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1221
 msgid ""
 "If you're unable to find the password reset email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
 "filtered."
 msgstr "إن لم تجد الرسالة في صندوق الوارد، فقم بتفقد صندوق بريد الرسائل المزعجة أو غير المرغوب فيها أو البريد غير الهام."
 
-#: common/djangoapps/student/views.py:1496
+#: common/djangoapps/student/views.py:1511
 msgid ""
 "Registration process has timed out. Please refresh the page and start over."
 msgstr "لقد انتهى وقت التسجيل، يرجى إعادة المحاولة."
@@ -134,31 +158,31 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:284
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:286
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:287
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:289
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:299
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:302
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:304
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:309
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:311
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:320
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:322
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -284,7 +308,15 @@ msgstr ""
 msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at %(platform_name)s."
-msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعادة ضبط كلمة السر الخاصة بك على %(platform_name)s."
+msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعادة ضبط كلمة المرور الخاصة بك على %(platform_name)s."
+
+#: openedx/core/djangoapps/user_api/accounts/serializers.py:181
+msgid "The name field must be at least {} characters long."
+msgstr ""
+
+#: openedx/core/djangoapps/user_api/accounts/serializers.py:190
+msgid "The language_proficiencies field must consist of unique languages"
+msgstr ""
 
 #: openedx/core/djangoapps/user_api/accounts/serializers.py:200
 msgid "This field is required."
@@ -297,7 +329,7 @@ msgstr "يُرجى إدخال البريد الإلكتروني."
 
 #: openedx/core/djangoapps/user_api/views.py:100
 msgid "Please enter your password."
-msgstr "أدخل كلمة السر."
+msgstr "أدخل كلمة المرور."
 
 #: openedx/core/djangoapps/user_api/views.py:405
 msgid "Please enter your Full name."
@@ -309,7 +341,7 @@ msgstr "يُرجى إدخال اسم المستخدم."
 
 #: openedx/core/djangoapps/user_api/views.py:475
 msgid "Please enter your Password."
-msgstr "يُرجى إدخال كلمة السر."
+msgstr "يُرجى إدخال كلمة المرور."
 
 #: openedx/core/djangoapps/user_api/views.py:554
 msgid "Please enter your Year of birth."
@@ -624,11 +656,11 @@ msgid ""
 "If you're unable to find the activation email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
 "filtered."
-msgstr "إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/غير المرغوب فيها أو البريد الغير هام."
+msgstr "إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/غير المرغوب فيها أو البريد غير الهام."
 
 #: lms/templates/registration/password_reset_subject.txt:6
 msgid "Password reset on {platform_name}"
-msgstr "تعليمات تغيير كلمة السر على {platform_name}"
+msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
 
 #: cms/templates/index.html:82
 msgid "Note: The organization name is part of the course URL"

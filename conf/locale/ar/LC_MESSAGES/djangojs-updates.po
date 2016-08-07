@@ -101,8 +101,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-07-30 10:47+0000\n"
-"PO-Revision-Date: 2016-07-29 14:05+0000\n"
+"POT-Creation-Date: 2016-08-04 18:44+0000\n"
+"PO-Revision-Date: 2016-08-04 18:47+0000\n"
 "Last-Translator: Ned Batchelder <ned@edx.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -748,6 +748,19 @@ msgstr ""
 "تم  في هذا المساق تمكين نظام تكوين الشعب التلقائي للمتعلمين المثبتين في "
 "المسار، ولكن تم تعطيل الشعب. يجب عليك تفعيل الشعب حتى تعمل هذه الخاصية."
 
+#: lms/static/js/student_account/account.js
+msgid ""
+"Password reset email sent. Follow the link in the email to change your "
+"password."
+msgstr ""
+"تم إرسال بريد إلكتروني لتغيير كلمة المرور. يُرجى اتّباع الرابط الوارد في "
+"الرسالة لاستكمال العملية . "
+
+#: lms/static/js/student_account/account.js
+msgid "We weren't able to send you a password reset email."
+msgstr ""
+"عذرًا، لم نتمكّن من مراسلتك عبر البريد الإلكتروني لتغيير كلمة المرور. "
+
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Basic Account Information"
 msgstr "معلومات الحساب الأساسية"
@@ -773,6 +786,11 @@ msgstr ""
 "على هويّتك الرسميّة التي تحمل صورة، بما فيه أي حروف غير لاتينية."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
+#: lms/templates/student_account/account.underscore
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Reset Your Password"
 msgstr "غير كلمة سر حسابك"
 
@@ -782,9 +800,9 @@ msgid ""
 " address for your {platform_name} account. Click the link in the message to "
 "reset your password."
 msgstr ""
-"عند اختيارك \"إعادة ضبط كلمة السر\"، ستصل رسالة لبريدك الإلكتروني المسجّل في"
-" {platform_name}. لتغيير كلمة السر، افتح الرسالة من بريدك وانقر على الرابط "
-"الموجود فيها."
+"عند اختيارك \"إعادة ضبط كلمة المرور\"، ستصل رسالة لبريدك الإلكتروني المسجّل "
+"لدى {platform_name}. لتغيير كلمة المرور، افتح الرسالة من بريدك وانقر على "
+"الرابط الموجود فيها."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Time Zone"
@@ -854,7 +872,7 @@ msgid ""
 "reset your password."
 msgstr ""
 "لقد قمنا بإرسال رسالة إلى عنوان البريد الإلكتروني {email_address}. الرجاء "
-"النقر على الرابط الموجود في هذه الرسالة لإعادة ضبط كلمة السر."
+"النقر على الرابط الموجود في هذه الرسالة لإعادة ضبط كلمة المرور."
 
 #: lms/static/js/student_account/views/account_settings_fields.js
 msgid "Link your {accountName} account"
@@ -1602,18 +1620,6 @@ msgid "Generate Exception Certificates"
 msgstr "إنشاء شهادات استثنائية"
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-white-list.underscore
-msgid ""
-"Generate certificates for all users on the Exception list who do not yet "
-"have a certificate"
-msgstr ""
-"أنشئ شهادات لكل المستخدمين الذين لا يحملون شهادات والموجودين على قائمة "
-"الاستثناءات"
-
-#: lms/templates/instructor/instructor_dashboard_2/certificate-white-list.underscore
-msgid "Generate a Certificate for all users on the Exception list"
-msgstr "إنشاء شهادة لجميع المستخدمين المدرجة اسماؤهم على لائحة الاستثناءات"
-
-#: lms/templates/instructor/instructor_dashboard_2/certificate-white-list.underscore
 msgid "User Email"
 msgstr "البريد الإلكتروني الخاص بالمستخدم"
 
@@ -1760,10 +1766,6 @@ msgstr ""
 "{link_start} صفحة تنزيل البيانات. {link_end}"
 
 #: lms/templates/learner_dashboard/certificate.underscore
-msgid "XSeries Program Certificates"
-msgstr "شهادات برنامج XSeries"
-
-#: lms/templates/learner_dashboard/certificate.underscore
 msgid "certificate.credential_url"
 msgstr "certificate.credential_url"
 
@@ -1774,10 +1776,6 @@ msgstr "certificate.display_name"
 #: lms/templates/learner_dashboard/certificate_status.underscore
 msgid "Congratulations! You have earned a certificate for this course."
 msgstr "تهانينا، لقد حصلت على على شهادة إتمام هذا المساق!"
-
-#: lms/templates/learner_dashboard/certificate_status.underscore
-msgid "View/Share Certificate"
-msgstr "اعرض وانشر شهادتك"
 
 #: lms/templates/learner_dashboard/course_enroll.underscore
 msgid "enrolled"
@@ -1828,27 +1826,11 @@ msgstr "يُفتح باب الانضمام في"
 msgid "Not Currently Available"
 msgstr "غير متاحٍ الآن"
 
-#: lms/templates/learner_dashboard/empty_programs_list.underscore
-msgid "You are not enrolled in any XSeries Programs yet."
-msgstr "أنت لست مسجلاً في أي من برامج XSeries."
-
-#: lms/templates/learner_dashboard/empty_programs_list.underscore
-msgid "Explore XSeries Programs"
-msgstr "استكشف برامج XSeries"
-
 #: lms/templates/learner_dashboard/explore_new_programs.underscore
 msgid ""
 "Browse recently launched courses and see what\\'s new in your favorite "
 "subjects"
 msgstr "تصفح الفصول حديثة الإنشاء وشاهد الجديد في مواضيعك المفضلة."
-
-#: lms/templates/learner_dashboard/explore_new_programs.underscore
-msgid "Explore New XSeries"
-msgstr "استكشف جديد XSeries"
-
-#: lms/templates/learner_dashboard/program_card.underscore
-msgid "type"
-msgstr "النوع"
 
 #: lms/templates/learner_dashboard/program_card.underscore
 #, python-format
@@ -1884,6 +1866,38 @@ msgstr "تحتاج لشهادة إتمام في هذا المساق حتى تك�
 #: lms/templates/learner_dashboard/upgrade_message.underscore
 msgid "Upgrade Now"
 msgstr "طوّر اشتراكك الآن"
+
+#: lms/templates/student_account/account.underscore
+msgid "Reset Password"
+msgstr "تغيير كلمة المرور"
+
+#: lms/templates/student_account/form_field.underscore
+msgid "Forgot password?"
+msgstr "هل نسيت كلمة المرور؟"
+
+#: lms/templates/student_account/login.underscore
+msgid "Password Reset Email Sent"
+msgstr "لقد أرسلنا بريداً إلكترونياً لك لتغيير كلمة المرور."
+
+#: lms/templates/student_account/login.underscore
+msgid ""
+"Sign in here using your email address and password, or use one of the "
+"providers listed below."
+msgstr ""
+"يُرجى تسجيل الدخول باستخدام عنوان بريدك الإلكتروني وكلمة المرور، أو من خلال "
+"أحد المزوِّدين المذكورين أدناه."
+
+#: lms/templates/student_account/login.underscore
+msgid "Sign in here using your email address and password."
+msgstr "يُرجى تسجيل دخولك باستخدام عنوان بريدك الإلكتروني وكلمة المرور."
+
+#: lms/templates/student_account/password_reset.underscore
+msgid "Password assistance"
+msgstr "المساعدة بخصوص كلمة المرور"
+
+#: lms/templates/student_account/password_reset.underscore
+msgid "Reset my password"
+msgstr "تغيير كلمة المرور"
 
 #: lms/templates/student_profile/badge.underscore
 #, python-format
