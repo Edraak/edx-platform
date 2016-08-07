@@ -4431,6 +4431,10 @@ msgid ""
 msgstr ""
 "لا يجب أن تزيد كمّية المشتريات في السلّة عن بند  1 عند تطبيق رمز التفعيل."
 
+#: lms/djangoapps/student_account/views.py
+msgid "No user with the provided email address exists."
+msgstr ""
+
 #: lms/templates/shoppingcart/billing_details.html
 msgid "Email Address"
 msgstr "عنوان البريد الإلكتروني"
@@ -5189,14 +5193,6 @@ msgstr ""
 "المتوقّع أن يشبه التالي: git@github.com:mitocw/edx4edx_lite.git"
 
 #: cms/djangoapps/contentstore/git_export_utils.py
-msgid ""
-"If using http urls, you must provide the username and password in the url. "
-"Similar to https://user:pass@github.com/user/course."
-msgstr ""
-"في حال استخدام الروابط وفق بروتوكول http، فإنّه يجب ذكر اسم المستخدم وكلمة "
-"السر في الرابط، كما يلي https://user:pass@github.com/user/course."
-
-#: cms/djangoapps/contentstore/git_export_utils.py
 msgid "Unable to determine branch, repo in detached HEAD mode"
 msgstr "تعذّر تحديد الفرع؛ المستودع في وضعية ’رأس مفصول‘ "
 
@@ -5207,10 +5203,6 @@ msgstr "تعذّر تحديث أو استنساخ مستودع git."
 #: cms/djangoapps/contentstore/git_export_utils.py
 msgid "Unable to export course to xml."
 msgstr "تعذّر تصدير المساق إلى ملف بصيغة xml."
-
-#: cms/djangoapps/contentstore/git_export_utils.py
-msgid "Unable to configure git username and password"
-msgstr "تعذّر ضبط إعدادات اسم المستخدم وكلمة السر لـ git"
 
 #: cms/djangoapps/contentstore/git_export_utils.py
 msgid ""
@@ -5641,10 +5633,6 @@ msgstr "عنوان البريد الإلكتروني"
 msgid "example: username@domain.com"
 msgstr "مثال:  username@domain.com "
 
-#: cms/templates/login.html lms/templates/login.html
-msgid "Forgot password?"
-msgstr "هل نسيت كلمة السر؟"
-
 #. Translators: This is the placeholder text for a field that requests the
 #. user's full name.
 #: cms/templates/register.html lms/templates/register.html
@@ -6056,10 +6044,6 @@ msgid "Legal"
 msgstr "القانوني"
 
 #: lms/templates/forgot_password_modal.html
-msgid "Password Reset"
-msgstr "تغيير كلمة السر"
-
-#: lms/templates/forgot_password_modal.html
 msgid ""
 "Please enter your e-mail address below, and we will e-mail instructions for "
 "setting a new password."
@@ -6386,10 +6370,6 @@ msgstr "عذرًا، إنّ حسابات {platform_name} غير متاحة حا�
 #: lms/templates/login.html
 msgid "We couldn't log you in."
 msgstr "نأسف لتعذّر إمكانية تسجيل دخولك."
-
-#: lms/templates/login.html
-msgid "Your email or password is incorrect"
-msgstr "عنوان بريدك الالكتروني أو كلمة السر غير صحيحين"
 
 #: lms/templates/login.html
 msgid "An error occurred when signing you in to {platform_name}."
@@ -8959,14 +8939,6 @@ msgid "email: {email}"
 msgstr "عنوان البريد الإلكتروني: {email}"
 
 #: lms/templates/emails/account_creation_and_enroll_emailMessage.txt
-msgid "password: {password}"
-msgstr "كلمة السر: {password}"
-
-#: lms/templates/emails/account_creation_and_enroll_emailMessage.txt
-msgid "It is recommended that you change your password."
-msgstr "نوصيك بتغيير كلمة السر."
-
-#: lms/templates/emails/account_creation_and_enroll_emailMessage.txt
 msgid "Sincerely yours,The {course_name} Team"
 msgstr "مع خالص التقدير، فريق {course_name} "
 
@@ -11489,18 +11461,6 @@ msgstr ""
 msgid "Or you can go back to the {link_start}home page{link_end}."
 msgstr "أو بإمكانك العودة لـ {link_start}الصفحة الرئيسية{link_end}."
 
-#: lms/templates/registration/password_reset_done.html
-msgid "Password reset successful"
-msgstr "تم تغيير كلمة السر بنجاح "
-
-#: lms/templates/registration/password_reset_done.html
-msgid ""
-"We've e-mailed you instructions for setting your password to the e-mail "
-"address you submitted. You should be receiving it shortly."
-msgstr ""
-"لقد قمنا بإرسال رسالةٍ على عنوان البريد الإلكتروني الذي زودتنا به تتضمن "
-"التعليمات الخاصة بضبط كلمة السر، وستصلك قريباً. "
-
 #: lms/templates/shoppingcart/billing_details.html
 #: lms/templates/shoppingcart/receipt.html
 #: lms/templates/shoppingcart/shopping_cart.html
@@ -12928,6 +12888,10 @@ msgstr "شاهد النسخة الحالية"
 #: cms/templates/course_outline.html
 msgid "Edit Start Date"
 msgstr "تعديل تاريخ البداية"
+
+#: cms/templates/course_outline.html
+msgid "Instructor-Paced"
+msgstr ""
 
 #: cms/templates/course_outline.html
 msgid "Creating your course organization"
@@ -16164,7 +16128,31 @@ msgid ""
 " or hyphens."
 msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
-#: common/djangoapps/student/views.py:1206
+#: common/djangoapps/student/views.py:1096
+msgid ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minute."
+msgid_plural ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1128
+msgid "Too many failed login attempts. Try again in {number} minute."
+msgid_plural "Too many failed login attempts. Try again in {number} minutes."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: common/djangoapps/student/views.py:1221
 msgid ""
 "If you're unable to find the password reset email, please check your email "
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
@@ -16173,7 +16161,7 @@ msgstr ""
 "إن لم تجد الرسالة في صندوق الوارد، فقم بتفقد صندوق بريد الرسائل المزعجة أو "
 "غير المرغوب فيها أو البريد غير الهام."
 
-#: common/djangoapps/student/views.py:1496
+#: common/djangoapps/student/views.py:1511
 msgid ""
 "Registration process has timed out. Please refresh the page and start over."
 msgstr "لقد انتهى وقت التسجيل، يرجى إعادة المحاولة."
@@ -16212,7 +16200,7 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:284
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:286
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
@@ -16221,7 +16209,7 @@ msgstr ""
 "على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد "
 "ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:287
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:289
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
@@ -16229,19 +16217,19 @@ msgstr ""
 "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا "
 "على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:299
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:302
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:304
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:309
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:311
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:320
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:322
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -16342,8 +16330,16 @@ msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at %(platform_name)s."
 msgstr ""
-"لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعادة ضبط كلمة السر الخاصة بك على "
+"لقد وصلك هذا البريد الإلكتروني ﻷنك طلبت إعادة ضبط كلمة المرور الخاصة بك على "
 "%(platform_name)s."
+
+#: openedx/core/djangoapps/user_api/accounts/serializers.py:181
+msgid "The name field must be at least {} characters long."
+msgstr ""
+
+#: openedx/core/djangoapps/user_api/accounts/serializers.py:190
+msgid "The language_proficiencies field must consist of unique languages"
+msgstr ""
 
 #: openedx/core/djangoapps/user_api/accounts/serializers.py:200
 msgid "This field is required."
@@ -16356,7 +16352,7 @@ msgstr "يُرجى إدخال البريد الإلكتروني."
 
 #: openedx/core/djangoapps/user_api/views.py:100
 msgid "Please enter your password."
-msgstr "أدخل كلمة السر."
+msgstr "أدخل كلمة المرور."
 
 #: openedx/core/djangoapps/user_api/views.py:405
 msgid "Please enter your Full name."
@@ -16368,7 +16364,7 @@ msgstr "يُرجى إدخال اسم المستخدم."
 
 #: openedx/core/djangoapps/user_api/views.py:475
 msgid "Please enter your Password."
-msgstr "يُرجى إدخال كلمة السر."
+msgstr "يُرجى إدخال كلمة المرور."
 
 #: openedx/core/djangoapps/user_api/views.py:554
 msgid "Please enter your Year of birth."
@@ -16552,11 +16548,11 @@ msgid ""
 "filtered."
 msgstr ""
 "إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/غير المرغوب فيها "
-"أو البريد الغير هام."
+"أو البريد غير الهام."
 
 #: lms/templates/registration/password_reset_subject.txt:6
 msgid "Password reset on {platform_name}"
-msgstr "تعليمات تغيير كلمة السر على {platform_name}"
+msgstr "تعليمات تغيير كلمة المرور على {platform_name}"
 
 #: cms/templates/index.html:82
 msgid "Note: The organization name is part of the course URL"
@@ -21405,10 +21401,6 @@ msgid "You do not have permission to view this page."
 msgstr "ليست لديك صلاحية الاطّلاع على محتوى هذه الصفحة."
 
 #: lms/djangoapps/student_account/views.py
-msgid "No user with the provided email address exists."
-msgstr "لا يوجد مستخدم مسجّل باستخدام عنوان البريد الإلكتروني المحدَّد."
-
-#: lms/djangoapps/student_account/views.py
 msgid "No email address provided."
 msgstr "لم يُحدَّد عنوان بريد إلكتروني."
 
@@ -21429,7 +21421,6 @@ msgid "View and update learner enrollments."
 msgstr "عرض وتحديث عمليات تسجيل المتعلّمين."
 
 #: lms/djangoapps/support/views/refund.py
-#: cms/templates/maintenance/_force_publish_course.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 #: lms/templates/instructor/instructor_dashboard_2/add_coupon_modal.html
 #: lms/templates/instructor/instructor_dashboard_2/edit_coupon_modal.html
@@ -22327,6 +22318,18 @@ msgstr ""
 "اسم الفئة الفرعية في النقاشات. يظهر هذا الاسم في الجانب الأيسر من منتدى "
 "النقاشات الخاص بالمساق."
 
+#: cms/djangoapps/contentstore/git_export_utils.py
+msgid ""
+"If using http urls, you must provide the username and password in the url. "
+"Similar to https://user:pass@github.com/user/course."
+msgstr ""
+"في حال استخدام الروابط وفق بروتوكول http، فإنّه يجب ذكر اسم المستخدم وكلمة "
+"المرور في الرابط، كما يلي https://user:pass@github.com/user/course."
+
+#: cms/djangoapps/contentstore/git_export_utils.py
+msgid "Unable to configure git username and password"
+msgstr "تعذّر ضبط إعدادات اسم المستخدم وكلمة المرور لـ git"
+
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
 "You must link this course to an organization in order to continue. "
@@ -22358,6 +22361,11 @@ msgstr "سجِّل دخولك إلى {studio_name}"
 #: cms/templates/login.html themes/red-theme/cms/templates/login.html
 msgid "Don't have a {studio_name} Account? Sign up!"
 msgstr "إن لم يكن لك حساب في {studio_name}، أنشئهُ الآن!"
+
+#: cms/templates/login.html lms/templates/login.html
+#: themes/red-theme/cms/templates/login.html
+msgid "Forgot password?"
+msgstr "هل نسيت كلمة المرور؟"
 
 #: cms/templates/registration/activation_complete.html
 #: lms/templates/registration/activation_complete.html
@@ -22444,6 +22452,10 @@ msgstr "عليك التسجيل في المنصة قبل أن تستطيع مش�
 msgid "Don't enroll"
 msgstr "لا تسجّل"
 
+#: lms/templates/forgot_password_modal.html
+msgid "Password Reset"
+msgstr "تغيير كلمة المرور"
+
 #: lms/templates/help_modal.html
 msgid ""
 "For {strong_start}questions on course lectures, homework, tools, or "
@@ -22504,6 +22516,10 @@ msgstr "مرحبًا بك في منصة Open edX{registered_trademark}!"
 msgid "Looking for help signing in or with your {platform_name} account?"
 msgstr "هل تحتاج إلى مساعدة في تسجيلك في {platform_name}؟"
 
+#: lms/templates/login.html
+msgid "Your email or password is incorrect"
+msgstr "قيمة غير صحيحة في عنوان بريدك الإلكتروني أو كلمة المرور"
+
 #: lms/templates/navigation.html themes/edx.org/lms/templates/header.html
 #: themes/red-theme/lms/templates/header.html
 msgid "{platform_name} Home Page"
@@ -22518,7 +22534,7 @@ msgid ""
 "{begin_strong}Warning:{end_strong} Your browser is not fully supported. We "
 "strongly recommend using {chrome_link} or {ff_link}."
 msgstr ""
-"{beging_strong}تحذير:{end_strong} متصفحك غير مدعوم. ننصحك باستخدام "
+"{begin_strong}تحذير:{end_strong} متصفحك غير مدعوم. ننصحك باستخدام "
 "{chrome_link} أو {ff_link}."
 
 #: lms/templates/problem.html
@@ -23323,6 +23339,22 @@ msgstr ""
 "لقد رفض {provider_name} طلبك للحصول على مادة للمساق. للمزيد من المعلومات، "
 "يرجى الاتصال {link_to_provider_site} مباشرةً."
 
+#: lms/templates/dashboard/_dashboard_program_info.html
+msgid "{category} Program: Interested in more courses in this subject?"
+msgstr "برنامج {category}: أأنت مهتم بمساقات أكثر في هذا الموضوع؟"
+
+#: lms/templates/dashboard/_dashboard_program_info.html
+msgid ""
+"This course is 1 of {course_count} courses in the "
+"{link_start}{program_display_name}{link_end} {program_category}."
+msgstr ""
+"هذا المساق 1 من بين {course_count} مساقات في "
+"{link_start}{program_display_name}{link_end} ضمن فئة {program_category}."
+
+#: lms/templates/dashboard/_dashboard_program_info.html
+msgid "View {category} Details"
+msgstr "استعرض تفاصيل فئة {category}"
+
 #: lms/templates/dashboard/_dashboard_status_verification.html
 msgid ""
 "Your edX Verification is reviewed and approved. Your verification status is "
@@ -23356,22 +23388,6 @@ msgstr ""
 "لقد انتهت صلاحية تأكيدهويتك. إن أردت الحصول على شهادات مصدقة، يجب أن ترسل "
 "صورة جديدة لك ولأي بطاقة حكومية تحمل صورتك الشخصية قبل انتهاء المساق."
 
-#: lms/templates/dashboard/_dashboard_xseries_info.html
-msgid "{category} Program: Interested in more courses in this subject?"
-msgstr "برنامج {category}: أأنت مهتم بمساقات أكثر في هذا الموضوع؟"
-
-#: lms/templates/dashboard/_dashboard_xseries_info.html
-msgid ""
-"This course is 1 of {course_count} courses in the "
-"{link_start}{program_display_name}{link_end} {program_category}."
-msgstr ""
-"هذا المساق 1 من بين {course_count} مساقات في "
-"{link_start}{program_display_name}{link_end} ضمن فئة {program_category}."
-
-#: lms/templates/dashboard/_dashboard_xseries_info.html
-msgid "View {category} Details"
-msgstr "استعرض تفاصيل فئة {category}"
-
 #: lms/templates/discussion/_discussion_course_navigation.html
 #: lms/templates/discussion/_discussion_inline.html
 msgid "Add a Post"
@@ -23389,6 +23405,14 @@ msgstr "الشعبة:"
 #: lms/templates/discussion/_thread_list_template.html
 msgid "in all cohorts"
 msgstr "في كافة الشعب"
+
+#: lms/templates/emails/account_creation_and_enroll_emailMessage.txt
+msgid "password: {password}"
+msgstr "كلمة المرور: {password}"
+
+#: lms/templates/emails/account_creation_and_enroll_emailMessage.txt
+msgid "It is recommended that you change your password."
+msgstr "نوصيك بتغيير كلمة المرور."
 
 #: lms/templates/emails/activation_email.txt
 msgid "Thank you for creating an account with {platform_name}!"
@@ -23854,38 +23878,38 @@ msgstr "عُد إلى {link_start}الصفحة الرئيسية{link_end}."
 
 #: lms/templates/registration/password_reset_complete.html
 msgid "Your Password Reset is Complete"
-msgstr "تمت إعادة ضبط كلمة السر الخاصة بك"
+msgstr "تمت إعادة ضبط كلمة المرور الخاصة بك"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid "Password Reset Complete"
-msgstr "تمت إعادة ضبط كلمة السر"
+msgstr "تمت إعادة ضبط كلمة المرور"
 
 #: lms/templates/registration/password_reset_complete.html
 msgid ""
 "Your password has been reset. {start_link}Sign-in to your account.{end_link}"
 msgstr ""
-"تمت إعادة ضبط كلمة السر الخاصة بك. {start_link}قم بتسجيل الدخول إلى "
+"تمت إعادة ضبط كلمة المرور الخاصة بك. {start_link}قم بتسجيل الدخول إلى "
 "حسابك.{end_link}"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Reset Your {platform_name} Password"
-msgstr "إعادة ضبط كلمة السر الخاصة بك على {platform_name}"
+msgstr "إعادة ضبط كلمة المرور الخاصة بك على {platform_name}"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Error Resetting Password"
-msgstr "مشكلة في إعادة ضبط كلمة السر"
+msgstr "مشكلة في إعادة ضبط كلمة المرور"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "You must enter and confirm your new password."
-msgstr "يجب أن تكتب وتؤكِّد كلمة السر الجديدة."
+msgstr "يجب أن تكتب وتؤكِّد كلمة المرور الجديدة."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The text in both password fields must match."
-msgstr "يجب أن تتطابق كلمة السر في كلا الحقلين."
+msgstr "يجب أن تتطابق كلمة المرور في كلا الحقلين."
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Reset Your Password"
-msgstr "غير كلمة السر"
+msgstr "غير كلمة المرور"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Enter and confirm your new password."
@@ -23893,15 +23917,27 @@ msgstr "أدخل وأكد كلمة سر حسابك الجديدة"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "New Password"
-msgstr "كلمة السر الجديدة"
+msgstr "كلمة المرور الجديدة"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Confirm Password"
-msgstr "أكِّد كلمة السر"
+msgstr "أكِّد كلمة المرور"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Invalid Password Reset Link"
-msgstr "رابط إعادة ضبط كلمة السر غير صحيح"
+msgstr "رابط إعادة ضبط كلمة المرور غير صحيح"
+
+#: lms/templates/registration/password_reset_done.html
+msgid "Password reset successful"
+msgstr "تم تغيير كلمة المرور بنجاح "
+
+#: lms/templates/registration/password_reset_done.html
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted. You should be receiving it shortly."
+msgstr ""
+"لقد قمنا بإرسال رسالةٍ على عنوان البريد الإلكتروني الذي زودتنا به تتضمن "
+"التعليمات الخاصة بضبط كلمة المرور، وستصلك قريباً. "
 
 #: lms/templates/shoppingcart/shopping_cart.html
 msgid "Increase"
@@ -24115,11 +24151,7 @@ msgstr "أسلوب التعلّم المتّبع في المساق:"
 
 #: cms/templates/course_outline.html
 msgid "Self-Paced"
-msgstr "تعلّم ذاتي"
-
-#: cms/templates/course_outline.html
-msgid "Instructor-Paced"
-msgstr "تعلّم بإشراف أستاذ"
+msgstr "مساق دائم"
 
 #: cms/templates/edit-tabs.html
 msgid ""
@@ -24285,7 +24317,7 @@ msgid ""
 "You can configure release dates for course content and due dates for "
 "assignments."
 msgstr ""
-"تسير المساقات بإشراف الأساتذة تبعًا لمخطّط التقدّم الذي يعدّه مُعدّ المساق. "
+"تسير المساقات غير الدائمة تبعًا لمخطط المساق الكلي الذي يعدّه مدرس المساق. "
 "يمكنك ضبط تواريخ نشر محتوى المساق وتواريخ تسليم الواجبات."
 
 #: cms/templates/settings.html
