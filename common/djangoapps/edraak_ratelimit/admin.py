@@ -5,11 +5,11 @@ from django.core.cache import cache
 from django.contrib.admin import DateFieldListFilter
 from django.contrib import admin
 
-from .models import RateLimitedIP
+from .models import RateLimitedIP, StudentAccountLock
 from .backends import EdraakRateLimitModelBackend
 
 
-class FakeRequest():
+class FakeRequest(object):
     def __init__(self, ip_address):
         self.META = {
             'REMOTE_ADDR': ip_address,
@@ -81,3 +81,28 @@ class RateLimitedIPAdmin(admin.ModelAdmin):
         cache_keys = backend.keys_to_check(request=FakeRequest(obj.ip_address))
         cache.delete_many(cache_keys)
         obj.delete()
+
+
+class StudentAccountLockAdmin(admin.ModelAdmin):
+    search_fields = (
+        'user__email', 'user__username', 'user__pk',
+    )
+
+    readonly_fields = (
+        'user', 'failure_count', 'lockout_until',
+    )
+
+    list_display = (
+        'email', 'username', 'failure_count', 'lockout_until',
+    )
+
+    def email(self, login_failures):
+        return login_failures.user.email
+
+    def username(self, login_failures):
+        return login_failures.user.username
+
+
+admin.site.register(StudentAccountLock, StudentAccountLockAdmin)
+
+admin.site.register(RateLimitedIP, RateLimitedIPAdmin)
