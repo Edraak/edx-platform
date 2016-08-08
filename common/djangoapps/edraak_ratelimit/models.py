@@ -37,3 +37,5 @@ class StudentAccountLock(LoginFailures):
 
     class Meta:
         proxy = True
+        managed = False
+        auto_created = True
