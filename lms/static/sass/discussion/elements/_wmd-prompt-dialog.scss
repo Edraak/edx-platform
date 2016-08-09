@@ -39,7 +39,8 @@
     $text-width: 380px;
 
     .field-label {
-      @include margin-vert($spacing);
+      margin-top: $spacing;
+      margin-bottom: $spacing;
     }
 
     .field-input {
