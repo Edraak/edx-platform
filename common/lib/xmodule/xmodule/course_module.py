@@ -731,6 +731,16 @@ class CourseFields(object):
         scope=Scope.settings
     )
 
+    enable_university_id = Boolean(
+        # This settings is for the edraak-university xblock.
+        display_name=_("Edraak University: Enable ID Tab"),
+        help=_(
+            "Set this \"true\" to show the University ID tab in the course."
+        ),
+        default=False,
+        scope=Scope.settings,
+    )
+
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method
     """

@@ -1,0 +1,42 @@
+// LMS -- views -- Edraak University ID pages
+// ====================
+
+.view-university-id {
+  .university-id {
+    padding: $baseline*2;
+  }
+
+  .form-help {
+    margin: $baseline 0;
+  }
+
+  .important {
+    color: $red;
+  }
+
+  .fields div {
+    label {
+      display: block;
+      margin-top: $baseline;
+      font-weight: bold;
+    }
+
+    input {
+      display: block;
+      width: 400px;
+    }
+
+    .helptext {
+      display: block;
+      margin-top: $baseline/2;
+    }
+
+    .errorlist {
+      color: $red;
+    }
+  }
+
+  .submit {
+    margin: $baseline 0;
+  }
+}

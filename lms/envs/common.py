@@ -1931,6 +1931,7 @@ INSTALLED_APPS = (
     'edraak_url_rewrites',
     'edraak_forus',
     'edraak_ratelimit',
+    'edraak_university',
 
     'lms.djangoapps.lms_xblock',
 
