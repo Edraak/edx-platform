@@ -84,7 +84,7 @@ def get_student_email(request):
             'user_id': user_id,
         }
 
-        message = render_to_string('bayt/verification_email.txt', {
+        message = render_to_string('emails/bayt_verification_email.txt', {
             'activation_url': '{base}{view}?{params}'.format(
                 base=get_absolute_url_prefix(request),
                 view=reverse('bayt_activation'),
