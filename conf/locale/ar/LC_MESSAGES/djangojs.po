@@ -5764,7 +5764,7 @@ msgstr "شارك في المنشورات"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
 msgid "Upvote posts and good responses"
-msgstr ""
+msgstr "صوت لتحسين تقييم المنشورات والردود الجيدة"
 
 #: common/static/common/templates/discussion/discussion-home.underscore
 msgid "Report Forum Misuse"

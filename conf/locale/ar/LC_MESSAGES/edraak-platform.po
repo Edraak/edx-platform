@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2016-08-07 09:22+0000\n"
+"PO-Revision-Date: 2016-08-12 13:08+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -75,7 +75,7 @@ msgstr "إن لم تجد الرسالة في صندوق الوارد، فقم ب
 #: common/djangoapps/student/views.py:1511
 msgid ""
 "Registration process has timed out. Please refresh the page and start over."
-msgstr "لقد انتهى وقت التسجيل، يرجى إعادة المحاولة."
+msgstr "انتهى الوقت المخصص  للتسجيل. قم بإعادة تحميل الصفحة والمحاولة مرة أخرى."
 
 #: common/djangoapps/util/views.py:119
 msgid "Invalid syntax"
@@ -158,31 +158,31 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:286
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:288
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:289
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:291
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:299
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:301
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:304
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:306
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:311
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:313
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:322
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:324
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -312,7 +312,7 @@ msgstr "لقد وصلك هذا البريد الإلكتروني ﻷنك طلب�
 
 #: openedx/core/djangoapps/user_api/accounts/serializers.py:181
 msgid "The name field must be at least {} characters long."
-msgstr ""
+msgstr "يجب أن يحتوي حقل الاسم الكامل من {} حرف على الأقل."
 
 #: openedx/core/djangoapps/user_api/accounts/serializers.py:190
 msgid "The language_proficiencies field must consist of unique languages"
@@ -538,6 +538,12 @@ msgid ""
 "Please go to {forus_link}, and try again. If the problem persists, please "
 "email us at {email}."
 msgstr "الرجاء الرجوع إلى  {forus_link} والمحاولة مجدداً. إذا ظهرت المشكلة مرة أخرى، تواصل معنا على {email}."
+
+#: lms/templates/emails/bayt_verification_email.txt:3
+msgid ""
+"Thank you for posting your certificate on Bayt.com \n"
+"To proceed in process please click on the link below"
+msgstr "لإتمام عملية نشر شهادتك على بيت.كوم انقر على رابط التفعيل في الأسفل"
 
 #: lms/templates/financial-assistance/financial-assistance.html:12
 msgid "Financial Assistance Application"

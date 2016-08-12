@@ -142,7 +142,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-08-04 18:45+0000\n"
+"POT-Creation-Date: 2016-08-11 16:22+0000\n"
 "PO-Revision-Date: 2016-07-26 14:02+0000\n"
 "Last-Translator: Soha Assali <soha+transifex@qordoba.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
@@ -226,6 +226,14 @@ msgid "A valid password is required"
 msgstr "يجب إدخال كلمة مرور صحيحة"
 
 #: common/djangoapps/student/forms.py
+msgid ""
+"Usernames must contain only letters, numbers, underscores (_), and hyphens "
+"(-)."
+msgstr ""
+"يجب أن تحتوي أسماء المستخدمين على حروف وأرقام وحرف الخط السفلي(_) "
+"والشرطة(-)فقط"
+
+#: common/djangoapps/student/forms.py
 msgid "Username and password fields cannot match"
 msgstr "ﻻ يسمحُ بتطابق حقليّ كلمة المرور واسم المستخدم"
 
@@ -276,6 +284,14 @@ msgstr "تُحذف الآن الصلاحيات التالية {codenames} من �
 #: common/djangoapps/student/views.py
 msgid "The course you are looking for is closed for enrollment as of {date}."
 msgstr "المساق الذي تبحث عنه مغلق لالالتحاق اعتبارا من {date}"
+
+#: common/djangoapps/student/views.py
+msgid ""
+"You've successfully logged into your {provider_name} account, but this "
+"account isn't linked with an {platform_name} account yet."
+msgstr ""
+"تم الحصول على معلوماتك من {provider_name}، غير أنّ هذا الحساب غير مرتبط بأي "
+"الحسابات على {platform_name}."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -5020,6 +5036,7 @@ msgid "View and update learner enrollments."
 msgstr "عرض وتحديث عمليات تسجيل المتعلّمين."
 
 #: lms/djangoapps/support/views/refund.py
+#: cms/templates/maintenance/_force_publish_course.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 #: lms/templates/instructor/instructor_dashboard_2/add_coupon_modal.html
 #: lms/templates/instructor/instructor_dashboard_2/edit_coupon_modal.html
@@ -6061,6 +6078,14 @@ msgstr "لا تسجّل"
 msgid "Password Reset"
 msgstr "تغيير كلمة المرور"
 
+#: lms/templates/forgot_password_modal.html
+msgid ""
+"Please enter your e-mail address below, and we will e-mail instructions for "
+"setting a new password."
+msgstr ""
+"يُرجى إدخال عنوان بريدك الإلكتروني أدناه وسنرسل لك تعليمات إعادة ضبط كلمة "
+"مرور جديدة."
+
 #: lms/templates/help_modal.html
 msgid ""
 "For {strong_start}questions on course lectures, homework, tools, or "
@@ -6159,6 +6184,15 @@ msgid ""
 msgstr ""
 "عذرًا، هذه الإصدارة من متصفّحك غير مدعومة. نرجو منك إعادة المحاولة مرّة أخرى"
 " إما باستخدام متصفّح آخر أو بتحديث إصدارة متصفّحك الحالي."
+
+#: lms/templates/register-form.html
+#: themes/stanford-style/lms/templates/register-form.html
+msgid ""
+"We just need a little more information before you start learning with "
+"{platform_name}."
+msgstr ""
+"نحتاج فقط إلى القليل من المعلومات الإضافية قبل أن تبدأ التعلّم مع "
+"{platform_name}."
 
 #: lms/templates/register-sidebar.html
 msgid ""
@@ -6277,7 +6311,7 @@ msgstr "معرف عميل واجهة برمجة التطبيقات"
 
 #: lms/templates/api_admin/status.html
 msgid "API Client Secret"
-msgstr "كلمة سر عميل واجهة برمجة التطبيقات"
+msgstr "كلمة مرور عميل واجهة برمجة التطبيقات"
 
 #: lms/templates/api_admin/status.html
 msgid ""
@@ -6366,8 +6400,8 @@ msgstr ""
 " تقدمها إلى {platform_name} يجب أن تكون دقيقة وعلى أحدث وضع، ويجب أن توافق "
 "على إخطارنا فور حدوث أي تغيرات. وسوف تقوم {platform_name} بمراجعة استمارة "
 "طلب API الخاصة بك، وبعد الاعتماد وفقًا لتقدير {platform_name} فقط، نقوم "
-"بتزويدك بالتعليمات التي توضح لك كيفية الحصول على كلمة سر ومعرف عميل API الذي"
-" حددته لدينا."
+"بتزويدك بالتعليمات التي توضح لك كيفية الحصول على كلمة مرور ومعرف عميل API "
+"الذي حددته لدينا."
 
 #: lms/templates/calculator/toggle_calculator.html
 msgid "Enter equation"
@@ -6824,10 +6858,6 @@ msgid "Verify your identity now."
 msgstr "أكد هويتك الآن."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
-msgid "{category} Program Course"
-msgstr "برنامج مساق الفئة {category}"
-
-#: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Course details"
 msgstr "تفاصيل المساق"
 
@@ -6944,22 +6974,6 @@ msgstr ""
 "لقد رفض {provider_name} طلبك للحصول على مادة للمساق. للمزيد من المعلومات، "
 "يرجى الاتصال {link_to_provider_site} مباشرةً."
 
-#: lms/templates/dashboard/_dashboard_program_info.html
-msgid "{category} Program: Interested in more courses in this subject?"
-msgstr "برنامج {category}: أأنت مهتم بمساقات أكثر في هذا الموضوع؟"
-
-#: lms/templates/dashboard/_dashboard_program_info.html
-msgid ""
-"This course is 1 of {course_count} courses in the "
-"{link_start}{program_display_name}{link_end} {program_category}."
-msgstr ""
-"هذا المساق 1 من بين {course_count} مساقات في "
-"{link_start}{program_display_name}{link_end} ضمن فئة {program_category}."
-
-#: lms/templates/dashboard/_dashboard_program_info.html
-msgid "View {category} Details"
-msgstr "استعرض تفاصيل فئة {category}"
-
 #: lms/templates/dashboard/_dashboard_status_verification.html
 msgid ""
 "Your edX Verification is reviewed and approved. Your verification status is "
@@ -7057,6 +7071,16 @@ msgstr "مرحباً {full_name}،"
 #: lms/templates/emails/business_order_confirmation_email.txt
 msgid "Dear [[Name]]"
 msgstr "مرحباً [[اسم المتعلّم]]،"
+
+#: lms/templates/emails/email_change.txt
+msgid ""
+"If you didn't request this, you don't need to do anything; you won't receive"
+" any more email from us. Please do not reply to this e-mail; if you require "
+"assistance, check the help section of the {platform_name} web site."
+msgstr ""
+"إذا لم تكن قد تقدمت بهذا الطّلب، لا حاجة لك لأن تقوم بأي شيء؛ ولن تتلقى منا "
+"المزيد من الرسائل الإلكترونية. الرجاء عدم الرد على هذه الرسالة؛ وإذا كنت "
+"بحاجة لمساعدة فقم بالتواصل معنا من خلال المنصة {platform_name}."
 
 #. Translators: please translate the text inside [[ ]]. This is meant as a
 #. template for course teams to use.
@@ -7518,7 +7542,7 @@ msgstr "غير كلمة المرور"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "Enter and confirm your new password."
-msgstr "أدخل وأكد كلمة سر حسابك الجديدة"
+msgstr "ادخل وأكد كلمة مرور حسابك الجديدة"
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "New Password"

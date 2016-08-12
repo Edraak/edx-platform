@@ -55,6 +55,7 @@
 # Nabeel El-Dughailib <nabeel@qordoba.com>, 2014-2015
 # Najwan Al Rousan <najwanrousan@gmail.com>, 2013
 # Nashwan Naji <nashwanameen@gmail.com>, 2016
+# Natalia Berdnikov <nberdnikov@edx.org>, 2016
 # RaghadG <raghad_g@yahoo.com>, 2014
 # Soha Assali <soha+transifex@qordoba.com>, 2015-2016
 # soliman osman <solimanosman@windowslive.com>, 2014-2015
@@ -75,6 +76,7 @@
 # Khaled Abdel wahab <engkhaledabdelwahab@gmail.com>, 2015
 # may <may@qordoba.com>, 2014-2015
 # Nabeel El-Dughailib <nabeel@qordoba.com>, 2014-2015
+# Natalia Berdnikov <nberdnikov@edx.org>, 2016
 # Ned Batchelder <ned@edx.org>, 2016
 # omarithawi <oithawi@qrf.org>, 2015-2016
 # Soha Assali <soha+transifex@qordoba.com>, 2015-2016
@@ -101,8 +103,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-08-04 18:44+0000\n"
-"PO-Revision-Date: 2016-08-04 18:47+0000\n"
+"POT-Creation-Date: 2016-08-11 16:21+0000\n"
+"PO-Revision-Date: 2016-08-11 16:29+0000\n"
 "Last-Translator: Ned Batchelder <ned@edx.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -329,7 +331,7 @@ msgstr "أظهر {numResponses} ردود أخرى"
 
 #: common/static/common/js/utils/edx.utils.validate.js
 msgid "%(field)s must have at least %(count)d characters."
-msgstr "يجب أن تحوي الحقول %(field)s على %(count)d حرفًا على الأقل"
+msgstr "يجب على حقل %(field)s أن يحتوي على %(count)d حروف على الأقل."
 
 #: common/static/common/js/utils/edx.utils.validate.js
 msgid "%(field)s can only contain up to %(count)d characters."
@@ -792,7 +794,7 @@ msgstr "كلمة المرور"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Reset Your Password"
-msgstr "غير كلمة سر حسابك"
+msgstr "غيّر كلمة مرور حسابك"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
@@ -1539,7 +1541,7 @@ msgid ""
 "include an optional note describing the reason for the exception in the "
 "second comma separated field."
 msgstr ""
-"يُرجى تحميل ملف بصيغة (.csv) ذا قيم مفصولة برمز الفاصلة، يحوي اسماء وعناوين "
+"يُرجى تحميل ملف بصيغة (.csv) ذا قيم مفصولة برمز الفاصلة، يحوي أسماء وعناوين "
 "البريد الإلكتروني الخاصة بالمتعلّمين الحاصلين على استثناءات. ضمّن اسم "
 "المستخدم وعنوان البريد الإلكتروني في الحقل الأول المفصول بفاصلة. يمكنك تضمين"
 " ملاحظة اختيارية تصف سبب منح الاستثناء في الحقل الثاني المفصول بفاصلة. "
@@ -1876,6 +1878,18 @@ msgid "Forgot password?"
 msgstr "هل نسيت كلمة المرور؟"
 
 #: lms/templates/student_account/login.underscore
+#, python-format
+msgid ""
+"You have successfully signed into %(currentProvider)s, but your "
+"%(currentProvider)s account does not have a linked %(platformName)s account."
+" To link your accounts, sign in now using your %(platformName)s password."
+msgstr ""
+"تم الحصول على معلوماتك من %(currentProvider)s، لكنّ حسابك على "
+"%(currentProvider)s غير مرتبط بأي حساب على %(platformName)s. لربط حساباتك؛ "
+"يُرجى تعبئة البيانات المطلوبة والمتبقية في صفحة التسجيل على "
+"%(platformName)s."
+
+#: lms/templates/student_account/login.underscore
 msgid "Password Reset Email Sent"
 msgstr "لقد أرسلنا بريداً إلكترونياً لك لتغيير كلمة المرور."
 
@@ -1896,8 +1910,30 @@ msgid "Password assistance"
 msgstr "المساعدة بخصوص كلمة المرور"
 
 #: lms/templates/student_account/password_reset.underscore
+msgid ""
+"Please enter your email address below and we will send you instructions for "
+"setting a new password."
+msgstr ""
+"يُرجى إدخال عنوان بريدك الإلكتروني أدناه، وسنرسل لك تعليمات إعادة ضبط كلمة "
+"مرور جديدة."
+
+#: lms/templates/student_account/password_reset.underscore
 msgid "Reset my password"
 msgstr "تغيير كلمة المرور"
+
+#: lms/templates/student_account/register.underscore
+#, python-format
+msgid "You've successfully signed into %(currentProvider)s."
+msgstr "تم الحصول على معلوماتك من %(currentProvider)s. "
+
+#: lms/templates/student_account/register.underscore
+#, python-format
+msgid ""
+"We just need a little more information before you start learning with "
+"%(platformName)s."
+msgstr ""
+"نحتاج فقط إلى قليل من المعلومات الإضافية قبل أن تبدأ التعلّم مع "
+"%(platformName)s. "
 
 #: lms/templates/student_profile/badge.underscore
 #, python-format
