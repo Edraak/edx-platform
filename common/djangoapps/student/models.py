@@ -120,7 +120,7 @@ def anonymous_id_for_user(user, course_id, save=True):
 
     # include the secret key as a salt, and to make the ids unique across different LMS installs.
     hasher = hashlib.md5()
-    hasher.update(settings.SECRET_KEY)
+    hasher.update("")  # Temporary hack to make old anon user IDs valid
     hasher.update(unicode(user.id))
     if course_id:
         hasher.update(course_id.to_deprecated_string().encode('utf-8'))
