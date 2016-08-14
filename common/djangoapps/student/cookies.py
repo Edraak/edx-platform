@@ -139,6 +139,12 @@ def delete_logged_in_cookies(response):
             domain=settings.SESSION_COOKIE_DOMAIN
         )
 
+    response.delete_cookie(
+        "csrftoken".encode('utf-8'),
+        path='/',
+        domain="courses.edraak.org"
+    )
+
     return response
 
 
