@@ -839,6 +839,7 @@ html:not('.afontgarde') .icon-fallback-img {
           position: absolute;
           width: auto;
           height: auto;
+          @include left(0);
         }
       }
 
