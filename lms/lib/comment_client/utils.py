@@ -82,7 +82,7 @@ def perform_request(method, url, data_or_params=None, raw=False,
             data=data,
             params=params,
             headers=headers,
-            timeout=5
+            timeout=20 # to solve issue https://app.asana.com/0/15875049854186/166307883409960
         )
 
     metric_tags.append(u'status_code:{}'.format(response.status_code))
