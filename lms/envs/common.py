@@ -1124,11 +1124,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'track.middleware.TrackMiddleware',
 
-    # CORS and CSRF
-    'corsheaders.middleware.CorsMiddleware',
-    'cors_csrf.middleware.CorsCSRFMiddleware',
-    'cors_csrf.middleware.CsrfCrossDomainCookieMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # # CORS and CSRF
+    # 'corsheaders.middleware.CorsMiddleware',
+    # 'cors_csrf.middleware.CorsCSRFMiddleware',
+    # 'cors_csrf.middleware.CsrfCrossDomainCookieMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
 
     'splash.middleware.SplashMiddleware',
 
