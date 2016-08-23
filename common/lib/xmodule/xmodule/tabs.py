@@ -209,6 +209,7 @@ class CourseTab(object):
             log.error('No type included in tab_dict: %r', tab_dict)
             return None
         try:
+            print 'tab_type_name', tab_type_name
             tab_type = CourseTabPluginManager.get_plugin(tab_type_name)
         except PluginError:
             log.exception(
@@ -328,6 +329,7 @@ class CourseTabList(List):
             discussion_tab,
             CourseTab.load('wiki'),
             CourseTab.load('progress'),
+            CourseTab.load('university_id'),
         ])
 
     @staticmethod
