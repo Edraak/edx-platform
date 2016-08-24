@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from django.views.generic.edit import FormView
+from django.views.generic import FormView, TemplateView
 
 from opaque_keys.edx.locator import CourseLocator
 from xmodule.modulestore.django import modulestore
@@ -8,7 +8,6 @@ from student.models import UserProfile
 
 from forms import UniversityIDForm
 from models import UniversityID
-
 
 class UniversityIDView(FormView):
     template_name = 'edraak_university/university_id.html'
@@ -60,12 +59,19 @@ class UniversityIDView(FormView):
             'course': self.get_course(),
             'form': self.get_form(),
             'has_valid_information': bool(self.get_instance()),
-            'form_action_url': reverse('edraak_university_id', kwargs={
-                'course_id': self.kwargs['course_id'],
-            }),
         }
 
 
 # Comply with the openedx.course_tab functionality
 university_id = UniversityIDView.as_view()
 
+
+class UniversityIDSuccessView(TemplateView):
+    template_name = 'edraak_university/university_id_success.html'
+
+    def get_context_data(self, **kwargs):
+        course_key = CourseLocator.from_string(self.kwargs['course_id'])
+
+        return {
+            'course': modulestore().get_course(course_key),
+        }

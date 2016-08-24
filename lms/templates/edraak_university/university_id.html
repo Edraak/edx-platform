@@ -21,7 +21,7 @@
 <%include file="/courseware/course_navigation.html" args="active_page='university_id'" />
 
 <style>
-    .university-id-form {
+    .university-id {
         padding: 45px;
     }
 
@@ -57,7 +57,7 @@
 <div class="container">
     <div class="profile-wrapper">
         <div class="university-id" id="course-university-id" aria-label="${_('University ID')}">
-            <form action="${reverse('')}" class="university-id-form" method="post">
+            <form class="university-id-form" method="post">
                 <h1>${_('Edraak University ID')}</h1>
                 <div class="form-help">
                     % if has_valid_information:
