@@ -22,11 +22,12 @@ class UniversityIDView(FormView):
         return kwargs
 
     def get_initial(self):
-        user_profile = UserProfile.objects.get(user=self.request.user)
-
         return {
-            'full_name': user_profile.name,
+            'full_name': self.get_user_profile().name,
         }
+
+    def get_user_profile(self):
+        return UserProfile.objects.get(user=self.request.user)
 
     def get_instance(self):
         try:
@@ -42,6 +43,10 @@ class UniversityIDView(FormView):
         instance.user = self.request.user
         instance.course_key = self.get_course().id
         instance.save()
+
+        user_profile = self.get_user_profile()
+        user_profile.name = form.cleaned_data['full_name']
+        user_profile.save()
 
         return super(UniversityIDView, self).form_valid(form)
 
