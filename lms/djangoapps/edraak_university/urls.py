@@ -7,7 +7,7 @@ from django.conf import settings
 urlpatterns = patterns('',  # nopep8
     url(
        r'^id/{}$'.format(settings.COURSE_ID_PATTERN),
-       'edraak_university.views.id_tab',
-       name='edraak_university_id_tab'
+       'edraak_university.views.university_id',
+       name='edraak_university_id'
     ),
 )

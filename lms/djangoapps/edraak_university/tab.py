@@ -11,7 +11,7 @@ class UniversityIDTab(EnrolledTab):
     type = 'university_id'
     title = ugettext_noop('University ID')
     priority = None
-    view_name = 'edraak_university.views.id_tab'
+    view_name = 'edraak_university.views.university_id'
     is_default = True
 
     @classmethod
