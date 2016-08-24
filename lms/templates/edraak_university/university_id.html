@@ -57,22 +57,28 @@
 <div class="container">
     <div class="profile-wrapper">
         <div class="university-id" id="course-university-id" aria-label="${_('University ID')}">
-            <form class="university-id-form" method="post">
+            <form action="${reverse('')}" class="university-id-form" method="post">
                 <h1>${_('Edraak University ID')}</h1>
-                <p class="form-help">
+                <div class="form-help">
                     % if has_valid_information:
-                        ${_('The following informaiton have been successfully submitted '
-                            'to your university coordinator.')}
+                        <p>
+                            ${_('The information bellow have been successfully submitted '
+                                'to your university coordinator.')}
+                        </p>
 
-                        <br />
-
-                        $(_('At anytime you can review and amend the information.')).
+                        <p>
+                            ${_('At anytime you can review and amend the information.')}
+                        </p>
                     % else:
-                        ${_('Please enter your the following information to be used by the university coordinator.')}
+                        <p>
+                            ${_('Please enter your the following information to be used by the university coordinator.')}
+                        </p>
                     % endif
-                </p>
+                </div>
 
                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+
+                <hr />
 
                 <div class="fields">
                     ${form.as_div()}

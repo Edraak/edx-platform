@@ -17,10 +17,14 @@ class Migration(migrations.Migration):
             name='UniversityID',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('course_key', xmodule_django.models.CourseKeyField(db_index=True, max_length=255, blank=True)),
+                ('course_key', xmodule_django.models.CourseKeyField(max_length=255, db_index=True)),
                 ('university_id', models.CharField(max_length=100)),
                 ('section_number', models.CharField(max_length=10)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
+        ),
+        migrations.AlterUniqueTogether(
+            name='universityid',
+            unique_together=set([('user', 'course_key')]),
         ),
     ]

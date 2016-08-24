@@ -24,7 +24,7 @@ class UniversityIDForm(forms.ModelForm):
         label=_('Section Number *'),
         help_text=_('Enter the number/name of the section e.g. 1, 2 or A, B, C depending on your university structure.'),
     )
-
+    
     class Meta:
         model = UniversityID
         fields = ('university_id', 'section_number',)
