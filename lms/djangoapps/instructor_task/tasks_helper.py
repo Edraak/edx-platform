@@ -68,6 +68,9 @@ from student.models import CourseEnrollment, CourseAccessRole
 from lms.djangoapps.teams.models import CourseTeamMembership
 from lms.djangoapps.verify_student.models import SoftwareSecurePhotoVerification
 
+from edraak_university.models import UniversityID
+from student.models import UserProfile
+
 # define different loggers for use within tasks and on client side
 TASK_LOG = logging.getLogger('edx.celery.task')
 
@@ -736,9 +739,16 @@ def upload_grades_csv(_xmodule_instance_args, _entry_id, course_id, _task_input,
             task_progress.succeeded += 1
             if not header:
                 header = [section['label'] for section in gradeset[u'section_breakdown']]
+
+                if course.enable_university_id:
+                    edraak_university_header = ['Full Name', 'University ID', 'University Section']
+                else:
+                    edraak_university_header = []
+
                 rows.append(
                     ["id", "email", "username", "grade"] + header + cohorts_header +
                     group_configs_header + teams_header +
+                    edraak_university_header +
                     ['Enrollment Track', 'Verification Status'] + certificate_info_header
                 )
 
@@ -786,9 +796,27 @@ def upload_grades_csv(_xmodule_instance_args, _entry_id, course_id, _task_input,
             # possible for a student to have a 0.0 show up in their row but
             # still have 100% for the course.
             row_percents = [percents.get(label, 0.0) for label in header]
+
+            if course.enable_university_id:
+                edraak_university_data = []
+                try:
+                    user_profile = UserProfile.objects.get(user=student)
+                    edraak_university_data.append(user_profile.name)
+                except UserProfile.DoesNotExist:
+                    edraak_university_data.append('N/A')
+
+                try:
+                    university_id = UniversityID.objects.get(user=student, course_key=course_id)
+                    edraak_university_data.extend([university_id.university_id, university_id.section_number])
+                except UniversityID.DoesNotExist:
+                    edraak_university_data.extend(['N/A', 'N/A'])
+            else:
+                edraak_university_data = []
+
             rows.append(
                 [student.id, student.email, student.username, gradeset['percent']] +
                 row_percents + cohorts_group_name + group_configs_group_names + team_name +
+                edraak_university_data +
                 [enrollment_mode] + [verification_status] + certificate_info
             )
         else:
