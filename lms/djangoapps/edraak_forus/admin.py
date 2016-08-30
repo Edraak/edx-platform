@@ -2,11 +2,12 @@
 Django admin page for ForUs models
 """
 from django.contrib import admin
-from .models import ForusProfile
 from django.core.urlresolvers import reverse
+from django.utils.html import escape
 
 from student.models import UserProfile
 
+from models import ForusProfile
 from helpers import setfuncattr
 
 
@@ -20,7 +21,7 @@ class ForusProfileAdmin(admin.ModelAdmin):
     def edraak_user(self, profile):
         user = profile.user
         return u'<a href="{url}">{name}</a>'.format(
-            name=user,
+            name=escape(user.username),
             url=reverse('admin:auth_user_change', args=[user.pk]),
         )
 
