@@ -209,7 +209,7 @@ class EdraakCertificate(object):
                 y -= line_height
             else:
                 self.ctx.drawString(self.bidi_x_axis(x), y, line)
-                y += line_height
+                y -= line_height
 
     def add_course_org_logo(self, course_org):
         if course_org:
