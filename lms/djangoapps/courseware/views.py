@@ -92,6 +92,7 @@ from instructor.enrollment import uses_shib
 
 import survey.utils
 import survey.views
+from edraak_university.helpers import university_id_is_required
 
 from util.views import ensure_valid_course_key
 from edraak_misc.utils import edraak_courses_logic
@@ -394,6 +395,10 @@ def _index_bulk_op(request, course_key, chapter, section, position):
             user.id, unicode(course.id))
         return redirect(reverse('dashboard'))
 
+    # If the user has to have a valid university ID before continuing to the course.
+    if not staff_access and university_id_is_required(user, course):
+        return redirect(reverse('edraak_university_id', args=[unicode(course.id)]))
+
     # Entrance Exam Check
     # If the course has an entrance exam and the requested chapter is NOT the entrance exam, and
     # the user hasn't yet met the criteria to bypass the entrance exam, redirect them to the exam.
@@ -677,6 +682,10 @@ def course_info(request, course_id):
 
         staff_access = has_access(request.user, 'staff', course)
         masquerade, user = setup_masquerade(request, course_key, staff_access, reset_masquerade_data=True)
+
+        # If the user has to have a valid university ID before continuing to the course.
+        if not staff_access and university_id_is_required(user, course):
+            return redirect(reverse('edraak_university_id', args=[unicode(course.id)]))
 
         # If the user needs to take an entrance exam to access this course, then we'll need
         # to send them to that specific course module before allowing them into other areas
