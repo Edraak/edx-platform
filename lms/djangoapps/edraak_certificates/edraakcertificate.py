@@ -62,6 +62,7 @@ def get_course_sponsor(course_id):
     if course_id in (
             "BritishCouncil/Eng100/T4_2015",
             "course-v1:BritishCouncil+Eng100+T4_2015",
+            "course-v1:BritishCouncil+Eng2+2016Q3",
             "course-v1:BritishCouncil+Eng3+Q4-2016"
     ):
         return "crescent_petroleum"
