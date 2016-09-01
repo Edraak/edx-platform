@@ -59,7 +59,11 @@ def get_organization_logo(organization):
 
 
 def get_course_sponsor(course_id):
-    if course_id == "BritishCouncil/Eng100/T4_2015":
+    if course_id in (
+            "BritishCouncil/Eng100/T4_2015",
+            "course-v1:BritishCouncil+Eng100+T4_2015",
+            "course-v1:BritishCouncil+Eng3+Q4-2016"
+    ):
         return "crescent_petroleum"
     else:
         return None
@@ -306,18 +310,18 @@ class EdraakCertificate(object):
         self.draw_bidi_text(self._("Successfully completed:"), x, 4.63, size=0.25)
 
         course_name_size = 0.31 if contains_rtl_text(self.course_name) else 0.33
-        self.draw_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
 
         sponsor = get_course_sponsor(self.course_id)
         if sponsor:
+            self.draw_single_line_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
             self.draw_bidi_text(self._("This course is sponsored by:"), x, 3.5, size=0.25)
-
             self.add_course_sponsor_logo(sponsor)
-
-        if not self.is_english_course():
-            self.draw_bidi_text(self.course_desc, x, 3.74, size=0.16)
         else:
-            self.draw_english_text(self.course_desc, x, 3.74, size=0.16)
+            self.draw_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
+            if not self.is_english_course():
+                self.draw_bidi_text(self.course_desc, x, 3.74, size=0.16)
+            else:
+                self.draw_english_text(self.course_desc, x, 3.74, size=0.16)
 
         date_x = 2.01
 
