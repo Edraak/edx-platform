@@ -6,6 +6,7 @@ from django.conf import settings
 
 from views import UniversityIDSuccessView
 
+
 urlpatterns = patterns('',  # nopep8
     url(
        r'^id/{}$'.format(settings.COURSE_ID_PATTERN),
