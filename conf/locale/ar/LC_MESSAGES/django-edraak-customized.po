@@ -16595,7 +16595,7 @@ msgid ""
 "Your university information is needed for your grade reports. Please enter "
 "the required information, and verify it is correct."
 msgstr ""
-"يرجى تزويد البيانات أدناه ليتم احتساب علامتك في هذا المساق في سجل درجاتك "
+"يرجى تزويد البيانات أدناه ليتم احتساب علامتك في المساق ضمن سجل علاماتك "
 "الجامعية. يرجى التأكد من صحة بياناتك قبل ارسالها."
 
 #: lms/templates/edraak_university/university_id_success.html:18
@@ -16611,8 +16611,8 @@ msgid ""
 "Your student university ID has been successfully submitted and will be used "
 "for your grade records."
 msgstr ""
-"تم إرسال بياناتك الجامعية بنجاح، وستُستخدم لاحتساب علامتك في هذا المساق في "
-"سجل درجاتك الجامعية."
+"تم إرسال بياناتك الجامعية بنجاح، وستُستخدم لاحتساب علامتك في هذا المساق ضمن "
+"سجل علاماتك الجامعية."
 
 #: lms/templates/edraak_university/university_id_success.html:34
 msgid ""
@@ -16623,7 +16623,7 @@ msgstr ""
 
 #: lms/templates/edraak_university/university_id_success.html:40
 msgid "View the Course Content"
-msgstr "إبدأ التعلم في المساق."
+msgstr "عُد إلى المساق"
 
 #: lms/templates/emails/bayt_verification_email.txt:3
 msgid ""
