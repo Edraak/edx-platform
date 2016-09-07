@@ -1,8 +1,12 @@
 from django.core.urlresolvers import reverse
 from django.views.generic import FormView, TemplateView
 
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
+from util.views import ensure_valid_course_key
 from opaque_keys.edx.locator import CourseLocator
-from xmodule.modulestore.django import modulestore
+from courseware.courses import get_course_with_access
 
 from student.models import UserProfile
 
@@ -50,7 +54,7 @@ class UniversityIDView(FormView):
 
     def get_course(self):
         course_key = CourseLocator.from_string(self.kwargs['course_id'])
-        return modulestore().get_course(course_key)
+        return get_course_with_access(self.request.user, 'load', course_key, check_if_enrolled=True)
 
     def get_context_data(self, **kwargs):
         return {
@@ -58,6 +62,11 @@ class UniversityIDView(FormView):
             'form': self.get_form(),
             'has_valid_information': has_valid_university_id(self.request.user, self.kwargs['course_id']),
         }
+
+    @method_decorator(login_required)
+    @method_decorator(ensure_valid_course_key)
+    def dispatch(self, *args, **kwargs):
+        return super(UniversityIDView, self).dispatch(*args, **kwargs)
 
 
 # Comply with the openedx.course_tab functionality
@@ -71,5 +80,10 @@ class UniversityIDSuccessView(TemplateView):
         course_key = CourseLocator.from_string(self.kwargs['course_id'])
 
         return {
-            'course': modulestore().get_course(course_key),
+            'course': get_course_with_access(self.request.user, 'load', course_key, check_if_enrolled=True),
         }
+
+    @method_decorator(login_required)
+    @method_decorator(ensure_valid_course_key)
+    def dispatch(self, *args, **kwargs):
+        return super(UniversityIDSuccessView, self).dispatch(*args, **kwargs)

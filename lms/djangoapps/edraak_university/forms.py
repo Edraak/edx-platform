@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -10,13 +12,25 @@ class UniversityIDForm(forms.ModelForm):
         help_text=_('Enter your full name that you use at the university.'),
         required=True,
         min_length=2,
+        max_length=50,
+        error_messages={
+            'min_length': _('The name you have entered is too short, please double check.'),
+            'max_length': _('The student university ID you have entered is too long, please double check.'),
+        },
     )
 
-    university_id = forms.CharField(
+    university_id = forms.RegexField(
+        regex=re.compile(r'^[0-9a-z-]+$', re.IGNORECASE),
         label=_('Student University ID *'),
         # TODO: Make ID format instruction course-variant, so coordinators can define it for each course.
         help_text=_('Enter the full student university ID e.g. 201311318.'),
         min_length=4,
+        max_length=50,
+        error_messages={
+            'invalid': _('The student university ID must only consist of numbers, letters and dashes.'),
+            'min_length': _('The student university ID you have entered is too short, please double check.'),
+            'max_length': _('The student university ID you have entered is too long, please double check.'),
+        },
     )
 
     section_number = forms.CharField(
@@ -24,7 +38,7 @@ class UniversityIDForm(forms.ModelForm):
         # TODO: Make ID format instruction course-variant, so coordinators can define it for each course.
         help_text=_('Enter the number/name of the section e.g. 1, 2 or A, B, C depending on your university structure.'),
     )
-    
+
     class Meta:
         model = UniversityID
         fields = ('full_name', 'university_id', 'section_number',)
