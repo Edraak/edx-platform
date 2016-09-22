@@ -1,10 +1,8 @@
 // LMS -- views -- Edraak University ID pages
 // ====================
 
-.view-university-id {
-  .university-id {
-    padding: $baseline*2;
-  }
+.university-id {
+  padding: $baseline*2;
 
   .form-help {
     margin: $baseline 0;
@@ -14,7 +12,7 @@
     color: $red;
   }
 
-  .fields div {
+  .fields {
     label {
       display: block;
       margin-top: $baseline;
@@ -38,5 +36,24 @@
 
   .submit {
     margin: $baseline 0;
+  }
+
+  // List View for Instructor
+  table.instructor-list {
+    border-spacing: 1px;
+    border-collapse: separate;
+    border: 1px solid $light-gray2;
+
+    tr {
+      th, td {
+        border: 1px solid $light-gray2;
+        padding: $baseline/4 $baseline/2;
+        vertical-align: baseline;
+      }
+
+      &.conflicted {
+        background-color: $highlight-color;
+      }
+    }
   }
 }

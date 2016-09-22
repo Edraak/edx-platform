@@ -3,6 +3,8 @@ import re
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
+
 from models import UniversityID
 
 
@@ -11,8 +13,8 @@ class UniversityIDForm(forms.ModelForm):
         label=_('Full Name *'),
         help_text=_('Enter your full name that you use at the university.'),
         required=True,
-        min_length=2,
-        max_length=50,
+        min_length=NAME_MIN_LENGTH,
+        max_length=50,  # Just a basic sanity check
         error_messages={
             'min_length': _('The name you have entered is too short, please double check.'),
             'max_length': _('The student university ID you have entered is too long, please double check.'),
