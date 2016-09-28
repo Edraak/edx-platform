@@ -7034,6 +7034,12 @@ msgstr ""
 msgid "path/to/introductionToCookieBaking-CH%d.pdf"
 msgstr ""
 
+#: cms/templates/js/publish-history.underscore
+#: cms/templates/js/publish-xblock.underscore
+#: cms/templates/js/staff-lock-editor.underscore
+msgid "message"
+msgstr ""
+
 #: cms/templates/js/publish-xblock.underscore
 msgid "Staff and Students"
 msgstr ""
@@ -8412,10 +8418,6 @@ msgstr "المناقشة"
 #: common/static/common/templates/discussion/thread.underscore
 msgid "Add a response:"
 msgstr "أضف رداً:"
-
-#: common/static/common/templates/discussion/topic.underscore
-msgid "Discussion topics; currently listing: "
-msgstr "مواضيع النقاش، المواضيع المُدرجة على اللائحة حاليًا: "
 
 #: lms/djangoapps/support/static/support/templates/certificates.underscore
 msgid "course id"
@@ -10208,11 +10210,6 @@ msgstr "لم تُنشَر قطّ"
 msgid "Last published %(last_published_date)s by %(publish_username)s"
 msgstr ""
 "نُشرت آخر مرّة في %(last_published_date)s من قِبل %(publish_username)s."
-
-#: cms/templates/js/publish-history.underscore
-#: cms/templates/js/staff-lock-editor.underscore
-msgid "message"
-msgstr "رسالة"
 
 #: cms/templates/js/publish-history.underscore
 #: cms/templates/js/publish-xblock.underscore
