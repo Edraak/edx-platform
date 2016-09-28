@@ -1505,7 +1505,7 @@ def create_account_with_params(request, params):
 
     if should_link_with_social_auth or (third_party_auth.is_enabled() and pipeline.running(request)):
         params["password"] = pipeline.make_random_password()
-    elif params["is_third_party_auth"]:
+    elif params.get("is_third_party_auth"):
         # Hack by Edraak to detect timed-out social login attempts.
         raise ValidationError({
             "password": _("Registration process has timed out. Please refresh the page and start over.")
