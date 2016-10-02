@@ -712,6 +712,7 @@ VIDEO_UPLOAD_PIPELINE = {
     'BUCKET': '',
     'ROOT_PATH': '',
     'CONCURRENT_UPLOAD_LIMIT': 4,
+    'COURSE_VIDEO_UPLOAD_TOKEN': None,
 }
 
 ############################ APPS #####################################
