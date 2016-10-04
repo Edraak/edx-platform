@@ -5129,22 +5129,6 @@ msgstr "العنوان البريدي"
 msgid "Terms of Service and Honor Code"
 msgstr "شروط الخدمة وميثاق الشرف الأكاديمي"
 
-#. Translators: "Terms of Service" is a legal document users must agree to
-#. in order to register a new account.
-#. Translators: "Terms of service" is a legal document users must agree to
-#. in order to register a new account.
-#: openedx/core/djangoapps/user_api/views.py
-msgid "I agree to the {platform_name} {terms_of_service}."
-msgstr ""
-
-#. Translators: "Terms of Service" is a legal document users must agree to
-#. in order to register a new account.
-#. Translators: "Terms of service" is a legal document users must agree to
-#. in order to register a new account.
-#: openedx/core/djangoapps/user_api/views.py
-msgid "You must agree to the {platform_name} {terms_of_service}."
-msgstr ""
-
 #: openedx/core/lib/api/view_utils.py
 msgid "This value is invalid."
 msgstr "هذة القيمة غير صحيحة"
@@ -5489,18 +5473,6 @@ msgstr "قيد المعالجة"
 #: cms/djangoapps/contentstore/views/videos.py
 msgid "Ready"
 msgstr "مستعدّ"
-
-#. Translators: This is the status for a video that the servers have failed to
-#. process
-#: cms/djangoapps/contentstore/views/videos.py
-msgid "Failed"
-msgstr "لم تنجح المعالجة"
-
-#. Translators: This is the status for a video for which an invalid
-#. processing token was provided in the course settings
-#: cms/djangoapps/contentstore/views/videos.py
-msgid "Invalid Token"
-msgstr "إشارة غير صالحة"
 
 #. Translators: This is the status for a video that was included in a course
 #. import
@@ -15166,10 +15138,6 @@ msgid "Video Uploads"
 msgstr "تحميلات الفيديو"
 
 #: cms/templates/videos_index.html
-msgid "Why upload video files?"
-msgstr "ما هو الهدف من تحميل ملفّات الفيديو؟"
-
-#: cms/templates/videos_index.html
 msgid ""
 "For a video to play on different devices, it needs to be available in "
 "multiple formats. After you upload an original video file in .mp4 or .mov "
@@ -16440,6 +16408,28 @@ msgstr "يُرجى إدخال كلمة المرور."
 #: openedx/core/djangoapps/user_api/views.py:554
 msgid "Please enter your Year of birth."
 msgstr "يُرجى إدخال سنة الميلاد."
+
+#. Translators: (Edraak-specific) "Terms of Service" is a legal document users
+#. must agree to
+#. in order to register a new account.
+#. Translators: (Edraak-specific) "Terms of service" is a legal document users
+#. must agree to
+#. in order to register a new account.
+#: openedx/core/djangoapps/user_api/views.py:687
+#: openedx/core/djangoapps/user_api/views.py:730
+msgid "I agree to the {platform_name} {terms_of_service}."
+msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platform_name}."
+
+#. Translators: (Edraak-specific) "Terms of Service" is a legal document users
+#. must agree to
+#. in order to register a new account.
+#. Translators: (Edraak-specific) "Terms of service" is a legal document users
+#. must agree to
+#. in order to register a new account.
+#: openedx/core/djangoapps/user_api/views.py:694
+#: openedx/core/djangoapps/user_api/views.py:737
+msgid "You must agree to the {platform_name} {terms_of_service}."
+msgstr "يجب الموافقة على {terms_of_service} الخاصين بمنصّة {platform_name}."
 
 #: lms/templates/bayt/callback.html:15
 msgid "Bayt.com Account Activation"
@@ -19564,6 +19554,10 @@ msgstr ""
 "محدّد بالثواني. فعّل ميزة الاحتفاظ بالبيانات في الذاكرة المؤقتة Cache بتعيين"
 " هذه القيمة لتصبح أكبر من 0."
 
+#: lms/djangoapps/commerce/models.py
+msgid "Path to order receipt page."
+msgstr "صفحة رابط لطلب الاستلام."
+
 #: lms/djangoapps/commerce/signals.py
 msgid ""
 "A refund request has been initiated for {username} ({email}). To process "
@@ -22653,10 +22647,6 @@ msgstr "هل تريد إظهار صفحات تفاصيل البرنامج "
 msgid "Enable course home page improvements."
 msgstr "فعّل ميزة تحسين الصفحة الرئيسية للمساق."
 
-#: openedx/core/djangoapps/site_configuration/models.py
-msgid "Path to order receipt page."
-msgstr "صفحة رابط لطلب الاستلام."
-
 #: openedx/core/djangoapps/user_api/accounts/api.py
 msgid "The '{field_name}' field cannot be edited."
 msgstr "لا يمكن تعديل الحقل '{field_name}'."
@@ -22882,11 +22872,23 @@ msgstr ""
 "يجب ربط هذا المساق بمؤسّسة لتتمكّن من المتابعة. إن المؤسّسة التي اخترتها غير"
 " موجودة ضمن النظام وهو ما سيتطلّب منك إضافتها إلى النظام."
 
+#. Translators: This is the status for a video that the servers have failed to
+#. process
+#: cms/djangoapps/contentstore/views/videos.py
+msgid "Failed"
+msgstr "خلل أثناء المعالجة"
+
 #. Translators: This is the status for a video which has failed
 #. due to being flagged as a duplicate by an external or internal CMS
 #: cms/djangoapps/contentstore/views/videos.py
 msgid "Failed Duplicate"
 msgstr "فشل التكرار"
+
+#. Translators: This is the status for a video for which an invalid
+#. processing token was provided in the course settings
+#: cms/djangoapps/contentstore/views/videos.py
+msgid "Invalid Token"
+msgstr "غير مُصرَّح له"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "pending"
@@ -25266,6 +25268,10 @@ msgstr ""
 #: cms/templates/settings_graders.html
 msgid "Add grade"
 msgstr "أضف درجة"
+
+#: cms/templates/videos_index.html
+msgid "Why upload video files?"
+msgstr "ما الهدف من تحميل الفيديو هنا؟"
 
 #: cms/templates/videos_index.html
 msgid "Maximum Video File Size"

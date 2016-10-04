@@ -682,14 +682,14 @@ class RegistrationView(APIView):
             terms_text=terms_text
         )
 
-        # Translators: "Terms of Service" is a legal document users must agree to
+        # Translators: (Edraak-specific) "Terms of Service" is a legal document users must agree to
         # in order to register a new account.
         label = _(u"I agree to the {platform_name} {terms_of_service}.").format(
             platform_name=settings.PLATFORM_NAME,
             terms_of_service=terms_link
         )
 
-        # Translators: "Terms of Service" is a legal document users must agree to
+        # Translators: (Edraak-specific) "Terms of Service" is a legal document users must agree to
         # in order to register a new account.
         error_msg = _(u"You must agree to the {platform_name} {terms_of_service}.").format(
             platform_name=settings.PLATFORM_NAME,
@@ -725,14 +725,14 @@ class RegistrationView(APIView):
             terms_text=terms_text
         )
 
-        # Translators: "Terms of service" is a legal document users must agree to
+        # Translators: (Edraak-specific) "Terms of service" is a legal document users must agree to
         # in order to register a new account.
         label = _(u"I agree to the {platform_name} {terms_of_service}.").format(
             platform_name=settings.PLATFORM_NAME,
             terms_of_service=terms_link
         )
 
-        # Translators: "Terms of service" is a legal document users must agree to
+        # Translators: (Edraak-specific) "Terms of service" is a legal document users must agree to
         # in order to register a new account.
         error_msg = _(u"You must agree to the {platform_name} {terms_of_service}.").format(
             platform_name=settings.PLATFORM_NAME,
