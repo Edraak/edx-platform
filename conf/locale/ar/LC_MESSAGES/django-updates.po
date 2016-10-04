@@ -150,7 +150,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-09-22 18:47+0000\n"
+"POT-Creation-Date: 2016-09-29 14:23+0000\n"
 "PO-Revision-Date: 2016-09-18 17:18+0000\n"
 "Last-Translator: Soha Assali <soha+transifex@qordoba.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
@@ -2989,6 +2989,10 @@ msgid ""
 msgstr ""
 "محدّد بالثواني. فعّل ميزة الاحتفاظ بالبيانات في الذاكرة المؤقتة Cache بتعيين"
 " هذه القيمة لتصبح أكبر من 0."
+
+#: lms/djangoapps/commerce/models.py
+msgid "Path to order receipt page."
+msgstr "صفحة رابط لطلب الاستلام."
 
 #: lms/djangoapps/commerce/signals.py
 msgid ""
@@ -6079,10 +6083,6 @@ msgstr "هل تريد إظهار صفحات تفاصيل البرنامج "
 msgid "Enable course home page improvements."
 msgstr "فعّل ميزة تحسين الصفحة الرئيسية للمساق."
 
-#: openedx/core/djangoapps/site_configuration/models.py
-msgid "Path to order receipt page."
-msgstr "صفحة رابط لطلب الاستلام."
-
 #: openedx/core/djangoapps/user_api/accounts/api.py
 msgid "The '{field_name}' field cannot be edited."
 msgstr "لا يمكن تعديل الحقل '{field_name}'."
@@ -6308,11 +6308,23 @@ msgstr ""
 "يجب ربط هذا المساق بمؤسّسة لتتمكّن من المتابعة. إن المؤسّسة التي اخترتها غير"
 " موجودة ضمن النظام وهو ما سيتطلّب منك إضافتها إلى النظام."
 
+#. Translators: This is the status for a video that the servers have failed to
+#. process
+#: cms/djangoapps/contentstore/views/videos.py
+msgid "Failed"
+msgstr "خلل أثناء المعالجة"
+
 #. Translators: This is the status for a video which has failed
 #. due to being flagged as a duplicate by an external or internal CMS
 #: cms/djangoapps/contentstore/views/videos.py
 msgid "Failed Duplicate"
 msgstr "فشل التكرار"
+
+#. Translators: This is the status for a video for which an invalid
+#. processing token was provided in the course settings
+#: cms/djangoapps/contentstore/views/videos.py
+msgid "Invalid Token"
+msgstr "غير مُصرَّح له"
 
 #: cms/djangoapps/course_creators/models.py
 msgid "pending"
@@ -8699,6 +8711,10 @@ msgstr ""
 #: cms/templates/settings_graders.html
 msgid "Add grade"
 msgstr "أضف درجة"
+
+#: cms/templates/videos_index.html
+msgid "Why upload video files?"
+msgstr "ما الهدف من تحميل الفيديو هنا؟"
 
 #: cms/templates/videos_index.html
 msgid "Maximum Video File Size"
