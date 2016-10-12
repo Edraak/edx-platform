@@ -56,6 +56,8 @@ def get_organization_logo(organization):
         return 'qou.png'
     elif organization == 'mbrcgi':
         return 'mbrcgi.png'
+    elif organization == 'psut':
+        return 'psut.png'
     else:
         return None
 
