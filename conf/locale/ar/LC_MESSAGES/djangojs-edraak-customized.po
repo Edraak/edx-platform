@@ -7233,6 +7233,7 @@ msgid "Explanation"
 msgstr "الإيضاح"
 
 #: common/lib/xmodule/xmodule/js/src/sequence/display.js
+#: lms/static/js/bookmarks/views/bookmark_button.js
 msgid "Bookmarked"
 msgstr "جرى وضع علامة"
 
@@ -8827,15 +8828,6 @@ msgstr "مؤقّت"
 
 #: lms/templates/courseware/proctored-exam-status.underscore
 #: test_root/staticfiles/templates/courseware/proctored-exam-status.underscore
-msgid ""
-"To receive credit on a problem, you must click \"Check\" or \"Final Check\" "
-"on it before you select \"End My Exam\"."
-msgstr ""
-"يجب النقر على ’مراجعة‘ أو ’مراجعة نهائية‘ على المادة الدراسية قبل اختيار "
-"’أنهي امتحاني‘ لتلقي مادة دراسية لبرنامج معيّن."
-
-#: lms/templates/courseware/proctored-exam-status.underscore
-#: test_root/staticfiles/templates/courseware/proctored-exam-status.underscore
 msgid "End My Exam"
 msgstr "أنهي امتحاني"
 
@@ -9647,6 +9639,14 @@ msgstr ""
 #: test_root/staticfiles/templates/verify_student/payment_confirmation_step.underscore
 msgid "Thank you! We have received your payment for {courseName}."
 msgstr "شكراً لك! لقد استلمنا مدفوعاتك لـ{courseName}"
+
+#: test_root/staticfiles/templates/courseware/proctored-exam-status.underscore
+msgid ""
+"To receive credit on a problem, you must click \"Check\" or \"Final Check\" "
+"on it before you select \"End My Exam\"."
+msgstr ""
+"يجب النقر على ’مراجعة‘ أو ’مراجعة نهائية‘ على المادة الدراسية قبل اختيار "
+"’أنهي امتحاني‘ لتلقي مادة دراسية لبرنامج معيّن."
 
 #: cms/templates/js/access-editor.underscore
 msgid "Limit Access"
