@@ -1,8 +1,14 @@
-from models import UniversityID
+from django.contrib.auth.models import AnonymousUser
+
 from opaque_keys.edx.locator import CourseLocator
+
+from models import UniversityID
 
 
 def get_university_id(user, course_id):
+    if isinstance(user, AnonymousUser):
+        return None
+
     try:
         return UniversityID.objects.get(
             user=user,
