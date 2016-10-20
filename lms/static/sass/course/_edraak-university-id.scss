@@ -1,6 +1,7 @@
 // LMS -- views -- Edraak University ID pages
 // ====================
 
+// Student View Styles
 .university-id {
   padding: $baseline*2;
 
@@ -37,23 +38,59 @@
   .submit {
     margin: $baseline 0;
   }
+}
 
-  // List View for Instructor
+
+// Instructor View Styles
+.university-id {
+  .dataTables_filter {
+    input {
+      font-size: 14px;
+      padding: 2px 1px;
+      margin: 2px 4px 8px;
+    }
+  }
+
   table.instructor-list {
     border-spacing: 1px;
     border-collapse: separate;
     border: 1px solid $light-gray2;
+
+    font-size: 14px;
+    table-layout: auto;
+    width: 100%;
+    clear: both;
+    margin-top: 10px;
+
+    thead {
+      .sorting, .sorting_asc, .sorting_desc, .sorting_asc_disabled, .sorting_desc_disabled {
+        @include rtl {
+          background-position: center left;
+        }
+      }
+    }
 
     tr {
       th, td {
         border: 1px solid $light-gray2;
         padding: $baseline/4 $baseline/2;
         vertical-align: baseline;
+        width: unset !important;
+
+        &.break {
+          word-break: break-all;
+        }
       }
 
       &.conflicted {
         background-color: $highlight-color;
       }
     }
+  }
+
+  .dataTables_info,
+  .dataTables_paginate {
+    font-size: 14px;
+    margin: 10px 8px 0;
   }
 }
