@@ -29,7 +29,7 @@
 
             <form method="post">
                 <p>
-                    ${_('Are you sure you want to delete "{university_id}" for student "{full_name}"?').format(
+                    ${_('Are you sure you want to delete the university ID ({university_id}) for student "{full_name}"?').format(
                         university_id=object.university_id,
                         full_name=object.get_full_name(),
                     ) | h}
