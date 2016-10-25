@@ -1906,6 +1906,10 @@ msgstr ""
 "الميزة غير مدعومة بشكل جيّد."
 
 #: common/lib/xmodule/xmodule/capa_base.py
+msgid "String customization substitutions for particular locations"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
 "Enter the API key provided by MathWorks for accessing the MATLAB Hosted "
 "Service. This key is granted for exclusive use by this course for the "
@@ -1920,6 +1924,32 @@ msgstr ""
 "مساقات أخرى، وإبلاغ ماثووركس فورًا إذا كنت تعتقد بأنّ المفتاح قد أصبح "
 "مكشوفًا. للحصول على مفتاح لمساقك، أو للإبلاغ عن مشكلة ما، يُرجى مراسلة "
 "الشركة على هذا العنوان moocsupport@mathworks.com."
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Check"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Final Check"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Checking..."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Hint: "
+msgstr ""
+
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Problem must be reset before it can be checked again."
+msgstr ""
+
+#. Translators: A student must "make an attempt" to solve the problem on the
+#. page before they can reset it.
+#: common/lib/xmodule/xmodule/capa_base.py
+msgid "Refresh the page and make an attempt before resetting."
+msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_module.py
 msgid ""
@@ -2782,6 +2812,14 @@ msgstr ""
 "يُرجى تحديد حالات ظهور زر ’عرض الإجابة‘ بالنسبة لكل مسألة. والقيم الصالحة هي"
 " \"دومًا\"، و’أُجيبت‘، و’جرت محاولة الإجابة‘، و’أغُلِقت‘، و’استُكمِلت‘، "
 "و’مضى استحقاقها‘ و \"صحيح أو مضى استحقاقها\"، و’مُطلقًا‘."
+
+#: common/lib/xmodule/xmodule/modulestore/inheritance.py
+msgid "Text Customization"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/modulestore/inheritance.py
+msgid "Enter string customization substitutions for particular locations."
+msgstr ""
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid ""
@@ -5681,6 +5719,10 @@ msgstr "الحساب"
 msgid "Help"
 msgstr "المساعدة"
 
+#: common/lib/capa/capa/templates/codeinput.html
+msgid "{programming_language} editor"
+msgstr ""
+
 #: common/templates/license.html
 msgid "All Rights Reserved"
 msgstr "جميع الحقوق محفوظة"
@@ -6551,6 +6593,10 @@ msgstr "إعادة الضبط"
 #: lms/templates/verify_student/face_upload.html
 msgid "Save"
 msgstr "حفظ"
+
+#: lms/templates/problem.html
+msgid "You have used {num_used} of {num_total} submissions"
+msgstr "لقد استخدمتَ {num_used} تقديمات من أصل {num_total}"
 
 #: lms/templates/provider_login.html
 msgid "Log In"
@@ -14718,6 +14764,10 @@ msgid "Enrollment End Date"
 msgstr "تاريخ انتهاء التسجيل"
 
 #: cms/templates/settings.html
+msgid "Contact your edX Partner Manager to update these settings."
+msgstr ""
+
+#: cms/templates/settings.html
 msgid "Enrollment End Time"
 msgstr "وقت انتهاء التسجيل"
 
@@ -16744,26 +16794,6 @@ msgstr "المناقشة"
 msgid "Pending"
 msgstr "قيد الانتظار"
 
-#: common/djangoapps/config_models/management/commands/populate_model.py
-msgid "A file containing JSON must be specified."
-msgstr "يجب تحديد ملف يتضمن JSON. "
-
-#: common/djangoapps/config_models/management/commands/populate_model.py
-msgid "A valid username must be specified."
-msgstr "يجب تحديد اسم مستخدم صالح."
-
-#: common/djangoapps/config_models/management/commands/populate_model.py
-msgid "File {0} does not exist"
-msgstr "الملف {0} غير موجود"
-
-#: common/djangoapps/config_models/management/commands/populate_model.py
-msgid "Importing JSON data from file {0}"
-msgstr "يجري استيراد بيانات JSON من ملف {0}"
-
-#: common/djangoapps/config_models/management/commands/populate_model.py
-msgid "Import complete, {0} new entries created"
-msgstr "تم الاستيراد، وأنشئت {0} مدخلات جديدة"
-
 #: common/djangoapps/course_modes/helpers.py
 msgid "Your verification is pending"
 msgstr "عملية التحقّق من هويّتك قيد الانتظار "
@@ -16827,17 +16857,6 @@ msgstr "إعادة تعيين اللغة على رمز اللغة الافترا
 #: common/djangoapps/dark_lang/views.py
 msgid "Language reset to user's preference: {preview_language_code}"
 msgstr "إعادة تعيين اللغة على تفضيل المستخدم: {preview_language_code}"
-
-#: common/djangoapps/external_auth/views.py
-msgid ""
-"\n"
-"        Your university identity server did not return your ID information to us.\n"
-"        Please try logging in again.  (You may need to restart your browser.)\n"
-"        "
-msgstr ""
-"\n"
-"لم يقم خادم هوية الجامعة الخاص بك بإرجاع معلومات هويتك إلينا.\n"
-"الرجاء محاولة تسجيل الدخول مرة أخرى. (قد تحتاج إلى إعادة تشغيل المتصفح.) "
 
 #: common/djangoapps/student/admin.py
 msgid "User profile"
@@ -17116,10 +17135,6 @@ msgstr ""
 "القيمة، فسيٌثمّن لكل حقل ردّ في المسألة بنقطة واحدة."
 
 #: common/lib/xmodule/xmodule/capa_base.py
-msgid "String customization substitutions for particular locations"
-msgstr "بدائل تخصيص النص لمواقع محدّدة"
-
-#: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Enable LaTeX templates?"
 msgstr "هل ترغب في تفعيل نماذج LaTeX؟"
@@ -17128,18 +17143,6 @@ msgstr "هل ترغب في تفعيل نماذج LaTeX؟"
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Matlab API key"
 msgstr "مفتاح واجهة برمجة التطبيقات الخاص ببرنامج ’Matlab‘؟"
-
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "Check"
-msgstr "تحقّق"
-
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "Final Check"
-msgstr "تحقّق أخير "
-
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "Checking..."
-msgstr "جاري التحقّق..."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Warning: The problem has been reset to its initial state!"
@@ -17157,12 +17160,9 @@ msgstr "أُفسِدت حالة المسألة بسبب تقديم غير صحي
 msgid "If this error persists, please contact the course staff."
 msgstr "إذا استمرّ ظهور هذا الخطأ، يُرجى الاتصال بطاقم المساق."
 
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "Hint: "
-msgstr "تلميح:"
-
-#. Translators: e.g. "Hint 1 of 3" meaning we are showing the first of three
+#. Translators: e.g. "Hint 1 of 3: " meaning we are showing the first of three
 #. hints.
+#. This text is shown in bold before the accompanying hint text.
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Hint ({hint_num} of {hints_count}): "
 msgstr "التلميح ({hint_num} من أصل {hints_count}):"
@@ -17172,10 +17172,6 @@ msgstr "التلميح ({hint_num} من أصل {hints_count}):"
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Problem is closed."
 msgstr "أُغلقت المسألة."
-
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "Problem must be reset before it can be checked again."
-msgstr "يجب إعادة ضبط المسألة قبل أن يُتمكّن التحقّق منها مرّة أخرى."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "You must wait at least {wait} seconds between submissions."
@@ -17249,12 +17245,6 @@ msgid ""
 msgstr ""
 "حُفِّظت إجاباتك ولكن لم يجرِ تقييمها بعد. يُرجى الضغط على '{button_name}' "
 "لتقييمها."
-
-#. Translators: A student must "make an attempt" to solve the problem on the
-#. page before they can reset it.
-#: common/lib/xmodule/xmodule/capa_base.py
-msgid "Refresh the page and make an attempt before resetting."
-msgstr "يٌرجى تحديث الصفحة ومحاولة حلّ المسألة قبل طلب إعادة ضبطها. "
 
 #: common/lib/xmodule/xmodule/capa_module.py
 msgid ""
@@ -18085,11 +18075,6 @@ msgstr ""
 " اخترت ’أي نوع\"‘ أو ’Any Type‘."
 
 #: common/lib/xmodule/xmodule/library_content_module.py
-#: common/lib/xmodule/xmodule/lti_module.py
-msgid "Scored"
-msgstr "مُقيَّم "
-
-#: common/lib/xmodule/xmodule/library_content_module.py
 msgid "This component is out of date. The library has new content."
 msgstr "انقضت مدّة هذا المكوِّن. حُدّثت المكتبة بمحتوى جديد الآن. "
 
@@ -18232,6 +18217,10 @@ msgid "Open in New Page"
 msgstr "فتح في صفحة جديدة"
 
 #: common/lib/xmodule/xmodule/lti_module.py
+msgid "Scored"
+msgstr "مُقيَّم "
+
+#: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
 "The score kept in the xblock KVS -- duplicate of the published score in "
 "django DB"
@@ -18367,14 +18356,6 @@ msgid ""
 msgstr ""
 "يُرجى إدخال المسار الذي يجب استخدامه للملفّات على صفحة \"الملفات "
 "والتحميلات\". تُلغي هذه القيمة قيمة استوديو الافتراضية، c4x://."
-
-#: common/lib/xmodule/xmodule/modulestore/inheritance.py
-msgid "Text Customization"
-msgstr "تخصيص النصّ"
-
-#: common/lib/xmodule/xmodule/modulestore/inheritance.py
-msgid "Enter string customization substitutions for particular locations."
-msgstr "يُرجى إدخال بدائل تعديل النص في أماكن محدّدة."
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Enable LaTeX Compiler"
@@ -22542,6 +22523,17 @@ msgstr "حالات متطلبات الاعتماد"
 msgid "Deadline for purchasing and requesting credit."
 msgstr "الموعد النهائي لشراء الوحدات الدراسية وطلبها."
 
+#: openedx/core/djangoapps/external_auth/views.py
+msgid ""
+"\n"
+"        Your university identity server did not return your ID information to us.\n"
+"        Please try logging in again.  (You may need to restart your browser.)\n"
+"        "
+msgstr ""
+"\n"
+"لم يقم خادم هوية الجامعة الخاص بك بإرجاع معلومات هويتك إلينا.\n"
+"الرجاء محاولة تسجيل الدخول مرة أخرى. (قد تحتاج إلى إعادة تشغيل المتصفح.) "
+
 #: openedx/core/djangoapps/profile_images/images.py
 msgid "The file must be smaller than {image_max_size} in size."
 msgstr "يجب ألا يزيد حجم الملف عن {image_max_size}"
@@ -23013,10 +23005,6 @@ msgstr "قائمة المستخدم"
 msgid "Usermenu dropdown"
 msgstr "قائمة المستخدم"
 
-#: common/lib/capa/capa/templates/codeinput.html
-msgid "{programming_language} editor"
-msgstr "مُحرّر {programming_language} "
-
 #: common/templates/darklang/preview_lang_include.html
 msgid "Language Code"
 msgstr "رمز اللغة"
@@ -23052,9 +23040,9 @@ msgstr "اضغط للإزالة"
 msgid "Click to add"
 msgstr "اضغط للإضافة"
 
-#: lms/templates/bookmark_button.html
-msgid "Bookmark"
-msgstr "ضع علامة"
+#: lms/templates/bookmark_button.html lms/templates/seq_module.html
+msgid "Bookmarked"
+msgstr "جرى وضع علامة"
 
 #: lms/templates/dashboard.html themes/edx.org/lms/templates/dashboard.html
 msgid "You are not enrolled in any courses yet."
@@ -23158,14 +23146,6 @@ msgstr ""
 "{begin_strong}تحذير:{end_strong} متصفحك غير مدعوم. ننصحك باستخدام "
 "{chrome_link} أو {ff_link}."
 
-#: lms/templates/problem.html
-msgid "Toggle Answer Visibility"
-msgstr "بدّل إمكانية رؤية الإجابة"
-
-#: lms/templates/problem.html
-msgid "You have used {num_used} of {num_total} submissions"
-msgstr "لقد استخدمتَ {num_used} محاولات من أصل {num_total}"
-
 #: lms/templates/register-form.html lms/templates/register-shib.html
 #: themes/stanford-style/lms/templates/register-form.html
 #: themes/stanford-style/lms/templates/register-shib.html
@@ -23219,10 +23199,6 @@ msgstr ""
 "لقد أعدتَ تفعيل رسائل البريد الإلكتروني الواردة من {platform_name} بشأن "
 "إشعارات المنتدى. يمكنك {dashboard_link_start} العودة إلى لوحة المعلومات "
 "الخاصّة بك {link_end}."
-
-#: lms/templates/seq_module.html
-msgid "Bookmarked"
-msgstr "جرى وضع علامة"
 
 #. Translators: GitHub is a popular website for hosting code
 #: lms/templates/sysadmin_dashboard.html
@@ -24009,44 +23985,6 @@ msgid ""
 msgstr ""
 "لقد رفض {provider_name} طلبك للحصول على مادة للمساق. للمزيد من المعلومات، "
 "يرجى الاتصال {link_to_provider_site} مباشرةً."
-
-#: lms/templates/dashboard/_dashboard_status_verification.html
-msgid "Verification Status: Approved"
-msgstr "وضع التحقق: تمت الموافقة عليه"
-
-#: lms/templates/dashboard/_dashboard_status_verification.html
-msgid ""
-"Your edX Verification is reviewed and approved. Your verification status is "
-"good for one year after submission."
-msgstr ""
-"لقد تمت مراجعة طلب تأكيد هويتك والموافقة عليه. هذه الموافقة صالحة لمدة سنة "
-"واحدة من تاريخ التقديم."
-
-#: lms/templates/dashboard/_dashboard_status_verification.html
-msgid "Verification Status: Pending"
-msgstr "وضع التحقق: قيد الانتظار"
-
-#: lms/templates/dashboard/_dashboard_status_verification.html
-msgid ""
-"Your edX Verification is pending. Your verification photos have been "
-"submitted and will be reviewed shortly."
-msgstr ""
-"لا يزال طلبك لتأكيد هويتك في انتظار بعض الإجراءات. لقد وصلت صورتك وسنقوم "
-"بمراجعتها قريباً."
-
-#: lms/templates/dashboard/_dashboard_status_verification.html
-msgid "Verification Status: Expired"
-msgstr "وضع التحقق: انتهت صلاحيته"
-
-#: lms/templates/dashboard/_dashboard_status_verification.html
-msgid ""
-"Your edX Verification has expired. To receive a verified certificate, you "
-"have to submit a new photo of yourself and your government-issued photo ID "
-"before the course ends."
-msgstr ""
-"لقد انتهت صلاحية تأكيدهويتك. إن أردت الحصول على شهادات مصدقة، يجب أن ترسل "
-"صورة جديدة لك ولأي بطاقة حكومية تحمل صورتك الشخصية قبل انتهاء الدورة "
-"التدريبية."
 
 #. Translators: This labels a cohort menu in forum navigation
 #: lms/templates/discussion/_thread_list_template.html
@@ -25088,10 +25026,6 @@ msgstr "إعدادات الجدول والتفاصيل "
 #: cms/templates/settings.html
 msgid "Last day students can enroll."
 msgstr "اليوم الأخير المتاح للطلاب للتسجيل."
-
-#: cms/templates/settings.html
-msgid "Contact your edX Partner Manager to update these settings."
-msgstr "اتصل بمدير edX الشريك لتحديث إعدادات الضبط هذه."
 
 #: cms/templates/settings.html
 msgid ""
