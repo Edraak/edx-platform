@@ -15,7 +15,15 @@ class ForceLangMiddleware(object):
     """
     def process_request(self, request):
         if 'HTTP_ACCEPT_LANGUAGE' in request.META:
-            del request.META['HTTP_ACCEPT_LANGUAGE']
+            # Store the requested language in another variable in
+            # case some one needed it later
+            request.META['ORIGINAL_HTTP_ACCEPT_LANGUAGE'] = \
+                request.META['HTTP_ACCEPT_LANGUAGE']
+
+            # Make the accept language as same as the site original
+            # language regardless of the original value
+            request.META['HTTP_ACCEPT_LANGUAGE'] = \
+                settings.LANGUAGE_CODE
         if 'LANG' in request.environ:
             del request.environ['LANG']
 
