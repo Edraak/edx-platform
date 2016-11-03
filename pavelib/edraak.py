@@ -302,6 +302,8 @@ def i18n_edraak_push(is_js, suffix):
             'Generated-By': 'Paver',
         }
 
+        added_strings = {}
+
         for po_path in partial_pofiles:
             print 'processing', po_path
 
@@ -312,7 +314,11 @@ def i18n_edraak_push(is_js, suffix):
                 marked_as_specific = 'edraak-specific' in entry.comment.lower()
 
                 if new_entry or marked_as_specific:
-                    edraak_specific.append(entry)
+                    if entry.msgid not in added_strings:
+                        edraak_specific.append(entry)
+                        added_strings[entry.msgid] = True
+                    else:
+                        print 'Duplicate occurrence (it\'s OK) for:', entry.msgid
 
         edraak_specific.save(edraak_specific_path)
 
