@@ -39,6 +39,7 @@
 # omarithawi <oithawi@qrf.org>, 2014-2016
 # Osama M. Mneina <o.mneina@gmail.com>, 2014
 # RaghadG <raghad_g@yahoo.com>, 2014
+# shefaa abu jabel <shefaa.aj@gmail.com>, 2016
 # SiddigSami <siddigsami@live.com>, 2014-2015
 # Soha Assali <soha+transifex@qordoba.com>, 2015-2016
 # soliman osman <solimanosman@windowslive.com>, 2014
@@ -152,8 +153,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-13 18:43+0000\n"
-"PO-Revision-Date: 2016-09-18 17:18+0000\n"
+"POT-Creation-Date: 2016-11-03 15:59+0000\n"
+"PO-Revision-Date: 2016-10-28 18:29+0000\n"
 "Last-Translator: Soha Assali <soha+transifex@qordoba.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -167,6 +168,7 @@ msgstr ""
 #. the discussion forums
 #: cms/djangoapps/contentstore/views/component.py
 #: lms/djangoapps/courseware/tabs.py lms/djangoapps/discussion/plugins.py
+#: openedx/core/lib/xblock_builtin/xblock_discussion/xblock_discussion.py
 msgid "Discussion"
 msgstr "المناقشة"
 
@@ -222,26 +224,6 @@ msgid ""
 "The time period before a course ends in which a course mode will expire"
 msgstr "الفترة الزمنية التي تسبق انتهاء المساق والتي سينتهي بعدها وضع المساق."
 
-#: common/djangoapps/dark_lang/views.py
-msgid "Preview Language is currently disabled"
-msgstr "معاينة اللغة معطلة حاليًا"
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language code not provided"
-msgstr "رمز اللغة غير مقدم"
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language set to language code: {preview_language_code}"
-msgstr "اللغة مضبوطة على رمز اللغة:  {preview_language_code} "
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language reset to the default language code"
-msgstr "إعادة تعيين اللغة على رمز اللغة الافتراضي"
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language reset to user's preference: {preview_language_code}"
-msgstr "إعادة تعيين اللغة على تفضيل المستخدم: {preview_language_code}"
-
 #: common/djangoapps/student/admin.py
 msgid "User profile"
 msgstr "الملف التعريفي للمستخدم"
@@ -252,11 +234,11 @@ msgstr "يجب إدخال كلمة مرور صحيحة"
 
 #: common/djangoapps/student/forms.py
 msgid ""
-"Usernames must contain only letters, numbers, underscores (_), and hyphens "
-"(-)."
+"Usernames can only contain Roman letters, western numerals (0-9), "
+"underscores (_), and hyphens (-)."
 msgstr ""
-"يجب أن تحتوي أسماء المستخدمين على حروف وأرقام وحرف الخط السفلي(_) "
-"والشرطة(-)فقط"
+"يجب أن يحتوي اسم المستخدم على حروف انجليزية وأرقام غربية (0-9) وخطوط سفلية "
+"(_) والوصلات (-) فقط."
 
 #: common/djangoapps/student/forms.py
 msgid "Username and password fields cannot match"
@@ -5911,6 +5893,26 @@ msgstr "حالات متطلبات الاعتماد"
 msgid "Deadline for purchasing and requesting credit."
 msgstr "الموعد النهائي لشراء الوحدات الدراسية وطلبها."
 
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Preview Language is currently disabled"
+msgstr "معاينة اللغة معطلة حاليًا"
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language code not provided"
+msgstr "رمز اللغة غير مقدم"
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language set to language code: {preview_language_code}"
+msgstr "اللغة مضبوطة على رمز اللغة:  {preview_language_code} "
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language reset to the default language code"
+msgstr "إعادة تعيين اللغة على رمز اللغة الافتراضي"
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language reset to user's preference: {preview_language_code}"
+msgstr "إعادة تعيين اللغة على تفضيل المستخدم: {preview_language_code}"
+
 #: openedx/core/djangoapps/external_auth/views.py
 msgid ""
 "\n"
@@ -6336,7 +6338,6 @@ msgid "Forgot password?"
 msgstr "هل نسيت كلمة المرور؟"
 
 #: cms/templates/darklang/preview_lang.html
-#: common/templates/darklang/preview_lang_include.html
 #: lms/templates/darklang/preview_lang.html
 msgid "Preview Language Setting"
 msgstr "معاينة إعداد اللغة"
@@ -6400,20 +6401,7 @@ msgstr "قائمة المستخدم"
 msgid "Usermenu dropdown"
 msgstr "قائمة المستخدم"
 
-#: common/templates/darklang/preview_lang_include.html
-msgid "Language Code"
-msgstr "رمز اللغة"
-
-#: common/templates/darklang/preview_lang_include.html
-msgid "For example use en for English"
-msgstr "على سبيل المثال، استخدم en للغة الإنجليزية  "
-
-#: common/templates/darklang/preview_lang_include.html
-msgid "Please refresh the page to see the changes applied."
-msgstr "يرجى تحديث الصفحة لمشاهدة التغييرات المطبقة."
-
 #: lms/djangoapps/discussion/templates/discussion/discussion_board.html
-#: lms/templates/discussion/_discussion_inline.html
 msgid "Add a Post"
 msgstr "أضف منشوراً"
 
@@ -7813,16 +7801,6 @@ msgstr "قسم الحسومات"
 msgid "Student Special Exam Attempts"
 msgstr "محاولات امتحانات الطلاب المخصّصة"
 
-#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid ""
-"Rescoring runs in the background, and status for active tasks will appear in"
-" the 'Pending Tasks' table. To see status for all tasks submitted for this "
-"problem and student, click on this button:"
-msgstr ""
-"تجري عمليات إعادة التقييم في الخلفية، بينما تظهر حالة أي مهمّات مفعّلة في "
-"جدول ’المهام القيد الانتظار‘. لاستعراض الحالة الخاصة بكافة المهمّات التي تم "
-"تقديمها لهذه المسألة وهذا الطالب، اضغط هذا الزر:"
-
 #: lms/templates/learner_dashboard/program_details.html
 msgid "Program Details"
 msgstr "تفاصيل البرنامج"
@@ -8125,16 +8103,6 @@ msgid ""
 msgstr ""
 "لعرض شهادة نموذجيّة، يُرجى اختيار وضع للمساق وتحديد {em_start} معاينة "
 "الشهادة{em_end} "
-
-#: cms/templates/certificates.html
-msgid ""
-"To begin issuing certificates, a course team member with the Admin role "
-"selects {em_start}Activate{em_end}. Course team members without the Admin "
-"role cannot edit or delete an activated certificate."
-msgstr ""
-"للبدء بإصدار الشهادات، يختار أحد أعضاء فريق المساق ممن يتمتّعون بصلاحيات "
-"المشرف {em_start}تنشيط{em_end}. لا يٌسمح لأعضاء الفريق من غير المشرفين "
-"بتعديل أو حذف شهادة مفعّلة."
 
 #: cms/templates/certificates.html
 msgid ""

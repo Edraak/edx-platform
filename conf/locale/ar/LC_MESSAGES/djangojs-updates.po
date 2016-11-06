@@ -110,8 +110,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-13 18:42+0000\n"
-"PO-Revision-Date: 2016-09-29 14:26+0000\n"
+"POT-Creation-Date: 2016-11-03 15:57+0000\n"
+"PO-Revision-Date: 2016-11-03 16:06+0000\n"
 "Last-Translator: Ned Batchelder <ned@edx.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/open-edx/edx-platform/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -415,11 +415,13 @@ msgid "The team \"{team}\" could not be found."
 msgstr "الفريق \"{team}\" غير موجود."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
+#: lms/static/js/instructor_dashboard/data_download.js
 msgid "Error generating ORA data report. Please try again."
 msgstr ""
 "نأسف لحدوث خطأ أثناء إنشاء تقرير ORA. يُرجى إعادة المحاولة في وقتٍ لاحق."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+#: lms/static/js/instructor_dashboard/membership.js
 msgid ""
 "Could not find a user with username or email address '<%- identifier %>'."
 msgstr ""
@@ -427,6 +429,7 @@ msgstr ""
 "%>'."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+#: lms/static/js/instructor_dashboard/membership.js
 msgid ""
 "Error: User '<%- username %>' has not yet activated their account. Users "
 "must create and activate their accounts before they can be assigned a role."
@@ -435,10 +438,12 @@ msgstr ""
 "حساباتهم قبل أن يُسند إليهم أي دور في الدورة التدريبية."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "Your message must have at least one target."
 msgstr "يجب أن يكون لرسالتك مستلم واحد على الأقل."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid ""
 "There are invalid keywords in your email. Check the following keywords and "
 "try again."
@@ -447,22 +452,27 @@ msgstr ""
 "مرة آخرى."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "Yourself"
 msgstr "نفسك"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "Everyone who has staff privileges in this course"
 msgstr "كل فرد لديه مزايا الموظفين في هذه الدورة التدريبية"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "All learners who are enrolled in this course"
 msgstr "كل المتعلمين المنضمين إلى هذه الدورة التدريبية ."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "All learners in the {cohort_name} cohort"
 msgstr "كل المتعلمين في شعبة {cohort_name}"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid ""
 "Your email message was successfully queued for sending. In courses with a "
 "large number of learners, email messages to learners might take up to an "
@@ -472,6 +482,7 @@ msgstr ""
 "التدريبية ساعة كاملة، ويعتمد ذلك على عدد المتعلمين في الدورة التدريبية."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid ""
 "You are sending an email message with the subject {subject} to the following"
 " recipients."
@@ -479,14 +490,17 @@ msgstr ""
 "أنت على وشك إرسال هذه الرسالة وعنوانها \"{subject}\" إلى المستلمين التالين."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "Is this OK?"
 msgstr "موافق؟"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
+#: lms/static/js/instructor_dashboard/send_email.js
 msgid "Send to:"
 msgstr "أرسل إلى: "
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
+#: lms/static/js/instructor_dashboard/util.js
 msgid "Sent To"
 msgstr "مُرسل إلى"
 
@@ -771,16 +785,6 @@ msgstr ""
 msgid "We weren't able to send you a password reset email."
 msgstr ""
 "عذرًا، لم نتمكّن من مراسلتك عبر البريد الإلكتروني لتغيير كلمة المرور. "
-
-#: lms/static/js/student_account/views/LoginView.js
-msgid ""
-"We have sent an email message with password reset instructions to the email "
-"address you provided.  If you do not receive this message, "
-"{anchorStart}contact technical support{anchorEnd}."
-msgstr ""
-"لقد قمنا بإرسال رسالة بريد إلكتروني مع إرشادات إعادة تعيين كلمة المرور إلى "
-"عنوان البريد الإلكتروني الذي قدمته. إذا لم تتلق هذه الرسالة، "
-"{anchorStart}اتصل بالدعم التقني{anchorEnd}."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Basic Account Information"
@@ -1258,20 +1262,6 @@ msgstr "تحديث الشَارات"
 msgid "Unscheduled"
 msgstr "غير مجدوَل"
 
-#: cms/templates/js/edit-chapter.underscore
-#: lms/templates/ccx/schedule.underscore
-#: lms/templates/commerce/receipt.underscore
-#: lms/templates/learner_dashboard/course_card.underscore
-#: lms/templates/learner_dashboard/program_card.underscore
-#: test_root/staticfiles/proctoring/templates/add-new-allowance.underscore
-#: test_root/staticfiles/proctoring/templates/student-proctored-exam-attempts.underscore
-#: test_root/staticfiles/templates/ccx/schedule.underscore
-#: test_root/staticfiles/templates/commerce/receipt.underscore
-#: test_root/staticfiles/templates/learner_dashboard/course_card.underscore
-#: test_root/staticfiles/templates/learner_dashboard/program_card.underscore
-msgid "gettext("
-msgstr "وظيفة gettext("
-
 #: common/static/common/templates/components/paging-footer.underscore
 #: test_root/staticfiles/common/templates/components/paging-footer.underscore
 #: test_root/staticfiles/xmodule_js/common_static/common/templates/components/paging-footer.underscore
@@ -1354,15 +1344,6 @@ msgid "posted %(time_ago)s by %(author)s"
 msgstr "منشور %(author)s بواسطة %(time_ago)s"
 
 #: common/static/common/templates/discussion/thread-list-item.underscore
-#: common/static/common/templates/discussion/thread-response-show.underscore
-#: test_root/staticfiles/common/templates/discussion/thread-list-item.underscore
-#: test_root/staticfiles/common/templates/discussion/thread-response-show.underscore
-#: test_root/staticfiles/xmodule_js/common_static/common/templates/discussion/thread-list-item.underscore
-#: test_root/staticfiles/xmodule_js/common_static/common/templates/discussion/thread-response-show.underscore
-msgid "fmt"
-msgstr "fmt"
-
-#: common/static/common/templates/discussion/thread-list-item.underscore
 #: test_root/staticfiles/common/templates/discussion/thread-list-item.underscore
 #: test_root/staticfiles/xmodule_js/common_static/common/templates/discussion/thread-list-item.underscore
 msgid "{unread_comments_count} new"
@@ -1380,12 +1361,6 @@ msgstr[2] "إظهار التعليقات (%(num_comments)s)"
 msgstr[3] "إظهار التعليقات (%(num_comments)s)"
 msgstr[4] "إظهار التعليقات (%(num_comments)s)"
 msgstr[5] "إظهار التعليقات (%(num_comments)s)"
-
-#: common/static/common/templates/discussion/thread-response.underscore
-#: test_root/staticfiles/common/templates/discussion/thread-response.underscore
-#: test_root/staticfiles/xmodule_js/common_static/common/templates/discussion/thread-response.underscore
-msgid "fmts"
-msgstr "fmts"
 
 #: common/static/common/templates/discussion/thread-type.underscore
 #: test_root/staticfiles/common/templates/discussion/thread-type.underscore
@@ -1595,11 +1570,6 @@ msgstr "انضم إلى الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 #: test_root/staticfiles/teams/templates/team-profile.underscore
-msgid "Add a Post"
-msgstr "أضف منشوراً"
-
-#: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
-#: test_root/staticfiles/teams/templates/team-profile.underscore
 msgid "Team Details"
 msgstr "تفاصيل معلومات الفريق"
 
@@ -1617,16 +1587,6 @@ msgstr "لمحة موجزة عن أعضاء الفريق"
 #: test_root/staticfiles/teams/templates/team-profile.underscore
 msgid "Team capacity"
 msgstr "سعة استيعاب الفريق"
-
-#: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
-#: test_root/staticfiles/teams/templates/team-profile.underscore
-msgid "country"
-msgstr "الدولة"
-
-#: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
-#: test_root/staticfiles/teams/templates/team-profile.underscore
-msgid "language"
-msgstr "اللغة"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 #: test_root/staticfiles/teams/templates/team-profile.underscore
@@ -1737,11 +1697,6 @@ msgid ""
 msgstr ""
 "شكراً جزيلاً %(full_name)s! لقد استلمنا المبلغ الذي سددته لقاء مشاركتك في "
 "%(course_name)s."
-
-#: lms/templates/commerce/receipt.underscore
-#: test_root/staticfiles/templates/commerce/receipt.underscore
-msgid "/verify_student/verify-now/{courseKey}/"
-msgstr "/verify_student/verify-now/{courseKey}/"
 
 #: lms/templates/courseware/proctored-exam-controls.underscore
 #: test_root/staticfiles/templates/courseware/proctored-exam-controls.underscore
@@ -2122,16 +2077,6 @@ msgstr "حمل ملف CSV لتوزيع الطلاب على شعب"
 msgid "Program Certificates"
 msgstr "شهادات برنامج "
 
-#: lms/templates/learner_dashboard/certificate.underscore
-#: test_root/staticfiles/templates/learner_dashboard/certificate.underscore
-msgid "certificate.credential_url"
-msgstr "certificate.credential_url"
-
-#: lms/templates/learner_dashboard/certificate.underscore
-#: test_root/staticfiles/templates/learner_dashboard/certificate.underscore
-msgid "certificate.display_name"
-msgstr "certificate.display_name"
-
 #: lms/templates/learner_dashboard/certificate_status.underscore
 #: test_root/staticfiles/templates/learner_dashboard/certificate_status.underscore
 msgid "Congratulations! You have earned a certificate for this course."
@@ -2222,11 +2167,6 @@ msgstr "استكشاف برامج جديدة"
 
 #: lms/templates/learner_dashboard/program_card.underscore
 #: test_root/staticfiles/templates/learner_dashboard/program_card.underscore
-msgid "category"
-msgstr "فئة"
-
-#: lms/templates/learner_dashboard/program_card.underscore
-#: test_root/staticfiles/templates/learner_dashboard/program_card.underscore
 #, python-format
 msgid ""
 "You have earned certificates in %(completed_courses)s of the "
@@ -2290,11 +2230,6 @@ msgstr ""
 "%(currentProvider)s غير مرتبط بأي حساب على %(platformName)s. لربط حساباتك؛ "
 "يُرجى تعبئة البيانات المطلوبة والمتبقية في صفحة التسجيل على "
 "%(platformName)s."
-
-#: lms/templates/student_account/login.underscore
-#: test_root/staticfiles/templates/student_account/login.underscore
-msgid "Password Reset Email Sent"
-msgstr "لقد أرسلنا بريداً إلكترونياً لك لتغيير كلمة المرور."
 
 #: lms/templates/student_account/login.underscore
 #: test_root/staticfiles/templates/student_account/login.underscore
@@ -2567,6 +2502,10 @@ msgstr ""
 msgid "Thank you! We have received your payment for {courseName}."
 msgstr "شكراً لك! لقد استلمنا مدفوعاتك لـ{courseName}"
 
+#: test_root/staticfiles/teams/templates/team-profile.underscore
+msgid "Add a Post"
+msgstr "أضف منشوراً"
+
 #: test_root/staticfiles/templates/courseware/proctored-exam-status.underscore
 msgid ""
 "To receive credit on a problem, you must click \"Check\" or \"Final Check\" "
@@ -2574,6 +2513,10 @@ msgid ""
 msgstr ""
 "يجب النقر على ’مراجعة‘ أو ’مراجعة نهائية‘ على المادة الدراسية قبل اختيار "
 "’أنهي امتحاني‘ لتلقي مادة دراسية لبرنامج معيّن."
+
+#: test_root/staticfiles/templates/student_account/login.underscore
+msgid "Password Reset Email Sent"
+msgstr "لقد أرسلنا بريداً إلكترونياً لك لتغيير كلمة المرور."
 
 #: cms/templates/js/access-editor.underscore
 msgid "Limit Access"
@@ -2618,10 +2561,6 @@ msgstr "استخدم خاصية السحب والإفلات أو اضغط هنا
 #: cms/templates/js/active-video-upload-list.underscore
 msgid "Active Uploads"
 msgstr "التحميلات النشطة"
-
-#: cms/templates/js/active-video-upload.underscore
-msgid "status"
-msgstr "الحالة"
 
 #: cms/templates/js/add-xblock-component-button.underscore
 msgid "Add Component:"
@@ -2757,13 +2696,6 @@ msgstr ""
 "يُوصى بشدة بتضمين 4 موقعيّن على الأكثر. راجع الشهادة في وضع ’مراجعة "
 "الطباعة‘، في حال إضافتك للمزيد من الموقعّين، لضمان طباعة الشهادة بالشكل "
 "الصحيح على صفحة واحدة. "
-
-#: cms/templates/js/certificate-editor.underscore
-#: cms/templates/js/content-group-editor.underscore
-#: cms/templates/js/edit-textbook.underscore
-#: cms/templates/js/group-configuration-editor.underscore
-msgid "error.message"
-msgstr "رسالة خطأ error.message"
 
 #: cms/templates/js/certificate-editor.underscore
 msgid "Certificate Information"
@@ -3728,10 +3660,6 @@ msgstr "تعديل الاسم"
 #, python-format
 msgid "Edit %(display_name)s (required)"
 msgstr "تعديل %(display_name)s (مطلوب)"
-
-#: cms/templates/js/xblock-string-field-editor.underscore
-msgid "formLabel"
-msgstr "عنوان النموذج formLabel"
 
 #: cms/templates/js/maintenance/force-published-course-response.underscore
 msgid ""

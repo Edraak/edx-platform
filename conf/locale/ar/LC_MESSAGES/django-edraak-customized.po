@@ -487,6 +487,14 @@ msgid "Your legal name must be a minimum of two characters long"
 msgstr "يجب أن يتألّف اسمك القانوني من حرفين على الأقلّ"
 
 #: common/djangoapps/student/forms.py
+msgid ""
+"Usernames must contain only letters, numbers, underscores (_), and hyphens "
+"(-)."
+msgstr ""
+"يجب أن تحوي أسماء المستخدمين على حروف وأرقام وحرف الخط السفلي(_) "
+"والشرطة(-)فقط"
+
+#: common/djangoapps/student/forms.py
 #, python-format
 msgid "Username cannot be more than %(limit_value)s characters long"
 msgstr "لا يمكن أن يزيد عدد أحرف اسم المستخدم عن %(limit_value)s"
@@ -6818,14 +6826,6 @@ msgstr "إنشاء حسابي"
 msgid "Re-subscribe Successful!"
 msgstr "نجحت عملية إعادة الاشتراك!"
 
-#: lms/templates/seq_module.html
-msgid "Previous"
-msgstr "السابق"
-
-#: lms/templates/seq_module.html
-msgid "Next"
-msgstr "التالي"
-
 #: lms/templates/signup_modal.html
 msgid "Sign Up for {platform_name}"
 msgstr "تسجيل العضوية في {platform_name}"
@@ -11101,6 +11101,16 @@ msgid "Delete Student State for Problem"
 msgstr "حذف حالة الطالب بالنسبة لمسألة محددة "
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
+msgid ""
+"Rescoring runs in the background, and status for active tasks will appear in"
+" the 'Pending Tasks' table. To see status for all tasks submitted for this "
+"problem and student, click on this button:"
+msgstr ""
+"تجري عمليات إعادة التقييم في الخلفية، بينما تظهر حالة أي مهمّات مفعّلة في "
+"جدول ’المهمّات المعلّقة‘. لاستعراض الحالة الخاصة بكافة المهمّات التي تم "
+"تقديمها لهذه المسألة وهذا الطالب، اضغط هذا الزر:"
+
+#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Show Background Task History for Student"
 msgstr "أظهر تاريخ المهام للطالب "
 
@@ -11963,6 +11973,11 @@ msgstr ""
 "{platform_name} يلتزم بالقيود المفروضة على الصادرات ولا يمكننا السماح لك "
 "بالوصول إلى هذا المساق."
 
+#: lms/templates/static_templates/faq.html
+#: themes/red-theme/lms/templates/footer.html
+msgid "FAQ"
+msgstr "الأسئلة الشائعة"
+
 #: lms/templates/static_templates/jobs.html
 #: themes/red-theme/lms/templates/footer.html
 msgid "Jobs"
@@ -12467,6 +12482,13 @@ msgstr ""
 #: cms/templates/certificates.html
 msgid "Issuing Certificates to Learners"
 msgstr "إصدار شهادات للمتعلمين  "
+
+#: cms/templates/certificates.html
+msgid ""
+"To begin issuing certificates, a course team member with the Admin role "
+"selects {em_start}Activate{em_end}. Course team members without the Admin "
+"role cannot edit or delete an activated certificate."
+msgstr ""
 
 #: cms/templates/certificates.html
 msgid "Learn more about certificates"
@@ -16241,7 +16263,7 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:295
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
@@ -16250,7 +16272,7 @@ msgstr ""
 "على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد "
 "ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:298
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:300
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
@@ -16258,19 +16280,19 @@ msgstr ""
 "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا "
 "على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:308
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:310
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:313
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:315
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:320
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:322
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:331
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:333
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -16365,9 +16387,13 @@ msgstr "{username} سجل في مساق {course_id}"
 msgid "{course_id} course confirmation code"
 msgstr "رمز تسجيل {course_id}"
 
+#: lms/djangoapps/edraak_university/forms.py:13
+msgid "Full Name in Arabic *"
+msgstr "الاسم الكامل باللغة العربية *"
+
 #: lms/djangoapps/edraak_university/forms.py:14
-msgid "Enter your full name that you use at the university."
-msgstr "أدخل اسمك الكامل كما هو مكتوب في سجلاتك الجامعية."
+msgid "Enter your full name that you use at the university in Arabic."
+msgstr "أدخل اسمك الكامل كما هو مكتوب في سجلاتك الجامعية باللغة العربية."
 
 #: lms/djangoapps/edraak_university/forms.py:19
 msgid "The name you have entered is too short, please double check."
@@ -16408,6 +16434,18 @@ msgid ""
 "Enter the number/name of the section e.g. 1, 2 or A, B, C depending on your "
 "university structure."
 msgstr "أدخل رقم الشعبة، مثلاً 1 أو 2 أو A أو B بحسب تنظيم جامعتك."
+
+#. Translators: The context here is a hack because there's a bug in
+#. pavelib/edraak.py script, translate it normally.
+#: lms/djangoapps/edraak_university/models.py:15
+msgid "Student University ID"
+msgstr "رقم الطالب الجامعي"
+
+#. Translators: The context here is a hack because there's a bug in
+#. pavelib/edraak.py script, translate it normally.
+#: lms/djangoapps/edraak_university/models.py:17
+msgid "Section Number"
+msgstr "رقم الشعبة"
 
 #: lms/djangoapps/edraak_university/tab.py:12
 msgid "University ID"
@@ -16631,11 +16669,6 @@ msgstr ""
 msgid "{course_number} Student University ID"
 msgstr "الرقم الجامعي لمساق {course_number} "
 
-#: lms/templates/edraak_university/university_id.html:25
-#: lms/templates/edraak_university/university_id.html:27
-msgid "Student University ID"
-msgstr "رقم الطالب الجامعي"
-
 #: lms/templates/edraak_university/university_id.html:32
 msgid ""
 "The information below have been successfully submitted to your university "
@@ -16686,36 +16719,84 @@ msgid "Delete a University ID for {course_number}"
 msgstr "احذف رقم الطالب الجامعي من المنصة لمساق {course_number}"
 
 #: lms/templates/edraak_university/instructor/delete.html:26
-#: lms/templates/edraak_university/instructor/list.html:26
+#: lms/templates/edraak_university/instructor/list.html:67
 #: lms/templates/edraak_university/instructor/update.html:26
 msgid "Edraak University IDs"
 msgstr "الأرقام الجامعية للطلاب"
 
 #: lms/templates/edraak_university/instructor/delete.html:32
 msgid ""
-"Are you sure you want to delete \"{university_id}\" for student "
-"\"{full_name}\"?"
+"Are you sure you want to delete the university ID ({university_id}) for "
+"student \"{full_name}\"?"
 msgstr ""
-"أأنت متأكد من رغبتك في حذف سجل الطالب \"{full_name}\" ذو الرقم الجامعي "
-"\"{university_id}\" من المنصة؟ "
+"أأنت متأكد من رغبتك في حذف الرقم الجامعي ({university_id}) للطالب "
+"\"{full_name}\" من المنصة؟"
 
-#: lms/templates/edraak_university/instructor/list.html:18
+#: lms/templates/edraak_university/instructor/list.html:30
+msgid "All"
+msgstr "الكل"
+
+#: lms/templates/edraak_university/instructor/list.html:37
+msgid "Processing..."
+msgstr "جاري العمل..."
+
+#: lms/templates/edraak_university/instructor/list.html:38
+msgid "Show _MENU_ entries"
+msgstr "أظهر _MENU_ سجل"
+
+#: lms/templates/edraak_university/instructor/list.html:39
+msgid "No records where found"
+msgstr "لا يوجد أي سجل"
+
+#: lms/templates/edraak_university/instructor/list.html:40
+msgid "Showing _START_ to _END_ out of _TOTAL_ entries."
+msgstr "يُعرض الآن السجل _START_ إلى _END_ من أصل _TOTAL_."
+
+#: lms/templates/edraak_university/instructor/list.html:41
+msgid "No records to show."
+msgstr "لا توجد سجلات لعرضها."
+
+#: lms/templates/edraak_university/instructor/list.html:42
+msgid "Filtered out of _MAX_ entries."
+msgstr "يتم عرض بعض السجلات من أصل _MAX_."
+
+#: lms/templates/edraak_university/instructor/list.html:44
+msgid "Search:"
+msgstr "بحث:"
+
+#: lms/templates/edraak_university/instructor/list.html:47
+msgctxt "pagination"
+msgid "First"
+msgstr "الأولى"
+
+#: lms/templates/edraak_university/instructor/list.html:48
+msgctxt "pagination"
+msgid "Previous"
+msgstr "السابقة"
+
+#: lms/templates/edraak_university/instructor/list.html:49
+msgctxt "pagination"
+msgid "Next"
+msgstr "التالية"
+
+#: lms/templates/edraak_university/instructor/list.html:50
+msgctxt "pagination"
+msgid "Last"
+msgstr "الأخيرة"
+
+#: lms/templates/edraak_university/instructor/list.html:59
 msgid "List of University IDs for {course_number}"
 msgstr "قائمة بأرقام الطلاب الجامعية لمساق {course_number}"
 
-#: lms/templates/edraak_university/instructor/list.html:34
+#: lms/templates/edraak_university/instructor/list.html:74
 msgid "Student's University ID"
 msgstr "رقم الطالب الجامعي"
 
-#: lms/templates/edraak_university/instructor/list.html:37
-msgid "Section Number"
-msgstr "رقم الشعبة"
-
-#: lms/templates/edraak_university/instructor/list.html:48
+#: lms/templates/edraak_university/instructor/list.html:89
 msgid "This university ID is a duplicate."
 msgstr "هذا الرقم الجامعي مستخدم أكثر من مرة."
 
-#: lms/templates/edraak_university/instructor/list.html:71
+#: lms/templates/edraak_university/instructor/list.html:113
 msgid "No student have entered his/her university ID yet."
 msgstr "لم يسجل أي طالب بعد برقم جامعي في هذا المساق."
 
@@ -16783,6 +16864,7 @@ msgstr "ملاحظة: اسم المؤسسة سيكون جزءاً من رابط 
 #. the discussion forums
 #: cms/djangoapps/contentstore/views/component.py
 #: lms/djangoapps/courseware/tabs.py lms/djangoapps/discussion/plugins.py
+#: openedx/core/lib/xblock_builtin/xblock_discussion/xblock_discussion.py
 msgid "Discussion"
 msgstr "المناقشة"
 
@@ -16838,26 +16920,6 @@ msgid ""
 "The time period before a course ends in which a course mode will expire"
 msgstr "الفترة الزمنية التي تسبق انتهاء المساق والتي سينتهي بعدها وضع المساق."
 
-#: common/djangoapps/dark_lang/views.py
-msgid "Preview Language is currently disabled"
-msgstr "معاينة اللغة معطلة حاليًا"
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language code not provided"
-msgstr "رمز اللغة غير مقدم"
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language set to language code: {preview_language_code}"
-msgstr "اللغة مضبوطة على رمز اللغة:  {preview_language_code} "
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language reset to the default language code"
-msgstr "إعادة تعيين اللغة على رمز اللغة الافتراضي"
-
-#: common/djangoapps/dark_lang/views.py
-msgid "Language reset to user's preference: {preview_language_code}"
-msgstr "إعادة تعيين اللغة على تفضيل المستخدم: {preview_language_code}"
-
 #: common/djangoapps/student/admin.py
 msgid "User profile"
 msgstr "الملف التعريفي للمستخدم"
@@ -16868,11 +16930,11 @@ msgstr "يجب إدخال كلمة مرور صحيحة"
 
 #: common/djangoapps/student/forms.py
 msgid ""
-"Usernames must contain only letters, numbers, underscores (_), and hyphens "
-"(-)."
+"Usernames can only contain Roman letters, western numerals (0-9), "
+"underscores (_), and hyphens (-)."
 msgstr ""
-"يجب أن تحتوي أسماء المستخدمين على حروف وأرقام وحرف الخط السفلي(_) "
-"والشرطة(-)فقط"
+"يجب أن يحتوي اسم المستخدم على حروف انجليزية وأرقام غربية (0-9) وخطوط سفلية "
+"(_) والوصلات (-) فقط."
 
 #: common/djangoapps/student/forms.py
 msgid "Username and password fields cannot match"
@@ -19053,10 +19115,6 @@ msgstr ""
 "© {org_name}. جميع الحقوق محفوظة باستثناء ملاحظات معيَّنة. إنّ كل من edX "
 "وOpen edX وStudio وشعارَي edX وOpen edX هي علامات تجارية مسجَّلة أو علامات "
 "تجارية لمؤسّسة edX Inc."
-
-#: lms/djangoapps/branding/api.py
-msgid "Help Center"
-msgstr "مركز المساعدة"
 
 #: lms/djangoapps/branding/api.py
 #: themes/stanford-style/lms/templates/footer.html
@@ -22523,6 +22581,26 @@ msgstr "حالات متطلبات الاعتماد"
 msgid "Deadline for purchasing and requesting credit."
 msgstr "الموعد النهائي لشراء الوحدات الدراسية وطلبها."
 
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Preview Language is currently disabled"
+msgstr "معاينة اللغة معطلة حاليًا"
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language code not provided"
+msgstr "رمز اللغة غير مقدم"
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language set to language code: {preview_language_code}"
+msgstr "اللغة مضبوطة على رمز اللغة:  {preview_language_code} "
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language reset to the default language code"
+msgstr "إعادة تعيين اللغة على رمز اللغة الافتراضي"
+
+#: openedx/core/djangoapps/dark_lang/views.py
+msgid "Language reset to user's preference: {preview_language_code}"
+msgstr "إعادة تعيين اللغة على تفضيل المستخدم: {preview_language_code}"
+
 #: openedx/core/djangoapps/external_auth/views.py
 msgid ""
 "\n"
@@ -22948,7 +23026,6 @@ msgid "Forgot password?"
 msgstr "هل نسيت كلمة المرور؟"
 
 #: cms/templates/darklang/preview_lang.html
-#: common/templates/darklang/preview_lang_include.html
 #: lms/templates/darklang/preview_lang.html
 msgid "Preview Language Setting"
 msgstr "معاينة إعداد اللغة"
@@ -22997,6 +23074,13 @@ msgstr "سجّل في StudioX"
 msgid "Send an email to {email}"
 msgstr "أرسل رسالةً إلكترونية إلى {email}"
 
+#: cms/templates/widgets/sock.html
+#: themes/edx.org/cms/templates/widgets/sock.html
+#: themes/example/lms/templates/static_templates/contact.html
+#: themes/stanford-style/lms/templates/static_templates/about.html
+msgid "Contact Us"
+msgstr "اتصل بنا"
+
 #: cms/templates/widgets/user_dropdown.html lms/templates/user_dropdown.html
 msgid "Usermenu"
 msgstr "قائمة المستخدم"
@@ -23005,20 +23089,7 @@ msgstr "قائمة المستخدم"
 msgid "Usermenu dropdown"
 msgstr "قائمة المستخدم"
 
-#: common/templates/darklang/preview_lang_include.html
-msgid "Language Code"
-msgstr "رمز اللغة"
-
-#: common/templates/darklang/preview_lang_include.html
-msgid "For example use en for English"
-msgstr "على سبيل المثال، استخدم en للغة الإنجليزية  "
-
-#: common/templates/darklang/preview_lang_include.html
-msgid "Please refresh the page to see the changes applied."
-msgstr "يرجى تحديث الصفحة لمشاهدة التغييرات المطبقة."
-
 #: lms/djangoapps/discussion/templates/discussion/discussion_board.html
-#: lms/templates/discussion/_discussion_inline.html
 msgid "Add a Post"
 msgstr "أضف منشوراً"
 
@@ -24418,16 +24489,6 @@ msgstr "قسم الحسومات"
 msgid "Student Special Exam Attempts"
 msgstr "محاولات امتحانات الطلاب المخصّصة"
 
-#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid ""
-"Rescoring runs in the background, and status for active tasks will appear in"
-" the 'Pending Tasks' table. To see status for all tasks submitted for this "
-"problem and student, click on this button:"
-msgstr ""
-"تجري عمليات إعادة التقييم في الخلفية، بينما تظهر حالة أي مهمّات مفعّلة في "
-"جدول ’المهام القيد الانتظار‘. لاستعراض الحالة الخاصة بكافة المهمّات التي تم "
-"تقديمها لهذه المسألة وهذا الطالب، اضغط هذا الزر:"
-
 #: lms/templates/learner_dashboard/program_details.html
 msgid "Program Details"
 msgstr "تفاصيل البرنامج"
@@ -24730,16 +24791,6 @@ msgid ""
 msgstr ""
 "لعرض شهادة نموذجيّة، يُرجى اختيار وضع للمساق وتحديد {em_start} معاينة "
 "الشهادة{em_end} "
-
-#: cms/templates/certificates.html
-msgid ""
-"To begin issuing certificates, a course team member with the Admin role "
-"selects {em_start}Activate{em_end}. Course team members without the Admin "
-"role cannot edit or delete an activated certificate."
-msgstr ""
-"للبدء بإصدار الشهادات، يختار أحد أعضاء فريق المساق ممن يتمتّعون بصلاحيات "
-"المشرف {em_start}تنشيط{em_end}. لا يٌسمح لأعضاء الفريق من غير المشرفين "
-"بتعديل أو حذف شهادة مفعّلة."
 
 #: cms/templates/certificates.html
 msgid ""
@@ -25353,28 +25404,23 @@ msgstr "عن إدراك"
 msgid "Blog"
 msgstr "المدونة"
 
-#: templates/theme-footer.html:25
-msgid "Contact Us"
-msgstr "تواصل معنا"
+#: templates/theme-footer.html:25 templates/theme-header.html:121
+msgid "Help Center"
+msgstr "مركز المساعدة"
 
-#: templates/theme-footer.html:28
-msgctxt "edraak-2015"
-msgid "FAQ"
-msgstr "الأسئلة المتكررة"
-
-#: templates/theme-footer.html:37
+#: templates/theme-footer.html:34
 msgid "Privacy Policy"
 msgstr "سياسة الخصوصية"
 
-#: templates/theme-footer.html:40
+#: templates/theme-footer.html:37
 msgid "Terms of Service"
 msgstr "شروط الخدمة"
 
-#: templates/theme-footer.html:77
+#: templates/theme-footer.html:74
 msgid "Powered by Open edX"
 msgstr "مدعوم من قبل منصة أوبن إدكس"
 
-#: templates/theme-footer.html:82
+#: templates/theme-footer.html:79
 msgid "{copy} 2016 Edraak, Some rights reserved"
 msgstr " {copy} بعض الحقوق محفوظة ٢٠١٦ إدراك"
 
@@ -25402,18 +25448,18 @@ msgctxt "edraak-2015"
 msgid "Teach"
 msgstr "علّم"
 
-#: templates/theme-header.html:124
+#: templates/theme-header.html:127
 msgid "Sign Out"
 msgstr "تسجيل الخروج"
 
-#: templates/theme-header.html:129
+#: templates/theme-header.html:132
 msgid "Dashboard"
 msgstr "لوحة المعلومات"
 
-#: templates/theme-header.html:135
+#: templates/theme-header.html:138
 msgid "Sign in"
 msgstr "دخول"
 
-#: templates/theme-header.html:140
+#: templates/theme-header.html:143
 msgid "Register"
 msgstr "سجّل الآن"

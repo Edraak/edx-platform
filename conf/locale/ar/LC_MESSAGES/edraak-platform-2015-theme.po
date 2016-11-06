@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-10-20 13:59+0300\n"
-"PO-Revision-Date: 2016-07-31 11:21+0000\n"
-"Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
+"POT-Creation-Date: 2016-11-06 13:17+0200\n"
+"PO-Revision-Date: 2016-11-01 11:51+0000\n"
+"Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,28 +38,23 @@ msgstr "عن إدراك"
 msgid "Blog"
 msgstr "المدونة"
 
-#: templates/theme-footer.html:25
-msgid "Contact Us"
-msgstr "تواصل معنا"
+#: templates/theme-footer.html:25 templates/theme-header.html:121
+msgid "Help Center"
+msgstr "مركز المساعدة"
 
-#: templates/theme-footer.html:28
-msgctxt "edraak-2015"
-msgid "FAQ"
-msgstr "الأسئلة المتكررة"
-
-#: templates/theme-footer.html:37
+#: templates/theme-footer.html:34
 msgid "Privacy Policy"
 msgstr "سياسة الخصوصية"
 
-#: templates/theme-footer.html:40
+#: templates/theme-footer.html:37
 msgid "Terms of Service"
 msgstr "شروط الخدمة"
 
-#: templates/theme-footer.html:77
+#: templates/theme-footer.html:74
 msgid "Powered by Open edX"
 msgstr "مدعوم من قبل منصة أوبن إدكس"
 
-#: templates/theme-footer.html:82
+#: templates/theme-footer.html:79
 msgid "{copy} 2016 Edraak, Some rights reserved"
 msgstr " {copy} بعض الحقوق محفوظة ٢٠١٦ إدراك"
 
@@ -87,18 +82,18 @@ msgctxt "edraak-2015"
 msgid "Teach"
 msgstr "علّم"
 
-#: templates/theme-header.html:124
+#: templates/theme-header.html:127
 msgid "Sign Out"
 msgstr "تسجيل الخروج"
 
-#: templates/theme-header.html:129
+#: templates/theme-header.html:132
 msgid "Dashboard"
 msgstr "لوحة المعلومات"
 
-#: templates/theme-header.html:135
+#: templates/theme-header.html:138
 msgid "Sign in"
 msgstr "دخول"
 
-#: templates/theme-header.html:140
+#: templates/theme-header.html:143
 msgid "Register"
 msgstr "سجّل الآن"

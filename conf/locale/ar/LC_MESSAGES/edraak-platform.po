@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: dev@qrf.org\n"
 "POT-Creation-Date: 2014-12-15 11:17+0200\n"
-"PO-Revision-Date: 2016-10-04 12:36+0000\n"
-"Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
+"PO-Revision-Date: 2016-11-03 16:08+0000\n"
+"Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -166,31 +166,31 @@ msgstr "البريد الإلكتروني غير صحيح"
 msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:295
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:297
 msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد ماسشوستس للتكنولوجيا."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:298
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:300
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr "تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:308
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:310
 msgid "This is to certify that:"
 msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:313
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:315
 msgid "Successfully completed:"
 msgstr "لإتمام المساق التالي بنجاح:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:320
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:322
 msgid "This course is sponsored by:"
 msgstr "هذا المساق برعاية:"
 
-#: lms/djangoapps/edraak_certificates/edraakcertificate.py:331
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py:333
 msgid "Course{new_line}Certificate{new_line}of Completion"
 msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
@@ -285,9 +285,13 @@ msgstr "{username} سجل في مساق {course_id}"
 msgid "{course_id} course confirmation code"
 msgstr "رمز تسجيل {course_id}"
 
+#: lms/djangoapps/edraak_university/forms.py:13
+msgid "Full Name in Arabic *"
+msgstr "الاسم الكامل باللغة العربية *"
+
 #: lms/djangoapps/edraak_university/forms.py:14
-msgid "Enter your full name that you use at the university."
-msgstr "أدخل اسمك الكامل كما هو مكتوب في سجلاتك الجامعية."
+msgid "Enter your full name that you use at the university in Arabic."
+msgstr "أدخل اسمك الكامل كما هو مكتوب في سجلاتك الجامعية باللغة العربية."
 
 #: lms/djangoapps/edraak_university/forms.py:19
 msgid "The name you have entered is too short, please double check."
@@ -327,6 +331,18 @@ msgid ""
 "Enter the number/name of the section e.g. 1, 2 or A, B, C depending on your "
 "university structure."
 msgstr "أدخل رقم الشعبة، مثلاً 1 أو 2 أو A أو B بحسب تنظيم جامعتك."
+
+#. Translators: The context here is a hack because there's a bug in
+#. pavelib/edraak.py script, translate it normally.
+#: lms/djangoapps/edraak_university/models.py:15
+msgid "Student University ID"
+msgstr "رقم الطالب الجامعي"
+
+#. Translators: The context here is a hack because there's a bug in
+#. pavelib/edraak.py script, translate it normally.
+#: lms/djangoapps/edraak_university/models.py:17
+msgid "Section Number"
+msgstr "رقم الشعبة"
 
 #: lms/djangoapps/edraak_university/tab.py:12
 msgid "University ID"
@@ -620,11 +636,6 @@ msgstr "الرجاء الرجوع إلى  {forus_link} والمحاولة مجد
 msgid "{course_number} Student University ID"
 msgstr "الرقم الجامعي لمساق {course_number} "
 
-#: lms/templates/edraak_university/university_id.html:25
-#: lms/templates/edraak_university/university_id.html:27
-msgid "Student University ID"
-msgstr "رقم الطالب الجامعي"
-
 #: lms/templates/edraak_university/university_id.html:32
 msgid ""
 "The information below have been successfully submitted to your university "
@@ -670,34 +681,82 @@ msgid "Delete a University ID for {course_number}"
 msgstr "احذف رقم الطالب الجامعي من المنصة لمساق {course_number}"
 
 #: lms/templates/edraak_university/instructor/delete.html:26
-#: lms/templates/edraak_university/instructor/list.html:26
+#: lms/templates/edraak_university/instructor/list.html:67
 #: lms/templates/edraak_university/instructor/update.html:26
 msgid "Edraak University IDs"
 msgstr "الأرقام الجامعية للطلاب"
 
 #: lms/templates/edraak_university/instructor/delete.html:32
 msgid ""
-"Are you sure you want to delete \"{university_id}\" for student "
-"\"{full_name}\"?"
-msgstr "أأنت متأكد من رغبتك في حذف سجل الطالب \"{full_name}\" ذو الرقم الجامعي \"{university_id}\" من المنصة؟ "
+"Are you sure you want to delete the university ID ({university_id}) for "
+"student \"{full_name}\"?"
+msgstr "أأنت متأكد من رغبتك في حذف الرقم الجامعي ({university_id}) للطالب \"{full_name}\" من المنصة؟"
 
-#: lms/templates/edraak_university/instructor/list.html:18
+#: lms/templates/edraak_university/instructor/list.html:30
+msgid "All"
+msgstr "الكل"
+
+#: lms/templates/edraak_university/instructor/list.html:37
+msgid "Processing..."
+msgstr "جاري العمل..."
+
+#: lms/templates/edraak_university/instructor/list.html:38
+msgid "Show _MENU_ entries"
+msgstr "أظهر _MENU_ سجل"
+
+#: lms/templates/edraak_university/instructor/list.html:39
+msgid "No records where found"
+msgstr "لا يوجد أي سجل"
+
+#: lms/templates/edraak_university/instructor/list.html:40
+msgid "Showing _START_ to _END_ out of _TOTAL_ entries."
+msgstr "يُعرض الآن السجل _START_ إلى _END_ من أصل _TOTAL_."
+
+#: lms/templates/edraak_university/instructor/list.html:41
+msgid "No records to show."
+msgstr "لا توجد سجلات لعرضها."
+
+#: lms/templates/edraak_university/instructor/list.html:42
+msgid "Filtered out of _MAX_ entries."
+msgstr "يتم عرض بعض السجلات من أصل _MAX_."
+
+#: lms/templates/edraak_university/instructor/list.html:44
+msgid "Search:"
+msgstr "بحث:"
+
+#: lms/templates/edraak_university/instructor/list.html:47
+msgctxt "pagination"
+msgid "First"
+msgstr "الأولى"
+
+#: lms/templates/edraak_university/instructor/list.html:48
+msgctxt "pagination"
+msgid "Previous"
+msgstr "السابقة"
+
+#: lms/templates/edraak_university/instructor/list.html:49
+msgctxt "pagination"
+msgid "Next"
+msgstr "التالية"
+
+#: lms/templates/edraak_university/instructor/list.html:50
+msgctxt "pagination"
+msgid "Last"
+msgstr "الأخيرة"
+
+#: lms/templates/edraak_university/instructor/list.html:59
 msgid "List of University IDs for {course_number}"
 msgstr "قائمة بأرقام الطلاب الجامعية لمساق {course_number}"
 
-#: lms/templates/edraak_university/instructor/list.html:34
+#: lms/templates/edraak_university/instructor/list.html:74
 msgid "Student's University ID"
 msgstr "رقم الطالب الجامعي"
 
-#: lms/templates/edraak_university/instructor/list.html:37
-msgid "Section Number"
-msgstr "رقم الشعبة"
-
-#: lms/templates/edraak_university/instructor/list.html:48
+#: lms/templates/edraak_university/instructor/list.html:89
 msgid "This university ID is a duplicate."
 msgstr "هذا الرقم الجامعي مستخدم أكثر من مرة."
 
-#: lms/templates/edraak_university/instructor/list.html:71
+#: lms/templates/edraak_university/instructor/list.html:113
 msgid "No student have entered his/her university ID yet."
 msgstr "لم يسجل أي طالب بعد برقم جامعي في هذا المساق."
 
