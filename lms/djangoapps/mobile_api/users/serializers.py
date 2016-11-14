@@ -4,10 +4,11 @@ Serializer for user API
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
+from course_modes.helpers import COURSE_INFO_PAGE, get_mktg_for_course
+
 from courseware.access import has_access
 from student.models import CourseEnrollment, User
 from certificates.api import certificate_downloadable_status
-
 
 class CourseOverviewField(serializers.RelatedField):
     """
@@ -55,6 +56,8 @@ class CourseOverviewField(serializers.RelatedField):
                 kwargs={'course_id': course_id},
                 request=request,
             ),
+            'course_info': get_mktg_for_course(
+                COURSE_INFO_PAGE, course_id),
             'course_updates': reverse(
                 'course-updates-list',
                 kwargs={'course_id': course_id},

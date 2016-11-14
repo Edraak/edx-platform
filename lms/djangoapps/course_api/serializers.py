@@ -90,3 +90,20 @@ class CourseDetailSerializer(CourseSerializer):  # pylint: disable=abstract-meth
         # fields from CourseSerializer, which get their data
         # from the CourseOverview object in SQL.
         return CourseDetails.fetch_about_attribute(course_overview.id, 'overview')
+
+
+class MarketingCourseDetailSerializer(CourseDetailSerializer):
+    """
+    Serializer for Course detailed objects providing additional details
+    about the course fetched from Marketing site.
+    """
+
+    def get_overview(self, course_overview):
+        """
+        Get the representation for SerializerMethodField `overview`
+
+        :returns a dummy overview fetched from the  marketing,
+        so you'll never find the value returned in the database
+        """
+
+        return course_overview.overview
