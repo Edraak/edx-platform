@@ -30,6 +30,7 @@ class CourseOverviewField(serializers.RelatedField):
             'start_display': course_overview.start_display,
             'start_type': course_overview.start_type,
             'end': course_overview.end,
+            'pacing': course_overview.pacing,
 
             # notification info
             'subscription_id': course_overview.clean_id(padding_char='_'),
