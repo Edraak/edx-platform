@@ -13,8 +13,6 @@ from django.http import (Http404, HttpResponse, HttpResponseNotAllowed,
 
 from django.utils.translation import ugettext as _
 
-from edraak_misc.utils import validate_email
-
 import dogstats_wrapper as dog_stats_api
 from edxmako.shortcuts import render_to_response
 import zendesk

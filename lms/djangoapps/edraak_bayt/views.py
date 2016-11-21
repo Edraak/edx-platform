@@ -12,11 +12,13 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 from opaque_keys.edx.keys import CourseKey
 from xmodule.modulestore.django import modulestore
 
-from edraak_misc.utils import validate_email, get_absolute_url_prefix
+from edraak_misc.utils import get_absolute_url_prefix
 
 from edxmako.shortcuts import render_to_response, render_to_string
 from util.json_request import JsonResponse
@@ -35,7 +37,9 @@ def get_student_email(request):
     cert_end = request.POST['cert_end']
     user_id = request.user.id
 
-    if not validate_email(user_email):
+    try:
+        validate_email(user_email)
+    except ValidationError:
         return JsonResponse({'success': False, 'error': _('Invalid Email')})
 
     try:
