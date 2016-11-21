@@ -44,9 +44,14 @@ else:
                 % if section['format'] or due_date or 'proctoring' in section:
                 <p class="subtitle">
                     % if 'proctoring' in section:
+                        <%
+                            exam_description = section['proctoring'].get('short_description', '')
+                            if exam_description == 'Timed Exam':
+                                exam_description = _('Timed Exam')
+                        %>
                         ## Display the proctored exam status icon and status message
                         <span class="menu-icon icon fa ${section['proctoring'].get('suggested_icon', 'fa-pencil-square-o')} ${section['proctoring'].get('status', 'eligible')}" aria-hidden="true"></span>
-                        <span class="subtitle-name">${section['proctoring'].get('short_description', '')}</span>
+                        <span class="subtitle-name">${exam_description}</span>
 
                         ## completed proctored exam statuses should not show the due date
                         ## since the exam has already been submitted by the user
