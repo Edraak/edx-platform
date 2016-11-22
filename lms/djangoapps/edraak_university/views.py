@@ -1,7 +1,6 @@
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ObjectDoesNotExist
 from django.views import generic
-from django.shortcuts import redirect
+from django.shortcuts import Http404, redirect
 
 from openedx.core.djangoapps.user_api.accounts.api import update_account_settings
 
@@ -26,12 +25,12 @@ class CourseContextMixin(object):
 
     def get_course(self):
         course_key = self.get_course_key()
-        return get_course_with_access(self.request.user, 'load', course_key, check_if_enrolled=True)
+        return get_course_with_access(self.request.user, 'load', course_key)
 
     def require_staff_access(self):
         course = self.get_course()
         if not has_access(self.request.user, 'staff', course):
-            raise ObjectDoesNotExist()
+            raise Http404('Course does not exists, or user does not have permission.')
 
     def get_context_data(self, **kwargs):
         data = super(CourseContextMixin, self).get_context_data(**kwargs)

@@ -3,15 +3,56 @@
 <%inherit file="/main.html" />
 <%namespace name='static' file='/static_content.html'/>
 <%!
-    from django.utils.translation import ugettext as _
+    from django.utils.translation import pgettext, ugettext as _
     from django.core.urlresolvers import reverse
     from django.conf import settings
 %>
 <%block name="bodyclass">view-in-course view-university-id-list</%block>
 
 <%block name="headextra">
+    ## Since those files won't change much, we can use their CDN, and saves ourselves some time
+    ## worrying about this in future sync with edX.
+    <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
     <%static:css group='style-course-vendor'/>
     <%static:css group='style-course'/>
+
+    <script>
+        ## I've placed the init-code/translation here because it's much easier
+        ## to handle in future sync with edX.
+
+        jQuery(function ($){
+            $('table.instructor-list').DataTable({
+                lengthMenu: [
+                    [50, 100, 200, -1],
+                    [50, 100, 200, "${_("All") | h}"]
+                ],
+                "columnDefs": [
+                    {"orderable": true, "targets": "sortable"},
+                    {"orderable": false, "targets": "_all"}
+                ],
+                language: {
+                    "sProcessing": "${_('Processing...') | h}",
+                    "sLengthMenu": "${_("Show _MENU_ entries") | h}",
+                    "sZeroRecords": "${_("No records where found") | h}",
+                    "sInfo": "${_("Showing _START_ to _END_ out of _TOTAL_ entries.") | h}",
+                    "sInfoEmpty": "${_("No records to show.") | h}",
+                    "sInfoFiltered": "${_("Filtered out of _MAX_ entries.") | h}",
+                    "sInfoPostFix": "",
+                    "sSearch": "${_("Search:") | h}",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "${pgettext("pagination", "First") | h}",
+                        "sPrevious": "${pgettext("pagination", "Previous") | h}",
+                        "sNext": "${pgettext("pagination", "Next") | h}",
+                        "sLast": "${pgettext("pagination", "Last") | h}"
+                    }
+                }
+            });
+        });
+    </script>
 </%block>
 
 
@@ -30,27 +71,28 @@
             <table class="instructor-list">
                 <thead>
                     <tr>
-                        <th>${_('Username')}</th>
-                        <th>${_('Student\'s University ID')}</th>
-                        <th>${_('Full Name')}</th>
-                        <th>${_('Email')}</th>
-                        <th>${_('Section Number')}</th>
-                        <th colspan="2"></th>
+                        <th class="break sortable">${_('Student\'s University ID')}</th>
+                        <th class="break sortable">${_('Section Number')}</th>
+                        <th class="break">${_('Username')}</th>
+                        <th class="break">${_('Full Name')}</th>
+                        <th class="break">${_('Email')}</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 % for object in object_list:
                     <tr class="${'conflicted' if object.is_conflicted else ''}">
-                        <td>${object.user.username | h}</td>
-                        <td>
+                        <td class="break">
                             ${object.university_id | h}
 
                             % if object.is_conflicted:
                               <span title="${_('This university ID is a duplicate.')}">(*)</span>
                             % endif
                         </td>
-                        <td>${object.get_full_name() | h}</td>
-                        <td>${object.get_email() | h}</td>
-                        <td>${object.section_number | h}</td>
+                        <td class="break">${object.section_number | h}</td>
+                        <td class="break">${object.user.username | h}</td>
+                        <td class="break">${object.get_full_name() | h}</td>
+                        <td class="break">${object.get_email() | h}</td>
                         <td>
                             <a href="${reverse('edraak_university_id_update', args=[course.id, object.pk])}">
                                 ${_('Edit')}

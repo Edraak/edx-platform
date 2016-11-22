@@ -10,8 +10,8 @@ from models import UniversityID
 
 class UniversityIDForm(forms.ModelForm):
     full_name = forms.CharField(
-        label=_('Full Name *'),
-        help_text=_('Enter your full name that you use at the university.'),
+        label=_('Full Name in Arabic *'),
+        help_text=_('Enter your full name that you use at the university in Arabic.'),
         required=True,
         min_length=NAME_MIN_LENGTH,
         max_length=50,  # Just a basic sanity check

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from student.models import UserProfile
 
@@ -10,8 +11,8 @@ from xmodule_django.models import CourseKeyField
 class UniversityID(models.Model):
     user = models.ForeignKey(User)
     course_key = CourseKeyField(max_length=255, db_index=True)
-    university_id = models.CharField(max_length=100)
-    section_number = models.CharField(max_length=10)
+    university_id = models.CharField(verbose_name=_('Student University ID'), max_length=100)
+    section_number = models.CharField(verbose_name=_('Section Number'), max_length=10)
     date_created = models.DateTimeField(default=timezone.now)
 
     # Will be used in `get_marked_university_ids()` method to mark
