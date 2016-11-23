@@ -412,8 +412,11 @@ class CapaMixin(CapaFields):
         # The logic flow is a little odd so that _('xxx') strings can be found for
         # translation while also running _() just once for each string.
         _ = self.runtime.service(self, "i18n").ugettext
+
+        # Edraak: The name for the "check" button will not change anymore
+        # Translators: Edraak-specific
         check = _('Check')
-        final_check = _('Final Check')
+        final_check = check
 
         # Apply customizations if present
         if 'custom_check' in self.text_customization:
