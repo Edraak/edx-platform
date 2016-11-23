@@ -69,6 +69,7 @@ generate_merge:
         - mako.po
         - mako-studio.po
         - wiki.po
+        - edraak-platform-2015-theme.po
     djangojs.po:
         - djangojs-partial.po
         - djangojs-studio.po
