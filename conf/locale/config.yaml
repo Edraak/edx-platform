@@ -23,6 +23,7 @@ ignore_dirs:
     - '*/images'
     - '*/sass'
     - '*/css'
+    - lms/djangoapps/instructor/views/legacy.py  # Ignored by Edraak
     # Directories that only contain tests.
     - common/test
     - test_root
