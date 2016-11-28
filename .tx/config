@@ -1,55 +1,55 @@
 [main]
 host = https://www.transifex.com
 
-[edx-platform.django-partial]
+[edraak.django-partial]
 file_filter = conf/locale/<lang>/LC_MESSAGES/django-partial.po
 source_file = conf/locale/en/LC_MESSAGES/django-partial.po
 source_lang = en
 type = PO
 
-[edx-platform.django-studio]
+[edraak.django-studio]
 file_filter = conf/locale/<lang>/LC_MESSAGES/django-studio.po
 source_file = conf/locale/en/LC_MESSAGES/django-studio.po
 source_lang = en
 type = PO
 
-[edx-platform.djangojs-partial]
+[edraak.djangojs-partial]
 file_filter = conf/locale/<lang>/LC_MESSAGES/djangojs-partial.po
 source_file = conf/locale/en/LC_MESSAGES/djangojs-partial.po
 source_lang = en
 type = PO
 
-[edx-platform.djangojs-studio]
+[edraak.djangojs-studio]
 file_filter = conf/locale/<lang>/LC_MESSAGES/djangojs-studio.po
 source_file = conf/locale/en/LC_MESSAGES/djangojs-studio.po
 source_lang = en
 type = PO
 
-[edx-platform.mako]
+[edraak.mako]
 file_filter = conf/locale/<lang>/LC_MESSAGES/mako.po
 source_file = conf/locale/en/LC_MESSAGES/mako.po
 source_lang = en
 type = PO
 
-[edx-platform.mako-studio]
+[edraak.mako-studio]
 file_filter = conf/locale/<lang>/LC_MESSAGES/mako-studio.po
 source_file = conf/locale/en/LC_MESSAGES/mako-studio.po
 source_lang = en
 type = PO
 
-[edx-platform.underscore]
+[edraak.underscore]
 file_filter = conf/locale/<lang>/LC_MESSAGES/underscore.po
 source_file = conf/locale/en/LC_MESSAGES/underscore.po
 source_lang = en
 type = PO
 
-[edx-platform.underscore-studio]
+[edraak.underscore-studio]
 file_filter = conf/locale/<lang>/LC_MESSAGES/underscore-studio.po
 source_file = conf/locale/en/LC_MESSAGES/underscore-studio.po
 source_lang = en
 type = PO
 
-[edx-platform.wiki]
+[edraak.wiki]
 file_filter = conf/locale/<lang>/LC_MESSAGES/wiki.po
 source_file = conf/locale/en/LC_MESSAGES/wiki.po
 source_lang = en
@@ -58,17 +58,5 @@ type = PO
 [edraak.edraak-platform-2015-theme]
 file_filter = conf/locale/<lang>/LC_MESSAGES/edraak-platform-2015-theme.po
 source_file = conf/locale/en/LC_MESSAGES/edraak-platform-2015-theme.po
-source_lang = en
-type = PO
-
-[edraak.edraak-platform]
-file_filter = conf/locale/<lang>/LC_MESSAGES/edraak-platform.po
-source_file = conf/locale/en/LC_MESSAGES/edraak-platform.po
-source_lang = en
-type = PO
-
-[edraak.edraakjs-platform]
-file_filter = conf/locale/<lang>/LC_MESSAGES/edraakjs-platform.po
-source_file = conf/locale/en/LC_MESSAGES/edraakjs-platform.po
 source_lang = en
 type = PO

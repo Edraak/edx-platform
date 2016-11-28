@@ -414,7 +414,6 @@ class CapaMixin(CapaFields):
         _ = self.runtime.service(self, "i18n").ugettext
 
         # Edraak: The name for the "check" button will not change anymore
-        # Translators: Edraak-specific
         check = _('Check')
         final_check = check
 
