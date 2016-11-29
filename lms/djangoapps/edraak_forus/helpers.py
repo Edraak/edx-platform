@@ -62,6 +62,12 @@ def forus_error_redirect(*messages):
     return HttpResponseRedirect(url)
 
 
+def calculate_hmac(msg_to_hash):
+    secret_key = settings.FORUS_AUTH_SECRET_KEY
+    dig = hmac.new(secret_key.encode('utf-8'), msg_to_hash.encode('utf-8'), digestmod=sha256)
+    return dig.hexdigest()
+
+
 def validate_forus_hmac(params):
     remote_hmac = params.get('forus_hmac')
 
@@ -78,12 +84,7 @@ def validate_forus_hmac(params):
     ]
 
     msg_to_hash = u';'.join(params_pairs)
-
-    secret_key = settings.FORUS_AUTH_SECRET_KEY
-
-    dig = hmac.new(secret_key.encode('utf-8'), msg_to_hash.encode('utf-8'), digestmod=sha256)
-
-    local_hmac = dig.hexdigest()
+    local_hmac = calculate_hmac(msg_to_hash)
 
     if local_hmac != remote_hmac:
         log.warn(

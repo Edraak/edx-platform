@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.contrib.auth import logout, login
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from util.json_request import JsonResponse
@@ -89,7 +89,7 @@ class AuthView(View):
             # Simulate `django.contrib.auth.authenticate()` function
             if not request.user.is_authenticated():
                 if ForusProfile.is_forus_user(user):
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
+                    user.backend = settings.AUTHENTICATION_BACKENDS[0]
                     login(request, user)
                 else:
                     # Redirect the non-forus users to the login page
