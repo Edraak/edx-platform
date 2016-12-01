@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
+from mako.filters import html_escape
 
 from edraak_forus.models import ForusProfile
 
@@ -149,3 +150,17 @@ class ForUsMessagePageTest(TestCase):
 
         self.assertContains(res, message, msg_prefix='The message is missing from the page')
         self.assertNotContains(res, 'error', msg_prefix='The page contains the work `error` which is confusing')
+
+    def test_no_xss(self):
+        message = '<script>alert("Hello")</script>'
+        escaped_message = html_escape(message)
+
+        self.assertNotEqual(message, escaped_message, 'Something is wrong, message is not being escaped!')
+        self.assertNotIn('<script>', escaped_message, 'Something is wrong, message is not being escaped!')
+
+        res = self.client.get(self.url, {
+            'message': message,
+        })
+
+        self.assertNotContains(res, message, msg_prefix='The page is XSS vulnerable')
+        self.assertContains(res, escaped_message, msg_prefix='The page encodes the message incorrectly')
