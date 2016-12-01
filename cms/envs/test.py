@@ -23,6 +23,7 @@ import os
 from path import Path as path
 from warnings import filterwarnings, simplefilter
 from uuid import uuid4
+import logging
 
 # import settings from LMS for consistent behavior with CMS
 # pylint: disable=unused-import
@@ -55,6 +56,9 @@ NOSE_ARGS = [
     '--id-file', _NOSEID_DIR / 'noseids',
     '--xunit-file', _REPORT_DIR / 'nosetests.xml',
 ]
+
+if os.environ.get('SUPPRESS_TEST_DEBUG_LOG'):
+    logging.disable(logging.INFO)
 
 TEST_ROOT = path('test_root')
 
