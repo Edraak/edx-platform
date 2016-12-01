@@ -36,6 +36,17 @@ def clean_dir(directory):
 
 
 @task
+def suppress_test_debug_log(options):
+    """
+    Disable debug messages if the verbosity is 0.
+    """
+
+    verbosity = getattr(options, 'verbosity', 1)
+
+    if verbosity == 0:
+        os.environ['SUPPRESS_TEST_DEBUG_LOG'] = 'yes'
+
+@task
 @cmdopts([
     ('skip_clean', 'C', 'skip cleaning repository before running tests'),
 ])

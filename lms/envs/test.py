@@ -40,8 +40,13 @@ LOG_OVERRIDES = [
 for log_name, log_level in LOG_OVERRIDES:
     logging.getLogger(log_name).setLevel(log_level)
 
-if os.environ.get('SUPPRESS_TEST_DEBUG_LOG'):
-    logging.disable(logging.INFO)
+
+def suppress_test_debug_log():
+    if os.environ.get('SUPPRESS_TEST_DEBUG_LOG'):
+        logging.disable(logging.INFO)
+        print 'SUPPRESS_TEST_DEBUG_LOG is set, suppressing debug messages.'
+
+suppress_test_debug_log()
 
 # mongo connection settings
 MONGO_PORT_NUM = int(os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017'))

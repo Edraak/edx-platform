@@ -34,6 +34,7 @@ from lms.envs.test import (
     DEFAULT_FILE_STORAGE,
     MEDIA_ROOT,
     MEDIA_URL,
+    suppress_test_debug_log,
 )
 
 # mongo connection settings
@@ -57,8 +58,7 @@ NOSE_ARGS = [
     '--xunit-file', _REPORT_DIR / 'nosetests.xml',
 ]
 
-if os.environ.get('SUPPRESS_TEST_DEBUG_LOG'):
-    logging.disable(logging.INFO)
+suppress_test_debug_log()
 
 TEST_ROOT = path('test_root')
 
