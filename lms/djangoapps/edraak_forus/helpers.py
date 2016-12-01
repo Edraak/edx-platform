@@ -53,7 +53,7 @@ def forus_error_redirect(*messages):
     message = '. '.join(messages) + '.'
 
     url = '{base_url}?{params}'.format(
-        base_url=reverse('forus_v1_error'),
+        base_url=reverse('forus_v1_message'),
         params=urlencode({
             'message': message.encode('utf-8')
         })

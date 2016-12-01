@@ -262,9 +262,9 @@ class RegistrationApiView(RegistrationView):
         ForusProfile.create_for_user(user)
 
 
-def error(request):
-    message = request.GET.get('message')
+def message(request):
+    message_text = request.GET.get('message')
 
-    return render_to_response('edraak_forus/error.html', {
-        'message': message
+    return render_to_response('edraak_forus/message.html', {
+        'message': message_text
     })
