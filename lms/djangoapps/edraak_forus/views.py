@@ -66,6 +66,8 @@ POPULATED_FIELDS = FORUS_SPECIFIC_FIELDS + (
 )
 
 HIDDEN_FIELDS = POPULATED_FIELDS + (
+    'goals',  # Hide goals because the ForUs people didn't like to
+              # ask their students about their goals in Edraak.
     'password',
 )
 

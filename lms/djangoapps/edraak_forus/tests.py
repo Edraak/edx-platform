@@ -2,10 +2,12 @@ from mock import patch, Mock
 import pytz
 from datetime import datetime, timedelta
 from urlparse import urlparse
+import json
 
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -250,3 +252,39 @@ class ParamValidatorTest(ModuleStoreTestCase):
         params = build_forus_params(email=self.user_email)
         params.update(**kwargs)
         return validate_forus_params(params)
+
+
+class RegistrationApiViewTest(ModuleStoreTestCase):
+    wanted_hidden_fields = sorted([
+        'course_id',
+        'enrollment_action',
+        'forus_hmac',
+        'lang',
+        'time',
+        'country',
+        'is_third_party_auth',
+        'email',
+        'gender',
+        'level_of_education',
+        'name',
+        'year_of_birth',
+        'password',
+        'goals',
+    ])
+
+    def setUp(self):
+        super(RegistrationApiViewTest, self).setUp()
+        self.url = reverse('forus_v1_reg_api')
+
+    @patch.dict(settings.REGISTRATION_EXTRA_FIELDS, {'country': 'required'})
+    def test_hidden_fields(self):
+        res = self.client.get(self.url)
+
+        form = json.loads(res.content)
+
+        hidden_fields = sorted([
+            str(field['name']) for field in form['fields']
+            if field['type'] == 'hidden'
+        ])
+
+        self.assertListEqual(hidden_fields, self.wanted_hidden_fields)
