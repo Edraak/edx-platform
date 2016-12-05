@@ -21,26 +21,33 @@ PAST_WEEK = datetime.now(pytz.UTC) - timedelta(days=7)
 NEXT_MONTH = datetime.now(pytz.UTC) + timedelta(days=30)
 YESTERDAY = datetime.now(pytz.UTC) - timedelta(days=1)
 
+TIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
+
+
+def build_forus_params(**kwargs):
+    values = {
+        'course_id': '',
+        'email': '',
+        'name': 'Abdulrahman (ForUs)',
+        'enrollment_action': 'enroll',
+        'country': 'JO',
+        'level_of_education': 'hs',
+        'gender': 'm',
+        'year_of_birth': '1989',
+        'lang': 'ar',
+        'time': datetime.utcnow().strftime(TIME_FORMAT),
+        'forus_hmac': 'dummy_hmac',
+    }
+
+    values.update(kwargs)
+
+    return values
+
 
 class ForusAuthTest(ModuleStoreTestCase):
     """
     Test the ForUs auth.
     """
-
-    TIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
-
-    ordered_hmac_keys = (
-        'course_id',
-        'email',
-        'name',
-        'enrollment_action',
-        'country',
-        'level_of_education',
-        'gender',
-        'year_of_birth',
-        'lang',
-        'time',
-    )
 
     def setUp(self):
         super(ForusAuthTest, self).setUp()
@@ -115,25 +122,10 @@ class ForusAuthTest(ModuleStoreTestCase):
 
         self._assertLoggedIn(msg_prefix='The user is not logged in after clicking the form another time')
 
-    def _build_forus_params(self, forus_hmac, **kwargs):
-        defaults = {
-            'course_id': unicode(self.course.id),
-            'email': self.user_email,
-            'name': 'Abdulrahman (ForUs)',
-            'enrollment_action': 'enroll',
-            'country': 'JO',
-            'level_of_education': 'hs',
-            'gender': 'm',
-            'year_of_birth': '1989',
-            'lang': 'ar',
-            'time': datetime.utcnow().strftime(self.TIME_FORMAT),
-        }
-
-        values = defaults.copy()
-        values.update(kwargs)
-        values['forus_hmac'] = forus_hmac
-
-        return values
+    def _build_forus_params(self, **kwargs):
+        params = build_forus_params(course_id=unicode(self.course.id), email=self.user_email)
+        params.update(**kwargs)
+        return params
 
 
 class ForUsMessagePageTest(TestCase):
@@ -232,13 +224,13 @@ class ParamValidatorTest(ModuleStoreTestCase):
         try:
             self._validate_params(course_id=unicode(self.current_course.id))
         except ValidationError as exc:
-            self.fail('The course is open and everything is fine, yet there is an error: `{}`'.format(exc.message))
+            self.fail('The course is open and everything is fine, yet there is an error: `{}`'.format(exc))
 
     def test_upcoming_course(self):
         try:
             self._validate_params(course_id=unicode(self.upcoming_course.id))
         except ValidationError as exc:
-            self.fail('The course is upcoming and everything is fine, yet there is an error: `{}`'.format(exc.message))
+            self.fail('The course is upcoming and everything is fine, yet there is an error: `{}`'.format(exc))
 
     def test_draft_course(self):
         with self.assertRaises(ValidationError) as cm:
@@ -255,23 +247,6 @@ class ParamValidatorTest(ModuleStoreTestCase):
 
     @patch('edraak_forus.helpers.calculate_hmac', Mock(return_value='dummy_hmac'))
     def _validate_params(self, **kwargs):
-        return validate_forus_params(self._build_forus_params(**kwargs))
-
-    def _build_forus_params(self, **kwargs):
-        values = {
-            'course_id': '',
-            'email': self.user_email,
-            'name': 'Abdulrahman (ForUs)',
-            'enrollment_action': 'enroll',
-            'country': 'JO',
-            'level_of_education': 'hs',
-            'gender': 'm',
-            'year_of_birth': '1989',
-            'lang': 'ar',
-            'time': datetime.utcnow().strftime(ForusAuthTest.TIME_FORMAT),
-            'forus_hmac': 'dummy_hmac',
-        }
-
-        values.update(kwargs)
-
-        return values
+        params = build_forus_params(email=self.user_email)
+        params.update(**kwargs)
+        return validate_forus_params(params)
