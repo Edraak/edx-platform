@@ -6,11 +6,12 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 from django_countries import countries
+from opaque_keys.edx.keys import CourseKey
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
@@ -18,9 +19,7 @@ from django.core.validators import validate_email
 
 
 from opaque_keys import InvalidKeyError
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
-from xmodule.modulestore.django import modulestore
+from courseware.courses import get_course_by_id
 
 from student.models import UserProfile
 
@@ -139,21 +138,20 @@ def validate_forus_params_values(params):
         mark_as_invalid('lang', _('level of education'))
 
     try:
-        course_key = SlashSeparatedCourseKey.from_deprecated_string(params.get('course_id'))
-        course = modulestore().get_course(course_key)
-
-        if not course:
-            raise ItemNotFoundError()
+        course_key = CourseKey.from_string(params['course_id'])
+        course = get_course_by_id(course_key)
 
         if not course.is_self_paced():
             if not course.enrollment_has_started():
 
                 # Translators: This is for the ForUs API
-                errors['course_id'].append(_('The course has not yet been opened for enrollment'))
+                errors['course_id'].append(_('The course has not yet been opened for enrollment, '
+                                             'please go back to the ForUs portal and enroll in other courses'))
 
             if course.enrollment_has_ended():
                 # Translators: This is for the ForUs API
-                errors['course_id'].append(_('Enrollment for this course has been closed'))
+                errors['course_id'].append(_('Enrollment for this course has been closed, '
+                                             'please go back to the ForUs portal and enroll in other courses'))
 
     except InvalidKeyError:
         log.warning(
@@ -165,7 +163,7 @@ def validate_forus_params_values(params):
         )
 
         mark_as_invalid('course_id', _('course id'))
-    except ItemNotFoundError:
+    except Http404:
         # Translators: This is for the ForUs API
         errors['course_id'].append(_('The requested course does not exist'))
 

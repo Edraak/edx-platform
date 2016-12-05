@@ -10,18 +10,22 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from mako.filters import html_escape
 
 from edraak_forus.models import ForusProfile
+from edraak_forus.helpers import validate_forus_params
+
+NEXT_WEEK = datetime.now(pytz.UTC) + timedelta(days=7)
+PAST_WEEK = datetime.now(pytz.UTC) - timedelta(days=7)
+NEXT_MONTH = datetime.now(pytz.UTC) + timedelta(days=30)
+YESTERDAY = datetime.now(pytz.UTC) - timedelta(days=1)
 
 
 class ForusAuthTest(ModuleStoreTestCase):
     """
     Test the ForUs auth.
     """
-
-    NEXT_WEEK = datetime.now(pytz.UTC) + timedelta(days=7)
-    PAST_WEEK = datetime.now(pytz.UTC) - timedelta(days=7)
 
     TIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
@@ -41,8 +45,8 @@ class ForusAuthTest(ModuleStoreTestCase):
     def setUp(self):
         super(ForusAuthTest, self).setUp()
         self.course = CourseFactory.create(
-            enrollment_start=self.PAST_WEEK,
-            start=self.NEXT_WEEK,
+            enrollment_start=PAST_WEEK,
+            start=NEXT_WEEK,
         )
 
         self.user_email = 'forus.user@example.com'
@@ -164,3 +168,110 @@ class ForUsMessagePageTest(TestCase):
 
         self.assertNotContains(res, message, msg_prefix='The page is XSS vulnerable')
         self.assertContains(res, escaped_message, msg_prefix='The page encodes the message incorrectly')
+
+
+class ParamValidatorTest(ModuleStoreTestCase):
+    """
+    Tests for the params validator functions.
+    """
+
+    user_email = 'forus.user.faramvalidatortest@example.com'
+
+    def setUp(self):
+        super(ParamValidatorTest, self).setUp()
+
+        self.draft_course = CourseFactory.create(
+            start=NEXT_WEEK,
+            enrollment_start=NEXT_WEEK,
+            end=NEXT_WEEK,
+            enrollment_end=NEXT_WEEK,
+        )
+
+        self.upcoming_course = CourseFactory.create(
+            start=NEXT_WEEK,
+            enrollment_start=YESTERDAY,
+            end=NEXT_MONTH,
+            enrollment_end=NEXT_WEEK,
+        )
+
+        self.current_course = CourseFactory.create(
+            start=PAST_WEEK,
+            enrollment_start=PAST_WEEK,
+            end=NEXT_MONTH,
+            enrollment_end=NEXT_WEEK,
+        )
+
+        self.closed_course = CourseFactory.create(
+            start=PAST_WEEK,
+            enrollment_start=PAST_WEEK,
+            end=YESTERDAY,
+            enrollment_end=YESTERDAY,
+        )
+
+    def test_sanity_check(self):
+        """
+        The user shouldn't exist, so the whole test case succeeds.
+        """
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(email=self.user_email)
+
+    def test_closed_course(self):
+        with self.assertRaises(ValidationError) as cm:
+            self._validate_params(course_id=unicode(self.closed_course.id))
+
+        exception = cm.exception
+        errors_count = len(exception.messages)
+        self.assertEquals(errors_count, 1, 'There should be one error instead of `{}`'.format(errors_count))
+
+        error_message = exception.messages[0]
+
+        self.assertRegexpMatches(error_message, r'Enrollment.*closed')
+        self.assertRegexpMatches(error_message, r'.*go.*ForUs')
+
+    def test_current_course(self):
+        try:
+            self._validate_params(course_id=unicode(self.current_course.id))
+        except ValidationError as exc:
+            self.fail('The course is open and everything is fine, yet there is an error: `{}`'.format(exc.message))
+
+    def test_upcoming_course(self):
+        try:
+            self._validate_params(course_id=unicode(self.upcoming_course.id))
+        except ValidationError as exc:
+            self.fail('The course is upcoming and everything is fine, yet there is an error: `{}`'.format(exc.message))
+
+    def test_draft_course(self):
+        with self.assertRaises(ValidationError) as cm:
+            self._validate_params(course_id=unicode(self.draft_course.id))
+
+        exception = cm.exception
+        errors_count = len(exception.messages)
+        self.assertEquals(errors_count, 1, 'There should be one error instead of `{}`'.format(errors_count))
+
+        error_message = exception.messages[0]
+
+        self.assertRegexpMatches(error_message, r'.*not.*opened')
+        self.assertRegexpMatches(error_message, r'.*go.*ForUs')
+
+    @patch('edraak_forus.helpers.calculate_hmac', Mock(return_value='dummy_hmac'))
+    def _validate_params(self, **kwargs):
+        return validate_forus_params(self._build_forus_params(**kwargs))
+
+    def _build_forus_params(self, **kwargs):
+        values = {
+            'course_id': '',
+            'email': self.user_email,
+            'name': 'Abdulrahman (ForUs)',
+            'enrollment_action': 'enroll',
+            'country': 'JO',
+            'level_of_education': 'hs',
+            'gender': 'm',
+            'year_of_birth': '1989',
+            'lang': 'ar',
+            'time': datetime.utcnow().strftime(ForusAuthTest.TIME_FORMAT),
+            'forus_hmac': 'dummy_hmac',
+        }
+
+        values.update(kwargs)
+
+        return values
