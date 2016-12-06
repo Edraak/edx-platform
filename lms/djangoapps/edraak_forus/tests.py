@@ -46,6 +46,7 @@ def build_forus_params(**kwargs):
     return values
 
 
+@patch('edraak_forus.helpers.calculate_hmac', Mock(return_value='dummy_hmac'))
 class ForusAuthTest(ModuleStoreTestCase):
     """
     Test the ForUs auth.
@@ -79,15 +80,12 @@ class ForusAuthTest(ModuleStoreTestCase):
         path_b = urlparse(url_b).path
         self.assertEquals(path_a, path_b, 'Paths are not equal `{}` != `{}`'.format(path_a, path_b))
 
-    @patch('edraak_forus.helpers.calculate_hmac', Mock(return_value='dummy_hmac'))
     @patch('openedx.core.djangoapps.user_api.views.set_logged_in_cookies')
     def test_open_enrolled_upcoming_course(self, mock_set_logged_in_cookies):
         # TODO: Split into more than one test case
         self.assertFalse(self.course.has_started())
 
-        res_auth_1 = self.client.get(self.auth_url, self._build_forus_params(
-            forus_hmac='dummy_hmac',
-        ))
+        res_auth_1 = self.client.get(self.auth_url, self._build_forus_params())
 
         with self.assertRaises(User.DoesNotExist):
             user = User.objects.get(email=self.user_email)
@@ -95,7 +93,6 @@ class ForusAuthTest(ModuleStoreTestCase):
         self.assertContains(res_auth_1, 'login-and-registration-container')
 
         self.client.post(self.register_url, self._build_forus_params(
-            forus_hmac='dummy_hmac',
             username='The Best ForUs User',
             password='random_password',
             honor_code=True,
@@ -112,9 +109,7 @@ class ForusAuthTest(ModuleStoreTestCase):
 
         self._assertLoggedOut()
 
-        res_auth_2 = self.client.get(self.auth_url, self._build_forus_params(
-            forus_hmac='dummy_hmac',
-        ))
+        res_auth_2 = self.client.get(self.auth_url, self._build_forus_params())
 
         self.assertIsInstance(res_auth_2, HttpResponseRedirect)
         self.assertTrue(
@@ -124,8 +119,18 @@ class ForusAuthTest(ModuleStoreTestCase):
 
         self._assertLoggedIn(msg_prefix='The user is not logged in after clicking the form another time')
 
+    def test_custom_registration_messages(self):
+        res = self.client.get(self.auth_url, self._build_forus_params())
+        self.assertNotContains(res, 'Create a new account')
+        self.assertContains(res, 'Edraak account using ForUs')
+
+        self.assertNotContains(res, 'Create your account')
+        self.assertContains(res, 'Create your Edraak account')
+
+        self.assertContains(res, 'toggle-form hidden')
+
     def _build_forus_params(self, **kwargs):
-        params = build_forus_params(course_id=unicode(self.course.id), email=self.user_email)
+        params = build_forus_params(course_id=unicode(self.course.id), email=self.user_email, forus_hmac='dummy_hmac')
         params.update(**kwargs)
         return params
 
