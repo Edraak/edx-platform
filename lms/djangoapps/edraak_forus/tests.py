@@ -3,6 +3,7 @@ import pytz
 from datetime import datetime, timedelta
 from urlparse import urlparse
 import json
+import ddt
 
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
@@ -169,6 +170,7 @@ class ForUsMessagePageTest(TestCase):
         self.assertContains(res, escaped_message, msg_prefix='The page encodes the message incorrectly')
 
 
+@ddt.ddt
 class ParamValidatorTest(ModuleStoreTestCase):
     """
     Tests for the params validator functions.
@@ -215,17 +217,10 @@ class ParamValidatorTest(ModuleStoreTestCase):
             User.objects.get(email=self.user_email)
 
     def test_closed_course(self):
-        with self.assertRaises(ValidationError) as cm:
+        with self.assertRaisesRegexp(ValidationError, 'Enrollment.*closed.*go.*ForUs') as cm:
             self._validate_params(course_id=unicode(self.closed_course.id))
 
-        exception = cm.exception
-        errors_count = len(exception.messages)
-        self.assertEquals(errors_count, 1, 'There should be one error instead of `{}`'.format(errors_count))
-
-        error_message = exception.messages[0]
-
-        self.assertRegexpMatches(error_message, r'Enrollment.*closed')
-        self.assertRegexpMatches(error_message, r'.*go.*ForUs')
+        self._assertErrorCount(cm.exception, 1)
 
     def test_current_course(self):
         try:
@@ -240,17 +235,58 @@ class ParamValidatorTest(ModuleStoreTestCase):
             self.fail('The course is upcoming and everything is fine, yet there is an error: `{}`'.format(exc))
 
     def test_draft_course(self):
-        with self.assertRaises(ValidationError) as cm:
+        with self.assertRaisesRegexp(ValidationError, '.*not.*opened.*go.*ForUs') as cm:
             self._validate_params(course_id=unicode(self.draft_course.id))
 
-        exception = cm.exception
-        errors_count = len(exception.messages)
-        self.assertEquals(errors_count, 1, 'There should be one error instead of `{}`'.format(errors_count))
+        self._assertErrorCount(cm.exception, 1)
 
-        error_message = exception.messages[0]
+    @ddt.data('', ' ', 'XZ')
+    def test_invalid_country(self, bad_value):
+        self._assertValidateData(
+            field_id='country',
+            bad_value=bad_value,
+            exception_regexp='.*Invalid.*country.*',
+        )
 
-        self.assertRegexpMatches(error_message, r'.*not.*opened')
-        self.assertRegexpMatches(error_message, r'.*go.*ForUs')
+    @ddt.data('', ' ')
+    def test_invalid_name(self, bad_value):
+        self._assertValidateData(
+            field_id='name',
+            bad_value=bad_value,
+            exception_regexp='.*Invalid.*name.*',
+        )
+
+    @ddt.data('', ' ', 'hello')
+    def test_invalid_level_of_education(self, bad_value):
+        self._assertValidateData(
+            field_id='level_of_education',
+            bad_value=bad_value,
+            exception_regexp='.*Invalid.*level of education.*',
+        )
+
+    @ddt.data('', ' ', 'o', 'hello')
+    def test_invalid_gender(self, bad_value):
+        self._assertValidateData(
+            field_id='gender',
+            bad_value=bad_value,
+            exception_regexp='.*Invalid.*gender.*',
+        )
+
+    def _assertValidateData(self, field_id, bad_value, exception_regexp):
+        with self.assertRaisesRegexp(ValidationError, exception_regexp) as cm:
+            params = {field_id: bad_value}
+            self._validate_params(course_id=unicode(self.upcoming_course.id), **params)
+
+        self._assertErrorCount(cm.exception, 1)
+        self.assertIn(field_id, cm.exception.message_dict)
+
+    def _assertErrorCount(self, exception, expected_count):
+        count = len(exception.messages)
+        message = 'There should be one error instead of `{count}` in exception `{exception}`'.format(
+            count=count,
+            exception=exception,
+        )
+        self.assertEquals(count, expected_count, message)
 
     @patch('edraak_forus.helpers.calculate_hmac', Mock(return_value='dummy_hmac'))
     def _validate_params(self, **kwargs):

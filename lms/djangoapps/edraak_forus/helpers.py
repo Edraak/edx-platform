@@ -121,6 +121,10 @@ def validate_forus_params_values(params):
         # Translators: This is for the ForUs API
         errors['email'].append(_("The provided email format is invalid"))
 
+    if len(params.get('name', '')) <= 2:
+        # Translators: This is for the ForUs API
+        mark_as_invalid('name', _('name'))
+
     if params.get('gender') not in dict(UserProfile.GENDER_CHOICES):
         # Translators: This is for the ForUs API
         mark_as_invalid('gender', _('gender'))
@@ -129,13 +133,13 @@ def validate_forus_params_values(params):
         # Translators: This is for the ForUs API
         mark_as_invalid('lang', _('language'))
 
-    if params.get('country') not in dict(countries):
+    if not params.get('country') or params.get('country') not in dict(countries):
         # Translators: This is for the ForUs API
-        mark_as_invalid('lang', _('country'))
+        mark_as_invalid('country', _('country'))
 
     if params.get('level_of_education') not in dict(UserProfile.LEVEL_OF_EDUCATION_CHOICES):
         # Translators: This is for the ForUs API
-        mark_as_invalid('lang', _('level of education'))
+        mark_as_invalid('level_of_education', _('level of education'))
 
     try:
         course_key = CourseKey.from_string(params['course_id'])
