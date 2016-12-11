@@ -6,6 +6,7 @@
 # 
 # Translators:
 # omarithawi <oithawi@qrf.org>, 2016
+# Salah Alomari <salomari@qrf.org>, 2016
 # Lina Bashayreh <lbashayreh@qrf.org>, 2016
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # #-#-#-#-#  django-studio.po (0.1a)  #-#-#-#-#
@@ -56,7 +57,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-11-27 10:13+0200\n"
+"POT-Creation-Date: 2016-12-11 10:58+0200\n"
 "PO-Revision-Date: 2016-11-01 11:51+0000\n"
 "Last-Translator: omarithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
@@ -2010,7 +2011,6 @@ msgstr ""
 "مكشوفًا. للحصول على مفتاح لمساقك، أو للإبلاغ عن مشكلة ما، يُرجى مراسلة "
 "الشركة على هذا العنوان moocsupport@mathworks.com."
 
-#. Translators: Edraak-specific
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Check"
 msgstr "تسليم"
@@ -5529,6 +5529,13 @@ msgstr "لا يمكن لمشرفي وأعضاء تدريس إدراك استخد
 msgid "The provided email format is invalid"
 msgstr "البريد الإلكتروني خاطئ"
 
+#. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
+#. Translators: This is for the ForUs API
+#: lms/djangoapps/edraak_forus/helpers.py
+#: cms/templates/widgets/tabs-aggregator.html
+msgid "name"
+msgstr "الاسم"
+
 #. Translators: This is for the ForUs API
 #: lms/djangoapps/edraak_forus/helpers.py
 msgid "gender"
@@ -5551,13 +5558,18 @@ msgstr "المستوى التعليميّ"
 
 #. Translators: This is for the ForUs API
 #: lms/djangoapps/edraak_forus/helpers.py
-msgid "The course has not yet been opened for enrollment"
-msgstr "هذا المساق لم يُفتح للتسجيل"
+msgid ""
+"The course has not yet been opened for enrollment, please go back to the "
+"ForUs portal and enroll in other courses"
+msgstr "هذا المساق لم يُفتح للتسجيل بعد، عُد إلى بوابة فرص وانضم لمساقات أخرى"
 
 #. Translators: This is for the ForUs API
 #: lms/djangoapps/edraak_forus/helpers.py
-msgid "Enrollment for this course has been closed"
-msgstr "بابُ التسجيل لهذا المساق مغلق"
+msgid ""
+"Enrollment for this course has been closed, please go back to the ForUs "
+"portal and enroll in other courses"
+msgstr ""
+"هذا المساق لم يعُد متاحاً للتسجيل، عُد إلى بوابة فرُص وانضم لمساقات أخرى"
 
 #: lms/djangoapps/edraak_forus/helpers.py
 msgid "course id"
@@ -9401,21 +9413,17 @@ msgstr "يُرجى تحديد بلدك."
 msgid "Terms of Service and Honor Code"
 msgstr "شروط الخدمة وميثاق الشرف الأكاديمي"
 
-#. Translators: (Edraak-specific) "Terms of Service" is a legal document users
-#. must agree to
+#. Translators: "Terms of Service" is a legal document users must agree to
 #. in order to register a new account.
-#. Translators: (Edraak-specific) "Terms of service" is a legal document users
-#. must agree to
+#. Translators: "Terms of service" is a legal document users must agree to
 #. in order to register a new account.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "I agree to the {platform_name} {terms_of_service}."
 msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platform_name}."
 
-#. Translators: (Edraak-specific) "Terms of Service" is a legal document users
-#. must agree to
+#. Translators: "Terms of Service" is a legal document users must agree to
 #. in order to register a new account.
-#. Translators: (Edraak-specific) "Terms of service" is a legal document users
-#. must agree to
+#. Translators: "Terms of service" is a legal document users must agree to
 #. in order to register a new account.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "You must agree to the {platform_name} {terms_of_service}."
@@ -12182,6 +12190,10 @@ msgid "due {date}"
 msgstr "تاريخ الاستحقاق {date}"
 
 #: lms/templates/courseware/accordion.html
+msgid "Timed Exam"
+msgstr ""
+
+#: lms/templates/courseware/accordion.html
 msgid "This content is graded"
 msgstr "جرى تقييم هذا المحتوى"
 
@@ -13638,22 +13650,21 @@ msgstr "نشر"
 msgid "Sign in or Register"
 msgstr "يرجى تسجيل الدخول أو التسجيل"
 
-#: lms/templates/edraak_forus/error.html
-msgid ""
-"An error have occurred while trying to use your account on {forus_link}."
-msgstr "حدث خطأ أثناء محاولة استخدام حسابك على {forus_link}."
+#: lms/templates/edraak_forus/message.html
+msgid "Sorry, we are unable to enroll you in the course."
+msgstr "عذراً، لا يمكن إتمام انضمامك في هذا المساق"
 
-#: lms/templates/edraak_forus/error.html
-msgid "ForUs portal"
-msgstr "بوابة فُرص"
-
-#: lms/templates/edraak_forus/error.html
+#: lms/templates/edraak_forus/message.html
 msgid ""
 "Please go to {forus_link}, and try again. If the problem persists, please "
 "email us at {email}."
 msgstr ""
 "الرجاء الرجوع إلى  {forus_link} والمحاولة مجدداً. إذا ظهرت المشكلة مرة أخرى،"
 " تواصل معنا على {email}."
+
+#: lms/templates/edraak_forus/message.html
+msgid "ForUs portal"
+msgstr "بوابة فُرص"
 
 #: lms/templates/edraak_university/university_id.html
 msgid "{course_number} Student University ID"
@@ -20815,10 +20826,6 @@ msgstr "أرسل رسالةً إلكترونية إلى {email}"
 #: cms/templates/widgets/sock.html
 msgid "Contact Us"
 msgstr "اتصل بنا"
-
-#: cms/templates/widgets/tabs-aggregator.html
-msgid "name"
-msgstr "الاسم"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
