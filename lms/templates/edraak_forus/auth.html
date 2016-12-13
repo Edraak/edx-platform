@@ -17,20 +17,22 @@
 </%block>
 
 <%block name="header_extras">
-    % for template_name in ["account", "access", "form_field", "login", "register", "institution_login", "institution_register", "password_reset", "hinted_login"]:
+    ## This file is to provide custom messages for ForUs users.
+    ## The file is adopted from
+    <script type="text/template" id="register-tpl">
+        <%static:include path="edraak_forus/register.underscore" />
+    </script>
+
+    % for template_name in ["account", "access", "form_field", "login", "institution_login", "institution_register", "password_reset", "hinted_login"]:
         <script type="text/template" id="${template_name}-tpl">
             <%static:include path="student_account/${template_name}.underscore" />
         </script>
-% endfor
+    % endfor
 </%block>
 
 <style>
     /* TODO: Move this into a CSS file */
     .form-field[class*=hidden] {
-        display: none;
-    }
-
-    .toggle-form {
         display: none;
     }
 

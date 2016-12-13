@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.contrib.auth import logout, login
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from util.json_request import JsonResponse
@@ -66,6 +66,8 @@ POPULATED_FIELDS = FORUS_SPECIFIC_FIELDS + (
 )
 
 HIDDEN_FIELDS = POPULATED_FIELDS + (
+    'goals',  # Hide goals because the ForUs people didn't like to
+              # ask their students about their goals in Edraak.
     'password',
 )
 
@@ -89,7 +91,7 @@ class AuthView(View):
             # Simulate `django.contrib.auth.authenticate()` function
             if not request.user.is_authenticated():
                 if ForusProfile.is_forus_user(user):
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
+                    user.backend = settings.AUTHENTICATION_BACKENDS[0]
                     login(request, user)
                 else:
                     # Redirect the non-forus users to the login page
@@ -262,9 +264,9 @@ class RegistrationApiView(RegistrationView):
         ForusProfile.create_for_user(user)
 
 
-def error(request):
-    message = request.GET.get('message')
+def message(request):
+    message_text = request.GET.get('message')
 
-    return render_to_response('edraak_forus/error.html', {
-        'message': message
+    return render_to_response('edraak_forus/message.html', {
+        'message': message_text
     })
