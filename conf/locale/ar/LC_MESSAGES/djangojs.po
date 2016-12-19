@@ -23,6 +23,7 @@
 # Translators:
 # omarithawi <oithawi@qrf.org>, 2016
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
+# Salah Alomari <salomari@qrf.org>, 2016
 # #-#-#-#-#  underscore-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
 # Copyright (C) 2016 edX
@@ -35,8 +36,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-12-11 10:58+0200\n"
-"PO-Revision-Date: 2016-12-11 08:59:26.805493\n"
+"POT-Creation-Date: 2016-12-19 16:54+0000\n"
+"PO-Revision-Date: 2016-12-19 16:55:48.351505\n"
 "Last-Translator: omarithawi <oithawi@qrf.org>, 2016\n"
 "Language-Team: Arabic (https://www.transifex.com/edraak/teams/27178/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -2453,7 +2454,6 @@ msgstr ""
 "حرفًا على الأكثر)."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
-#: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Language"
 msgstr "اللغة"
 
@@ -4122,14 +4122,6 @@ msgstr ""
 "عندها النقر على الرابط الموجود في الرسالة لتغيّرها."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
-msgid ""
-"The language used throughout this site. This site is currently available in "
-"a limited number of languages."
-msgstr ""
-"اللغة المستخدمة في كافة أقسام هذا الموقع. يتوفّر هذا الموقع حاليًا بعدد "
-"محدود من اللغات."
-
-#: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Country or Region"
 msgstr "الدولة أو المنطقة"
 
@@ -4148,11 +4140,6 @@ msgstr "الجنس"
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Year of Birth"
 msgstr "سنة الميلاد"
-
-#: lms/static/js/student_account/views/account_settings_factory.js
-#: lms/static/js/student_profile/views/learner_profile_factory.js
-msgid "Preferred Language"
-msgstr "اللغة المفضّلة"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Connected Accounts"
@@ -4221,6 +4208,10 @@ msgstr "كامل ملفّي الشخصي"
 #: lms/static/js/student_profile/views/learner_profile_factory.js
 msgid "Add Country"
 msgstr "إضافة البلد"
+
+#: lms/static/js/student_profile/views/learner_profile_factory.js
+msgid "Preferred Language"
+msgstr "اللغة المفضّلة"
 
 #: lms/static/js/student_profile/views/learner_profile_factory.js
 msgid "Add language"
@@ -6035,7 +6026,7 @@ msgstr "مجال الموضوع:"
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Discussion topics; current selection is: "
-msgstr ""
+msgstr "مواضيع النقاشات؛ الاختيار الحالي هو: "
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Filter topics"
@@ -6426,7 +6417,7 @@ msgstr ""
 
 #: lms/templates/edraak_forus/register.underscore
 msgid "Create your Edraak account"
-msgstr "أنشئ حسابك على منصة إدراك"
+msgstr ""
 
 #: lms/templates/edraak_forus/register.underscore
 #: lms/templates/student_account/register.underscore
