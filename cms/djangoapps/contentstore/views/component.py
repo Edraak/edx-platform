@@ -27,7 +27,7 @@ from contentstore.views.item import create_xblock_info, add_container_page_publi
 from opaque_keys.edx.keys import UsageKey
 
 from student.auth import has_course_author_access
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, pgettext
 from models.settings.course_grading import CourseGradingModel
 
 __all__ = [
@@ -185,7 +185,7 @@ def get_component_templates(courselike, library=False):
         }
 
     component_display_names = {
-        'discussion': _("Discussion"),
+        'discussion': pgettext("component template", "Discussion"),
         'html': _("HTML"),
         'problem': _("Problem"),
         'video': _("Video")
