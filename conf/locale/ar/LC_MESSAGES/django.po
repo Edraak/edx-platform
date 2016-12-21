@@ -17,6 +17,7 @@
 # 
 # Translators:
 # omarithawi <oithawi@qrf.org>, 2016
+# Salah Alomari <salomari@qrf.org>, 2016
 # #-#-#-#-#  mako.po (0.1a)  #-#-#-#-#
 # edX translation file
 # Copyright (C) 2016 edX
@@ -25,6 +26,9 @@
 # 
 # Translators:
 # omarithawi <oithawi@qrf.org>, 2016
+# Lina Bashayreh <lbashayreh@qrf.org>, 2016
+# Salah Alomari <salomari@qrf.org>, 2016
+# qrfahasan <ahasan@qrf.org>, 2016
 # #-#-#-#-#  mako-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
 # Copyright (C) 2016 edX
@@ -52,14 +56,15 @@
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # Areej Huniti <ahuniti@qrf.org>, 2015
 # omarithawi <oithawi@qrf.org>, 2016
+# Salah Alomari <salomari@qrf.org>, 2016
 # Sherif Halawa <shalawa@qrf.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-12-11 10:58+0200\n"
-"PO-Revision-Date: 2016-11-01 11:51+0000\n"
-"Last-Translator: omarithawi <oithawi@qrf.org>\n"
+"POT-Creation-Date: 2016-12-19 18:53+0200\n"
+"PO-Revision-Date: 2016-12-19 17:05+0000\n"
+"Last-Translator: Salah Alomari <salomari@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -67,14 +72,6 @@ msgstr ""
 "Generated-By: Babel 1.3\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-
-#. Translators: 'Discussion' refers to the tab in the courseware that leads to
-#. the discussion forums
-#: cms/djangoapps/contentstore/views/component.py
-#: lms/djangoapps/courseware/tabs.py
-#: lms/djangoapps/django_comment_client/forum/views.py
-msgid "Discussion"
-msgstr "المناقشة"
 
 #: cms/djangoapps/contentstore/views/component.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -5051,6 +5048,13 @@ msgstr "العلامات"
 msgid "Textbooks"
 msgstr "الكتب"
 
+#. Translators: 'Discussion' refers to the tab in the courseware that leads to
+#. the discussion forums
+#: lms/djangoapps/courseware/tabs.py
+#: lms/djangoapps/django_comment_client/forum/views.py
+msgid "Discussion"
+msgstr "منتدى النقاش"
+
 #. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
 #. Translators: This will look like '$50', where {currency_symbol} is a symbol
 #. such as '$' and {price} is a
@@ -9568,6 +9572,11 @@ msgid "PermissionDenied: Failed in authenticating {user}"
 msgstr "رُفِض التصريح: تعذّر التحقّق من هوية المستخدم {user}"
 
 #: cms/djangoapps/contentstore/views/component.py
+msgctxt "component template"
+msgid "Discussion"
+msgstr "المناقشة"
+
+#: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
 msgstr "HTML "
 
@@ -9946,7 +9955,7 @@ msgstr "رقم المساق: "
 #: lms/templates/courseware/courses.html
 #: themes/red-theme/lms/templates/header.html
 msgid "Courses"
-msgstr ""
+msgstr "المساقات"
 
 #: cms/templates/login.html cms/templates/register.html
 #: lms/templates/help_modal.html lms/templates/login.html
@@ -10048,7 +10057,7 @@ msgstr "تسجيل الخروج"
 
 #: common/lib/capa/capa/templates/codeinput.html
 msgid "{programming_language} editor"
-msgstr ""
+msgstr "محرر {programming_language}"
 
 #: common/templates/license.html
 msgid "All Rights Reserved"
@@ -10854,7 +10863,7 @@ msgstr "الصفحة الرئيسية لمنصّة {platform_name}"
 #: themes/edx.org/lms/templates/header.html
 #: themes/red-theme/lms/templates/header.html
 msgid "How it Works"
-msgstr ""
+msgstr "كيف تتعلم مع إدراك"
 
 #: lms/templates/navigation-edx.html lms/templates/navigation.html
 #: themes/edx.org/lms/templates/header.html
@@ -10949,7 +10958,7 @@ msgstr "حفظ"
 
 #: lms/templates/problem.html
 msgid "You have used {num_used} of {num_total} submissions"
-msgstr "لقد استخدمتَ {num_used} تقديمات من أصل {num_total}"
+msgstr "لقد استخدمتَ {num_used} محاولات من أصل {num_total}"
 
 #: lms/templates/provider_login.html
 msgid "Log In"
@@ -11198,11 +11207,11 @@ msgstr ""
 
 #: lms/templates/seq_module.html
 msgid "Previous"
-msgstr ""
+msgstr "السابق"
 
 #: lms/templates/seq_module.html
 msgid "Next"
-msgstr ""
+msgstr "التالي"
 
 #: lms/templates/signup_modal.html
 msgid "Sign Up for {platform_name}"
@@ -12191,7 +12200,7 @@ msgstr "تاريخ الاستحقاق {date}"
 
 #: lms/templates/courseware/accordion.html
 msgid "Timed Exam"
-msgstr ""
+msgstr "امتحان محدود بوقت"
 
 #: lms/templates/courseware/accordion.html
 msgid "This content is graded"
@@ -12646,6 +12655,8 @@ msgid ""
 "To download a CSV listing student responses to a given problem, visit the "
 "Data Download section of the Instructor Dashboard."
 msgstr ""
+"لتنزيل ملف CSV يحتوي على معلومات اجابات الطلاب لمسألة معينة، يُرجى زيارة قسم"
+" \"تنزيل البيانات\" في لوحة معلومات الأستاذ."
 
 #: lms/templates/courseware/legacy_instructor_dashboard.html
 msgid ""
@@ -12843,7 +12854,7 @@ msgstr "عذرًا، لقد جرى رفض عملية التحقّق"
 
 #: lms/templates/courseware/progress.html
 msgid "Completed"
-msgstr ""
+msgstr "استُكملت العملية"
 
 #: lms/templates/courseware/progress.html
 msgid "Upcoming"
