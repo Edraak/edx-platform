@@ -1,7 +1,7 @@
 """
 Tests use cases related to LMS Entrance Exam behavior, such as gated content access (TOC)
 """
-from mock import patch, Mock
+from mock import patch, Mock, ANY
 
 from django.core.urlresolvers import reverse
 from django.test.client import RequestFactory
@@ -33,6 +33,9 @@ from util.milestones_helpers import (
     get_milestone_relationship_types,
     seed_milestone_relationship_types,
 )
+
+from courseware.grades import get_weighted_scores
+
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
@@ -594,6 +597,30 @@ class EntranceExamTestCases(LoginEnrollmentTestCase, ModuleStoreTestCase):
             self.exam_1.url_name,
             self.field_data_cache
         )
+
+    @patch('courseware.grades.force_translate')
+    @patch.dict('django.conf.settings.FEATURES', {'ENTRANCE_EXAMS': True, 'MILESTONES_APP': True})
+    def test_translation_in_progress_page__force_translate(self, patched_force_translate):
+        get_weighted_scores(self.request.user, self.course)
+        patched_force_translate.assert_called_with(ANY, 'Entrance Exam')
+
+    @patch('courseware.grades.ugettext_noop')
+    @patch.dict('django.conf.settings.FEATURES', {'ENTRANCE_EXAMS': True, 'MILESTONES_APP': True})
+    def test_translation_in_progress_page__ugettext_noop(self, patched_ugettext_noop):
+        get_weighted_scores(self.request.user, self.course)
+        patched_ugettext_noop.assert_called_with('Entrance Exam')
+
+    @patch('courseware.module_render.force_translate')
+    @patch.dict('django.conf.settings.FEATURES', {'ENTRANCE_EXAMS': True, 'MILESTONES_APP': True})
+    def test_translation_in_table_of_content__force_translate(self, patched_force_translate):
+        self._return_table_of_contents()
+        patched_force_translate.assert_called_with(ANY, 'Entrance Exam')
+
+    @patch('courseware.module_render.ugettext_noop')
+    @patch.dict('django.conf.settings.FEATURES', {'ENTRANCE_EXAMS': True, 'MILESTONES_APP': True})
+    def test_translation_in_table_of_content__ugettext_noop(self, patched_ugettext_noop):
+        self._return_table_of_contents()
+        patched_ugettext_noop.assert_called_with('Entrance Exam')
 
 
 def answer_entrance_exam_problem(course, request, problem, user=None):

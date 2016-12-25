@@ -158,10 +158,11 @@ ${fragment.foot_html()}
            entrance_exam_current_score is not UNDEFINED:
             % if not entrance_exam_passed:
             <p class="sequential-status-message">
-                ${_('To access course materials, you must score {required_score}% or higher on this \
-                exam. Your current score is {current_score}%.').format(
+                ${_('To access course materials, you must score {required_score}{percent} or higher on this \
+                exam. Your current score is {current_score}{percent}.').format(
                     required_score=int(round(course.entrance_exam_minimum_score_pct * 100)),
-                    current_score=int(round(entrance_exam_current_score * 100))
+                    current_score=int(round(entrance_exam_current_score * 100)),
+                    percent=_('%'),
                 )}
             </p>
             <script type="text/javascript">
