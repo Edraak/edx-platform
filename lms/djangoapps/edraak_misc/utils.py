@@ -1,16 +1,10 @@
-import logging
-
 from django.conf import settings
-from django.core.validators import validate_email as django_validate_email, ValidationError as DjangoValidationError
-from validate_email import validate_email as strict_validate_email
 from django.core.cache import cache
 from xmodule.modulestore.django import modulestore
 
 from courseware.access import has_access
 from courseware.grades import grade
 from opaque_keys.edx import locator
-
-log = logging.getLogger(__name__)
 
 
 def cached_function(cache_key_format, timeout=30):
@@ -95,35 +89,3 @@ def get_absolute_url_prefix(request):
     schema = 'https' if request.is_secure() else 'http'
     prefix = '{schema}://{host}'.format(schema=schema, host=settings.SITE_NAME)
     return prefix
-
-
-def validate_email(email):
-    """
-    Validate email, the strict or the quick way depending on `FEATURES['EMAIL_STRICT_VERIFICATION']`.
-    """
-    is_strict = settings.FEATURES.get('EMAIL_STRICT_VERIFICATION', True)
-    log.info(u'Validating user email=%(email)s, strict_verification=%(is_strict)s', {
-        'email': email,
-        'is_strict': is_strict,
-    })
-
-    if is_strict:
-        is_valid = strict_validate_email(
-            email=email,
-            check_mx=True,
-            debug=True,
-        )
-    else:
-        try:
-            django_validate_email(email)
-            is_valid = True
-        except DjangoValidationError:
-            is_valid = False
-
-    log.info(u'Validating user email=%(email)s, strict_verification=%(is_strict)s, is_valid=%(is_valid)s', {
-        'email': email,
-        'is_strict': is_strict,
-        'is_valid': is_valid,
-    })
-
-    return is_valid

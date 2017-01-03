@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from django.conf import settings
 from django.test.client import RequestFactory
 from django.core.cache import cache
+from django.utils.translation import ugettext_noop
 
 import dogstats_wrapper as dog_stats_api
 
@@ -29,6 +30,7 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 from openedx.core.djangoapps.signals.signals import GRADES_UPDATED
 
+from util.i18n import force_translate
 
 log = logging.getLogger("edx.courseware")
 
@@ -646,7 +648,7 @@ def _progress_summary(student, request, course, field_data_cache=None, scores_cl
                     'url_name': section_module.url_name,
                     'scores': scores,
                     'section_total': section_total,
-                    'format': module_format,
+                    'format': force_translate(module_format, ugettext_noop('Entrance Exam')),
                     'due': section_module.due,
                     'graded': graded,
                 })

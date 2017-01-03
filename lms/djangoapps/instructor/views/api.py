@@ -20,6 +20,7 @@ from django.core.mail.message import EmailMessage
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import IntegrityError, transaction
 from django.core.urlresolvers import reverse
+from django.core.validators import validate_email
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
 from django.utils.html import strip_tags
@@ -38,8 +39,6 @@ from util.file import (
 )
 from util.json_request import JsonResponse, JsonResponseBadRequest
 from instructor.views.instructor_task_helpers import extract_email_features, extract_task_features
-
-from edraak_misc.utils import validate_email
 
 from microsite_configuration import microsite
 

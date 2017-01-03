@@ -1,3 +1,0 @@
-# Used for strict email verification
-pydns==2.3.6
-validate-email==1.2
