@@ -246,6 +246,7 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
                             # so add to the accordion data context
                             section_context.update({
                                 'proctoring': timed_exam_attempt_context,
+                                'proctoring_short_description': force_translate(timed_exam_attempt_context.get('short_description', ''), ugettext_noop('Timed Exam'))
                             })
 
                     sections.append(section_context)
