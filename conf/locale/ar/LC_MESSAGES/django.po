@@ -1,53 +1,54 @@
 # #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2016 EdX
+# Copyright (C) 2017 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2016.
+# EdX Team <info@edx.org>, 2017.
 # 
 # Translators:
-# omarithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
 # Lina Bashayreh <lbashayreh@qrf.org>, 2016
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # #-#-#-#-#  django-studio.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2016 EdX
+# Copyright (C) 2017 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2016.
+# EdX Team <info@edx.org>, 2017.
 # 
 # Translators:
-# omarithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
+# Lina Bashayreh <lbashayreh@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
 # #-#-#-#-#  mako.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2016 edX
+# Copyright (C) 2017 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2016.
+# EdX Team <info@edx.org>, 2017.
 # 
 # Translators:
-# omarithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # Lina Bashayreh <lbashayreh@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
 # qrfahasan <ahasan@qrf.org>, 2016
 # #-#-#-#-#  mako-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2016 edX
+# Copyright (C) 2017 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2016.
+# EdX Team <info@edx.org>, 2017.
 # 
 # Translators:
-# omarithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # #-#-#-#-#  wiki.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2016 edX
+# Copyright (C) 2017 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2016.
+# EdX Team <info@edx.org>, 2017.
 # 
 # Translators:
-# omarithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # #-#-#-#-#  edraak-platform-2015-theme.po (Edraak)  #-#-#-#-#
 # Translations template for PROJECT.
-# Copyright (C) 2016 ORGANIZATION
+# Copyright (C) 2017 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # 
 # Translators:
@@ -55,15 +56,15 @@
 # Ahmed Jazzar <ajazzar@qrf.org>, 2015
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # Areej Huniti <ahuniti@qrf.org>, 2015
-# omarithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
 # Sherif Halawa <shalawa@qrf.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-12-19 18:53+0200\n"
-"PO-Revision-Date: 2016-12-19 17:05+0000\n"
+"POT-Creation-Date: 2017-01-10 16:12+0200\n"
+"PO-Revision-Date: 2017-01-09 12:03+0000\n"
 "Last-Translator: Salah Alomari <salomari@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -84,9 +85,11 @@ msgid "Advanced"
 msgstr "إعدادات متقدّمة"
 
 #: cms/djangoapps/contentstore/views/entrance_exam.py
+#: lms/djangoapps/courseware/grades.py
+#: lms/djangoapps/courseware/module_render.py
 #: lms/djangoapps/courseware/tabs.py cms/templates/settings.html
 msgid "Entrance Exam"
-msgstr "امتحان الدخول"
+msgstr "اختبار القبول"
 
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -2611,6 +2614,9 @@ msgid ""
 "marks, enter the short name of the course to use on the certificate that "
 "students receive when they complete the course."
 msgstr ""
+"Use this setting only when generating PDF certificates. Between quotation "
+"marks, enter the short name of the course to use on the certificate that "
+"students receive when they complete the course."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Certificate Name (Short)"
@@ -2622,6 +2628,9 @@ msgid ""
 "marks, enter the long name of the course to use on the certificate that "
 "students receive when they complete the course."
 msgstr ""
+"Use this setting only when generating PDF certificates. Between quotation "
+"marks, enter the long name of the course to use on the certificate that "
+"students receive when they complete the course."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Certificate Name (Long)"
@@ -2704,6 +2713,10 @@ msgid ""
 "the course. To use the organization that you entered when you created the "
 "course, enter null."
 msgstr ""
+"Enter the course organization that you want to appear in the courseware. "
+"This setting overrides the organization that you entered when you created "
+"the course. To use the organization that you entered when you created the "
+"course, enter null."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Course Number Display String"
@@ -2716,6 +2729,10 @@ msgid ""
 "course. To use the course number that you entered when you created the "
 "course, enter null."
 msgstr ""
+"Enter the course number that you want to appear in the courseware. This "
+"setting overrides the course number that you entered when you created the "
+"course. To use the course number that you entered when you created the "
+"course, enter null."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Course Maximum Student Enrollment"
@@ -2806,7 +2823,7 @@ msgstr "غير مذكور"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Entrance Exam Enabled"
-msgstr "تفعيل ’امتحان الدخول‘"
+msgstr "تفعيل \"اختبار القبول\""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -2814,13 +2831,13 @@ msgid ""
 " your course content. Note, you must enable Entrance Exams for this course "
 "setting to take effect."
 msgstr ""
-"حدّد فيما إذا يجب على الطلّاب إتمام امتحان دخول قبل أن يتمكّنوا من استعراض "
+"حدّد فيما إذا يجب على الطلّاب إتمام اختبار قبول قبل أن يتمكّنوا من استعراض "
 "محتوى مساقك. كما يُرجى ملاحظة أنّه عليك تفعيل ’امتحانات الدخول‘ ليُفعّل هذا "
 "الإعداد في مساقك."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Entrance Exam Minimum Score (%)"
-msgstr "الدرجة الدنيا النطلوبة للنجاح في امتحان الدخول (%)"
+msgstr "الحد الادنى المطلوب للنجاح في اختبار القبول (%)"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -2828,17 +2845,17 @@ msgid ""
 "view your course content. Note, you must enable Entrance Exams for this "
 "course setting to take effect."
 msgstr ""
-"يُرجى تحديد النسبة المئوية الدنيا لدرجة النجاح في امتحان الدخول قبل أن "
+"يُرجى تحديد النسبة المئوية الدنيا لدرجة النجاح في اختبار القبول قبل أن "
 "يتمكّن الطلّاب من استعراض محتوى مساقك. كما يُرجى ملاحظة أنّه عليك تفعيل "
-"’امتحانات الدخول‘ ليُفعّل هذا الإعداد الخاص بالمساق."
+"\"اختبار القبول\" ليُفعّل هذا الإعداد الخاص بالمساق."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Entrance Exam ID"
-msgstr "رقم امتحان الدخول"
+msgstr "معرُف اختبار القبول "
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Content module identifier (location) of entrance exam."
-msgstr "معرّف (موقع) وحدة المحتوى الخاص بامتحان الدخول."
+msgstr "معرّف (موقع) وحدة المحتوى الخاص باختبار القبول."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Social Media Sharing URL"
@@ -2873,6 +2890,8 @@ msgid ""
 "Enter configuration for the teams feature. Expects two entries: "
 "max_team_size and topics, where topics is a list of topics."
 msgstr ""
+"Enter configuration for the teams feature. Expects two entries: "
+"max_team_size and topics, where topics is a list of topics."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enable Proctored Exams"
@@ -2886,18 +2905,18 @@ msgid ""
 msgstr ""
 "يُرجى إدخال ’true‘ أو ’false‘. تشير القيمة ’true‘ إلى تفعيل الامتحانات "
 "المراقبة لهذا المساق. وانتبه إلى أن تفعيلك للامتحانات المراقبة سيفعّل بدوره "
-"الامتحانات محدَّدة التوقيت أيضًا."
+"الاختبارات محدَّدة التوقيت أيضًا."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enable Timed Exams"
-msgstr "تفعيل الامتحانات محدّدة التوقيت."
+msgstr "تفعيل الاختبارات محدّدة التوقيت."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Enter true or false. If this value is true, timed exams are enabled in your "
 "course."
 msgstr ""
-"يُرجى إدخال ’true‘ أو ’false‘. يسمح اختيارك للخيار ’true‘ بتفعيل الامتحانات "
+"يُرجى إدخال ’true‘ أو ’false‘. يسمح اختيارك للخيار ’true‘ بتفعيل الاختبارات "
 "محدَّدة التوقيت في مساقك."
 
 #: common/lib/xmodule/xmodule/course_module.py
@@ -2940,11 +2959,11 @@ msgstr "عام"
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid "Discussion Id"
-msgstr ""
+msgstr "مُعرّف النقاش"
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid "The id is a unique identifier for the discussion. It is non editable."
-msgstr ""
+msgstr "المُعرّف هو اسم فريد للنقاش، وهو غير قابل للتعديل."
 
 #: common/lib/xmodule/xmodule/discussion_module.py
 msgid "Category"
@@ -3648,6 +3667,13 @@ msgid ""
 "-ad9d-0178ab8c77be\", \"transcripts\": {\"en\": \"/static/DemoX-D01_1.srt\","
 " \"uk\": \"/static/DemoX-D01_1_uk.srt\"}}"
 msgstr ""
+"Identify a video, 5-10 seconds in length, to play before course videos. "
+"Enter the video ID from the Video Uploads page and one or more transcript "
+"files in the following format: {\"video_id\": \"ID\", \"transcripts\": "
+"{\"language\": \"/static/filename.srt\"}}. For example, an entry for a video"
+" with two transcripts looks like this: {\"video_id\": \"77cef264-d6f5-4cf2"
+"-ad9d-0178ab8c77be\", \"transcripts\": {\"en\": \"/static/DemoX-D01_1.srt\","
+" \"uk\": \"/static/DemoX-D01_1_uk.srt\"}}"
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Show Reset Button for Problems"
@@ -3686,7 +3712,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Tag this module as part of an Entrance Exam section"
-msgstr "وسم هذه الوحدة على أنّها جزء من قسم خاص بامتحان الدخول."
+msgstr "وسم هذه الوحدة على أنّها جزء من قسم خاص باختبار القبول."
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid ""
@@ -3694,7 +3720,7 @@ msgid ""
 " considered in the Entrance Exam scoring/gating algorithm."
 msgstr ""
 "يُرجى إدخال ’true‘ أو ’false‘. باختيارك للقيمة ’true‘، ستُحتسب إجابات وحدات "
-"المسائل كجزء من خوارزمية تقييم/تحكيم امتحان الدخول أو القبول في المساق."
+"المسائل كجزء من خوارزمية تقييم اختبار القبول في المساق."
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Enter the date by which problems are due."
@@ -3702,15 +3728,15 @@ msgstr "يُرجى إدخال تاريخ استحقاق حلّ المسائل."
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Is Entrance Exam"
-msgstr "هو امتحان الدخول"
+msgstr "حدّد كاختبار قبول"
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid ""
 "Tag this course module as an Entrance Exam. Note, you must enable Entrance "
 "Exams for this course setting to take effect."
 msgstr ""
-"يُرجى وسم وحدة المساق هذه على أنّها \"امتحان دخول\". كما يُرجى أخذ العلم بأن"
-" عليك تفعيل خاصية \"امتحانات الدخول\" ليسري مفعول هذا الإعداد في المساق."
+"حدّد وحدة المساق هذه على أنّها \"اختبار قبول\". كما يُرجى أخذ العلم بأن عليك"
+" تفعيل خاصية \"اختبار القبول\" ليسري مفعول هذا الإعداد في المساق."
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Is Time Limited"
@@ -4276,7 +4302,7 @@ msgstr "إجابة الطالب."
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "All possible words from all students."
-msgstr ""
+msgstr "جميع الكلمات المدخلة من المتعلمين."
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Top num_top_words words for word cloud."
@@ -4581,6 +4607,8 @@ msgid ""
 "An {cert_type} Certificate demonstrates a high level of achievement in a "
 "program of study, and includes verification of the student's identity."
 msgstr ""
+"An {cert_type} Certificate demonstrates a high level of achievement in a "
+"program of study, and includes verification of the student's identity."
 
 #. Translators:  The format of the date includes the full name of the month
 #: lms/djangoapps/certificates/views/webview.py
@@ -4710,6 +4738,10 @@ msgid ""
 "and many others.  {platform_name} is a non-profit online initiative created "
 "by founding partners Harvard and MIT."
 msgstr ""
+"{platform_name} offers interactive online classes and MOOCs from the world's"
+" best universities, including MIT, Harvard, Berkeley, University of Texas, "
+"and many others.  {platform_name} is a non-profit online initiative created "
+"by founding partners Harvard and MIT."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "About {platform_name}"
@@ -4743,12 +4775,14 @@ msgid ""
 "a course of study offered by {partner_short_name}, an online learning "
 "initiative of {partner_long_name} through {platform_name}."
 msgstr ""
+"a course of study offered by {partner_short_name}, an online learning "
+"initiative of {partner_long_name} through {platform_name}."
 
 #. Translators:  This text represents the description of course
 #: lms/djangoapps/certificates/views/webview.py
 msgid ""
 "a course of study offered by {partner_short_name}, through {platform_name}."
-msgstr ""
+msgstr "مساق مقدم من {partner_short_name} على منصة {platform_name}."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "I completed the {course_title} course on {platform_name}."
@@ -4767,7 +4801,7 @@ msgstr "المزيد من المعلومات عن شهادة {user_name}"
 #. and achieved a certification
 #: lms/djangoapps/certificates/views/webview.py
 msgid "{fullname}, you've earned a certificate!"
-msgstr ""
+msgstr "تهانينا {fullname}، لقد حصلت على شهادة."
 
 #. Translators: This line congratulates the user and instructs them to share
 #. their accomplishment on social networks
@@ -4934,7 +4968,7 @@ msgstr ""
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "UTC"
-msgstr ""
+msgstr "التوقيت العالمي UTC"
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Today is {date}"
@@ -5020,6 +5054,10 @@ msgid ""
 "specific student."
 msgstr ""
 " بصفتك أحد الطلّاب، لا يمكن عرض هذا النوع من المكوّنات أثناء استعراض المساق."
+
+#: lms/djangoapps/courseware/module_render.py
+msgid "Timed Exam"
+msgstr "اختبار محدود بوقت"
 
 #: lms/djangoapps/courseware/tabs.py
 #: lms/templates/courseware/courseware-error.html
@@ -5357,11 +5395,16 @@ msgid ""
 "We recommend you enable the MongoDB based module store instead, unless this "
 "is a development environment."
 msgstr ""
+"Refusing to import. GIT_IMPORT_WITH_XMLMODULESTORE is not turned on, and it "
+"is generally not safe to import into an XMLModuleStore with multithreaded. "
+"We recommend you enable the MongoDB based module store instead, unless this "
+"is a development environment."
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid ""
 "The course {0} already exists in the data directory! (reloading anyway)"
 msgstr ""
+"المساق {0} موجود مسبقا في مجلد البيانات! (يتم إعادة تحميله على أية حال)"
 
 #. Translators: unable to download the course content from
 #. the source git repository. Clone occurs if this is brand
@@ -5378,11 +5421,11 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Successfully switched to branch: {branch_name}"
-msgstr ""
+msgstr "تم التحويل إلى الفرع: {branch_name}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Loaded course {course_name}<br/>Errors:"
-msgstr ""
+msgstr "تم تحميل المساق {course_name} ‏<br/> قائمة بالأخطاء التي حصلت: "
 
 #: lms/djangoapps/dashboard/sysadmin.py cms/templates/course-create-rerun.html
 #: cms/templates/index.html lms/templates/shoppingcart/receipt.html
@@ -5904,6 +5947,8 @@ msgid ""
 "The enrolled learner profile report is being created. To view the status of "
 "the report, see Pending Instructor Tasks below."
 msgstr ""
+"The enrolled learner profile report is being created. To view the status of "
+"the report, see Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -5911,6 +5956,9 @@ msgid ""
 " report, see Pending Instructor Tasks below. You will be able to download "
 "the report when it is complete."
 msgstr ""
+"This enrollment report is currently being created. To view the status of the"
+" report, see Pending Instructor Tasks below. You will be able to download "
+"the report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -5918,6 +5966,9 @@ msgid ""
 "about learners who can enroll in the course. To view the status of the "
 "report, see Pending Instructor Tasks below."
 msgstr ""
+"The enrollment report is being created. This report contains information "
+"about learners who can enroll in the course. To view the status of the "
+"report, see Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "The file must contain a 'cohort' column containing cohort names."
@@ -5980,6 +6031,8 @@ msgid ""
 "The detailed enrollment report is being created. To view the status of the "
 "report, see Pending Instructor Tasks below."
 msgstr ""
+"The detailed enrollment report is being created. To view the status of the "
+"report, see Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -5987,12 +6040,17 @@ msgid ""
 "report, see Pending Instructor Tasks below. You will be able to download the"
 " report when it is complete."
 msgstr ""
+"The detailed enrollment report is being created. To view the status of the "
+"report, see Pending Instructor Tasks below. You will be able to download the"
+" report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
 "The executive summary report is being created. To view the status of the "
 "report, see Pending Instructor Tasks below."
 msgstr ""
+"The executive summary report is being created. To view the status of the "
+"report, see Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -6000,12 +6058,17 @@ msgid ""
 "of the report, see Pending Instructor Tasks below. You will be able to "
 "download the report when it is complete."
 msgstr ""
+"The executive summary report is currently being created. To view the status "
+"of the report, see Pending Instructor Tasks below. You will be able to "
+"download the report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
 "The survey report is being created. To view the status of the report, see "
 "Pending Instructor Tasks below."
 msgstr ""
+"The survey report is being created. To view the status of the report, see "
+"Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -6013,12 +6076,17 @@ msgid ""
 "report, see Pending Instructor Tasks below. You will be able to download the"
 " report when it is complete."
 msgstr ""
+"The survey report is currently being created. To view the status of the "
+"report, see Pending Instructor Tasks below. You will be able to download the"
+" report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
 "The proctored exam results report is being created. To view the status of "
 "the report, see Pending Instructor Tasks below."
 msgstr ""
+"The proctored exam results report is being created. To view the status of "
+"the report, see Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -6026,6 +6094,9 @@ msgid ""
 "status of the report, see Pending Instructor Tasks below. You will be able "
 "to download the report when it is complete."
 msgstr ""
+"The proctored exam results report is currently being created. To view the "
+"status of the report, see Pending Instructor Tasks below. You will be able "
+"to download the report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Could not parse amount as a decimal"
@@ -6050,7 +6121,7 @@ msgstr "حدث خطأ أثناء حذف الدرجة."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Course has no entrance exam section."
-msgstr "لم يُعيّن للمساق قسم خاص بامتحان الدخول."
+msgstr "لم يتم تعين اختبار قبول لهذا المساق"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "all_students and unique_student_identifier are mutually exclusive."
@@ -6070,7 +6141,7 @@ msgstr "يتطلّب صلاحية دخول الأستاذ"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Course has no valid entrance exam section."
-msgstr "لم يُعيّن للمساق قسم خاص بامتحان الدخول."
+msgstr "لم يُعيّن للمساق قسم خاص باختبار قبول."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "All Students"
@@ -6086,6 +6157,8 @@ msgid ""
 "The grade report is being created. To view the status of the report, see "
 "Pending Instructor Tasks below."
 msgstr ""
+"The grade report is being created. To view the status of the report, see "
+"Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -6093,12 +6166,17 @@ msgid ""
 "report, see Pending Instructor Tasks below. You will be able to download the"
 " report when it is complete."
 msgstr ""
+"The grade report is currently being created. To view the status of the "
+"report, see Pending Instructor Tasks below. You will be able to download the"
+" report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
 "The problem grade report is being created. To view the status of the report,"
 " see Pending Instructor Tasks below."
 msgstr ""
+"The problem grade report is being created. To view the status of the report,"
+" see Pending Instructor Tasks below."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -6106,6 +6184,9 @@ msgid ""
 " report, see Pending Instructor Tasks below. You will be able to download "
 "the report when it is complete."
 msgstr ""
+"A problem grade report is already being generated. To view the status of the"
+" report, see Pending Instructor Tasks below. You will be able to download "
+"the report when it is complete."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Successfully changed due date for student {0} for {1} to {2}"
@@ -6125,12 +6206,12 @@ msgstr "نجحت إعادة ضبط تاريخ الاستحقاق للطالب {0
 #: lms/djangoapps/instructor/views/api.py
 #, python-format
 msgid "This student (%s) will skip the entrance exam."
-msgstr "سيتخطّى الطالب (%s) امتحان الدخول."
+msgstr "سيتخطّى الطالب (%s) اختبار القبول."
 
 #: lms/djangoapps/instructor/views/api.py
 #, python-format
 msgid "This student (%s) is already allowed to skip the entrance exam."
-msgstr "سبق أن سُمِح للطالب (%s) بتخطّي امتحان الدخول."
+msgstr "سبق أن سُمِح للطالب (%s) بتخطّي اختبار القبول."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -6207,11 +6288,11 @@ msgstr ""
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Invalid Json data, Please refresh the page and then try again."
-msgstr ""
+msgstr "Invalid Json data, Please refresh the page and then try again."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Invalid data, user_id must be present for all certificate exceptions."
-msgstr ""
+msgstr "Invalid data, user_id must be present for all certificate exceptions."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Certificate generation started for white listed students."
@@ -6345,7 +6426,7 @@ msgstr "تنزيل البيانات"
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "For analytics about your course, go to {analytics_dashboard_name}."
-msgstr ""
+msgstr "For analytics about your course, go to {analytics_dashboard_name}."
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid "Analytics"
@@ -6397,11 +6478,11 @@ msgstr "لمحة سريعة عن إحصائيات المساق"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of students enrolled in {course_key}"
-msgstr ""
+msgstr "List of students enrolled in {course_key}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Raw Grades of students enrolled in {course_key}"
-msgstr ""
+msgstr "Raw Grades of students enrolled in {course_key}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Assignment Name"
@@ -6417,27 +6498,27 @@ msgstr "اسم الواجب '{name}' غير صحيح."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "External email"
-msgstr ""
+msgstr "External email"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Grades for assignment \"{name}\""
-msgstr ""
+msgstr "Grades for assignment \"{name}\""
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Grades from {course_id}"
-msgstr ""
+msgstr "Grades from {course_id}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "No remote gradebook defined in course metadata"
-msgstr ""
+msgstr "No remote gradebook defined in course metadata"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "No remote gradebook url defined in settings.FEATURES"
-msgstr ""
+msgstr "No remote gradebook url defined in settings.FEATURES"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "No gradebook name defined in course remote_gradebook metadata"
-msgstr ""
+msgstr "No gradebook name defined in course remote_gradebook metadata"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to communicate with gradebook server at {url}"
@@ -6445,11 +6526,11 @@ msgstr "تعذّر الاتّصال بخادم دفتر الدرجات باست�
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Error: {err}"
-msgstr ""
+msgstr "خطأ: {err}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Remote gradebook response for {action}"
-msgstr ""
+msgstr "Remote gradebook response for {action}"
 
 #. Translators: This label appears above a field on the registration form
 #. meant to hold the user's full name.
@@ -6460,7 +6541,7 @@ msgstr "الاسم الكامل"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "{title} in course {course_key}"
-msgstr ""
+msgstr "{title} in course {course_key}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "ID"
@@ -6493,6 +6574,8 @@ msgid ""
 "Failed to find any background tasks for course \"{course}\", module "
 "\"{problem}\" and student \"{student}\"."
 msgstr ""
+"Failed to find any background tasks for course \"{course}\", module "
+"\"{problem}\" and student \"{student}\"."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid ""
@@ -6562,7 +6645,7 @@ msgstr "عمليات تمديد تاريخ الاستحقاق لـ {0} {1} ({2})
 
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "Not all problems in entrance exam support re-scoring."
-msgstr "لا  تدعم جميع مسائل امتحان الدخول ميّزة إعادة التقييم."
+msgstr "لا  تدعم جميع مسائل اختبار القبول ميّزة إعادة التقييم."
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
@@ -6786,14 +6869,14 @@ msgid ""
 "Unable to find entrance exam submission to be {action} for student "
 "'{student}'"
 msgstr ""
-"تعذّر إيجاد التقديم الخاص بامتحان الدخول الذي كان قد {action} للطالب "
+"تعذّر إيجاد التقديم الخاص باختبار القبول الذي كان قد {action} للطالب "
 "'{student}'"
 
 #. Translators: {action} is a past-tense verb that is localized separately.
 #. {student} is a student identifier.
 #: lms/djangoapps/instructor_task/views.py
 msgid "Entrance exam successfully {action} for student '{student}'"
-msgstr "نجحت مهمّة {action} لامتحان الدخول الخاص بالطالب ’{student}‘ "
+msgstr "نجحت مهمّة {action} لاختبار القبول الخاص بالطالب ’{student}‘ "
 
 #. Translators: {action} is a past-tense verb that is localized separately.
 #: lms/djangoapps/instructor_task/views.py
@@ -6875,7 +6958,7 @@ msgstr ""
 
 #: lms/djangoapps/lms_xblock/mixin.py
 msgid "Courseware Chrome"
-msgstr ""
+msgstr "Courseware Chrome"
 
 #. Translators: DO NOT translate the words in quotes here, they are
 #. specific words for the acceptable values.
@@ -6902,6 +6985,8 @@ msgid ""
 "Enter the tab that is selected in the XBlock. If not set, the Courseware tab"
 " is selected."
 msgstr ""
+"Enter the tab that is selected in the XBlock. If not set, the Courseware tab"
+" is selected."
 
 #: lms/djangoapps/lms_xblock/mixin.py
 msgid "LaTeX Source File Name"
@@ -8051,7 +8136,7 @@ msgstr "ليست لديك صلاحية الاطّلاع على محتوى هذه
 
 #: lms/djangoapps/student_account/views.py
 msgid "No user with the provided email address exists."
-msgstr ""
+msgstr "لم نعثر على حساب للبريد الإلكتروني الذي قمت بإدخاله."
 
 #: lms/djangoapps/student_account/views.py
 msgid "No email address provided."
@@ -8384,7 +8469,7 @@ msgstr "المؤسّسة"
 
 #: lms/envs/devstack.py
 msgid "Course Type"
-msgstr ""
+msgstr "نوع المساق"
 
 #: lms/templates/main_django.html cms/templates/base.html
 #: lms/templates/main.html
@@ -8435,6 +8520,9 @@ msgid ""
 "                We're sorry, but this version of your browser is not supported. Try again using a different browser or a newer version of your browser.\n"
 "            "
 msgstr ""
+"\n"
+"                We're sorry, but this version of your browser is not supported. Try again using a different browser or a newer version of your browser.\n"
+"            "
 
 #: lms/templates/registration/password_reset_confirm.html
 msgid "The following errors occurred while processing your registration: "
@@ -9233,7 +9321,7 @@ msgstr "يجب أن يحتوي حقل الاسم الكامل من {} حرف ع�
 
 #: openedx/core/djangoapps/user_api/accounts/serializers.py
 msgid "The language_proficiencies field must consist of unique languages"
-msgstr ""
+msgstr "The language_proficiencies field must consist of unique languages"
 
 #: openedx/core/djangoapps/user_api/accounts/serializers.py
 msgid "This field is required."
@@ -9657,11 +9745,11 @@ msgstr "إنّ مجموعة المحتوى هذه قيد الاستخدام ول
 
 #: cms/djangoapps/contentstore/views/entrance_exam.py
 msgid "Entrance Exam - Subsection"
-msgstr "امتحان الدخول - قسم فرعي"
+msgstr "اختبار القبول - قسم فرعي"
 
 #: cms/djangoapps/contentstore/views/entrance_exam.py
 msgid "Completed Course Entrance Exam"
-msgstr "استُكمِل امتحان دخول المساق"
+msgstr "استُكمِل اختبار القبول في المساق"
 
 #: cms/djangoapps/contentstore/views/export_git.py
 msgid "Course successfully exported to git repository"
@@ -9711,11 +9799,13 @@ msgid ""
 "Students must score {score}{pct_sign} or higher to access course materials."
 msgstr ""
 "يجب أن يحصل الطلّاب على درجة {score}{pct_sign} أو ما فوق ليتمكّنوا من الوصول"
-" إلى مواد المساق."
+" إلى محتويات المساق."
 
+#. #-#-#-#-#  django-studio.po (0.1a)  #-#-#-#-#
 #. Translators: This is the percent sign. It will be used to represent
 #. a percent value out of 100, e.g. "58%" means "58/100".
 #: cms/djangoapps/contentstore/views/item.py
+#: lms/templates/courseware/courseware.html
 msgid "%"
 msgstr "%"
 
@@ -12199,10 +12289,6 @@ msgid "due {date}"
 msgstr "تاريخ الاستحقاق {date}"
 
 #: lms/templates/courseware/accordion.html
-msgid "Timed Exam"
-msgstr "امتحان محدود بوقت"
-
-#: lms/templates/courseware/accordion.html
 msgid "This content is graded"
 msgstr "جرى تقييم هذا المحتوى"
 
@@ -12410,17 +12496,17 @@ msgid "No content has been added to this course"
 msgstr "لم يُضاف أي محتوى إلى هذا المساق بعد"
 
 #: lms/templates/courseware/courseware.html
-#, python-format
 msgid ""
-"To access course materials, you must score {required_score}% or higher on "
-"this                 exam. Your current score is {current_score}%."
+"To access course materials, you must score {required_score}{percent} or "
+"higher on this                 exam. Your current score is "
+"{current_score}{percent}."
 msgstr ""
-"لتدخل إلى مواد مساقك، يجب عليك الحصول على {required_score}% أو ما فوق في هذا"
-" الامتحان. ودرجتك الحالية هي {current_score}%"
+"لتدخل إلى محتويات المساق، يجب عليك الحصول على {required_score}{percent} أو "
+"ما فوق في هذا الاختبار. ودرجتك الحالية هي {current_score}{percent}"
 
 #: lms/templates/courseware/courseware.html
 msgid "Your score is {current_score}%. You have passed the entrance exam."
-msgstr "علامتك هي {current_score}%. لقد نجحت في اختبار الدخول."
+msgstr " لقد نجحت في اختبار القبول،علامتك هي {current_score}%."
 
 #: lms/templates/courseware/error-message.html
 msgid ""
@@ -13995,7 +14081,7 @@ msgstr ""
 #: lms/templates/emails/add_beta_tester_email_message.txt
 #: lms/templates/emails/enroll_email_enrolledmessage.txt
 msgid "To start accessing course materials, please visit {course_url}"
-msgstr "للبدء بالاطلاع على مواد المساق، يُرجى زيارة الصفحة {course_url}"
+msgstr "للبدء بالاطلاع على محتويات المساق، يُرجى زيارة الصفحة {course_url}"
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 msgid "Visit {course_about_url} to join the course and begin the beta test."
@@ -14496,8 +14582,8 @@ msgid ""
 "cancellation policy."
 msgstr ""
 "في حال عدم استلامتنا للدفعة فإن تسجيلات المتعلّم التي تستخدم هذه الرموز سوف "
-"تلغى ولن يتمكن المتعلم من الوصول إلى مواد المساق. جميع عمليات الشراء نهائية."
-" للمزيد من المعلومات راجع سياسة الإلغاء {site_name}."
+"تلغى ولن يتمكن المتعلم من الوصول إلى محتويات المساق. جميع عمليات الشراء "
+"نهائية. للمزيد من المعلومات راجع سياسة الإلغاء {site_name}."
 
 #: lms/templates/emails/registration_codes_sale_invoice_attachment.txt
 msgid "For payment questions, contact {contact_email}"
@@ -16257,7 +16343,7 @@ msgstr "أظهر تاريخ المهام للطالب "
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Entrance Exam Adjustment"
-msgstr "تعديل اختبار الدخول"
+msgstr "تعديل اختبار القبول"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Student's {platform_name} email address or username:"
@@ -16268,7 +16354,7 @@ msgid ""
 "Select an action for the student's entrance exam. This action will affect "
 "every problem in the student's exam."
 msgstr ""
-"اختر إجراءًا لاختبار الدخول للطالب. هذا الإجراء سيؤثر على جميع المسائل في "
+"اختر إجراءً لاختبار قبول الطالب. هذا الإجراء سيؤثر على جميع المسائل في "
 "اختبار الطالب."
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
@@ -16281,13 +16367,13 @@ msgstr "أعد تقييم جميع المسائل"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Let Student Skip Entrance Exam"
-msgstr "اسمح للطالب بتجاوز اختبار الدخول"
+msgstr "اسمح للطالب بتجاوز اختبار القبول"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid ""
 "You can also delete all of the student's answers and scores for the entire "
 "entrance exam."
-msgstr "يمكنك أيضًا حذف جميع إجابات الطلاب وعلاماتهم في اختبار الدخول كاملاً"
+msgstr "يمكنك أيضًا حذف جميع إجابات الطلاب وعلاماتهم في اختبار القبول كاملاً"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Delete Student's Answers and Scores"
@@ -17644,6 +17730,9 @@ msgid ""
 "selects {em_start}Activate{em_end}. Course team members without the Admin "
 "role cannot edit or delete an activated certificate."
 msgstr ""
+"To begin issuing certificates, a course team member with the Admin role "
+"selects {em_start}Activate{em_end}. Course team members without the Admin "
+"role cannot edit or delete an activated certificate."
 
 #: cms/templates/certificates.html
 msgid ""
@@ -20166,7 +20255,7 @@ msgid ""
 "You can now view and author your course entrance exam from the "
 "{link_start}Course Outline{link_end}."
 msgstr ""
-"يمكنك الآن رؤية امتحان الدخول الخاص بمساقك وتأليفه من خلال "
+"يمكنك الآن رؤية اختبار القبول الخاص بمساقك وتأليفه من خلال "
 "{link_start}مخطَّط المساق{link_end}."
 
 #: cms/templates/settings.html
@@ -20181,7 +20270,7 @@ msgstr "%"
 msgid ""
 "The score student must meet in order to successfully complete the entrance "
 "exam. "
-msgstr "مجموع الدرجات الذي يجب على الطالب إحرازه لاجتياز امتحان الدخول."
+msgstr "مجموع الدرجات الذي يجب على الطالب إحرازه لاجتياز اختبار القبول."
 
 #: cms/templates/settings.html
 msgid "Course Pacing"
@@ -21473,7 +21562,7 @@ msgstr "نجحت إضافة مراجعة جديدة للمقال."
 
 #: wiki/views/article.py
 msgid "Restoring article"
-msgstr "استعادة المقال"
+msgstr ""
 
 #: wiki/views/article.py
 #, python-format
