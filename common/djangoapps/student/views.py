@@ -27,7 +27,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbi
                          HttpResponseServerError, Http404)
 from django.shortcuts import redirect
 from django.utils.encoding import force_bytes, force_text
-from django.utils.translation import ungettext, pgettext
+from django.utils.translation import ungettext
 from django.utils.http import base36_to_int, urlsafe_base64_encode
 from django.utils.translation import ugettext as _, get_language
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -128,7 +128,7 @@ from notification_prefs.views import enable_notifications
 from openedx.core.djangoapps.user_api.preferences import api as preferences_api
 from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
 
-from .helpers import enroll
+from .helpers import enroll, get_spam_name
 
 
 log = logging.getLogger("edx.student")
@@ -567,14 +567,7 @@ def dashboard(request):
 
     message = ""
     if not user.is_active:
-        email_provider = user.email.split("@")[1].split(".")[0].lower()
-        if email_provider=='gmail':
-            spam_name = pgettext("gmail", "Spam")
-        elif email_provider in ['hotmail', 'outlook']:
-            spam_name = _("Junk")
-        else:
-            spam_name = pgettext("email", "Spam")
-
+        spam_name = get_spam_name(user.email)
         message = render_to_string(
             'registration/activate_account_notice.html',
             {'email': user.email, 'platform_name': platform_name, 'spam_name': spam_name}
