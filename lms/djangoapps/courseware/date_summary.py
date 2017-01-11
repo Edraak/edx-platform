@@ -128,7 +128,7 @@ class TodaysDate(DateSummary):
     """
     css_class = 'todays-date'
     is_enabled = True
-    date_format = '%b %d, %Y (%H:%M {utc})'.format(utc=_('UTC'))
+    date_format = u'%b %d, %Y (%H:%M {utc})'.format(utc=_('UTC'))
 
     # The date is shown in the title, no need to display it again.
     def get_context(self):
