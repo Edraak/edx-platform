@@ -128,7 +128,7 @@ from notification_prefs.views import enable_notifications
 from openedx.core.djangoapps.user_api.preferences import api as preferences_api
 from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
 
-from .helpers import enroll
+from .helpers import enroll, get_spam_name
 
 
 log = logging.getLogger("edx.student")
@@ -567,9 +567,10 @@ def dashboard(request):
 
     message = ""
     if not user.is_active:
+        spam_name = get_spam_name(user.email)
         message = render_to_string(
             'registration/activate_account_notice.html',
-            {'email': user.email, 'platform_name': platform_name}
+            {'email': user.email, 'platform_name': platform_name, 'spam_name': spam_name}
         )
 
     # Global staff can see what courses errored on their dashboard
