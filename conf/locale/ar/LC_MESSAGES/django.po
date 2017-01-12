@@ -63,7 +63,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-10 16:12+0200\n"
+"POT-Creation-Date: 2017-01-12 11:48+0200\n"
 "PO-Revision-Date: 2017-01-09 12:03+0000\n"
 "Last-Translator: Salah Alomari <salomari@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
@@ -537,6 +537,24 @@ msgstr "ﻻ يسمحُ بتطابق حقليّ كلمة المرور واسم ا
 #: common/djangoapps/student/forms.py common/djangoapps/student/views.py
 msgid "Password: "
 msgstr "كلمة المرور:"
+
+#. Translators: Gmail Spam folder translation
+#: common/djangoapps/student/helpers.py
+msgctxt "gmail"
+msgid "Spam"
+msgstr "الرسائل غير المرغوب فيها"
+
+#. Translators: Hotmail Junk folder translation
+#: common/djangoapps/student/helpers.py
+msgctxt "hotmail"
+msgid "Junk"
+msgstr "البريد الإلكتروني الغير هام"
+
+#. Translators: Other email Spam folder translation
+#: common/djangoapps/student/helpers.py
+msgctxt "other_email_providers"
+msgid "Spam"
+msgstr "الرسائل المزعجة"
 
 #: common/djangoapps/student/middleware.py
 msgid ""
@@ -16622,7 +16640,7 @@ msgid "Go Back"
 msgstr "العودة "
 
 #: lms/templates/registration/activate_account_notice.html
-msgid "Just one more step to start learning with us!"
+msgid "You're a step away from starting to learn with us!"
 msgstr "بقيت خطوة واحدة لإنشاء حسابك!"
 
 #: lms/templates/registration/activate_account_notice.html
@@ -16636,11 +16654,8 @@ msgstr ""
 #: lms/templates/registration/activate_account_notice.html
 msgid ""
 "If you're unable to find the activation email, please check your email "
-"account's \"Spam\" or \"Junk\" folders to ensure the message was not "
-"filtered."
-msgstr ""
-"إن لم تجد الرسالة في الصندوق الوارد، تفقد الرسائل المزعجة/غير المرغوب فيها "
-"أو البريد غير الهام."
+"account's {spam_name} folder to ensure the message was not filtered."
+msgstr "إن لم تجد الرسالة في الصندوق الوارد، الرجاء تفقد صندوق {spam_name}."
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
