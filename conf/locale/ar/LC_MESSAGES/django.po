@@ -57,14 +57,14 @@
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # Areej Huniti <ahuniti@qrf.org>, 2015
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
-# Salah Alomari <salomari@qrf.org>, 2016
+# Salah Alomari <salomari@qrf.org>, 2016-2017
 # Sherif Halawa <shalawa@qrf.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-12 11:48+0200\n"
-"PO-Revision-Date: 2017-01-09 12:03+0000\n"
+"POT-Creation-Date: 2017-01-19 11:21+0200\n"
+"PO-Revision-Date: 2017-01-19 09:37+0000\n"
 "Last-Translator: Salah Alomari <salomari@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -21617,8 +21617,8 @@ msgid "About Us"
 msgstr "عن إدراك"
 
 #: templates/theme-footer.html
-msgid "{copy} 2016 Edraak, Some rights reserved"
-msgstr " {copy} بعض الحقوق محفوظة ٢٠١٦ إدراك"
+msgid "{copy} {year} Edraak, Some rights reserved"
+msgstr "{copy} {year} إدراك. بعض الحقوق محفوظة."
 
 #: templates/theme-header.html
 msgid "Welcome {full_name}"
