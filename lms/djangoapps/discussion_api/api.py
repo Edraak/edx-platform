@@ -127,7 +127,8 @@ def get_thread_list_url(request, course_key, topic_id_list=None, following=False
     path = reverse("thread-list")
     query_list = (
         [("course_id", unicode(course_key))] +
-        [("topic_id", topic_id) for topic_id in topic_id_list or []] +
+        # Edraak (fix): Supporting some of the discussion topics written in Arabic
+        [("topic_id", topic_id.encode('utf-8')) for topic_id in topic_id_list or []] +
         ([("following", following)] if following else [])
     )
     return request.build_absolute_uri(urlunparse(("", "", path, "", urlencode(query_list), "")))
