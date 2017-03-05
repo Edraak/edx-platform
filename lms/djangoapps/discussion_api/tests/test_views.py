@@ -23,6 +23,7 @@ from discussion_api.tests.utils import (
     CommentsServiceMockMixin,
     make_minimal_cs_comment,
     make_minimal_cs_thread,
+    make_paginated_api_response
 )
 from student.tests.factories import CourseEnrollmentFactory, UserFactory
 from util.testing import UrlResetMixin, PatchMediaTypeMixin
@@ -307,15 +308,18 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
         }]
         self.register_get_threads_response(source_threads, page=1, num_pages=2)
         response = self.client.get(self.url, {"course_id": unicode(self.course.id), "following": ""})
+        expected_respoonse = make_paginated_api_response(
+            results=expected_threads,
+            count=0,
+            num_pages=2,
+            next_link="http://testserver/api/discussion/v1/threads/?course_id=x%2Fy%2Fz&page=2",
+            previous_link=None
+        )
+        expected_respoonse.update({"text_search_rewrite": None})
         self.assert_response_correct(
             response,
             200,
-            {
-                "results": expected_threads,
-                "next": "http://testserver/api/discussion/v1/threads/?course_id=x%2Fy%2Fz&page=2",
-                "previous": None,
-                "text_search_rewrite": None,
-            }
+            expected_respoonse
         )
         self.assert_last_query_params({
             "user_id": [unicode(self.user.id)],
@@ -360,7 +364,7 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
         self.assert_response_correct(
             response,
             404,
-            {"developer_message": "Not found."}
+            {"developer_message": "Page not found (No results on this page)."}
         )
         self.assert_last_query_params({
             "user_id": [unicode(self.user.id)],
@@ -374,15 +378,20 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
 
     def test_text_search(self):
         self.register_get_user_response(self.user)
-        self.register_get_threads_search_response([], None)
+        self.register_get_threads_search_response([], None, num_pages=0)
         response = self.client.get(
             self.url,
             {"course_id": unicode(self.course.id), "text_search": "test search string"}
         )
+
+        expected_response = make_paginated_api_response(
+            results=[], count=0, num_pages=0, next_link=None, previous_link=None
+        )
+        expected_response.update({"text_search_rewrite": None})
         self.assert_response_correct(
             response,
             200,
-            {"results": [], "next": None, "previous": None, "text_search_rewrite": None}
+            expected_response
         )
         self.assert_last_query_params({
             "user_id": [unicode(self.user.id)],
@@ -398,7 +407,7 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
     @ddt.data(True, "true", "1")
     def test_following_true(self, following):
         self.register_get_user_response(self.user)
-        self.register_subscribed_threads_response(self.user, [], page=1, num_pages=1)
+        self.register_subscribed_threads_response(self.user, [], page=1, num_pages=0)
         response = self.client.get(
             self.url,
             {
@@ -406,10 +415,15 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
                 "following": following,
             }
         )
+
+        expected_response = make_paginated_api_response(
+            results=[], count=0, num_pages=0, next_link=None, previous_link=None
+        )
+        expected_response.update({"text_search_rewrite": None})
         self.assert_response_correct(
             response,
             200,
-            {"results": [], "next": None, "previous": None, "text_search_rewrite": None}
+            expected_response
         )
         self.assertEqual(
             urlparse(httpretty.last_request().path).path,
@@ -884,7 +898,7 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
         self.assert_response_correct(
             response,
             404,
-            {"developer_message": "Not found."}
+            {"developer_message": "Thread not found."}
         )
 
     def test_basic(self):
@@ -933,16 +947,15 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
             "resp_total": 100,
         })
         response = self.client.get(self.url, {"thread_id": self.thread_id})
+        next_link = "http://testserver/api/discussion/v1/comments/?page=2&thread_id={}".format(
+            self.thread_id
+        )
         self.assert_response_correct(
             response,
             200,
-            {
-                "results": expected_comments,
-                "next": "http://testserver/api/discussion/v1/comments/?page=2&thread_id={}".format(
-                    self.thread_id
-                ),
-                "previous": None,
-            }
+            make_paginated_api_response(
+                results=expected_comments, count=0, num_pages=10, next_link=next_link, previous_link=None
+            )
         )
         self.assert_query_params_equal(
             httpretty.httpretty.latest_requests[-2],
@@ -976,7 +989,7 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
         self.assert_response_correct(
             response,
             404,
-            {"developer_message": "Not found."}
+            {"developer_message": "Page not found (No results on this page)."}
         )
         self.assert_query_params_equal(
             httpretty.httpretty.latest_requests[-2],
@@ -1013,6 +1026,39 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
         })
         parsed_content = json.loads(response.content)
         self.assertEqual(parsed_content["results"][0]["id"], comment_id)
+
+    def test_question_invalid_endorsed(self):
+        response = self.client.get(self.url, {
+            "thread_id": self.thread_id,
+            "endorsed": "invalid-boolean"
+        })
+        self.assert_response_correct(
+            response,
+            400,
+            {"field_errors": {
+                "endorsed": {"developer_message": "Invalid Boolean Value."}
+            }}
+        )
+
+    def test_question_missing_endorsed(self):
+        self.register_get_user_response(self.user)
+        thread = self.make_minimal_cs_thread({
+            "thread_type": "question",
+            "endorsed_responses": [make_minimal_cs_comment({"id": "endorsed_comment"})],
+            "non_endorsed_responses": [make_minimal_cs_comment({"id": "non_endorsed_comment"})],
+            "non_endorsed_resp_total": 1,
+        })
+        self.register_get_thread_response(thread)
+        response = self.client.get(self.url, {
+            "thread_id": thread["id"]
+        })
+        self.assert_response_correct(
+            response,
+            400,
+            {"field_errors": {
+                "endorsed": {"developer_message": "This field is required for question threads."}
+            }}
+        )
 
 
 @httpretty.activate
