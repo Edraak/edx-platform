@@ -53,6 +53,7 @@ from contentstore.views.entrance_exam import (
     delete_entrance_exam,
     update_entrance_exam,
 )
+from milestones import api as milestones_api
 from course_action_state.managers import CourseActionStateItemNotFoundError
 from course_action_state.models import CourseRerunState, CourseRerunUIStateManager
 from course_creators.views import get_course_creator_status, add_user_with_status_unrequested
@@ -83,6 +84,7 @@ from util.milestones_helpers import (
     is_prerequisite_courses_enabled,
     is_valid_course_key,
     set_prerequisite_courses,
+    remove_prerequisite_course,
 )
 from util.organizations_helpers import (
     add_organization_course,
@@ -1023,6 +1025,11 @@ def settings_handler(request, course_key_string):
                         if not all(is_valid_course_key(course_key) for course_key in prerequisite_course_keys):
                             return JsonResponseBadRequest({"error": _("Invalid prerequisite course key")})
                         set_prerequisite_courses(course_key, prerequisite_course_keys)
+                    else:
+                        # None is chose so remove the course prerequites
+                        course_milestones = milestones_api.get_course_milestones(course_key=course_key, relationship="requires")
+                        for milestone in course_milestones:
+                            remove_prerequisite_course(course_key, milestone)
 
                 # If the entrance exams feature has been enabled, we'll need to check for some
                 # feature-specific settings and handle them accordingly
