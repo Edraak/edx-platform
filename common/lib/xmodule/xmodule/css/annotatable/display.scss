@@ -42,7 +42,7 @@ $annotatable--body-font-size: em(14);
 
   ul.instructions-template {
     list-style: disc;
-    margin-left: 4em;
+    @include margin-left(4em);
     b { font-weight: bold; }
     i { font-style: italic; }
     code {
@@ -55,8 +55,8 @@ $annotatable--body-font-size: em(14);
 
 .annotatable-toggle {
   position: absolute;
-  right: 0;
-  margin: 2px 1em 2px 0;
+  @include right(0);
+  @include bi-app-compact(margin, 2px, 1em, 2px, 0);  // Avoid ambiguity and force using the bi-app-sass mixin
   &.expanded:after { content: " \2191" }
   &.collapsed:after { content: " \2193" }
 }
