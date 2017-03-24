@@ -1,6 +1,7 @@
 """
 Views related to the video upload feature
 """
+import urllib
 from boto import s3
 import csv
 from uuid import uuid4
@@ -314,6 +315,8 @@ def videos_post(course, request):
             ("course_video_upload_token", course_video_upload_token),
             ("client_video_id", file_name),
             ("course_key", unicode(course.id)),
+            # Edraak: This is needed in the edraak video processor for youtube deployments
+            ("course_title", urllib.quote_plus(course.display_name.encode("utf-8"))),
         ]:
             key.set_metadata(metadata_name, value)
         upload_url = key.generate_url(

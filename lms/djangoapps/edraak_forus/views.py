@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.contrib.auth import logout, login
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from util.json_request import JsonResponse
@@ -66,6 +66,8 @@ POPULATED_FIELDS = FORUS_SPECIFIC_FIELDS + (
 )
 
 HIDDEN_FIELDS = POPULATED_FIELDS + (
+    'goals',  # Hide goals because the ForUs people didn't like to
+              # ask their students about their goals in Edraak.
     'password',
 )
 
@@ -89,12 +91,12 @@ class AuthView(View):
             # Simulate `django.contrib.auth.authenticate()` function
             if not request.user.is_authenticated():
                 if ForusProfile.is_forus_user(user):
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
+                    user.backend = settings.AUTHENTICATION_BACKENDS[0]
                     login(request, user)
                 else:
                     # Redirect the non-forus users to the login page
                     return redirect('{login_url}?{params}'.format(
-                            login_url=reverse('accounts_login'),
+                            login_url=reverse('signin_user'),
                             params=urlencode({
                                 'course_id': course_string_id,
                                 'enrollment_action': 'enroll',
@@ -144,7 +146,7 @@ class AuthView(View):
             if 'username' == field_name:
                 field['defaultValue'] = forus_params['name'].strip()
 
-        return json.dumps(form)
+        return form
 
     def render_auth_form(self, request, forus_params):
         """Render the combined login/registration form, defaulting to login
@@ -165,20 +167,24 @@ class AuthView(View):
 
         # Otherwise, render the combined login/registration page
         context = {
-            # This gets added to the query string of the "Sign In" button in the header
-            'login_redirect_url': redirect_to,
-            'disable_courseware_js': True,
-            'initial_mode': initial_mode,
-            'third_party_auth': {},
-            'third_party_auth_hint': '',
-            'platform_name': settings.PLATFORM_NAME,
-            'responsive': True,
+            'data': {
+                'login_redirect_url': redirect_to,
+                'initial_mode': initial_mode,
+                'third_party_auth': {},
+                'third_party_auth_hint': '',
+                'platform_name': settings.PLATFORM_NAME,
 
-            # Include form descriptions retrieved from the user API.
-            # We could have the JS client make these requests directly,
-            # but we include them in the initial page load to avoid
-            # the additional round-trip to the server.
-            'registration_form_desc': self.get_registration_form_description(request, forus_params),
+                # Include form descriptions retrieved from the user API.
+                # We could have the JS client make these requests directly,
+                # but we include them in the initial page load to avoid
+                # the additional round-trip to the server.
+                'registration_form_desc': self.get_registration_form_description(request, forus_params),
+            },
+            'login_redirect_url': redirect_to,  # This gets added to the query string of the "Sign In" button in header
+            'responsive': True,
+            'allow_iframing': True,
+            'disable_courseware_js': True,
+            'disable_footer': True,
         }
 
         return render_to_response('edraak_forus/auth.html', context)
@@ -258,9 +264,9 @@ class RegistrationApiView(RegistrationView):
         ForusProfile.create_for_user(user)
 
 
-def error(request):
-    message = request.GET.get('message')
+def message(request):
+    message_text = request.GET.get('message')
 
-    return render_to_response('edraak_forus/error.html', {
-        'message': message
+    return render_to_response('edraak_forus/message.html', {
+        'message': message_text
     })

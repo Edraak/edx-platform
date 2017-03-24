@@ -23,6 +23,7 @@ import os
 from path import Path as path
 from warnings import filterwarnings, simplefilter
 from uuid import uuid4
+import logging
 
 # import settings from LMS for consistent behavior with CMS
 # pylint: disable=unused-import
@@ -33,6 +34,7 @@ from lms.envs.test import (
     DEFAULT_FILE_STORAGE,
     MEDIA_ROOT,
     MEDIA_URL,
+    suppress_test_debug_log,
 )
 
 # mongo connection settings
@@ -55,6 +57,8 @@ NOSE_ARGS = [
     '--id-file', _NOSEID_DIR / 'noseids',
     '--xunit-file', _REPORT_DIR / 'nosetests.xml',
 ]
+
+suppress_test_debug_log()
 
 TEST_ROOT = path('test_root')
 

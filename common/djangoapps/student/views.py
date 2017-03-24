@@ -128,7 +128,7 @@ from notification_prefs.views import enable_notifications
 from openedx.core.djangoapps.user_api.preferences import api as preferences_api
 from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
 
-from .helpers import enroll
+from .helpers import enroll, get_spam_name
 
 
 log = logging.getLogger("edx.student")
@@ -567,9 +567,10 @@ def dashboard(request):
 
     message = ""
     if not user.is_active:
+        spam_name = get_spam_name(user.email)
         message = render_to_string(
             'registration/activate_account_notice.html',
-            {'email': user.email, 'platform_name': platform_name}
+            {'email': user.email, 'platform_name': platform_name, 'spam_name': spam_name}
         )
 
     # Global staff can see what courses errored on their dashboard
@@ -1091,9 +1092,16 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
     user_found_by_email_lookup = user
     if user_found_by_email_lookup and LoginFailures.is_feature_enabled():
         if LoginFailures.is_user_locked_out(user_found_by_email_lookup):
+            minutes = settings.MAX_FAILED_LOGIN_ATTEMPTS_LOCKOUT_PERIOD_SECS / 60
+            message = ungettext(
+                "This account has been temporarily locked due to excessive login failures. Try again in {number} minute.",  # noqa
+                "This account has been temporarily locked due to excessive login failures. Try again in {number} minutes.",  # noqa
+                minutes,
+            ).format(number=minutes)
+
             return JsonResponse({
                 "success": False,
-                "value": _('This account has been temporarily locked due to excessive login failures. Try again later.'),
+                "value": message,
             })  # TODO: this should be status code 429  # pylint: disable=fixme
 
     # see if the user must reset his/her password due to any policy settings
@@ -1115,9 +1123,17 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             user = authenticate(username=username, password=password, request=request)
         # this occurs when there are too many attempts from the same IP address
         except RateLimitException:
+            minutes = BadRequestRateLimiter.minutes
+
+            message = ungettext(
+                "Too many failed login attempts. Try again in {number} minute.",
+                "Too many failed login attempts. Try again in {number} minutes.",
+                minutes,
+            ).format(number=minutes)
+
             return JsonResponse({
                 "success": False,
-                "value": _('Too many failed login attempts. Try again later.'),
+                "value": message,
             })  # TODO: this should be status code 429  # pylint: disable=fixme
 
     if user is None:
@@ -1490,7 +1506,7 @@ def create_account_with_params(request, params):
 
     if should_link_with_social_auth or (third_party_auth.is_enabled() and pipeline.running(request)):
         params["password"] = pipeline.make_random_password()
-    elif params["is_third_party_auth"]:
+    elif params.get("is_third_party_auth"):
         # Hack by Edraak to detect timed-out social login attempts.
         raise ValidationError({
             "password": _("Registration process has timed out. Please refresh the page and start over.")

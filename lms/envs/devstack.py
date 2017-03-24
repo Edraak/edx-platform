@@ -13,7 +13,13 @@ MEDIA_ROOT = "/edx/var/edxapp/uploads"
 DEBUG = True
 USE_I18N = True
 DEFAULT_TEMPLATE_ENGINE['OPTIONS']['debug'] = True
-SITE_NAME = 'localhost:8000'
+
+# Edraak: SITE_NAME bellow overrides the settings of aws.py (and JSON files)
+# to a hardcoded value that edX uses. Commenting out here we can use the
+# correct Edraak value.
+# This makes ORA2 run on the devstack.
+# SITE_NAME = 'localhost:8000'
+
 PLATFORM_NAME = ENV_TOKENS.get('PLATFORM_NAME', 'Devstack')
 # By default don't use a worker, execute tasks as if they were local functions
 CELERY_ALWAYS_EAGER = True
@@ -137,7 +143,7 @@ FEATURES['ENABLE_VIDEO_ABSTRACTION_LAYER_API'] = True
 
 ########################## SECURITY #######################
 FEATURES['ENFORCE_PASSWORD_POLICY'] = False
-FEATURES['ENABLE_MAX_FAILED_LOGIN_ATTEMPTS'] = False
+FEATURES['ENABLE_MAX_FAILED_LOGIN_ATTEMPTS'] = True  # So Omar don't get confused all the time!
 FEATURES['SQUELCH_PII_IN_LOGS'] = False
 FEATURES['PREVENT_CONCURRENT_LOGINS'] = False
 FEATURES['ADVANCED_SECURITY'] = False

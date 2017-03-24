@@ -22,6 +22,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.test.client import RequestFactory
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import ugettext_noop
 
 import newrelic.agent
 
@@ -76,6 +77,7 @@ from util.json_request import JsonResponse
 from util.model_utils import slugify
 from util.sandboxing import can_execute_unsafe_code, get_python_lib_zip
 from util import milestones_helpers
+from util.i18n import force_translate
 from lms.djangoapps.verify_student.services import ReverificationService
 
 from edx_proctoring.services import ProctoringService
@@ -182,10 +184,12 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
                           section.url_name == active_section)
 
                 if not section.hide_from_toc:
+                    section_format = section.format if section.format is not None else ''
+
                     section_context = {
                         'display_name': section.display_name_with_default_escaped,
                         'url_name': section.url_name,
-                        'format': section.format if section.format is not None else '',
+                        'format': force_translate(section_format, ugettext_noop('Entrance Exam')),
                         'due': section.due,
                         'active': active,
                         'graded': section.graded,
@@ -242,6 +246,7 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
                             # so add to the accordion data context
                             section_context.update({
                                 'proctoring': timed_exam_attempt_context,
+                                'proctoring_short_description': force_translate(timed_exam_attempt_context.get('short_description', ''), ugettext_noop('Timed Exam'))
                             })
 
                     sections.append(section_context)

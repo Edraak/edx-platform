@@ -31,11 +31,11 @@
 
     <%= context.fields %>
 
-    <button type="submit" class="action action-primary action-update js-register register-button"><%- gettext("Create your account") %></button>
+    <button type="submit" class="action action-primary action-update js-register register-button"><%- gettext("Create your Edraak account") %></button>
     <p class="note">* <%- gettext("Required field") %></p>
 </form>
 
-<div class="toggle-form">
+<div class="toggle-form hidden">
     <div class="section-title">
         <h2>
             <span class="text"><%- gettext("Already have an account?") %></span>

@@ -4,13 +4,19 @@ from django.conf import settings
 import os
 from subprocess import call
 import polib
+from shutil import copyfileobj
 
 
 class Command(BaseCommand):
-    help = '''Run theme's ./scripts/edraak_i18n_theme_push.sh'''
+    help = '''Generate Edraak theme translation strings.'''
 
     @staticmethod
     def remove_ignored_messages(theme_root):
+        """
+        Removes all ignored translations that is has the following comment:
+
+        # Translators: Edraak-ignore
+        """
         theme_pofile = theme_root / 'conf/locale/en/LC_MESSAGES/edraak-platform-2015-theme.po'
         theme_po = polib.pofile(theme_pofile)
 
@@ -25,6 +31,9 @@ class Command(BaseCommand):
 
     @staticmethod
     def generate_pofile(theme_root):
+        """
+        Run pybabel to collect the translatable strings from all Mako templates in the theme.
+        """
         mako_pofile_relative = 'conf/locale/en/LC_MESSAGES/mako.po'
         mako_pofile = theme_root / mako_pofile_relative
 
@@ -49,15 +58,29 @@ class Command(BaseCommand):
             mako_pofile.unlink()
 
     @staticmethod
-    def transifex_push(theme_root):
-        call(['tx', 'push', '-l', 'en', '-s', '-r', 'edraak.edraak-platform-2015-theme'], cwd=theme_root)
+    def copy_pofile(theme_root):
+        """
+        Copies the pofile to the platform so the i18n_robot_pull/push can use.
+        """
+        theme_pofile_relative = 'conf/locale/en/LC_MESSAGES/edraak-platform-2015-theme.po'
+
+        source = os.path.join(theme_root, theme_pofile_relative)
+        dest = os.path.join(settings.REPO_ROOT, theme_pofile_relative)
+
+        # Simulates a Linux $ cat theme/django.po > platform/django.po
+        with open(source) as source_file:
+            with open(dest, 'w') as dest_file:
+                copyfileobj(source_file, dest_file)
 
     def handle(self, *args, **options):
+        """
+        The main command function.
+        """
         if settings.FEATURES.get('USE_CUSTOM_THEME', False) and settings.THEME_NAME:
             theme_root = settings.ENV_ROOT / "themes" / settings.THEME_NAME
             self.generate_pofile(theme_root)
             self.remove_ignored_messages(theme_root)
-            self.transifex_push(theme_root)
+            self.copy_pofile(theme_root)
         else:
             print "Error: theme files not found."
             print "Are you sure the config is correct? Press <Enter> to continue without theme i18n..."

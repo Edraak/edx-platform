@@ -269,7 +269,7 @@ LOGIN_URL = EDX_ROOT_URL + '/signin'
 
 # use the ratelimit backend to prevent brute force attacks
 AUTHENTICATION_BACKENDS = (
-    'ratelimitbackend.backends.RateLimitModelBackend',
+    'edraak_ratelimit.backends.EdraakRateLimitModelBackend',
 )
 
 LMS_BASE = None
@@ -712,6 +712,7 @@ VIDEO_UPLOAD_PIPELINE = {
     'BUCKET': '',
     'ROOT_PATH': '',
     'CONCURRENT_UPLOAD_LIMIT': 4,
+    'COURSE_VIDEO_UPLOAD_TOKEN': None,
 }
 
 ############################ APPS #####################################
@@ -792,6 +793,7 @@ INSTALLED_APPS = (
 
     # Edraak specific modules
     'edraak_i18n',
+    'edraak_ratelimit',
 
     # Course action state
     'course_action_state',

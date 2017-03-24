@@ -82,6 +82,7 @@ urlpatterns = (
     url(r'', include('edraak_contact.urls')),
     url(r'', include('edraak_bayt.urls')),
     url(r'^certificate/', include('edraak_certificates.urls')),
+    url(r'^university/', include('edraak_university.urls')),
 
     # Feedback Form endpoint
     url(r'^submit_feedback$', 'util.views.submit_feedback'),

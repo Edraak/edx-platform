@@ -34,7 +34,7 @@ CONDITIONS = ['is_open', 'is_author', 'is_question_author', 'is_team_member_if_a
 def get_team(commentable_id):
     """ Returns the team that the commentable_id belongs to if it exists. Returns None otherwise. """
     request_cache_dict = RequestCache.get_request_cache().data
-    cache_key = "django_comment_client.team_commentable.{}".format(commentable_id)
+    cache_key = u"django_comment_client.team_commentable.{}".format(commentable_id)
     if cache_key in request_cache_dict:
         return request_cache_dict[cache_key]
 
@@ -84,9 +84,9 @@ def _check_condition(user, condition, content):
         if not content:
             return False
         try:
-            commentable_id = content['commentable_id'].encode("utf-8")
+            commentable_id = content['commentable_id']
             request_cache_dict = RequestCache.get_request_cache().data
-            cache_key = "django_comment_client.check_team_member.{}.{}".format(user.id, commentable_id)
+            cache_key = u"django_comment_client.check_team_member.{}.{}".format(user.id, commentable_id)
             if cache_key in request_cache_dict:
                 return request_cache_dict[cache_key]
             team = get_team(commentable_id)

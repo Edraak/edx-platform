@@ -40,6 +40,14 @@ LOG_OVERRIDES = [
 for log_name, log_level in LOG_OVERRIDES:
     logging.getLogger(log_name).setLevel(log_level)
 
+
+def suppress_test_debug_log():
+    if os.environ.get('SUPPRESS_TEST_DEBUG_LOG'):
+        logging.disable(logging.INFO)
+        print 'SUPPRESS_TEST_DEBUG_LOG is set, suppressing debug messages.'
+
+suppress_test_debug_log()
+
 # mongo connection settings
 MONGO_PORT_NUM = int(os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017'))
 MONGO_HOST = os.environ.get('EDXAPP_TEST_MONGO_HOST', 'localhost')
@@ -508,6 +516,10 @@ MONGODB_LOG = {
     'password': '',
     'db': 'xlog',
 }
+
+# ForUs variables
+FORUS_AUTH_SECRET_KEY = 'dummy_auth_secret_key'
+FORUS_BASE_URL = 'http://forus.jo'
 
 # Enable EdxNotes for tests.
 FEATURES['ENABLE_EDXNOTES'] = True

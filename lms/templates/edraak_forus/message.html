@@ -5,15 +5,10 @@
 
 <section class="outside-app">
   <h1>
-    ${_('An error have occurred while trying to use your account on {forus_link}.').format(
-        forus_link=u'<a href="{url}">{name}</a>'.format(
-           url=settings.FORUS_BASE_URL,
-           name=_('ForUs portal'),
-        ),
-    )}
+    ${_('Sorry, we are unable to enroll you in the course.')}
   </h1>
   <p class="text-center">
-      ${message}
+      ${message|h}
   </p>
 
   <hr />

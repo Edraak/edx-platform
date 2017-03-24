@@ -6,11 +6,12 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 from django_countries import countries
+from opaque_keys.edx.keys import CourseKey
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
@@ -18,9 +19,7 @@ from django.core.validators import validate_email
 
 
 from opaque_keys import InvalidKeyError
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
-from xmodule.modulestore.django import modulestore
+from courseware.courses import get_course_by_id
 
 from student.models import UserProfile
 
@@ -53,13 +52,19 @@ def forus_error_redirect(*messages):
     message = '. '.join(messages) + '.'
 
     url = '{base_url}?{params}'.format(
-        base_url=reverse('forus_v1_error'),
+        base_url=reverse('forus_v1_message'),
         params=urlencode({
             'message': message.encode('utf-8')
         })
     )
 
     return HttpResponseRedirect(url)
+
+
+def calculate_hmac(msg_to_hash):
+    secret_key = settings.FORUS_AUTH_SECRET_KEY
+    dig = hmac.new(secret_key.encode('utf-8'), msg_to_hash.encode('utf-8'), digestmod=sha256)
+    return dig.hexdigest()
 
 
 def validate_forus_hmac(params):
@@ -78,12 +83,7 @@ def validate_forus_hmac(params):
     ]
 
     msg_to_hash = u';'.join(params_pairs)
-
-    secret_key = settings.FORUS_AUTH_SECRET_KEY
-
-    dig = hmac.new(secret_key.encode('utf-8'), msg_to_hash.encode('utf-8'), digestmod=sha256)
-
-    local_hmac = dig.hexdigest()
+    local_hmac = calculate_hmac(msg_to_hash)
 
     if local_hmac != remote_hmac:
         log.warn(
@@ -121,6 +121,10 @@ def validate_forus_params_values(params):
         # Translators: This is for the ForUs API
         errors['email'].append(_("The provided email format is invalid"))
 
+    if len(params.get('name', '')) <= 2:
+        # Translators: This is for the ForUs API
+        mark_as_invalid('name', _('name'))
+
     if params.get('gender') not in dict(UserProfile.GENDER_CHOICES):
         # Translators: This is for the ForUs API
         mark_as_invalid('gender', _('gender'))
@@ -129,30 +133,29 @@ def validate_forus_params_values(params):
         # Translators: This is for the ForUs API
         mark_as_invalid('lang', _('language'))
 
-    if params.get('country') not in dict(countries):
+    if not params.get('country') or params.get('country') not in dict(countries):
         # Translators: This is for the ForUs API
-        mark_as_invalid('lang', _('country'))
+        mark_as_invalid('country', _('country'))
 
     if params.get('level_of_education') not in dict(UserProfile.LEVEL_OF_EDUCATION_CHOICES):
         # Translators: This is for the ForUs API
-        mark_as_invalid('lang', _('level of education'))
+        mark_as_invalid('level_of_education', _('level of education'))
 
     try:
-        course_key = SlashSeparatedCourseKey.from_deprecated_string(params.get('course_id'))
-        course = modulestore().get_course(course_key)
-
-        if not course:
-            raise ItemNotFoundError()
+        course_key = CourseKey.from_string(params['course_id'])
+        course = get_course_by_id(course_key)
 
         if not course.is_self_paced():
             if not course.enrollment_has_started():
 
                 # Translators: This is for the ForUs API
-                errors['course_id'].append(_('The course has not yet been opened for enrollment'))
+                errors['course_id'].append(_('The course has not yet been opened for enrollment, '
+                                             'please go back to the ForUs portal and enroll in other courses'))
 
             if course.enrollment_has_ended():
                 # Translators: This is for the ForUs API
-                errors['course_id'].append(_('Enrollment for this course has been closed'))
+                errors['course_id'].append(_('Enrollment for this course has been closed, '
+                                             'please go back to the ForUs portal and enroll in other courses'))
 
     except InvalidKeyError:
         log.warning(
@@ -164,7 +167,7 @@ def validate_forus_params_values(params):
         )
 
         mark_as_invalid('course_id', _('course id'))
-    except ItemNotFoundError:
+    except Http404:
         # Translators: This is for the ForUs API
         errors['course_id'].append(_('The requested course does not exist'))
 

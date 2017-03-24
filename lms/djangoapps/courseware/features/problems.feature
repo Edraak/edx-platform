@@ -104,7 +104,6 @@ Feature: LMS.Answer problems
         When I answer a "multiple choice" problem "incorrectly"
         And I reset the problem
         Then I should see "You have used 2 of 3 submissions" somewhere in the page
-        And The "Final Check" button does appear
         When I answer a "multiple choice" problem "correctly"
         Then The "Reset" button does not appear
 

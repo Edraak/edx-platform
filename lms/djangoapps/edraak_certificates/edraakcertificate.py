@@ -28,7 +28,7 @@ for font_file, font_name in fonts.iteritems():
 SIZE = landscape(A4)
 
 
-def get_organization_logo(organization):
+def get_organization_logo(organization, course_id):
     organization = organization.lower()
     if organization == 'mitx' or organization == 'harvardx' or organization == 'qrf':
         return 'edx.png'
@@ -50,12 +50,27 @@ def get_organization_logo(organization):
         return 'crescent-petroleum.jpg'
     elif organization == 'auc':
         return 'auc.jpg'
+    elif organization == 'pmijo':
+        return 'pmijo.jpg'
+    elif organization == 'qou':
+        return 'qou.png'
+    elif organization == 'mbrcgi':
+        return 'mbrcgi.png'
+    elif organization == 'psut':
+        return 'psut.png'
+    elif course_id == 'course-v1:Edraak+STEAM101+R1_Q1_2017':
+        return 'auc.jpg'
     else:
         return None
 
 
 def get_course_sponsor(course_id):
-    if course_id == "BritishCouncil/Eng100/T4_2015":
+    if course_id in (
+            "BritishCouncil/Eng100/T4_2015",
+            "course-v1:BritishCouncil+Eng100+T4_2015",
+            "course-v1:BritishCouncil+Eng2+2016Q3",
+            "course-v1:BritishCouncil+Eng3+Q4-2016"
+    ):
         return "crescent_petroleum"
     else:
         return None
@@ -205,11 +220,11 @@ class EdraakCertificate(object):
                 y -= line_height
             else:
                 self.ctx.drawString(self.bidi_x_axis(x), y, line)
-                y += line_height
+                y -= line_height
 
-    def add_course_org_logo(self, course_org):
+    def add_course_org_logo(self, course_org, course_id):
         if course_org:
-            logo = get_organization_logo(course_org)
+            logo = get_organization_logo(course_org, course_id)
             if logo:
                 image = utils.ImageReader(path.join(static_dir, logo))
 
@@ -229,8 +244,8 @@ class EdraakCertificate(object):
 
                 self.ctx.drawImage(image, x, y, width, height)
 
-    def add_course_sponsor_logo(self, sponsor):
-        logo = get_organization_logo(sponsor)
+    def add_course_sponsor_logo(self, sponsor, course_id):
+        logo = get_organization_logo(sponsor, course_id)
         if logo:
             image = utils.ImageReader(path.join(static_dir, logo))
 
@@ -292,7 +307,7 @@ class EdraakCertificate(object):
 
         x = 10.8
         self.add_certificate_bg()
-        self.add_course_org_logo(self.course_org)
+        self.add_course_org_logo(self.course_org, self.course_id)
 
         self.draw_bidi_text(self._("This is to certify that:"), x, 5.8, size=0.25)
 
@@ -302,18 +317,18 @@ class EdraakCertificate(object):
         self.draw_bidi_text(self._("Successfully completed:"), x, 4.63, size=0.25)
 
         course_name_size = 0.31 if contains_rtl_text(self.course_name) else 0.33
-        self.draw_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
 
         sponsor = get_course_sponsor(self.course_id)
         if sponsor:
+            self.draw_single_line_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
             self.draw_bidi_text(self._("This course is sponsored by:"), x, 3.5, size=0.25)
-
-            self.add_course_sponsor_logo(sponsor)
-
-        if not self.is_english_course():
-            self.draw_bidi_text(self.course_desc, x, 3.74, size=0.16)
+            self.add_course_sponsor_logo(sponsor, self.course_id)
         else:
-            self.draw_english_text(self.course_desc, x, 3.74, size=0.16)
+            self.draw_bidi_text(self.course_name, x, 4.1, size=course_name_size, bold=True)
+            if not self.is_english_course():
+                self.draw_bidi_text(self.course_desc, x, 3.74, size=0.16)
+            else:
+                self.draw_english_text(self.course_desc, x, 3.74, size=0.16)
 
         date_x = 2.01
 

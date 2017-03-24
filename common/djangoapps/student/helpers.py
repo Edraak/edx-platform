@@ -10,7 +10,7 @@ from embargo import api as embargo_api
 from ipware.ip import get_ip
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, pgettext
 
 from django.conf import settings
 from django.core.urlresolvers import reverse, NoReverseMatch
@@ -315,3 +315,42 @@ def get_next_url_for_login_page(request):
         # be saved in the session as part of the pipeline state. That URL will take priority
         # over this one.
     return redirect_to
+
+
+def is_hotmail_email(string):
+    """
+    Determine if an element in a list is a substring of string
+    """
+    outlook_domains = ['hotmail', 'outlook', 'live', 'outlook', 'msn']
+    return any('{}.'.format(substring) in string for substring in outlook_domains)
+
+
+def get_email_domain(email):
+    """
+    Determine the domain of an email
+    """
+    _user, domain = email.lower().rsplit('@', 1)
+    if 'gmail.' in domain:
+        domain = 'gmail'
+    elif is_hotmail_email(domain):
+        domain = 'hotmail'
+    else:
+        domain = 'other'
+    return domain
+
+
+def get_spam_name(email):
+    """
+    Determine name of spam folder
+    """
+    domain = get_email_domain(email)
+    if domain is 'gmail':
+        # Translators: Gmail Spam folder translation
+        spam_name = pgettext('gmail', 'Spam')
+    elif domain is 'hotmail':
+        # Translators: Hotmail Junk folder translation
+        spam_name = pgettext('hotmail', 'Junk')
+    else:
+        # Translators: Other email Spam folder translation
+        spam_name = pgettext('other_email_providers', 'Spam')
+    return spam_name

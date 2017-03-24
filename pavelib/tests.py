@@ -19,6 +19,7 @@ __test__ = False  # do not collect
 @task
 @needs(
     'pavelib.prereqs.install_prereqs',
+    'pavelib.utils.test.utils.suppress_test_debug_log',
     'pavelib.utils.test.utils.clean_reports_dir',
 )
 @cmdopts([
@@ -34,7 +35,10 @@ __test__ = False  # do not collect
     make_option("-q", "--quiet", action="store_const", const=0, dest="verbosity"),
     make_option("-v", "--verbosity", action="count", dest="verbosity", default=1),
     make_option("--pdb", action="store_true", help="Drop into debugger on failures or errors"),
-], share_with=['pavelib.utils.test.utils.clean_reports_dir'])
+], share_with=[
+    'pavelib.utils.test.utils.clean_reports_dir',
+    'pavelib.utils.test.utils.suppress_test_debug_log',
+])
 def test_system(options):
     """
     Run tests on our djangoapps for lms and cms
@@ -74,6 +78,7 @@ def test_system(options):
 @task
 @needs(
     'pavelib.prereqs.install_prereqs',
+    'pavelib.utils.test.utils.suppress_test_debug_log',
     'pavelib.utils.test.utils.clean_reports_dir',
 )
 @cmdopts([
@@ -88,7 +93,10 @@ def test_system(options):
     make_option("-q", "--quiet", action="store_const", const=0, dest="verbosity"),
     make_option("-v", "--verbosity", action="count", dest="verbosity", default=1),
     make_option("--pdb", action="store_true", help="Drop into debugger on failures or errors"),
-], share_with=['pavelib.utils.test.utils.clean_reports_dir'])
+], share_with=[
+    'pavelib.utils.test.utils.clean_reports_dir',
+    'pavelib.utils.test.utils.suppress_test_debug_log',
+])
 def test_lib(options):
     """
     Run tests for common/lib/ and pavelib/ (paver-tests)
@@ -124,6 +132,7 @@ def test_lib(options):
 @needs(
     'pavelib.prereqs.install_prereqs',
     'pavelib.utils.test.utils.clean_reports_dir',
+    'pavelib.utils.test.utils.suppress_test_debug_log',
 )
 @cmdopts([
     ("failed", "f", "Run only failed tests"),
@@ -134,6 +143,8 @@ def test_lib(options):
     make_option("-q", "--quiet", action="store_const", const=0, dest="verbosity"),
     make_option("-v", "--verbosity", action="count", dest="verbosity", default=1),
     make_option("--pdb", action="store_true", help="Drop into debugger on failures or errors"),
+], share_with=[
+    'pavelib.utils.test.utils.suppress_test_debug_log',
 ])
 def test_python(options):
     """
@@ -155,6 +166,7 @@ def test_python(options):
 @task
 @needs(
     'pavelib.prereqs.install_prereqs',
+    'pavelib.utils.test.utils.suppress_test_debug_log',
     'pavelib.utils.test.utils.clean_reports_dir',
 )
 @cmdopts([
@@ -165,6 +177,8 @@ def test_python(options):
     make_option("-q", "--quiet", action="store_const", const=0, dest="verbosity"),
     make_option("-v", "--verbosity", action="count", dest="verbosity", default=1),
     make_option("--pdb", action="store_true", help="Drop into debugger on failures or errors"),
+], share_with=[
+    'pavelib.utils.test.utils.suppress_test_debug_log',
 ])
 def test(options):
     """

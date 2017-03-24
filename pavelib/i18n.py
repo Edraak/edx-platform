@@ -184,6 +184,7 @@ def i18n_ltr():
 
 @task
 @needs(
+    "pavelib.edraak.clean_repo_check",
     "pavelib.i18n.i18n_clean",
     "pavelib.i18n.i18n_transifex_pull",
     "pavelib.i18n.i18n_extract",
@@ -224,6 +225,8 @@ def i18n_clean():
 
 @task
 @needs(
+    "pavelib.edraak.clean_repo_check",
+    "pavelib.edraak.i18n_theme_generate",
     "pavelib.i18n.i18n_extract",
     "pavelib.i18n.i18n_transifex_push",
 )

@@ -76,29 +76,33 @@ from openedx.core.lib.js_utils import (
     <%block name="jsextra"></%block>
     <script type="text/javascript">
       require(['common/js/common_libraries'], function () {
+          // If you are rebasing take there's this bit was hacked to fix an issue that must fix by the rebase https://app.asana.com/0/15875049854186/230573008666419
           require(['js/factories/base'], function () {
-            % if context_course:
               require(['js/factories/course'], function(CourseFactory) {
-                  CourseFactory({
-                      id: "${escape_js_string(context_course.id) | n}",
-                      name: "${context_course.display_name_with_default_escaped | h}",
-                      url_name: "${context_course.location.name | h}",
-                      org: "${context_course.location.org | h}",
-                      num: "${context_course.location.course | h}",
-                      display_course_number: "${_(context_course.display_number_with_default)}",
-                      revision: "${context_course.location.revision | h}",
-                      self_paced: ${escape_json_dumps(context_course.self_paced) | n}
-                  });
+                  % if context_course:
+                      CourseFactory({
+                          id: "${escape_js_string(context_course.id) | n}",
+                          name: "${context_course.display_name_with_default_escaped | h}",
+                          url_name: "${context_course.location.name | h}",
+                          org: "${context_course.location.org | h}",
+                          num: "${context_course.location.course | h}",
+                          display_course_number: "${_(context_course.display_number_with_default)}",
+                          revision: "${context_course.location.revision | h}",
+                          self_paced: ${escape_json_dumps(context_course.self_paced) | n}
+                      });
+                  % endif
+
+                  % if user.is_authenticated():
+                      require(['js/sock']);
+                  % endif
+                  <%block name='requirejs'></%block>
               });
-            % endif
-            % if user.is_authenticated():
-                require(['js/sock']);
-            % endif
-            <%block name='requirejs'></%block>
           });
       });
     </script>
     <%include file="widgets/segment-io-footer.html" />
     <div class="modal-cover"></div>
+
+    <%include file="mathjax_arabic_config.html" />
   </body>
 </html>

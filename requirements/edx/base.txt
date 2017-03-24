@@ -165,4 +165,3 @@ pynliner==0.5.2
 
 # Edraak packages
 -r edraak/certificates.txt
--r edraak/email-verification.txt
