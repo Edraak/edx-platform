@@ -45,9 +45,6 @@ def set_language(request):
 
         if lang_code and check_for_language(lang_code):
 
-            if request.user.is_authenticated():
-                set_user_preference(request.user, DARK_LANGUAGE_KEY, lang_code)
-
             if hasattr(request, 'session'):
                 request.session[LANGUAGE_SESSION_KEY] = lang_code
             else:
