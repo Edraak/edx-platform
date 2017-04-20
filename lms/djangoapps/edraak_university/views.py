@@ -1,8 +1,14 @@
+import datetime
+import pytz
+
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.shortcuts import Http404, redirect
+from django.db import IntegrityError, transaction
 
 from openedx.core.djangoapps.user_api.accounts.api import update_account_settings
+from openedx.core.djangoapps.course_groups.models import CourseUserGroup, CohortMembership
+from openedx.core.djangoapps.course_groups.cohorts import add_user_to_cohort, remove_user_from_cohort, get_cohort, get_cohort_by_id, get_course_cohorts
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -15,9 +21,8 @@ from courseware.access import has_access
 from student.models import UserProfile
 
 from forms import UniversityIDForm
-from models import UniversityID
+from models import UniversityID, UniversityIDSetting
 from helpers import get_university_id, has_valid_university_id
-
 
 class CourseContextMixin(object):
     def get_course_key(self):
@@ -55,12 +60,21 @@ class UniversityIDView(CourseContextMixin, generic.FormView):
         instance = get_university_id(self.request.user, self.kwargs['course_id'])
         if instance:
             kwargs['instance'] = instance
+        is_disabled = self.form_disabled(self.get_course_key())
+        kwargs['is_disabled'] = is_disabled
+        kwargs['course'] = self.get_course()
 
         return kwargs
 
     def get_initial(self):
+        cohort = get_cohort(user=self.request.user, course_key=self.get_course_key(), assign=False)
+        if cohort:
+            cohort_id = cohort.id
+        else:
+            cohort_id = ''
         return {
             'full_name': self.get_user_profile().name,
+            'cohort': cohort_id,
         }
 
     def get_user_profile(self):
@@ -69,12 +83,20 @@ class UniversityIDView(CourseContextMixin, generic.FormView):
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.user = self.request.user
+        instance.terms_and_conditions_read = self.request.POST.get('terms_and_conditions_read',False)
         instance.course_key = self.get_course_key()
         instance.save()
 
         update_account_settings(self.request.user, {
             'name': form.cleaned_data['full_name'],
         })
+
+        cohort_id = int(form.cleaned_data['cohort'])
+        cohort = get_cohort_by_id(course_key=instance.course_key, cohort_id=cohort_id)
+        try:
+            add_user_to_cohort(cohort, instance.user.email)
+        except ValueError:
+           pass
 
         return super(UniversityIDView, self).form_valid(form)
 
@@ -85,13 +107,32 @@ class UniversityIDView(CourseContextMixin, generic.FormView):
 
     def get_context_data(self, **kwargs):
         data = super(UniversityIDView, self).get_context_data(**kwargs)
+        university_id =get_university_id(self.request.user, self.kwargs['course_id'])
+        if university_id:
+            terms_and_conditions_read = university_id.terms_and_conditions_read
+        else:
+            terms_and_conditions_read = False
         data.update({
             'form': self.get_form(),
             'has_valid_information': has_valid_university_id(self.request.user, self.kwargs['course_id']),
+            'form_is_disabled': self.form_disabled(self.get_course_key()),
+            'terms_conditions': self.get_university_id_settings(self.get_course_key()).get_terms_and_conditions(),
+            'terms_and_conditions_read': terms_and_conditions_read ,
         })
 
         return data
 
+    def form_disabled(self, course_key):
+        try:
+            registration_end = self.get_university_id_settings(course_key).registration_end_date
+            return (registration_end.date() <= datetime.datetime.now(pytz.UTC).date())
+        except:
+            return False
+
+    def get_university_id_settings(self, course_key):
+        return UniversityIDSetting.objects.get(course_key=course_key)
+
+    @method_decorator(transaction.non_atomic_requests)
     @method_decorator(login_required)
     @method_decorator(ensure_valid_course_key)
     def dispatch(self, *args, **kwargs):
@@ -115,8 +156,16 @@ class UniversityIDListView(CourseContextMixin, generic.ListView):
     model = UniversityID
     template_name = 'edraak_university/instructor/list.html'
 
-    def get_queryset(self):
-        return UniversityID.get_marked_university_ids(course_key=self.get_course_key())
+    def get_context_data(self, **kwargs):
+        data = super(UniversityIDListView, self).get_context_data(**kwargs)
+        for object in data['object_list']:
+            try:
+                cohort = get_cohort(user=object.user, course_key=object.course_key, assign=False)
+                object.cohort = cohort.name
+            except CourseUserGroup.DoesNotExist:
+                object.cohort = "---"
+
+        return data
 
     @method_decorator(login_required)
     @method_decorator(ensure_valid_course_key)
@@ -130,13 +179,31 @@ class UniversityIDUpdateView(CourseContextMixin, generic.UpdateView):
     template_name = 'edraak_university/instructor/update.html'
 
     # The email and full_name fields are written directly in the `update.html` file.
-    fields = ('university_id', 'section_number',)
+    fields = ('university_id',)
 
     def get_success_url(self):
         return reverse('edraak_university_id_list', kwargs={
             'course_id': self.get_course_key(),
         })
 
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.save()
+        cohort_id = self.request.POST['cohort']
+        cohort = get_cohort_by_id(course_key=instance.course_key, cohort_id=cohort_id)
+        try:
+            add_user_to_cohort(cohort, instance.user.email)
+        except ValueError:
+           pass
+        return super(UniversityIDUpdateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        data = super(UniversityIDUpdateView,self).get_context_data(**kwargs)
+        data['selected_cohort'] = get_cohort(user=self.object.user, course_key=self.object.course_key, assign=False).id
+        data['cohort_list'] = get_course_cohorts(self.get_course())
+        return data
+
+    @method_decorator(transaction.non_atomic_requests)
     @method_decorator(login_required)
     @method_decorator(ensure_valid_course_key)
     def dispatch(self, *args, **kwargs):
@@ -153,6 +220,21 @@ class UniversityIDDeleteView(CourseContextMixin, generic.DeleteView):
             'course_id': self.get_course_key(),
         })
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        email = self.object.get_email()
+        try:
+            cohort = get_cohort(user=self.object.user, course_key=self.object.course_key, assign=False)
+
+            try:
+                remove_user_from_cohort(cohort, email)
+            except ValueError:
+                pass
+        except CohortMembership.DoesNotExist:
+            pass
+        return super(UniversityIDDeleteView, self).delete(request, *args, **kwargs)
+
+    @method_decorator(transaction.non_atomic_requests)
     @method_decorator(login_required)
     @method_decorator(ensure_valid_course_key)
     def dispatch(self, *args, **kwargs):

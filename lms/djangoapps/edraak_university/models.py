@@ -1,12 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
 
 from student.models import UserProfile
 
 from xmodule_django.models import CourseKeyField
-
 
 class UniversityID(models.Model):
     user = models.ForeignKey(User)
@@ -14,7 +13,7 @@ class UniversityID(models.Model):
     university_id = models.CharField(verbose_name=_('Student University ID'), max_length=100)
     section_number = models.CharField(verbose_name=_('Section Number'), max_length=10)
     date_created = models.DateTimeField(default=timezone.now)
-
+    terms_and_conditions_read = models.BooleanField(default=False)
     # Will be used in `get_marked_university_ids()` method to mark
     # duplicate entries.
     is_conflicted = False
@@ -59,3 +58,16 @@ class UniversityID(models.Model):
 
     class Meta:
         unique_together = ('user', 'course_key',)
+
+# Class related to university ID settings for a course
+class UniversityIDSetting(models.Model):
+    course_key = CourseKeyField(max_length=255, db_index=True)
+    registration_end_date = models.DateTimeField(default=None, null=True, blank=True)
+    terms_and_conditions_ar = models.TextField(null=True, blank=True)
+    terms_and_conditions_en = models.TextField(null=True, blank=True)
+
+    def get_terms_and_conditions(self):
+        if get_language() == 'ar':
+            return self.terms_and_conditions_ar
+        else:
+            return self.terms_and_conditions_en
