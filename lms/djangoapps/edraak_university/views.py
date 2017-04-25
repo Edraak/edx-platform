@@ -12,7 +12,7 @@ from opaque_keys.edx.locator import CourseLocator
 from courseware.courses import get_course_with_access
 
 from courseware.access import has_access
-from student.models import UserProfile
+from student.models import UserProfile, CourseEnrollment
 
 from forms import UniversityIDForm
 from models import UniversityID
@@ -85,9 +85,12 @@ class UniversityIDView(CourseContextMixin, generic.FormView):
 
     def get_context_data(self, **kwargs):
         data = super(UniversityIDView, self).get_context_data(**kwargs)
+        show_enroll_banner = self.request.user.is_authenticated() and not CourseEnrollment.is_enrolled(self.user, self.get_course_key())
+
         data.update({
             'form': self.get_form(),
             'has_valid_information': has_valid_university_id(self.request.user, self.kwargs['course_id']),
+            'show_enroll_banner': show_enroll_banner
         })
 
         return data
@@ -95,6 +98,7 @@ class UniversityIDView(CourseContextMixin, generic.FormView):
     @method_decorator(login_required)
     @method_decorator(ensure_valid_course_key)
     def dispatch(self, *args, **kwargs):
+
         return super(UniversityIDView, self).dispatch(*args, **kwargs)
 
 

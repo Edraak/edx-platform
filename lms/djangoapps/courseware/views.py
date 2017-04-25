@@ -46,7 +46,8 @@ from courseware.courses import (
     get_course_with_access,
     sort_by_announcement,
     sort_by_start_date,
-    UserNotEnrolled
+    UserNotEnrolled,
+    check_course_access
 )
 from courseware.masquerade import setup_masquerade
 from openedx.core.djangoapps.credit.api import (
@@ -682,10 +683,7 @@ def course_info(request, course_id):
 
         staff_access = has_access(request.user, 'staff', course)
         masquerade, user = setup_masquerade(request, course_key, staff_access, reset_masquerade_data=True)
-
-        # If the user has to have a valid university ID before continuing to the course.
-        if not staff_access and university_id_is_required(user, course):
-            return redirect(reverse('edraak_university_id', args=[unicode(course.id)]))
+        course_enrollment = CourseEnrollment.is_enrolled(user, course.id)
 
         # If the user needs to take an entrance exam to access this course, then we'll need
         # to send them to that specific course module before allowing them into other areas
@@ -718,6 +716,10 @@ def course_info(request, course_id):
             'show_enroll_banner': show_enroll_banner,
             'url_to_enroll': url_to_enroll,
         }
+
+        # If the user has to have a valid university ID before continuing to the course.
+        if not staff_access and university_id_is_required(user, course):
+            return redirect(reverse('edraak_university_id', args=[unicode(course.id)]))
 
         now = datetime.now(UTC())
         effective_start = _adjust_start_date_for_beta_testers(user, course, course_key)
