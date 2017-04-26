@@ -3,10 +3,10 @@ import re
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from openedx.core.djangoapps.course_groups.models import CourseUserGroup
 from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
-from openedx.core.djangoapps.course_groups.cohorts import get_cohort_names
 
-from models import UniversityID
+from models import UniversityID, UniversityIDSettings
 
 
 class UniversityIDForm(forms.ModelForm):
@@ -36,22 +36,18 @@ class UniversityIDForm(forms.ModelForm):
         },
     )
 
-    cohort = forms.ChoiceField(
+    cohort = forms.ModelChoiceField(
+        queryset=CourseUserGroup.objects.none(),
         label=_('Section Number *'),
         # TODO: Make ID format instruction course-variant, so coordinators can define it for each course.
         help_text=_('Select the cohort you are enrolled in.'),
     )
 
-    def __init__(self,course=None, is_disabled=False, *args, **kwargs):
+    def __init__(self, course_key, *args, **kwargs):
         super(UniversityIDForm,self).__init__(*args, **kwargs)
-        if is_disabled:
-            for field in self.fields.keys():
-                self.fields[field].widget.attrs['readonly'] = True
-            self.fields['cohort'].widget.attrs['disabled'] = True
-        if course:
-            cohorts = get_cohort_names(course)
-            cohorts_choices = [(id, name) for id, name in cohorts.iteritems() ]
-            self.fields['cohort'].choices = [('','----')] + cohorts_choices
+
+        cohorts_choices = CourseUserGroup.objects.filter(course_id=course_key, group_type=CourseUserGroup.COHORT)
+        self.fields['cohort'].queryset = cohorts_choices
 
     class Meta:
         model = UniversityID
@@ -71,14 +67,12 @@ class UniversityIDForm(forms.ModelForm):
             errors_on_separate_row=False,
         )
 
-    def clean_full_name(self):
-        return self.cleaned_data['full_name']
 
-    def clean_university_id(self):
-        return self.cleaned_data['university_id']
-
-    def clean_cohort(self):
-        return self.cleaned_data['cohort']
-
-    def clean_terms_and_conditions_read(self):
-        return self.cleaned_data['terms_and_conditions_read']
+class UniversityIDSettingsForm(forms.ModelForm):
+    class Meta:
+        model = UniversityIDSettings
+        exclude = ('course_key', )
+        widgets = {
+            'registration_end_date': forms.TextInput(
+                attrs={'placeholder': _('YYYY-MM-DD')}),
+        }

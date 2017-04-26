@@ -19,8 +19,8 @@
 <%block name="pagetitle">${_("{course_number} Student University ID").format(course_number=course.display_number_with_default) | h}</%block>
 <%block name="nav_skip">#course-university-id</%block>
 
+<%include file="/courseware/enroll_banner.html" args="show_enroll_banner=show_enroll_banner, url_to_enroll=url_to_enroll"/>
 <%include file="/courseware/course_navigation.html" args="active_page='university_id'" />
-
 
 <div class="container">
     <div class="profile-wrapper">
@@ -29,25 +29,26 @@
                 <h1>${_('Student University ID')}</h1>
 
                 <div class="form-help">
-                    % if form_is_disabled:
-                        <p>
-                            ${_('Registration has ended. Contact your course instructor for help.')}
+                    % if show_enroll_banner:
+                        <p class="important">
+                            ${_('Enroll in the course so you can edit your university ID.')}
                         </p>
-
-                    % elif has_valid_information and not form_is_disabled:
+                    % elif is_form_disabled:
+                        <p class="important">
+                            ${_('Registration is disabled. Contact your course instructor for help.')}
+                        </p>
+                    % elif has_valid_information:
                         <p>
                             ${_('The information below have been successfully submitted '
                                 'to your university coordinator.')}
                         </p>
-
+                    % elif registration_end:
                         <p>
-                            ${_('You can review and change the information up till registration ends.')}
+                            ${_('You can submit and change your information before {end_date}.').format(end_date=registration_end)}
                         </p>
-
                     % else:
                         <p class="important">
-                            ${_('Your university information is needed for your grade reports. '
-                                'Please enter the required information, and verify it is correct.')}
+                            ${_('Your university information is needed for your grade reports. Please enter the required information, and verify it is correct.')}
                         </p>
                     % endif
                 </div>
@@ -57,34 +58,26 @@
                 <hr />
 
                 <div class="fields">
-                    ${form.as_div()}
+                    <fieldset ${'disabled' if is_form_disabled else ''}>
+                        ${form.as_div()}
+                    </fieldset>
                 </div>
 
-                <hr />
 
-                <h3>${_('Terms and Conditions')}</h3>
-                %if terms_conditions:
-                    ${terms_conditions | markdown }
-                %endif
-                <br>
-
-                % if terms_and_conditions_read and form_is_disabled:
-                <input type="checkbox" name = "terms_and_conditions_read" value="true" disabled checked required><label>${_(' I have read and agree with the above terms and conditions.')}</label>
-                 %elif terms_and_conditions_read:
-                <input type="checkbox" name = "terms_and_conditions_read" value="true"  checked required><label>${_(' I have read and agree with the above terms and conditions.')}</label>
-                %elif form_is_disabled:
-                <input type="checkbox" name = "terms_and_conditions_read" value="true" disabled required><label>${_(' I have read and agree with the above terms and conditions.')}</label>
-                %else:
-                <input type="checkbox" name = "terms_and_conditions_read" value="true" required><label>${_(' I have read and agree with the above terms and conditions.')}</label>
-                %endif
-
-                % if form_is_disabled:
-                    <input class="submit" type="submit" value="${_('Submit')}" disabled>
-                % else:got
-                    <input class="submit" type="submit" value="${_('Submit')}">
+                % if terms_conditions:
+                    <hr />
+                    <h3>${_('Terms and Conditions')}</h3>
+                    <div class="terms">
+                        ${terms_conditions | markdown }
+                    </div>
+                    <br>
                 % endif
+
+                % if terms_conditions:
+                    <p>${_('By clicking submit, you agree to the terms and conditions above.')}</p>
+                % endif
+                 <input class="submit" type="submit" value="${_('Submit')}" ${'disabled' if is_form_disabled or show_enroll_banner else ''}>
             </form>
         </div>
     </div>
 </div>
-

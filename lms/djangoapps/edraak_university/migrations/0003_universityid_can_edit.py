@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('edraak_university', '0002_auto_20170425_1424'),
+        ('edraak_university', '0002_university_id_setting'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.AddField(
             model_name='universityid',
-            name='date_created',
-            field=models.DateTimeField(default=None, null=True, blank=True),
+            name='can_edit',
+            field=models.BooleanField(default=True),
         ),
     ]

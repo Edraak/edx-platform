@@ -38,18 +38,6 @@
 
                     ${form.as_p()}
 
-                    <p>
-                        <label>${_('Section Number:')}</label>
-                        <select name="cohort">
-                            % for  cohort  in cohort_list:
-                                % if selected_cohort == cohort.id:
-                                    <option value="${cohort.id}" selected>${cohort.name}</option>
-                                % else:
-                                    <option value="${cohort.id}">${cohort.name}</option>
-                                % endif
-                             % endfor
-                        </select>
-                    </p>
                     <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
                 </div>
 
