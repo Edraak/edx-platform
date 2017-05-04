@@ -222,7 +222,7 @@ class UniversityIDStaffView(ContextMixin, generic.FormView, generic.ListView):
                 'section_key': 'list'
             },
             {
-                'section_display_name': 'University ID Settings',
+                'section_display_name': 'University ID settings',
                 'section_key': 'settings',
                 'form': self.get_form()
             },
