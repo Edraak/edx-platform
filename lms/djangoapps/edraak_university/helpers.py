@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AnonymousUser
-
 from opaque_keys.edx.locator import CourseLocator
 
 from models import UniversityID

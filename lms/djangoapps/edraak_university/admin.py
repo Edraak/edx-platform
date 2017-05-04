@@ -17,7 +17,7 @@ class UniversityIDAdmin(admin.ModelAdmin):
         'edraak_user',
         'course_key',
         'university_id',
-        'section_number',
+        'cohort',
         'edraak_profile',
         'email',
         'date_created',
@@ -47,6 +47,5 @@ class UniversityIDAdmin(admin.ModelAdmin):
 
     def email(self, profile):
         return profile.user.email
-
 
 admin.site.register(UniversityID, UniversityIDAdmin)

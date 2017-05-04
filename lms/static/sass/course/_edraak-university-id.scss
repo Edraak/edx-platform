@@ -3,7 +3,7 @@
 
 // Student View Styles
 .university-id {
-  padding: $baseline*2;
+  padding: 0 $baseline*2 0;
 
   .form-help {
     margin: $baseline 0;
@@ -33,16 +33,24 @@
     .errorlist {
       color: $red;
     }
+
+    textarea  {
+      height: 100px;
+    }
   }
 
+  .terms {
+    height: 200px;
+    border: 1px solid #ccc;
+    overflow: auto;
+    padding: 20px;
+    margin-top: 10px;
+  }
   .submit {
     margin: $baseline 0;
   }
-}
 
-
-// Instructor View Styles
-.university-id {
+  // Instructor View Styles
   .dataTables_filter {
     input {
       font-size: 14px;
