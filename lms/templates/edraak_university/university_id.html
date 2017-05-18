@@ -42,13 +42,14 @@
                             ${_('The information below have been successfully submitted '
                                 'to your university coordinator.')}
                         </p>
-                    % elif registration_end:
-                        <p>
-                            ${_('You can submit and change your information before {end_date}.').format(end_date=registration_end)}
-                        </p>
                     % else:
                         <p class="important">
                             ${_('Your university information is needed for your grade reports. Please enter the required information, and verify it is correct.')}
+                        </p>
+                    % endif
+                    % if registration_end and not is_form_disabled:
+                        <p>
+                            ${_('You can submit and change your information before')} <b> ${registration_end}</b>
                         </p>
                     % endif
                 </div>

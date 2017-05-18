@@ -26,15 +26,6 @@
             <h1>${_('Students\' University IDs')}</h1>
             <form class="university-id-form" method="post">
                 <div class="fields">
-                    <p>
-                        <label>${_('Full Name:')}</label>
-                        <input type="text" disabled value="${object.get_full_name() | h}">
-                    </p>
-
-                    <p>
-                        <label>${_('Email:')}</label>
-                        <input type="text" disabled value="${object.get_email() | h}">
-                    </p>
 
                     ${form.as_p()}
 

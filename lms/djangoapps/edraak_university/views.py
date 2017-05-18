@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import generic
-from django.shortcuts import Http404, redirect
+from django.shortcuts import redirect
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
@@ -11,13 +11,14 @@ from openedx.core.djangoapps.user_api.accounts.api import update_account_setting
 from openedx.core.djangoapps.course_groups.cohorts import add_user_to_cohort, remove_user_from_cohort, get_cohort
 
 from util.views import ensure_valid_course_key
+from util.date_utils import strftime_localized
 from opaque_keys.edx.locator import CourseLocator
 from courseware.courses import get_course_with_access
 from courseware.views import course_about, marketing_link
 from courseware.access import has_access
 from student.models import UserProfile, CourseEnrollment
 
-from forms import UniversityIDForm, UniversityIDSettingsForm
+import forms
 from models import UniversityID, UniversityIDSettings
 from helpers import get_university_id, has_valid_university_id
 
@@ -49,20 +50,27 @@ class ContextMixin(object):
         except UniversityID.DoesNotExist:
             return None
 
+    def is_staff(self):
+        return has_access(self.request.user, 'staff', self.get_course())
+
     def get_context_data(self, **kwargs):
         data = super(ContextMixin, self).get_context_data(**kwargs)
         data['course'] = self.get_course()
+        data['is_staff'] = self.is_staff()
         return data
 
 
 class UniversityIDView(ContextMixin, generic.FormView):
     template_name = 'edraak_university/university_id.html'
-    form_class = UniversityIDForm
+    form_class = forms.UniversityIDForm
 
     def get(self, *args, **kwargs):
         course = self.get_course()
 
-        if has_access(self.request.user, 'staff', course):
+        if not self.get_course().enable_university_id:
+            return redirect('course_root', unicode(course.id))
+
+        if self.is_staff():
             return redirect('edraak_university_id_staff', course_id=course.id)
         else:
             return super(UniversityIDView, self).get(*args, **kwargs)
@@ -116,6 +124,14 @@ class UniversityIDView(ContextMixin, generic.FormView):
         data = super(UniversityIDView, self).get_context_data(**kwargs)
         mktg_enabled = settings.FEATURES.get('ENABLE_MKTG_SITE')
         university_settings = self.get_university_settings()
+        final_date = university_settings.registration_end_date if university_settings else None
+
+        if final_date:
+            date = strftime_localized(final_date, format="SHORT_DATE")
+            registration_end_date = date.replace('"', '')
+        else:
+            registration_end_date = None
+
 
         data.update({
             'form': self.get_form(),
@@ -123,7 +139,7 @@ class UniversityIDView(ContextMixin, generic.FormView):
             'is_form_disabled': self.is_form_disabled(),
             'terms_conditions': university_settings.terms_and_conditions if university_settings else None,
             'show_enroll_banner': self.is_not_enrolled(),
-            'registration_end': university_settings.registration_end_date if university_settings else None,
+            'registration_end': registration_end_date,
             'url_to_enroll': marketing_link('COURSES') if mktg_enabled else reverse(course_about,args=[self.get_course_key()]),
         })
 
@@ -176,7 +192,7 @@ class UniversityIDSuccessView(ContextMixin, generic.TemplateView):
 class UniversityIDStaffView(ContextMixin, generic.FormView, generic.ListView):
     template_name = 'edraak_university/instructor/main.html'
     model = UniversityID
-    form_class = UniversityIDSettingsForm
+    form_class = forms.UniversityIDSettingsForm
 
     def get_success_url(self):
         return reverse('edraak_university_id_success', kwargs={
@@ -240,9 +256,16 @@ class UniversityIDStaffView(ContextMixin, generic.FormView, generic.ListView):
 class UniversityIDUpdateView(ContextMixin, generic.UpdateView):
     model = UniversityID
     template_name = 'edraak_university/instructor/update.html'
+    form_class = forms.UniversityIDInstructorForm
 
-    # The email and full_name fields are written directly in the `update.html` file.
-    fields = ('university_id','cohort')
+    def get_form_kwargs(self):
+        kwargs = super(UniversityIDUpdateView, self).get_form_kwargs()
+        instance = UniversityID.objects.get(pk=self.kwargs['pk'])
+        
+        kwargs['instance'] = instance
+        kwargs['course_key'] = self.get_course_key()
+
+        return kwargs
 
     def get_success_url(self):
         return reverse('edraak_university_id_staff', kwargs={

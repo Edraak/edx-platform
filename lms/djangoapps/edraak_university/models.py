@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from openedx.core.djangoapps.course_groups.models import CourseUserGroup
-from student.models import UserProfile
-
+from openedx.core.djangoapps.course_groups.cohorts import _get_default_cohort
 from xmodule_django.models import CourseKeyField
+from student.models import UserProfile
 
 
 class UniversityID(models.Model):
@@ -31,12 +31,15 @@ class UniversityID(models.Model):
     def get_email(self):
         return self.user.email
 
-    def __unicode__(self):
-        return u'{user} - {course_key} - {university_id}'.format(
-            user=self.user,
-            course_key=self.course_key,
-            university_id=self.university_id,
-        )
+    @classmethod
+    def get_cohorts(cls, course_key):
+        cohorts_choices = CourseUserGroup.objects.filter(course_id=course_key, group_type=CourseUserGroup.COHORT)
+
+        # Exclude the default group
+        default_group = _get_default_cohort(course_key)
+        cohorts_choices = cohorts_choices.exclude(id=default_group.id)
+
+        return cohorts_choices
 
     @classmethod
     def get_marked_university_ids(cls, course_key):
@@ -58,6 +61,13 @@ class UniversityID(models.Model):
                     prev_entry.is_conflicted = True
 
         return entries
+
+    def __unicode__(self):
+        return u'{user} - {course_key} - {university_id}'.format(
+            user=self.user,
+            course_key=self.course_key,
+            university_id=self.university_id,
+        )
 
     class Meta:
         unique_together = ('user', 'course_key',)
