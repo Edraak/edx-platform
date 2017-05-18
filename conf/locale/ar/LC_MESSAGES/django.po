@@ -7,6 +7,7 @@
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
+# Dania Quraini <dalquraini@qrf.org>, 2016
 # Lina Bashayreh <lbashayreh@qrf.org>, 2016
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # #-#-#-#-#  django-studio.po (0.1a)  #-#-#-#-#
@@ -31,6 +32,7 @@
 # Ahmed Jazzar <ajazzar@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
 # Ali Hasan <ahasan@qrf.org>, 2016
+# Dania Quraini <dalquraini@qrf.org>, 2017
 # #-#-#-#-#  mako-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
 # Copyright (C) 2017 edX
@@ -64,9 +66,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-05-04 16:21+0300\n"
-"PO-Revision-Date: 2017-05-04 12:41+0000\n"
-"Last-Translator: Shared Edraak <dev@qrf.org>\n"
+"POT-Creation-Date: 2017-05-18 16:58+0300\n"
+"PO-Revision-Date: 2017-05-09 15:18+0000\n"
+"Last-Translator: Dania Quraini <dalquraini@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5701,7 +5703,7 @@ msgstr "الرقم الجامعي *"
 
 #: lms/djangoapps/edraak_university/forms.py
 msgid "Enter the full student university ID e.g. 201311318."
-msgstr "أدخل رقمك الجامعي كاملاً، مثال: 201311318."
+msgstr "أدخل الرقم الجامعي كاملاً، مثال: 201311318."
 
 #: lms/djangoapps/edraak_university/forms.py
 msgid ""
@@ -5722,6 +5724,27 @@ msgstr "رقم الشعبة *"
 #: lms/djangoapps/edraak_university/forms.py
 msgid "Select the cohort you are enrolled in."
 msgstr "اختر الشعبة الجامعية التي تنتمي إليها."
+
+#: lms/djangoapps/edraak_university/forms.py
+msgid "Full Name in Arabic"
+msgstr "الاسم الكامل باللغة العربية"
+
+#. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
+#. Translators: This label appears above a field on the login form
+#. meant to hold the user's email address.
+#. Translators: This label appears above a field on the registration form
+#. meant to hold the user's email address.
+#. Translators: This label appears above a field on the password reset
+#. form meant to hold the user's email address.
+#: lms/djangoapps/edraak_university/forms.py
+#: lms/djangoapps/instructor/views/api.py
+#: lms/djangoapps/instructor/views/instructor_dashboard.py
+#: openedx/core/djangoapps/user_api/views.py
+#: lms/templates/courseware/legacy_instructor_dashboard.html
+#: lms/templates/edraak_university/instructor/list.html
+#: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
+msgid "Email"
+msgstr "البريد الإلكتروني"
 
 #: lms/djangoapps/edraak_university/forms.py
 msgid "YYYY-MM-DD"
@@ -5908,22 +5931,6 @@ msgstr "تاريخ تشغيل عملية إعداد التقرير"
 #: lms/djangoapps/instructor_task/tasks_helper.py
 msgid "User ID"
 msgstr "رقم المستخدم"
-
-#. #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
-#. Translators: This label appears above a field on the login form
-#. meant to hold the user's email address.
-#. Translators: This label appears above a field on the registration form
-#. meant to hold the user's email address.
-#. Translators: This label appears above a field on the password reset
-#. form meant to hold the user's email address.
-#: lms/djangoapps/instructor/views/api.py
-#: lms/djangoapps/instructor/views/instructor_dashboard.py
-#: openedx/core/djangoapps/user_api/views.py
-#: lms/templates/courseware/legacy_instructor_dashboard.html
-#: lms/templates/edraak_university/instructor/list.html
-#: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
-msgid "Email"
-msgstr "البريد الإلكتروني"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/tasks_helper.py lms/envs/devstack.py
@@ -13813,16 +13820,16 @@ msgid ""
 msgstr "لقد تم إرسال البيانات أدناه لطاقم تدريس المساق بنجاح."
 
 #: lms/templates/edraak_university/university_id.html
-msgid "You can submit and change your information before {end_date}."
-msgstr "يمكنك تقديم وتعديل بياناتك الجامعية قبل {end_date}."
-
-#: lms/templates/edraak_university/university_id.html
 msgid ""
 "Your university information is needed for your grade reports. Please enter "
 "the required information, and verify it is correct."
 msgstr ""
 "يرجى تزويد البيانات أدناه ليتم احتساب علامتك في المساق ضمن سجل علاماتك "
 "الجامعية. يرجى التأكد من صحة بياناتك قبل ارسالها."
+
+#: lms/templates/edraak_university/university_id.html
+msgid "You can submit and change your information before"
+msgstr "يمكنك تقديم وتعديل بياناتك الجامعية قبل"
 
 #: lms/templates/edraak_university/university_id.html
 msgid "By clicking submit, you agree to the terms and conditions above."
@@ -13833,6 +13840,14 @@ msgstr ""
 #: lms/templates/edraak_university/university_id_success.html
 msgid "{course_number} Student University ID Successfully Saved"
 msgstr "تم حفظ بياناتك الجامعية بنجاح في مساق {course_number}"
+
+#: lms/templates/edraak_university/university_id_success.html
+msgid "Your Settings Have Been Saved"
+msgstr "تم حفظ الإعدادات بنجاح"
+
+#: lms/templates/edraak_university/university_id_success.html
+msgid "View the Students List"
+msgstr "عُد إلى قائمة الطلاب"
 
 #: lms/templates/edraak_university/university_id_success.html
 msgid "Your Student University ID Has Been Saved"
@@ -13950,14 +13965,6 @@ msgstr "إعدادات الرقم الجامعي"
 #: lms/templates/edraak_university/instructor/update.html
 msgid "Update University ID for {course_number}"
 msgstr "عدل الرقم الجامعي لطالب في {course_number}"
-
-#: lms/templates/edraak_university/instructor/update.html
-msgid "Full Name:"
-msgstr "الاسم الكامل:"
-
-#: lms/templates/edraak_university/instructor/update.html
-msgid "Email:"
-msgstr "البريد الإلكتروني:"
 
 #: lms/templates/edxnotes/edxnotes.html
 msgid "Student Notes"
