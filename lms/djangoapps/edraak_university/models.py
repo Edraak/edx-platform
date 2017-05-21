@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from openedx.core.djangoapps.course_groups.models import CourseUserGroup
 from student.models import UserProfile
 
 from xmodule_django.models import CourseKeyField
@@ -14,7 +15,8 @@ class UniversityID(models.Model):
     university_id = models.CharField(verbose_name=_('Student University ID'), max_length=100)
     section_number = models.CharField(verbose_name=_('Section Number'), max_length=10)
     date_created = models.DateTimeField(default=timezone.now)
-
+    cohort = models.ForeignKey(CourseUserGroup, null=True)
+    can_edit = models.BooleanField(default=True)
     # Will be used in `get_marked_university_ids()` method to mark
     # duplicate entries.
     is_conflicted = False
@@ -59,3 +61,15 @@ class UniversityID(models.Model):
 
     class Meta:
         unique_together = ('user', 'course_key',)
+
+
+class UniversityIDSettings(models.Model):
+    """
+    This model stores university id settings for each course.
+    """
+    course_key = CourseKeyField(primary_key=True, max_length=255, db_index=True)
+    registration_end_date = models.DateField(null=True, blank=True, verbose_name=_('Registration End Date'))
+    terms_and_conditions = models.TextField(null=True, blank=True, verbose_name=_('Terms and Conditions'))
+
+    def __unicode__(self):
+        return unicode(self.course_key)

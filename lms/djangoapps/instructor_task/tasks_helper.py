@@ -741,7 +741,7 @@ def upload_grades_csv(_xmodule_instance_args, _entry_id, course_id, _task_input,
                 header = [section['label'] for section in gradeset[u'section_breakdown']]
 
                 if course.enable_university_id:
-                    edraak_university_header = ['Full Name', 'University ID', 'University Section']
+                    edraak_university_header = ['Full Name', 'University ID']
                 else:
                     edraak_university_header = []
 
@@ -807,9 +807,9 @@ def upload_grades_csv(_xmodule_instance_args, _entry_id, course_id, _task_input,
 
                 try:
                     university_id = UniversityID.objects.get(user=student, course_key=course_id)
-                    edraak_university_data.extend([university_id.university_id, university_id.section_number])
+                    edraak_university_data.extend([university_id.university_id])
                 except UniversityID.DoesNotExist:
-                    edraak_university_data.extend(['N/A', 'N/A'])
+                    edraak_university_data.extend(['N/A'])
             else:
                 edraak_university_data = []
 

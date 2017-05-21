@@ -61,6 +61,8 @@ class CourseUserGroup(models.Model):
             name=name
         )
 
+    def __unicode__(self):
+        return self.name
 
 class CohortMembership(models.Model):
     """Used internally to enforce our particular definition of uniqueness"""
