@@ -10,16 +10,22 @@
 
 <%include file="/courseware/course_navigation.html" args="active_page='university_id'" />
 <%block name="headextra">
+  <%static:js group='main_vendor'/>
   <%static:css group='style-course-vendor'/>
   <%static:css group='style-course'/>
   <%static:js group='instructor_dash'/>
 </%block>
 
+<script>
+ $( function() {
+    $( "#id_registration_end_date" ).datepicker();
+  } );
+</script>
 
 <section class="container">
   <div class="instructor-dashboard-wrapper-2">
     <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">
-        <h1>${_("Edraak University IDs")}</h1>
+        <h1>${_("Students' University IDs")}</h1>
 
         ## links which are tied to idash-sections below.
         ## the links are activated and handled in instructor_dashboard.coffee

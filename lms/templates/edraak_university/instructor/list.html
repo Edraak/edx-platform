@@ -57,11 +57,11 @@
             <table class="instructor-list">
                 <thead>
                     <tr>
-                        <th class="break sortable">${_('Student\'s University ID')}</th>
-                        <th class="break sortable">${_('Section Number')}</th>
-                        <th class="break">${_('Username')}</th>
-                        <th class="break">${_('Full Name')}</th>
-                        <th class="break">${_('Email')}</th>
+                        <th class="sortable">${_('Student\'s University ID')}</th>
+                        <th class="sortable">${_('Section Number')}</th>
+                        <th>${_('Username')}</th>
+                        <th>${_('Full Name')}</th>
+                        <th>${_('Email')}</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -75,10 +75,10 @@
                               <span title="${_('This university ID is a duplicate.')}">(*)</span>
                             % endif
                         </td>
-                        <td class="break">${object.cohort | h}</td>
-                        <td class="break">${object.user.username | h}</td>
-                        <td class="break">${object.get_full_name() | h}</td>
-                        <td class="break">${object.get_email() | h}</td>
+                        <td>${object.cohort | h}</td>
+                        <td>${object.user.username | h}</td>
+                        <td>${object.get_full_name() | h}</td>
+                        <td>${object.get_email() | h}</td>
                         <td>
                             <a href="${reverse('edraak_university_id_update', args=[course.id, object.pk])}">
                                 ${_('Edit')}
