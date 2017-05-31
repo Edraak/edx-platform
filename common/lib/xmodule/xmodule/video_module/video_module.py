@@ -855,7 +855,9 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         transcripts_info = self.get_transcripts_info()
         transcripts = {
             lang: self.runtime.handler_url(self, 'transcript', 'download', query="lang=" + lang, thirdparty=True)
-            for lang in self.available_translations(transcripts_info, verify_assets=False)
+            # Edraak (mobile): Do not force English if there's no subtitles found.
+            # for lang in self.available_translations(transcripts_info, verify_assets=False)
+            for lang in self.available_translations(transcripts_info)
         }
 
         return {
