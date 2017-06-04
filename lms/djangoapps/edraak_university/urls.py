@@ -21,8 +21,8 @@ urlpatterns = patterns('',  # nopep8
     ),
     url(
         r'^id/{}/instructor/list$'.format(settings.COURSE_ID_PATTERN),
-        views.UniversityIDListView.as_view(),
-        name='edraak_university_id_list',
+        views.UniversityIDStaffView.as_view(),
+        name='edraak_university_id_staff',
     ),
     url(
         r'^id/{}/instructor/update/(?P<pk>\d+)$'.format(settings.COURSE_ID_PATTERN),

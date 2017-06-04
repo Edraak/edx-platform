@@ -22,17 +22,26 @@
 
 <section class="container activation">
     <section class="message">
-        <h1 class="valid text-center">${_("Your Student University ID Has Been Saved")}</h1>
 
-        <hr class="horizontal-divider">
+        % if is_staff:
+            <h1 class="valid text-center">${_("Your Settings Have Been Saved")}</h1>
+            <p class="text-center">
+                <a href="${reverse('edraak_university_id_staff', kwargs={'course_id': course.id})}">
+                    <strong>${_('View the Students List')}</strong>
+                </a>
+            </p>
+        % else:
+            <h1 class="valid text-center">${_("Your Student University ID Has Been Saved")}</h1>
+
+            <hr class="horizontal-divider">
             <p>
                 ${_('Your student university ID has been successfully '
-                    'submitted and will be used for your grade records.')}
+                'submitted and will be used for your grade records.')}
             </p>
 
             <p>
                 ${_('Should your university coordinator have any comments on '
-                    'the information you entered, he/she will contact you.')}
+                'the information you entered, he/she will contact you.')}
             </p>
 
             <p class="text-center">
@@ -40,5 +49,6 @@
                     <strong>${_('View the Course Content')}</strong>
                 </a>
             </p>
+        % endif
     </section>
 </section>
