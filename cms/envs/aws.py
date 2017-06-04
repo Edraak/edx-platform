@@ -105,6 +105,9 @@ if STATIC_URL_BASE:
 # for course data
 GITHUB_REPO_ROOT = ENV_TOKENS.get('GITHUB_REPO_ROOT', GITHUB_REPO_ROOT)
 
+#for course image
+DEFAULT_COURSE_ABOUT_IMAGE_URL = ENV_TOKENS.get('DEFAULT_COURSE_ABOUT_IMAGE_URL', DEFAULT_COURSE_ABOUT_IMAGE_URL)
+
 # STATIC_ROOT specifies the directory where static files are
 # collected
 
