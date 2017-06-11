@@ -54,6 +54,8 @@ def get_organization_logo(organization, course_id):
         return 'pmijo.jpg'
     elif organization == 'qou':
         return 'qou.png'
+    elif organization == 'moe':
+        return 'moe.png'
     elif organization == 'mbrcgi':
         return 'mbrcgi.png'
     elif organization == 'hsoub':
