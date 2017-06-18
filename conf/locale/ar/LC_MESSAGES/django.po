@@ -49,7 +49,7 @@
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
-# #-#-#-#-#  edraak-platform-2015-theme.po (Edraak)  #-#-#-#-#
+# #-#-#-#-#  edraak-platform-2015-theme.po (Edraak (Deprecated))  #-#-#-#-#
 # Translations template for PROJECT.
 # Copyright (C) 2017 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
@@ -64,11 +64,11 @@
 # Sherif Halawa <shalawa@qrf.org>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: Edraak\n"
+"Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-05-18 16:58+0300\n"
-"PO-Revision-Date: 2017-05-09 15:18+0000\n"
-"Last-Translator: Dania Quraini <dalquraini@qrf.org>\n"
+"POT-Creation-Date: 2017-06-18 15:06+0300\n"
+"PO-Revision-Date: 2017-06-18 12:02+0000\n"
+"Last-Translator: Shared Edraak <dev@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -578,6 +578,11 @@ msgstr "ذكر"
 #: common/djangoapps/student/models.py
 msgid "Female"
 msgstr "أنثى"
+
+#. Translators: 'Other' refers to the student's gender
+#: common/djangoapps/student/models.py
+msgid "I prefer not to specify"
+msgstr "أفضل عدم الإفصاح"
 
 #: common/djangoapps/student/models.py
 msgid "Doctorate"
