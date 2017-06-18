@@ -264,7 +264,7 @@ class ParamValidatorTest(ModuleStoreTestCase):
             exception_regexp='.*Invalid.*level of education.*',
         )
 
-    @ddt.data('', ' ', 'o', 'hello')
+    @ddt.data('', ' ', 'hello')
     def test_invalid_gender(self, bad_value):
         self._assertValidateData(
             field_id='gender',
