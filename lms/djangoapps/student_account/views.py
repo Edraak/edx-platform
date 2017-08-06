@@ -159,7 +159,7 @@ def password_change_request_handler(request):
 
     if email:
         try:
-            request_password_change(email, request.get_host(), request.is_secure())
+            request_password_change(email, request.is_secure())
         except UserNotFound:
             AUDIT_LOG.info("Invalid password reset attempt")
             # Increment the rate limit counter
