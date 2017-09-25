@@ -68,7 +68,7 @@ python-dateutil==2.1
 
 # This module gets monkey-patched in third_party_auth.py to fix a Django 1.8 incompatibility.
 # When this dependency gets upgraded, the monkey patch should be removed, if possible.
-python-social-auth==0.2.12
+python-social-auth==0.2.20
 
 pytz==2015.2
 pysrt==0.4.7
