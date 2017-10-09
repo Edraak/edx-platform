@@ -270,7 +270,6 @@ from student.helpers import (
                 </ul>
               </div>
             </div>
-            <%include file="../edraak_certificates/_dashboard_certificate_link.html" args="course_overview=course_overview" />
           </div>
         </div>
       </div>
@@ -278,7 +277,7 @@ from student.helpers import (
   <footer class="wrapper-messages-primary">
     <ul class="messages-list">
       ## Bellow is disabled, till we get edX certificate running
-      % if False:  ## course_overview.may_certify() and cert_status:
+      % if course_overview.may_certify() and cert_status:
         <%include file='_dashboard_certificate_information.html' args='cert_status=cert_status,course_overview=course_overview, enrollment=enrollment'/>
       % endif
 
