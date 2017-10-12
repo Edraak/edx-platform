@@ -93,3 +93,30 @@ def organizations_enabled():
     Returns boolean indication if organizations app is enabled on not.
     """
     return settings.FEATURES.get('ORGANIZATIONS_APP', False)
+
+
+def get_edraak_course_organizations(course):
+    """
+    This is to fetch all organizations of the course by short_name 
+    since the  organizations_api don't support this yet.
+    :param course: 
+    :return: A list of all course's organizations and sponsors
+    """
+    if not organizations_enabled():
+        return []
+
+    from organizations import api as organizations_api
+    orgs = organizations_api.get_organizations()
+
+    course_orgs = []
+    course_id = course.id
+    short_name = course.org
+    sponsor_key = '{}_sponsor'.format(course_id)
+
+    for org in orgs:
+        if org['short_name'] == short_name:
+            course_orgs.insert(0, org)
+        elif org['short_name'] == sponsor_key:
+            course_orgs.append(org)
+
+    return course_orgs

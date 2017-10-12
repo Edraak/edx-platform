@@ -444,7 +444,7 @@ def _update_organization_context(context, course):
     """
     partner_long_name, organization_logo = None, None
     partner_short_name = course.display_organization if course.display_organization else course.org
-    organizations = organization_api.get_course_organizations(course_id=course.id)
+    organizations = organization_api.get_edraak_course_organizations(course)
     if organizations:
         #TODO Need to add support for multiple organizations, Currently we are interested in the first one.
         organization = organizations[0]
@@ -455,7 +455,9 @@ def _update_organization_context(context, course):
     context['organization_long_name'] = partner_long_name
     context['organization_short_name'] = partner_short_name
     context['accomplishment_copy_course_org'] = partner_short_name
-    context['organization_logo'] = organization_logo
+    context['organizations_logo'] = [
+        organization.get('logo', None) for organization in organizations
+    ]
 
 
 def render_cert_by_uuid(request, certificate_uuid):
