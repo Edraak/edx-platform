@@ -78,6 +78,7 @@
 @import 'elements/xmodules'; // styling for Studio-specific contexts
 
 @import 'edraak/arabic-mathjax';  // Styles and hacks for the Arabic MathJax
+@import 'edraak/header'; // edraak header style for studio
 
 @import 'developer'; // used for any developer-created scss that needs further polish/refactoring
 @import 'shame';     // used for any bad-form/orphaned scss
