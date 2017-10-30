@@ -317,15 +317,29 @@ def get_next_url_for_login_page(request):
         # over this one.
     return redirect_to
 
-def is_next_url_origin_allowed(origin):
 
-    return settings.FEATURES.get("ENABLE_AUTH_EXTERNAL_REDIRECT") and\
-           (
-                settings.AUTH_REDIRECT_ALLOW_ANY or \
-                origin in settings.AUTH_REDIRECT_ORIGINS_WHITELIST or \
-                any(filter(lambda exp: re.match(exp, origin),
-                           settings.AUTH_REDIRECT_REGX_ORIGINS))
-           )
+def is_origin_url_allowed(origin):
+    """
+    An Edraak change to determine if we can redirect the user to the
+    requested origin or not. Allowed origins are identified in the
+    configs files.
+    :param origin: The requested origin
+    :return: True if we can redirect, False otherwise
+    """
+    # Check if origin is a safe origin
+    all_allowed = settings.AUTH_REDIRECT_ALLOW_ANY
+    origin_allowed = origin in settings.AUTH_REDIRECT_ORIGINS_WHITELIST
+
+    # Check if the origin matches any allowed pattern
+    patterns = settings.AUTH_REDIRECT_REGX_ORIGINS
+    evaluated_origins = filter(lambda x: re.match(x, origin), patterns)
+    pattern_allowed = any(evaluated_origins)
+
+    origin_recognized = all_allowed or origin_allowed or pattern_allowed
+    is_enabled = settings.FEATURES.get("ENABLE_AUTH_EXTERNAL_REDIRECT")
+
+    return is_enabled and origin_recognized
+
 
 def is_hotmail_email(string):
     """
