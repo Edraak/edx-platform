@@ -31,7 +31,8 @@ from student.views import (
     signin_user as old_login_view,
     register_user as old_register_view
 )
-from student.helpers import get_next_url_for_login_page
+from student.helpers import get_next_url_for_login_page, \
+    is_next_url_origin_allowed
 import third_party_auth
 from third_party_auth import pipeline
 from third_party_auth.decorators import xframe_allow_whitelisted
@@ -118,6 +119,13 @@ def login_and_registration_form(request, initial_mode="login"):
         'disable_courseware_js': True,
         'disable_footer': True,
     }
+
+    # Edraak: Check if the origin is a safe (trusted) url. if so pass it
+    # to the front end to allow navigating back to the originating
+    # site after authentication.
+    origin = request.GET.get('origin')
+    if origin and is_next_url_origin_allowed(origin):
+        context['data']['origin'] = origin
 
     return render_to_response('student_account/login_and_register.html', context)
 

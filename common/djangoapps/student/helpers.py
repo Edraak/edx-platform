@@ -1,4 +1,5 @@
 """Helpers for the student app. """
+import re
 import time
 import logging
 from datetime import datetime
@@ -316,6 +317,15 @@ def get_next_url_for_login_page(request):
         # over this one.
     return redirect_to
 
+def is_next_url_origin_allowed(origin):
+
+    return settings.FEATURES.get("ENABLE_AUTH_EXTERNAL_REDIRECT") and\
+           (
+                settings.AUTH_REDIRECT_ALLOW_ANY or \
+                origin in settings.AUTH_REDIRECT_ORIGINS_WHITELIST or \
+                any(filter(lambda exp: re.match(exp, origin),
+                           settings.AUTH_REDIRECT_REGX_ORIGINS))
+           )
 
 def is_hotmail_email(string):
     """

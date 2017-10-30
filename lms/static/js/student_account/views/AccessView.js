@@ -63,6 +63,15 @@
                     if ( ! window.isExternal( options.login_redirect_url ) ) {
                         this.nextUrl = options.login_redirect_url;
                     }
+
+                    // Edraak: if an origin option is passed, then
+                    // the authentication request came from a different
+                    // trusted domain. therefore, the nextUrl should
+                    // redirect to the origin domain.
+                    if (options.origin) {
+                        this.nextUrl = location.protocol + "//" +
+                            options.origin + this.nextUrl;
+                    }
                 }
 
                 this.formDescriptions = {
