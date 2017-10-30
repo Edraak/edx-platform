@@ -233,6 +233,13 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = ()
 CORS_ORIGIN_ALLOW_ALL = True
 
+##################### Auth redirect ##########################
+
+FEATURES["ENABLE_AUTH_EXTERNAL_REDIRECT"] = True
+AUTH_REDIRECT_ALLOW_ANY = False
+AUTH_REDIRECT_ORIGINS_WHITELIST = tuple()
+AUTH_REDIRECT_REGX_ORIGINS = (r'^(https?://)?(\w+\.)?edraak\.dw',)
+
 
 #####################################################################
 # See if the developer has any local overrides.
