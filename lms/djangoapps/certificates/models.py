@@ -52,6 +52,7 @@ import os
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse_lazy
 from django.db import models, transaction
 from django.db.models import Count
 from django.db.models.signals import post_save
