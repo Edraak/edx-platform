@@ -2623,6 +2623,7 @@ ACCOUNT_VISIBILITY_CONFIGURATION = {
         "profile_image",
         "language_proficiencies",
         "name",
+        "english_name",
         "gender",
         "goals",
         "year_of_birth",
