@@ -22,6 +22,9 @@ from eventtracking import tracker
 from microsite_configuration import microsite
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
+
+from lms.djangoapps.edraak_certificates.edraakcertificate import \
+    contains_rtl_text
 from openedx.core.lib.courses import course_image_url
 from student.models import LinkedInAddToProfileConfiguration
 from util import organizations_helpers as organization_api
@@ -131,13 +134,10 @@ def _update_certificate_context(context, user_certificate, platform_name):
     # Translators: This text describes the purpose (and therefore, value) of a course certificate
     # 'verifying your identity' refers to the process for establishing the authenticity of the student
     context['certificate_info_description'] = _("{platform_name} acknowledges achievements through certificates, which "
-                                                "are awarded for various activities {platform_name} students complete "
-                                                "under the <a href='{tos_url}'>{platform_name} Honor Code</a>.  Some "
-                                                "certificates require completing additional steps, such as "
-                                                "<a href='{verified_cert_url}'> verifying your identity</a>.").format(
+                                                "are awarded for various activities. {platform_name} students complete "
+                                                "under the <a href='{tos_url}'>{platform_name} Honor Code</a>.").format(
         platform_name=platform_name,
-        tos_url=context.get('company_tos_url'),
-        verified_cert_url=context.get('company_verified_certificate_url'))
+        tos_url=context.get('company_tos_url'))
 
 
 def _update_context_with_basic_info(context, course_id, platform_name, configuration):
@@ -201,10 +201,14 @@ def _update_context_with_basic_info(context, course_id, platform_name, configura
     context['certificate_verify_urltext'] = _("Validate this certificate for yourself")
 
     # Translators:  This text describes (at a high level) the mission and charter the edX platform and organization
-    context['company_about_description'] = _("{platform_name} offers interactive online classes and MOOCs from the "
-                                             "world's best universities, including MIT, Harvard, Berkeley, University "
-                                             "of Texas, and many others.  {platform_name} is a non-profit online "
-                                             "initiative created by founding partners Harvard and MIT.").format(
+    context['company_about_description'] = _("{platform_name} is a massive open online course (MOOC) platform, that "
+                                             "is an initiative of the Queen Rania Foundation (QRF). QRF is determined "
+                                             "to ensure that the Arab world is at the forefront of educational innovation. "
+                                             "As such, QRF has capitalized on regional Arab talent to leverage technology "
+                                             "developed by the Harvard-MIT consortium, edX, to create the first non-profit "
+                                             "Arabic MOOC platform. The new MOOC platform will present the Arab world with "
+                                             "unique and vital opportunities that can be part of a necessary revolution in "
+                                             "education and learning.").format(
         platform_name=platform_name)
 
     context['company_about_title'] = _("About {platform_name}").format(platform_name=platform_name)
@@ -266,7 +270,7 @@ def _update_social_context(request, context, course, user, user_certificate, pla
     context['twitter_share_enabled'] = share_settings.get('CERTIFICATE_TWITTER', False)
     context['twitter_share_text'] = share_settings.get(
         'CERTIFICATE_TWITTER_TEXT',
-        _("I completed a course on {platform_name}. Take a look at my certificate.").format(
+        _("I completed a course on #{platform_name}. Take a look at my certificate.").format(
             platform_name=platform_name
         )
     )
@@ -515,6 +519,10 @@ def render_html_view(request, user_id, course_id):
     if active_configuration is None:
         return render_to_response(invalid_template_path, context)
     context['certificate_data'] = active_configuration
+
+    # Determine the certificate language
+    course_title = active_configuration.get('course_title')
+    context['lang'] = 'ar' if contains_rtl_text(course_title) else 'en'
 
     # Append/Override the existing view context values with any mode-specific ConfigurationModel values
     context.update(configuration.get(user_certificate.mode, {}))
