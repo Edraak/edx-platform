@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
+from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_str
 from django.core.urlresolvers import reverse
@@ -489,7 +490,7 @@ def _update_sponsor_context(context, course):
     partner_long_name, sponsor_logo = None, None
     partner_short_name = course.display_organization if course.display_organization else course.org
     sponsors = organization_api.get_course_sponsors(course_id=course.id)
-    print(sponsors)
+
     if sponsors:
         #TODO Need to add support for multiple organizations, Currently we are interested in the first one.
         organization = sponsors[0]
@@ -562,7 +563,12 @@ def render_html_view(request, user_id, course_id):
 
     # Determine the certificate language
     course_title = active_configuration.get('course_title')
-    context['lang'] = 'ar' if contains_rtl_text(course_title) else 'en'
+    language = 'ar' if contains_rtl_text(course_title) else 'en'
+    translation.activate(language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = language
+
+    # Reload the basic info with activated language
+    _update_context_with_basic_info(context, course_id, platform_name, configuration)
 
     # Append/Override the existing view context values with any mode-specific ConfigurationModel values
     context.update(configuration.get(user_certificate.mode, {}))
