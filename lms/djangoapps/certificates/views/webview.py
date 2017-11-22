@@ -23,6 +23,7 @@ from microsite_configuration import microsite
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 
+from lms.djangoapps.courseware.courses import get_course_about_section
 from lms.djangoapps.edraak_certificates.edraakcertificate import \
     contains_rtl_text
 from openedx.core.lib.courses import course_image_url
@@ -253,6 +254,25 @@ def _update_course_context(request, context, course, platform_name):
             platform_name=platform_name)
 
 
+def _update_edraak_course_context(request, context, course):
+    """
+    Updates context dictionary with course info.
+    """
+    context['full_course_image_url'] = request.build_absolute_uri(course_image_url(course))
+
+    cert_title = context['certificate_data'].get('course_title', '')
+    course_name = cert_title if cert_title else course.display_name
+    context['accomplishment_copy_course_name'] = course_name
+
+    course_description = get_course_about_section(
+        request, course, 'short_description')
+    context['course_description'] = course_description
+
+    course_number = course.display_coursenumber if \
+        course.display_coursenumber else course.number
+    context['course_number'] = course_number
+
+
 def _update_social_context(request, context, course, user, user_certificate, platform_name):
     """
     Updates context dictionary with info required for social sharing.
@@ -462,6 +482,26 @@ def _update_organization_context(context, course):
     context['organization_logo'] = organization_logo
 
 
+def _update_sponsor_context(context, course):
+    """
+    Updates context with organization related info.
+    """
+    partner_long_name, sponsor_logo = None, None
+    partner_short_name = course.display_organization if course.display_organization else course.org
+    sponsors = organization_api.get_course_sponsors(course_id=course.id)
+    print(sponsors)
+    if sponsors:
+        #TODO Need to add support for multiple organizations, Currently we are interested in the first one.
+        organization = sponsors[0]
+        partner_long_name = organization.get('name', partner_long_name)
+        partner_short_name = organization.get('short_name', partner_short_name)
+        sponsor_logo = organization.get('logo', None)
+
+    context['sponsor_long_name'] = partner_long_name
+    context['sponsor_short_name'] = partner_short_name
+    context['sponsor_logo'] = sponsor_logo
+
+
 def render_cert_by_uuid(request, certificate_uuid):
     """
     This public view generates an HTML representation of the specified certificate
@@ -530,8 +570,11 @@ def render_html_view(request, user_id, course_id):
     # Append organization info
     _update_organization_context(context, course)
 
+    # Append sponsor info
+    _update_sponsor_context(context, course)
+
     # Append course info
-    _update_course_context(request, context, course, platform_name)
+    _update_edraak_course_context(request, context, course)
 
     # Append user info
     _update_context_with_user_info(context, user, user_certificate)
