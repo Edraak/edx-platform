@@ -209,29 +209,46 @@ class EdraakCertificate(object):
                 y -= line_height
 
     def add_course_org_logo(self):
+        if not self.organizations:
+            return
+
         x = self.left_panel_center
-        y = 5.6
+        y = 5.9
 
+        text = self._("Brought to you by")
+        self.draw_bidi_center_text(text, x, y, 0.15, color='grey-light')
+
+        # Underline the sentence
+        text_width = stringWidth(text, self.font, self.font_size)
+        xu = self.bidi_x_axis(x*inch, difference=-text_width/2.0)
+        yu = (y - 0.1)*inch
+        length = text_width if self.is_english else -text_width
+
+        self.ctx.setStrokeColor(self.colors['grey-light'])
+        self.ctx.setLineWidth(0.5)
+        self.ctx.line(xu, yu, xu+length, yu)
+
+        # Fetch the organization data
+        organization = self.organizations[0]
+        organization_name = organization.get('name') if \
+            self.is_english else organization.get('short_name')
+
+        logo = organization.get('logo', None)
+        image = utils.ImageReader(self.path_builder(logo.url))
+        iw, ih = image.getSize()
+        aspect = iw / float(ih)
+        height = inch / 1.55
+        width = height * aspect
+
+        x = self.bidi_x_axis(x*inch, difference=width/2.0)
+        y -= 0.9
+
+        self.ctx.drawImage(image, x, y*inch, width, height, mask='auto')
+
+        x = self.left_panel_center
+        y -= 0.15
         self.draw_bidi_center_text(
-            self._("Brought to you by"), x, y, 0.175,
-            color='grey-light')
-
-        if self.organizations:
-            organization = self.organizations[0]
-            logo = organization.get('logo', None)
-            image = utils.ImageReader(self.path_builder(logo.url))
-
-            iw, ih = image.getSize()
-            aspect = iw / float(ih)
-            height = inch / 1.55
-            width = height * aspect
-
-            x = self.bidi_x_axis(x*inch, difference=width/2.0)
-            y -= 0.75
-
-            self.ctx.drawImage(image, x, y*inch,
-                width, height,
-                mask='auto')
+            organization_name, x, y, 0.09, color='grey-light')
 
     def add_course_sponsor_logo(self):
         if not self.sponsors:
@@ -240,11 +257,24 @@ class EdraakCertificate(object):
         x = self.left_panel_center
         y = 4.3
 
+        text = self._("In sponsorship with")
         self.draw_bidi_center_text(
-            self._("In sponsorship with"), x, y, 0.125,
-            color='grey-light')
+            text, x, y, 0.125, color='grey-light')
 
+        # Underline the sentence
+        text_width = stringWidth(text, self.font, self.font_size)
+        xu = self.bidi_x_axis(x*inch, difference=-text_width/2.0)
+        yu = (y - 0.1)*inch
+        length = text_width if self.is_english else -text_width
+
+        self.ctx.setStrokeColor(self.colors['grey-light'])
+        self.ctx.setLineWidth(0.5)
+        self.ctx.line(xu, yu, xu+length, yu)
+
+        # Fetch the organization data
         organization = self.sponsors[0]
+        organization_name = organization.get('name') if \
+            self.is_english else organization.get('short_name')
         logo = organization.get('logo', None)
         image = utils.ImageReader(self.path_builder(logo.url))
 
@@ -254,11 +284,14 @@ class EdraakCertificate(object):
         width = height * aspect
 
         x = self.bidi_x_axis(x*inch, difference=width/2.0)
-        y -= 0.55
+        y -= 0.7
 
-        self.ctx.drawImage(image, x, y*inch,
-            width, height,
-            mask='auto')
+        self.ctx.drawImage(image, x, y*inch, width, height, mask='auto')
+
+        x = self.left_panel_center
+        y -= 0.15
+        self.draw_bidi_center_text(
+            organization_name, x, y, 0.09, color='grey-light')
 
     def add_signatories(self):
         x = self.left_panel_center
@@ -344,7 +377,7 @@ class EdraakCertificate(object):
         This is draws a grid on the certificate if the platform
         running on a debug mode.
         """
-        if not settings.DEBUG:
+        if settings.DEBUG:
             return
 
         self.ctx.setStrokeColor(cyan) # put in a frame of reference
@@ -374,8 +407,8 @@ class EdraakCertificate(object):
         # Verification
         x = x - 3.3
         self.draw_bidi_text(
-            self._('Verify the authenticity of this certificate '
-                   'at'), x, y, size=font_size)
+            self._('Verify the authenticity of this certificate at'),
+            x, y, size=font_size)
 
         cert_url = get_certificate_url(
             course_id=self.course_id, uuid=self.cert.verify_uuid)
@@ -386,8 +419,6 @@ class EdraakCertificate(object):
         qr_y = (y + sub_y)/2.0
         self.add_qr_code(url, x, qr_y)
         self.draw_bidi_text(cert_uuid, x, sub_y, size=font_sub_size)
-
-
 
         # Underline the UUID
         uuid_width = stringWidth(cert_uuid, self.font, self.font_size)
