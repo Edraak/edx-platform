@@ -257,7 +257,7 @@ class EdraakCertificate(object):
         x = self.left_panel_center
         y = 4.3
 
-        text = self._("In sponsorship with")
+        text = self._("In Sponsorship with")
         self.draw_bidi_center_text(
             text, x, y, 0.125, color='grey-light')
 

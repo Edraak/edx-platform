@@ -34,7 +34,7 @@
 
     .certificate-container {
       .column {
-        float: right;
+        @include float(right);
         width: 50%;
       }
       .column-20 {
@@ -99,6 +99,7 @@
           text-align: left;
 
           .accomplishment-type-label {
+            @include text-align(left);
             margin: 0 0 1rem;
             color: #e10043;
           }
@@ -143,6 +144,7 @@
           .accomplishment-summary, .accomplishment-course,
           .accomplishment-statement-detail, .accomplishment-recipient {
             width: 100%;
+            @include text-align(left);
           }
         }
       }
