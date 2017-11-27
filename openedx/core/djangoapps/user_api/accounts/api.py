@@ -139,6 +139,9 @@ def update_account_settings(requesting_user, update, username=None):
     old_name = None
     if "name" in update:
         old_name = existing_user_profile.name
+    old_english_name = None
+    if "english_name" in update:
+        old_english_name = existing_user_profile.english_name
 
     # Check for fields that are not editable. Marking them read-only causes them to be ignored, but we wish to 400.
     read_only_fields = set(update.keys()).intersection(
@@ -213,6 +216,18 @@ def update_account_settings(requesting_user, update, username=None):
             meta['old_names'].append([
                 old_name,
                 u"Name change requested through account API by {0}".format(requesting_user.username),
+                datetime.datetime.now(UTC).isoformat()
+            ])
+            existing_user_profile.set_meta(meta)
+            existing_user_profile.save()
+
+        if old_english_name:
+            meta = existing_user_profile.get_meta()
+            if 'old_english_name' not in meta:
+                meta['old_english_name'] = []
+            meta['old_english_name'].append([
+                old_english_name,
+                u"English name change requested through account API by {0}".format(requesting_user.username),
                 datetime.datetime.now(UTC).isoformat()
             ])
             existing_user_profile.set_meta(meta)
