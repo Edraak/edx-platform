@@ -90,6 +90,7 @@ class UserReadOnlySerializer(serializers.Serializer):
                 many=True
             ).data,
             "name": profile.name,
+            "english_name": profile.english_name,
             "gender": AccountLegacyProfileSerializer.convert_empty_to_None(profile.gender),
             "goals": profile.goals,
             "year_of_birth": profile.year_of_birth,
@@ -167,7 +168,8 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer, Rea
     class Meta(object):
         model = UserProfile
         fields = (
-            "name", "gender", "goals", "year_of_birth", "level_of_education", "country",
+            "name", "english_name", "gender", "goals", "year_of_birth", 
+            "level_of_education", "country",
             "mailing_address", "bio", "profile_image", "requires_parental_consent", "language_proficiencies"
         )
         # Currently no read-only field, but keep this so view code doesn't need to know.

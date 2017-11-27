@@ -106,6 +106,15 @@
                             })
                         },
                         {
+                            view: new FieldViews.TextFieldView({
+                                model: userAccountModel,
+                                title: gettext('English Full Name'),
+                                valueAttribute: 'english_name',
+                                helpMessage: gettext('The name that appears on your english certificates. Other learners never see your full name.'),
+                                persistChanges: true
+                            })
+                        },
+                        {
                             view: new FieldViews.DropdownFieldView({
                                 model: userAccountModel,
                                 title: gettext('Gender'),
