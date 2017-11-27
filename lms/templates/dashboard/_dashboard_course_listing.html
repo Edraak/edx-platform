@@ -270,19 +270,18 @@ from student.helpers import (
                 </ul>
               </div>
             </div>
+            % if course_overview.may_certify() and cert_status:
+                <%include file='../edraak_certificates/_dashboard_certificate_link.html' args='cert_status=cert_status,course_overview=course_overview, enrollment=enrollment'/>
+            % endif
           </div>
         </div>
       </div>
   </section>
   <footer class="wrapper-messages-primary">
     <ul class="messages-list">
-      ## Bellow is disabled, till we get edX certificate running
-      % if course_overview.may_certify() and cert_status:
-        <%include file='_dashboard_certificate_information.html' args='cert_status=cert_status,course_overview=course_overview, enrollment=enrollment'/>
-      % endif
-
       % if credit_status is not None:
         <%include file="_dashboard_credit_info.html" args="credit_status=credit_status"/>
+
       % endif
 
         % if verification_status.get('status') in [VERIFY_STATUS_NEED_TO_VERIFY, VERIFY_STATUS_SUBMITTED, VERIFY_STATUS_APPROVED, VERIFY_STATUS_NEED_TO_REVERIFY] and not is_course_blocked:

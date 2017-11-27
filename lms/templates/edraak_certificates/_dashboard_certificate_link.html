@@ -1,14 +1,14 @@
-<%!
-    from django.utils.translation import ugettext as _
-    from django.core.urlresolvers import reverse
-    from edraak_misc.utils import is_certificate_allowed
-%>
+<%page args="cert_status, course_overview, enrollment" />
 
-<%page args="course_overview" />
+<%! from django.utils.translation import ugettext as _ %>
+<%namespace name='static' file='../static_content.html'/>
 
-## TODO: Activate this
-% if is_certificate_allowed(user, course_overview):
-    <a href="${reverse('edraak_certificates_issue', args=[course_overview.id])}" class="issue-certificate">
-        ${_("Issue Certificate")}
-    </a>
+% if cert_status['show_disabled_download_button'] or cert_status['show_download_url'] or cert_status['show_survey_button']:
+  % if cert_status['show_disabled_download_button']:
+    <span class="issue-certificate">${_("Your Certificate is Generating")}</span>
+  % elif cert_status['show_download_url'] and cert_status.get('show_cert_web_view', False):
+    <a class="issue-certificate" href="${cert_status['cert_web_view_url']}" target="_blank"
+       title="${_('This link will open the certificate web view')}">${_("Issue Certificate")}</a>
+  % endif
 % endif
+
