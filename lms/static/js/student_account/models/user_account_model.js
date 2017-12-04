@@ -9,7 +9,7 @@
             defaults: {
                 username: '',
                 name: '',
-                english_name: '',
+                name_en: '',
                 email: '',
                 password: '',
                 language: null,

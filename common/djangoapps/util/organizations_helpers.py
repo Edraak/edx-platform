@@ -4,6 +4,10 @@ Utility library for working with the edx-organizations app
 
 from django.conf import settings
 from django.db.utils import DatabaseError
+from organizations import serializers
+from organizations.api import _validate_course_key
+
+from models import CourseSponsor
 
 
 def add_organization(organization_data):
@@ -95,7 +99,7 @@ def organizations_enabled():
     return settings.FEATURES.get('ORGANIZATIONS_APP', False)
 
 
-def get_course_sponsors(course_id):
+def get_course_sponsors(course_key):
     """
     This is to fetch all sponsors of the course .
     :param course:
@@ -104,13 +108,9 @@ def get_course_sponsors(course_id):
     if not organizations_enabled():
         return []
 
-    from organizations import api as organizations_api
-    orgs = organizations_api.get_organizations()
-
-    course_sponsors = []
-    for org in orgs:
-        description = org['description'].strip('\n').strip()
-        if description == str(course_id):
-            course_sponsors.append(org)
-
-    return course_sponsors
+    _validate_course_key(course_key)
+    queryset = CourseSponsor.objects.filter(
+        course_id=unicode(course_key),
+        active=True
+    ).select_related('organization')
+    return [serializers.serialize_organization_with_course(organization) for organization in queryset]

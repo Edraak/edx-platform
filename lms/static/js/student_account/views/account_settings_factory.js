@@ -37,7 +37,7 @@
                         {
                             view: new FieldViews.TextFieldView({
                                 model: userAccountModel,
-                                title: gettext('Arabic Full Name'),
+                                title: gettext('Full Name in Arabic'),
                                 valueAttribute: 'name',
                                 helpMessage: gettext('The name that appears on your Arabic certificates. Other learners never see your full name.'),
                                 persistChanges: true
@@ -46,8 +46,8 @@
                         {
                           view: new FieldViews.TextFieldView({
                             model: userAccountModel,
-                            title: gettext('English Full Name'),
-                            valueAttribute: 'english_name',
+                            title: gettext('Full Name in English'),
+                            valueAttribute: 'name_en',
                             helpMessage: gettext('The name that appears on your English certificates. Other learners never see your full name.'),
                             persistChanges: true
                           })

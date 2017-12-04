@@ -5,8 +5,10 @@ import logging
 
 from django.db import models
 from django.utils.text import compress_string
+from django.utils.translation import ugettext_lazy as _
 
 from config_models.models import ConfigurationModel
+from organizations.models import OrganizationCourse
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
@@ -62,3 +64,10 @@ class CompressedTextField(models.TextField):
             value = decompress_string(value)
 
         return value
+
+
+class CourseSponsor(OrganizationCourse):
+    class Meta(OrganizationCourse.Meta):
+        """ Meta class for this Django model """
+        verbose_name = _('Course Sponsor')
+        verbose_name_plural = _('Link Course Sponsors')

@@ -90,7 +90,7 @@ class UserReadOnlySerializer(serializers.Serializer):
                 many=True
             ).data,
             "name": profile.name,
-            "english_name": profile.english_name,
+            "name_en": profile.name_en,
             "gender": AccountLegacyProfileSerializer.convert_empty_to_None(profile.gender),
             "goals": profile.goals,
             "year_of_birth": profile.year_of_birth,
@@ -168,7 +168,7 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer, Rea
     class Meta(object):
         model = UserProfile
         fields = (
-            "name", "english_name", "gender", "goals", "year_of_birth", 
+            "name", "name_en", "gender", "goals", "year_of_birth",
             "level_of_education", "country",
             "mailing_address", "bio", "profile_image", "requires_parental_consent", "language_proficiencies"
         )
