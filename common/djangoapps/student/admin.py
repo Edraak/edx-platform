@@ -11,7 +11,7 @@ from opaque_keys.edx.keys import CourseKey
 from config_models.admin import ConfigurationModelAdmin
 from student.models import (
     UserProfile, UserTestGroup, CourseEnrollmentAllowed, DashboardConfiguration, CourseEnrollment, Registration,
-    PendingNameChange, CourseAccessRole, LinkedInAddToProfileConfiguration
+    PendingNameChange, CourseAccessRole, LinkedInAddToProfileConfiguration, UserFullNameHistory
 )
 from student.roles import REGISTERED_ACCESS_ROLES
 
@@ -174,6 +174,12 @@ class UnicodeFriendlyUserAdmin(UserAdmin):
             'username',
         )
 
+
+class UserFullNameHistoryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'english_name', 'created',)
+
+
+admin.site.register(UserFullNameHistory, UserFullNameHistoryAdmin)
 
 admin.site.register(UserTestGroup)
 

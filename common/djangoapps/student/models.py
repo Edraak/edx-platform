@@ -385,6 +385,28 @@ class UserProfile(models.Model):
         return cls.PROFILE_COUNTRY_CACHE_KEY.format(user_id=user_id)
 
 
+class UserFullNameHistory(models.Model):
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    description = models.CharField(
+        blank=True, null=True,max_length=255)
+    english_name = models.CharField(
+        blank=True, null=True, max_length=255)
+    name = models.CharField(blank=True, max_length=255)
+    user = models.ForeignKey(User, db_index=True)
+
+    @receiver(post_save, sender=UserProfile)
+    def save_history(sender, instance, **kwargs):
+        """
+
+        """
+        history_entry = UserFullNameHistory(
+            english_name=instance.english_name,
+            name=instance.name,
+            user=instance.user,
+        )
+        history_entry.save()
+
+
 @receiver(models.signals.post_save, sender=UserProfile)
 def invalidate_user_profile_country_cache(sender, instance, **kwargs):  # pylint:   disable=unused-argument, invalid-name
     """Invalidate the cache of country in UserProfile model. """

@@ -53,12 +53,15 @@ def normalize_spaces(text):
 
 
 def contains_rtl_text(string):
-        try:
-            string.decode('ascii')
-        except (UnicodeDecodeError, UnicodeEncodeError) as e:
-            return True
-        else:
-            return False
+    if not string:
+        return False
+
+    try:
+        string.decode('ascii')
+    except (UnicodeDecodeError, UnicodeEncodeError) as e:
+        return True
+    else:
+        return False
 
 
 class EdraakCertificate(object):
@@ -116,16 +119,16 @@ class EdraakCertificate(object):
         ctx.setPageSize(self.size)
         self.ctx = ctx
 
-    def bidi_x_axis(self, x, difference=0):
+    def bidi_x_axis(self, x, offset=0):
         """
         Normalize the X-axis and provide the correct RTL/LTR value.
 
         This helps avoiding hard-coded values for both directions.
         """
         if not self.is_english:
-            return x - difference
+            return x - offset
         else:
-            return self.size[0] - (x + difference)
+            return self.size[0] - (x + offset)
 
     def add_certificate_bg(self):
         width, height = self.size
@@ -220,7 +223,7 @@ class EdraakCertificate(object):
 
         # Underline the sentence
         text_width = stringWidth(text, self.font, self.font_size)
-        xu = self.bidi_x_axis(x*inch, difference=-text_width/2.0)
+        xu = self.bidi_x_axis(x * inch, offset=-text_width / 2.0)
         yu = (y - 0.1)*inch
         length = text_width if self.is_english else -text_width
 
@@ -240,7 +243,7 @@ class EdraakCertificate(object):
         height = inch / 1.55
         width = height * aspect
 
-        x = self.bidi_x_axis(x*inch, difference=width/2.0)
+        x = self.bidi_x_axis(x * inch, offset=width / 2.0)
         y -= 0.9
 
         self.ctx.drawImage(image, x, y*inch, width, height, mask='auto')
@@ -263,7 +266,7 @@ class EdraakCertificate(object):
 
         # Underline the sentence
         text_width = stringWidth(text, self.font, self.font_size)
-        xu = self.bidi_x_axis(x*inch, difference=-text_width/2.0)
+        xu = self.bidi_x_axis(x * inch, offset=-text_width / 2.0)
         yu = (y - 0.1)*inch
         length = text_width if self.is_english else -text_width
 
@@ -283,7 +286,7 @@ class EdraakCertificate(object):
         height = inch / 2.1
         width = height * aspect
 
-        x = self.bidi_x_axis(x*inch, difference=width/2.0)
+        x = self.bidi_x_axis(x * inch, offset=width / 2.0)
         y -= 0.7
 
         self.ctx.drawImage(image, x, y*inch, width, height, mask='auto')
@@ -306,7 +309,7 @@ class EdraakCertificate(object):
         aspect = iw / float(ih)
         height = inch / 1.9
         width = height * aspect
-        signature_x = self.bidi_x_axis(x*inch, difference=width/2.0)
+        signature_x = self.bidi_x_axis(x * inch, offset=width / 2.0)
 
         signatories = self.certificate_data.get('signatories', [])
         for signatory in signatories:
@@ -339,7 +342,7 @@ class EdraakCertificate(object):
         width = height * aspect
 
         x = self.left_panel_center
-        logo_x = self.bidi_x_axis(x*inch, difference=width/2.0)
+        logo_x = self.bidi_x_axis(x * inch, offset=width / 2.0)
 
         self.ctx.drawImage(logo, logo_x, y, width, height, mask='auto')
 
@@ -377,7 +380,7 @@ class EdraakCertificate(object):
         This is draws a grid on the certificate if the platform
         running on a debug mode.
         """
-        if settings.DEBUG:
+        if not settings.DEBUG:
             return
 
         self.ctx.setStrokeColor(cyan) # put in a frame of reference
@@ -452,7 +455,7 @@ class EdraakCertificate(object):
         width = height * aspect
 
         difference = width + border if self.is_english else 0
-        x = self.bidi_x_axis(x*inch, difference=difference)
+        x = self.bidi_x_axis(x * inch, offset=difference)
         y = y*inch - (height/2.25)
 
         self.ctx.drawImage(
