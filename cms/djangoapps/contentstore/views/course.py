@@ -5,7 +5,9 @@ import copy
 import json
 import logging
 import random
+import requests
 import string  # pylint: disable=deprecated-module
+import urlparse
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -57,6 +59,7 @@ from milestones import api as milestones_api
 from course_action_state.managers import CourseActionStateItemNotFoundError
 from course_action_state.models import CourseRerunState, CourseRerunUIStateManager
 from course_creators.views import get_course_creator_status, add_user_with_status_unrequested
+from edraak_specializations.models import CourseSpecializationInfo
 from edxmako.shortcuts import render_to_response
 from microsite_configuration import microsite
 from models.settings.course_grading import CourseGradingModel
@@ -1219,6 +1222,46 @@ def advanced_settings_handler(request, course_key_string):
 
                         # now update mongo
                         modulestore().update_item(course_module, request.user.id)
+
+                        """
+                        Edraak (programs):
+                        if a specialization slug has been added to the
+                        course, save the specialization's info in the
+                        MODEL
+                        """
+                        if course_module.specialization_slug:
+                            url = urlparse.urljoin(
+                                settings.PROGS_URLS.get("ROOT"),
+                                settings.PROGS_URLS.get("PROG_API", "")
+                                .format(
+                                    program_slug=
+                                    course_module.specialization_slug
+                                )
+                            )
+                            r = requests.get(url)
+                            if r.status_code != requests.codes.ok:
+                                return JsonResponseBadRequest([
+                                    {
+                                        "message": r.json().get(
+                                            'detail',
+                                            _('An error occurred while trying to save the speciliazation id')
+                                        ),
+                                        "model": {
+                                            "display_name": _("Specialization id error"),
+                                        }
+                                    }
+                                ])
+
+                            spec_json = r.json()
+                            CourseSpecializationInfo.objects.update_or_create(
+                                course_id=course_key,
+                                specialization_slug=
+                                course_module.specialization_slug,
+                                defaults={
+                                    'name_en': spec_json.get('name_en'),
+                                    'name_ar': spec_json.get('name_ar')
+                                }
+                            )
 
                         return JsonResponse(updated_data)
                     else:

@@ -1932,6 +1932,7 @@ INSTALLED_APPS = (
     'edraak_forus',
     'edraak_ratelimit',
     'edraak_university',
+    'edraak_specializations',
 
     'lms.djangoapps.lms_xblock',
 
@@ -2013,6 +2014,9 @@ MKTG_URL_LINK_MAP = {
 }
 
 SUPPORT_SITE_LINK = ''
+
+######################## PROGRAMS PLATFORM #############################
+PROGS_URLS = {}
 
 ############################# SOCIAL MEDIA SHARING #############################
 # Social Media Sharing on Student Dashboard
