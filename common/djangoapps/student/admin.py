@@ -176,7 +176,7 @@ class UnicodeFriendlyUserAdmin(UserAdmin):
 
 
 class UserFullNameHistoryAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'english_name', 'created',)
+    list_display = ('user', 'name', 'name_en', 'created',)
 
 
 admin.site.register(UserFullNameHistory, UserFullNameHistoryAdmin)

@@ -1,7 +1,6 @@
 <%!
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import escapejs
-from django.core.urlresolvers import reverse
 %>
 <%namespace name='static' file='../static_content.html'/>
 <%block name="js_extra">
@@ -26,9 +25,6 @@ from django.core.urlresolvers import reverse
               };
               Logger.log('edx.certificate.shared', data);
               window.open('${linked_in_url}');
-          });
-          $("#action-download-view").click(function() {
-                window.location.href = "${reverse('edraak_certificates_download', args=(course_id,))}";
           });
       });
 
@@ -85,9 +81,9 @@ from django.core.urlresolvers import reverse
                     </button>
                     %endif
 
-                    <button class="action action-print btn btn-overlay btn-small" id="action-download-view">
-                        <i class="icon fa fa-download" aria-hidden="true"></i>
-                        ${_("Download Certificate")}
+                    <button class="action action-print btn btn-overlay btn-small" id="action-print-view">
+                        <i class="icon fa fa-print" aria-hidden="true"></i>
+                        ${_("Print Certificate")}
                     </button>
                 </div>
             </div>

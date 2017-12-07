@@ -37,7 +37,7 @@ def track_names(apps, schema_editor):
         History.objects.create(
             user=profile.user,
             name=profile.name,
-            english_name=profile.english_name,
+            name_en=profile.name_en,
         )
 
 

@@ -71,7 +71,7 @@ class CourseOverview(TimeStampedModel):
     # Certification data
     certificates_display_behavior = TextField(null=True)
     certificates_show_before_end = BooleanField(default=False)
-    cert_html_view_enabled = BooleanField(default=False)
+    cert_html_view_enabled = BooleanField(default=True)
     has_any_active_web_certificate = BooleanField(default=False)
     cert_name_short = TextField()
     cert_name_long = TextField()

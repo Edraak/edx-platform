@@ -79,7 +79,7 @@ class EdraakCertificate(object):
         self.organizations = organization_api.get_course_organizations(
             course_id=course.id)
         self.sponsors = organization_api.get_course_sponsors(
-            course_id=course.id)
+            course_key=course.id)
 
         self.colors = {
             'base': (225 / 255.0, 0 / 255.0, 67 / 255.0),

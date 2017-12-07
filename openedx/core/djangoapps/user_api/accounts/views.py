@@ -82,7 +82,7 @@ class AccountView(APIView):
             * mailing_address: The textual representation of the user's mailing
               address, or null.
             * name: The full name of the user.
-            * english_name: The full English name of the user.
+            * name_en: The full English name of the user.
             * profile_image: A JSON representation of a user's profile image
               information. This representation has the following keys.
 

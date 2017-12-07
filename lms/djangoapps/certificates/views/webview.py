@@ -202,7 +202,7 @@ def _update_context_with_basic_info(context, course_id, platform_name, configura
 
     context['certificate_verify_urltext'] = _("Validate this certificate for yourself")
 
-    # Translators:  This text describes (at a high level) the mission and charter the edX platform and organization
+    # Translators:  (EDRAAK) This text describes (at a high level) the mission and charter the edX platform and organization
     context['company_about_description'] = _("{platform_name} is a massive open online course (MOOC) platform, that "
                                              "is an initiative of the Queen Rania Foundation (QRF). QRF is determined "
                                              "to ensure that the Arab world is at the forefront of educational innovation. "
@@ -327,12 +327,12 @@ def _update_context_with_user_info(context, user, user_certificate):
     Updates context dictionary with user related info.
     """
     user_fullname = user.profile.name
-    user_english_fullname = user.profile.english_name
+    user_english_fullname = user.profile.name_en
     context['username'] = user.username
     context['course_mode'] = user_certificate.mode
     context['accomplishment_user_id'] = user.id
     context['accomplishment_copy_name'] = user_fullname
-    context['accomplishment_copy_english_name'] = user_english_fullname
+    context['accomplishment_copy_name_en'] = user_english_fullname
     context['accomplishment_copy_username'] = user.username
 
     context['accomplishment_more_title'] = _("More Information About {user_name}'s Certificate:").format(
@@ -491,7 +491,7 @@ def _update_sponsor_context(context, course):
     """
     partner_long_name, sponsor_logo = None, None
     partner_short_name = course.display_organization if course.display_organization else course.org
-    sponsors = organization_api.get_course_sponsors(course_id=course.id)
+    sponsors = organization_api.get_course_sponsors(course_key=course.id)
 
     if sponsors:
         #TODO Need to add support for multiple organizations, Currently we are interested in the first one.

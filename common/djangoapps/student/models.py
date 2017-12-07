@@ -226,7 +226,7 @@ class UserProfile(models.Model):
     # This is not visible to other users, but could introduce holes later
     user = models.OneToOneField(User, unique=True, db_index=True, related_name='profile')
     name = models.CharField(blank=True, max_length=255, db_index=True)
-    english_name = models.CharField(blank=True, max_length=255)
+    name_en = models.CharField(blank=True, max_length=255)
 
     meta = models.TextField(blank=True)  # JSON dictionary for future expansion
     courseware = models.CharField(blank=True, max_length=255, default='course.xml')
@@ -389,7 +389,7 @@ class UserFullNameHistory(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     description = models.CharField(
         blank=True, null=True,max_length=255)
-    english_name = models.CharField(
+    name_en = models.CharField(
         blank=True, null=True, max_length=255)
     name = models.CharField(blank=True, max_length=255)
     user = models.ForeignKey(User, db_index=True)
@@ -400,7 +400,7 @@ class UserFullNameHistory(models.Model):
 
         """
         history_entry = UserFullNameHistory(
-            english_name=instance.english_name,
+            name_en=instance.name_en,
             name=instance.name,
             user=instance.user,
         )
