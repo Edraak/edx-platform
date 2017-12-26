@@ -25,6 +25,21 @@ def check_student_grades(request):
     })
 
 
+@transaction.non_atomic_requests
+@login_required
+def student_course_complete_status(request, course_id):
+    """
+    This view returns a json response describing if a user has
+    completed (passed) a course.
+
+    :param course_id: the id for the course to check
+    """
+
+    return JsonResponse({
+        'complete': is_student_pass(request.user, request, course_id)
+    })
+
+
 @ensure_csrf_cookie
 @cache_if_anonymous()
 def all_courses(request, extra_context={}, user=AnonymousUser()):
