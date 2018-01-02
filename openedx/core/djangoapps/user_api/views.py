@@ -472,10 +472,18 @@ class RegistrationView(APIView):
         # meant to hold the user's password.
         password_label = _(u"Password")
 
+        password_instructions = _(
+            # Translators: These instructions appear on the registration form, immediately
+            # below a field meant to hold the user's password.
+            u"Password must be at least 6 characters."
+            u"It cannot match your username."
+        ).format(bold_start=u'<strong>', bold_end=u'</strong>')
+
         error_msg = _(u"Please enter your Password.")
         form_desc.add_field(
             "password",
             label=password_label,
+            instructions=password_instructions,
             field_type="password",
             restrictions={
                 "min_length": PASSWORD_MIN_LENGTH,
@@ -684,9 +692,11 @@ class RegistrationView(APIView):
 
         # Translators: "Terms of Service" is a legal document users must agree to
         # in order to register a new account.
-        label = _(u"I agree to the {platform_name} {terms_of_service}.").format(
+        label = _(u"By clicking on {bold_start}Create your account{bold_end}, you agree to the {platform_name} {terms_of_service}.").format(
             platform_name=settings.PLATFORM_NAME,
-            terms_of_service=terms_link
+            terms_of_service=terms_link,
+            bold_start=u'<strong>',
+            bold_end=u'</strong>'
         )
 
         # Translators: "Terms of Service" is a legal document users must agree to
@@ -704,7 +714,7 @@ class RegistrationView(APIView):
             required=required,
             error_messages={
                 "required": error_msg
-            }
+            },
         )
 
     def _add_terms_of_service_field(self, form_desc, required=True):
