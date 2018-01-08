@@ -2,6 +2,8 @@
 URLs for LMS
 """
 
+from urlparse import urljoin
+
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import RedirectView
@@ -16,6 +18,16 @@ from config_models.views import ConfigurationModelCurrentAPIView
 from openedx.core.djangoapps.programs.models import ProgramsApiConfig
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 
+# Edraak: Redirect dashboard to programs platform
+DASHBOARD_VIEW = 'student.views.dashboard'
+if settings.PROGS_URLS and settings.PROGS_URLS.get('DASHBOARD'):
+    progs_dashboard_url =\
+        urljoin(settings.PROGS_URLS.get("ROOT"),
+                                   settings.PROGS_URLS.get("DASHBOARD"))
+    DASHBOARD_VIEW =\
+        RedirectView.as_view(url=progs_dashboard_url, permanent=True)
+
+
 # Uncomment the next two lines to enable the admin:
 if settings.DEBUG or settings.FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
     admin.autodiscover()
@@ -29,7 +41,8 @@ urlpatterns = (
     url(r'', include('edraak_url_rewrites.urls')),
 
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
-    url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
+    # Edraak: Redirect dashboard to programs platform
+    url(r'^dashboard$', DASHBOARD_VIEW, name="dashboard"),
     url(r'^login_ajax$', 'student.views.login_user', name="login"),
     url(r'^login_ajax/(?P<error>[^/]*)$', 'student.views.login_user'),
 
