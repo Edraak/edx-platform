@@ -106,4 +106,7 @@ class MarketingCourseDetailSerializer(CourseDetailSerializer):
         so you'll never find the value returned in the database
         """
 
-        return course_overview.overview
+        # If the marketing course doesn't have an overview just
+        # return an empty overview. Not None to not break the mobile
+        # apps.
+        return getattr(course_overview, 'overview', '')
