@@ -1,8 +1,8 @@
 # #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2017 EdX
+# Copyright (C) 2018 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
@@ -13,9 +13,9 @@
 # saadaltabari <saadtabari@gmail.com>, 2017
 # #-#-#-#-#  django-studio.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2017 EdX
+# Copyright (C) 2018 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
@@ -24,9 +24,9 @@
 # saadaltabari <saadtabari@gmail.com>, 2017
 # #-#-#-#-#  mako.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2017 edX
+# Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
@@ -37,23 +37,23 @@
 # Dania Quraini <dalquraini@qrf.org>, 2017
 # #-#-#-#-#  mako-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2017 edX
+# Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # #-#-#-#-#  wiki.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2017 edX
+# Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # #-#-#-#-#  edraak-platform-2015-theme.po (Edraak (Deprecated))  #-#-#-#-#
 # Translations template for PROJECT.
-# Copyright (C) 2017 ORGANIZATION
+# Copyright (C) 2018 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # 
 # Translators:
@@ -63,15 +63,15 @@
 # Areej Huniti <ahuniti@qrf.org>, 2015
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # saadaltabari <saadtabari@gmail.com>, 2017
-# Salah Alomari <salomari@qrf.org>, 2016-2017
+# Salah Alomari <salomari@qrf.org>, 2016-2018
 # Sherif Halawa <shalawa@qrf.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-12-06 17:07+0200\n"
-"PO-Revision-Date: 2017-12-06 15:09+0000\n"
-"Last-Translator: saadaltabari <saadtabari@gmail.com>\n"
+"POT-Creation-Date: 2018-01-12 14:25+0200\n"
+"PO-Revision-Date: 2018-01-12 21:33+0000\n"
+"Last-Translator: Salah Alomari <salomari@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -432,205 +432,218 @@ msgstr "اسم المستخدم"
 #: common/djangoapps/student/edraak_validation.py
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
+"يرجى إدخال ٣٠ حرفاً أول أقل. يُسمح باستخدام الحروف والأرقام بالإضافة للرموز "
+"التالية: @ . + - _ فقط."
 
 #: common/djangoapps/student/edraak_validation.py
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
 msgstr ""
+"يُسمح باستخدام الحروف والأرقام بالإضافة للرموز التالية: @ . + - _ فقط."
 
 #: common/djangoapps/student/edraak_validation.py
 msgid ""
 "Enter a valid 'username' consisting of letters, numbers, spaces, underscores"
 " or hyphens."
-msgstr ""
+msgstr "أدخل اسم مستخدم صحيح، مكوّناً من حروف وأرقام ومسافات وشرطات (- و _)."
 
 #: common/djangoapps/student/forms.py
 msgid ""
 "That e-mail address doesn't have an associated user account. Are you sure "
 "you've registered?"
 msgstr ""
+"لا يرتبط عنوان البريد الإلكتروني ذاك بأي حساب لمستخدم لدينا. هل أنت متأكد "
+"بأنك قد سجّلت لدينا؟"
 
 #: common/djangoapps/student/forms.py
 msgid ""
 "The user account associated with this e-mail address cannot reset the "
 "password."
 msgstr ""
+"لا يمكن لحساب المستخدم المرتبط بعنوان البريد الإلكتروني هذا إعادة تهيئة كلمة"
+" المرور."
 
 #: common/djangoapps/student/forms.py
 msgid "Username must be minimum of two characters long"
-msgstr ""
+msgstr "يجب أن يتألّف اسم المستخدم من حرفين على الأقلّ"
 
 #: common/djangoapps/student/forms.py
 msgid "A properly formatted e-mail is required"
-msgstr ""
+msgstr "يجب إدخال عنوان بريد إلكتروني بصيغة ملائمة"
 
 #: common/djangoapps/student/forms.py
 msgid "A valid password is required"
-msgstr ""
+msgstr "يجب إدخال كلمة مرور صحيحة"
 
 #: common/djangoapps/student/forms.py
 msgid "Your legal name must be a minimum of two characters long"
-msgstr ""
+msgstr "يجب أن يتألّف اسمك القانوني من حرفين على الأقلّ"
 
 #: common/djangoapps/student/forms.py
 msgid ""
 "Usernames must contain only letters, numbers, underscores (_), and hyphens "
 "(-)."
 msgstr ""
+"يجب أن تحوي أسماء المستخدمين على حروف وأرقام وحرف الخط السفلي(_) "
+"والشرطة(-)فقط"
 
 #: common/djangoapps/student/forms.py
 #, python-format
 msgid "Username cannot be more than %(limit_value)s characters long"
-msgstr ""
+msgstr "لا يمكن أن يزيد عدد أحرف اسم المستخدم عن %(limit_value)s"
 
 #: common/djangoapps/student/forms.py
 #, python-format
 msgid "Email cannot be more than %(limit_value)s characters long"
-msgstr ""
+msgstr "لا يمكن أن يزيد عدد أحرف البريد الإلكتروني عن %(limit_value)s"
 
 #: common/djangoapps/student/forms.py
 msgid "You must accept the terms of service."
-msgstr ""
+msgstr "يجب أن تقبل بشروط الخدمة."
 
 #: common/djangoapps/student/forms.py
 msgid "A level of education is required"
-msgstr ""
+msgstr "يجب إدخال المستوى التعليمي"
 
 #: common/djangoapps/student/forms.py
 msgid "Your gender is required"
-msgstr ""
+msgstr "يجب إدخال نوع جنسك"
 
 #: common/djangoapps/student/forms.py
 msgid "Your year of birth is required"
-msgstr ""
+msgstr "يجب إدخال سنة ميلادك"
 
 #: common/djangoapps/student/forms.py
 msgid "Your mailing address is required"
-msgstr ""
+msgstr "يجب إدخال عنوانك البريدي"
 
 #: common/djangoapps/student/forms.py
 msgid "A description of your goals is required"
-msgstr ""
+msgstr "يجب إدخال وصف لأهدافك"
 
 #: common/djangoapps/student/forms.py
 msgid "A city is required"
-msgstr ""
+msgstr "يجب إدخال المدينة"
 
 #: common/djangoapps/student/forms.py
 msgid "A country is required"
-msgstr ""
+msgstr "يجب إدخال الدولة"
 
 #: common/djangoapps/student/forms.py
 msgid "To enroll, you must follow the honor code."
-msgstr ""
+msgstr "للتسجيل، يجب عليك اتّباع ميثاق الشرف الأكاديمي."
 
 #: common/djangoapps/student/forms.py
 msgid "You are missing one or more required fields"
-msgstr ""
+msgstr "لم تقم بتعبئة واحد أو أكثر من الحقول المطلوبة"
 
 #: common/djangoapps/student/forms.py
 msgid "Username and password fields cannot match"
-msgstr ""
+msgstr "ﻻ يسمحُ بتطابق حقليّ كلمة المرور واسم المستخدم"
 
 #: common/djangoapps/student/forms.py common/djangoapps/student/views.py
 msgid "Password: "
-msgstr ""
+msgstr "كلمة المرور:"
 
 #. Translators: Gmail Spam folder translation
 #: common/djangoapps/student/helpers.py
 msgctxt "gmail"
 msgid "Spam"
-msgstr ""
+msgstr "الرسائل المزعجة"
 
 #. Translators: Hotmail Junk folder translation
 #: common/djangoapps/student/helpers.py
 msgctxt "hotmail"
 msgid "Junk"
-msgstr ""
+msgstr "البريد الإلكتروني الغير هام"
 
 #. Translators: Other email Spam folder translation
 #: common/djangoapps/student/helpers.py
 msgctxt "other_email_providers"
 msgid "Spam"
-msgstr ""
+msgstr "الرسائل المزعجة"
 
 #: common/djangoapps/student/middleware.py
 msgid ""
 "Your account has been disabled. If you believe this was done in error, "
 "please contact us at {support_email}"
 msgstr ""
+"عذرًا، لقد جرى تعطيل حسابك. إذا كنت تعتقد حصول ذلك بفعل خطأ، يُرجى الاتصال "
+"بنا على العنوان {support_email}"
 
 #: common/djangoapps/student/middleware.py
 msgid "Disabled Account"
-msgstr ""
+msgstr "حساب معطَّل "
 
 #: common/djangoapps/student/models.py
 msgid "Male"
-msgstr ""
+msgstr "ذكر"
 
 #: common/djangoapps/student/models.py
 msgid "Female"
-msgstr ""
+msgstr "أنثى"
 
 #. Translators: 'Other' refers to the student's gender
 #: common/djangoapps/student/models.py
 msgid "I prefer not to specify"
-msgstr ""
+msgstr "أفضل عدم الإفصاح"
 
 #: common/djangoapps/student/models.py
 msgid "Doctorate"
-msgstr ""
+msgstr "دكتوراه"
 
 #: common/djangoapps/student/models.py
 msgid "Master's or professional degree"
-msgstr ""
+msgstr "ماجستير أو شهادة مهنيّة"
 
 #: common/djangoapps/student/models.py
 msgid "Bachelor's degree"
-msgstr ""
+msgstr "درجة البكالوريوس"
 
 #: common/djangoapps/student/models.py
 msgid "Associate degree"
-msgstr ""
+msgstr "درجة زميل"
 
 #: common/djangoapps/student/models.py
 msgid "Secondary/high school"
-msgstr ""
+msgstr "شهادة الثانوية العامة"
 
 #: common/djangoapps/student/models.py
 msgid "Junior secondary/junior high/middle school"
-msgstr ""
+msgstr "شهادة الثانوية الصغرى/الإعدادية/المرحلة المتوسّطة"
 
 #: common/djangoapps/student/models.py
 msgid "Elementary/primary school"
-msgstr ""
+msgstr "المدرسة الابتدائية"
 
 #. Translators: 'None' refers to the student's level of education
 #: common/djangoapps/student/models.py
 msgid "No Formal Education"
-msgstr ""
+msgstr "لا تعليم رسمي"
 
 #. Translators: 'Other' refers to the student's level of education
 #: common/djangoapps/student/models.py
 msgid "Other Education"
-msgstr ""
+msgstr "تعليم آخر"
 
 #: common/djangoapps/student/models.py
 msgid "{platform_name} Honor Code Certificate for {course_name}"
-msgstr ""
+msgstr "شهادة ميثاق الشرف الأكاديمي من {platform_name} للمساق {course_name}"
 
 #: common/djangoapps/student/models.py
 msgid "{platform_name} Verified Certificate for {course_name}"
-msgstr ""
+msgstr "شهادة موثَّقة من {platform_name} للمساق {course_name}"
 
 #: common/djangoapps/student/models.py
 msgid "{platform_name} Professional Certificate for {course_name}"
-msgstr ""
+msgstr "شهادة مهنيّة من {platform_name} للمساق {course_name}"
 
 #: common/djangoapps/student/models.py
 msgid ""
 "The company identifier for the LinkedIn Add-to-Profile button e.g "
 "0_0dPSPyS070e0HsE9HNz_13_d11_"
 msgstr ""
+"الرمز التعريفي للشركة، مطلوب لزرّ \"إضافة إلى الملف الشخصي\" على موقع لينكد "
+"إن، مثلًا 0_0dPSPyS070e0HsE9HNz_13_d11_"
 
 #: common/djangoapps/student/models.py
 msgid ""
@@ -638,40 +651,44 @@ msgid ""
 "(Example: 'edx')  If no value is provided, tracking codes will not be sent "
 "to LinkedIn."
 msgstr ""
+"رمز تعريفي قصير للشريك على موقع لينكد إن والمستخدَم كجزء من رمز التتبّع. "
+"(مثلًا: ’edx‘) لن تٌرسل رموز التتبّع إلى موقع لينكد إن مالم تزوّد القيم."
 
 #: common/djangoapps/student/models.py
 msgid "{platform_name} Certificate for {course_name}"
-msgstr ""
+msgstr "شهادة من {platform_name} للمساق {course_name}"
 
 #: common/djangoapps/student/models.py
 msgid "The ISO 639-1 language code for this language."
-msgstr ""
+msgstr "رمز اللغة أيزو-639-1 لهذه اللغة"
 
 #: common/djangoapps/student/models.py
 msgid "Namespace of enrollment attribute"
-msgstr ""
+msgstr "مساحة الاسم لخاصيّة التسجيل"
 
 #: common/djangoapps/student/models.py
 msgid "Name of the enrollment attribute"
-msgstr ""
+msgstr "اسم خاصيّة التسجيل"
 
 #: common/djangoapps/student/models.py
 msgid "Value of the enrollment attribute"
-msgstr ""
+msgstr "قيمة خاصيّة التسجيل"
 
 #: common/djangoapps/student/models.py
 msgid ""
 "The window of time after enrolling during which users can be granted a "
 "refund, represented in microseconds. The default is 14 days."
 msgstr ""
+"الإطار الزمني التالي للتسجيل والذي يُقبل خلاله إعادة المبلغ المدفوع "
+"للمستخدمين، ممثلًا بأجزاء الثواني. الفترة الافتراضية هي 14 يومًا."
 
 #: common/djangoapps/student/views.py
 msgid "The course you are looking for does not start until {date}."
-msgstr ""
+msgstr "عذرًا، المساق الذي تبحث عنه لن يبدأ حتى {date}. "
 
 #: common/djangoapps/student/views.py
 msgid "Course id not specified"
-msgstr ""
+msgstr "الرقم التعريفي المساق غير محدَّد "
 
 #: common/djangoapps/student/views.py lms/djangoapps/edraak_forus/views.py
 #: lms/djangoapps/support/views/refund.py
@@ -684,21 +701,23 @@ msgstr "تعذّرت عمليّة التسجيل"
 
 #: common/djangoapps/student/views.py
 msgid "You are not enrolled in this course"
-msgstr ""
+msgstr "عذرًا، أنت غير مسجَّل في هذا المساق "
 
 #: common/djangoapps/student/views.py
 msgid "Your certificate prevents you from unenrolling from this course"
-msgstr ""
+msgstr "تمنعك شهادتك من إلغاء تسجيلك في هذا المساق"
 
 #: common/djangoapps/student/views.py
 msgid "Enrollment action is invalid"
-msgstr ""
+msgstr "عملية التسجيل غير صحيحة"
 
 #: common/djangoapps/student/views.py
 msgid ""
 "You've successfully logged into your {provider_name} account, but this "
 "account isn't linked with an {platform_name} account yet."
 msgstr ""
+"تم الحصول على معلوماتك من {provider_name}، غير أنّ هذا الحساب غير مرتبط بأي "
+"الحسابات على {platform_name}."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -706,16 +725,23 @@ msgid ""
 "below, and then link your {platform_name} account with {provider_name} from "
 "your dashboard."
 msgstr ""
+"يُرجى تحديد اسم المستخدم وكلمة المرور الخاصَّين بحسابك لدى {platform_name} "
+"لتسجيل دخولك إلى {platform_name} أدناه، ثمّ اربط حسابك لدى {platform_name} "
+"مع {provider_name} باستخدام لوحة المعلومات الخاصة بك."
 
 #: common/djangoapps/student/views.py
 msgid ""
 "If you don't have an {platform_name} account yet, click "
 "<strong>Register</strong> at the top of the page."
 msgstr ""
+"إذا لم تكن قد أنشأت حسابًا لدى {platform_name} بعد، يُرجة النقر على "
+"<strong>سجّل الآن</strong> في أعلى الصفحة."
 
 #: common/djangoapps/student/views.py
 msgid "There was an error receiving your login information. Please email us."
 msgstr ""
+"نعتذر لحدوث خطأ أثناء تلقّي بيانات تسجيل دخولك. يُرجى مراسلتنا على عنوان "
+"بريدنا الإلكتروني."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -737,6 +763,10 @@ msgid ""
 "reset your password before you can log in again. Please click the \"Forgot "
 "Password\" link on this page to reset your password before logging in again."
 msgstr ""
+"انتهت صلاحية كلمة المرور الخاصة بك حسب سياسة كلمة المرور المعتمدة لهذا "
+"الحساب. لذا يُرجى منك إعادة ضبط كلمة المرور لتتمكّن من تسجيل دخولك مرّة "
+"أخرى. يُرجى الضغط على رابط \"نسيت كلمة المرور\" الموجود على هذه الصفحة لتعيد"
+" ضبط كلمة المرور قبل إعادة محاولة تسجيل الدخول."
 
 #: common/djangoapps/student/views.py
 msgid "Too many failed login attempts. Try again in {number} minute."
@@ -748,7 +778,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: lms/templates/provider_login.html
+#: common/djangoapps/student/views.py lms/templates/provider_login.html
 msgid "Email or password is incorrect."
 msgstr "عنوان البريد الإلكتروني أو كلمة المرور خاطئين."
 
@@ -757,6 +787,8 @@ msgid ""
 "This account has not been activated. We have sent another activation "
 "message. Please check your email for the activation instructions."
 msgstr ""
+"لم يجرِ تفعيل هذا الحساب بعد. قد أرسلنا رسالة تفعيل أخرى. يُرجى التحقق من "
+"بريدك الإلكتروني للاطلاع على إرشادات التفعيل."
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -764,59 +796,64 @@ msgid ""
 "account's \"Spam\" or \"Junk\" folders to ensure the message was not "
 "filtered."
 msgstr ""
+"إن لم تجد الرسالة في صندوق الوارد، تفقد الرسائل المزعجة أو غير المرغوب فيها "
+"أو البريد غير الهام."
 
 #: common/djangoapps/student/views.py
 msgid "Please enter a username"
-msgstr ""
+msgstr "يُرجى إدخال اسم المستخدم"
 
 #: common/djangoapps/student/views.py
 msgid "Please choose an option"
-msgstr ""
+msgstr "يُرجى تحديد أحد الخيارات"
 
 #: common/djangoapps/student/views.py
 msgid "User with username {} does not exist"
-msgstr ""
+msgstr "المستخدم الذي يحمل اسم المستخدم {} غير موجود"
 
 #: common/djangoapps/student/views.py
 msgid "Successfully disabled {}'s account"
-msgstr ""
+msgstr "نجح تعطيل الحساب {}"
 
 #: common/djangoapps/student/views.py
 msgid "Successfully reenabled {}'s account"
-msgstr ""
+msgstr "لقد نجحت عملية إعادة تفعيل حساب {}"
 
 #: common/djangoapps/student/views.py
 msgid "Unexpected account status"
-msgstr ""
+msgstr "حالة حساب غير متوقّعة"
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Public Username '{username}' already exists."
-msgstr ""
+msgstr "سبق أن سُجل حساب يحمل اسم المستخدم '{username}' ذاته."
 
 #: common/djangoapps/student/views.py
 msgid "An account with the Email '{email}' already exists."
-msgstr ""
+msgstr "سبق أن سُجّل حساب بعنوان البريد الإلكتروني '{email}' ذاته."
 
 #: common/djangoapps/student/views.py
 msgid ""
 "Registration process has timed out. Please refresh the page and start over."
 msgstr ""
+"انتهى الوقت المخصص  للتسجيل. قم بإعادة تحميل الصفحة والمحاولة مرة أخرى."
 
 #: common/djangoapps/student/views.py
 msgid "An access_token is required when passing value ({}) for provider."
-msgstr ""
+msgstr "رمز الدخول ’access_token‘ مطلوب عند تمرير قيمة ({}) للمزوِّد."
 
 #: common/djangoapps/student/views.py
 msgid "The provided access_token is already associated with another user."
-msgstr ""
+msgstr "سبق أن رُبط رمز الدخول ’access_token‘ بمستخدِم آخر."
 
 #: common/djangoapps/student/views.py
 msgid "The provided access_token is not valid."
-msgstr ""
+msgstr "رمز الدخول ’access_token‘ غير صحيح. "
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
 msgstr ""
+"نعتذر لحدوث خطأ غير معروف. يُرجى التواصل معنا بإرسال رسالة إلى عنوان بريدنا "
+"الإلكتروني لإعلامنا بكيفية حدوث ذلك. "
 
 #: common/djangoapps/student/views.py
 msgid ""
@@ -848,31 +885,33 @@ msgstr[5] ""
 
 #: common/djangoapps/student/views.py
 msgid "Password reset unsuccessful"
-msgstr ""
+msgstr "عذرًا، لم تنجح عملية تغيير كلمة المرور"
 
 #: common/djangoapps/student/views.py
 msgid "No inactive user with this e-mail exists"
-msgstr ""
+msgstr "لا يوجد مستخدم غير فعّال مرتبط بعنوان البريد الإلكتروني هذا"
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send reactivation email"
-msgstr ""
+msgstr "نأسف لتعذّر إرسال رسالة إعادة التفعيل."
 
 #: common/djangoapps/student/views.py
 msgid "Valid e-mail address required."
-msgstr ""
+msgstr "يجب إدخال عنوان بريد إلكتروني صحيح."
 
 #: common/djangoapps/student/views.py
 msgid "Old email is the same as the new email."
-msgstr ""
+msgstr "البريد الإلكتروني القديم مطابق للبريد الإلكتروني الجديد."
 
 #: common/djangoapps/student/views.py
 msgid "An account with this e-mail already exists."
-msgstr ""
+msgstr "سبق أن سُجّل حساب بعنوان البريد الإلكتروني ذاته."
 
 #: common/djangoapps/student/views.py
 msgid "Unable to send email activation link. Please try again later."
 msgstr ""
+"نأسف لتعذّر إرسال رسالة بريد إلكتروني تحوي رابط التفعيل. يُرجى إعادة "
+"المحاولة لاحقًا. "
 
 #: common/djangoapps/third_party_auth/models.py
 msgid "Authentication with {} is currently unavailable."
@@ -905,6 +944,7 @@ msgstr ""
 "إذا جرى تحديد هذا الخيار، لن يُطلب من المستخدمين تأكيد صحّة بريدهم "
 "الإلكتروني بل سيُفعّل حسابهم على الفور بمجرّد التسجيل."
 
+#: common/djangoapps/third_party_auth/templates/third_party_auth/post_custom_auth_entry.html
 #: lms/templates/student_account/finish_auth.html
 msgid "Please wait"
 msgstr "يرجى الانتظار"
@@ -1509,7 +1549,7 @@ msgstr "اختيارات متعدّدة"
 #. Translators: 'unmask_name' is a method name and should not be translated.
 #: common/lib/capa/capa/responsetypes.py
 msgid "unmask_name called on response that is not masked"
-msgstr ""
+msgstr "تمت مناداة الدالة unmask_name على response لم يطبق عليه mask"
 
 #. Translators: 'shuffle' and 'answer-pool' are attribute names and should not
 #. be translated.
@@ -2122,7 +2162,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "List of pairs of (title, url) for textbooks used in this course"
-msgstr ""
+msgstr "قائمة تحوي على (عنوان، ورابط) للكتب المستخدمة في هذا المساق"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Slug that points to the wiki for this course"
@@ -2454,11 +2494,11 @@ msgstr "قائمة متقدّمة بالوحدات"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Enter the names of the advanced components to use in your course."
-msgstr ""
+msgstr "أدخل أسماء المكونات المتقدمة التي تود استخدامها في هذا المساق. "
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Course Info Sidebar Name"
-msgstr ""
+msgstr "اسم شريط المعلومات الجانبي في المساق"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -2466,6 +2506,8 @@ msgid ""
 "on the Course Info page. Your course handouts appear in the right panel of "
 "the page."
 msgstr ""
+"أدخل العنوان الذي تريد أن يراه المتعلمون أعلى الشريط الجانبي للمساق. يظهر "
+"هذا الشريط يسار صفحة معلومات المساق."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -3545,7 +3587,7 @@ msgstr "تخصيص النصّ"
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Enter string customization substitutions for particular locations."
-msgstr ""
+msgstr "أدخل بدائل تخصيص النص لمواقع محدّدة."
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Enable LaTeX Compiler"
@@ -4235,7 +4277,7 @@ msgstr "مُدخلات"
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Number of text boxes available for students to input words/sentences."
-msgstr ""
+msgstr "عدد مربعات النص التي يمكن للمتعلمين من إدخال الجمل\\والكلمات من خلالها."
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Maximum Words"
@@ -4243,7 +4285,7 @@ msgstr "عدد الكلمات الأقصى"
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Maximum number of words to be displayed in generated word cloud."
-msgstr ""
+msgstr "الحد الأقصى لعدد الكلمات التي تظهر في سحابة المولّدة."
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Show Percents"
@@ -4255,7 +4297,7 @@ msgstr "تَظهر إحصاءات الكلمات التي أُدخِلت بجا�
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Whether this student has posted words to the cloud."
-msgstr ""
+msgstr "فيما إذا كتب المتعلم شيئاً في سحابة الكلمات."
 
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Student answer."
@@ -4302,7 +4344,6 @@ msgid "News"
 msgstr "الأخبار"
 
 #: lms/djangoapps/branding/api.py templates/theme-footer.html
-#: templates/theme-header.html
 msgid "Help Center"
 msgstr "مركز المساعدة"
 
@@ -4615,6 +4656,11 @@ msgid ""
 "require completing additional steps, such as <a href='{verified_cert_url}'> "
 "verifying your identity</a>."
 msgstr ""
+"تُقِرّ {platform_name} بالإنجازات من خلال شهادات، تُمنَح تقديرًا لجهود طلّاب"
+" {platform_name} بعد استكمال أنشطة مختلفة في إطار <a href='{tos_url}'>ميثاق "
+"الشرف الأكاديمي الخاص بمنصّة {platform_name}</a>. كما وتتطلّب بعض الشهادات "
+"استكمال خطوات إضافية، مثل <a href='{verified_cert_url}'>التحقّق من "
+"هويّتك</a>."
 
 #. Translators:  'All rights reserved' is a legal term used in copyrighting to
 #. protect published content
@@ -4694,6 +4740,10 @@ msgid ""
 "and many others.  {platform_name} is a non-profit online initiative created "
 "by founding partners Harvard and MIT."
 msgstr ""
+"{platform_name} offers interactive online classes and MOOCs from the world's"
+" best universities, including MIT, Harvard, Berkeley, University of Texas, "
+"and many others.  {platform_name} is a non-profit online initiative created "
+"by founding partners Harvard and MIT."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "About {platform_name}"
@@ -4743,7 +4793,7 @@ msgstr "لقد أتممت مساق {course_title} على {platform_name}."
 #: lms/djangoapps/certificates/views/webview.py
 msgid ""
 "I completed a course on {platform_name}. Take a look at my certificate."
-msgstr ""
+msgstr "لقد أتمّمت مساقًا على {platform_name}. للقي نظرة على شهادتي."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "More Information About {user_name}'s Certificate:"
@@ -4919,7 +4969,7 @@ msgstr "عذرًا، لا تملك صلاحية دخول هذا المساق م�
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "in {relative_date} - {absolute_date}"
-msgstr ""
+msgstr "في {relative_date} - {absolute_date}"
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "UTC"
@@ -4956,7 +5006,7 @@ msgstr "الموعد النهائي للترقية والحصول على شها�
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "You are still eligible to upgrade to a Verified Certificate!"
-msgstr ""
+msgstr "لا زلت مؤهلا للترقية للحصول على شهادة موثّقة!"
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Upgrade to Verified Certificate"
@@ -5369,10 +5419,11 @@ msgstr ""
 msgid ""
 "Unable to clone or pull repository. Please check your url. Output was: {0!r}"
 msgstr ""
+"لا يمكن استيراد مستودع المساق. يرجى التأكد من رابطه. رسالة الخطأ: {0!r}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Failed to clone repository to {directory_name}"
-msgstr ""
+msgstr "فشلت عملية استيراد المستودع إلى {directory_name}"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Successfully switched to branch: {branch_name}"
@@ -5485,28 +5536,33 @@ msgid ""
 "A course of study offered by Edraak with cooperation from MITx. The learning"
 " experience has been supervised and managed by the course team."
 msgstr ""
+"تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا "
+"على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد "
+"ماسشوستس للتكنولوجيا."
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid ""
 "A course of study offered by Edraak. The learning experience has been "
 "supervised and managed by the course team."
 msgstr ""
+"تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا "
+"على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "This is to certify that:"
-msgstr ""
+msgstr " تم منح شهادة إتمام المساق هذه إلى:"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "Successfully completed:"
-msgstr ""
+msgstr "لإتمام المساق التالي بنجاح:"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "This course is sponsored by:"
-msgstr ""
+msgstr "هذا المساق برعاية:"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "Course{new_line}Certificate{new_line}of Completion"
-msgstr ""
+msgstr "شهادة{new_line}إتمام{new_line}مساق"
 
 #: lms/djangoapps/edraak_forus/helpers.py
 msgid "The security check has failed on the provided parameters"
@@ -5694,6 +5750,7 @@ msgid "Registration End Date"
 msgstr "الموعد النهائي لتسجيل معلومات الطلاب"
 
 #: lms/djangoapps/edraak_university/models.py
+#: lms/templates/edraak_university/university_id.html
 msgid "Terms and Conditions"
 msgstr "الشروط والأحكام"
 
@@ -7961,6 +8018,7 @@ msgid "Total Cost"
 msgstr "التكلفة الإجمالية"
 
 #: lms/djangoapps/shoppingcart/reports.py
+#: lms/templates/instructor/instructor_dashboard_2/set_course_mode_price_modal.html
 msgid "Currency"
 msgstr "العملة"
 
@@ -8152,32 +8210,34 @@ msgstr "استُردّ مبلغ {cost} المدفوع لقاء الطلبيّة 
 
 #: lms/djangoapps/teams/models.py
 msgid "Optional language the team uses as ISO 639-1 code."
-msgstr ""
+msgstr "لغة اختيارية التي يستخدمها الفريق كرمز ISO 639-1."
 
 #: lms/djangoapps/teams/plugins.py
 #: lms/djangoapps/teams/templates/teams/teams.html
 msgid "Teams"
-msgstr ""
+msgstr "فرق"
 
 #: lms/djangoapps/teams/views.py
 msgid "The supplied course id {course_id} is not valid."
-msgstr ""
+msgstr "إن الرقم التعريفي الذي أدخلته للمساق {course_id} غير صحيح."
 
 #: lms/djangoapps/teams/views.py
 msgid "course_id must be provided"
-msgstr ""
+msgstr "يجب إدخال الرقم التعريفي للمساق course_id."
 
 #: lms/djangoapps/teams/views.py
 msgid "text_search and order_by cannot be provided together"
 msgstr ""
+"لا يمكن استخدام ميزتي البحث النصيّ text_search والترتيب حسب order_by معًا في"
+" الوقت ذاته."
 
 #: lms/djangoapps/teams/views.py
 msgid "The supplied topic id {topic_id} is not valid"
-msgstr ""
+msgstr "الرقم التعريفي الذي أدخلته للموضوع {topic_id} غير صحيح."
 
 #: lms/djangoapps/teams/views.py
 msgid "Error connecting to elasticsearch"
-msgstr ""
+msgstr "حدث خطأ أثناء محاولة الاتصال بمخدّم \"elasticSearch\""
 
 #. Translators: 'ordering' is a string describing a way
 #. of ordering a list. For example, {ordering} may be
@@ -8185,40 +8245,40 @@ msgstr ""
 #. list by lower case name.
 #: lms/djangoapps/teams/views.py
 msgid "The ordering {ordering} is not supported"
-msgstr ""
+msgstr "إنّ خاصّية إنشاء طلبية {ordering} غير مدعومة."
 
 #: lms/djangoapps/teams/views.py
 msgid "The supplied course_id {course_id} is not valid."
-msgstr ""
+msgstr "إن الرقم التعريفي الذي أدخلته للمساق {course_id} غير صحيح."
 
 #: lms/djangoapps/teams/views.py
 msgid "You are already in a team in this course."
-msgstr ""
+msgstr "سبق أن جرت إضافتك إلى أحد فرق عمل هذا المساق."
 
 #: lms/djangoapps/teams/views.py
 msgid "username or team_id must be specified."
-msgstr ""
+msgstr "يجب تحديد اسم المستخدم أو الرقم التعريفي للفريق."
 
 #: lms/djangoapps/teams/views.py
 msgid "Username is required."
-msgstr ""
+msgstr "اسم المستخدم مطلوب."
 
 #: lms/djangoapps/teams/views.py
 msgid "Team id is required."
-msgstr ""
+msgstr "الرقم التعريفي للفريق مطلوب."
 
 #: lms/djangoapps/teams/views.py
 msgid "This team is already full."
-msgstr ""
+msgstr "اكتمل أعضاء هذا الفريق قبل الآن."
 
 #: lms/djangoapps/teams/views.py
 msgid "The user {username} is already a member of a team in this course."
-msgstr ""
+msgstr "سبق أنّ سُجَّل المستخدم {username} كعضو في أحد فرق هذا المساق."
 
 #: lms/djangoapps/teams/views.py
 msgid ""
 "The user {username} is not enrolled in the course associated with this team."
-msgstr ""
+msgstr "إنّ المستخدم {username} غير مسجَّل في المساق المرتبط بهذا الفريق."
 
 #: lms/djangoapps/verify_student/models.py
 msgid "Your {platform_name} verification has expired."
@@ -9022,7 +9082,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/index.html
 #: lms/templates/courseware/courses.html
 #: lms/templates/discussion/_thread_list_template.html
-#: lms/templates/edxnotes/edxnotes.html
+#: lms/templates/edxnotes/edxnotes.html templates/theme-header.html
 msgid "Search"
 msgstr "بحث"
 
@@ -9423,6 +9483,13 @@ msgstr "فاطمة_الفهري"
 msgid "Please enter your Username."
 msgstr "يُرجى إدخال اسم المستخدم."
 
+#. Translators: These instructions appear on the registration form,
+#. immediately
+#. below a field meant to hold the user's password.
+#: openedx/core/djangoapps/user_api/views.py
+msgid "Password must be at least 6 characters.It cannot match your username."
+msgstr ""
+
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Please enter your Password."
 msgstr "يُرجى إدخال كلمة المرور."
@@ -9469,11 +9536,13 @@ msgstr "شروط الخدمة وميثاق الشرف الأكاديمي"
 
 #. Translators: "Terms of Service" is a legal document users must agree to
 #. in order to register a new account.
-#. Translators: "Terms of service" is a legal document users must agree to
-#. in order to register a new account.
 #: openedx/core/djangoapps/user_api/views.py
-msgid "I agree to the {platform_name} {terms_of_service}."
-msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platform_name}."
+msgid ""
+"By clicking on {bold_start}Create your account{bold_end}, you agree to the "
+"{platform_name} {terms_of_service}."
+msgstr ""
+"بالضغط على {bold_start}انشئ حسابك{bold_end}، انت توافق على "
+"{terms_of_service} الخاصة ب {platform_name}."
 
 #. Translators: "Terms of Service" is a legal document users must agree to
 #. in order to register a new account.
@@ -9482,6 +9551,12 @@ msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platfo
 #: openedx/core/djangoapps/user_api/views.py
 msgid "You must agree to the {platform_name} {terms_of_service}."
 msgstr "يجب الموافقة على {terms_of_service} الخاصين بمنصّة {platform_name}."
+
+#. Translators: "Terms of service" is a legal document users must agree to
+#. in order to register a new account.
+#: openedx/core/djangoapps/user_api/views.py
+msgid "I agree to the {platform_name} {terms_of_service}."
+msgstr "أوافق على {terms_of_service} الخاصين بمنصّة {platform_name}."
 
 #: openedx/core/lib/api/view_utils.py
 msgid "This field is not editable"
@@ -10304,6 +10379,7 @@ msgstr "البداية"
 
 #: lms/templates/dashboard.html lms/templates/navigation-edx.html
 #: lms/templates/navigation.html themes/edx.org/lms/templates/header.html
+#: templates/theme-header.html
 msgid "Dashboard"
 msgstr "لوحة المعلومات"
 
@@ -10960,7 +11036,7 @@ msgstr "سلّة التسوّق"
 
 #: lms/templates/navigation-edx.html lms/templates/navigation.html
 #: themes/edx.org/lms/templates/header.html
-#: themes/red-theme/lms/templates/header.html templates/theme-header.html
+#: themes/red-theme/lms/templates/header.html
 msgid "Sign in"
 msgstr "دخول"
 
@@ -12154,7 +12230,7 @@ msgstr "إضافة إلى موزيلا BackPack"
 
 #: lms/templates/certificates/_accomplishment-banner.html
 msgid "Print Certificate"
-msgstr ""
+msgstr "اطبع الشهادة"
 
 #: lms/templates/certificates/_accomplishment-header.html
 msgid "{platform_name} Home"
@@ -14585,6 +14661,9 @@ msgid ""
 "name from {old_name} to {new_name}. If you need further assistance, please "
 "e-mail the tech support at {email}"
 msgstr ""
+"نعتذر. لم يوافق طاقم المساق لدينا على طلبك تغيير اسمك من {old_name} إلى "
+"{new_name}. إذا كنت بحاجة للمزيد من المساعدة، الرجاء مراسلة فريق الدعم الفني"
+" على البريد الإلكتروني {email}"
 
 #: lms/templates/emails/reject_name_change.txt
 msgid ""
@@ -14592,6 +14671,9 @@ msgid ""
 "name from {old_name} to {new_name}. If you need further assistance, please "
 "e-mail the course staff at {email}."
 msgstr ""
+"نعتذر. لم يوافق طاقم المساق لدينا على طلبك تغيير اسمك من {old_name} إلى "
+"{new_name}. إذا كنت بحاجة للمزيد من المساعدة، الرجاء مراسلة فريق المساق على "
+"البريد الإلكتروني {email}"
 
 #: lms/templates/emails/remove_beta_tester_email_message.txt
 msgid ""
@@ -16231,15 +16313,15 @@ msgstr "إظهار سجل كافة مهمات البريد الإلكتروني 
 
 #: lms/templates/instructor/instructor_dashboard_2/set_course_mode_price_modal.html
 msgid "Set Course Mode Price"
-msgstr ""
+msgstr "تحديد سعر وضعية المساق"
 
 #: lms/templates/instructor/instructor_dashboard_2/set_course_mode_price_modal.html
 msgid "Please enter Course Mode detail below"
-msgstr ""
+msgstr "يرجى إدخال تفاصيل وضعية المساق أدناه"
 
 #: lms/templates/instructor/instructor_dashboard_2/set_course_mode_price_modal.html
 msgid "Set Price"
-msgstr ""
+msgstr "السعر المحدد"
 
 #: lms/templates/instructor/instructor_dashboard_2/special_exams.html
 msgid "Allowance Section"
@@ -17201,7 +17283,7 @@ msgid "Currently the {platform_name} servers are overloaded"
 msgstr "تعمل مخدمات المنصة {platform_name} حالياً بمستوى تحميل يتجاوز طاقتها"
 
 #: lms/templates/student_account/account_settings.html
-#: themes/red-theme/lms/templates/header.html
+#: themes/red-theme/lms/templates/header.html templates/theme-header.html
 msgid "Account Settings"
 msgstr "إعدادات الحساب"
 
@@ -17314,7 +17396,7 @@ msgstr "حدث الخاطئ التالي أثناء تعديل إسمك:"
 
 #: lms/templates/verify_student/incourse_reverify.html
 msgid "Re-Verify for {course_name}"
-msgstr ""
+msgstr "يرجى إعادة التحقق للمساق {course_name}"
 
 #: lms/templates/verify_student/missed_deadline.html
 msgid "Verification Deadline Has Passed"
@@ -17496,13 +17578,15 @@ msgstr "تفعيل الحساب في {studio_name}"
 
 #: cms/templates/activation_active.html
 msgid "Your account is already active"
-msgstr ""
+msgstr "حسابك مفعَّل مسبقًا "
 
 #: cms/templates/activation_active.html
 msgid ""
 "This account, set up using {email}, has already been activated. Please sign "
 "in to start working within {studio_name}."
 msgstr ""
+"سبق أن جرى تفعيل هذا الحساب الذي أُنشئ باستخدام البريد الإلكتروني {email}. "
+"يُرجى تسجيل الدخول لبدء العمل ضمن استوديو {studio_name}. "
 
 #: cms/templates/activation_active.html cms/templates/activation_complete.html
 msgid "Sign into {studio_name}"
@@ -18135,7 +18219,7 @@ msgstr "مساق دائم"
 
 #: cms/templates/course_outline.html
 msgid "Instructor-Paced"
-msgstr ""
+msgstr "مساق محدد بمدة"
 
 #: cms/templates/course_outline.html
 msgid "Creating your course organization"
@@ -19653,6 +19737,7 @@ msgid "Learn more about content libraries"
 msgstr "اعرف المزيد عن مكتبات المحتوى"
 
 #: cms/templates/login.html cms/templates/widgets/header.html
+#: templates/theme-header.html
 msgid "Sign In"
 msgstr "تسجيل الدخول"
 
@@ -20071,7 +20156,7 @@ msgstr "اليوم الأخير المتاح للطلاب للتسجيل."
 
 #: cms/templates/settings.html
 msgid "Contact your edX Partner Manager to update these settings."
-msgstr ""
+msgstr "إتصل بمدير المساق المختص من فريق إدراك للتعديل على الإعدادات."
 
 #: cms/templates/settings.html
 msgid "Enrollment End Time"
@@ -21571,37 +21656,37 @@ msgid ""
 msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة #%(r1)d والمراجعة #%(r2)d "
 
 #: templates/theme-footer.html
-msgid "About Us"
-msgstr "عن إدراك"
-
-#: templates/theme-footer.html
 msgid "{copy} {year} Edraak, Some rights reserved"
 msgstr "{copy} {year} إدراك. بعض الحقوق محفوظة."
 
+#: templates/theme-footer.html
+msgid "About Us"
+msgstr "عن إدراك"
+
 #: templates/theme-header.html
-msgid "Welcome {full_name}"
-msgstr "أهلاً {full_name}"
+msgid "What would you like to learn today?"
+msgstr "ماذا تريد أن تتعلم اليوم؟"
+
+#: templates/theme-header.html
+msgid "Hi {full_name}"
+msgstr "اهلا {full_name}"
 
 #: templates/theme-header.html
 msgid "Part of the specialization"
 msgstr "جزءٌ من تخصص"
 
 #: templates/theme-header.html
-msgctxt "edraak-2015"
-msgid "ABOUT"
-msgstr "عن إدراك"
+msgid "Home"
+msgstr "الصفحة الرئيسية"
 
 #: templates/theme-header.html
-msgctxt "edraak-2015"
-msgid "How it Works"
-msgstr "كيف تتعلم عبر إدراك"
+msgid "Continuous education"
+msgstr "التعلم المستمر"
 
 #: templates/theme-header.html
-msgctxt "edraak-2015"
-msgid "Courses"
-msgstr "المساقات"
+msgid "School education"
+msgstr "التعلم المدرسي"
 
 #: templates/theme-header.html
-msgctxt "edraak-2015"
-msgid "Teach"
-msgstr "علّم"
+msgid "NEW"
+msgstr "جديد"
