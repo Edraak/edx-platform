@@ -93,8 +93,9 @@ class TrueCheckbox(widgets.CheckboxInput):
     A checkbox widget that only accepts "true" (case-insensitive) as true.
     """
     def value_from_datadict(self, data, files, name):
-        value = data.get(name, '')
-        return value.lower() == 'true'
+        data.get(name, '')
+        # Edraak (new-marketing-site): do not check if checkbox ir checked or not, always return True
+        return True
 
 
 class TrueField(forms.BooleanField):

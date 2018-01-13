@@ -95,7 +95,9 @@
                             isBlank;
 
                         if ( type === 'checkbox' ) {
-                            isBlank = !$el.prop('checked');
+                            // Edraak (new-marketing-theme): Skip front end validation of checkbox field
+                            // isBlank = !$el.prop('checked')
+                            isBlank = false;
                         } else if ( type === 'select' ) {
                             isBlank = ( $el.data('isdefault') === true );
                         } else {

@@ -81,7 +81,7 @@
 <div class="toggle-form">
     <div class="section-title">
         <h2>
-            <span class="text"><%- _.sprintf( gettext("New to %(platformName)s?"), context ) %></span>
+            <span class="text"><%- _.sprintf( gettext("New to %(platformName)s? Create a Free Account Now!"), context ) %></span>
         </h2>
     </div>
     <button class="nav-btn form-toggle" data-type="register"><%- gettext("Create an account") %></button>

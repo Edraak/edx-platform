@@ -1,8 +1,8 @@
 # #-#-#-#-#  djangojs-partial.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2017 EdX
+# Copyright (C) 2018 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
@@ -10,28 +10,29 @@
 # Salah Alomari <salomari@qrf.org>, 2017
 # #-#-#-#-#  djangojs-studio.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2017 EdX
+# Copyright (C) 2018 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
 # #-#-#-#-#  underscore.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2017 edX
+# Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
-# Omar Al-Ithawi <oithawi@qrf.org>, 2016
-# Salah Alomari <salomari@qrf.org>, 2016
-# Ahmed Jazzar <ajazzar@qrf.org>, 2016
-# Lina Bashayreh <lbashayreh@qrf.org>, 2017
+# Omar Al-Ithawi <oithawi@qrf.org>, 2018
+# Salah Alomari <salomari@qrf.org>, 2018
+# Ali Hasan <ahasan@qrf.org>, 2018
+# Lina Bashayreh <lbashayreh@qrf.org>, 2018
+# Ahmed Jazzar <ajazzar@qrf.org>, 2018
 # #-#-#-#-#  underscore-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2017 edX
+# Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2017.
+# EdX Team <info@edx.org>, 2018.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
@@ -40,8 +41,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-06 15:07+0000\n"
-"PO-Revision-Date: 2017-12-06 15:07:58.056716\n"
+"POT-Creation-Date: 2018-01-12 12:25+0000\n"
+"PO-Revision-Date: 2018-01-12 12:26:25.436917\n"
 "Last-Translator: Salah Alomari <salomari@qrf.org>, 2016\n"
 "Language-Team: Arabic (https://www.transifex.com/edraak/teams/27178/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -2409,12 +2410,13 @@ msgstr "نأسف لحدوث خطأ غير متوقَّع. يُرجى إعادة 
 
 #: lms/djangoapps/teams/static/teams/js/collections/team.js
 msgid "last activity"
-msgstr ""
+msgstr "النشاط الأخير"
 
 #: lms/djangoapps/teams/static/teams/js/collections/team.js
 msgid "open slots"
-msgstr ""
+msgstr "الشواغر المتاحة"
 
+#: lms/djangoapps/teams/static/teams/js/collections/topic.js
 #: lms/templates/edxnotes/tab-item.underscore
 msgid "name"
 msgstr "الاسم  "
@@ -2423,8 +2425,9 @@ msgstr "الاسم  "
 #. there are)
 #: lms/djangoapps/teams/static/teams/js/collections/topic.js
 msgid "team count"
-msgstr ""
+msgstr "عدد أعضاء الفريق"
 
+#: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 #: cms/templates/js/certificate-editor.underscore
 #: cms/templates/js/content-group-editor.underscore
 #: cms/templates/js/group-configuration-editor.underscore
@@ -2433,35 +2436,38 @@ msgstr "إنشاء "
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Update"
-msgstr ""
+msgstr "تحديث"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Team Name (Required) *"
-msgstr ""
+msgstr "اسم الفريق (مطلوب)*"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "A name that identifies your team (maximum 255 characters)."
-msgstr ""
+msgstr "اسم يعرّف بفريقك (255 حرفًا على الأكثر)."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Team Description (Required) *"
-msgstr ""
+msgstr "وصف تعريفي بالفريق (مطلوب)*"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid ""
 "A short description of the team to help other learners understand the goals "
 "or direction of the team (maximum 300 characters)."
 msgstr ""
+"وصف قصير حول الفريق لمساعدة المتعلمين الآخرين على فهم أهدافه أو توجّهه (300 "
+"حرفًا على الأكثر)."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Language"
-msgstr ""
+msgstr "اللغة"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid ""
 "The language that team members primarily use to communicate with each other."
 msgstr ""
+"اللغة الرئيسية التي يعتمدها أفراد الفريق بشكل أساسي للتواصل فيما بينهم"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 #: lms/static/js/student_profile/views/learner_profile_factory.js
@@ -2471,7 +2477,7 @@ msgstr "البلد"
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "The country that team members primarily identify with."
-msgstr ""
+msgstr "البلد الذي يعتمده أعضاء الفريق بشكل أساسي للتعريف بأنفسهم."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 #: lms/static/js/views/fields.js
@@ -2480,107 +2486,115 @@ msgstr "نأسف لحدوث خطأ. يُرجى إعادة المحاولة."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Check the highlighted fields below and try again."
-msgstr ""
+msgstr "يُرجى الاطلاع على الحقول المميزة بإشارة والمحاولة من جديد."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Enter team name."
-msgstr ""
+msgstr "أدخل اسم الفريق."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Team name cannot have more than 255 characters."
-msgstr ""
+msgstr "يجب ألا يتجاوز اسم الفريق 255 حرفًا."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Enter team description."
-msgstr ""
+msgstr "أدخل وصف تعريفي بالفريق."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "Team description cannot have more than 300 characters."
-msgstr ""
+msgstr "يجب ألا يتجاوز اسم الفريق 300 حرفًا."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 msgid "An error occurred while removing the member from the team. Try again."
-msgstr ""
+msgstr "نأسف لحدوث خطأ أثناء إستبعاد عضو من الفريق. يُرجى إعادة المحاولة."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 msgid "This team does not have any members."
-msgstr ""
+msgstr "لا يضم الفريق أيّ أعضاء."
 
 #. Translators: 'date' is a placeholder for a fuzzy, relative timestamp (see:
 #. https://github.com/rmm5t/jquery-timeago)
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 msgid "Joined %(date)s"
-msgstr ""
+msgstr "انضم بتاريخ %(date)s"
 
 #. Translators: 'date' is a placeholder for a fuzzy, relative timestamp (see:
 #. https://github.com/rmm5t/jquery-timeago)
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 msgid "Last Activity %(date)s"
-msgstr ""
+msgstr "النشاط الأخير بتاريخ %(date)s"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 msgid "Remove this team member?"
-msgstr ""
+msgstr "أتوّد استبعاد عضو الفريق هذا؟"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 msgid ""
 "This learner will be removed from the team, allowing another learner to take"
 " the available spot."
 msgstr ""
+"سيجري استبعاد هذا المتعلّم من الفريق، الأمر الذي سيفسح لمتعلّم الآخر المجال "
+"لشغل الشاغر المتاح."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team_members.js
 #: lms/static/js/views/image_field.js
+#: cms/templates/js/video/metadata-translations-item.underscore
+#: lms/djangoapps/teams/static/teams/templates/edit-team-member.underscore
 msgid "Remove"
 msgstr "حذف"
 
 #: lms/djangoapps/teams/static/teams/js/views/instructor_tools.js
 msgid "Delete this team?"
-msgstr ""
+msgstr "أتودّ حذف هذا الفريق؟"
 
 #: lms/djangoapps/teams/static/teams/js/views/instructor_tools.js
 msgid ""
 "Deleting a team is permanent and cannot be undone. All members are removed "
 "from the team, and team discussions can no longer be accessed."
 msgstr ""
+"إن عملية حذف هذا الفريق دائمة ولا يمكن التراجع عنها. سيُستبعد بذلك جميع "
+"أعضاء الفريق وسيتعذّر الوصول إلى مناقشات أعضاء الفريق في المستقبل."
 
 #: lms/djangoapps/teams/static/teams/js/views/instructor_tools.js
 msgid "Team \"%(team)s\" successfully deleted."
-msgstr ""
+msgstr "لقد جرى حذف الفرق \"%(team)s\" بنجاح."
 
 #: lms/djangoapps/teams/static/teams/js/views/my_teams.js
 msgid "You are not currently a member of any team."
-msgstr ""
+msgstr "حاليًا، أنت لست عضوًا في أي فريق."
 
 #. Translators: "and others" refers to fact that additional members of a team
 #. exist that are not displayed.
 #: lms/djangoapps/teams/static/teams/js/views/team_card.js
 msgid "and others"
-msgstr ""
+msgstr "وآخرين"
 
 #. Translators: 'date' is a placeholder for a fuzzy, relative timestamp (see:
 #. http://momentjs.com/)
 #: lms/djangoapps/teams/static/teams/js/views/team_card.js
 msgid "Last activity %(date)s"
-msgstr ""
+msgstr "النشاط الأخير بتاريخ %(date)s"
 
 #: lms/djangoapps/teams/static/teams/js/views/team_card.js
 msgid "View %(span_start)s %(team_name)s %(span_end)s"
-msgstr ""
+msgstr "مشاهدة %(span_start)s %(team_name)s %(span_end)s"
 
 #: lms/djangoapps/teams/static/teams/js/views/team_profile.js
 #: lms/djangoapps/teams/static/teams/js/views/team_profile_header_actions.js
 msgid "An error occurred. Try again."
-msgstr ""
+msgstr "نأسف لحدوث خطأ. يُرجى إعادة المحاولة."
 
 #: lms/djangoapps/teams/static/teams/js/views/team_profile.js
 msgid "Leave this team?"
-msgstr ""
+msgstr "أتوّد ترك هذا الفريق؟"
 
 #: lms/djangoapps/teams/static/teams/js/views/team_profile.js
 msgid ""
 "If you leave, you can no longer post in this team's discussions. Your place "
 "will be available to another learner."
 msgstr ""
+"في حال اخترت ترك الفريق، لن تتمكّن مستقبلًا من المشاركة في نقاشات أعضائه إلى"
+" جانب إتاحة الشاغر الذي ستتركه لمتعلّم آخر."
 
 #: lms/djangoapps/teams/static/teams/js/views/team_profile.js
 #: lms/static/js/verify_student/views/reverify_view.js
@@ -2590,11 +2604,11 @@ msgstr "تأكيد"
 
 #: lms/djangoapps/teams/static/teams/js/views/team_profile_header_actions.js
 msgid "You already belong to another team."
-msgstr ""
+msgstr "لقد انتسبت في وقت سابق إلى فريق آخر."
 
 #: lms/djangoapps/teams/static/teams/js/views/team_profile_header_actions.js
 msgid "This team is full."
-msgstr ""
+msgstr "هذا الفريق مكتمل"
 
 #: lms/djangoapps/teams/static/teams/js/views/team_utils.js
 msgid "%(memberCount)s / %(maxMemberCount)s Member"
@@ -2608,25 +2622,27 @@ msgstr[5] ""
 
 #: lms/djangoapps/teams/static/teams/js/views/teams.js
 msgid "All teams"
-msgstr ""
+msgstr "جميع الفرق"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Topics"
-msgstr ""
+msgstr "المواضيع"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Teams"
-msgstr ""
+msgstr "فرق"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid ""
 "See all teams in your course, organized by topic. Join a team to collaborate"
 " with other learners who are interested in the same topic as you are."
 msgstr ""
+"تفضّل بالاطّلاع على جميع الفرق في مساقك، مرتّبةً بحسب الموضوع. وانضم إلى "
+"أحدها للتعاون مع المتعلّمين الآخرين المهتمّين بالمجال نفسه مثلك."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "My Team"
-msgstr ""
+msgstr "فريقي"
 
 #. Translators: sr_start and sr_end surround text meant only for screen
 #. readers.
@@ -2635,11 +2651,13 @@ msgstr ""
 #. screenreader, and "Browse" otherwise.
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Browse %(sr_start)s teams %(sr_end)s"
-msgstr ""
+msgstr "تصفّح %(sr_start)s الفرق %(sr_end)s"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Your request could not be completed. Reload the page and try again."
 msgstr ""
+"عذرًا لم نتمكّن من إتمام طلبك. الرجاء طلب تحميل الصفحة من جديد والمحاولة "
+"مرّة أخرى."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid ""
@@ -2647,65 +2665,73 @@ msgid ""
 " and try again. If the issue persists, click the Help tab to report the "
 "problem."
 msgstr ""
+"عذرًا لم نتمكّن من إتمام طلبك نظرًا لوجود مشكلة في المخدّم. الرجاء طلب تحميل"
+" الصفحة من جديد والمحاولة مرّة أخرى. في حال استمرت المشكلة، يُرجى النقر على "
+"علامة تبويب ’مساعدة‘ لإعلام فريق الدعم بالمشكلة."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Team Search"
-msgstr ""
+msgstr "بحث الفريق"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Showing results for \"%(searchString)s\""
-msgstr ""
+msgstr "تظهر نتائج البحث ذات الصلة بالعبارة \"%(searchString)s\""
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Create a New Team"
-msgstr ""
+msgstr "إنشاء فريق جديد"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid ""
 "Create a new team if you can't find an existing team to join, or if you "
 "would like to learn with friends you know."
 msgstr ""
+"أنشئ فريقًا جديدًا في حال لم تجد فريقًا موجودًا للانضمام إليه أو كنت ترغب "
+"بالتعلّم برفقة أصدقاء تعرفهم."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 #: lms/djangoapps/teams/static/teams/templates/team-profile-header-actions.underscore
 msgid "Edit Team"
-msgstr ""
+msgstr "تعديل الفريق"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid ""
 "If you make significant changes, make sure you notify members of the team "
 "before making these changes."
 msgstr ""
+"في حال أجريت تعديلات مهمّة، تأكّد من إخطار بقية أعضاء الفريق قبل اعتماد هذه "
+"التغييرات."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Membership"
-msgstr ""
+msgstr "العضوية"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid ""
 "You can remove members from this team, especially if they have not "
 "participated in the team's activity."
 msgstr ""
+"يمكنك استبعاد أعضاء من هذا الفريق، وخاصةً في حال عدم مشاركتهم بأنشطة الفريق."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "Search teams"
-msgstr ""
+msgstr "بحث في الفرق"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "All Topics"
-msgstr ""
+msgstr "كافّة المواضيع"
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "The page \"%(route)s\" could not be found."
-msgstr ""
+msgstr "نأسف لتعذّر إيجاد الصفحة \"%(route)s\"."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "The topic \"%(topic)s\" could not be found."
-msgstr ""
+msgstr "نأسف لتعذّر إيجاد الموضوع \"%(topic)s\"."
 
 #: lms/djangoapps/teams/static/teams/js/views/teams_tab.js
 msgid "The team \"%(team)s\" could not be found."
-msgstr ""
+msgstr "نأسف لتعذّر إيجاد الفريق \"%(team)s\""
 
 #: lms/djangoapps/teams/static/teams/js/views/topic_card.js
 msgid "%(team_count)s Team"
@@ -2719,11 +2745,11 @@ msgstr[5] ""
 
 #: lms/djangoapps/teams/static/teams/js/views/topic_card.js
 msgid "Topic"
-msgstr ""
+msgstr "الموضوع"
 
 #: lms/djangoapps/teams/static/teams/js/views/topic_card.js
 msgid "View Teams in the %(topic_name)s Topic"
-msgstr ""
+msgstr "استعراض الفِرق في موضوع %(topic_name)s"
 
 #. Translators: this string is shown at the bottom of the teams page
 #. to find a team to join or else to create a new one. There are three
@@ -2740,10 +2766,14 @@ msgid ""
 "find a team to join, {create_span_start}create a new team in this "
 "topic{span_end}."
 msgstr ""
+"{browse_span_start}تصفّح فرق في موضوعات أخرى{span_end} أو "
+"{search_span_start} ابحث في الفرق{span_end} ضمن هذا الموضوع. في حال لم "
+"تتمكّن من إيجاد فريق للانضمام إليه، {create_span_start}أنشئ فريقًا جديدًا "
+"ضمن هذا الموضوع{span_end}."
 
 #: lms/djangoapps/teams/static/teams/js/views/topics.js
 msgid "All topics"
-msgstr ""
+msgstr "كافّة المواضيع"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"
@@ -3944,12 +3974,12 @@ msgstr "وسم رمز التسجيل على أنّه غير مستخدم"
 #, c-format
 msgid "%s result"
 msgid_plural "%s results"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "%s  نتيجة"
+msgstr[1] "%s  نتيجة"
+msgstr[2] "%s  نتيجة"
+msgstr[3] "%s  نتيجة"
+msgstr[4] "%s  نتيجة"
+msgstr[5] "%s نتيجة"
 
 #: lms/static/js/staff_debug_actions.js
 msgid "Unknown Error Occurred."
@@ -4053,13 +4083,14 @@ msgstr ""
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Full Name"
-msgstr ""
+msgstr "الاسم الكامل"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
 "The name that appears on your certificates. Other learners never see your "
 "full name."
 msgstr ""
+"الاسم الذي يظهر على شهاداتك. لن يرى المتعلّمون الآخرون اسمك الكامل أبدًا."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Email Address"
@@ -4751,7 +4782,7 @@ msgstr "عليك أن تحدّد اسمًا."
 
 #: cms/static/js/models/group.js
 msgid "Group name is required"
-msgstr ""
+msgstr "اسم المجموعة مطلوب"
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group A"
@@ -4856,7 +4887,7 @@ msgstr "هناك إشكالات في المصادقة على هذا المكوّ
 
 #: cms/static/js/views/active_video_upload_list.js
 msgid "Your video uploads are not complete."
-msgstr ""
+msgstr "عمليات تحميل ملف الفيديو الخاص بك غير مكتملة."
 
 #: cms/static/js/views/asset.js
 msgid "Delete File Confirmation"
@@ -5864,7 +5895,7 @@ msgstr "بواسطة: مساعد أستاذ لشؤون المتعلّمين"
 #: common/static/common/templates/discussion/thread-list-item.underscore
 #: common/static/common/templates/discussion/thread-response-show.underscore
 msgid "fmt"
-msgstr ""
+msgstr "fmt"
 
 #: common/static/common/templates/discussion/thread-list-item.underscore
 #, python-format
@@ -5912,16 +5943,16 @@ msgstr "مصادقة عليها %(time_ago)s"
 #, python-format
 msgid "Show Comment (%(num_comments)s)"
 msgid_plural "Show Comments (%(num_comments)s)"
-msgstr[0] "إظهار التعليق (%(num_comments)s)"
-msgstr[1] "إظهار التعليق (%(num_comments)s)"
-msgstr[2] "إظهار التعليقات (%(num_comments)s)"
-msgstr[3] "إظهار التعليقات (%(num_comments)s)"
-msgstr[4] "إظهار التعليقات (%(num_comments)s)"
-msgstr[5] "إظهار التعليقات (%(num_comments)s)"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: common/static/common/templates/discussion/thread-response.underscore
 msgid "fmts"
-msgstr ""
+msgstr "fmts"
 
 #: common/static/common/templates/discussion/thread-response.underscore
 msgid "Add a comment"
@@ -5996,19 +6027,19 @@ msgstr "تصغير نافذة المناقشة"
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Topic Area:"
-msgstr ""
+msgstr "مجال الموضوع:"
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Discussion topics; current selection is: "
-msgstr ""
+msgstr "مواضيع النقاشات؛ الاختيار الحالي هو: "
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Filter topics"
-msgstr ""
+msgstr "فلترة المواضيع "
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Add your post to a relevant topic to help others find it."
-msgstr ""
+msgstr "أضف منشورك إلى موضوع ذي صلة لمساعدة الآخرين على إيجاده."
 
 #: common/static/common/templates/discussion/user-profile.underscore
 msgid "Active Threads"
@@ -6057,21 +6088,23 @@ msgstr "إعادة  إنشاء شهادة المستخدم"
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Your team could not be created."
-msgstr ""
+msgstr "عذرًا، لم نتمكّن من إنشاء فريقك."
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Your team could not be updated."
-msgstr ""
+msgstr "عذرًا، لم نتمكّن من تحديث فريقك."
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid ""
 "Enter information to describe your team. You cannot change these details "
 "after you create the team."
 msgstr ""
+"يُرجى إدخال معلومات لوصف فريقك. يتعذّر تعديل هذه التفاصيل بمجرّد إنشاء "
+"الفريق."
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Optional Characteristics"
-msgstr ""
+msgstr "الخصائص الاختيارية"
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid ""
@@ -6079,74 +6112,77 @@ msgid ""
 "characteristics for your team. Choose carefully, because fewer people might "
 "be interested in joining your team if it seems too restrictive."
 msgstr ""
+"ساعد المتعلّمين الآخرين في اتخاذ القرار بالانضمام إلى فريق أم لا وذلك بتحديد"
+" بعض الخصائص المميّزة لفريقك. اخترها بحذر إذ قد يهتم عدّد أقل من الأشخاص "
+"بالانضمام إلى فريقك في حال انطوى الأمر على الكثير من القيود."
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Create team."
-msgstr ""
+msgstr "أنشئ فريق."
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Update team."
-msgstr ""
+msgstr "عدّل فريق."
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Cancel team creating."
-msgstr ""
+msgstr "إلغاء عملية إنشاء الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/edit-team.underscore
 msgid "Cancel team updating."
-msgstr ""
+msgstr "إلغاء عملية تحديث الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/instructor-tools.underscore
 msgid "Instructor tools"
-msgstr ""
+msgstr "أدوات الأستاذ"
 
 #: lms/djangoapps/teams/static/teams/templates/instructor-tools.underscore
 msgid "Delete Team"
-msgstr ""
+msgstr "حذف الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/instructor-tools.underscore
 msgid "Edit Membership"
-msgstr ""
+msgstr "تعديل العضويّة"
 
 #: lms/djangoapps/teams/static/teams/templates/team-actions.underscore
 msgid "Are you having trouble finding a team to join?"
-msgstr ""
+msgstr "عذرًا، هل تواجه مشكلة في إيجاد فريق لتنضم إليه؟"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile-header-actions.underscore
 msgid "Join Team"
-msgstr ""
+msgstr "انضم إلى الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "New Post"
-msgstr ""
+msgstr "منشور جديد "
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "Team Details"
-msgstr ""
+msgstr "تفاصيل معلومات الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "You are a member of this team."
-msgstr ""
+msgstr "أنت عضو في هذا الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "Team member profiles"
-msgstr ""
+msgstr "لمحة موجزة عن أعضاء الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "Team capacity"
-msgstr ""
+msgstr "سعة استيعاب الفريق"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "country"
-msgstr ""
+msgstr "الدولة"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "language"
-msgstr ""
+msgstr "اللغة"
 
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
 msgid "Leave Team"
-msgstr ""
+msgstr "أترك الفريق"
 
 #: lms/static/js/fixtures/donation.underscore
 #: lms/templates/dashboard/donation.underscore
@@ -6179,7 +6215,7 @@ msgstr "حذف الكل"
 
 #: lms/templates/ccx/schedule.underscore
 msgid "gettext("
-msgstr ""
+msgstr "gettext("
 
 #: lms/templates/ccx/schedule.underscore
 msgid "Section"
@@ -6543,7 +6579,7 @@ msgstr "Generate a Certificate for all "
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-white-list.underscore
 msgid "New"
-msgstr ""
+msgstr "جديد"
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-white-list.underscore
 msgid "additions to the Exception list"
@@ -6731,6 +6767,8 @@ msgid ""
 "%(screen_reader_start)sWarning:%(screen_reader_end)s No content groups "
 "exist."
 msgstr ""
+"%(screen_reader_start)s تحذير: %(screen_reader_end)s لا يوجد أي مجموعات "
+"محتوى."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
 msgid "Create a content group"
@@ -6742,10 +6780,10 @@ msgid "(contains %(student_count)s student)"
 msgid_plural "(contains %(student_count)s students)"
 msgstr[0] "(يحتوي على %(student_count)s طالب)"
 msgstr[1] "(يحتوي على %(student_count)s طالب)"
-msgstr[2] "(يحتوي على %(student_count)s طالب)"
+msgstr[2] "(يحتوي على %(student_count)s طالبان)"
 msgstr[3] "(يحتوي على %(student_count)s طالب)"
 msgstr[4] "(يحتوي على %(student_count)s طالب)"
-msgstr[5] "(يشمل %(student_count)s طلّاب)"
+msgstr[5] "(يحتوي على %(student_count)s طالب)"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-group-header.underscore
 msgid ""
@@ -6812,12 +6850,12 @@ msgstr "صالح"
 #, python-format
 msgid "Load next %(num_items)s result"
 msgid_plural "Load next %(num_items)s results"
-msgstr[0] "تحميل النتائج الـ %(num_items)s التالية"
-msgstr[1] "تحميل النتيجة %(num_items)s التالية"
-msgstr[2] "تحميل النتيجتين %(num_items)s التاليتين"
-msgstr[3] "تحميل النتائج %(num_items)s التالية"
-msgstr[4] "تحميل النتائج %(num_items)s التالية"
-msgstr[5] "تحميل النتائج الـ %(num_items)s التالية"
+msgstr[0] "بقي %(num_items)s نتائج"
+msgstr[1] "اظهر ال%(num_items)s نتيجة التالية"
+msgstr[2] "اظهر ال%(num_items)s نتيجة التالية"
+msgstr[3] "اظهر ال%(num_items)s  نتيجة التالية"
+msgstr[4] "اظهر ال%(num_items)s  نتيجة التالية"
+msgstr[5] "اظهر ال%(num_items)s نتيجة التالية"
 
 #: lms/templates/search/course_search_results.underscore
 #: lms/templates/search/dashboard_search_results.underscore
@@ -6971,8 +7009,8 @@ msgstr "استخدام بياناتي لدى المؤسّسة/ الحرم الج
 
 #: lms/templates/student_account/login.underscore
 #, python-format
-msgid "New to %(platformName)s?"
-msgstr "هل أنت جديد على %(platformName)s؟"
+msgid "New to %(platformName)s? Create a Free Account Now!"
+msgstr "هل أنت جديد على منصة%(platformName)s؟ أنشئ حسابك المجاني الآن!"
 
 #: lms/templates/student_account/login.underscore
 msgid "Create an account"
@@ -7893,7 +7931,7 @@ msgstr "اسم نوع الواجب "
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. Homework, Midterm Exams"
-msgstr ""
+msgstr "مثال: واجب، الأمتحان الأول"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Abbreviation"
@@ -7901,7 +7939,7 @@ msgstr "الاختصار"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. HW, Midterm"
-msgstr ""
+msgstr "مثال: واجب، امتحان ١"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Weight of Total Grade"
@@ -7909,7 +7947,7 @@ msgstr "وزن الدرجة الإجمالية"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "as a percent, e.g. 40"
-msgstr ""
+msgstr "كنسبة مئوية مثلا: ٤٠"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Total Number"
@@ -7917,7 +7955,7 @@ msgstr "العدد الإجمالي"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises assigned"
-msgstr ""
+msgstr "اجمالي الامتحانات المعيّنة"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Number of Droppable"
@@ -7925,7 +7963,7 @@ msgstr "عدد المساقات التي يمكن الانسحاب منها"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises that won't be graded"
-msgstr ""
+msgstr "إجمالي الامتحانات التي لن تُقيّم"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid "Course Handouts"
@@ -7974,7 +8012,7 @@ msgstr "اسم الفصل"
 #: cms/templates/js/edit-chapter.underscore
 #, python-format
 msgid "Chapter %s"
-msgstr ""
+msgstr "فصل %s"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "provide the title/name of the chapter that will be used in navigating"
@@ -8098,6 +8136,8 @@ msgid ""
 "This configuration is currently used in content experiments. If you make "
 "changes to the groups, you may need to edit those experiments."
 msgstr ""
+"هذا الإعداد مستخدم حاليًّا في اختبارات المحتوى. قد تحتاج لتعديل هذه "
+"الاختبارات في حال إدخلت أي تعدّيلات  على المجموعات."
 
 #: cms/templates/js/group-edit.underscore
 msgid "delete group"
@@ -8207,7 +8247,7 @@ msgstr ""
 #: cms/templates/js/publish-xblock.underscore
 #: cms/templates/js/staff-lock-editor.underscore
 msgid "message"
-msgstr ""
+msgstr "رسالة"
 
 #: cms/templates/js/publish-history.underscore
 #: cms/templates/js/publish-xblock.underscore
@@ -8271,7 +8311,7 @@ msgstr "مع %(section_or_subsection)s"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Staff and Students"
-msgstr ""
+msgstr "طاقم المساق والمتعلمين"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Some content in this unit is visible only to particular content groups"
@@ -8280,7 +8320,7 @@ msgstr "إنّ جزء من محتوى هذه الوحدة مرئي فقط من �
 #: cms/templates/js/publish-xblock.underscore
 #: cms/templates/js/staff-lock-editor.underscore
 msgid "Hide from students"
-msgstr ""
+msgstr "إخفِ عن الطلاب"
 
 #: cms/templates/js/release-date-editor.underscore
 msgid "Release Date and Time"
@@ -8366,13 +8406,15 @@ msgstr "يجب أن تكون الصورة بصيغة PNG."
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid "Student Visibility"
-msgstr ""
+msgstr "قابلية رؤية المكون للمتعلمين"
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "If the unit was previously published and released to students, any changes "
 "you made to the unit when it was hidden will now be visible to students."
 msgstr ""
+"إن نُشرت الوحدة مسبقاً، ومضى وقت إصدارها للمتعلمين. أي تغييرات عملتها على "
+"الوحدة عندما كانت مخفية ستظهر للطلاب."
 
 #: cms/templates/js/staff-lock-editor.underscore
 #, python-format
@@ -8381,18 +8423,24 @@ msgid ""
 "to see its content after the release date has passed and you have published "
 "the unit."
 msgstr ""
+"إن أظهرت  %(xblockType)s للمتعلمين، فسيصبحوا قادرين على رؤية محتواه بعد مرور"
+" تاريخ الإصدار ونشر الوحدة."
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "Any subsections or units that are explicitly hidden from students will "
 "remain hidden after you clear this option for the section."
 msgstr ""
+"كل قسم فرعي أو وحدة مخفيين بشكل واضح عن الطلاب سيبقيان كذلك بعد إعادة ضبط "
+"الخيار لهذا القسم."
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "Any units that are explicitly hidden from students will remain hidden after "
 "you clear this option for the subsection."
 msgstr ""
+"كل وحدة مخفية بشكل واضح عن الطلاب ستبقى كذلك بعد إعادة ضبط هذا الخيارة عن "
+"القسم الفرعي."
 
 #: cms/templates/js/team-member.underscore
 msgid "Current Role:"
@@ -8424,7 +8472,7 @@ msgstr "حذف المستخدم،  {username} "
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Additional Options:"
-msgstr ""
+msgstr "خيارات إضافية:"
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Timed"
@@ -8436,6 +8484,9 @@ msgid ""
 "subsection. Learners must submit answers before the time expires. You can "
 "allow additional time on per learner basis through the Instructor Dashboard."
 msgstr ""
+"استخدم الامتحان المحدد بوقت لضبط الوقت الذي يقضيه المتعلم على المسائل في هذا"
+" القسم الفرعي. يجب على المتعلمين تسليم إجاباتهم قبل انتهاء الامتحان. يمكنك "
+"إعطاء وقت إضافي لمتعلّم ما، من خلال لوحة تحكم الأستاذ."
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Proctored"
@@ -8446,6 +8497,8 @@ msgid ""
 "Proctored exams are timed, and software records video of each learner taking"
 " the exam. These videos are then reviewed by a third party."
 msgstr ""
+"الامتحانات المراقبة محددة بوقت، وسيُسجّل فيديو لكل متعلّم أثناء الامتحان. "
+"هذه الفيديوات ستُراجع من قبل آخرين."
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Practice Proctored"
@@ -8457,6 +8510,8 @@ msgid ""
 "and processes. Results of the practice exam do not count towards the "
 "learner's grade."
 msgstr ""
+"استخدم امتحان تجريبي محدود بوقت لتعرف المتعلمين على أدوات وعملية المراقبة. "
+"نتائج هذا الامتحان لن تحسب ضمن علامة المتعلم."
 
 #: cms/templates/js/timed-examination-preference-editor.underscore
 msgid "Time Allotted (HH:MM):"
