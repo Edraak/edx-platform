@@ -69,8 +69,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-01-12 14:25+0200\n"
-"PO-Revision-Date: 2018-01-12 21:33+0000\n"
+"POT-Creation-Date: 2018-01-16 16:55+0200\n"
+"PO-Revision-Date: 2018-01-16 15:03+0000\n"
 "Last-Translator: Salah Alomari <salomari@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -8486,6 +8486,7 @@ msgstr "اشترك في قناة منصّة {platform_name} على موقع يو
 
 #: lms/envs/devstack.py cms/templates/course-create-rerun.html
 #: cms/templates/index.html cms/templates/settings.html
+#: templates/theme-header.html
 msgid "Organization"
 msgstr "المؤسّسة"
 
@@ -9489,6 +9490,8 @@ msgstr "يُرجى إدخال اسم المستخدم."
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Password must be at least 6 characters.It cannot match your username."
 msgstr ""
+"كلمة السر يجب أن لا تقل عن ٦ أحرف أو رموز. لا يجوز أن تطابق كلمة السر اسم "
+"المستخدم اللذي قمت بادخاله."
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Please enter your Password."
@@ -10996,7 +10999,7 @@ msgstr "الصفحة الرئيسية لمنصّة {platform_name}"
 
 #: lms/templates/navigation-edx.html lms/templates/navigation.html
 #: themes/edx.org/lms/templates/header.html
-#: themes/red-theme/lms/templates/header.html
+#: themes/red-theme/lms/templates/header.html templates/theme-footer.html
 msgid "How it Works"
 msgstr "كيف تتعلم مع إدراك"
 
@@ -20987,7 +20990,7 @@ msgstr "سجّل في StudioX"
 msgid "Send an email to {email}"
 msgstr "أرسل رسالةً إلكترونية إلى {email}"
 
-#: cms/templates/widgets/sock.html
+#: cms/templates/widgets/sock.html templates/theme-footer.html
 msgid "Contact Us"
 msgstr "اتصل بنا"
 
@@ -21660,20 +21663,24 @@ msgid "{copy} {year} Edraak, Some rights reserved"
 msgstr "{copy} {year} إدراك. بعض الحقوق محفوظة."
 
 #: templates/theme-footer.html
-msgid "About Us"
+msgid "About Edraak"
 msgstr "عن إدراك"
+
+#: templates/theme-footer.html
+msgid "The Team"
+msgstr " الفريق"
 
 #: templates/theme-header.html
 msgid "What would you like to learn today?"
 msgstr "ماذا تريد أن تتعلم اليوم؟"
 
 #: templates/theme-header.html
-msgid "Hi {full_name}"
-msgstr "اهلا {full_name}"
-
-#: templates/theme-header.html
 msgid "Part of the specialization"
 msgstr "جزءٌ من تخصص"
+
+#: templates/theme-header.html
+msgid "Hi {full_name}"
+msgstr "اهلا {full_name}"
 
 #: templates/theme-header.html
 msgid "Home"
