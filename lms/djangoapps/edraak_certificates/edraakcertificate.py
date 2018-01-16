@@ -44,6 +44,8 @@ def get_organization_logo(organization, course_id):
         return 'HCAC_Logo.png'
     elif organization == "delftx":
         return 'delftx.jpg'
+    elif organization == "arij":
+        return 'arij.png'
     elif organization == "britishcouncil":
         return 'british-council.jpg'
     elif organization == "crescent_petroleum":
