@@ -327,7 +327,7 @@ class MarketingCourseDetailView(CourseDetailView):
         """
         marketing_data = self.get_marketing_data()
         if marketing_data:
-            course_object.effort = marketing_data['estimated_effort']
+            course_object.effort = marketing_data['effort']
             course_object.display_name = marketing_data['name']
             course_object.course_image_url = marketing_data['course_image']
             course_object.course_video_url = marketing_data['course_video']
