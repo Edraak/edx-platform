@@ -333,6 +333,8 @@ class MarketingCourseDetailView(CourseDetailView):
             course_object.course_video_url = marketing_data['course_video']
             course_object.short_description = marketing_data['short_description']
             course_object.overview = marketing_data['overview']
+            course_object.name_en = marketing_data['name_en']
+            course_object.name_ar = marketing_data['name_ar']
 
     def get_marketing_data(self):
         """
