@@ -434,7 +434,7 @@ class SAMLConfiguration(ConfigurationModel):
         other_config = json.loads(self.other_config_str)
         if name in ("TECHNICAL_CONTACT", "SUPPORT_CONTACT"):
             contact = {
-                "givenName": "{} Support".format(settings.PLATFORM_NAME),
+                "givenName": u"{} Support".format(settings.PLATFORM_NAME),
                 "emailAddress": settings.TECH_SUPPORT_EMAIL
             }
             contact.update(other_config.get(name, {}))
