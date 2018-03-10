@@ -10,6 +10,7 @@ from django.conf import settings
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from edxmako.shortcuts import marketing_link
+from edraak_misc.utils import get_courses_marketing_details
 from openedx.core.lib.api.paginators import NamespacedPageNumberPagination
 from openedx.core.lib.api.view_utils import view_auth_classes, DeveloperErrorViewMixin
 from .api import course_detail, list_courses
@@ -325,36 +326,17 @@ class MarketingCourseDetailView(CourseDetailView):
         
         :param course_object: The object we want to alter
         """
-        marketing_data = self.get_marketing_data()
+        course_id = self.kwargs['course_key_string']
+        marketing_data = get_courses_marketing_details(
+            request=self.request,
+            course_ids=[course_id]
+        ).get(course_id)
         if marketing_data:
             course_object.effort = marketing_data['effort']
             course_object.display_name = marketing_data['name']
             course_object.course_image_url = marketing_data['course_image']
             course_object.course_video_url = marketing_data['course_video']
             course_object.short_description = marketing_data['short_description']
-            course_object.overview = marketing_data['overview']
+            course_object.overview = marketing_data.get('overview')
             course_object.name_en = marketing_data['name_en']
             course_object.name_ar = marketing_data['name_ar']
-
-    def get_marketing_data(self):
-        """
-        This method gets the current marketing details for a specific
-        course.
-        :returns a course details from the marketing API or None if
-        no marketing details found.
-        """
-        course_key = self.kwargs['course_key_string']
-        language = self.request.META.get(
-            'ORIGINAL_HTTP_ACCEPT_LANGUAGE', settings.LANGUAGE_CODE)
-        headers = {'Accept-Language': language}
-
-        # Get the marketing url
-        marketing_root = marketing_link('ROOT')
-        # Marketing API path
-        marketing_api = 'api/marketing/courses/{}'.format(course_key)
-        url = urljoin(marketing_root, marketing_api)
-
-        response = requests.get(url, headers=headers)
-        if response.status_code != 200:
-            return None
-        return response.json()
