@@ -17,7 +17,8 @@ log = logging.getLogger(__name__)
 DEFAULT_DATA_API = 'enrollment.data'
 
 
-def get_enrollments(user_id):
+# Edraak: update function to accept request param
+def get_enrollments(user_id, request=None):
     """Retrieves all the courses a user is enrolled in.
 
     Takes a user and retrieves all relative enrollments. Includes information regarding how the user is enrolled
@@ -87,10 +88,12 @@ def get_enrollments(user_id):
         ]
 
     """
-    return _data_api().get_course_enrollments(user_id)
+    # Edraak: pass request param to _data_api().get_course_enrollments
+    return _data_api().get_course_enrollments(user_id, request=request)
 
 
-def get_enrollment(user_id, course_id):
+# Edraak: update function to accept request param
+def get_enrollment(user_id, course_id, request=None):
     """Retrieves all enrollment information for the user in respect to a specific course.
 
     Gets all the course enrollment information specific to a user in a course.
@@ -132,7 +135,8 @@ def get_enrollment(user_id, course_id):
         }
 
     """
-    return _data_api().get_course_enrollment(user_id, course_id)
+    return _data_api().get_course_enrollment(user_id, course_id,
+                                             request=request)
 
 
 def add_enrollment(user_id, course_id, mode=None, is_active=True):

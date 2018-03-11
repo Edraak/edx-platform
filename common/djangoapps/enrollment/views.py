@@ -172,7 +172,9 @@ class EnrollmentView(APIView, ApiKeyPermissionMixIn):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            return Response(api.get_enrollment(username, course_id))
+            # Edraak: pass request to api.get_enrollment
+            return Response(api.get_enrollment(username, course_id,
+                                               request=request))
         except CourseEnrollmentError:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -475,7 +477,8 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
         """
         username = request.GET.get('user', request.user.username)
         try:
-            enrollment_data = api.get_enrollments(username)
+            # Edraak: pass request to api.get_enrollments
+            enrollment_data = api.get_enrollments(username, request)
         except CourseEnrollmentError:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,

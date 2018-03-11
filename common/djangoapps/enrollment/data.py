@@ -7,11 +7,16 @@ import logging
 from django.contrib.auth.models import User
 from opaque_keys.edx.keys import CourseKey
 
+from edraak_misc.utils import get_courses_marketing_details
 from enrollment.errors import (
     CourseEnrollmentClosedError, CourseEnrollmentFullError,
     CourseEnrollmentExistsError, UserNotFoundError, InvalidEnrollmentAttribute
 )
-from enrollment.serializers import CourseEnrollmentSerializer, CourseSerializer
+from enrollment.serializers import (
+    CourseEnrollmentSerializer,
+    CourseSerializer,
+    EdraakCourseEnrollmentSerializer
+)
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from openedx.core.lib.exceptions import CourseNotFoundError
 from student.models import (
@@ -23,7 +28,8 @@ from student.models import (
 log = logging.getLogger(__name__)
 
 
-def get_course_enrollments(user_id):
+# Edraak update function to accept request param
+def get_course_enrollments(user_id, request=None):
     """Retrieve a list representing all aggregated data for a user's course enrollments.
 
     Construct a representation of all course enrollment data for a specific user.
@@ -40,13 +46,33 @@ def get_course_enrollments(user_id):
         is_active=True
     ).order_by('created')
 
-    enrollments = CourseEnrollmentSerializer(qset, many=True).data
+    # Edraak: get course details from the marketing site
+    vals = qset.values_list('course_id', flat=True)
+    edraak_course_details = get_courses_marketing_details(
+        request,
+        vals
+    )
+    #######################################################
+
+    enrollments = EdraakCourseEnrollmentSerializer(
+        qset,
+        many=True,
+        context={'request': request}
+    ).data
 
     # Find deleted courses and filter them out of the results
     deleted = []
     valid = []
     for enrollment in enrollments:
         if enrollment.get("course_details") is not None:
+            # Edraak: inject a course's marketing site details
+            # into the courses representation
+            course_id = enrollment['course_details']['course_id']
+            _inject_mktg_course_details(
+                enrollment['edraak_course_details'],
+                edraak_course_details.get(course_id, {})
+            )
+            ###################################################
             valid.append(enrollment)
         else:
             deleted.append(enrollment)
@@ -62,7 +88,8 @@ def get_course_enrollments(user_id):
     return valid
 
 
-def get_course_enrollment(username, course_id):
+# Edraak update function to accept request param
+def get_course_enrollment(username, course_id, request=None):
     """Retrieve an object representing all aggregated data for a user's course enrollment.
 
     Get the course enrollment information for a specific user and course.
@@ -80,7 +107,12 @@ def get_course_enrollment(username, course_id):
         enrollment = CourseEnrollment.objects.get(
             user__username=username, course_id=course_key
         )
-        return CourseEnrollmentSerializer(enrollment).data
+        # Edraak: use EdraakCourseEnrollmentSerializer to serialize
+        # enrollments
+        return EdraakCourseEnrollmentSerializer(
+            enrollment,
+            context={'request': request}
+        ).data
     except CourseEnrollment.DoesNotExist:
         return None
 
@@ -264,6 +296,37 @@ def _invalid_attribute(attributes):
             raise InvalidEnrollmentAttribute(msg)
 
     return invalid_attributes
+
+
+# Edraak
+def _inject_mktg_course_details(course_details, mktg_course_details):
+    """
+    This function injects a course's representation with details from
+    the marketing site.
+
+    :param course_details: a dictionary containing a course's details.
+    :param mktg_course_details: a dictionary containing a course's on
+    the marketing site
+    :return: a dictionary containing the course details updated from
+    the course's marketing site details if available.
+    """
+    if mktg_course_details:
+        course_details['effort'] = mktg_course_details.get('effort')
+        course_details['name'] = mktg_course_details.get('name')
+        course_details['media'] = {
+            'course_image': {
+                'url': mktg_course_details.get('course_image')
+            },
+            'course_video': {
+                'url': mktg_course_details.get('course_video')
+            }
+        }
+        course_details['short_description'] = mktg_course_details.get(
+            'short_description')
+        course_details['name_en'] = mktg_course_details.get('name_en')
+        course_details['name_ar'] = mktg_course_details.get('name_ar')
+
+    return course_details
 
 
 def get_course_enrollment_info(course_id, include_expired=False):
