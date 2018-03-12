@@ -478,7 +478,7 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
         username = request.GET.get('user', request.user.username)
         try:
             # Edraak: pass request to api.get_enrollments
-            enrollment_data = api.get_enrollments(username, request)
+            enrollment_data = api.get_enrollments(username, request=request)
         except CourseEnrollmentError:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -575,7 +575,7 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                 )
 
             enrollment_attributes = request.data.get('enrollment_attributes')
-            enrollment = api.get_enrollment(username, unicode(course_id))
+            enrollment = api.get_enrollment(username, unicode(course_id), request=request)
             mode_changed = enrollment and mode is not None and enrollment['mode'] != mode
             active_changed = enrollment and is_active is not None and enrollment['is_active'] != is_active
             missing_attrs = []
@@ -651,7 +651,7 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
         finally:
             # Assumes that the ecommerce service uses an API key to authenticate.
             if has_api_key_permissions:
-                current_enrollment = api.get_enrollment(username, unicode(course_id))
+                current_enrollment = api.get_enrollment(username, unicode(course_id), request=request)
                 audit_log(
                     'enrollment_change_requested',
                     course_id=unicode(course_id),
