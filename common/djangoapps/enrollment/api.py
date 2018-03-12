@@ -26,6 +26,7 @@ def get_enrollments(user_id, request=None):
 
     Args:
         user_id (str): The username of the user we want to retrieve course enrollment information for.
+        request: The request that comes with the REST call
 
     Returns:
         A list of enrollment information for the given user.
@@ -101,6 +102,7 @@ def get_enrollment(user_id, course_id, request=None):
     Args:
         user_id (str): The user to get course enrollment information for.
         course_id (str): The course to get enrollment information for.
+        request: The request that comes with the REST call
 
     Returns:
         A serializable dictionary of the course enrollment.
