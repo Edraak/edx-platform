@@ -7,16 +7,22 @@ from urlparse import urljoin
 
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.http import Http404
+from django.utils.translation import ugettext as _
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from edxmako.shortcuts import marketing_link
 from edraak_misc.utils import get_courses_marketing_details
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from openedx.core.lib.api.paginators import NamespacedPageNumberPagination
 from openedx.core.lib.api.view_utils import view_auth_classes, DeveloperErrorViewMixin
 from .api import course_detail, list_courses
 from .forms import CourseDetailGetForm, CourseListGetForm
 from .serializers import CourseSerializer, CourseDetailSerializer, \
     MarketingCourseDetailSerializer
+
 
 
 @view_auth_classes(is_authenticated=False)
@@ -114,17 +120,20 @@ class CourseDetailView(DeveloperErrorViewMixin, RetrieveAPIView):
         Return the requested course object, if the user has appropriate
         permissions.
         """
-        requested_params = self.request.query_params.copy()
-        requested_params.update({'course_key': self.kwargs['course_key_string']})
-        form = CourseDetailGetForm(requested_params, initial={'requesting_user': self.request.user})
-        if not form.is_valid():
-            raise ValidationError(form.errors)
+        course_key_string = self.kwargs['course_key_string']
+        try:
+            course_key = CourseKey.from_string(course_key_string)
+        except InvalidKeyError:
+            error_string = _("{course_key} is not a valid course key")
+            raise ValidationError(
+                error_string.format(
+                    course_key=unicode(course_key_string)))
 
-        return course_detail(
-            self.request,
-            form.cleaned_data['username'],
-            form.cleaned_data['course_key'],
-        )
+        try:
+            course_overview = CourseOverview.get_from_id(course_key)
+        except CourseOverview.DoesNotExist:
+            raise Http404(_("Course not found."))
+        return course_overview
 
 
 @view_auth_classes(is_authenticated=False)
