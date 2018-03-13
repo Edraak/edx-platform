@@ -69,9 +69,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-01-16 16:55+0200\n"
-"PO-Revision-Date: 2018-01-16 15:03+0000\n"
-"Last-Translator: Salah Alomari <salomari@qrf.org>\n"
+"POT-Creation-Date: 2018-03-13 16:31+0200\n"
+"PO-Revision-Date: 2018-03-13 14:06+0000\n"
+"Last-Translator: Ali Hasan <ahasan@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4344,6 +4344,7 @@ msgid "News"
 msgstr "الأخبار"
 
 #: lms/djangoapps/branding/api.py templates/theme-footer.html
+#: templates/theme-header.html
 msgid "Help Center"
 msgstr "مركز المساعدة"
 
@@ -4558,6 +4559,7 @@ msgid "User {username} does not exist"
 msgstr "المستخدم {username} غير موجود."
 
 #: lms/djangoapps/certificates/views/support.py
+#: lms/djangoapps/course_api/views.py
 msgid "{course_key} is not a valid course key"
 msgstr "مفتاح المساق {course_key} غير صالح"
 
@@ -4922,6 +4924,10 @@ msgid ""
 msgstr ""
 "إذا لم يظهر مساقك على لوحة معلوماتك، يُرجى الاتصال بـ "
 "{payment_support_link}."
+
+#: lms/djangoapps/course_api/views.py
+msgid "Course not found."
+msgstr "لم يتم العثور على المساق المطلوب."
 
 #: lms/djangoapps/course_wiki/tab.py lms/djangoapps/course_wiki/views.py
 #: lms/templates/wiki/base.html
@@ -8486,7 +8492,6 @@ msgstr "اشترك في قناة منصّة {platform_name} على موقع يو
 
 #: lms/envs/devstack.py cms/templates/course-create-rerun.html
 #: cms/templates/index.html cms/templates/settings.html
-#: templates/theme-header.html
 msgid "Organization"
 msgstr "المؤسّسة"
 
@@ -9083,7 +9088,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/index.html
 #: lms/templates/courseware/courses.html
 #: lms/templates/discussion/_thread_list_template.html
-#: lms/templates/edxnotes/edxnotes.html templates/theme-header.html
+#: lms/templates/edxnotes/edxnotes.html
 msgid "Search"
 msgstr "بحث"
 
@@ -10999,7 +11004,7 @@ msgstr "الصفحة الرئيسية لمنصّة {platform_name}"
 
 #: lms/templates/navigation-edx.html lms/templates/navigation.html
 #: themes/edx.org/lms/templates/header.html
-#: themes/red-theme/lms/templates/header.html templates/theme-footer.html
+#: themes/red-theme/lms/templates/header.html
 msgid "How it Works"
 msgstr "كيف تتعلم مع إدراك"
 
@@ -17286,7 +17291,7 @@ msgid "Currently the {platform_name} servers are overloaded"
 msgstr "تعمل مخدمات المنصة {platform_name} حالياً بمستوى تحميل يتجاوز طاقتها"
 
 #: lms/templates/student_account/account_settings.html
-#: themes/red-theme/lms/templates/header.html templates/theme-header.html
+#: themes/red-theme/lms/templates/header.html
 msgid "Account Settings"
 msgstr "إعدادات الحساب"
 
@@ -19740,7 +19745,6 @@ msgid "Learn more about content libraries"
 msgstr "اعرف المزيد عن مكتبات المحتوى"
 
 #: cms/templates/login.html cms/templates/widgets/header.html
-#: templates/theme-header.html
 msgid "Sign In"
 msgstr "تسجيل الدخول"
 
@@ -20990,7 +20994,7 @@ msgstr "سجّل في StudioX"
 msgid "Send an email to {email}"
 msgstr "أرسل رسالةً إلكترونية إلى {email}"
 
-#: cms/templates/widgets/sock.html templates/theme-footer.html
+#: cms/templates/widgets/sock.html
 msgid "Contact Us"
 msgstr "اتصل بنا"
 
@@ -21659,41 +21663,33 @@ msgid ""
 msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة #%(r1)d والمراجعة #%(r2)d "
 
 #: templates/theme-footer.html
+msgid "About Us"
+msgstr ""
+
+#: templates/theme-footer.html
 msgid "{copy} {year} Edraak, Some rights reserved"
 msgstr "{copy} {year} إدراك. بعض الحقوق محفوظة."
 
-#: templates/theme-footer.html
-msgid "About Edraak"
-msgstr "عن إدراك"
-
-#: templates/theme-footer.html
-msgid "The Team"
-msgstr " الفريق"
+#: templates/theme-header.html
+msgid "Welcome {full_name}"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "What would you like to learn today?"
-msgstr "ماذا تريد أن تتعلم اليوم؟"
+msgctxt "edraak-2015"
+msgid "ABOUT"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "Part of the specialization"
-msgstr "جزءٌ من تخصص"
+msgctxt "edraak-2015"
+msgid "How it Works"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "Hi {full_name}"
-msgstr "اهلا {full_name}"
+msgctxt "edraak-2015"
+msgid "Courses"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "Home"
-msgstr "الصفحة الرئيسية"
-
-#: templates/theme-header.html
-msgid "Continuous education"
-msgstr "التعلم المستمر"
-
-#: templates/theme-header.html
-msgid "School education"
-msgstr "التعلم المدرسي"
-
-#: templates/theme-header.html
-msgid "NEW"
-msgstr "جديد"
+msgctxt "edraak-2015"
+msgid "Teach"
+msgstr ""
