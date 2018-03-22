@@ -117,7 +117,8 @@ def get_course_enrollment(username, course_id, request=None):
         return None
 
 
-def create_course_enrollment(username, course_id, mode, is_active):
+def create_course_enrollment(username, course_id, mode, is_active,
+                             request=None):
     """Create a new course enrollment for the given user.
 
     Creates a new course enrollment for the specified user username.
@@ -157,7 +158,8 @@ def create_course_enrollment(username, course_id, mode, is_active):
     except CourseFullError as err:
         raise CourseEnrollmentFullError(err.message)
     except AlreadyEnrolledError as err:
-        enrollment = get_course_enrollment(username, course_id)
+        enrollment = get_course_enrollment(username, course_id,
+                                           request=request)
         raise CourseEnrollmentExistsError(err.message, enrollment)
 
 
