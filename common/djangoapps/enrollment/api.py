@@ -141,7 +141,8 @@ def get_enrollment(user_id, course_id, request=None):
                                              request=request)
 
 
-def add_enrollment(user_id, course_id, mode=None, is_active=True):
+def add_enrollment(user_id, course_id, mode=None, is_active=True,
+                   request=None):
     """Enrolls a user in a course.
 
     Enrolls a user in a course. If the mode is not specified, this will default to `CourseMode.DEFAULT_MODE_SLUG`.
@@ -191,7 +192,9 @@ def add_enrollment(user_id, course_id, mode=None, is_active=True):
     if mode is None:
         mode = _default_course_mode(course_id)
     _validate_course_mode(course_id, mode, is_active=is_active)
-    return _data_api().create_course_enrollment(user_id, course_id, mode, is_active)
+    return _data_api().create_course_enrollment(user_id, course_id,
+                                                mode, is_active,
+                                                request=request)
 
 
 def update_enrollment(user_id, course_id, mode=None, is_active=None, enrollment_attributes=None):
