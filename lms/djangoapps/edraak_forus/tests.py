@@ -125,7 +125,6 @@ class ForusAuthTest(ModuleStoreTestCase):
         self.assertNotContains(res, 'Create a new account')
         self.assertContains(res, 'Edraak account using ForUs')
 
-        self.assertNotContains(res, 'Create your account')
         self.assertContains(res, 'Create your Edraak account')
 
         self.assertContains(res, 'toggle-form hidden')
