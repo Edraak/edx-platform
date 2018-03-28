@@ -15,6 +15,7 @@ dependencies:
   override:
     - npm install
 
+    - pip install django==1.8.7
     - pip install setuptools
     - pip install --exists-action w -r requirements/edx/paver.txt
 
