@@ -44,15 +44,6 @@
                             })
                         },
                         {
-                          view: new FieldViews.TextFieldView({
-                            model: userAccountModel,
-                            title: gettext('Full Name in English'),
-                            valueAttribute: 'name_en',
-                            helpMessage: gettext('The name that appears on your English certificates. Other learners never see your full name.'),
-                            persistChanges: true
-                          })
-                        },
-                        {
                             view: new AccountSettingsFieldViews.EmailFieldView({
                                 model: userAccountModel,
                                 title: gettext('Email Address'),
@@ -105,6 +96,15 @@
                 {
                     title: gettext('Additional Information (optional)'),
                     fields: [
+                      {
+                        view: new FieldViews.TextFieldView({
+                          model: userAccountModel,
+                          title: gettext('Full Name in English'),
+                          valueAttribute: 'name_en',
+                          helpMessage: gettext('The name that appears on your English certificates. Other learners never see your full name.'),
+                          persistChanges: true
+                        })
+                      },
                       {
                             view: new FieldViews.DropdownFieldView({
                                 model: userAccountModel,
