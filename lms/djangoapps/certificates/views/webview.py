@@ -564,7 +564,7 @@ def render_html_view(request, user_id, course_id):
     context['certificate_data'] = active_configuration
 
     # Determine the certificate language
-    course_title = active_configuration.get('course_title')
+    course_title = active_configuration.get('course_title', course.display_name)
     language = 'ar' if contains_rtl_text(course_title) else 'en'
     translation.activate(language)
     request.session[translation.LANGUAGE_SESSION_KEY] = language

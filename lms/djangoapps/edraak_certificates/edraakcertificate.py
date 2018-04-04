@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import re
 from os import path
@@ -66,20 +67,21 @@ def contains_rtl_text(string):
 
 class EdraakCertificate(object):
     def __init__(self, course, user, course_desc, path_builder=None):
+        self.course_id = course.id
+
         self.path_builder = path_builder
         self.certificate_data = get_active_web_certificate(course)
         self.cert = GeneratedCertificate.certificate_for_student(
-            user, course.id)
+            user, self.course_id)
 
         self.user_profile_name = user.profile.name
 
-        self.course_id = course.id
         self.course_name = self.certificate_data.get('course_title')
         self.course_desc = course_desc
         self.organizations = organization_api.get_course_organizations(
-            course_id=course.id)
+            course_id=self.course_id)
         self.sponsors = organization_api.get_course_sponsors(
-            course_key=course.id)
+            course_key=self.course_id)
 
         self.colors = {
             'base': (225 / 255.0, 0 / 255.0, 67 / 255.0),
