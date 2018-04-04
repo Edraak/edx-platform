@@ -69,9 +69,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-03-15 11:33+0200\n"
-"PO-Revision-Date: 2018-03-15 09:55+0000\n"
-"Last-Translator: Salah Alomari <salomari@qrf.org>\n"
+"POT-Creation-Date: 2018-04-04 13:59+0300\n"
+"PO-Revision-Date: 2018-04-04 11:01+0000\n"
+"Last-Translator: Omar Al-Ithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1364,6 +1364,14 @@ msgstr "يستوجب المساق {course_id} المتطلّب {prerequisite_cou
 #: common/djangoapps/util/milestones_helpers.py
 msgid "System defined milestone"
 msgstr "إنجاز مهمّ يحدّده النظام"
+
+#: common/djangoapps/util/models.py
+msgid "Course Sponsor"
+msgstr ""
+
+#: common/djangoapps/util/models.py
+msgid "Link Course Sponsors"
+msgstr ""
 
 #: common/djangoapps/util/password_policy_validators.py
 msgid "Invalid Length ({0})"
@@ -4694,16 +4702,9 @@ msgstr ""
 #: lms/djangoapps/certificates/views/webview.py
 msgid ""
 "{platform_name} acknowledges achievements through certificates, which are "
-"awarded for various activities {platform_name} students complete under the "
-"<a href='{tos_url}'>{platform_name} Honor Code</a>.  Some certificates "
-"require completing additional steps, such as <a href='{verified_cert_url}'> "
-"verifying your identity</a>."
+"awarded for various activities. {platform_name} students complete under the "
+"<a href='{tos_url}'>{platform_name} Honor Code</a>."
 msgstr ""
-"تُقِرّ {platform_name} بالإنجازات من خلال شهادات، تُمنَح تقديرًا لجهود طلّاب"
-" {platform_name} بعد استكمال أنشطة مختلفة في إطار <a href='{tos_url}'>ميثاق "
-"الشرف الأكاديمي الخاص بمنصّة {platform_name}</a>. كما وتتطلّب بعض الشهادات "
-"استكمال خطوات إضافية، مثل <a href='{verified_cert_url}'>التحقّق من "
-"هويّتك</a>."
 
 #. Translators:  'All rights reserved' is a legal term used in copyrighting to
 #. protect published content
@@ -4774,19 +4775,19 @@ msgstr ""
 msgid "Validate this certificate for yourself"
 msgstr "صدّق هذه الشهادة لنفسك"
 
-#. Translators:  This text describes (at a high level) the mission and charter
-#. the edX platform and organization
+#. Translators:  (EDRAAK) This text describes (at a high level) the mission
+#. and charter the edX platform and organization
 #: lms/djangoapps/certificates/views/webview.py
 msgid ""
-"{platform_name} offers interactive online classes and MOOCs from the world's"
-" best universities, including MIT, Harvard, Berkeley, University of Texas, "
-"and many others.  {platform_name} is a non-profit online initiative created "
-"by founding partners Harvard and MIT."
+"{platform_name} is a massive open online course (MOOC) platform, that is an "
+"initiative of the Queen Rania Foundation (QRF). QRF is determined to ensure "
+"that the Arab world is at the forefront of educational innovation. As such, "
+"QRF has capitalized on regional Arab talent to leverage technology developed"
+" by the Harvard-MIT consortium, edX, to create the first non-profit Arabic "
+"MOOC platform. The new MOOC platform will present the Arab world with unique"
+" and vital opportunities that can be part of a necessary revolution in "
+"education and learning."
 msgstr ""
-"{platform_name} offers interactive online classes and MOOCs from the world's"
-" best universities, including MIT, Harvard, Berkeley, University of Texas, "
-"and many others.  {platform_name} is a non-profit online initiative created "
-"by founding partners Harvard and MIT."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "About {platform_name}"
@@ -4835,8 +4836,8 @@ msgstr "لقد أتممت مساق {course_title} على {platform_name}."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid ""
-"I completed a course on {platform_name}. Take a look at my certificate."
-msgstr "لقد أتمّمت مساقًا على {platform_name}. للقي نظرة على شهادتي."
+"I completed a course on #{platform_name}. Take a look at my certificate."
+msgstr ""
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "More Information About {user_name}'s Certificate:"
@@ -5579,37 +5580,41 @@ msgid "Verify your email to share your Edraak certificate on Bayt.com"
 msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على بيت.كوم"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
-msgid ""
-"A course of study offered by Edraak with cooperation from MITx. The learning"
-" experience has been supervised and managed by the course team."
+#: templates/certificates/_accomplishment-rendering.html
+msgid "Brought to you by"
 msgstr ""
-"تم طرح هذا المساق من قبل إدراك تحت إشراف فريق من الأكاديميين الذين أشرفوا "
-"على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات، و ذلك بالتعاون مع معهد "
-"ماسشوستس للتكنولوجيا."
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
-msgid ""
-"A course of study offered by Edraak. The learning experience has been "
-"supervised and managed by the course team."
+#: templates/certificates/_accomplishment-rendering.html
+msgid "In Sponsorship with"
 msgstr ""
-"تم طرح هذا المساق من قبل إدراك وتحت إشراف فريق من الأكاديميين الذين أشرفوا "
-"على تعليم وإدارة النقاش وتقييم الأجوبة والامتحانات."
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
-msgid "This is to certify that:"
-msgstr " تم منح شهادة إتمام المساق هذه إلى:"
+msgid "COURSE CERTIFICATE"
+msgstr ""
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
-msgid "Successfully completed:"
-msgstr "لإتمام المساق التالي بنجاح:"
+msgid "Issued {date}"
+msgstr ""
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
-msgid "This course is sponsored by:"
-msgstr "هذا المساق برعاية:"
+msgid "Verify the authenticity of this certificate at"
+msgstr ""
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
-msgid "Course{new_line}Certificate{new_line}of Completion"
-msgstr "شهادة{new_line}إتمام{new_line}مساق"
+#: templates/certificates/_accomplishment-rendering.html
+msgid "CERTIFICATE OF COMPLETION"
+msgstr ""
+
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py
+#: templates/certificates/_accomplishment-rendering.html
+msgid "This is to certify that"
+msgstr ""
+
+#: lms/djangoapps/edraak_certificates/edraakcertificate.py
+#: templates/certificates/_accomplishment-rendering.html
+msgid "Successfully completed"
+msgstr ""
 
 #: lms/djangoapps/edraak_forus/helpers.py
 msgid "The security check has failed on the provided parameters"
@@ -12953,7 +12958,8 @@ msgstr "شهادتك جاهزة"
 msgid ""
 "You can keep working for a higher grade, or request your certificate now."
 msgstr ""
-"يمكنك الاستمرار في العمل سعيًا وراء شهادة أعلى أو يمكنك طلب شهادتك الآن."
+"يمكنك الاستمرار في إتمام اختبارات هذا المساق لتحصل على علامة أعلى أو يمكنك "
+"إصدار شهادتك الآن حسب علامتك الحالية."
 
 #: lms/templates/courseware/progress.html
 msgid "View certificate in a new browser window or tab."
@@ -13190,6 +13196,7 @@ msgid "Your {cert_name_short} is Generating"
 msgstr "جاري إعداد شهادتك {cert_name_short}"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
+#: lms/templates/edraak_certificates/_dashboard_certificate_link.html
 msgid "This link will open the certificate web view"
 msgstr "هذا الرابط يفتح مستعرضًا في الويب لمشاهدة شهادتك"
 
@@ -13753,6 +13760,10 @@ msgstr "تخضع المنتديات حاليًّا لأعمال الصيانة. 
 #: lms/templates/discussion/user_profile.html
 msgid "User Profile"
 msgstr "الملف الشخصي للمستخدم "
+
+#: lms/templates/edraak_certificates/_dashboard_certificate_link.html
+msgid "Your Certificate is Generating"
+msgstr ""
 
 #: lms/templates/edraak_certificates/_dashboard_certificate_link.html
 msgid "Issue Certificate"
@@ -21744,3 +21755,7 @@ msgstr "التعلم المدرسي"
 #: templates/theme-header.html
 msgid "NEW"
 msgstr "جديد"
+
+#: templates/certificates/_accomplishment-banner.html
+msgid "Download Certificate"
+msgstr ""
