@@ -81,8 +81,6 @@ class EdraakCertificate(object):
         self.cert = self._get_user_certificate(
             user, course, preview_mode=preview_mode)
 
-        self.user_profile_name = user.profile.name
-
         self.course_name = self.certificate_data.get('course_title')
         self.course_desc = course_desc
         self.organizations = organization_api.get_course_organizations(
@@ -98,6 +96,8 @@ class EdraakCertificate(object):
 
         self.temp_file = NamedTemporaryFile(suffix='-cert.pdf')
         self.is_english = not contains_rtl_text(self.course_name)
+        self.user_profile_name = self._get_user_name(user)
+
         self.left_panel_center = 1.6
         self.ctx = None
         self.size = None
@@ -119,8 +119,8 @@ class EdraakCertificate(object):
         background_filename = 'certificate_layout.png'
         return path.join(static_dir, background_filename)
 
-    def _get_user_certificate(self, user, course,
-                              preview_mode=None):
+    @staticmethod
+    def _get_user_certificate(user, course, preview_mode=None):
         """
         Retrieves user's certificate from db. Creates one in case of
         preview mode.
@@ -149,6 +149,21 @@ class EdraakCertificate(object):
                 pass
 
         return user_certificate
+
+    def _get_user_name(self, user):
+        """
+        Returns the user profile name if for teh requested
+        certificate, if the user requested the english certificate
+        and she doesn't fill the English name this should fall back
+        to the Arabic one as it's mandatory
+        """
+        name_en = user.profile.name_en
+        name_ar = user.profile.name
+
+        if self.is_english and name_en:
+            return name_en
+
+        return name_ar
 
     def init_context(self):
         # Initializing the size of the background

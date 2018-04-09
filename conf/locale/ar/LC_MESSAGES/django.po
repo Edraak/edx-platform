@@ -69,7 +69,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-04-04 13:59+0300\n"
+"POT-Creation-Date: 2018-04-09 11:27+0300\n"
 "PO-Revision-Date: 2018-04-04 11:01+0000\n"
 "Last-Translator: Omar Al-Ithawi <oithawi@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
@@ -1367,11 +1367,11 @@ msgstr "إنجاز مهمّ يحدّده النظام"
 
 #: common/djangoapps/util/models.py
 msgid "Course Sponsor"
-msgstr ""
+msgstr "الجهات الراعية"
 
 #: common/djangoapps/util/models.py
 msgid "Link Course Sponsors"
-msgstr ""
+msgstr "اربط الجهات الراعية للمساق"
 
 #: common/djangoapps/util/password_policy_validators.py
 msgid "Invalid Length ({0})"
@@ -13763,7 +13763,7 @@ msgstr "الملف الشخصي للمستخدم "
 
 #: lms/templates/edraak_certificates/_dashboard_certificate_link.html
 msgid "Your Certificate is Generating"
-msgstr ""
+msgstr "يجري إصدار الشهادة"
 
 #: lms/templates/edraak_certificates/_dashboard_certificate_link.html
 msgid "Issue Certificate"

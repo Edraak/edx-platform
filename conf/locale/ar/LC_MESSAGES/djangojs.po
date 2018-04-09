@@ -44,8 +44,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2018-04-04 10:59+0000\n"
-"PO-Revision-Date: 2018-04-04 11:00:33.659277\n"
+"POT-Creation-Date: 2018-04-09 08:27+0000\n"
+"PO-Revision-Date: 2018-04-09 08:28:30.398370\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>, 2016\n"
 "Language-Team: Arabic (https://www.transifex.com/edraak/teams/27178/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -4138,7 +4138,7 @@ msgstr "معلومات إضافية (اختياري)"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Full Name in English"
-msgstr ""
+msgstr "الاسم الكامل باللغة الإنجليزية"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
