@@ -1,7 +1,12 @@
 
 # -*- coding: utf-8 -*-
-import re
+from datetime import datetime
+import logging
+
+from organizations.models import Organization
 from os import path
+import re
+from uuid import uuid4
 
 from django.conf import settings
 from django.core.files.temp import NamedTemporaryFile
@@ -20,8 +25,10 @@ from reportlab.lib.colors import cyan
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from certificates.models import GeneratedCertificate
+from certificates.models import GeneratedCertificate, CertificateStatuses
+from courseware.access import has_access
 from util import organizations_helpers as organization_api
+from util.models import OrganizationDetail
 
 import arabicreshaper
 
@@ -29,8 +36,9 @@ import arabicreshaper
 from lms.djangoapps.certificates.api import get_certificate_url, \
     get_active_web_certificate
 
-static_dir = path.join(path.dirname(__file__), 'assets')
 
+logger = logging.getLogger(__name__)
+static_dir = path.join(path.dirname(__file__), 'assets')
 fonts = {
     'sahlnaskh-regular.ttf': 'Sahl Naskh Regular',
     'sahlnaskh-bold.ttf': 'Sahl Naskh Bold',
@@ -66,15 +74,15 @@ def contains_rtl_text(string):
 
 
 class EdraakCertificate(object):
-    def __init__(self, course, user, course_desc, path_builder=None):
+    def __init__(self, course, user, course_desc,
+                 path_builder=None, preview_mode=None):
         self.course_id = course.id
 
         self.path_builder = path_builder
-        self.certificate_data = get_active_web_certificate(course)
-        self.cert = GeneratedCertificate.certificate_for_student(
-            user, self.course_id)
-
-        self.user_profile_name = user.profile.name
+        self.certificate_data = get_active_web_certificate(
+            course, preview_mode)
+        self.cert = self._get_user_certificate(
+            user, course, preview_mode=preview_mode)
 
         self.course_name = self.certificate_data.get('course_title')
         self.course_desc = course_desc
@@ -91,6 +99,8 @@ class EdraakCertificate(object):
 
         self.temp_file = NamedTemporaryFile(suffix='-cert.pdf')
         self.is_english = not contains_rtl_text(self.course_name)
+        self.user_profile_name = self._get_user_name(user)
+
         self.left_panel_center = 1.6
         self.ctx = None
         self.size = None
@@ -111,6 +121,52 @@ class EdraakCertificate(object):
     def _background_path():
         background_filename = 'certificate_layout.png'
         return path.join(static_dir, background_filename)
+
+    @staticmethod
+    def _get_user_certificate(user, course, preview_mode=None):
+        """
+        Retrieves user's certificate from db. Creates one in case of
+        preview mode.
+        Returns None if there is no certificate generated for given user
+        otherwise returns `GeneratedCertificate` instance.
+        """
+        user_certificate = None
+        if preview_mode:
+            # certificate is being previewed from studio
+            is_instructor = has_access(user, 'instructor', course)
+            is_staff = has_access(user, 'staff', course)
+            if is_instructor or is_staff:
+                user_certificate = GeneratedCertificate(
+                    mode=preview_mode, verify_uuid=unicode(uuid4().hex),
+                    modified_date=datetime.now().date())
+                logger.info('Downloading certificate for preview mode '
+                            'requested by user %s for the course %s',
+                            user, course.id)
+        else:
+            # certificate is being viewed by learner or public
+            try:
+                user_certificate = GeneratedCertificate.objects.get(
+                    user=user, course_id=course.id,
+                    status=CertificateStatuses.downloadable)
+            except GeneratedCertificate.DoesNotExist:
+                pass
+
+        return user_certificate
+
+    def _get_user_name(self, user):
+        """
+        Returns the user profile name if for teh requested
+        certificate, if the user requested the english certificate
+        and she doesn't fill the English name this should fall back
+        to the Arabic one as it's mandatory
+        """
+        name_en = user.profile.name_en
+        name_ar = user.profile.name
+
+        if self.is_english and name_en:
+            return name_en
+
+        return name_ar
 
     def init_context(self):
         # Initializing the size of the background
@@ -235,13 +291,18 @@ class EdraakCertificate(object):
 
         # Fetch the organization data
         organization = self.organizations[0]
-        organization_name = organization.get('name') if \
-            self.is_english else organization.get('short_name')
+        organization_name = self.get_organization_details(organization)
 
         logo = organization.get('logo', None)
-        image = utils.ImageReader(self.path_builder(logo.url))
-        iw, ih = image.getSize()
-        aspect = iw / float(ih)
+
+        try:
+            image = utils.ImageReader(self.path_builder(logo.url))
+            iw, ih = image.getSize()
+            aspect = iw / float(ih)
+        except IOError:
+            image = None
+            iw, aspect = 0, 0
+
         height = inch / 1.55
         width = height * aspect
 
@@ -254,6 +315,17 @@ class EdraakCertificate(object):
         y -= 0.15
         self.draw_bidi_center_text(
             organization_name, x, y, 0.09, color='grey-light')
+
+    def get_organization_details(self, org_details):
+        org_id = org_details.get('id')
+
+        try:
+            detail = OrganizationDetail.objects.get(organization=org_id)
+            name = detail.name_en if self.is_english else detail.name_ar
+        except OrganizationDetail.DoesNotExist:
+            name = org_details.get('name')
+
+        return name
 
     def add_course_sponsor_logo(self):
         if not self.sponsors:
@@ -278,13 +350,17 @@ class EdraakCertificate(object):
 
         # Fetch the organization data
         organization = self.sponsors[0]
-        organization_name = organization.get('name') if \
-            self.is_english else organization.get('short_name')
         logo = organization.get('logo', None)
-        image = utils.ImageReader(self.path_builder(logo.url))
+        organization_name = self.get_organization_details(organization)
 
-        iw, ih = image.getSize()
-        aspect = iw / float(ih)
+        try:
+            image = utils.ImageReader(self.path_builder(logo.url))
+            iw, ih = image.getSize()
+            aspect = iw / float(ih)
+        except IOError:
+            image = None
+            iw, aspect = 0, 0
+
         height = inch / 2.1
         width = height * aspect
 
@@ -317,7 +393,11 @@ class EdraakCertificate(object):
         for signatory in signatories:
             signature = signatory['signature_image_path']
             signature_url = self.path_builder(signature)
-            signature = ImageReader(signature_url)
+            try:
+                signature = ImageReader(signature_url)
+            except IOError:
+                logger.error('Cannot read signature %s', signature_url)
+                continue
 
             space -= signature_space
             self.ctx.drawImage(

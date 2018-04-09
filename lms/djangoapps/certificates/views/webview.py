@@ -31,6 +31,7 @@ from openedx.core.lib.courses import course_image_url
 from student.models import LinkedInAddToProfileConfiguration
 from util import organizations_helpers as organization_api
 from util.views import handle_500
+from util.models import OrganizationDetail
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
 
@@ -239,7 +240,7 @@ def _update_course_context(request, context, course, platform_name):
     context['accomplishment_copy_course_name'] = accomplishment_copy_course_name
     course_number = course.display_coursenumber if course.display_coursenumber else course.number
     context['course_number'] = course_number
-    if context['organization_long_name']:
+    if context['organization_long_name_en']:
         # Translators:  This text represents the description of course
         context['accomplishment_copy_course_description'] = _('a course of study offered by {partner_short_name}, '
                                                               'an online learning initiative of {partner_long_name} '
@@ -471,18 +472,48 @@ def _update_organization_context(context, course):
     """
     partner_long_name, organization_logo = None, None
     partner_short_name = course.display_organization if course.display_organization else course.org
+    language = context['language']
+    org_names = {
+        'long_name': partner_long_name,
+        'short_name': partner_short_name,
+    }
+
     organizations = organization_api.get_course_organizations(course_id=course.id)
     if organizations:
         #TODO Need to add support for multiple organizations, Currently we are interested in the first one.
         organization = organizations[0]
-        partner_long_name = organization.get('name', partner_long_name)
-        partner_short_name = organization.get('short_name', partner_short_name)
+        org_names = _get_organization_names(organization, lang=language)
         organization_logo = organization.get('logo', None)
 
-    context['organization_long_name'] = partner_long_name
-    context['organization_short_name'] = partner_short_name
-    context['accomplishment_copy_course_org'] = partner_short_name
+    context['organization_long_name'] = org_names['long_name']
+    context['organization_short_name'] = org_names['short_name']
+    context['accomplishment_copy_course_org'] = org_names['long_name']
     context['organization_logo'] = organization_logo
+
+
+def _get_organization_names(organization, lang='ar'):
+    org_id = organization.get('id')
+
+    try:
+        detail = OrganizationDetail.objects.get(organization=org_id)
+        long_en, long_ar = detail.name_en, detail.name_ar
+        short_en, short_ar = detail.short_name_en, detail.short_name_ar
+    except OrganizationDetail.DoesNotExist:
+        name = organization.get('name')
+        short = organization.get('short_name')
+        long_en, long_ar = name, name
+        short_en, short_ar = short, short
+
+    names_en = {
+        'long_name': long_en,
+        'short_name': short_en,
+    }
+    names_ar = {
+        'long_name': long_ar,
+        'short_name': short_ar,
+    }
+
+    return names_ar if lang == 'ar' else names_en
 
 
 def _update_sponsor_context(context, course):
@@ -566,6 +597,7 @@ def render_html_view(request, user_id, course_id):
     # Determine the certificate language
     course_title = active_configuration.get('course_title', course.display_name)
     language = 'ar' if contains_rtl_text(course_title) else 'en'
+    context['language'] = language
     translation.activate(language)
     request.session[translation.LANGUAGE_SESSION_KEY] = language
 

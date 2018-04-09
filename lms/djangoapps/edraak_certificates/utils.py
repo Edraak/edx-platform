@@ -16,9 +16,11 @@ def generate_certificate(request, course_id):
     course_short_desc = get_course_about_section(
         request, course, 'short_description')
 
+    preview_mode = request.GET.get('preview', None)
     cert = EdraakCertificate(course=course,
                              user=request.user,
                              course_desc=course_short_desc,
+                             preview_mode=preview_mode,
                              path_builder=path_builder)
 
     cert.generate_and_save()
