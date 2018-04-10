@@ -22,7 +22,7 @@ urlpatterns = patterns(
         name='courseenrollment'
     ),
     url(
-        r'^enrollment/{course_key}$'.format(course_key=settings.COURSE_ID_PATTERN),
+        r'^enrollment/{course_key}'.format(course_key=settings.COURSE_ID_PATTERN),
         EnrollmentView.as_view(),
         name='courseenrollment'
     ),
