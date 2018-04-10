@@ -4086,13 +4086,15 @@ msgstr ""
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Full Name in Arabic"
-msgstr ""
+msgstr "الاسم الكامل باللغة العربية"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
 "The name that appears on your Arabic certificates. Other learners never see "
 "your full name."
 msgstr ""
+"الاسم الذي يظهر على شهاداتك العربية. لن يرى المتعلّمون الآخرون اسمك الكامل "
+"أبدًا."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Email Address"
@@ -4145,6 +4147,8 @@ msgid ""
 "The name that appears on your English certificates. Other learners never see"
 " your full name."
 msgstr ""
+"الاسم الذي يظهر على شهاداتك الإنجليزية. لن يرى المتعلّمون الآخرون اسمك "
+"الكامل أبدًا."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Education Completed"
@@ -7766,7 +7770,7 @@ msgstr "الموقّعون على الشهادة"
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/group-configuration-editor.underscore
 msgid "error.message"
-msgstr ""
+msgstr "error.message"
 
 #: cms/templates/js/certificate-editor.underscore
 msgid "Certificate Information"
@@ -8037,7 +8041,7 @@ msgstr "مادة ملحقة بفصل"
 #: cms/templates/js/edit-chapter.underscore
 #, python-format
 msgid "path/to/introductionToCookieBaking-CH%d.pdf"
-msgstr ""
+msgstr "path/to/introductionToCookieBaking-CH%d.pdf"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "upload a PDF file or provide the path to a Studio asset file"
@@ -8582,7 +8586,7 @@ msgstr "تعديل %(display_name)s (مطلوب)"
 
 #: cms/templates/js/xblock-string-field-editor.underscore
 msgid "formLabel"
-msgstr ""
+msgstr "formLabel"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Add URLs for additional versions"

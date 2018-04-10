@@ -70,8 +70,8 @@ msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2018-04-09 11:27+0300\n"
-"PO-Revision-Date: 2018-04-04 11:01+0000\n"
-"Last-Translator: Omar Al-Ithawi <oithawi@qrf.org>\n"
+"PO-Revision-Date: 2018-04-10 10:01+0000\n"
+"Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4705,6 +4705,9 @@ msgid ""
 "awarded for various activities. {platform_name} students complete under the "
 "<a href='{tos_url}'>{platform_name} Honor Code</a>."
 msgstr ""
+"تُقِرّ {platform_name} بالإنجازات من خلال الشهادات التي تُمنَح تقديرًا لجهود"
+" طلّاب {platform_name} بعد استكمال أنشطة مختلفة في إطار <a "
+"href='{tos_url}'>ميثاق الشرف الأكاديمي الخاص بمنصّة {platform_name}</a>."
 
 #. Translators:  'All rights reserved' is a legal term used in copyrighting to
 #. protect published content
@@ -4788,6 +4791,12 @@ msgid ""
 " and vital opportunities that can be part of a necessary revolution in "
 "education and learning."
 msgstr ""
+"{platform_name} هي منصة إلكترونية عربية للمساقات الجماعية مفتوحة المصادر "
+"(MOOCs). تم تأسيس إدراك بمبادرة من مؤسسة الملكة رانيا للتعليم والتنمية والتي"
+" تحرص على بذل كافة الجهود والمساعي للمساهمة في وضع العالم العربي في المقدمة "
+"في مجال التربية والتعليم كونهما حجر الأساس لتطور وازدهار الشعوب. تعمل إدراك "
+"بالشراكة مع edX وهي إحدى المنصات التعليمية الإلكترونية الأولى على مستوى "
+"العالم والتابعة لجامعة هارفرد الأميركية و معهد ماساتشوستس للتكنولوجيا."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "About {platform_name}"
@@ -4837,7 +4846,7 @@ msgstr "لقد أتممت مساق {course_title} على {platform_name}."
 #: lms/djangoapps/certificates/views/webview.py
 msgid ""
 "I completed a course on #{platform_name}. Take a look at my certificate."
-msgstr ""
+msgstr "لقد أتمّمت مساقًا على {platform_name}. ها هي شهادتي هنا."
 
 #: lms/djangoapps/certificates/views/webview.py
 msgid "More Information About {user_name}'s Certificate:"
@@ -5582,39 +5591,39 @@ msgstr "فعّل بريدك الإلكتروني لتنشر شهادتك على 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 #: templates/certificates/_accomplishment-rendering.html
 msgid "Brought to you by"
-msgstr ""
+msgstr "مقدم من"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 #: templates/certificates/_accomplishment-rendering.html
 msgid "In Sponsorship with"
-msgstr ""
+msgstr "بدعم من"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "COURSE CERTIFICATE"
-msgstr ""
+msgstr "شهادة مساق"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "Issued {date}"
-msgstr ""
+msgstr "أصدرت بـ {date}"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 msgid "Verify the authenticity of this certificate at"
-msgstr ""
+msgstr "تحقق من مصداقية هذه الشهادة على"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 #: templates/certificates/_accomplishment-rendering.html
 msgid "CERTIFICATE OF COMPLETION"
-msgstr ""
+msgstr "شهادة إتمام مساق"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 #: templates/certificates/_accomplishment-rendering.html
 msgid "This is to certify that"
-msgstr ""
+msgstr "تم منح شهادة إتمام المساق هذه إلى"
 
 #: lms/djangoapps/edraak_certificates/edraakcertificate.py
 #: templates/certificates/_accomplishment-rendering.html
 msgid "Successfully completed"
-msgstr ""
+msgstr "لإتمام المساق التالي بنجاح"
 
 #: lms/djangoapps/edraak_forus/helpers.py
 msgid "The security check has failed on the provided parameters"
@@ -10467,6 +10476,8 @@ msgid ""
 "Check out our recently launched courses and what's new in your favorite "
 "subjects"
 msgstr ""
+"Check out our recently launched courses and what's new in your favorite "
+"subjects"
 
 #: lms/templates/dashboard.html
 msgid "Find New Courses"
@@ -12255,31 +12266,38 @@ msgid "Download student grades"
 msgstr "تنزيل درجات الطلاب"
 
 #: lms/templates/certificates/_accomplishment-banner.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Print or share your certificate:"
 msgstr "اطبع أو شارك شهادتك:"
 
 #: lms/templates/certificates/_accomplishment-banner.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Click the link to see my certificate."
 msgstr "انقر على الرابط لمشاهدة شهادتي"
 
 #: lms/templates/certificates/_accomplishment-banner.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Post on Facebook"
 msgstr "انشر على فيسبوك"
 
 #: lms/templates/certificates/_accomplishment-banner.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Share on Twitter"
 msgstr "شارك على تويتر"
 
 #: lms/templates/certificates/_accomplishment-banner.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Tweet this Accomplishment. Pop up window."
 msgstr "غرّد هذا الإنجاز. نافذة منبثقة."
 
 #: lms/templates/certificates/_accomplishment-banner.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Add to LinkedIn Profile"
 msgstr "إضافة إلى ملفي الشخصي على لينكد إن"
 
 #: lms/templates/certificates/_accomplishment-banner.html
+#: templates/certificates/_accomplishment-banner.html
 msgid "Add to Mozilla Backpack"
 msgstr "إضافة إلى موزيلا BackPack"
 
@@ -13252,7 +13270,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "{category} Program Course"
-msgstr ""
+msgstr "{category} Program Course"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "{course_number} {course_name} Home Page"
@@ -13574,17 +13592,19 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_xseries_info.html
 msgid "{category} Program: Interested in more courses in this subject?"
-msgstr ""
+msgstr "{category} Program: Interested in more courses in this subject?"
 
 #: lms/templates/dashboard/_dashboard_xseries_info.html
 msgid ""
 "This course is 1 of {course_count} courses in the "
 "{link_start}{program_display_name}{link_end} {program_category}."
 msgstr ""
+"This course is 1 of {course_count} courses in the "
+"{link_start}{program_display_name}{link_end} {program_category}."
 
 #: lms/templates/dashboard/_dashboard_xseries_info.html
 msgid "View {category} Details"
-msgstr ""
+msgstr "View {category} Details"
 
 #: lms/templates/debug/run_python_form.html
 msgid "Results:"
@@ -21758,4 +21778,4 @@ msgstr "جديد"
 
 #: templates/certificates/_accomplishment-banner.html
 msgid "Download Certificate"
-msgstr ""
+msgstr "احفظ الشهادة"
