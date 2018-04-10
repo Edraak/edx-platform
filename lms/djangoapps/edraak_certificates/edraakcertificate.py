@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 import logging
+
+from organizations.models import Organization
 from os import path
 import re
 from uuid import uuid4
@@ -26,6 +28,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from certificates.models import GeneratedCertificate, CertificateStatuses
 from courseware.access import has_access
 from util import organizations_helpers as organization_api
+from util.models import OrganizationDetail
 
 import arabicreshaper
 
@@ -288,8 +291,7 @@ class EdraakCertificate(object):
 
         # Fetch the organization data
         organization = self.organizations[0]
-        organization_name = organization.get('name') if \
-            self.is_english else organization.get('short_name')
+        organization_name = self.get_organization_details(organization)
 
         logo = organization.get('logo', None)
 
@@ -314,6 +316,17 @@ class EdraakCertificate(object):
         self.draw_bidi_center_text(
             organization_name, x, y, 0.09, color='grey-light')
 
+    def get_organization_details(self, org_details):
+        org_id = org_details.get('id')
+
+        try:
+            detail = OrganizationDetail.objects.get(organization=org_id)
+            name = detail.name_en if self.is_english else detail.name_ar
+        except OrganizationDetail.DoesNotExist:
+            name = org_details.get('name')
+
+        return name
+
     def add_course_sponsor_logo(self):
         if not self.sponsors:
             return
@@ -337,9 +350,8 @@ class EdraakCertificate(object):
 
         # Fetch the organization data
         organization = self.sponsors[0]
-        organization_name = organization.get('name') if \
-            self.is_english else organization.get('short_name')
         logo = organization.get('logo', None)
+        organization_name = self.get_organization_details(organization)
 
         try:
             image = utils.ImageReader(self.path_builder(logo.url))
