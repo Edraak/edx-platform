@@ -64,6 +64,17 @@ def is_student_pass(user, request, course_id):
     return bool(grade(user, request, course)['grade'])
 
 
+@cached_function(
+    cache_key_format='edraak_misc.utils.student_passed_course.{0.id}.{2}',
+    timeout=60 * 5  # Cache up to 5 minutes
+)
+def student_passed_course(user, request, course_id):
+    course_key = locator.CourseLocator.from_string(course_id)
+    course = modulestore().get_course(course_key)
+
+    return bool(grade(user, request, course)['grade'])
+
+
 def is_certificate_allowed(user, course):
     if not settings.FEATURES.get('ENABLE_ISSUE_CERTIFICATE'):
         return False
