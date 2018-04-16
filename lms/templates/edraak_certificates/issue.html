@@ -6,10 +6,6 @@
 
 <%inherit file="../main.html" />
 
-<%block name="headerextra">
-    <meta http-equiv="refresh" content="5; url=${reverse('edraak_certificates_view', args=[course_id])}" />
-</%block>
-
 <%block name="pagetitle">
     ${_("Please wait...")}
 </%block>
@@ -30,3 +26,21 @@
     </p>
   </section>
 </section>
+
+<%block name="jsextra">
+  <script type="text/javascript">
+    // Keep certificate status on check.
+    setInterval(function () {
+      $.ajax({
+        url: "${reverse('edraak_certificates_check_status', args=[course_id])}",
+        method: 'GET',
+        success: function(response) {
+          console.log(response);
+          if(response['is_downloadable']) {
+            location.reload();
+          }
+        },
+      })
+    }, 2000);
+  </script>
+</%block>
