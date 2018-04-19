@@ -69,7 +69,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-04-09 11:27+0300\n"
+"POT-Creation-Date: 2018-04-19 13:43+0300\n"
 "PO-Revision-Date: 2018-04-10 10:01+0000\n"
 "Last-Translator: Ahmed Jazzar <ajazzar@qrf.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
@@ -1372,6 +1372,14 @@ msgstr "الجهات الراعية"
 #: common/djangoapps/util/models.py
 msgid "Link Course Sponsors"
 msgstr "اربط الجهات الراعية للمساق"
+
+#: common/djangoapps/util/models.py
+msgid ""
+"Please do not use spaces or special characters. Only allowed special "
+"characters are period (.), hyphen (-) and underscore (_)."
+msgstr ""
+"استخدام المسافات والرموز الخاصة غير مسموح به. الرموز الخاصة المسموح "
+"استخدامها هي النقطة (.)، الشرطة (-)، والشرطة على السطر (_)."
 
 #: common/djangoapps/util/password_policy_validators.py
 msgid "Invalid Length ({0})"
@@ -8873,7 +8881,6 @@ msgstr "معاينة"
 #: lms/templates/wiki/includes/cheatsheet.html lms/templates/dashboard.html
 #: lms/templates/forgot_password_modal.html lms/templates/help_modal.html
 #: lms/templates/signup_modal.html lms/templates/ccx/schedule.html
-#: lms/templates/edraak_certificates/view.html
 #: lms/templates/instructor/instructor_dashboard_2/add_coupon_modal.html
 #: lms/templates/instructor/instructor_dashboard_2/edit_coupon_modal.html
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
@@ -13812,62 +13819,17 @@ msgstr ""
 "سيتم اعادة توجيهك إلى {link_start}لوحة المعلومات{link_end} الخاصة بك بعد 10 "
 "ثوان."
 
+#: lms/templates/edraak_certificates/fail.html
+msgid ""
+"If you are a course staff and want to view certificate, please go to "
+"{link_start}Studio{link_end}."
+msgstr ""
+"يمكن لمشرفي ومدرسي المساق إصدار شهادة تجريبية غير معتمدة من على "
+"{link_start}Studio{link_end}."
+
 #: lms/templates/edraak_certificates/issue.html
 msgid "We are calculating your grades. This may take up-to one minute."
 msgstr "يتم حالياً حساب علامتك، قد تستمر هذه العملية ما يقارب الدقيقة."
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Course Completion Certificate"
-msgstr "شهادة إكمال المساق"
-
-#: lms/templates/edraak_certificates/view.html
-msgid ""
-"Please note that the certificate will be issued with your full name on it as"
-" provided on your {link_start}account settings{link_end}."
-msgstr ""
-"نرجو ملاحظة أن الشهادة أصدرت باستخدام اسمك الكامل كما هو مكتوب في صفحة "
-"{link_start}إعدادات الحساب{link_end}."
-
-#: lms/templates/edraak_certificates/view.html
-msgid ""
-"Please double check your name. We prefer that the name is written in the "
-"same language you're issuing the certificate with. To change it, go to the "
-"{link_start}account settings{link_end} and edit your full name."
-msgstr ""
-"تأكد من أن اسمك مكتوب بشكل صحيح وبنفس لغة إصدار الشهادة. لتعديل اسمك يرجى "
-"التوجه الى {link_start}إعدادات الحساب{link_end} وتعديل اسمك."
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Download as PDF"
-msgstr "حمل بصيغة PDF"
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Already posted to Bayt.com"
-msgstr "منشور على بيت.كوم"
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Post to Bayt.com"
-msgstr "نشر على بيت.كوم"
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Do you want to post your certificate on Bayt?"
-msgstr "هل تريد أن تنشر شهادتك على بيت.كوم؟"
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Enter or Confirm your Bayt email"
-msgstr "يرجى تأكيد بريدك الإكتروني المسجل على بيت.كوم"
-
-#: lms/templates/edraak_certificates/view.html
-msgid "This will post the course completed on your Bayt CV."
-msgstr "سيتم إضافة هذه الشهادة إلى سيرتك الذاتية في بيت."
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Bayt Email"
-msgstr "البريد الإلكتروني"
-
-#: lms/templates/edraak_certificates/view.html
-msgid "Post"
-msgstr "نشر"
 
 #: lms/templates/edraak_forus/auth.html
 #: lms/templates/student_account/login_and_register.html
