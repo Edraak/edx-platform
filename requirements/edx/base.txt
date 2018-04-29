@@ -165,4 +165,5 @@ jsonfield==1.0.3
 pynliner==0.5.2
 
 # Edraak packages
+mautic==0.2.0
 -r edraak/certificates.txt

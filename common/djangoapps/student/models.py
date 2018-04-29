@@ -54,6 +54,7 @@ from openedx.core.djangoapps.content.course_overviews.models import CourseOvervi
 from util.model_utils import emit_field_changed_events, get_changed_fields_dict
 from util.query import use_read_replica_if_available
 from util.milestones_helpers import is_entrance_exams_enabled
+from util.usermautic import register_mautic_contact
 
 
 UNENROLL_DONE = Signal(providing_args=["course_enrollment", "skip_refund"])
@@ -439,8 +440,11 @@ def user_profile_pre_save_callback(sender, **kwargs):
 @receiver(post_save, sender=UserProfile)
 def user_profile_post_save_callback(sender, **kwargs):
     """
-    Emit analytics events after saving the UserProfile.
+    Emit analytics events and record the user in mautic after saving
+    the UserProfile.
     """
+
+    # Emit analytics events
     user_profile = kwargs['instance']
     # pylint: disable=protected-access
     emit_field_changed_events(
@@ -449,6 +453,9 @@ def user_profile_post_save_callback(sender, **kwargs):
         sender._meta.db_table,
         excluded_fields=['meta']
     )
+
+    # Add the user to Mautic contacts
+    register_mautic_contact(user_profile)
 
 
 @receiver(pre_save, sender=User)
@@ -528,6 +535,13 @@ class Registration(models.Model):
     def activate(self):
         self.user.is_active = True
         self.user.save()
+
+        # Reflect the change on Mautic
+        user_profile = UserProfile.objects.get(user=self.user)
+        register_mautic_contact(user_profile)
+
+        log = logging.getLogger('edx.registration')
+        log.info('User %s has been verified', self.user.username)
 
 
 class PendingNameChange(models.Model):
