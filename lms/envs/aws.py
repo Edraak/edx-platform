@@ -693,7 +693,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
   'fields': 'id, name, email'
 }
 SOCIAL_AUTH_FACEBOOK_AUTH_EXTRA_ARGUMENTS = {
-    'auth_type': 'rerequest',
+    'auth_type': 'reauthorize',
 }
 
 XBLOCK_SETTINGS = ENV_TOKENS.get('XBLOCK_SETTINGS', {})
