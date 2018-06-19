@@ -58,7 +58,7 @@ def extract_email_features(email_task):
     email_feature_dict = {
         'created': get_default_time_display(email.created),
         'sent_to': task_input_information['to_option'],
-        'requester': str(email_task.requester),
+        'requester': str(email_task.requester).decode("utf-8"),
     }
     features = ['subject', 'html_message', 'id']
     email_info = {feature: unicode(getattr(email, feature)) for feature in features}
@@ -109,7 +109,7 @@ def extract_task_features(task):
     """
     # Pull out information from the task
     features = ['task_type', 'task_input', 'task_id', 'requester', 'task_state']
-    task_feature_dict = {feature: str(getattr(task, feature)) for feature in features}
+    task_feature_dict = {feature: str(getattr(task, feature)).decode("utf-8") for feature in features}
     # Some information (created, duration, status, task message) require additional formatting
     task_feature_dict['created'] = task.created.isoformat()
 
