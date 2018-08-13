@@ -165,7 +165,7 @@ class LoginSessionView(APIView):
 class RegistrationView(APIView):
     """HTTP end-points for creating a new user. """
 
-    DEFAULT_FIELDS = ["email", "name", "username", "password", "is_third_party_auth"]
+    DEFAULT_FIELDS = ["email", "confirm_email", "name", "username", "password", "confirm_password", "is_third_party_auth"]
 
     EXTRA_FIELDS = [
         "city",
@@ -270,8 +270,8 @@ class RegistrationView(APIView):
                 address already exists
         """
         data = request.POST.copy()
-
         email = data.get('email')
+
         username = data.get('username')
 
         # Handle duplicate email/username
@@ -347,6 +347,43 @@ class RegistrationView(APIView):
             field_type="email",
             label=email_label,
             placeholder=email_placeholder,
+            restrictions={
+                "min_length": EMAIL_MIN_LENGTH,
+                "max_length": EMAIL_MAX_LENGTH,
+            },
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
+        )
+
+    def _add_confirm_email_field(self, form_desc, required=True):
+        """Add an confirm email field to a form description.
+
+        Arguments:
+            form_desc: A form description
+
+        Keyword Arguments:
+            required (bool): Whether this field is required; defaults to True
+
+        """
+        # Translators: This label appears above a field on the registration form
+        # meant to hold the user's confirmation of the email address.
+        confirm_email_label = _(u"Confirm Email")
+
+        # Translators: This example email address is used as a placeholder in
+        # a field on the registration form meant to hold the user's confirmed email address.
+        confirm_email_placeholder = _(u"username@domain.com")
+
+        confirm_email_instructions = _(u"Please enter your email again for verification")
+
+        error_msg = _(u"Please enter your Confirm Email")
+        form_desc.add_field(
+            "confirm_email",
+            field_type="email",
+            label=confirm_email_label,
+            placeholder=confirm_email_placeholder,
+            instructions=confirm_email_instructions,
             restrictions={
                 "min_length": EMAIL_MIN_LENGTH,
                 "max_length": EMAIL_MAX_LENGTH,
@@ -484,6 +521,42 @@ class RegistrationView(APIView):
             "password",
             label=password_label,
             instructions=password_instructions,
+            field_type="password",
+            restrictions={
+                "min_length": PASSWORD_MIN_LENGTH,
+                "max_length": PASSWORD_MAX_LENGTH,
+            },
+            required=required,
+            error_messages={
+                "required": error_msg
+            }
+        )
+
+    def _add_confirm_password_field(self, form_desc, required=True):
+        """Add a confirm password field to a form description.
+
+        Arguments:
+            form_desc: A form description
+
+        Keyword Arguments:
+            required (bool): Whether this field is required; defaults to True
+
+        """
+        # Translators: This label appears above a field on the registration form
+        # meant to hold the user's password.
+        confirm_password_label = _(u"Confirm Password")
+
+        confirm_password_instructions = _(
+            # Translators: These instructions appear on the registration form, immediately
+            # below a field meant to hold the user's password.
+            u"Please enter your password again for verification"
+        )
+
+        error_msg = _(u"Please enter your Confirm Password")
+        form_desc.add_field(
+            "confirm_password",
+            label=confirm_password_label,
+            instructions=confirm_password_instructions,
             field_type="password",
             restrictions={
                 "min_length": PASSWORD_MIN_LENGTH,
@@ -800,6 +873,26 @@ class RegistrationView(APIView):
                     # Hide the password field
                     form_desc.override_field_properties(
                         "password",
+                        default="",
+                        field_type="hidden",
+                        required=False,
+                        label="",
+                        instructions="",
+                        restrictions={}
+                    )
+
+                    form_desc.override_field_properties(
+                        "confirm_password",
+                        default="",
+                        field_type="hidden",
+                        required=False,
+                        label="",
+                        instructions="",
+                        restrictions={}
+                    )
+
+                    form_desc.override_field_properties(
+                        "confirm_email",
                         default="",
                         field_type="hidden",
                         required=False,

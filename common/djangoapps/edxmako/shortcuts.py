@@ -22,6 +22,8 @@ from edxmako import lookup_template
 from edxmako.middleware import get_template_request_context
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.utils.translation import get_language_bidi
+
 log = logging.getLogger(__name__)
 
 
@@ -46,7 +48,12 @@ def marketing_link(name):
         # special case for when we only want the root marketing URL
         if name == 'ROOT':
             return settings.MKTG_URLS.get('ROOT')
-        return settings.MKTG_URLS.get('ROOT') + settings.MKTG_URLS.get(name)
+
+        if get_language_bidi():
+            return settings.MKTG_URLS.get('ROOT') + settings.MKTG_URLS.get(name)
+        else:
+            return settings.MKTG_URLS.get('ROOT') + 'en/' + settings.MKTG_URLS.get(name)
+
     # only link to the old pages when the marketing site isn't on
     elif not enable_mktg_site and name in link_map:
         # don't try to reverse disabled marketing links

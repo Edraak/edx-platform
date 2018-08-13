@@ -1506,6 +1506,9 @@ def create_account_with_params(request, params):
 
     if should_link_with_social_auth or (third_party_auth.is_enabled() and pipeline.running(request)):
         params["password"] = pipeline.make_random_password()
+        params["confirm_password"] = params["password"]
+        params["confirm_email"] = params["email"]
+
     elif params.get("is_third_party_auth"):
         # Hack by Edraak to detect timed-out social login attempts.
         raise ValidationError({
@@ -1522,11 +1525,14 @@ def create_account_with_params(request, params):
         try:
             validate_email(eamap.external_email)
             params["email"] = eamap.external_email
+            params["confirm_email"] = params["email"]
         except ValidationError:
             pass
         if eamap.external_name.strip() != '':
             params["name"] = eamap.external_name
         params["password"] = eamap.internal_password
+        params["confirm_password"] = params["password"]
+
         log.debug(u'In create_account with external_auth: user = %s, email=%s', params["name"], params["email"])
 
     extended_profile_fields = microsite.get_value('extended_profile_fields', [])
