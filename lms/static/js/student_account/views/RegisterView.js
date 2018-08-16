@@ -71,10 +71,28 @@
             },
 
             saveSuccess: function() {
+                // Edraak (google-analytics): Send event on registration success
+                ga('send', 'event', {
+                    eventCategory: 'Registration',
+                    eventAction: 'Submit',
+                    eventLabel: 'Register',
+                    eventValue: 1,
+                    transport: 'beacon'
+                });
+
                 this.trigger('auth-complete');
             },
 
             saveError: function( error ) {
+                // Edraak (google-analytics): Send event on registration failure
+                ga('send', 'event', {
+                    eventCategory: 'Registration',
+                    eventAction: 'Submit',
+                    eventLabel: 'Register',
+                    eventValue: 0,
+                    transport: 'beacon'
+                });
+
                 $(this.el).show(); // Show in case the form was hidden for auto-submission
                 this.errors = _.flatten(
                     _.map(
