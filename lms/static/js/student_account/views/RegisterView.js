@@ -72,27 +72,44 @@
 
             saveSuccess: function() {
                 // Edraak (google-analytics): Send event on registration success
-                ga('send', 'event', {
+                if (ga) {
+                  ga('send', 'event', {
                     eventCategory: 'Registration',
                     eventAction: 'Submit',
                     eventLabel: 'Register',
                     eventValue: 1,
                     transport: 'beacon'
-                });
+                  });
+                }
+
+                if (fbq) {
+                  fbq('track', 'CompleteRegistration', {status: 'successful'});
+                }
+
+                if (snaptr) {
+                  snaptr('track', 'SIGN_UP', {success: 1});
+                }
 
                 this.trigger('auth-complete');
             },
 
             saveError: function( error ) {
                 // Edraak (google-analytics): Send event on registration failure
-                ga('send', 'event', {
+                if (ga) {
+                  ga('send', 'event', {
                     eventCategory: 'Registration',
                     eventAction: 'Submit',
                     eventLabel: 'Register',
                     eventValue: 0,
                     transport: 'beacon'
-                });
-
+                  });
+                }
+                if (fbq) {
+                  fbq('track', 'CompleteRegistration', {status: 'failed'});
+                }
+                if(snaptr) {
+                  snaptr('track', 'SIGN_UP', {success: 0});
+                }
                 $(this.el).show(); // Show in case the form was hidden for auto-submission
                 this.errors = _.flatten(
                     _.map(
