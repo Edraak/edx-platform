@@ -5,7 +5,7 @@
 #   * @edx/devops to check system requirements
 
 # Use a modern setuptools instead of distribute
-setuptools==18.0.1
+setuptools
 
 # Numpy and scipy can't be installed in the same pip run.
 # Install numpy before other things to help resolve the problem.
