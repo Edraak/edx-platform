@@ -14,7 +14,15 @@
 
             events: {
                 'click .js-register': 'submitForm',
-                'click .login-provider': 'thirdPartyAuth'
+                'click .login-provider': 'thirdPartyAuth',
+                'contextmenu #register-confirm_email': 'preventCopyPaste',
+                'cut #register-confirm_email': 'preventCopyPaste',
+                'copy #register-confirm_email': 'preventCopyPaste',
+                'paste #register-confirm_email': 'preventCopyPaste',
+                'contextmenu #register-confirm_password': 'preventCopyPaste',
+                'cut #register-confirm_password': 'preventCopyPaste',
+                'copy #register-confirm_password': 'preventCopyPaste',
+                'paste #register-confirm_password': 'preventCopyPaste'
             },
 
             formType: 'register',
@@ -131,6 +139,12 @@
                     // The form did not get submitted due to validation errors.
                     $(this.el).show(); // Show in case the form was hidden for auto-submission
                 }
+            },
+
+            //Edraak
+            //Disable copying and pasting into confirm email and confirm password fields
+            preventCopyPaste: function(event) {
+                event.preventDefault();
             }
         });
     });

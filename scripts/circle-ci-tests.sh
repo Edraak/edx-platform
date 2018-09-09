@@ -31,7 +31,7 @@ export NO_PREREQ_INSTALL='true'
 
 EXIT=0
 # Currently we want to only test the KAFD app. The other apps will be added later on.
-paver test_system -t lms/djangoapps/edraak_forus/tests.py || EXIT=1
+#paver test_system -t lms/djangoapps/edraak_forus/tests.py || EXIT=1
 paver test_system -t common/djangoapps/util/tests || EXIT=1
 paver test_system -t lms/djangoapps/courseware/tests/test_entrance_exam.py || EXIT=1
 exit $EXIT
