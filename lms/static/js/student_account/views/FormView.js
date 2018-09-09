@@ -206,7 +206,9 @@
 
                 // Scroll to error messages
                 $('html,body').animate({
-                    scrollTop: this.$errors.offset().top
+                    //scrollTop: this.$errors.offset().top
+                    // The above does not scroll to the correct position
+                    scrollTop: 100
                 },'slow');
 
                 // Focus on first error field
