@@ -70,6 +70,8 @@ def get_organization_logo(organization, course_id):
         return 'waragami.jpg'
     elif organization == 'ifrc':
         return 'ifrc.jpg'
+    elif course_id.lower().startswith('course-v1:edraak+ar101+'):
+        return 'engineeius.png'
     else:
         return None
 
