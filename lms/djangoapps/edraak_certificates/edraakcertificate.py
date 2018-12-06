@@ -65,7 +65,7 @@ def get_organization_logo(organization, course_id):
     elif organization == 'psut':
         return 'psut.png'
     elif organization == 'adp':
-        return 'adp.png'
+        return 'adp-white.png'
     elif course_id == 'course-v1:Edraak+STEAM101+R1_Q1_2017':
         return 'auc.jpg'
     elif course_id.lower().startswith('course-v1:edraak+pa+'):
