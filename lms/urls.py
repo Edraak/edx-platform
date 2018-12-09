@@ -46,6 +46,8 @@ urlpatterns = (
     url(r'^login_ajax$', 'student.views.login_user', name="login"),
     url(r'^login_ajax/(?P<error>[^/]*)$', 'student.views.login_user'),
 
+    url(r'^enroll/(?P<slug>{})/$'.format(settings.EDRAAK_PROGRAM_SLUG_RGX), 'student.views.enroll_in_program'),
+
     url(r'^email_confirm/(?P<key>[^/]*)$', 'student.views.confirm_email_change'),
     url(r'^event$', 'track.views.user_track'),
     url(r'^performance$', 'performance.views.performance_log'),

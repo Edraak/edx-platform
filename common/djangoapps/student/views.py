@@ -2328,3 +2328,15 @@ def _get_course_programs(user, user_enrolled_courses):  # pylint: disable=invali
                 log.warning('Program structure is invalid, skipping display: %r', program)
 
     return programs_data
+
+
+@require_GET
+@login_required
+@ensure_csrf_cookie
+def enroll_in_program(request, slug):
+    """Redirect user to Edraak programs after signing in"""
+    mktg_base_enroll = urljoin(settings.MKTG_URLS.get("ROOT"), 'enroll/')
+    redirect_to = urljoin(mktg_base_enroll, slug)
+    query_string = '?enroll={}'.format(request.GET.get('enroll', False))
+
+    return redirect(redirect_to + query_string, permanent=True)

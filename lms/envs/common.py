@@ -562,6 +562,9 @@ EDX_ROOT_URL = ''
 LOGIN_REDIRECT_URL = EDX_ROOT_URL + '/login'
 LOGIN_URL = EDX_ROOT_URL + '/login'
 
+# exclude edx courses from this pattern
+EDRAAK_PROGRAM_SLUG_RGX = r'(?!course)[-\w_]+\/[-\w_]+'
+
 COURSE_NAME = "6.002_Spring_2012"
 COURSE_NUMBER = "6.002x"
 COURSE_TITLE = "Circuits and Electronics"
