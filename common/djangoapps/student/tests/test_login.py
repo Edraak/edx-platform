@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponseBadRequest, HttpResponse
 import httpretty
 from mock import patch
-from social.apps.django_app.default.models import UserSocialAuth
+from social_django.models import UserSocialAuth
 
 from external_auth.models import ExternalAuthMap
 from student.tests.factories import UserFactory, RegistrationFactory, UserProfileFactory
