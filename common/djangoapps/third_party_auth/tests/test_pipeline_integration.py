@@ -8,7 +8,7 @@ from django.contrib.auth import models
 
 from third_party_auth import pipeline, provider
 from third_party_auth.tests import testutil
-from social.apps.django_app.default import models as social_models
+from social_django import models as social_models
 
 
 # Get Django User model by reference from python-social-auth. Not a type

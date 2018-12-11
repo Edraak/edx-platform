@@ -13,7 +13,6 @@ import edxmako
 import logging
 import analytics
 
-
 import xmodule.x_module
 import lms_xblock.runtime
 

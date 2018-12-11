@@ -39,9 +39,9 @@ from django.template.response import TemplateResponse
 from ratelimitbackend.exceptions import RateLimitException
 
 
-from social.apps.django_app import utils as social_utils
-from social.backends import oauth as social_oauth
-from social.exceptions import AuthException, AuthAlreadyAssociated
+from social_django import utils as social_utils
+from social_core.backends import oauth as social_oauth
+from social_core.exceptions import AuthException, AuthAlreadyAssociated
 
 from edxmako.shortcuts import render_to_response, render_to_string
 
@@ -1229,7 +1229,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
 
 @csrf_exempt
 @require_POST
-@social_utils.strategy("social:complete")
+@social_utils.psa("social:complete")
 def login_oauth_token(request, backend):
     """
     Authenticate the client using an OAuth access token by using the token to
@@ -1254,7 +1254,8 @@ def login_oauth_token(request, backend):
                 return JsonResponse(status=204)
             else:
                 # Ensure user does not re-enter the pipeline
-                request.social_strategy.clean_partial_pipeline()
+                partial_token = request.social_strategy.session_get('partial_pipeline_token')
+                request.social_strategy.clean_partial_pipeline(partial_token)
                 return JsonResponse({"error": "invalid_token"}, status=401)
         else:
             return JsonResponse({"error": "invalid_request"}, status=400)
@@ -1591,7 +1592,8 @@ def create_account_with_params(request, params):
                 error_message = _("The provided access_token is not valid.")
             if not pipeline_user or not isinstance(pipeline_user, User):
                 # Ensure user does not re-enter the pipeline
-                request.social_strategy.clean_partial_pipeline()
+                partial_token = request.social_strategy.session_get('partial_pipeline_token')
+                request.social_strategy.clean_partial_pipeline(partial_token)
                 raise ValidationError({'access_token': [error_message]})
 
     # Perform operations that are non-critical parts of account creation

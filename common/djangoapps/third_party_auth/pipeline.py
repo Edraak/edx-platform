@@ -74,10 +74,10 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
-from social.apps.django_app.default import models
-from social.exceptions import AuthException
-from social.pipeline import partial
-from social.pipeline.social_auth import associate_by_email
+from social_django import models
+from social_core.exceptions import AuthException
+from social_core.pipeline import partial
+from social_core.pipeline.social_auth import associate_by_email
 
 import student
 

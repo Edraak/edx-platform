@@ -15,8 +15,8 @@ from django.test import utils as django_utils
 from django.conf import settings as django_settings
 from edxmako.tests import mako_middleware_process_request
 from social import actions, exceptions
-from social.apps.django_app import utils as social_utils
-from social.apps.django_app import views as social_views
+from social_django import utils as social_utils
+from social_django import views as social_views
 from student import models as student_models
 from student import views as student_views
 from student.tests.factories import UserFactory
@@ -464,7 +464,7 @@ class IntegrationTest(testutil.TestCase, test.TestCase):
         return user
 
     def fake_auth_complete(self, strategy):
-        """Fake implementation of social.backends.BaseAuth.auth_complete.
+        """Fake implementation of social_core.backends.BaseAuth.auth_complete.
 
         Unlike what the docs say, it does not need to return a user instance.
         Sometimes (like when directing users to the /register form) it instead
@@ -506,7 +506,7 @@ class IntegrationTest(testutil.TestCase, test.TestCase):
         These two objects contain circular references, so we create them
         together. The references themselves are a mixture of normal __init__
         stuff and monkey-patching done by python-social-auth. See, for example,
-        social.apps.django_apps.utils.strategy().
+        social_django.utils.strategy().
         """
         request = self.request_factory.get(
             pipeline.get_complete_url(self.backend_name) +
