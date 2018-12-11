@@ -3,9 +3,11 @@ import json
 
 import httpretty
 
+from django.conf import settings
 from provider.constants import PUBLIC
 from provider.oauth2.models import Client
-from social.apps.django_app.default.models import UserSocialAuth
+from social_django.models import UserSocialAuth
+from social_core.backends.facebook import FacebookOAuth2
 
 from student.tests.factories import UserFactory
 
@@ -72,7 +74,7 @@ class ThirdPartyOAuthTestMixin(ThirdPartyAuthTestMixin):
 class ThirdPartyOAuthTestMixinFacebook(object):
     """Tests oauth with the Facebook backend"""
     BACKEND = "facebook"
-    USER_URL = "https://graph.facebook.com/v2.3/me"
+    USER_URL = FacebookOAuth2.USER_DATA_URL.format(version=settings.FACEBOOK_API_VERSION)
     # In facebook responses, the "id" field is used as the user's identifier
     UID_FIELD = "id"
 
