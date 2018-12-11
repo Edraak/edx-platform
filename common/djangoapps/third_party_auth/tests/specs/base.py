@@ -410,7 +410,7 @@ class IntegrationTest(testutil.TestCase, test.TestCase):
         """Asserts a response would redirect to /dashboard."""
         self.assertEqual(302, response.status_code)
         # pylint: disable=protected-access
-        self.assertEqual(auth_settings._SOCIAL_AUTH_LOGIN_REDIRECT_URL, response.get('Location'))
+        self.assertTrue(response.get('Location').endswith(django_settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL))
 
     def assert_redirect_to_login_looks_correct(self, response):
         """Asserts a response would redirect to /login."""
