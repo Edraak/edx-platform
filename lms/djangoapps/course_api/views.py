@@ -8,7 +8,7 @@ from urlparse import urljoin
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.http import Http404
-from django.utils.translation import ugettext as _
+from django.utils.translation import get_language, ugettext as _
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from edxmako.shortcuts import marketing_link
@@ -345,7 +345,9 @@ class MarketingCourseDetailView(CourseDetailView):
             course_object.display_name = marketing_data['name']
             course_object.course_image_url = marketing_data['course_image']
             course_object.course_video_url = marketing_data['course_video']
-            course_object.short_description = marketing_data['short_description']
+            course_object.short_description = marketing_data[
+                'short_description_en'] if get_language() == "en" \
+                else marketing_data['short_description_ar']
             course_object.overview = marketing_data.get('overview')
             course_object.name_en = marketing_data['name_en']
             course_object.name_ar = marketing_data['name_ar']
