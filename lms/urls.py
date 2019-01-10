@@ -20,13 +20,6 @@ from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 
 # Edraak: Redirect dashboard to programs platform
 DASHBOARD_VIEW = 'student.views.dashboard'
-if settings.PROGS_URLS and settings.PROGS_URLS.get('DASHBOARD'):
-    progs_dashboard_url =\
-        urljoin(settings.PROGS_URLS.get("ROOT"),
-                                   settings.PROGS_URLS.get("DASHBOARD"))
-    DASHBOARD_VIEW =\
-        RedirectView.as_view(url=progs_dashboard_url, permanent=True)
-
 
 # Uncomment the next two lines to enable the admin:
 if settings.DEBUG or settings.FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):

@@ -129,6 +129,8 @@ from openedx.core.djangoapps.user_api.preferences import api as preferences_api
 from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
 
 from .constants import CHILD_USER_PERMISSION_GROUP
+from course_modes.helpers import get_progs_url
+
 from .helpers import enroll, get_spam_name
 
 
@@ -523,6 +525,10 @@ def is_course_blocked(request, redeemed_registration_codes, course_key):
 @login_required
 @ensure_csrf_cookie
 def dashboard(request):
+    if settings.PROGS_URLS and settings.PROGS_URLS.get('DASHBOARD', None):
+
+        return redirect(get_progs_url(settings.PROGS_URLS.get('DASHBOARD')))
+
     user = request.user
 
     platform_name = microsite.get_value("platform_name", settings.PLATFORM_NAME)
