@@ -16,7 +16,7 @@ from course_modes.models import CourseMode
 from util.json_request import JsonResponse
 from django.views.decorators.http import require_POST, require_http_methods
 from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 from util.bad_request_rate_limiter import BadRequestRateLimiter
 from util.date_utils import get_default_time_display
 from django.contrib.auth.decorators import login_required

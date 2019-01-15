@@ -1,4 +1,4 @@
-from django.views.decorators.csrf import ensure_csrf_cookie
+from edraak_backends.csrf import ensure_csrf_cookie
 from django.conf import settings
 from django.db import transaction
 from django.contrib.auth.decorators import login_required

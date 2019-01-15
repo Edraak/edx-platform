@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.core import exceptions
 from django.http import Http404, HttpResponseBadRequest
 from django.utils.translation import ugettext as _
-from django.views.decorators import csrf
+from edraak_backends import csrf
 from django.views.decorators.http import require_GET, require_POST
 from opaque_keys.edx.keys import CourseKey
 

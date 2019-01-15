@@ -12,10 +12,7 @@ from django.http import HttpResponse
 from django.conf import settings
 import track.views
 
-try:
-    from django.views.decorators.csrf import csrf_exempt
-except ImportError:
-    from django.contrib.csrf.middleware import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 
 log = logging.getLogger("edx.lms_migrate")
 LOCAL_DEBUG = True

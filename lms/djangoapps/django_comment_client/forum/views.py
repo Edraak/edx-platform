@@ -8,7 +8,7 @@ import logging
 
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.core.context_processors import csrf
+from edraak_backends.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseBadRequest

@@ -26,7 +26,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_control
-from django.views.decorators.csrf import ensure_csrf_cookie
+from edraak_backends.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 
 from courseware.courses import get_course_by_id

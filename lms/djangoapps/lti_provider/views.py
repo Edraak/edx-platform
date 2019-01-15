@@ -4,7 +4,7 @@ LTI Provider view functions
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest, HttpResponseForbidden, Http404
-from django.views.decorators.csrf import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 import logging
 
 from lti_provider.outcomes import store_outcome_parameters

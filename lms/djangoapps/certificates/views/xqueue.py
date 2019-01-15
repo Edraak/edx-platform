@@ -7,7 +7,7 @@ import logging
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse, Http404, HttpResponseForbidden
-from django.views.decorators.csrf import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import dogstats_wrapper as dog_stats_api
 

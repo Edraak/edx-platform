@@ -12,7 +12,7 @@ from django.contrib.auth import login
 import django.contrib.auth as auth
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 from provider import constants
 from provider.oauth2.views import AccessTokenView as AccessTokenView
 from rest_framework import permissions

@@ -1128,7 +1128,7 @@ MIDDLEWARE_CLASSES = (
     'corsheaders.middleware.CorsMiddleware',
     'cors_csrf.middleware.CorsCSRFMiddleware',
     'cors_csrf.middleware.CsrfCrossDomainCookieMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'edraak_backends.middleware.EdraakCsrfViewMiddleware',
 
     'splash.middleware.SplashMiddleware',
 
@@ -1933,6 +1933,7 @@ INSTALLED_APPS = (
     'edraak_ratelimit',
     'edraak_university',
     'edraak_specializations',
+    'edraak_backends',
 
     'lms.djangoapps.lms_xblock',
 

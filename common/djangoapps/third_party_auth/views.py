@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseServerError, Http404, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
-from django.views.decorators.csrf import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 import social
 from social.apps.django_app.views import complete
 from social.apps.django_app.utils import load_strategy, load_backend
