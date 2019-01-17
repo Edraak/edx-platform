@@ -16,12 +16,12 @@ import dogstats_wrapper as dog_stats_api
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.core.context_processors import csrf
+from edraak_backends.context_processors import csrf
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.test.client import RequestFactory
-from django.views.decorators.csrf import csrf_exempt
+from edraak_backends.csrf import csrf_exempt
 from django.utils.translation import ugettext_noop
 
 import newrelic.agent

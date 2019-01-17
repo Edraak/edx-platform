@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
-from django.views.decorators.csrf import ensure_csrf_cookie
+from edraak_backends.csrf import ensure_csrf_cookie
 
 from edxmako.shortcuts import render_to_response
 from ipware.ip import get_ip

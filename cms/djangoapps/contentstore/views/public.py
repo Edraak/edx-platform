@@ -1,9 +1,9 @@
 """
 Public views
 """
-from django.views.decorators.csrf import ensure_csrf_cookie
+from edraak_backends.csrf import ensure_csrf_cookie
 from django.views.decorators.clickjacking import xframe_options_deny
-from django.core.context_processors import csrf
+from edraak_backends.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.conf import settings

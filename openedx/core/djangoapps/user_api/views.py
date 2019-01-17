@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured, NON_FIELD_ERRORS, ValidationError
 from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
+from edraak_backends.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from opaque_keys.edx import locator
 from rest_framework import authentication
 from rest_framework import filters
