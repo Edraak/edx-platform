@@ -1025,6 +1025,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
     third_party_auth_successful = False
     trumped_by_first_party_auth = bool(request.POST.get('email')) or bool(request.POST.get('password'))
     user = None
+    parent_user = None
     child_user = None
     platform_name = microsite.get_value("platform_name", settings.PLATFORM_NAME)
 
@@ -1132,7 +1133,9 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
 
     # set the user object to child_user object if a child is being
     # loged in
-    user = child_user if child_user else user
+    if child_user:
+        parent_user = request.user
+        user = child_user
 
     # if the user doesn't exist, we want to set the username to an invalid
     # username so that authentication is guaranteed to fail and we can take
@@ -1213,6 +1216,14 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 log.debug("Setting user session to never expire")
             else:
                 request.session.set_expiry(0)
+
+            if parent_user:
+                request.session['parent_user'] = json.dumps({
+                    'user_id': parent_user.id,
+                    'username': parent_user.username,
+                    'email': parent_user.email,
+                    'name': parent_user.profile.name
+                })
         except Exception as exc:  # pylint: disable=broad-except
             AUDIT_LOG.critical("Login failed - Could not create session. Is memcached running?")
             log.critical("Login failed - Could not create session. Is memcached running?")
