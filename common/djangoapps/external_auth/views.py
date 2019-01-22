@@ -31,7 +31,11 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 
 from edxmako.shortcuts import render_to_response, render_to_string
-from edraak_backends.csrf import ensure_csrf_cookie, csrf_exempt
+try:
+    from django.views.decorators.csrf import csrf_exempt
+except ImportError:
+    from django.contrib.csrf.middleware import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import django_openid_auth.views as openid_views
 from django_openid_auth import auth as openid_auth

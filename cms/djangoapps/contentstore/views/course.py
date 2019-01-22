@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 import django.utils
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_http_methods, require_GET
-from edraak_backends.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys.edx.locations import Location

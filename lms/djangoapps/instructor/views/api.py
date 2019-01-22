@@ -12,7 +12,7 @@ import re
 import time
 import requests
 from django.conf import settings
-from edraak_backends.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.cache import cache_control
 from django.core.exceptions import ValidationError, PermissionDenied

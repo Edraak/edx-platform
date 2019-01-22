@@ -3,7 +3,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from edraak_backends.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 
 from edxmako.shortcuts import render_to_response
 from microsite_configuration import microsite

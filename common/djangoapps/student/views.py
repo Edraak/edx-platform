@@ -18,7 +18,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import password_reset_confirm
 from django.contrib import messages
-from edraak_backends.context_processors import csrf
+from django.core.context_processors import csrf
 from django.core import mail
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.core.validators import validate_email, ValidationError
@@ -30,7 +30,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.translation import ungettext
 from django.utils.http import base36_to_int, urlsafe_base64_encode
 from django.utils.translation import ugettext as _, get_language
-from edraak_backends.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_GET
 from django.db.models.signals import post_save
 from django.dispatch import receiver

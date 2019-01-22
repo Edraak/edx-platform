@@ -45,7 +45,7 @@ CSRF cookie.
 import logging
 
 from django.conf import settings
-from edraak_backends.middleware import EdraakCsrfViewMiddleware
+from django.middleware.csrf import CsrfViewMiddleware
 from django.core.exceptions import MiddlewareNotUsed, ImproperlyConfigured
 
 from cors_csrf.helpers import is_cross_domain_request_allowed, skip_cross_domain_referer_check
@@ -53,7 +53,7 @@ from cors_csrf.helpers import is_cross_domain_request_allowed, skip_cross_domain
 log = logging.getLogger(__name__)
 
 
-class CorsCSRFMiddleware(EdraakCsrfViewMiddleware):
+class CorsCSRFMiddleware(CsrfViewMiddleware):
     """
     Middleware for handling CSRF checks with CORS requests
     """

@@ -7,7 +7,7 @@ import json
 import logging
 
 from django.contrib.auth.decorators import login_required
-from edraak_backends.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, HttpResponseBadRequest
 
 from openedx.core.lib.js_utils import escape_json_dumps

@@ -2,7 +2,7 @@ import logging
 import re
 
 from django.conf import settings
-from edraak_backends.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import send_mail
 
 from edxmako.shortcuts import render_to_response, render_to_string

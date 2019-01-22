@@ -9,7 +9,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.exceptions import MiddlewareNotUsed, ImproperlyConfigured
 from django.http import HttpResponse
-from edraak_backends.csrf import EdraakCsrfViewMiddleware
+from django.middleware.csrf import CsrfViewMiddleware
 
 from cors_csrf.middleware import CorsCSRFMiddleware, CsrfCrossDomainCookieMiddleware
 
@@ -39,7 +39,7 @@ class TestCorsMiddlewareProcessRequest(TestCase):
         """
         Check that the middleware does NOT process the provided request
         """
-        with patch.object(EdraakCsrfViewMiddleware, 'process_view') as mock_method:
+        with patch.object(CsrfViewMiddleware, 'process_view') as mock_method:
             res = self.middleware.process_view(request, None, None, None)
 
         self.assertIsNone(res)
@@ -56,7 +56,7 @@ class TestCorsMiddlewareProcessRequest(TestCase):
             self.assertFalse(request.is_secure())
             return SENTINEL
 
-        with patch.object(EdraakCsrfViewMiddleware, 'process_view') as mock_method:
+        with patch.object(CsrfViewMiddleware, 'process_view') as mock_method:
             mock_method.side_effect = cb_check_req_is_secure_false
             res = self.middleware.process_view(request, None, None, None)
 
