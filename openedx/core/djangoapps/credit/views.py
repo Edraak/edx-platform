@@ -7,7 +7,7 @@ import datetime
 
 from django.conf import settings
 from django.utils.decorators import method_decorator
-from edraak_backends.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 import pytz

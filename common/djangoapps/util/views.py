@@ -6,7 +6,7 @@ from functools import wraps
 from django.conf import settings
 from django.core.cache import caches
 from django.core.validators import ValidationError, validate_email
-from edraak_backends.csrf import requires_csrf_token
+from django.views.decorators.csrf import requires_csrf_token
 from django.views.defaults import server_error
 from django.http import (Http404, HttpResponse, HttpResponseNotAllowed,
                          HttpResponseServerError)

@@ -1,5 +1,5 @@
 """Decorators for cross-domain CSRF. """
-from edraak_backends.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 def ensure_csrf_cookie_cross_domain(func):

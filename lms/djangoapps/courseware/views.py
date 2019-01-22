@@ -12,7 +12,7 @@ from datetime import datetime
 from django.utils.translation import ugettext as _
 
 from django.conf import settings
-from edraak_backends.context_processors import csrf
+from django.core.context_processors import csrf
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User, AnonymousUser
@@ -25,7 +25,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.shortcuts import redirect
 from certificates import api as certs_api
 from edxmako.shortcuts import render_to_response, render_to_string, marketing_link
-from edraak_backends.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from ipware.ip import get_ip
 from markupsafe import escape

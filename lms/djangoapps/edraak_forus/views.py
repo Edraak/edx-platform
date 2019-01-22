@@ -17,7 +17,7 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from util.json_request import JsonResponse
 
 from student_account.views import _local_server_get
-from edraak_backends.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ValidationError
 from student.cookies import delete_logged_in_cookies
