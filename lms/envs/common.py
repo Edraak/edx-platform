@@ -1934,6 +1934,7 @@ INSTALLED_APPS = (
     'edraak_ratelimit',
     'edraak_university',
     'edraak_specializations',
+    'edraak_dummy',
 
     'lms.djangoapps.lms_xblock',
 
