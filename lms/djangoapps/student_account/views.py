@@ -202,7 +202,6 @@ def _third_party_auth_context(request, redirect_to):
         "finishAuthUrl": None,
         "errorMessage": None,
     }
-
     if third_party_auth.is_enabled():
         for enabled in third_party_auth.provider.Registry.accepting_logins():
             info = {

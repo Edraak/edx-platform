@@ -1,4 +1,4 @@
-from social.backends.facebook import FacebookOAuth2
+from social_core.backends.facebook  import FacebookOAuth2
 
 
 class EdraakFacebookOAuth2(FacebookOAuth2):

@@ -39,6 +39,7 @@ class Registry(object):
     @classmethod
     def accepting_logins(cls):
         """Returns list of providers that can be used to initiate logins currently"""
+        bobo = cls.enabled()
         return [provider for provider in cls.enabled() if provider.accepts_logins]
 
     @classmethod

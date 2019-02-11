@@ -2,8 +2,8 @@
 Slightly customized python-social-auth backend for SAML 2.0 support
 """
 import logging
-from social.backends.saml import SAMLAuth, OID_EDU_PERSON_ENTITLEMENT
-from social.exceptions import AuthForbidden
+from social_core.backends.saml import OID_EDU_PERSON_ENTITLEMENT, SAMLAuth, SAMLIdentityProvider
+from social_core.exceptions import AuthForbidden
 
 log = logging.getLogger(__name__)
 

@@ -127,7 +127,6 @@ FEATURES = {
     # Turn off Video Upload Pipeline through Studio, by default
     'ENABLE_VIDEO_UPLOAD_PIPELINE': False,
 
-
     # Is this an edX-owned domain? (edx.org)
     # for consistency in user-experience, keep the value of this feature flag
     # in sync with the one in lms/envs/common.py
@@ -216,6 +215,7 @@ GEOIPV6_PATH = REPO_ROOT / "common/static/data/geoip/GeoIPv6.dat"
 # Mako templating
 # TODO: Move the Mako templating into a different engine in TEMPLATES below.
 import tempfile
+
 MAKO_MODULE_DIR = os.path.join(tempfile.gettempdir(), 'mako_cms')
 MAKO_TEMPLATES = {}
 MAKO_TEMPLATES['main'] = [
@@ -252,6 +252,8 @@ TEMPLATES = [
                 'django.template.context_processors.csrf',
                 'dealer.contrib.django.staff.context_processor',  # access git revision
                 'contentstore.context_processors.doc_url',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ),
             # Change 'debug' in your environment settings files - not here.
             'debug': False
@@ -284,7 +286,6 @@ from lms.envs.common import (
 
 # Forwards-compatibility with Django 1.7
 CSRF_COOKIE_AGE = 60 * 60 * 24 * 7 * 52
-
 
 #################### CAPA External Code Evaluation #############################
 XQUEUE_INTERFACE = {
@@ -406,7 +407,6 @@ SESSION_COOKIE_SECURE = False
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 CSRF_COOKIE_SECURE = False
-
 
 # Site info
 SITE_ID = 1
@@ -559,9 +559,9 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'module-js': {
         'source_filenames': (
-            rooted_glob(COMMON_ROOT / 'static/', 'xmodule/descriptors/js/*.js') +
-            rooted_glob(COMMON_ROOT / 'static/', 'xmodule/modules/js/*.js') +
-            rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/discussion/*.js')
+                rooted_glob(COMMON_ROOT / 'static/', 'xmodule/descriptors/js/*.js') +
+                rooted_glob(COMMON_ROOT / 'static/', 'xmodule/modules/js/*.js') +
+                rooted_glob(COMMON_ROOT / 'static/', 'coffee/src/discussion/*.js')
         ),
         'output_filename': 'js/cms-modules.js',
         'test_order': 1
@@ -631,7 +631,6 @@ REQUIRE_EXCLUDE = ("build.txt",)
 # It can also be a path to a custom class that subclasses require.environments.Environment and defines some "args" function that returns a list with the command arguments to execute.
 REQUIRE_ENVIRONMENT = "node"
 
-
 ########################## DJANGO DEBUG TOOLBAR ###############################
 
 # We don't enable Django Debug Toolbar universally, but whenever we do, we want
@@ -684,7 +683,6 @@ CELERY_QUEUES = {
     LOW_PRIORITY_QUEUE: {},
     DEFAULT_PRIORITY_QUEUE: {}
 }
-
 
 ############################## Video ##########################################
 
@@ -802,7 +800,7 @@ INSTALLED_APPS = (
     'course_action_state',
 
     # Additional problem types
-    'edx_jsme',    # Molecular Structure
+    'edx_jsme',  # Molecular Structure
 
     'openedx.core.djangoapps.content.course_overviews',
     'openedx.core.djangoapps.content.course_structures',
@@ -831,7 +829,6 @@ INSTALLED_APPS = (
     # by installed apps.
     'lms.djangoapps.verify_student',
 )
-
 
 ################# EDX MARKETING SITE ##################################
 
@@ -920,7 +917,6 @@ PASSWORD_DICTIONARY = []
 MAX_FAILED_LOGIN_ATTEMPTS_ALLOWED = 5
 MAX_FAILED_LOGIN_ATTEMPTS_LOCKOUT_PERIOD_SECS = 15 * 60
 
-
 ### Apps only installed in some instances
 
 OPTIONAL_APPS = (
@@ -945,7 +941,6 @@ OPTIONAL_APPS = (
     # Organizations App (http://github.com/edx/edx-organizations)
     'organizations',
 )
-
 
 for app_name in OPTIONAL_APPS:
     # First attempt to only find the module rather than actually importing it,
@@ -983,7 +978,6 @@ ENTRANCE_EXAM_MIN_SCORE_PCT = 50
 
 ### Default language for a new course
 DEFAULT_COURSE_LANGUAGE = "en"
-
 
 ################ ADVANCED_COMPONENT_TYPES ###############
 
@@ -1074,7 +1068,6 @@ ADVANCED_PROBLEM_TYPES = [
     },
 ]
 
-
 # Files and Uploads type filter values
 
 FILES_AND_UPLOAD_TYPE_FILTERS = {
@@ -1127,7 +1120,6 @@ CREDIT_TASK_MAX_RETRIES = 5
 # or denied for credit.
 CREDIT_PROVIDER_TIMESTAMP_EXPIRATION = 15 * 60
 
-
 ################################ Deprecated Blocks Info ################################
 
 DEPRECATED_BLOCK_TYPES = ['peergrading', 'combinedopenended']
@@ -1139,7 +1131,6 @@ PROCTORING_BACKEND_PROVIDER = {
     'options': {},
 }
 PROCTORING_SETTINGS = {}
-
 
 ############################ OAUTH2 Provider ###################################
 

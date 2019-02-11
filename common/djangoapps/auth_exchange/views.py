@@ -17,7 +17,7 @@ from provider import constants
 from provider.oauth2.views import AccessTokenView as AccessTokenView
 from rest_framework import permissions
 from rest_framework.views import APIView
-import social.apps.django_app.utils as social_utils
+import social_django.utils as social_utils
 
 from auth_exchange.forms import AccessTokenExchangeForm
 from openedx.core.lib.api.authentication import OAuth2AuthenticationAllowInactiveUser
@@ -28,7 +28,7 @@ class AccessTokenExchangeView(AccessTokenView):
     View for token exchange from 3rd party OAuth access token to 1st party OAuth access token
     """
     @method_decorator(csrf_exempt)
-    @method_decorator(social_utils.strategy("social:complete"))
+    @method_decorator(social_utils.psa("social:complete"))
     def dispatch(self, *args, **kwargs):
         return super(AccessTokenExchangeView, self).dispatch(*args, **kwargs)
 

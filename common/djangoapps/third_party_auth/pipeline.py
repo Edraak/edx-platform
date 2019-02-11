@@ -54,7 +54,7 @@ This is surprising but important behavior, since it allows a single function in
 the pipeline to consolidate all the operations needed to establish invariants
 rather than spreading them across two functions in the pipeline.
 
-See http://psa.matiasaguirre.net/docs/pipeline.html for more docs.
+See http://python-social-auth.readthedocs.io/en/latest/pipeline.html for more docs.
 """
 
 import base64
@@ -73,18 +73,16 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _
-from social.apps.django_app.default import models
-from social.exceptions import AuthException
-from social.pipeline import partial
-from social.pipeline.social_auth import associate_by_email
+import social_django
+from social_core.exceptions import AuthException
+from social_core.pipeline import partial
+from social_core.pipeline.social_auth import associate_by_email
 
 import student
 
 from logging import getLogger
 
 from . import provider
-
 
 # These are the query string params you can pass
 # to the URL that starts the authentication process.
@@ -97,7 +95,6 @@ from . import provider
 # (if not provided, defaults to `_SOCIAL_AUTH_LOGIN_REDIRECT_URL`)
 AUTH_ENTRY_KEY = 'auth_entry'
 AUTH_REDIRECT_KEY = 'next'
-
 
 # The following are various possible values for the AUTH_ENTRY_KEY.
 AUTH_ENTRY_LOGIN = 'login'
@@ -125,6 +122,7 @@ def is_api(auth_entry):
     """Returns whether the auth entry point is via an API call."""
     return (auth_entry == AUTH_ENTRY_LOGIN_API) or (auth_entry == AUTH_ENTRY_REGISTER_API)
 
+
 # URLs associated with auth entry points
 # These are used to request additional user information
 # (for example, account credentials when logging in),
@@ -139,12 +137,12 @@ AUTH_DISPATCH_URLS = {
 }
 
 _AUTH_ENTRY_CHOICES = frozenset([
-    AUTH_ENTRY_LOGIN,
-    AUTH_ENTRY_REGISTER,
-    AUTH_ENTRY_ACCOUNT_SETTINGS,
-    AUTH_ENTRY_LOGIN_API,
-    AUTH_ENTRY_REGISTER_API,
-] + AUTH_ENTRY_CUSTOM.keys())
+                                    AUTH_ENTRY_LOGIN,
+                                    AUTH_ENTRY_REGISTER,
+                                    AUTH_ENTRY_ACCOUNT_SETTINGS,
+                                    AUTH_ENTRY_LOGIN_API,
+                                    AUTH_ENTRY_REGISTER_API,
+                                ] + AUTH_ENTRY_CUSTOM.keys())
 
 _DEFAULT_RANDOM_PASSWORD_LENGTH = 12
 _PASSWORD_CHARSET = string.letters + string.digits
@@ -197,8 +195,14 @@ class ProviderUserState(object):
 
 
 def get(request):
-    """Gets the running pipeline from the passed request."""
-    return request.session.get('partial_pipeline')
+    """Gets the running pipeline's data from the passed request."""
+    strategy = social_django.utils.load_strategy(request)
+    token = strategy.session_get('partial_pipeline_token')
+    partial_object = strategy.partial_load(token)
+    pipeline_data = None
+    if partial_object:
+        pipeline_data = {'kwargs': partial_object.kwargs, 'backend': partial_object.backend}
+    return pipeline_data
 
 
 def get_authenticated_user(auth_provider, username, uid):
@@ -223,7 +227,7 @@ def get_authenticated_user(auth_provider, username, uid):
         user has no social auth associated with the given backend.
         AssertionError: if the user is not authenticated.
     """
-    match = models.DjangoStorage.user.get_social_auth(provider=auth_provider.backend_name, uid=uid)
+    match = social_django.models.DjangoStorage.user.get_social_auth(provider=auth_provider.backend_name, uid=uid)
 
     if not match or match.user.username != username:
         raise User.DoesNotExist
@@ -289,7 +293,7 @@ def get_disconnect_url(provider_id, association_id):
     """Gets URL for the endpoint that starts the disconnect pipeline.
 
     Args:
-        provider_id: string identifier of the models.ProviderConfig child you want
+        provider_id: string identifier of the social_django.models.ProviderConfig child you want
             to disconnect from.
         association_id: int. Optional ID of a specific row in the UserSocialAuth
             table to disconnect (useful if multiple providers use a common backend)
@@ -311,7 +315,7 @@ def get_login_url(provider_id, auth_entry, redirect_url=None):
     """Gets the login URL for the endpoint that kicks off auth with a provider.
 
     Args:
-        provider_id: string identifier of the models.ProviderConfig child you want
+        provider_id: string identifier of the social_django.models.ProviderConfig child you want
             to disconnect from.
         auth_entry: string. Query argument specifying the desired entry point
             for the auth pipeline. Used by the pipeline for later branching.
@@ -374,7 +378,7 @@ def get_provider_user_states(user):
             each enabled provider.
     """
     states = []
-    found_user_auths = list(models.DjangoStorage.user.get_social_auth_for_user(user))
+    found_user_auths = list(social_django.models.DjangoStorage.user.get_social_auth_for_user(user))
 
     for enabled_provider in provider.Registry.enabled():
         association = None
@@ -413,7 +417,7 @@ def make_random_password(length=None, choice_fn=random.SystemRandom().choice):
 
 def running(request):
     """Returns True iff request is running a third-party auth pipeline."""
-    return request.session.get('partial_pipeline') is not None  # Avoid False for {}.
+    return get(request) is not None  # Avoid False for {}.
 
 
 # Pipeline functions.
@@ -424,7 +428,7 @@ def running(request):
 
 def parse_query_params(strategy, response, *args, **kwargs):
     """Reads whitelisted query params, transforms them into pipeline args."""
-    auth_entry = strategy.session.get(AUTH_ENTRY_KEY)
+    auth_entry = strategy.request.session.get(AUTH_ENTRY_KEY)
     if not (auth_entry and auth_entry in _AUTH_ENTRY_CHOICES):
         raise AuthEntryError(strategy.request.backend, 'auth_entry missing or invalid')
 
@@ -494,7 +498,7 @@ def redirect_to_custom_form(request, auth_entry, kwargs):
 
 
 @partial.partial
-def ensure_user_information(strategy, auth_entry, backend=None, user=None, social=None,
+def ensure_user_information(strategy, auth_entry, backend=None, user=None, social=None, current_partial=None,
                             allow_inactive_user=False, *args, **kwargs):
     """
     Ensure that we have the necessary information about a user (either an
@@ -522,7 +526,7 @@ def ensure_user_information(strategy, auth_entry, backend=None, user=None, socia
 
     def should_force_account_creation():
         """ For some third party providers, we auto-create user accounts """
-        current_provider = provider.Registry.get_from_pipeline({'backend': backend.name, 'kwargs': kwargs})
+        current_provider = provider.Registry.get_from_pipeline({'backend': current_partial.backend, 'kwargs': kwargs})
         return current_provider and current_provider.skip_email_verification
 
     if not user:
@@ -576,7 +580,8 @@ def ensure_user_information(strategy, auth_entry, backend=None, user=None, socia
 
 
 @partial.partial
-def set_logged_in_cookies(backend=None, user=None, strategy=None, auth_entry=None, *args, **kwargs):
+def set_logged_in_cookies(backend=None, user=None, strategy=None, auth_entry=None, current_partial=None,
+                          *args, **kwargs):
     """This pipeline step sets the "logged in" cookie for authenticated users.
 
     Some installations have a marketing site front-end separate from
@@ -611,7 +616,7 @@ def set_logged_in_cookies(backend=None, user=None, strategy=None, auth_entry=Non
             has_cookie = student.cookies.is_logged_in_cookie_set(request)
             if not has_cookie:
                 try:
-                    redirect_url = get_complete_url(backend.name)
+                    redirect_url = get_complete_url(current_partial.backend)
                 except ValueError:
                     # If for some reason we can't get the URL, just skip this step
                     # This may be overly paranoid, but it's far more important that
@@ -623,7 +628,7 @@ def set_logged_in_cookies(backend=None, user=None, strategy=None, auth_entry=Non
 
 
 @partial.partial
-def login_analytics(strategy, auth_entry, *args, **kwargs):
+def login_analytics(strategy, auth_entry, current_partial=None, *args, **kwargs):
     """ Sends login info to Segment """
 
     event_name = None
@@ -652,7 +657,7 @@ def login_analytics(strategy, auth_entry, *args, **kwargs):
 
 
 @partial.partial
-def associate_by_email_if_login_api(auth_entry, backend, details, user, *args, **kwargs):
+def associate_by_email_if_login_api(auth_entry, backend, details, user, current_partial=None, *args, **kwargs):
     """
     This pipeline step associates the current social auth with the user with the
     same email address in the database.  It defers to the social library's associate_by_email
@@ -663,9 +668,9 @@ def associate_by_email_if_login_api(auth_entry, backend, details, user, *args, *
     if auth_entry == AUTH_ENTRY_LOGIN_API:
         association_response = associate_by_email(backend, details, user, *args, **kwargs)
         if (
-            association_response and
-            association_response.get('user') and
-            association_response['user'].is_active
+                association_response and
+                association_response.get('user') and
+                association_response['user'].is_active
         ):
             # Only return the user matched by email if their email has been activated.
             # Otherwise, an illegitimate user can create an account with another user's
