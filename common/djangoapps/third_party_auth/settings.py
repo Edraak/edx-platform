@@ -1,11 +1,8 @@
 """Settings for the third-party auth module.
-
 The flow for settings registration is:
-
 The base settings file contains a boolean, ENABLE_THIRD_PARTY_AUTH, indicating
 whether this module is enabled. startup.py probes the ENABLE_THIRD_PARTY_AUTH.
 If true, it:
-
     a) loads this module.
     b) calls apply_settings(), passing in the Django settings
 """
@@ -13,6 +10,7 @@ If true, it:
 _FIELDS_STORED_IN_SESSION = ['auth_entry', 'next']
 _MIDDLEWARE_CLASSES = (
     'third_party_auth.middleware.ExceptionMiddleware',
+    'third_party_auth.middleware.PipelineQuarantineMiddleware',
 )
 _SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/dashboard'
 
@@ -20,7 +18,7 @@ _SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/dashboard'
 def apply_settings(django_settings):
     """Set provider-independent settings."""
 
-    # Whitelisted URL query parameters retrained in the pipeline session.
+    # Whitelisted           zURL query parameters retrained in the pipeline session.
     # Params not in this whitelist will be silently dropped.
     django_settings.FIELDS_STORED_IN_SESSION = _FIELDS_STORED_IN_SESSION
 
@@ -37,7 +35,7 @@ def apply_settings(django_settings):
 
     # Inject our customized auth pipeline. All auth backends must work with
     # this pipeline.
-    django_settings.SOCIAL_AUTH_PIPELINE = (
+    django_settings.SOCIAL_AUTH_PIPELINE = [
         'third_party_auth.pipeline.parse_query_params',
         'social_core.pipeline.social_auth.social_details',
         'social_core.pipeline.social_auth.social_uid',
@@ -53,7 +51,7 @@ def apply_settings(django_settings):
         'social_core.pipeline.user.user_details',
         'third_party_auth.pipeline.set_logged_in_cookies',
         'third_party_auth.pipeline.login_analytics',
-    )
+    ]
 
     # Required so that we can use unmodified PSA OAuth2 backends:
     django_settings.SOCIAL_AUTH_STRATEGY = 'third_party_auth.strategy.ConfigurationModelStrategy'

@@ -66,10 +66,9 @@ python-memcached==1.48
 python-openid==2.2.5
 python-dateutil==2.1
 
-# This module gets monkey-patched in third_party_auth.py to fix a Django 1.8 incompatibility.
-# When this dependency gets upgraded, the monkey patch should be removed, if possible.
 social-auth-app-django==1.2.0
-social-auth-core==3.0.0
+social-auth-core[openidconnect]==3.0.0
+python-social-auth
 pytz==2015.2
 pysrt==0.4.7
 PyYAML==3.10

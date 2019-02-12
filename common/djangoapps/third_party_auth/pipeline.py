@@ -1,8 +1,6 @@
 """Auth pipeline definitions.
-
 Auth pipelines handle the process of authenticating a user. They involve a
 consumer system and a provider service. The general pattern is:
-
     1. The consumer system exposes a URL endpoint that starts the process.
     2. When a user visits that URL, the client system redirects the user to a
        page served by the provider. The user authenticates with the provider.
@@ -26,34 +24,26 @@ consumer system and a provider service. The general pattern is:
        This happens by hitting a handler exposed by the consumer system.
     9. In this way, execution moves between the provider, the pipeline, and
        arbitrary consumer system code.
-
 Gotcha alert!:
-
 Bear in mind that when pausing and resuming a pipeline function decorated with
 @partial.partial, execution resumes by re-invoking the decorated function
 instead of invoking the next function in the pipeline stack. For example, if
 you have a pipeline of
-
     A
     B
     C
-
 with an implementation of
-
     @partial.partial
     def B(*args, **kwargs):
         [...]
-
 B will be invoked twice: once when initially proceeding through the pipeline
 before it is paused, and once when other code finishes and the pipeline
 resumes. Consequently, many decorated functions will first invoke a predicate
 to determine if they are in their first or second execution (usually by
 checking side-effects from the first run).
-
 This is surprising but important behavior, since it allows a single function in
 the pipeline to consolidate all the operations needed to establish invariants
 rather than spreading them across two functions in the pipeline.
-
 See http://python-social-auth.readthedocs.io/en/latest/pipeline.html for more docs.
 """
 
@@ -63,11 +53,11 @@ import hmac
 import json
 import random
 import string
-from collections import OrderedDict
 import urllib
-import analytics
-from eventtracking import tracker
+from collections import OrderedDict
+from logging import getLogger
 
+import analytics
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -79,8 +69,7 @@ from social_core.pipeline import partial
 from social_core.pipeline.social_auth import associate_by_email
 
 import student
-
-from logging import getLogger
+from eventtracking import tracker
 
 from . import provider
 
@@ -95,6 +84,7 @@ from . import provider
 # (if not provided, defaults to `_SOCIAL_AUTH_LOGIN_REDIRECT_URL`)
 AUTH_ENTRY_KEY = 'auth_entry'
 AUTH_REDIRECT_KEY = 'next'
+
 
 # The following are various possible values for the AUTH_ENTRY_KEY.
 AUTH_ENTRY_LOGIN = 'login'
@@ -122,7 +112,6 @@ def is_api(auth_entry):
     """Returns whether the auth entry point is via an API call."""
     return (auth_entry == AUTH_ENTRY_LOGIN_API) or (auth_entry == AUTH_ENTRY_REGISTER_API)
 
-
 # URLs associated with auth entry points
 # These are used to request additional user information
 # (for example, account credentials when logging in),
@@ -137,12 +126,12 @@ AUTH_DISPATCH_URLS = {
 }
 
 _AUTH_ENTRY_CHOICES = frozenset([
-                                    AUTH_ENTRY_LOGIN,
-                                    AUTH_ENTRY_REGISTER,
-                                    AUTH_ENTRY_ACCOUNT_SETTINGS,
-                                    AUTH_ENTRY_LOGIN_API,
-                                    AUTH_ENTRY_REGISTER_API,
-                                ] + AUTH_ENTRY_CUSTOM.keys())
+    AUTH_ENTRY_LOGIN,
+    AUTH_ENTRY_REGISTER,
+    AUTH_ENTRY_ACCOUNT_SETTINGS,
+    AUTH_ENTRY_LOGIN_API,
+    AUTH_ENTRY_REGISTER_API,
+] + AUTH_ENTRY_CUSTOM.keys())
 
 _DEFAULT_RANDOM_PASSWORD_LENGTH = 12
 _PASSWORD_CHARSET = string.letters + string.digits
@@ -152,11 +141,9 @@ logger = getLogger(__name__)
 
 class AuthEntryError(AuthException):
     """Raised when auth_entry is missing or invalid on URLs.
-
     auth_entry tells us whether the auth flow was initiated to register a new
     user (in which case it has the value of AUTH_ENTRY_REGISTER) or log in an
     existing user (in which case it has the value of AUTH_ENTRY_LOGIN).
-
     This is necessary because the edX code we hook into the pipeline to
     redirect to the existing auth flows needs to know what case we are in in
     order to format its output correctly (for example, the register code is
@@ -167,7 +154,6 @@ class AuthEntryError(AuthException):
 
 class ProviderUserState(object):
     """Object representing the provider state (attached or not) for a user.
-
     This is intended only for use when rendering templates. See for example
     lms/templates/dashboard.html.
     """
@@ -205,23 +191,50 @@ def get(request):
     return pipeline_data
 
 
+def get_real_social_auth_object(request):
+    """
+    At times, the pipeline will have a "social" kwarg that contains a dictionary
+    rather than an actual DB-backed UserSocialAuth object. We need the real thing,
+    so this method allows us to get that by passing in the relevant request.
+    """
+    running_pipeline = get(request)
+    if running_pipeline and 'social' in running_pipeline['kwargs']:
+        social = running_pipeline['kwargs']['social']
+        if isinstance(social, dict):
+            social = social_django.models.UserSocialAuth.objects.get(**social)
+        return social
+
+
+def quarantine_session(request, locations):
+    """
+    Set a session variable indicating that the session is restricted
+    to being used in views contained in the modules listed by string
+    in the `locations` argument.
+    Example: ``quarantine_session(request, ('enterprise.views',))``
+    """
+    request.session['third_party_auth_quarantined_modules'] = locations
+
+
+def lift_quarantine(request):
+    """
+    Remove the session quarantine variable.
+    """
+    request.session.pop('third_party_auth_quarantined_modules', None)
+
+
 def get_authenticated_user(auth_provider, username, uid):
     """Gets a saved user authenticated by a particular backend.
-
     Between pipeline steps User objects are not saved. We need to reconstitute
     the user and set its .backend, which is ordinarily monkey-patched on by
     Django during authenticate(), so it will function like a user returned by
     authenticate().
-
     Args:
         auth_provider: the third_party_auth provider in use for the current pipeline.
         username: string. Username of user to get.
         uid: string. The user ID according to the third party.
-
     Returns:
         User if user is found and has a social auth from the passed
         provider.
-
     Raises:
         User.DoesNotExist: if no user matching user is found, or the matching
         user has no social auth associated with the given backend.
@@ -272,14 +285,11 @@ def _get_url(view_name, backend_name, auth_entry=None, redirect_url=None,
 
 def get_complete_url(backend_name):
     """Gets URL for the endpoint that returns control to the auth pipeline.
-
     Args:
         backend_name: string. Name of the python-social-auth backend from the
             currently-running pipeline.
-
     Returns:
         String. URL that finishes the auth pipeline for a provider.
-
     Raises:
         ValueError: if no provider is enabled with the given backend_name.
     """
@@ -291,16 +301,13 @@ def get_complete_url(backend_name):
 
 def get_disconnect_url(provider_id, association_id):
     """Gets URL for the endpoint that starts the disconnect pipeline.
-
     Args:
         provider_id: string identifier of the social_django.models.ProviderConfig child you want
             to disconnect from.
         association_id: int. Optional ID of a specific row in the UserSocialAuth
             table to disconnect (useful if multiple providers use a common backend)
-
     Returns:
         String. URL that starts the disconnection pipeline.
-
     Raises:
         ValueError: if no provider is enabled with the given ID.
     """
@@ -313,21 +320,17 @@ def get_disconnect_url(provider_id, association_id):
 
 def get_login_url(provider_id, auth_entry, redirect_url=None):
     """Gets the login URL for the endpoint that kicks off auth with a provider.
-
     Args:
         provider_id: string identifier of the social_django.models.ProviderConfig child you want
             to disconnect from.
         auth_entry: string. Query argument specifying the desired entry point
             for the auth pipeline. Used by the pipeline for later branching.
             Must be one of _AUTH_ENTRY_CHOICES.
-
     Keyword Args:
         redirect_url (string): If provided, redirect to this URL at the end
             of the authentication process.
-
     Returns:
         String. URL that starts the auth pipeline for a provider.
-
     Raises:
         ValueError: if no provider is enabled with the given provider_id.
     """
@@ -344,15 +347,12 @@ def get_login_url(provider_id, auth_entry, redirect_url=None):
 
 def get_duplicate_provider(messages):
     """Gets provider from message about social account already in use.
-
     python-social-auth's exception middleware uses the messages module to
     record details about duplicate account associations. It records exactly one
     message there is a request to associate a social account S with an edX
     account E if S is already associated with an edX account E'.
-
     This messaging approach is stringly-typed and the particular string is
     unfortunately not in a reusable constant.
-
     Returns:
         string name of the python-social-auth backend that has the duplicate
         account, or None if there is no duplicate (and hence no error).
@@ -369,10 +369,8 @@ def get_duplicate_provider(messages):
 
 def get_provider_user_states(user):
     """Gets list of states of provider-user combinations.
-
     Args:
         django.contrib.auth.User. The user to get states for.
-
     Returns:
         List of ProviderUserState. The list of states of a user's account with
             each enabled provider.
@@ -396,18 +394,15 @@ def get_provider_user_states(user):
 
 def make_random_password(length=None, choice_fn=random.SystemRandom().choice):
     """Makes a random password.
-
     When a user creates an account via a social provider, we need to create a
     placeholder password for them to satisfy the ORM's consistency and
     validation requirements. Users don't know (and hence cannot sign in with)
     this password; that's OK because they can always use the reset password
     flow to set it to a known value.
-
     Args:
         choice_fn: function or method. Takes an iterable and returns a random
             element.
         length: int. Number of chars in the returned value. None to use default.
-
     Returns:
         String. The resulting password.
     """
@@ -438,7 +433,6 @@ def parse_query_params(strategy, response, *args, **kwargs):
 def set_pipeline_timeout(strategy, user, *args, **kwargs):
     """
     Set a short session timeout while the pipeline runs, to improve security.
-
     Consider the following attack:
     1. Attacker on a public computer visits edX and initiates the third-party login flow
     2. Attacker logs into their own third-party account
@@ -446,7 +440,6 @@ def set_pipeline_timeout(strategy, user, *args, **kwargs):
     4. Victim on the same computer logs into edX with username/password
     5. edX links attacker's third-party account with victim's edX account
     6. Attacker logs into victim's edX account using attacker's own third-party account
-
     We have two features of the pipeline designed to prevent this attack:
     * This method shortens the Django session timeout during the pipeline. This should mean that
       if there is a reasonable delay between steps 3 and 4, the session and pipeline will be
@@ -469,7 +462,6 @@ def redirect_to_custom_form(request, auth_entry, kwargs):
     """
     If auth_entry is found in AUTH_ENTRY_CUSTOM, this is used to send provider
     data to an external server's registration/login page.
-
     The data is sent as a base64-encoded values in a POST request and includes
     a cryptographic checksum in case the integrity of the data is important.
     """
@@ -583,28 +575,22 @@ def ensure_user_information(strategy, auth_entry, backend=None, user=None, socia
 def set_logged_in_cookies(backend=None, user=None, strategy=None, auth_entry=None, current_partial=None,
                           *args, **kwargs):
     """This pipeline step sets the "logged in" cookie for authenticated users.
-
     Some installations have a marketing site front-end separate from
     edx-platform.  Those installations sometimes display different
     information for logged in versus anonymous users (e.g. a link
     to the student dashboard instead of the login page.)
-
     Since social auth uses Django's native `login()` method, it bypasses
     our usual login view that sets this cookie.  For this reason, we need
     to set the cookie ourselves within the pipeline.
-
     The procedure for doing this is a little strange.  On the one hand,
     we need to send a response to the user in order to set the cookie.
     On the other hand, we don't want to drop the user out of the pipeline.
-
     For this reason, we send a redirect back to the "complete" URL,
     so users immediately re-enter the pipeline.  The redirect response
     contains a header that sets the logged in cookie.
-
     If the user is not logged in, or the logged in cookie is already set,
     the function returns `None`, indicating that control should pass
     to the next pipeline step.
-
     """
     if not is_api(auth_entry) and user is not None and user.is_authenticated():
         request = strategy.request if strategy else None
@@ -662,15 +648,14 @@ def associate_by_email_if_login_api(auth_entry, backend, details, user, current_
     This pipeline step associates the current social auth with the user with the
     same email address in the database.  It defers to the social library's associate_by_email
     implementation, which verifies that only a single database user is associated with the email.
-
     This association is done ONLY if the user entered the pipeline through a LOGIN API.
     """
     if auth_entry == AUTH_ENTRY_LOGIN_API:
         association_response = associate_by_email(backend, details, user, *args, **kwargs)
         if (
-                association_response and
-                association_response.get('user') and
-                association_response['user'].is_active
+            association_response and
+            association_response.get('user') and
+            association_response['user'].is_active
         ):
             # Only return the user matched by email if their email has been activated.
             # Otherwise, an illegitimate user can create an account with another user's
