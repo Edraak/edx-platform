@@ -13,6 +13,7 @@ If true, it:
 _FIELDS_STORED_IN_SESSION = ['auth_entry', 'next']
 _MIDDLEWARE_CLASSES = (
     'third_party_auth.middleware.ExceptionMiddleware',
+    'third_party_auth.middleware.PipelineQuarantineMiddleware',
 )
 _SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/dashboard'
 

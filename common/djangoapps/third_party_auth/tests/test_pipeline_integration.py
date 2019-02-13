@@ -66,8 +66,7 @@ class GetAuthenticatedUserTestCase(TestCase):
         self.assertEqual(self.enabled_provider.get_authentication_backend(), user.backend)
 
 
-@unittest.skipUnless(
-    testutil.AUTH_FEATURES_KEY in settings.FEATURES, testutil.AUTH_FEATURES_KEY + ' not in settings.FEATURES')
+@unittest.skipUnless(testutil.AUTH_FEATURE_ENABLED, testutil.AUTH_FEATURES_KEY + ' not enabled')
 class GetProviderUserStatesTestCase(testutil.TestCase, test.TestCase):
     """Tests generation of ProviderUserStates."""
 
@@ -143,8 +142,7 @@ class GetProviderUserStatesTestCase(testutil.TestCase, test.TestCase):
         self.assertEqual(self.user, linkedin_state.user)
 
 
-@unittest.skipUnless(
-    testutil.AUTH_FEATURES_KEY in settings.FEATURES, testutil.AUTH_FEATURES_KEY + ' not in settings.FEATURES')
+@unittest.skipUnless(testutil.AUTH_FEATURE_ENABLED, testutil.AUTH_FEATURES_KEY + ' not enabled')
 class UrlFormationTestCase(TestCase):
     """Tests formation of URLs for pipeline hook points."""
 

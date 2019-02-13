@@ -1244,8 +1244,9 @@ def login_oauth_token(request, backend):
             # Tell third party auth pipeline that this is an API call
             request.session[pipeline.AUTH_ENTRY_KEY] = pipeline.AUTH_ENTRY_LOGIN_API
             user = None
+            access_token = request.POST["access_token"]
             try:
-                user = backend.do_auth(request.POST["access_token"])
+                user = backend.do_auth(access_token)
             except (HTTPError, AuthException):
                 pass
             # do_auth can return a non-User object if it fails
@@ -1254,8 +1255,7 @@ def login_oauth_token(request, backend):
                 return JsonResponse(status=204)
             else:
                 # Ensure user does not re-enter the pipeline
-                partial_token = request.social_strategy.session_get('partial_pipeline_token')
-                request.social_strategy.clean_partial_pipeline(partial_token)
+                request.social_strategy.clean_partial_pipeline()
                 return JsonResponse({"error": "invalid_token"}, status=401)
         else:
             return JsonResponse({"error": "invalid_request"}, status=400)
@@ -1592,8 +1592,7 @@ def create_account_with_params(request, params):
                 error_message = _("The provided access_token is not valid.")
             if not pipeline_user or not isinstance(pipeline_user, User):
                 # Ensure user does not re-enter the pipeline
-                partial_token = request.social_strategy.session_get('partial_pipeline_token')
-                request.social_strategy.clean_partial_pipeline(partial_token)
+                request.social_strategy.clean_partial_pipeline(access_token)
                 raise ValidationError({'access_token': [error_message]})
 
     # Perform operations that are non-critical parts of account creation

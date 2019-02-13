@@ -34,7 +34,7 @@ class LTIAuthBackend(BaseAuth):
         """
         Prepare to handle a login request.
 
-        This method replaces social.actions.do_auth and must be kept in sync
+        This method replaces social_core.actions.do_auth and must be kept in sync
         with any upstream changes in that method. In the current version of
         the upstream, this means replacing the logic to populate the session
         from request parameters, and not calling backend.start() to avoid

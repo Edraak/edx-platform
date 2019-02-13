@@ -88,16 +88,16 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         self.cleaned_data["client"] = client
 
         user = None
+        access_token = self.cleaned_data.get("access_token")
         try:
-            user = backend.do_auth(self.cleaned_data.get("access_token"), allow_inactive_user=True)
+            user = backend.do_auth(access_token, allow_inactive_user=True)
         except (HTTPError, AuthException):
             pass
         if user and isinstance(user, User):
             self.cleaned_data["user"] = user
         else:
             # Ensure user does not re-enter the pipeline
-            partial_token = self.request.social_strategy.session_get('partial_pipeline_token')
-            self.request.social_strategy.clean_partial_pipeline(partial_token)
+            self.request.social_strategy.clean_partial_pipeline(access_token)
             raise OAuthValidationError(
                 {
                     "error": "invalid_grant",
