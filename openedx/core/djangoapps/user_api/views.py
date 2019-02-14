@@ -165,7 +165,7 @@ class LoginSessionView(APIView):
 class RegistrationView(APIView):
     """HTTP end-points for creating a new user. """
 
-    DEFAULT_FIELDS = ["email", "confirm_email", "name", "username", "password", "confirm_password", "is_third_party_auth"]
+    DEFAULT_FIELDS = ["email", "name", "username", "password", "confirm_password", "is_third_party_auth"]
 
     EXTRA_FIELDS = [
         "city",
@@ -347,43 +347,6 @@ class RegistrationView(APIView):
             field_type="email",
             label=email_label,
             placeholder=email_placeholder,
-            restrictions={
-                "min_length": EMAIL_MIN_LENGTH,
-                "max_length": EMAIL_MAX_LENGTH,
-            },
-            required=required,
-            error_messages={
-                "required": error_msg
-            }
-        )
-
-    def _add_confirm_email_field(self, form_desc, required=True):
-        """Add an confirm email field to a form description.
-
-        Arguments:
-            form_desc: A form description
-
-        Keyword Arguments:
-            required (bool): Whether this field is required; defaults to True
-
-        """
-        # Translators: This label appears above a field on the registration form
-        # meant to hold the user's confirmation of the email address.
-        confirm_email_label = _(u"Confirm Email")
-
-        # Translators: This example email address is used as a placeholder in
-        # a field on the registration form meant to hold the user's confirmed email address.
-        confirm_email_placeholder = _(u"username@domain.com")
-
-        confirm_email_instructions = _(u"Please enter your email again for verification")
-
-        error_msg = _(u"Please enter your Confirm Email")
-        form_desc.add_field(
-            "confirm_email",
-            field_type="email",
-            label=confirm_email_label,
-            placeholder=confirm_email_placeholder,
-            instructions=confirm_email_instructions,
             restrictions={
                 "min_length": EMAIL_MIN_LENGTH,
                 "max_length": EMAIL_MAX_LENGTH,

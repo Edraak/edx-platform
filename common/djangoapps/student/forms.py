@@ -136,12 +136,6 @@ class AccountCreationForm(forms.Form):
             "max_length": _("Email cannot be more than %(limit_value)s characters long"),
         }
     )
-    confirm_email = forms.EmailField(
-        max_length=75,  # Limit per RFCs is 254, but User's email field in django 1.4 only takes 75
-        error_messages={
-            "required": _EMAIL_INVALID_MSG,
-        }
-    )
     password = forms.CharField(
         min_length=2,
         error_messages={
@@ -251,20 +245,6 @@ class AccountCreationForm(forms.Form):
             raise ValidationError(_("The passwords you entered do not match"))
 
         return confirmed_password
-
-    def clean_confirm_email(self):
-        confirmed_email = self.cleaned_data["confirm_email"]
-
-        if "email" in self.cleaned_data:
-            email = self.cleaned_data["email"]
-
-            confirmed_email = confirmed_email.decode("utf-8").lower().encode("utf-8")
-            email = email.decode("utf-8").lower().encode("utf-8")
-
-            if confirmed_email != email:
-                raise ValidationError(_("The emails you entered do not match"))
-
-        return confirmed_email
 
     def clean_year_of_birth(self):
         """
