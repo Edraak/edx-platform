@@ -73,12 +73,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
-from social_django import models
 from social_core.exceptions import AuthException
 from social_core.pipeline import partial
 from social_core.pipeline.social_auth import associate_by_email
 
 import student
+import social_django
 
 from logging import getLogger
 
@@ -259,7 +259,7 @@ def get_authenticated_user(auth_provider, username, uid):
         user has no social auth associated with the given backend.
         AssertionError: if the user is not authenticated.
     """
-    match = models.DjangoStorage.user.get_social_auth(provider=auth_provider.backend_name, uid=uid)
+    match = social_django.models.DjangoStorage.user.get_social_auth(provider=auth_provider.backend_name, uid=uid)
 
     if not match or match.user.username != username:
         raise User.DoesNotExist
@@ -410,7 +410,7 @@ def get_provider_user_states(user):
             each enabled provider.
     """
     states = []
-    found_user_auths = list(models.DjangoStorage.user.get_social_auth_for_user(user))
+    found_user_auths = list(social_django.models.DjangoStorage.user.get_social_auth_for_user(user))
 
     for enabled_provider in provider.Registry.enabled():
         association = None
