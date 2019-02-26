@@ -1,5 +1,9 @@
 """HTTP end-points for the User API. """
 import copy
+import logging
+
+from util.db import outer_atomic
+
 from opaque_keys import InvalidKeyError
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -9,6 +13,9 @@ from django.core.exceptions import ImproperlyConfigured, NON_FIELD_ERRORS, Valid
 from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
+from django.views.decorators.http import require_POST
+from django.db.utils import DatabaseError
+from django.db import transaction
 from opaque_keys.edx import locator
 from rest_framework import authentication
 from rest_framework import filters
@@ -37,6 +44,9 @@ from .accounts import (
 )
 from .accounts.api import check_account_exists
 from .serializers import UserSerializer, UserPreferenceSerializer
+
+
+POST_AUTH_LOG = logging.getLogger('edx.post_auth')
 
 
 class LoginSessionView(APIView):
@@ -869,6 +879,44 @@ class RegistrationView(APIView):
                         default="true",
                     )
 
+
+@transaction.non_atomic_requests
+@require_POST
+@outer_atomic(read_committed=True)
+def update_profile_info(request):
+    """
+    """
+    # Get the user
+
+    data = request.POST.copy()
+    user = request.user
+
+    POST_REGISTRATION_FIELDS = [('gender', str), ('country', str), ('year_of_birth', int)]
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        user_has_profile = True
+    except UserProfile.DoesNotExist:
+        # Handle when no profile for the user, create a new one
+        user_profile = UserProfile(user=user)
+        user_has_profile = False
+
+    for field in POST_REGISTRATION_FIELDS:
+        field_name = field[0]
+        field_type = field[1]
+
+        value = field_type(data.get(field_name))
+
+        if value:
+            setattr(user_profile, field_name, value)
+
+    try:
+        user_profile.save(update_fields=list(field[0] for field in POST_REGISTRATION_FIELDS) if user_has_profile else None)
+        return JsonResponse({"is_success": True}, status=200)
+    except (DatabaseError, ValidationError, TypeError) as e:
+        POST_AUTH_LOG.error('Failed to save post auth data for {user}, exception is {e}'.format(user=user.username, e=e))
+
+    return JsonResponse({"is_success": False}, status=400)
 
 
 class PasswordResetView(APIView):
