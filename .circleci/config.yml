@@ -60,16 +60,14 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run: npm install
     - run: pip install django==1.8.7
-    - run: pip install -U setuptools
-    - run: pip install --exists-action w -r requirements/edx/paver.txt
+    - run: pip install setuptools==36.2.1 -U
+    - run: pip install -U pip
     - run: pip install --exists-action w -r requirements/edx/pre.txt
     - run: pip install --exists-action w -r requirements/edx/github.txt
     - run: pip install --exists-action w -r requirements/edx/local.txt
-    - run: pip install  --exists-action w pbr
     - run: pip install --exists-action w -r requirements/edx/base.txt
+    - run: pip install --exists-action w -r requirements/edx/post.txt
     - run: pip install --exists-action w -r requirements/edx/paver.txt
-    - run: if [ -e requirements/edx/post.txt ]; then pip install --exists-action w -r requirements/edx/post.txt ; fi
-    - run: pip install coveralls==1.0
     - run: pip freeze
     # Save dependency cache
     - save_cache:
@@ -86,6 +84,7 @@ jobs:
         - ~/.gradle
         - ~/.cache/bower
         - ./node_modules
+        - /opt/circleci/python/2.7.10/lib/python2.7/site-packages
     # Test
     #   This would typically be a build job when using workflows, possibly combined with build
     # This is based on your 1.0 configuration file or project settings
