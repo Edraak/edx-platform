@@ -5,6 +5,7 @@ Install Python, Ruby, and Node prerequisites.
 from distutils import sysconfig
 import hashlib
 import os
+import re
 
 from paver.easy import sh, task
 
@@ -169,6 +170,16 @@ def install_node_prereqs():
     prereq_cache("Node prereqs", ["package.json"], node_prereqs_installation)
 
 
+# To add a package to the uninstall list, just add it to this list! No need
+# to touch any other part of this file.
+PACKAGES_TO_UNINSTALL = [
+    "South",                        # Because it interferes with Django 1.8 migrations.
+    "edxval",                       # Because it was bork-installed somehow.
+    "django-storages",
+    "python-social-auth",           # v0.3.0 has a package named social_core instead of social
+]
+
+
 @task
 def uninstall_python_packages():
     """
@@ -197,20 +208,11 @@ def uninstall_python_packages():
         uninstalled = False
         frozen = sh("pip freeze", capture=True).splitlines()
 
-        # Uninstall South
-        if any(line.startswith("South") for line in frozen):
-            sh("pip uninstall --disable-pip-version-check -y South")
-            uninstalled = True
-
-        # Uninstall edx-val
-        if any("edxval" in line for line in frozen):
-            sh("pip uninstall --disable-pip-version-check -y edxval")
-            uninstalled = True
-
-        # Uninstall django-storages
-        if any("django-storages==" in line for line in frozen):
-            sh("pip uninstall --disable-pip-version-check -y django-storages")
-            uninstalled = True
+        for package_name in PACKAGES_TO_UNINSTALL:
+            if package_in_frozen(package_name, frozen):
+                # Uninstall the pacakge
+                sh("pip uninstall --disable-pip-version-check -y {}".format(package_name))
+                uninstalled = True
 
         if not uninstalled:
             break
@@ -222,6 +224,23 @@ def uninstall_python_packages():
     # Write our version.
     with open(state_file_path, "w") as state_file:
         state_file.write(str(expected_version))
+
+
+def package_in_frozen(package_name, frozen_output):
+    """Is this package in the output of 'pip freeze'?"""
+    # Look for either:
+    #
+    #   PACKAGE-NAME==
+    #
+    # or:
+    #
+    #   blah_blah#egg=package_name-version
+    #
+    pattern = r"(?mi)^{pkg}==|#egg={pkg_under}-".format(
+        pkg=re.escape(package_name),
+        pkg_under=re.escape(package_name.replace("-", "_")),
+    )
+    return bool(re.search(pattern, frozen_output))
 
 
 @task

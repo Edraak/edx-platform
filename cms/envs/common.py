@@ -252,6 +252,8 @@ TEMPLATES = [
                 'django.template.context_processors.csrf',
                 'dealer.contrib.django.staff.context_processor',  # access git revision
                 'contentstore.context_processors.doc_url',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ),
             # Change 'debug' in your environment settings files - not here.
             'debug': False
@@ -802,7 +804,7 @@ INSTALLED_APPS = (
     'course_action_state',
 
     # Additional problem types
-    'edx_jsme',    # Molecular Structure
+    'edx_jsme',  # Molecular Structure
 
     'openedx.core.djangoapps.content.course_overviews',
     'openedx.core.djangoapps.content.course_structures',
@@ -831,7 +833,6 @@ INSTALLED_APPS = (
     # by installed apps.
     'lms.djangoapps.verify_student',
 )
-
 
 ################# EDX MARKETING SITE ##################################
 
@@ -919,7 +920,6 @@ PASSWORD_DICTIONARY = []
 ##### ACCOUNT LOCKOUT DEFAULT PARAMETERS #####
 MAX_FAILED_LOGIN_ATTEMPTS_ALLOWED = 5
 MAX_FAILED_LOGIN_ATTEMPTS_LOCKOUT_PERIOD_SECS = 15 * 60
-
 
 ### Apps only installed in some instances
 

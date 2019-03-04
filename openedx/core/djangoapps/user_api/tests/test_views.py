@@ -20,7 +20,7 @@ from django.test.testcases import TransactionTestCase
 from django.test.utils import override_settings
 from django.test.client import RequestFactory
 
-from social.apps.django_app.default.models import UserSocialAuth
+from social_django.models import UserSocialAuth
 
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
@@ -1781,7 +1781,7 @@ class TestFacebookRegistrationView(
     """Tests the User API registration endpoint with Facebook authentication."""
     def test_social_auth_exception(self):
         """
-        According to the do_auth method in social.backends.facebook.py,
+        According to the do_auth method in social_core.backends.facebook.py,
         the Facebook API sometimes responds back a JSON with just False as value.
         """
         self._setup_provider_response_with_body(200, json.dumps("false"))
