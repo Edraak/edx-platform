@@ -543,6 +543,7 @@ DEFAULT_TEMPLATE_ENGINE = TEMPLATES[0]
 
 # use the ratelimit backend to prevent brute force attacks
 AUTHENTICATION_BACKENDS = (
+    'edraak_users.backends.EdraakChildAuthenticationBackend',
     'edraak_ratelimit.backends.EdraakRateLimitModelBackend',
 )
 STUDENT_FILEUPLOAD_MAX_SIZE = 4 * 1000 * 1000  # 4 MB
@@ -1933,6 +1934,7 @@ INSTALLED_APPS = (
     'edraak_ratelimit',
     'edraak_university',
     'edraak_specializations',
+    'edraak_dummy',
 
     'lms.djangoapps.lms_xblock',
 

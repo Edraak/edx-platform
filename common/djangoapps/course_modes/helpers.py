@@ -1,4 +1,7 @@
 """ Helper methods for CourseModes. """
+from urlparse import urljoin
+from functools import reduce
+
 from django.utils.translation import get_language, ugettext_lazy as _
 
 from course_modes.models import CourseMode
@@ -20,6 +23,19 @@ COURSE_INFO_PAGE = "COURSE_INFO"
 SUCCESS_ENROLL_PAGE = "ENROLL_SUCCESS"
 
 
+def get_progs_url(page):
+    lang = ''
+
+    if get_language() != 'ar':
+        lang = 'en/'
+
+    root = settings.PROGS_URLS['ROOT']
+
+    url = reduce(urljoin, [root, lang, page])
+
+    return url
+
+
 def get_mktg_url(page):
     lang = ''
 
@@ -31,6 +47,7 @@ def get_mktg_url(page):
         lang=lang,
         page=page
     )
+    
     return url
 
 

@@ -128,6 +128,9 @@ from notification_prefs.views import enable_notifications
 from openedx.core.djangoapps.user_api.preferences import api as preferences_api
 from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
 
+from .constants import CHILD_USER_PERMISSION_GROUP
+from course_modes.helpers import get_progs_url
+
 from .helpers import enroll, get_spam_name
 
 
@@ -522,6 +525,10 @@ def is_course_blocked(request, redeemed_registration_codes, course_key):
 @login_required
 @ensure_csrf_cookie
 def dashboard(request):
+    if settings.PROGS_URLS and settings.PROGS_URLS.get('DASHBOARD', None):
+
+        return redirect(get_progs_url(settings.PROGS_URLS.get('DASHBOARD')))
+
     user = request.user
 
     platform_name = microsite.get_value("platform_name", settings.PLATFORM_NAME)
@@ -1018,6 +1025,8 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
     third_party_auth_successful = False
     trumped_by_first_party_auth = bool(request.POST.get('email')) or bool(request.POST.get('password'))
     user = None
+    parent_user = None
+    child_user = None
     platform_name = microsite.get_value("platform_name", settings.PLATFORM_NAME)
 
     if third_party_auth_requested and not trumped_by_first_party_auth:
@@ -1055,6 +1064,15 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 status=403
             )
 
+    elif 'child_user_id' in request.POST:
+        child_user_id = request.POST['child_user_id']
+        try:
+            child_user = User.objects.get(id=child_user_id)
+        except User.DoesNotExist:
+            if settings.FEATURES['SQUELCH_PII_IN_LOGS']:
+                AUDIT_LOG.warning(u"Child login failed - Unknown child user id")
+            else:
+                AUDIT_LOG.warning(u"Child login failed - Unknown child user id: {0}".format(child_user_id))
     else:
 
         if 'email' not in request.POST or 'password' not in request.POST:
@@ -1066,7 +1084,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
         email = request.POST['email']
         password = request.POST['password']
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.exclude(groups__name=CHILD_USER_PERMISSION_GROUP).get(email=email)
         except User.DoesNotExist:
             if settings.FEATURES['SQUELCH_PII_IN_LOGS']:
                 AUDIT_LOG.warning(u"Login failed - Unknown user email")
@@ -1112,6 +1130,12 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                        'reset your password before you can log in again. Please click the '
                        '"Forgot Password" link on this page to reset your password before logging in again.'),
         })  # TODO: this should be status code 403  # pylint: disable=fixme
+
+    # set the user object to child_user object if a child is being
+    # loged in
+    if child_user:
+        parent_user = request.user
+        user = child_user
 
     # if the user doesn't exist, we want to set the username to an invalid
     # username so that authentication is guaranteed to fail and we can take
@@ -1192,6 +1216,14 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 log.debug("Setting user session to never expire")
             else:
                 request.session.set_expiry(0)
+
+            if parent_user:
+                request.session['parent_user'] = json.dumps({
+                    'user_id': parent_user.id,
+                    'username': parent_user.username,
+                    'email': parent_user.email,
+                    'name': parent_user.profile.name
+                })
         except Exception as exc:  # pylint: disable=broad-except
             AUDIT_LOG.critical("Login failed - Could not create session. Is memcached running?")
             log.critical("Login failed - Could not create session. Is memcached running?")
