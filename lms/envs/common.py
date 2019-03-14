@@ -1129,7 +1129,9 @@ MIDDLEWARE_CLASSES = (
     'corsheaders.middleware.CorsMiddleware',
     'cors_csrf.middleware.CorsCSRFMiddleware',
     'cors_csrf.middleware.CsrfCrossDomainCookieMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # This middleware extends django.middleware.csrf.CsrfViewMiddleware to allow
+    # cross origin CSRF
+    'cors_csrf.middleware.CrossDomainCsrfViewMiddleware',
 
     'splash.middleware.SplashMiddleware',
 

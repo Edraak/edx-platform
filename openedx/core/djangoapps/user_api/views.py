@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured, NON_FIELD_ERRORS, ValidationError
 from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.views.decorators.http import require_POST
 from django.db.utils import DatabaseError
 from django.db import transaction
@@ -27,6 +27,7 @@ from rest_framework.exceptions import ParseError
 from django_countries import countries
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
+from cors_csrf.decorators import csrf_protect as edx_csrf_protect
 from openedx.core.lib.api.permissions import ApiKeyHeaderPermission
 import third_party_auth
 from django_comment_common.models import Role
@@ -135,7 +136,7 @@ class LoginSessionView(APIView):
         return HttpResponse(form_desc.to_json(), content_type="application/json")
 
     @method_decorator(require_post_params(["email", "password"]))
-    @method_decorator(csrf_protect)
+    @method_decorator(edx_csrf_protect)
     def post(self, request):
         """Log in a user.
 
