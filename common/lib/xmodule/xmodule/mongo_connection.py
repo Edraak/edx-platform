@@ -47,9 +47,8 @@ def connect_to_mongodb(
         )
 
     # If credentials were provided, authenticate the user.
-    auth_src = None
-    if kwargs.get('authSource'):
-        auth_src=kwargs.get('authSource')
+    auth_src = kwargs.get('authSource')
+
     if user is not None and password is not None:
         mongo_conn.authenticate(user, password, source=auth_src)
 
