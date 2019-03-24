@@ -281,9 +281,10 @@ class RegistrationView(APIView):
                 address already exists
         """
         data = request.POST.copy()
-        email = data.get('email')
 
+        email = data.get('email')
         username = data.get('username')
+        data['is_third_party_registration'] = data.get('is_third_party_registration', False)
 
         # Handle duplicate email/username
         conflicts = check_account_exists(email=email, username=username)

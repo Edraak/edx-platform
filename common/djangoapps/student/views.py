@@ -1426,7 +1426,7 @@ def user_signup_handler(sender, **kwargs):  # pylint: disable=unused-argument
             log.info(u'user {} originated from a white labeled "Microsite"'.format(kwargs['instance'].id))
 
 
-def _do_create_account(form):
+def _do_create_account(form, is_active=False):
     """
     Given cleaned post variables, create the User and UserProfile objects, as well as the
     registration for this user.
@@ -1441,7 +1441,7 @@ def _do_create_account(form):
     user = User(
         username=form.cleaned_data["username"],
         email=form.cleaned_data["email"],
-        is_active=False
+        is_active=is_active
     )
     user.set_password(form.cleaned_data["password"])
     registration = Registration()
@@ -1595,7 +1595,7 @@ def create_account_with_params(request, params):
     # Perform operations within a transaction that are critical to account creation
     with transaction.atomic():
         # first, create the account
-        (user, profile, registration) = _do_create_account(form)
+        (user, profile, registration) = _do_create_account(form, is_active=params['is_third_party_registration'])
 
         # next, link the account with social auth, if provided via the API.
         # (If the user is using the normal register page, the social auth pipeline does the linking, not this code)
