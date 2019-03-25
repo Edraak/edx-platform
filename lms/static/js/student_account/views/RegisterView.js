@@ -38,7 +38,7 @@
                 this.errorMessage = data.thirdPartyAuth.errorMessage || '';
                 this.platformName = data.platformName;
                 this.autoSubmit = data.thirdPartyAuth.autoSubmitRegForm;
-
+                this.eventLabel = $.cookie('k12-landing') ? 'K12' : 'Universal';
                 this.listenTo( this.model, 'sync', this.saveSuccess );
             },
 
@@ -79,19 +79,19 @@
             },
 
             saveSuccess: function() {
-                // Edraak (google-analytics): Send event on registration success
+
                 if (ga) {
                   ga('send', 'event', {
                     eventCategory: 'Registration',
                     eventAction: 'Submit',
-                    eventLabel: 'Register',
+                    eventLabel: this.eventLabel,
                     eventValue: 1,
                     transport: 'beacon'
                   });
                 }
 
                 if (fbq) {
-                  fbq('track', 'CompleteRegistration', {status: 'successful'});
+                  fbq('track', 'CompleteRegistration', {status: 'successful', content_name: this.eventLabel});
                 }
 
                 if (snaptr) {
@@ -103,17 +103,18 @@
 
             saveError: function( error ) {
                 // Edraak (google-analytics): Send event on registration failure
+
                 if (ga) {
                   ga('send', 'event', {
                     eventCategory: 'Registration',
                     eventAction: 'Submit',
-                    eventLabel: 'Register',
+                    eventLabel: this.eventLabel,
                     eventValue: 0,
                     transport: 'beacon'
                   });
                 }
                 if (fbq) {
-                  fbq('track', 'CompleteRegistration', {status: 'failed'});
+                  fbq('track', 'CompleteRegistration', {status: 'failed', content_name: this.eventLabel});
                 }
                 if(snaptr) {
                   snaptr('track', 'SIGN_UP', {success: 0});
