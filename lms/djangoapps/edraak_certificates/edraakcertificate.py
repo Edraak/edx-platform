@@ -74,6 +74,8 @@ def get_organization_logo(organization, course_id):
         return 'ifrc.jpg'
     elif organization == 'skild':
         return 'skild.png'
+    elif organization == 'ucl':
+        return 'ucl.png'
     elif course_id.lower().startswith('course-v1:edraak+ar101+'):
         return 'engineeius.png'
     elif course_id.lower().startswith('course-v1:edraak+icdl'):
