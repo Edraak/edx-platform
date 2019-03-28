@@ -1,6 +1,7 @@
 from django.utils.cache import patch_vary_headers
 from django.utils import translation
 from django.conf import settings
+from django.utils.translation import LANGUAGE_SESSION_KEY
 
 
 class ForceLangMiddleware(object):
@@ -14,6 +15,9 @@ class ForceLangMiddleware(object):
     namely django.middleware.locale.LocaleMiddleware
     """
     def process_request(self, request):
+        if 'HTTP_X_API_ACCEPT_LANGUAGE' in request.META:
+            request.session[LANGUAGE_SESSION_KEY] = request.META['HTTP_X_API_ACCEPT_LANGUAGE']
+
         if 'HTTP_ACCEPT_LANGUAGE' in request.META:
             # Store the requested language in another variable in
             # case some one needed it later
