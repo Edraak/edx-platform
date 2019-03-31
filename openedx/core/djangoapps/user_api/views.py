@@ -284,7 +284,7 @@ class RegistrationView(APIView):
 
         email = data.get('email')
         username = data.get('username')
-        data['is_third_party_registration'] = data.get('is_third_party_registration', False)
+        data['is_third_party_registration'] = True if data['is_third_party_registration'] == 'true' else False
 
         # Handle duplicate email/username
         conflicts = check_account_exists(email=email, username=username)
