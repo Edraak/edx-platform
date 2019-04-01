@@ -34,6 +34,7 @@ from student.views import (
 from student.helpers import (
     get_next_url_for_login_page,
     is_origin_url_allowed,
+    get_next_url_for_progs_login_page,
 )
 import third_party_auth
 from third_party_auth import pipeline
@@ -61,10 +62,15 @@ def login_and_registration_form(request, initial_mode="login"):
 
     """
     # Determine the URL to redirect to following login/registration/third_party_auth
+
     redirect_to = get_next_url_for_login_page(request)
 
     # If we're already logged in, redirect to the dashboard
     if request.user.is_authenticated():
+        return redirect(redirect_to)
+
+    if settings.FEATURES.get("PROGS_AUTH_ENABLED", False):
+        redirect_to = get_next_url_for_progs_login_page(request, initial_mode)
         return redirect(redirect_to)
 
     # Retrieve the form descriptions from the user API
