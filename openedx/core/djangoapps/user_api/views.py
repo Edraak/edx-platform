@@ -286,7 +286,8 @@ class RegistrationView(APIView):
         username = data.get('username')
 
         # third party related data
-        data['is_third_party_registration'] = True if data['is_third_party_registration'] == 'true' else False
+        data['is_third_party_registration'] = True if data.get('is_third_party_registration',
+                                                               False) == 'true' else False
         access_token = data.get('access_token', None)
         provider = data.get('provider', None)
 
