@@ -1537,7 +1537,7 @@ def create_account_with_params(request, params):
     # when the account is created via the browser and redirect URLs.
     should_link_with_social_auth = third_party_auth.is_enabled() and 'provider' in params
 
-    if should_link_with_social_auth or (third_party_auth.is_enabled() and pipeline.running(request)):
+    if (should_link_with_social_auth and params.get('random_password', False)) or (third_party_auth.is_enabled() and pipeline.running(request)):
         params["password"] = pipeline.make_random_password()
         params["confirm_password"] = params["password"]
         params["confirm_email"] = params["email"]
