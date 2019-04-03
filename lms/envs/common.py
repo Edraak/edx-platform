@@ -1129,7 +1129,9 @@ MIDDLEWARE_CLASSES = (
     'corsheaders.middleware.CorsMiddleware',
     'cors_csrf.middleware.CorsCSRFMiddleware',
     'cors_csrf.middleware.CsrfCrossDomainCookieMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # This middleware extends django.middleware.csrf.CsrfViewMiddleware to allow
+    # cross origin CSRF
+    'cors_csrf.middleware.CrossDomainCsrfViewMiddleware',
 
     'splash.middleware.SplashMiddleware',
 
@@ -2155,6 +2157,19 @@ if FEATURES.get('ENABLE_CORS_HEADERS'):
     CORS_ALLOW_CREDENTIALS = True
     CORS_ORIGIN_WHITELIST = ()
     CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'user-agent',
+    'accept-encoding',
+    'accept-language',
+    'x-api-accept-language'
+)
 
 # Default cache expiration for the cross-domain proxy HTML page.
 # This is a static page that can be iframed into an external page

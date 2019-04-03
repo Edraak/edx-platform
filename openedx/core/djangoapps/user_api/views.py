@@ -1,5 +1,9 @@
 """HTTP end-points for the User API. """
 import copy
+import logging
+
+from util.db import outer_atomic
+
 from opaque_keys import InvalidKeyError
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -8,7 +12,10 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured, NON_FIELD_ERRORS, ValidationError
 from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.decorators.http import require_POST
+from django.db.utils import DatabaseError
+from django.db import transaction
 from opaque_keys.edx import locator
 from rest_framework import authentication
 from rest_framework import filters
@@ -20,6 +27,7 @@ from rest_framework.exceptions import ParseError
 from django_countries import countries
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
+from cors_csrf.decorators import csrf_protect as edx_csrf_protect
 from openedx.core.lib.api.permissions import ApiKeyHeaderPermission
 import third_party_auth
 from django_comment_common.models import Role
@@ -37,6 +45,9 @@ from .accounts import (
 )
 from .accounts.api import check_account_exists
 from .serializers import UserSerializer, UserPreferenceSerializer
+
+
+POST_AUTH_LOG = logging.getLogger('edx.post_auth')
 
 
 class LoginSessionView(APIView):
@@ -125,7 +136,7 @@ class LoginSessionView(APIView):
         return HttpResponse(form_desc.to_json(), content_type="application/json")
 
     @method_decorator(require_post_params(["email", "password"]))
-    @method_decorator(csrf_protect)
+    @method_decorator(edx_csrf_protect)
     def post(self, request):
         """Log in a user.
 
@@ -165,7 +176,7 @@ class LoginSessionView(APIView):
 class RegistrationView(APIView):
     """HTTP end-points for creating a new user. """
 
-    DEFAULT_FIELDS = ["email", "confirm_email", "name", "username", "password", "confirm_password", "is_third_party_auth"]
+    DEFAULT_FIELDS = ["email", "name", "username", "password", "confirm_password", "is_third_party_auth"]
 
     EXTRA_FIELDS = [
         "city",
@@ -270,9 +281,19 @@ class RegistrationView(APIView):
                 address already exists
         """
         data = request.POST.copy()
-        email = data.get('email')
 
+        email = data.get('email')
         username = data.get('username')
+
+        # third party related data
+        data['is_third_party_registration'] = True if data.get('is_third_party_registration',
+                                                               False) == 'true' else False
+        access_token = data.get('access_token', None)
+        provider = data.get('provider', None)
+
+        if data['is_third_party_registration'] and access_token and provider:
+            data['access_token'] = access_token
+            data['provider'] = provider
 
         # Handle duplicate email/username
         conflicts = check_account_exists(email=email, username=username)
@@ -347,43 +368,6 @@ class RegistrationView(APIView):
             field_type="email",
             label=email_label,
             placeholder=email_placeholder,
-            restrictions={
-                "min_length": EMAIL_MIN_LENGTH,
-                "max_length": EMAIL_MAX_LENGTH,
-            },
-            required=required,
-            error_messages={
-                "required": error_msg
-            }
-        )
-
-    def _add_confirm_email_field(self, form_desc, required=True):
-        """Add an confirm email field to a form description.
-
-        Arguments:
-            form_desc: A form description
-
-        Keyword Arguments:
-            required (bool): Whether this field is required; defaults to True
-
-        """
-        # Translators: This label appears above a field on the registration form
-        # meant to hold the user's confirmation of the email address.
-        confirm_email_label = _(u"Confirm Email")
-
-        # Translators: This example email address is used as a placeholder in
-        # a field on the registration form meant to hold the user's confirmed email address.
-        confirm_email_placeholder = _(u"username@domain.com")
-
-        confirm_email_instructions = _(u"Please enter your email again for verification")
-
-        error_msg = _(u"Please enter your Confirm Email")
-        form_desc.add_field(
-            "confirm_email",
-            field_type="email",
-            label=confirm_email_label,
-            placeholder=confirm_email_placeholder,
-            instructions=confirm_email_instructions,
             restrictions={
                 "min_length": EMAIL_MIN_LENGTH,
                 "max_length": EMAIL_MAX_LENGTH,
@@ -906,6 +890,44 @@ class RegistrationView(APIView):
                         default="true",
                     )
 
+
+@transaction.non_atomic_requests
+@require_POST
+@outer_atomic(read_committed=True)
+def update_profile_info(request):
+    """
+    """
+    # Get the user
+
+    data = request.POST.copy()
+    user = request.user
+
+    POST_REGISTRATION_FIELDS = [('gender', str), ('country', str), ('year_of_birth', int)]
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        user_has_profile = True
+    except UserProfile.DoesNotExist:
+        # Handle when no profile for the user, create a new one
+        user_profile = UserProfile(user=user)
+        user_has_profile = False
+
+    for field in POST_REGISTRATION_FIELDS:
+        field_name = field[0]
+        field_type = field[1]
+
+        value = field_type(data.get(field_name))
+
+        if value:
+            setattr(user_profile, field_name, value)
+
+    try:
+        user_profile.save(update_fields=list(field[0] for field in POST_REGISTRATION_FIELDS) if user_has_profile else None)
+        return JsonResponse({"is_success": True}, status=200)
+    except (DatabaseError, ValidationError, TypeError) as e:
+        POST_AUTH_LOG.error('Failed to save post auth data for {user}, exception is {e}'.format(user=user.username, e=e))
+
+    return JsonResponse({"is_success": False}, status=400)
 
 
 class PasswordResetView(APIView):

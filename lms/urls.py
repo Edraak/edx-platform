@@ -273,6 +273,8 @@ COURSE_URLS = patterns(
 )
 urlpatterns += (
     # jump_to URLs for direct access to a location in the course
+    url(r'^user_api/v1/account/post_registration/$', 'openedx.core.djangoapps.user_api.views.update_profile_info',
+        name="user_api_post_registration"),
     url(
         r'^courses/{}/jump_to/(?P<location>.*)$'.format(
             settings.COURSE_ID_PATTERN,
