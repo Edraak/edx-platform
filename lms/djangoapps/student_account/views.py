@@ -69,7 +69,7 @@ def login_and_registration_form(request, initial_mode="login"):
     if request.user.is_authenticated():
         return redirect(redirect_to)
 
-    if settings.FEATURES.get("PROGS_AUTH_ENABLED", False):
+    if settings.FEATURES.get("ENABLE_EDRAAK_LOGISTRATION", False):
         redirect_to = get_next_url_for_progs_login_page(request, initial_mode)
         return redirect(redirect_to)
 
