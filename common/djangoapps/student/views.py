@@ -1206,7 +1206,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             }
         )
 
-    if user is not None and user.is_active:
+    if user is not None:
         try:
             # We do not log here, because we have a handler registered
             # to perform logging on successful logins.
