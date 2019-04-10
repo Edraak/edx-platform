@@ -20,6 +20,7 @@ from django.contrib.auth.views import password_reset_confirm
 from django.contrib import messages
 from django.core.context_processors import csrf
 from django.core import mail
+from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.core.validators import validate_email, ValidationError
 from django.db import IntegrityError, transaction
@@ -1712,28 +1713,34 @@ def create_account_with_params(request, params):
     )
     if send_email:
         context = {
-            'name': profile.name,
+            'lms_base': settings.LMS_BASE,
+            'name': profile.name.split(' ')[0],
             'key': registration.activation_key,
+            'direction': 'rtl' if get_language() == 'ar' else 'ltr'
         }
 
         # composes activation email
         subject = render_to_string('emails/activation_email_subject.txt', context)
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-        message = render_to_string('emails/activation_email.txt', context)
+        message = render_to_string('emails/activation_email.html', context)
 
         from_address = microsite.get_value(
             'email_from_address',
             settings.DEFAULT_FROM_EMAIL
         )
+        from_address = '{sender_name} <{email_addr}>'.format(sender_name=_('Edraak Platform').encode('utf-8'), email_addr=from_address)
         try:
             if settings.FEATURES.get('REROUTE_ACTIVATION_EMAIL'):
                 dest_addr = settings.FEATURES['REROUTE_ACTIVATION_EMAIL']
                 message = ("Activation for %s (%s): %s\n" % (user, user.email, profile.name) +
                            '-' * 80 + '\n\n' + message)
-                mail.send_mail(subject, message, from_address, [dest_addr], fail_silently=False)
             else:
-                user.email_user(subject, message, from_address)
+                dest_addr = user.email
+
+            msg = EmailMessage(subject, message, from_email=from_address, to=[dest_addr])
+            msg.content_subtype = 'html'
+            msg.send(fail_silently=False)
         except Exception:  # pylint: disable=broad-except
             log.error(u'Unable to send activation email to user from "%s"', from_address, exc_info=True)
     else:
@@ -2141,16 +2148,22 @@ def reactivation_email_for_user(user):
         })  # TODO: this should be status code 400  # pylint: disable=fixme
 
     context = {
-        'name': user.profile.name,
+        'lms_base': settings.LMS_BASE,
+        'name': user.profile.name.split(' ')[0],
         'key': reg.activation_key,
+        'direction': 'rtl' if get_language() == 'ar' else 'ltr'
     }
 
     subject = render_to_string('emails/activation_email_subject.txt', context)
     subject = ''.join(subject.splitlines())
-    message = render_to_string('emails/activation_email.txt', context)
+    message = render_to_string('emails/activation_email.html', context)
+    from_address = '{sender_name} <{email_addr}>'.format(sender_name=_('Edraak Platform').encode('utf-8'),
+                                                         email_addr=settings.DEFAULT_FROM_EMAIL)
 
     try:
-        user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+        msg = EmailMessage(subject, message, from_email=from_address, to=[user.email])
+        msg.content_subtype = 'html'
+        msg.send(fail_silently=False)
     except Exception:  # pylint: disable=broad-except
         log.error(u'Unable to send reactivation email from "%s"', settings.DEFAULT_FROM_EMAIL, exc_info=True)
         return JsonResponse({

@@ -1,59 +1,66 @@
 # #-#-#-#-#  django-partial.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2018 EdX
+# Copyright (C) 2019 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2018.
+# EdX Team <info@edx.org>, 2019.
 # 
 # Translators:
-# Omar Al-Ithawi <oithawi@qrf.org>, 2016
-# Salah Alomari <salomari@qrf.org>, 2016
-# Dania Quraini <dalquraini@qrf.org>, 2016
 # Lina Bashayreh <lbashayreh@qrf.org>, 2016
-# Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2016
-# saadaltabari <saadtabari@gmail.com>, 2017
+# Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2017
+# saadaltabari <saadtabari@gmail.com>, 2018
+# Omar Al-Ithawi <oithawi@qrf.org>, 2018
+# Dania Quraini <dalquraini@qrf.org>, 2018
+# Salah Alomari <salomari@qrf.org>, 2018
+# Fahmi Al-Najjar <falnajjar@qrf.org>, 2019
+# 
 # #-#-#-#-#  django-studio.po (0.1a)  #-#-#-#-#
 # edX translation file.
-# Copyright (C) 2018 EdX
+# Copyright (C) 2019 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2018.
+# EdX Team <info@edx.org>, 2019.
 # 
 # Translators:
-# Omar Al-Ithawi <oithawi@qrf.org>, 2016
-# Lina Bashayreh <lbashayreh@qrf.org>, 2016
 # Salah Alomari <salomari@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2016
+# Lina Bashayreh <lbashayreh@qrf.org>, 2017
 # saadaltabari <saadtabari@gmail.com>, 2017
+# 
 # #-#-#-#-#  mako.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2018 edX
+# Copyright (C) 2019 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2018.
+# EdX Team <info@edx.org>, 2019.
 # 
 # Translators:
-# Omar Al-Ithawi <oithawi@qrf.org>, 2016
-# Lina Bashayreh <lbashayreh@qrf.org>, 2016
-# Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2016
-# Salah Alomari <salomari@qrf.org>, 2016
 # Ali Hasan <ahasan@qrf.org>, 2016
+# Lina Bashayreh <lbashayreh@qrf.org>, 2017
+# Salah Alomari <salomari@qrf.org>, 2017
 # Dania Quraini <dalquraini@qrf.org>, 2017
+# Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2018
+# Omar Al-Ithawi <oithawi@qrf.org>, 2018
+# Fahmi Al-Najjar <falnajjar@qrf.org>, 2019
+# 
 # #-#-#-#-#  mako-studio.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2018 edX
+# Copyright (C) 2019 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2018.
+# EdX Team <info@edx.org>, 2019.
 # 
 # Translators:
-# Omar Al-Ithawi <oithawi@qrf.org>, 2016
+# Omar Al-Ithawi <oithawi@qrf.org>, 2017
+# 
 # #-#-#-#-#  wiki.po (0.1a)  #-#-#-#-#
 # edX translation file
-# Copyright (C) 2018 edX
+# Copyright (C) 2019 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
-# EdX Team <info@edx.org>, 2018.
+# EdX Team <info@edx.org>, 2019.
 # 
 # Translators:
 # Omar Al-Ithawi <oithawi@qrf.org>, 2016
+# 
 # #-#-#-#-#  edraak-platform-2015-theme.po (Edraak (Deprecated))  #-#-#-#-#
 # Translations template for PROJECT.
-# Copyright (C) 2018 ORGANIZATION
+# Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # 
 # Translators:
@@ -69,8 +76,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Edraak (Deprecated)\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-04-19 13:43+0300\n"
-"PO-Revision-Date: 2018-04-10 10:01+0000\n"
+"POT-Creation-Date: 2019-04-08 17:49+0300\n"
+"PO-Revision-Date: 2019-04-08 14:52+0000\n"
 "Last-Translator: Ahmed Jazzar <ahmed.mojaz@gmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/edraak/edraak/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -551,12 +558,6 @@ msgstr "كلمة المرور:"
 msgid "The passwords you entered do not match"
 msgstr "كلمات المرور التي قمت بإدخالها غير متطابقة"
 
-#: common/djangoapps/student/forms.py
-msgid "The emails you entered do not match"
-msgstr ""
-"البريد الإلكتروني الذي قمت بادخاله للتأكيد لا ينطبق مع البريد الإلكتروني "
-"الأصلي"
-
 #. Translators: Gmail Spam folder translation
 #: common/djangoapps/student/helpers.py
 msgctxt "gmail"
@@ -886,6 +887,10 @@ msgstr "سبق أن رُبط رمز الدخول ’access_token‘ بمستخد
 #: common/djangoapps/student/views.py
 msgid "The provided access_token is not valid."
 msgstr "رمز الدخول ’access_token‘ غير صحيح. "
+
+#: common/djangoapps/student/views.py
+msgid "Edraak Platform"
+msgstr "منصة إدراك"
 
 #: common/djangoapps/student/views.py
 msgid "Unknown error. Please e-mail us to let us know how it happened."
@@ -4473,6 +4478,7 @@ msgid "News"
 msgstr "الأخبار"
 
 #: lms/djangoapps/branding/api.py templates/theme-footer.html
+#: templates/theme-header.html
 msgid "Help Center"
 msgstr "مركز المساعدة"
 
@@ -8815,7 +8821,6 @@ msgstr "اشترك في قناة منصّة {platform_name} على موقع يو
 
 #: lms/envs/devstack.py cms/templates/course-create-rerun.html
 #: cms/templates/index.html cms/templates/settings.html
-#: templates/theme-header.html
 msgid "Organization"
 msgstr "المؤسّسة"
 
@@ -9412,7 +9417,7 @@ msgstr ""
 #: lms/templates/dashboard.html lms/templates/index.html
 #: lms/templates/courseware/courses.html
 #: lms/templates/discussion/_thread_list_template.html
-#: lms/templates/edxnotes/edxnotes.html templates/theme-header.html
+#: lms/templates/edxnotes/edxnotes.html
 msgid "Search"
 msgstr "بحث"
 
@@ -9719,9 +9724,6 @@ msgstr "لم تتوفّر أيّة بيانات لتحديث تفضيل المس
 #. Translators: This example email address is used as a placeholder in
 #. a field on the registration form meant to hold the user's email address.
 #. Translators: This example email address is used as a placeholder in
-#. a field on the registration form meant to hold the user's confirmed email
-#. address.
-#. Translators: This example email address is used as a placeholder in
 #. a field on the password reset form meant to hold the user's email address.
 #: openedx/core/djangoapps/user_api/views.py
 msgid "username@domain.com"
@@ -9781,20 +9783,6 @@ msgid ""
 msgstr ""
 "يبدو أنّ اسم المستخدم {username} يخصّ حسابًا موجودًا. يُرجى إعادة المحاولة "
 "باستخدام اسم مستخدم مختلف."
-
-#. Translators: This label appears above a field on the registration form
-#. meant to hold the user's confirmation of the email address.
-#: openedx/core/djangoapps/user_api/views.py
-msgid "Confirm Email"
-msgstr "تأكيد البريد الإلكتروني"
-
-#: openedx/core/djangoapps/user_api/views.py
-msgid "Please enter your email again for verification"
-msgstr "الرجاء إعادة إدخال البريد الإلكتروني للتأكيد"
-
-#: openedx/core/djangoapps/user_api/views.py
-msgid "Please enter your Confirm Email"
-msgstr "يُرجى إدخال البريد الإلكتروني مرة أخرى للتأكيد"
 
 #. Translators: This example name is used as a placeholder in
 #. a field on the registration form meant to hold the user's name.
@@ -11398,7 +11386,7 @@ msgstr "الصفحة الرئيسية لمنصّة {platform_name}"
 
 #: lms/templates/navigation-edx.html lms/templates/navigation.html
 #: themes/edx.org/lms/templates/header.html
-#: themes/red-theme/lms/templates/header.html templates/theme-footer.html
+#: themes/red-theme/lms/templates/header.html
 msgid "How it Works"
 msgstr "كيف تتعلم مع إدراك"
 
@@ -12602,38 +12590,31 @@ msgid "Download student grades"
 msgstr "تنزيل درجات الطلاب"
 
 #: lms/templates/certificates/_accomplishment-banner.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Print or share your certificate:"
 msgstr "اطبع أو شارك شهادتك:"
 
 #: lms/templates/certificates/_accomplishment-banner.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Click the link to see my certificate."
 msgstr "انقر على الرابط لمشاهدة شهادتي"
 
 #: lms/templates/certificates/_accomplishment-banner.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Post on Facebook"
 msgstr "انشر على فيسبوك"
 
 #: lms/templates/certificates/_accomplishment-banner.html
 #: lms/templates/dashboard/_dashboard_course_listing.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Share on Twitter"
 msgstr "شارك على تويتر"
 
 #: lms/templates/certificates/_accomplishment-banner.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Tweet this Accomplishment. Pop up window."
 msgstr "غرّد هذا الإنجاز. نافذة منبثقة."
 
 #: lms/templates/certificates/_accomplishment-banner.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Add to LinkedIn Profile"
 msgstr "إضافة إلى ملفي الشخصي على لينكد إن"
 
 #: lms/templates/certificates/_accomplishment-banner.html
-#: templates/certificates/_accomplishment-banner.html
 msgid "Add to Mozilla Backpack"
 msgstr "إضافة إلى موزيلا BackPack"
 
@@ -13778,6 +13759,9 @@ msgid ""
 "the course. <br>{link_start}Learn more about the verified "
 "{cert_name_long}{link_end}."
 msgstr ""
+"It's official. It's easily shareable. It's a proven motivator to complete "
+"the course. <br>{link_start}Learn more about the verified "
+"{cert_name_long}{link_end}."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Upgrade to Verified"
@@ -14475,6 +14459,44 @@ msgstr "نوصيك بتغيير كلمة المرور."
 msgid "Sincerely yours,The {course_name} Team"
 msgstr "مع خالص التقدير، فريق {course_name} "
 
+#: lms/templates/emails/activation_email.html
+msgid "Hello"
+msgstr "مرحبا"
+
+#: lms/templates/emails/activation_email.html
+msgid "The last step to start the learning journey at Edraak"
+msgstr "الخطوة الأخيرة لبدء رحلتك التعليمية على إدراك"
+
+#: lms/templates/emails/activation_email.html
+msgid ""
+"By clicking on the following button you will finish the registration process"
+" on Edraak"
+msgstr "بالنقر على زر التفعيل تكون قد أتممت عملية إنشاء حسابك على منصة إدراك"
+
+#: lms/templates/emails/activation_email.html
+msgid "Activate your account now"
+msgstr "فعّل حسابك الآن"
+
+#: lms/templates/emails/activation_email.html
+msgid "Or copy and paste the activation link to your browser"
+msgstr "أو قم بنسخ الرابط ولصقة على شريط العنوان في المتصفح"
+
+#: lms/templates/emails/activation_email.html
+msgid ""
+"Note: If you haven't made this request, you don't need to do anything, and "
+"you will not receive any further messages from us"
+msgstr ""
+"ملاحظة: إذا لم تكن قد تقدّمت بهذا الطلب، فلا تحتاج إلى فعل أي شيء، ولن تتلقى"
+" منا أي رسائل أخرى"
+
+#: lms/templates/emails/activation_email.html
+msgid ""
+"This mail is automated, please do not reply to this email, and if you need "
+"any help, you can contact us in the 'help center' on Edraak platform"
+msgstr ""
+"هذه رسالة آلية، يرجى عدم الرد على هذه الرسالة. لمزيد من الإستفسارات "
+"والملاحظات قم بمراجعة \"مركز المساعدة\" عبر منصة إدراك"
+
 #: lms/templates/emails/activation_email.txt
 msgid "Thank you for signing up for {platform_name}."
 msgstr "شكرًا على تسجيلك في {platform_name}."
@@ -14538,8 +14560,12 @@ msgstr ""
 "يمكنك مراجعة قسم المساعدة في موقع {platform_name}."
 
 #: lms/templates/emails/activation_email_subject.txt
-msgid "Activate Your {platform_name} Account"
-msgstr "تفعيل حسابك في {platform_name}"
+msgid "ACTION REQUIRED"
+msgstr "إجراء مطلوب"
+
+#: lms/templates/emails/activation_email_subject.txt
+msgid "One step left to activate your account"
+msgstr "بقيت خطوة لتفعيل حسابك"
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 #: lms/templates/emails/enroll_email_enrolledmessage.txt
@@ -15390,6 +15416,9 @@ msgid ""
 "Certificates. You do not need to do this<br/>if you have set the certificate"
 " mode to on-demand generation."
 msgstr ""
+"When you are ready to generate certificates for your course, click Generate "
+"Certificates. You do not need to do this<br/>if you have set the certificate"
+" mode to on-demand generation."
 
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
@@ -15417,6 +15446,8 @@ msgid ""
 "To regenerate certificates for your course, chose the learners who will "
 "receive regenerated certificates and click <br/> Regenerate Certificates."
 msgstr ""
+"To regenerate certificates for your course, chose the learners who will "
+"receive regenerated certificates and click <br/> Regenerate Certificates."
 
 #: lms/templates/instructor/instructor_dashboard_2/certificates.html
 msgid ""
@@ -17695,7 +17726,7 @@ msgid "Currently the {platform_name} servers are overloaded"
 msgstr "تعمل مخدمات المنصة {platform_name} حالياً بمستوى تحميل يتجاوز طاقتها"
 
 #: lms/templates/student_account/account_settings.html
-#: themes/red-theme/lms/templates/header.html templates/theme-header.html
+#: themes/red-theme/lms/templates/header.html
 msgid "Account Settings"
 msgstr "إعدادات الحساب"
 
@@ -20149,7 +20180,6 @@ msgid "Learn more about content libraries"
 msgstr "اعرف المزيد عن مكتبات المحتوى"
 
 #: cms/templates/login.html cms/templates/widgets/header.html
-#: templates/theme-header.html
 msgid "Sign In"
 msgstr "تسجيل الدخول"
 
@@ -21399,7 +21429,7 @@ msgstr "سجّل في StudioX"
 msgid "Send an email to {email}"
 msgstr "أرسل رسالةً إلكترونية إلى {email}"
 
-#: cms/templates/widgets/sock.html templates/theme-footer.html
+#: cms/templates/widgets/sock.html
 msgid "Contact Us"
 msgstr "اتصل بنا"
 
@@ -22068,65 +22098,37 @@ msgid ""
 msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة #%(r1)d والمراجعة #%(r2)d "
 
 #: templates/theme-footer.html
+msgid "About Us"
+msgstr ""
+
+#: templates/theme-footer.html
 msgid "{copy} {year} Edraak, Some rights reserved"
 msgstr "{copy} {year} إدراك. بعض الحقوق محفوظة."
 
-#: templates/theme-footer.html
-msgid "About Edraak"
-msgstr "عن إدراك"
-
-#: templates/theme-footer.html
-msgid "The Team"
-msgstr " الفريق"
-
 #: templates/theme-header.html
-msgid "What would you like to learn today?"
-msgstr "ماذا تريد أن تتعلم اليوم؟"
+msgid "Welcome {full_name}"
+msgstr ""
 
 #: templates/theme-header.html
 msgid "Part of the specialization"
 msgstr "جزءٌ من تخصص"
 
 #: templates/theme-header.html
-msgid "Hi {full_name}"
-msgstr "اهلا {full_name}"
+msgctxt "edraak-2015"
+msgid "ABOUT"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "Home"
-msgstr "الصفحة الرئيسية"
+msgctxt "edraak-2015"
+msgid "How it Works"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "Continuous education"
-msgstr "التعلم المستمر"
+msgctxt "edraak-2015"
+msgid "Courses"
+msgstr ""
 
 #: templates/theme-header.html
-msgid "School education"
-msgstr "التعلم المدرسي"
-
-#: templates/theme-header.html
-msgid "NEW"
-msgstr "جديد"
-
-#: templates/certificates/_accomplishment-banner.html
-msgid "Download Certificate"
-msgstr "احفظ الشهادة"
-
-#: templates/certificates/_accomplishment-rendering.html
-msgid "Brought to you by"
-msgstr "مقدم من"
-
-#: templates/certificates/_accomplishment-rendering.html
-msgid "CERTIFICATE OF COMPLETION"
-msgstr "شهادة إتمام مساق"
-
-#: templates/certificates/_accomplishment-rendering.html
-msgid "This is to certify that"
-msgstr "تم منح شهادة إتمام المساق هذه إلى"
-
-#: templates/certificates/_accomplishment-rendering.html
-msgid "Successfully completed"
-msgstr "لإتمام المساق التالي بنجاح"
-
-#: templates/certificates/_accomplishment-rendering.html
-msgid "In Sponsorship with"
-msgstr "بدعم من"
+msgctxt "edraak-2015"
+msgid "Teach"
+msgstr ""
