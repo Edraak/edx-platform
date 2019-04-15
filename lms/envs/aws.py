@@ -176,6 +176,7 @@ for feature, value in ENV_FEATURES.items():
     FEATURES[feature] = value
 
 CMS_BASE = ENV_TOKENS.get('CMS_BASE', 'studio.edx.org')
+LMS_BASE = ENV_TOKENS.get('LMS_BASE', '')
 
 ALLOWED_HOSTS = [
     # TODO: bbeggs remove this before prod, temp fix to get load testing running

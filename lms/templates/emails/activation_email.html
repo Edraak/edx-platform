@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<%namespace file="../main.html" import="stanford_theme_enabled" />
+<%! from django.utils.translation import ugettext as _ %>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+        .email-content {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        .heading {
+            font-size: 20.0pt;
+        }
+
+        .button {
+            background-color: #0ca7aa;
+            border: none;
+            border-radius: 5px;
+            color: white !important;
+            padding: 15px 34px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            min-width: 150px;
+            width: 30%;
+        }
+
+        .button:hover {
+            background-color: #09787a;
+        }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="email-content" dir="${ direction }">
+            <p class="heading">${_("Hello")} ${ name }.. ${_("The last step to start the learning journey at Edraak")}</p>
+
+            <p style="font-size: 16.0pt">
+                ${_("By clicking on the following button you will finish the registration process on Edraak")}:
+            </p>
+
+            <a class="button" href="https://${ lms_base }/activate/${ key }">${_("Activate your account now")}</a>
+
+            <p style="font-size: 11.0pt">${_("Or copy and paste the activation link to your browser")}:</p>
+            <a href="https://${ lms_base }/activate/${ key }">https://${ lms_base }/activate/${ key }</a>
+
+            <p style="line-height: 1.5">
+                ${_("Note: If you haven't made this request, you don't need to do anything, and you will not receive any further messages from us")}.
+                <br/>
+                ${_("This mail is automated, please do not reply to this email, and if you need any help, you can contact us in the 'help center' on Edraak platform")}.
+            </p>
+        </div>
+
+    </body>
+</html>
