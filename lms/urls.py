@@ -55,6 +55,7 @@ urlpatterns = (
     url(r'^logout$', 'student.views.logout_user', name='logout'),
     url(r'^create_account$', 'student.views.create_account', name='create_account'),
     url(r'^activate/(?P<key>[^/]*)$', 'student.views.activate_account', name="activate"),
+    url(r'^reactivate$', 'student.views.resend_activation_email_for_user', name="resend_activation"),
 
     url(r'^password_reset/$', 'student.views.password_reset', name='password_reset'),
     ## Obsolete Django views for password resets

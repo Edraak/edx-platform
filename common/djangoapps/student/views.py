@@ -2041,6 +2041,23 @@ def password_reset(request):
     })
 
 
+@ensure_csrf_cookie
+@require_POST
+@login_required
+def resend_activation_email_for_user(request):
+    """
+    Resend activation/verification email to the logged in user.
+    """
+    if request.user.is_active:
+        return JsonResponse({'success': False, 'message': 'The user is already active'}, status=400)
+
+    try:
+        reactivation_email_for_user(request.user)
+        return JsonResponse({'success': True})
+    except BaseException:
+        return JsonResponse({'success': False}, status=400)
+
+
 def password_reset_confirm_wrapper(
     request,
     uidb36=None,
