@@ -42,6 +42,7 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     """
 
     blocks_url = serializers.SerializerMethodField()
+    duration = serializers.SerializerMethodField()
     course_id = serializers.CharField(source='id', read_only=True)
     effort = serializers.CharField()
     end = serializers.DateTimeField()
@@ -68,6 +69,16 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
             urllib.urlencode({'course_id': course_overview.id}),
         ])
         return self.context['request'].build_absolute_uri(base_url)
+
+    def get_duration(self, obj):
+        if obj.self_paced:
+            return 0
+
+        try:
+            delta = obj.end - obj.start
+            return int(delta.days / 7)
+        except TypeError:
+            return 0
 
 
 class CourseDetailSerializer(CourseSerializer):  # pylint: disable=abstract-method

@@ -9,7 +9,9 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.http import Http404
 from django.utils.translation import get_language, ugettext as _
+from django.db.models import Q
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
 
 from edxmako.shortcuts import marketing_link
 from edraak_misc.utils import get_courses_marketing_details
@@ -22,6 +24,7 @@ from .api import course_detail, list_courses
 from .forms import CourseDetailGetForm, CourseListGetForm
 from .serializers import CourseSerializer, CourseDetailSerializer, \
     MarketingCourseDetailSerializer
+from edraak_specializations.models import CourseSpecializationInfo
 
 
 
@@ -351,3 +354,24 @@ class MarketingCourseDetailView(CourseDetailView):
             course_object.overview = marketing_data.get('overview')
             course_object.name_en = marketing_data['name_en']
             course_object.name_ar = marketing_data['name_ar']
+
+
+@view_auth_classes(is_authenticated=True)
+class SpecializationCourseListView(ListAPIView):
+    serializer_class = CourseSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        specialization_slug = self.kwargs['specialization_slug']
+        course_id_tuples = CourseSpecializationInfo.objects.filter(specialization_slug=specialization_slug) \
+            .values_list('course_id')
+
+        if not course_id_tuples:
+            raise Http404("Specialization not found")
+
+        course_ids = [c[0] for c in course_id_tuples]
+
+        query = Q()
+        for c_id in course_ids:
+            query = query | Q(id__endswith=c_id)
+
+        return CourseOverview.objects.filter(query)
