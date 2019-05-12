@@ -173,6 +173,9 @@ class UniversityIDView(ContextMixin, generic.FormView):
     @method_decorator(login_required)
     @method_decorator(ensure_valid_course_key)
     def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_active:
+            return redirect(reverse('dashboard'))
+
         return super(UniversityIDView, self).dispatch(*args, **kwargs)
 
 
