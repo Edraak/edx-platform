@@ -4,11 +4,11 @@ from social_core.backends.oauth import BaseOAuth2
 class ForUsOAuth2(BaseOAuth2):
 
     name = 'forus'
-    AUTHORIZATION_URL = 'http://forus.dev.srv05.devcloud.vardot.io/oauth/authorize'
-    ACCESS_TOKEN_URL = 'http://forus.dev.srv05.devcloud.vardot.io/oauth/token'
+    AUTHORIZATION_URL = 'https://www.forus.jo/oauth/authorize'
+    ACCESS_TOKEN_URL = 'https://www.forus.jo/oauth/token'
     ACCESS_TOKEN_METHOD = 'POST'
-    REFRESH_TOKEN_URL = 'http://forus.dev.srv05.devcloud.vardot.io/oauth/token'
-    USER_DATA_URL = 'http://forus.dev.srv05.devcloud.vardot.io/oauth/userInfo'
+    REFRESH_TOKEN_URL = 'https://www.forus.jo/oauth/token'
+    USER_DATA_URL = 'https://www.forus.jo/oauth/userInfo'
     ID_KEY = 'uid'
     REDIRECT_STATE = False
     STATE_PARAMETER = False
