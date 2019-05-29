@@ -354,24 +354,3 @@ class MarketingCourseDetailView(CourseDetailView):
             course_object.overview = marketing_data.get('overview')
             course_object.name_en = marketing_data['name_en']
             course_object.name_ar = marketing_data['name_ar']
-
-
-@view_auth_classes(is_authenticated=True)
-class SpecializationCourseListView(ListAPIView):
-    serializer_class = CourseSerializer
-
-    def get_queryset(self, *args, **kwargs):
-        specialization_slug = self.kwargs['specialization_slug']
-        course_id_tuples = CourseSpecializationInfo.objects.filter(specialization_slug=specialization_slug) \
-            .values_list('course_id')
-
-        if not course_id_tuples:
-            raise Http404("Specialization not found")
-
-        course_ids = [c[0] for c in course_id_tuples]
-
-        query = Q()
-        for c_id in course_ids:
-            query = query | Q(id__endswith=c_id)
-
-        return CourseOverview.objects.filter(query)
