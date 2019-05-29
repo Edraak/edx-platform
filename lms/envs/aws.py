@@ -571,6 +571,7 @@ if FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
             'social_core.backends.google.GoogleOAuth2',
             'social_core.backends.linkedin.LinkedinOAuth2',
             'edraak_social.backends.facebook.EdraakFacebookOAuth2',
+            'edraak_social.backends.forus.ForUsOAuth2',
             'third_party_auth.saml.SAMLAuthBackend',
             'third_party_auth.lti.LTIAuthBackend',
         ]) + list(AUTHENTICATION_BACKENDS)
@@ -791,3 +792,7 @@ if FEATURES.get("ENABLE_AUTH_EXTERNAL_REDIRECT"):
         "AUTH_REDIRECT_ORIGINS_WHITELIST", tuple())
     AUTH_REDIRECT_REGX_ORIGINS = ENV_TOKENS.get(
         "AUTH_REDIRECT_REGX_ORIGINS", tuple())
+
+# the hosts that the platform is safe to redirect to
+ALLOWED_REDIRECT_HOSTS = ENV_TOKENS.get(
+        "SAFE_REDIRECT_HOSTS", tuple())

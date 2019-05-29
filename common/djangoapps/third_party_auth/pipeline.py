@@ -458,10 +458,24 @@ def running(request):
 # pylint: disable=unused-argument
 
 
+def get_backend_name(strategy, response, *arg, **kwargs):
+    return {
+        'backend_name': getattr(kwargs.get('backend'), 'name', None)
+    }
+
+
+def forus_save_redirect_param(strategy, response, *args, **kwargs):
+    if kwargs.get('backend_name') == 'forus':
+        strategy.request.session['next'] = \
+            strategy.request.GET.get('next', '').replace(' ', '+')
+
+
 def parse_query_params(strategy, response, *args, **kwargs):
     """Reads whitelisted query params, transforms them into pipeline args."""
     auth_entry = strategy.request.session.get(AUTH_ENTRY_KEY)
-    if not (auth_entry and auth_entry in _AUTH_ENTRY_CHOICES):
+    backend_name = kwargs.get('backend_name')
+    if backend_name != 'forus' and \
+            not (auth_entry and auth_entry in _AUTH_ENTRY_CHOICES):
         raise AuthEntryError(strategy.request.backend, 'auth_entry missing or invalid')
 
     return {'auth_entry': auth_entry}
@@ -529,6 +543,16 @@ def redirect_to_custom_form(request, auth_entry, kwargs):
     return redirect(reverse('tpa_post_to_custom_auth_form'))
 
 
+def create_user_student_profile(user, *args, **kwargs):
+    UserProfile = student.models.UserProfile
+    try:
+        user.profile
+    except UserProfile.DoesNotExist:
+        profile_details = kwargs.get('profile_details', {})
+        profile_details['user_id'] = user.id
+        UserProfile.objects.create(**profile_details)
+
+
 @partial.partial
 def ensure_user_information(strategy, auth_entry, backend=None, user=None, social=None, current_partial=None,
                             allow_inactive_user=False, *args, **kwargs):
@@ -579,10 +603,12 @@ def ensure_user_information(strategy, auth_entry, backend=None, user=None, socia
         elif auth_entry in AUTH_ENTRY_CUSTOM:
             # Pass the username, email, etc. via query params to the custom entry page:
             return redirect_to_custom_form(strategy.request, auth_entry, kwargs)
+        elif kwargs.get('backend_name') == 'forus':
+            pass
         else:
             raise AuthEntryError(backend, 'auth_entry invalid')
 
-    if not user.is_active:
+    if user and not user.is_active:
         # The user account has not been verified yet.
         if allow_inactive_user:
             # This parameter is used by the auth_exchange app, which always allows users to
