@@ -211,6 +211,14 @@ class CourseListView(DeveloperErrorViewMixin, ListAPIView):
     pagination_class = NamespacedPageNumberPagination
     serializer_class = CourseSerializer
 
+    def get_serializer_context(self):
+        context = super(CourseListView, self).get_serializer_context()
+
+        calculate_completion = self.request.GET.get('calculate_completion') in ['true', 'True']
+        context['calculate_completion'] = calculate_completion
+
+        return context
+
     def get_queryset(self):
         """
         Return a list of courses visible to the user.
