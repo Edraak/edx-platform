@@ -63,9 +63,11 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     def __init__(self, *args, **kwargs):
         super(CourseSerializer, self).__init__(*args, **kwargs)
 
-        calculate_completion = kwargs['context']['calculate_completion']
-        if calculate_completion:
-            self.fields['completed'] = serializers.SerializerMethodField()
+        context = kwargs.get('context')
+        if context:
+            calculate_completion = context.get('calculate_completion')
+            if calculate_completion:
+                self.fields['completed'] = serializers.SerializerMethodField()
 
     def get_blocks_url(self, course_overview):
         """
