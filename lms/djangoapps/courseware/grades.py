@@ -312,8 +312,8 @@ def grade(student, request, course, keep_raw_scores=False, field_data_cache=None
         deadline=course.end
     )
 
-    for receiver, response in responses:
-        log.info('Signal fired when student grade is calculated. Receiver: %s. Response: %s', receiver, response)
+    # for receiver, response in responses:
+    #     log.info('Signal fired when student grade is calculated. Receiver: %s. Response: %s', receiver, response)
 
     return grade_summary
 

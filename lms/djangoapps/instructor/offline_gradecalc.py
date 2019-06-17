@@ -29,44 +29,38 @@ class MyEncoder(JSONEncoder):
         return JSONEncoder.default(self, obj)
 
 
-def offline_grade_calculation(course_key):
+def offline_grade_calculation(course):
     '''
     Compute grades for all students for a specified course, and save results to the DB.
     '''
 
     tstart = time.time()
     enrolled_students = User.objects.filter(
-        courseenrollment__course_id=course_key,
+        courseenrollment__course_id=course.id,
         courseenrollment__is_active=1
     ).prefetch_related("groups").order_by('username')
 
     enc = MyEncoder()
-
-    print "{} enrolled students".format(len(enrolled_students))
-    course = get_course_by_id(course_key)
-
+    all_studnets = len(enrolled_students)
+    print "{} enrolled students in {}".format(all_studnets, course.id)
+    counter = 0
     for student in enrolled_students:
+        counter+=1
+        if counter%1000 == 0:
+            print "{}/{} done: Course {}".format(counter, all_studnets, course.id)
         request = DummyRequest()
         request.user = student
         request.session = {}
 
         gradeset = grades.grade(student, request, course, keep_raw_scores=True)
-        # Convert Score namedtuples to dicts:
-        totaled_scores = gradeset['totaled_scores']
-        for section in totaled_scores:
-            totaled_scores[section] = [score._asdict() for score in totaled_scores[section]]
-        gradeset['raw_scores'] = [score._asdict() for score in gradeset['raw_scores']]
-        # Encode as JSON and save:
-        gradeset_str = enc.encode(gradeset)
-        ocg, _created = models.OfflineComputedGrade.objects.get_or_create(user=student, course_id=course_key)
-        ocg.gradeset = gradeset_str
+        ocg, _created = models.OfflineComputedGrade.objects.get_or_create(user=student, course_id=course.id)
+        ocg.gradeset = gradeset['grade']
         ocg.save()
-        print "%s done" % student  	# print statement used because this is run by a management command
 
     tend = time.time()
     dt = tend - tstart
 
-    ocgl = models.OfflineComputedGradeLog(course_id=course_key, seconds=dt, nstudents=len(enrolled_students))
+    ocgl = models.OfflineComputedGradeLog(course_id=course.id, seconds=dt, nstudents=len(enrolled_students))
     ocgl.save()
     print ocgl
     print "All Done!"

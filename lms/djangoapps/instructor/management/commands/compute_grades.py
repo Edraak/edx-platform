@@ -3,48 +3,32 @@
 django management command: dump grades to csv files
 for use by batch processes
 """
+from xmodule.modulestore.django import modulestore
 from instructor.offline_gradecalc import offline_grade_calculation
-from courseware.courses import get_course_by_id
-from opaque_keys import InvalidKeyError
-from opaque_keys.edx.keys import CourseKey
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
-
+import multiprocessing.dummy as mp
+from courseware import models
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 
 class Command(BaseCommand):
-    help = "Compute grades for all students in a course, and store result in DB.\n"
-    help += "Usage: compute_grades course_id_or_dir \n"
-    help += "   course_id_or_dir: either course_id or course_dir\n"
-    help += 'Example course_id: MITx/8.01rq_MW/Classical_Mechanics_Reading_Questions_Fall_2012_MW_Section'
+    help = "Compute grades for all students in all unproccessed courses, and store result in DB.\n"
+    help += "Usage: compute_grades \n"
 
     def handle(self, *args, **options):
+        computed_courses = dict((x.course_id, x) for x in models.OfflineComputedGradeLog.objects.all())
+        today = timezone.now()
+        all_courses = modulestore().get_courses()
 
-        print "args = ", args
+        def condition(course):
+            if course.id not in computed_courses.keys():  # if not processed before
+                return True
+            if course.end and today < course.end or course.is_self_paced():  # if curr of is_self_paced
+                return (today - computed_courses[course.id].created).days > 7  # if not updated in the past 7 days
 
-        if len(args) > 0:
-            course_id = args[0]
-        else:
-            print self.help
-            return
-        course_key = None
-        # parse out the course id into a coursekey
-        try:
-            course_key = CourseKey.from_string(course_id)
-        # if it's not a new-style course key, parse it from an old-style
-        # course key
-        except InvalidKeyError:
-            course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-        try:
-            _course = get_course_by_id(course_key)
-        except Exception as err:
-            print "-----------------------------------------------------------------------------"
-            print "Sorry, cannot find course with id {}".format(course_id)
-            print "Got exception {}".format(err)
-            print "Please provide a course ID or course data directory name, eg content-mit-801rq"
-            return
-
-        print "-----------------------------------------------------------------------------"
-        print "Computing grades for {}".format(course_id)
-
-        offline_grade_calculation(course_key)
+        courses = filter(condition, all_courses)
+        print "processing {} courses ...".format(len(courses))
+        p = mp.Pool(4)
+        p.map(offline_grade_calculation, courses)
+        p.close()
+        p.join()
