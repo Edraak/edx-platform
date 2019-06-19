@@ -16,19 +16,22 @@ class Command(BaseCommand):
     help += "Usage: compute_grades \n"
 
     def handle(self, *args, **options):
-        computed_courses = dict((x.course_id, x) for x in models.OfflineComputedGradeLog.objects.all())
         today = timezone.now()
         all_courses = modulestore().get_courses()
 
         def condition(course):
-            if course.id not in computed_courses.keys():  # if not processed before
+            computed_course = models.OfflineComputedGradeLog.objects.filter(course_id=course.id)
+            if not computed_course:  # if not processed before
                 return True
             if course.end and today < course.end or course.is_self_paced():  # if curr of is_self_paced
-                return (today - computed_courses[course.id].created).days > 7  # if not updated in the past 7 days
+                return (today - computed_course.latest().created).days > 7  # if not updated in the past 7 days
+            return False
 
         courses = filter(condition, all_courses)
+
         print "processing {} courses ...".format(len(courses))
-        p = mp.Pool(4)
+
+        p = mp.Pool(2)
         p.map(offline_grade_calculation, courses)
         p.close()
         p.join()
