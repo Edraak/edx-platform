@@ -35,7 +35,7 @@ def get_organization_logo(organization, course_id):
     elif organization == u'bayt.com':
         return 'bayt-logo2-en.png'
     elif organization == u'qrta':
-        return 'qrta_logo.jpg'
+        return 'qrta_logo.png'
     elif organization == 'aub':
         return 'Full-AUB-Seal.jpg'
     elif organization == "csbe":
