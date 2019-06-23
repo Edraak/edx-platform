@@ -6,10 +6,11 @@
 # 
 # Translators:
 # Lina Bashayreh <lbashayreh@qrf.org>, 2016
-# Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2018
+# Omar Al-Ithawi <oithawi@qrf.org>, 2018
 # Salah Alomari <salomari@qrf.org>, 2018
 # Ali Hasan <ahasan@qrf.org>, 2019
-# Omar Al-Ithawi <oithawi@qrf.org>, 2019
+# Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2019
+# Dania Quraini <dalquraini@qrf.org>, 2019
 # 
 # #-#-#-#-#  djangojs-studio.po (0.1a)  #-#-#-#-#
 # edX translation file.
@@ -48,7 +49,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2019-07-09 13:08+0000\n"
+"POT-Creation-Date: 2019-07-15 10:54+0000\n"
 "PO-Revision-Date: 2016-11-23 13:15+0000\n"
 "Last-Translator: Ahmed Jazzar <ahmed.mojaz@gmail.com>, 2018\n"
 "Language-Team: Arabic (https://www.transifex.com/edraak/teams/27178/ar/)\n"
@@ -4235,15 +4236,16 @@ msgstr ""
 "الخاص بك."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
-msgid "Full Name"
-msgstr "الاسم الكامل"
+msgid "Full Name in Arabic"
+msgstr "الاسم الكامل باللغة العربية"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
-"The name that appears on your certificates. Other learners never see your "
-"full name."
+"The name that appears on your Arabic certificates. Other learners never see "
+"your full name."
 msgstr ""
-"الاسم الذي يظهر على شهاداتك. لن يرى المتعلّمون الآخرون اسمك الكامل أبدًا."
+"الاسم الذي يظهر على شهاداتك العربية. لن يرى المتعلّمون الآخرون اسمك الكامل "
+"أبدًا."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Email Address"
@@ -4286,6 +4288,18 @@ msgstr "الدولة أو المنطقة"
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Additional Information (optional)"
 msgstr "معلومات إضافية (اختياري)"
+
+#: lms/static/js/student_account/views/account_settings_factory.js
+msgid "Full Name in English"
+msgstr "الاسم الكامل باللغة الإنجليزية"
+
+#: lms/static/js/student_account/views/account_settings_factory.js
+msgid ""
+"The name that appears on your English certificates. Other learners never see"
+" your full name."
+msgstr ""
+"الاسم الذي يظهر على شهاداتك الإنجليزية. لن يرى المتعلّمون الآخرون اسمك "
+"الكامل أبدًا."
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Education Completed"
