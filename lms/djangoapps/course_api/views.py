@@ -10,6 +10,7 @@ from django.conf import settings
 from django.http import Http404
 from django.utils.translation import get_language, ugettext as _
 from django.db.models import Q
+from django.db import transaction
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
@@ -25,7 +26,6 @@ from .forms import CourseDetailGetForm, CourseListGetForm
 from .serializers import CourseSerializer, CourseDetailSerializer, \
     MarketingCourseDetailSerializer
 from edraak_specializations.models import CourseSpecializationInfo
-
 
 
 @view_auth_classes(is_authenticated=False)
@@ -210,6 +210,10 @@ class CourseListView(DeveloperErrorViewMixin, ListAPIView):
 
     pagination_class = NamespacedPageNumberPagination
     serializer_class = CourseSerializer
+
+    @transaction.non_atomic_requests
+    def dispatch(self, request, *args, **kwargs):
+        return super(CourseListView, self).dispatch(request, *args, **kwargs)
 
     def get_serializer_context(self):
         context = super(CourseListView, self).get_serializer_context()
