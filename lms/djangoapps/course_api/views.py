@@ -118,6 +118,14 @@ class CourseDetailView(DeveloperErrorViewMixin, RetrieveAPIView):
 
     serializer_class = CourseDetailSerializer
 
+    def get_serializer_context(self):
+        context = super(CourseDetailView, self).get_serializer_context()
+
+        calculate_completion = self.request.GET.get('calculate_completion') in ['true', 'True']
+        context['calculate_completion'] = calculate_completion
+
+        return context
+
     def get_object(self):
         """
         Return the requested course object, if the user has appropriate
