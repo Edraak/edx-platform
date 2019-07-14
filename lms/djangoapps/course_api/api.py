@@ -7,6 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from lms.djangoapps.courseware.courses import (
     get_courses,
+    get_specialization_courses,
     get_course_overview_with_access,
     get_permission_for_course_about,
 )
@@ -82,3 +83,27 @@ def list_courses(request, username, org=None, filter_=None):
     """
     user = get_effective_user(request.user, username)
     return get_courses(user, org=org, filter_=filter_)
+
+
+def list_specialization_courses(org=None, filter_=None):
+    """
+    Return a list of available courses.
+
+    Arguments:
+        request (HTTPRequest):
+            Used to identify the logged-in user and to instantiate the course
+            module to retrieve the course about description
+
+    Keyword Arguments:
+        org (string):
+            If specified, visible `CourseOverview` objects are filtered
+            such that only those belonging to the organization with the provided
+            org code (e.g., "HarvardX") are returned. Case-insensitive.
+        filter_ (dict):
+            If specified, visible `CourseOverview` objects are filtered
+            by the given key-value pairs.
+
+    Return value:
+        List of `CourseOverview` objects representing the collection of courses.
+    """
+    return get_specialization_courses(org=org, filter_=filter_)
