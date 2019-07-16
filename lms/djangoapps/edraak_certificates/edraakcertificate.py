@@ -30,11 +30,10 @@ from courseware.access import has_access
 from util import organizations_helpers as organization_api
 from util.models import OrganizationDetail
 
-import arabicreshaper
+from edraak_certificates import arabicreshaper
 
 
-from lms.djangoapps.certificates.api import get_certificate_url, \
-    get_active_web_certificate
+from lms.djangoapps.certificates.api import get_certificate_url, get_active_web_certificate
 
 
 logger = logging.getLogger(__name__)
@@ -72,6 +71,33 @@ def contains_rtl_text(string):
     else:
         return False
 
+
+def trans_digits(text):
+    """
+    This helper is responsible for returning digits in any text in
+    Arabic–Indic numerals based on the site locale.
+    :param text: The text that may have numerals.
+    :return: A text with Arabic–Indic if the site in Arabic Locale,
+             Arabic numerals if the site is running in English locale.
+    """
+    if text is None:
+        return None
+    if not isinstance(text, str) and not isinstance(text, unicode):
+        return text
+    # Translators: Enter the local format of the number e.g. ١، ٢، ٣
+    return (
+        text
+        .replace('0', u'٠')
+        .replace('1', u'١')
+        .replace('2', u'٢')
+        .replace('3', u'٣')
+        .replace('4', u'٤')
+        .replace('5', u'٥')
+        .replace('6', u'٦')
+        .replace('7', u'٧')
+        .replace('8', u'٨')
+        .replace('9', u'٩')
+    )
 
 class EdraakCertificate(object):
     def __init__(self, course, user, course_desc,
@@ -281,9 +307,9 @@ class EdraakCertificate(object):
 
         # Underline the sentence
         text_width = stringWidth(text, self.font, self.font_size)
-        xu = self.bidi_x_axis(x * inch, offset=-text_width / 2.0)
-        yu = (y - 0.1)*inch
         length = text_width if self.is_english else -text_width
+        xu = self.bidi_x_axis(x * inch, offset=length / 2.0)
+        yu = (y - 0.1)*inch
 
         self.ctx.setStrokeColor(self.colors['grey-light'])
         self.ctx.setLineWidth(0.5)
@@ -477,7 +503,7 @@ class EdraakCertificate(object):
         font_sub_size = 0.12
 
         if not self.is_english:
-            date = _date(self.cert.modified_date, 'd F, Y')
+            date = trans_digits(_date(self.cert.modified_date, 'd F, Y'))
         else:
             date = self.cert.modified_date.strftime('%d %B, %Y')
 

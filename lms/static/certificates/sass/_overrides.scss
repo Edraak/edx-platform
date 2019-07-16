@@ -52,7 +52,8 @@
             padding: 0 1rem;
           }
           .organization-logo  {
-            width: 80%;
+            max-height: 6rem;
+            width: auto;
           }
 
           .sponsor-logo {
@@ -137,7 +138,7 @@
           }
 
           .accomplishment-summary {
-            margin-top: 4.5rem;
+            margin-top: 2rem;
             margin-bottom: 1.5rem;
           }
 
