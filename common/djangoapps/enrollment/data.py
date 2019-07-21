@@ -118,7 +118,7 @@ def get_course_enrollment(username, course_id, request=None):
 
 
 def create_course_enrollment(username, course_id, mode, is_active,
-                             request=None):
+                             check_access=True, request=None):
     """Create a new course enrollment for the given user.
 
     Creates a new course enrollment for the specified user username.
@@ -149,7 +149,7 @@ def create_course_enrollment(username, course_id, mode, is_active,
         raise UserNotFoundError(msg)
 
     try:
-        enrollment = CourseEnrollment.enroll(user, course_key, check_access=True)
+        enrollment = CourseEnrollment.enroll(user, course_key, check_access=check_access)
         return _update_enrollment(enrollment, is_active=is_active, mode=mode)
     except NonExistentCourseError as err:
         raise CourseNotFoundError(err.message)

@@ -509,6 +509,10 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
         username = request.data.get('user', request.user.username)
         course_id = request.data.get('course_details', {}).get('course_id')
 
+        # Used to enroll a user in a course without checking enrollment access
+        # (we need this flag for specialization courses).
+        check_access = request.data.get('check_access', True)
+
         if not course_id:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -612,8 +616,11 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                 )
             else:
                 # Will reactivate inactive enrollments.
-                response = api.add_enrollment(username, unicode(
-                    course_id), mode=mode, is_active=is_active,
+                response = api.add_enrollment(username,
+                                              unicode(course_id),
+                                              mode=mode,
+                                              is_active=is_active,
+                                              check_access=check_access,
                                               request=request)
 
             email_opt_in = request.data.get('email_opt_in', None)

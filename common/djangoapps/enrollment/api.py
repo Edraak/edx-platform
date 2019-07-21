@@ -142,7 +142,7 @@ def get_enrollment(user_id, course_id, request=None):
 
 
 def add_enrollment(user_id, course_id, mode=None, is_active=True,
-                   request=None):
+                   check_access=True, request=None):
     """Enrolls a user in a course.
 
     Enrolls a user in a course. If the mode is not specified, this will default to `CourseMode.DEFAULT_MODE_SLUG`.
@@ -156,6 +156,7 @@ def add_enrollment(user_id, course_id, mode=None, is_active=True,
             'professional'. If not specified, this defaults to the default course mode.
         is_active (boolean): Optional argument for making the new enrollment inactive. If not specified, is_active
             defaults to True.
+        check_access (boolean): Optional argument for checking enrollment access when enrolling a user in a course
 
     Returns:
         A serializable dictionary of the new course enrollment.
@@ -194,6 +195,7 @@ def add_enrollment(user_id, course_id, mode=None, is_active=True,
     _validate_course_mode(course_id, mode, is_active=is_active)
     return _data_api().create_course_enrollment(user_id, course_id,
                                                 mode, is_active,
+                                                check_access,
                                                 request=request)
 
 
