@@ -444,7 +444,7 @@
         .accomplishment-statement,
         .accomplishment-statement-lead,
         .accomplishment-recipient,
-        .accomplishment-course,
+        .accomplishment-course
          {
             font-family: $font-family-serif;
         }
@@ -471,6 +471,11 @@
 
         .accomplishment-type {
             margin-top: 0;
+
+            .platform-logo {
+                margin: 30px 0;
+                height: 80px;
+            }
         }
 
         // hide the fancy

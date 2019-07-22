@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
+from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_str
 from django.core.urlresolvers import reverse
@@ -22,10 +23,15 @@ from eventtracking import tracker
 from microsite_configuration import microsite
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
+
+from lms.djangoapps.courseware.courses import get_course_about_section
+from lms.djangoapps.edraak_certificates.edraakcertificate import \
+    contains_rtl_text
 from openedx.core.lib.courses import course_image_url
 from student.models import LinkedInAddToProfileConfiguration
 from util import organizations_helpers as organization_api
 from util.views import handle_500
+from util.models import OrganizationDetail
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError
 
@@ -131,13 +137,10 @@ def _update_certificate_context(context, user_certificate, platform_name):
     # Translators: This text describes the purpose (and therefore, value) of a course certificate
     # 'verifying your identity' refers to the process for establishing the authenticity of the student
     context['certificate_info_description'] = _("{platform_name} acknowledges achievements through certificates, which "
-                                                "are awarded for various activities {platform_name} students complete "
-                                                "under the <a href='{tos_url}'>{platform_name} Honor Code</a>.  Some "
-                                                "certificates require completing additional steps, such as "
-                                                "<a href='{verified_cert_url}'> verifying your identity</a>.").format(
+                                                "are awarded for various activities. {platform_name} students complete "
+                                                "under the <a href='{tos_url}'>{platform_name} Honor Code</a>.").format(
         platform_name=platform_name,
-        tos_url=context.get('company_tos_url'),
-        verified_cert_url=context.get('company_verified_certificate_url'))
+        tos_url=context.get('company_tos_url'))
 
 
 def _update_context_with_basic_info(context, course_id, platform_name, configuration):
@@ -200,11 +203,15 @@ def _update_context_with_basic_info(context, course_id, platform_name, configura
 
     context['certificate_verify_urltext'] = _("Validate this certificate for yourself")
 
-    # Translators:  This text describes (at a high level) the mission and charter the edX platform and organization
-    context['company_about_description'] = _("{platform_name} offers interactive online classes and MOOCs from the "
-                                             "world's best universities, including MIT, Harvard, Berkeley, University "
-                                             "of Texas, and many others.  {platform_name} is a non-profit online "
-                                             "initiative created by founding partners Harvard and MIT.").format(
+    # Translators:  (EDRAAK) This text describes (at a high level) the mission and charter the edX platform and organization
+    context['company_about_description'] = _("{platform_name} is a massive open online course (MOOC) platform, that "
+                                             "is an initiative of the Queen Rania Foundation (QRF). QRF is determined "
+                                             "to ensure that the Arab world is at the forefront of educational innovation. "
+                                             "As such, QRF has capitalized on regional Arab talent to leverage technology "
+                                             "developed by the Harvard-MIT consortium, edX, to create the first non-profit "
+                                             "Arabic MOOC platform. The new MOOC platform will present the Arab world with "
+                                             "unique and vital opportunities that can be part of a necessary revolution in "
+                                             "education and learning.").format(
         platform_name=platform_name)
 
     context['company_about_title'] = _("About {platform_name}").format(platform_name=platform_name)
@@ -233,7 +240,7 @@ def _update_course_context(request, context, course, platform_name):
     context['accomplishment_copy_course_name'] = accomplishment_copy_course_name
     course_number = course.display_coursenumber if course.display_coursenumber else course.number
     context['course_number'] = course_number
-    if context['organization_long_name']:
+    if context['organization_long_name_en']:
         # Translators:  This text represents the description of course
         context['accomplishment_copy_course_description'] = _('a course of study offered by {partner_short_name}, '
                                                               'an online learning initiative of {partner_long_name} '
@@ -247,6 +254,25 @@ def _update_course_context(request, context, course, platform_name):
                                                               'through {platform_name}.').format(
             partner_short_name=context['organization_short_name'],
             platform_name=platform_name)
+
+
+def _update_edraak_course_context(request, context, course):
+    """
+    Updates context dictionary with course info.
+    """
+    context['full_course_image_url'] = request.build_absolute_uri(course_image_url(course))
+
+    cert_title = context['certificate_data'].get('course_title', '')
+    course_name = cert_title if cert_title else course.display_name
+    context['accomplishment_copy_course_name'] = course_name
+
+    course_description = get_course_about_section(
+        request, course, 'short_description')
+    context['course_description'] = course_description
+
+    course_number = course.display_coursenumber if \
+        course.display_coursenumber else course.number
+    context['course_number'] = course_number
 
 
 def _update_social_context(request, context, course, user, user_certificate, platform_name):
@@ -266,7 +292,7 @@ def _update_social_context(request, context, course, user, user_certificate, pla
     context['twitter_share_enabled'] = share_settings.get('CERTIFICATE_TWITTER', False)
     context['twitter_share_text'] = share_settings.get(
         'CERTIFICATE_TWITTER_TEXT',
-        _("I completed a course on {platform_name}. Take a look at my certificate.").format(
+        _("I completed a course on #{platform_name}. Take a look at my certificate.").format(
             platform_name=platform_name
         )
     )
@@ -302,10 +328,12 @@ def _update_context_with_user_info(context, user, user_certificate):
     Updates context dictionary with user related info.
     """
     user_fullname = user.profile.name
+    user_english_fullname = user.profile.name_en
     context['username'] = user.username
     context['course_mode'] = user_certificate.mode
     context['accomplishment_user_id'] = user.id
     context['accomplishment_copy_name'] = user_fullname
+    context['accomplishment_copy_name_en'] = user_english_fullname
     context['accomplishment_copy_username'] = user.username
 
     context['accomplishment_more_title'] = _("More Information About {user_name}'s Certificate:").format(
@@ -444,18 +472,68 @@ def _update_organization_context(context, course):
     """
     partner_long_name, organization_logo = None, None
     partner_short_name = course.display_organization if course.display_organization else course.org
+    language = context['language']
+    org_names = {
+        'long_name': partner_long_name,
+        'short_name': partner_short_name,
+    }
+
     organizations = organization_api.get_course_organizations(course_id=course.id)
     if organizations:
         #TODO Need to add support for multiple organizations, Currently we are interested in the first one.
         organization = organizations[0]
-        partner_long_name = organization.get('name', partner_long_name)
-        partner_short_name = organization.get('short_name', partner_short_name)
+        org_names = _get_organization_names(organization, lang=language)
         organization_logo = organization.get('logo', None)
 
-    context['organization_long_name'] = partner_long_name
-    context['organization_short_name'] = partner_short_name
-    context['accomplishment_copy_course_org'] = partner_short_name
+    context['organization_long_name'] = org_names['long_name']
+    context['organization_short_name'] = org_names['short_name']
+    context['accomplishment_copy_course_org'] = org_names['long_name']
     context['organization_logo'] = organization_logo
+
+
+def _get_organization_names(organization, lang='ar'):
+    org_id = organization.get('id')
+
+    try:
+        detail = OrganizationDetail.objects.get(organization=org_id)
+        long_en, long_ar = detail.name_en, detail.name_ar
+        short_en, short_ar = detail.short_name_en, detail.short_name_ar
+    except OrganizationDetail.DoesNotExist:
+        name = organization.get('name')
+        short = organization.get('short_name')
+        long_en, long_ar = name, name
+        short_en, short_ar = short, short
+
+    names_en = {
+        'long_name': long_en,
+        'short_name': short_en,
+    }
+    names_ar = {
+        'long_name': long_ar,
+        'short_name': short_ar,
+    }
+
+    return names_ar if lang == 'ar' else names_en
+
+
+def _update_sponsor_context(context, course):
+    """
+    Updates context with organization related info.
+    """
+    partner_long_name, sponsor_logo = None, None
+    partner_short_name = course.display_organization if course.display_organization else course.org
+    sponsors = organization_api.get_course_sponsors(course_key=course.id)
+
+    if sponsors:
+        #TODO Need to add support for multiple organizations, Currently we are interested in the first one.
+        organization = sponsors[0]
+        partner_long_name = organization.get('name', partner_long_name)
+        partner_short_name = organization.get('short_name', partner_short_name)
+        sponsor_logo = organization.get('logo', None)
+
+    context['sponsor_long_name'] = partner_long_name
+    context['sponsor_short_name'] = partner_short_name
+    context['sponsor_logo'] = sponsor_logo
 
 
 def render_cert_by_uuid(request, certificate_uuid):
@@ -516,14 +594,28 @@ def render_html_view(request, user_id, course_id):
         return render_to_response(invalid_template_path, context)
     context['certificate_data'] = active_configuration
 
+    # Determine the certificate language
+    course_title = active_configuration.get('course_title', '')
+    course_title = course_title if course_title else course.display_name
+    language = 'ar' if contains_rtl_text(course_title) else 'en'
+    context['language'] = language
+    translation.activate(language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = language
+
+    # Reload the basic info with activated language
+    _update_context_with_basic_info(context, course_id, platform_name, configuration)
+
     # Append/Override the existing view context values with any mode-specific ConfigurationModel values
     context.update(configuration.get(user_certificate.mode, {}))
 
     # Append organization info
     _update_organization_context(context, course)
 
+    # Append sponsor info
+    _update_sponsor_context(context, course)
+
     # Append course info
-    _update_course_context(request, context, course, platform_name)
+    _update_edraak_course_context(request, context, course)
 
     # Append user info
     _update_context_with_user_info(context, user, user_certificate)
