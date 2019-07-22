@@ -33,6 +33,7 @@ def create_cert(course):
         except:
             pass
         course.certificates['certificates'] = []
+        instructor_name = get_main_instractor_name(course)
         body = {"editing":True,
          "course_title": course.display_name,
          "name":"Name of the certificate",
@@ -42,10 +43,11 @@ def create_cert(course):
          "signatories":
          [{
             "certificate":None,
-            "name": get_main_instractor_name(course),
+            "name": instructor_name,
             "title": "",
             "organization": course.org.lower(),
             "signature_image_path": "/c4x/AUB/CZN100/asset/trans.png"}]}
+        print instructor_name, course.id
         # print body
         new_certificate = CertificateManager.deserialize_certificate(course, json.dumps(body))
         if course.certificates.get('certificates') is None:
