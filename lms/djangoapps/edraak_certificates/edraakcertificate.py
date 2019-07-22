@@ -299,6 +299,15 @@ class EdraakCertificate(object):
         if not self.organizations:
             return
 
+        # Fetch the organization data
+        organization = self.organizations[0]
+        organization_name = self.get_organization_details(organization)
+
+        logo = organization.get('logo', None)
+
+        if not logo.name:
+            return
+
         x = self.left_panel_center
         y = 5.9
 
@@ -315,17 +324,11 @@ class EdraakCertificate(object):
         self.ctx.setLineWidth(0.5)
         self.ctx.line(xu, yu, xu+length, yu)
 
-        # Fetch the organization data
-        organization = self.organizations[0]
-        organization_name = self.get_organization_details(organization)
-
-        logo = organization.get('logo', None)
-
         try:
             image = utils.ImageReader(self.path_builder(logo.url))
             iw, ih = image.getSize()
             aspect = iw / float(ih)
-        except IOError:
+        except (IOError, ValueError):
             image = None
             iw, aspect = 0, 0
 
