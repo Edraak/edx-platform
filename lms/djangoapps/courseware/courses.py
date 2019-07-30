@@ -390,6 +390,15 @@ def get_courses(user, org=None, filter_=None):
     return courses
 
 
+def get_specialization_courses(org=None, filter_=None):
+    """
+    Returns a list of courses available, sorted by course.number and optionally
+    filtered by org code (case-insensitive).
+    """
+    courses = branding.get_visible_courses(org=org, filter_=filter_)
+    return courses
+
+
 def get_permission_for_course_about():
     """
     Returns the CourseOverview object for the course after checking for access.

@@ -21,7 +21,7 @@ from opaque_keys.edx.keys import CourseKey
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from openedx.core.lib.api.paginators import NamespacedPageNumberPagination
 from openedx.core.lib.api.view_utils import view_auth_classes, DeveloperErrorViewMixin
-from .api import course_detail, list_courses
+from .api import course_detail, list_courses, list_specialization_courses
 from .forms import CourseDetailGetForm, CourseListGetForm
 from .serializers import CourseSerializer, CourseDetailSerializer, \
     MarketingCourseDetailSerializer
@@ -238,6 +238,13 @@ class CourseListView(DeveloperErrorViewMixin, ListAPIView):
         form = CourseListGetForm(self.request.query_params, initial={'requesting_user': self.request.user})
         if not form.is_valid():
             raise ValidationError(form.errors)
+
+        spec_courses = self.request.GET.get('spec_courses') in ['true', 'True']
+        if spec_courses:
+            return list_specialization_courses(
+                org=form.cleaned_data['org'],
+                filter_=form.cleaned_data['filter_'],
+            )
 
         return list_courses(
             self.request,
