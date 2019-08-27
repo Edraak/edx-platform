@@ -331,14 +331,13 @@ class EdraakCertificate(object):
         except (IOError, ValueError):
             image = None
             iw, aspect = 0, 0
-        width = 0
-        height = 0
-        if iw > 2.5*inch:
-            width = 2.5*inch
+
+        height = inch
+        width = height * aspect
+
+        if aspect > 2: # in case the logo is too wide
+            width = 2*inch
             height = width / aspect
-        else:
-            height = inch
-            width = height * aspect
 
         x = self.bidi_x_axis(x * inch, offset=width / 2.0)
         y -= 1.3
