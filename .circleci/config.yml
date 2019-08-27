@@ -29,6 +29,19 @@ jobs:
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
 #      command: /sbin/init
+    - image: circleci/mongo:3.6
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ""
+        MONGO_INITDB_ROOT_PASSWORD: ""
+    - image: circleci/mysql:5.6
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: true
+        MYSQL_DATABASE: test_edxapp
+        MYSQL_HOST: "127.0.0.1"
+        MYSQL_ROOT_HOST: "%"
+        MYSQL_USER: ubuntu
+        MYSQL_PASSWORD: ""
+        MYSQL_ROOT_PASSWORD: ""
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
