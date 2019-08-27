@@ -331,12 +331,17 @@ class EdraakCertificate(object):
         except (IOError, ValueError):
             image = None
             iw, aspect = 0, 0
-
-        height = inch / 1.55
-        width = height * aspect
+        width = 0
+        height = 0
+        if iw > 2.5*inch:
+            width = 2.5*inch
+            height = width / aspect
+        else:
+            height = inch
+            width = height * aspect
 
         x = self.bidi_x_axis(x * inch, offset=width / 2.0)
-        y -= 0.9
+        y -= 1.3
 
         self.ctx.drawImage(image, x, y*inch, width, height, mask='auto')
 
