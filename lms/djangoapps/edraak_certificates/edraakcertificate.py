@@ -30,8 +30,7 @@ from courseware.access import has_access
 from util import organizations_helpers as organization_api
 from util.models import OrganizationDetail
 
-from edraak_certificates import arabicreshaper
-
+from arabic_reshaper import ArabicReshaper
 
 from lms.djangoapps.certificates.api import get_certificate_url, get_active_web_certificate
 
@@ -50,8 +49,12 @@ for font_file, font_name in fonts.iteritems():
 
 def text_to_bidi(text):
     text = normalize_spaces(text)
-
-    reshaped_text = arabicreshaper.reshape(text)
+    Reshaper = ArabicReshaper(
+        configuration={
+            'use_unshaped_instead_of_isolated': True
+        }
+    )
+    reshaped_text = Reshaper.reshape(text)
     bidi_text = get_display(reshaped_text)
     return bidi_text
 

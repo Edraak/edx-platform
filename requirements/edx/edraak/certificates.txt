@@ -2,3 +2,4 @@
 python-bidi==0.3.4
 wand==0.3.7
 qrcode==5.3
+arabic-reshaper==2.0.14
