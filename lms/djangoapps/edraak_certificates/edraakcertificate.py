@@ -30,8 +30,7 @@ from courseware.access import has_access
 from util import organizations_helpers as organization_api
 from util.models import OrganizationDetail
 
-from edraak_certificates import arabicreshaper
-
+from arabic_reshaper import ArabicReshaper
 
 from lms.djangoapps.certificates.api import get_certificate_url, get_active_web_certificate
 
@@ -39,8 +38,8 @@ from lms.djangoapps.certificates.api import get_certificate_url, get_active_web_
 logger = logging.getLogger(__name__)
 static_dir = path.join(path.dirname(__file__), 'assets')
 fonts = {
-    'sahlnaskh-regular.ttf': 'Sahl Naskh Regular',
-    'sahlnaskh-bold.ttf': 'Sahl Naskh Bold',
+    'Tajawal-Regular.ttf': 'tajawal Regular',
+    'Tajawal-Bold.ttf': 'tajawal Bold',
 }
 
 for font_file, font_name in fonts.iteritems():
@@ -50,8 +49,12 @@ for font_file, font_name in fonts.iteritems():
 
 def text_to_bidi(text):
     text = normalize_spaces(text)
-
-    reshaped_text = arabicreshaper.reshape(text)
+    Reshaper = ArabicReshaper(
+        configuration={
+            'use_unshaped_instead_of_isolated': True
+        }
+    )
+    reshaped_text = Reshaper.reshape(text)
     bidi_text = get_display(reshaped_text)
     return bidi_text
 
@@ -222,9 +225,9 @@ class EdraakCertificate(object):
 
     def _set_font(self, size, is_bold, color='grey-dark'):
         if is_bold:
-            font = 'Sahl Naskh Bold'
+            font = 'tajawal Bold'
         else:
-            font = 'Sahl Naskh Regular'
+            font = 'tajawal Regular'
 
         self.font = font
         self.font_size = size

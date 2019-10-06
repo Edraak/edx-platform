@@ -24,10 +24,10 @@
   }
 }
 
-// Hack #3.a Arabic Droid Naskh is not playing well with MathJax `spans`
+// Hack #3.a Arabic font is not playing well with MathJax `spans`
 // This style makes sure that the spans in a MathJax element gets the
-// `sans-serif` font family instead of Arabic Droid Naskh
-.naskhfixup {
+// `sans-serif` font family instead of Arabic font
+.arabic_font_fixup {
   > span {
     > span {
       font-family: sans-serif;
