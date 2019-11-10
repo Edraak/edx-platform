@@ -8,7 +8,8 @@ from django.conf.urls import patterns, url
 from .views import (
     EnrollmentView,
     EnrollmentListView,
-    EnrollmentCourseDetailView
+    EnrollmentCourseDetailView,
+    BulkEnrollmentView
 )
 
 USERNAME_PATTERN = settings.USERNAME_PATTERN
@@ -27,6 +28,9 @@ urlpatterns = patterns(
         name='courseenrollment'
     ),
     url(r'^enrollment$', EnrollmentListView.as_view(), name='courseenrollments'),
+
+    url(r'^enrollment/create_many_enrollments$', BulkEnrollmentView.as_view(), name='bulk_course_enrollments'),
+
     url(
         r'^course/{course_key}$'.format(course_key=settings.COURSE_ID_PATTERN),
         EnrollmentCourseDetailView.as_view(),

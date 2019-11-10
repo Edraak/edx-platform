@@ -990,7 +990,7 @@ class CourseEnrollment(models.Model):
 
         enrollment, created = CourseEnrollment.objects.get_or_create(
             user=user,
-            course_id=course_key,
+            course_id=course_key
         )
 
         # If we *did* just create a new enrollment, set some defaults
@@ -1172,7 +1172,7 @@ class CourseEnrollment(models.Model):
             # announced before the start of content creation.
             if check_access:
                 log.warning(u"User %s failed to enroll in non-existent course %s", user.username, unicode(course_key))
-                raise NonExistentCourseError
+            raise NonExistentCourseError
 
         if check_access:
             if CourseEnrollment.is_enrollment_closed(user, course):

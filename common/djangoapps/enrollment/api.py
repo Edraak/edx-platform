@@ -199,6 +199,83 @@ def add_enrollment(user_id, course_id, mode=None, is_active=True,
                                                 request=request)
 
 
+def add_bulk_enrollments(username, course_ids, mode=None, check_access=True, request=None):
+    """Enrolls a user in a list of courses.
+
+    Enrolls a user in list of courses.
+
+    Arguments:
+        username (str): The user to enroll.
+        course_ids (list): Course ids to enroll the user in.
+        mode (str): Optional argument for the type of enrollments to create. Ex. 'audit', 'honor', 'verified',
+            'professional'. If not specified, this defaults to the default course mode.
+        check_access (boolean): Optional argument for checking enrollment access when enrolling a user in courses
+        request (Request): API View request object
+
+    Returns:
+        A serializable dictionary of the new course enrollments.
+
+    Example:
+        >>> add_bulk_enrollments("Bob", ["edX/DemoX/2014T2", "edX/DemoX/2015T2"])
+        {
+            "success_enrollments": 1,
+            "enrollments": [
+                {
+                    "edX/DemoX/2014T2": {
+                        "created": "2014-10-20T20:18:00Z",
+                        "mode": "audit",
+                        "is_active": True,
+                        "user": "Bob",
+                        "course": {
+                            "course_id": "edX/DemoX/2014T2",
+                            "enrollment_end": "2014-12-20T20:18:00Z",
+                            "enrollment_start": "2014-10-15T20:18:00Z",
+                            "course_start": "2015-02-03T00:00:00Z",
+                            "course_end": "2015-05-06T00:00:00Z",
+                            "course_modes": [
+                                {
+                                    "slug": "audit",
+                                    "name": "Audit",
+                                    "min_price": 0,
+                                    "suggested_prices": "",
+                                    "currency": "usd",
+                                    "expiration_datetime": null,
+                                    "description": null,
+                                    "sku": null
+                                }
+                            ],
+                            "invite_only": False
+                        }
+                    },
+                    {
+                        "course_details": {
+                            "course_id": "edX/DemoX/2015T2"
+                        },
+                        "error": "course_not_found",
+                        "message": "Course with slug 'edX/DemoX/2014T2' is not found"
+                    }
+                }
+            ]
+        }
+
+    Bulk Enrollment Errors:
+        - course_not_found
+        - enrollment_closed
+        - course_full
+    """
+    if mode is not None:
+        for course_id in course_ids:
+            _validate_course_mode(course_id, mode, is_active=True)
+
+    response = _data_api().create_course_bulk_enrollments(username=username,
+                                                          course_ids=course_ids,
+                                                          mode=mode,
+                                                          check_access=check_access,
+                                                          request=request)
+
+    return response
+
+
 def update_enrollment(user_id, course_id, mode=None, is_active=None, enrollment_attributes=None):
     """Updates the course mode for the enrolled user.
 

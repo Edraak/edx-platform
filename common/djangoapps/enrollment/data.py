@@ -128,6 +128,8 @@ def create_course_enrollment(username, course_id, mode, is_active,
         course_id (str): The course to create the course enrollment for.
         mode (str): (Optional) The mode for the new enrollment.
         is_active (boolean): (Optional) Determines if the enrollment is active.
+        check_access (boolean): Determines if enrollment access checks is on when enrolling a user in a course
+        request (Request): request Object
 
     Returns:
         A serializable dictionary representing the new course enrollment.
@@ -149,8 +151,13 @@ def create_course_enrollment(username, course_id, mode, is_active,
         raise UserNotFoundError(msg)
 
     try:
-        enrollment = CourseEnrollment.enroll(user, course_key, check_access=check_access)
-        return _update_enrollment(enrollment, is_active=is_active, mode=mode)
+        enrollment = CourseEnrollment.enroll(user,
+                                             course_key,
+                                             check_access=check_access)
+        return _update_enrollment(enrollment,
+                                  is_active=is_active,
+                                  mode=mode)
+
     except NonExistentCourseError as err:
         raise CourseNotFoundError(err.message)
     except EnrollmentClosedError as err:
@@ -161,6 +168,63 @@ def create_course_enrollment(username, course_id, mode, is_active,
         enrollment = get_course_enrollment(username, course_id,
                                            request=request)
         raise CourseEnrollmentExistsError(err.message, enrollment)
+
+
+def create_course_bulk_enrollments(username, course_ids, mode=None, check_access=True, request=None):
+    """
+    Creates a new courses enrollments (bulk enrollment) for the specified username.
+
+    Args:
+        username (str): The name of the user to create a new course enrollment for.
+        course_ids (str): The courses to create the courses enrollments for.
+        mode (str): (Optional) The mode for the new enrollment.
+        check_access (boolean): Determines if enrollment access checks is on when enrolling a user in a course
+        request (Request): View request object.
+
+    Returns:
+        A serializable dictionary representing the new courses enrollments.
+    """
+    course_keys = [CourseKey.from_string(unicode(c_id)) for c_id in course_ids]
+
+    success_enrollments = list()
+    failed_enrollments = list()
+    for course_key in course_keys:
+        try:
+            enrollment = create_course_enrollment(username=username, course_id=str(course_key), mode=mode,
+                                                  is_active=True, check_access=check_access, request=request)
+            success_enrollments.append(enrollment)
+
+        except CourseNotFoundError as err:
+            failed_enrollments.append({
+                'course_details': {
+                    'course_id': str(course_key)
+                },
+                'error': 'course_not_found',
+                'message': err.message
+            })
+        except CourseEnrollmentClosedError as err:
+            failed_enrollments.append({
+                'course_details': {
+                    'course_id': str(course_key)
+                },
+                'error': 'enrollment_closed',
+                'message': err.message
+            })
+        except CourseEnrollmentFullError as err:
+            failed_enrollments.append({
+                'course_details': {
+                    'course_id': str(course_key)
+                },
+                'error': 'course_full',
+                'message': err.message
+            })
+        except CourseEnrollmentExistsError as error:
+            success_enrollments.append(error.enrollment)
+
+    return {
+        'success_enrollments': success_enrollments,
+        'failed_enrollments': failed_enrollments
+    }
 
 
 def update_course_enrollment(username, course_id, mode=None, is_active=None):

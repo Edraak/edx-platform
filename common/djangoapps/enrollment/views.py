@@ -16,6 +16,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from opaque_keys.edx.keys import CourseKey
 from embargo import api as embargo_api
 from cors_csrf.authentication import SessionAuthenticationCrossDomainCsrf
@@ -670,3 +672,48 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                     actual_activation=current_enrollment['is_active'] if current_enrollment else None,
                     user_id=user.id
                 )
+
+
+@can_disable_rate_limit
+class BulkEnrollmentView(APIView, ApiKeyPermissionMixIn):
+    authentication_classes = OAuth2AuthenticationAllowInactiveUser, EnrollmentCrossDomainSessionAuth
+    permission_classes = ApiKeyHeaderPermissionIsAuthenticated,
+    throttle_classes = EnrollmentUserThrottle,
+
+    def post(self, request):
+        username = request.data.get('username', request.user.username)
+        course_ids = request.data.get('course_ids')
+
+        has_api_key_permissions = self.has_api_key_permissions(request)
+
+        # Check that the user specified is either the same user, or this is a server-to-server request.
+        if not username or username != request.user.username and not has_api_key_permissions:
+            # Return a 404 instead of a 403 (Unauthorized). If one user is looking up
+            # other users, do not let them deduce the existence of an enrollment.
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if not course_ids:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"message": u"Course IDs must be specified to create new enrollments."}
+            )
+
+        # convert course ids to course keys
+        course_keys = []
+        for course_id in course_ids:
+            try:
+                course_keys.append(CourseKey.from_string(course_id))
+            except InvalidKeyError:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={
+                        "message": u"No course '{course_id}' found for enrollment".format(course_id=course_id)
+                    }
+                )
+
+        response = api.add_bulk_enrollments(username=username,
+                                            course_ids=course_keys,
+                                            check_access=False,
+                                            request=request)
+
+        return Response(response)
