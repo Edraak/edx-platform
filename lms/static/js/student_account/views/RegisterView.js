@@ -79,46 +79,10 @@
             },
 
             saveSuccess: function() {
-
-                if (ga) {
-                  ga('send', 'event', {
-                    eventCategory: 'Registration',
-                    eventAction: 'Submit',
-                    eventLabel: this.eventLabel,
-                    eventValue: 1,
-                    transport: 'beacon'
-                  });
-                }
-
-                if (fbq) {
-                  fbq('track', 'CompleteRegistration', {status: 'successful', content_name: this.eventLabel});
-                }
-
-                if (snaptr) {
-                  snaptr('track', 'SIGN_UP', {success: 1});
-                }
-
                 this.trigger('auth-complete');
             },
 
             saveError: function( error ) {
-                // Edraak (google-analytics): Send event on registration failure
-
-                if (ga) {
-                  ga('send', 'event', {
-                    eventCategory: 'Registration',
-                    eventAction: 'Submit',
-                    eventLabel: this.eventLabel,
-                    eventValue: 0,
-                    transport: 'beacon'
-                  });
-                }
-                if (fbq) {
-                  fbq('track', 'CompleteRegistration', {status: 'failed', content_name: this.eventLabel});
-                }
-                if(snaptr) {
-                  snaptr('track', 'SIGN_UP', {success: 0});
-                }
                 $(this.el).show(); // Show in case the form was hidden for auto-submission
                 this.errors = _.flatten(
                     _.map(
