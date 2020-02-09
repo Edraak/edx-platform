@@ -80,8 +80,8 @@ jobs:
     - run: npm install
     - run: pip install django==1.8.7
     - run: pip install setuptools==36.2.1 -U
-    - run: pip install -U pip
     - run: pip install -r requirements/edx/pre.txt
+    - run: pip install -U pip
     - run: pip install -r requirements/edx/github.txt
     - run: pip install -r requirements/edx/local.txt
     - run: pip install -r requirements/edx/base.txt
