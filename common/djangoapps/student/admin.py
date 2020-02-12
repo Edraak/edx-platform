@@ -14,6 +14,7 @@ from student.models import (
     PendingNameChange, CourseAccessRole, LinkedInAddToProfileConfiguration, UserFullNameHistory
 )
 from student.roles import REGISTERED_ACCESS_ROLES
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 
 class CourseAccessRoleForm(forms.ModelForm):
@@ -173,6 +174,14 @@ class UnicodeFriendlyUserAdmin(UserAdmin):
         return super(UserAdmin, self).get_readonly_fields(*args, **kwargs) + (
             'username',
         )
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
+    filter_horizontal = ()
 
 
 class UserFullNameHistoryAdmin(admin.ModelAdmin):
