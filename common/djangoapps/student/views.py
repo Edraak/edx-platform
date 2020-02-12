@@ -1617,6 +1617,7 @@ def create_account_with_params(request, params):
             request.session[pipeline.AUTH_ENTRY_KEY] = pipeline.AUTH_ENTRY_REGISTER_API
             pipeline_user = None
             error_message = ""
+            access_token = request.POST["access_token"]
             try:
                 pipeline_user = request.backend.do_auth(social_access_token, user=user)
             except AuthAlreadyAssociated:
