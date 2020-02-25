@@ -12,6 +12,13 @@ from openedx.core.lib.js_utils import (
   <head dir="${static.dir_rtl()}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	  <!-- OneTrust Cookies Consent Notice start -->
+    <script type="text/javascript" src="https://cookie-cdn.cookiepro.com/consent/7bc9e667-f406-4710-9f22-58e22b545c65/OtAutoBlock.js"></script>
+    <script src="https://cookie-cdn.cookiepro.com/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="7bc9e667-f406-4710-9f22-58e22b545c65"></script>
+    <script type="text/javascript">
+        function OptanonWrapper() { }
+    </script>
+    <!-- OneTrust Cookies Consent Notice end -->
     <title>
         <%block name="title"></%block> |
         % if context_course:
