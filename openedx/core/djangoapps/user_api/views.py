@@ -1,6 +1,7 @@
 """HTTP end-points for the User API. """
 import copy
 import logging
+import jwt
 
 from util.db import outer_atomic
 
@@ -37,7 +38,7 @@ from student.cookies import set_logged_in_cookies
 from openedx.core.lib.api.authentication import SessionAuthenticationAllowInactiveUser
 from util.json_request import JsonResponse
 from .preferences.api import update_email_opt_in
-from .helpers import FormDescription, shim_student_view, require_post_params
+from .helpers import FormDescription, shim_student_view, require_post_params, require_any_post_params
 from .models import UserPreference, UserProfile
 from .accounts import (
     NAME_MAX_LENGTH, EMAIL_MIN_LENGTH, EMAIL_MAX_LENGTH, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH,
@@ -47,6 +48,7 @@ from .accounts.api import check_account_exists
 from .serializers import UserSerializer, UserPreferenceSerializer
 
 
+REGISTRATION_LOG = logging.getLogger('edx.registration')
 POST_AUTH_LOG = logging.getLogger('edx.post_auth')
 
 
@@ -135,7 +137,7 @@ class LoginSessionView(APIView):
 
         return HttpResponse(form_desc.to_json(), content_type="application/json")
 
-    @method_decorator(require_post_params(["email", "password"]))
+    @method_decorator(require_any_post_params([["email", "password"], ["data_token"]]))
     @method_decorator(edx_csrf_protect)
     def post(self, request):
         """Log in a user.
@@ -281,6 +283,43 @@ class RegistrationView(APIView):
                 address already exists
         """
         data = request.POST.copy()
+
+        # Decrypt form data if it is encrypted
+        if 'data_token' in request.POST:
+            data_token = request.POST.get('data_token')
+
+            try:
+                decoded_data = jwt.decode(data_token,
+                                          settings.EDRAAK_LOGISTRATION_SECRET_KEY,
+                                          algorithms=[settings.EDRAAK_LOGISTRATION_SIGNING_ALGORITHM])
+                data.update(decoded_data)
+
+            except jwt.ExpiredSignatureError:
+                err_msg = u"The provided data_token has been expired"
+                REGISTRATION_LOG.warning(err_msg)
+
+                return JsonResponse({
+                    "success": False,
+                    "value": err_msg,
+                }, status=400)
+
+            except jwt.DecodeError:
+                err_msg = u"Signature verification failed"
+                REGISTRATION_LOG.warning(err_msg)
+
+                return JsonResponse({
+                    "success": False,
+                    "value": err_msg,
+                }, status=400)
+
+            except (jwt.InvalidTokenError, ValueError):
+                err_msg = u"Invalid token"
+                REGISTRATION_LOG.warning(err_msg)
+
+                return JsonResponse({
+                    "success": False,
+                    "value": err_msg,
+                }, status=400)
 
         email = data.get('email')
         username = data.get('username')
