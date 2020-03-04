@@ -6,6 +6,8 @@ import logging
 import uuid
 import json
 import warnings
+import jwt
+
 from collections import defaultdict
 from urlparse import urljoin
 
@@ -1015,6 +1017,44 @@ def change_enrollment(request, check_access=True):
 @ensure_csrf_cookie
 def login_user(request, error=""):  # pylint: disable=too-many-statements,unused-argument
     """AJAX request to log in the user."""
+    post_data = request.POST.copy()
+
+    # Decrypt form data if it is encrypted
+    if 'data_token' in request.POST:
+        data_token = request.POST.get('data_token')
+
+        try:
+            decoded_data = jwt.decode(data_token,
+                                      settings.EDRAAK_LOGISTRATION_SECRET_KEY,
+                                      algorithms=[settings.EDRAAK_LOGISTRATION_SIGNING_ALGORITHM])
+            post_data.update(decoded_data)
+
+        except jwt.ExpiredSignatureError:
+            err_msg = u"The provided data_token has been expired"
+            AUDIT_LOG.warning(err_msg)
+
+            return JsonResponse({
+                "success": False,
+                "value": err_msg,
+            }, status=400)
+
+        except jwt.DecodeError:
+            err_msg = u"Signature verification failed"
+            AUDIT_LOG.warning(err_msg)
+
+            return JsonResponse({
+                "success": False,
+                "value": err_msg,
+            }, status=400)
+
+        except (jwt.InvalidTokenError, ValueError):
+            err_msg = u"Invalid token"
+            AUDIT_LOG.warning(err_msg)
+
+            return JsonResponse({
+                "success": False,
+                "value": err_msg,
+            }, status=400)
 
     backend_name = None
     email = None
@@ -1024,7 +1064,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
     running_pipeline = None
     third_party_auth_requested = third_party_auth.is_enabled() and pipeline.running(request)
     third_party_auth_successful = False
-    trumped_by_first_party_auth = bool(request.POST.get('email')) or bool(request.POST.get('password'))
+    trumped_by_first_party_auth = bool(post_data.get('email')) or bool(post_data.get('password'))
     user = None
     parent_user = None
     child_user = None
@@ -1065,8 +1105,8 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 status=403
             )
 
-    elif 'child_user_id' in request.POST:
-        child_user_id = request.POST['child_user_id']
+    elif 'child_user_id' in post_data:
+        child_user_id = post_data['child_user_id']
         try:
             child_user = User.objects.get(id=child_user_id)
         except User.DoesNotExist:
@@ -1076,14 +1116,14 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 AUDIT_LOG.warning(u"Child login failed - Unknown child user id: {0}".format(child_user_id))
     else:
 
-        if 'email' not in request.POST or 'password' not in request.POST:
+        if 'email' not in post_data or 'password' not in post_data:
             return JsonResponse({
                 "success": False,
                 "value": _('There was an error receiving your login information. Please email us.'),  # TODO: User error message
             })  # TODO: this should be status code 400  # pylint: disable=fixme
 
-        email = request.POST['email']
-        password = request.POST['password']
+        email = post_data['email']
+        password = post_data['password']
         try:
             user = User.objects.exclude(groups__name=CHILD_USER_PERMISSION_GROUP).get(email=email)
         except User.DoesNotExist:
@@ -1196,7 +1236,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             "edx.bi.user.account.authenticated",
             {
                 'category': "conversion",
-                'label': request.POST.get('course_id'),
+                'label': post_data.get('course_id'),
                 'provider': None
             },
             context={
@@ -1212,7 +1252,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             # We do not log here, because we have a handler registered
             # to perform logging on successful logins.
             login(request, user)
-            if request.POST.get('remember') == 'true':
+            if post_data.get('remember') == 'true':
                 request.session.set_expiry(604800)
                 log.debug("Setting user session to never expire")
             else:
