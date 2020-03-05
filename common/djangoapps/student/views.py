@@ -1026,6 +1026,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
         try:
             decoded_data = jwt.decode(data_token,
                                       settings.EDRAAK_LOGISTRATION_SECRET_KEY,
+                                      verify=False,
                                       algorithms=[settings.EDRAAK_LOGISTRATION_SIGNING_ALGORITHM])
             post_data.update(decoded_data)
 
